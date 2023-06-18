@@ -43,7 +43,7 @@ export default function BrowserFilterBreadcrumbs() {
             icon={<IoClose />}
           />
         </Center>
-        <Center px={5} py={1} w={"calc(100% - 20px)"} overflow={"auto"}>
+        <Center px={5} py={1} w={"calc(100% - 27px)"} overflow={"auto"}>
           <Breadcrumb spacing="8px" separator={<IoChevronForward />}>
             {filterBreadcrumbsGroup.map((group, i) => (
               <BreadcrumbItem key={`bcg_${i}`}>
