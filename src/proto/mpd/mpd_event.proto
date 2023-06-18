@@ -1,0 +1,17 @@
+syntax = "proto3";
+
+message MpdEvent {
+  EventType event_type = 1;
+
+  enum EventType {
+    UNKNOWN = 0;
+    DATABASE = 1;
+    PLAYLIST = 2;
+    PLAY_QUEUE = 3;
+    MIXER = 4;
+    OPTIONS = 5;
+    PLAYER = 6;
+    DISCONNECTED = 7;
+    UPDATE = 8;
+  }
+}

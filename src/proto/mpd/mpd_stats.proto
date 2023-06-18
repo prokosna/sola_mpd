@@ -1,0 +1,14 @@
+syntax = "proto3";
+
+import "google/protobuf/timestamp.proto";
+
+message MpdStats {
+  string version = 1;
+  int32 artists_count = 2;
+  int32 albums_count = 3;
+  int32 songs_count = 4;
+  int32 uptime = 5;
+  int32 total_playtime = 6;
+  google.protobuf.Timestamp last_updated = 7;
+  int32 playtime = 8;
+}
