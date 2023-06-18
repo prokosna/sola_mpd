@@ -91,3 +91,18 @@ $ docker/start.sh [--port 3001]
 4. When the plugin is available, the right-click context menu has `Sync with Astiga` and you can create a playlist with selected songs on Sola MPD as long as the exact same songs are available on Astiga as well.
 
 This plugin is quite specific to my use case, but you can use this as a reference to develop a custom plugin for your use case.
+
+## For developers
+
+Sola MPD is built in TypeScript with utilizing React, Next.js, Protocol Buffers and so on.
+
+```
+# 1. Install dependencies, set up a husky hook for format/lint
+$ npm i
+
+# 2. Compile protobuf messages as all objects are defined in the Probobuf format
+$ npm run proto
+
+# 3. Run a dev server (Currently hot-reload doesn't work due to the custom server issue of Next.js)
+$ npm run dev
+```
