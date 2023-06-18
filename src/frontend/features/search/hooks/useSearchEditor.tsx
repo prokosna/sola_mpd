@@ -7,7 +7,7 @@ import { useAppStore } from "../../global/store/AppStore";
 
 import { FilterCondition, FilterConditionOperator } from "@/models/filter";
 import { Query, Search } from "@/models/search";
-import { SongMetadataTag } from "@/models/song";
+import { SongMetadataTag, SongMetadataValue } from "@/models/song";
 import { FilterUtils } from "@/utils/FilterUtils";
 import { SongTableUtils } from "@/utils/SongTableUtils";
 import { SongUtils } from "@/utils/SongUtils";
@@ -42,11 +42,17 @@ export function useSearchEditor() {
     return savedSearches?.map((v) => v.name) || [];
   }, [savedSearches]);
 
-  const defaultFilterCondition = (uuid: string) =>
+  const getDefaultFilterCondition = (uuid: string) =>
     FilterCondition.create({
       uuid,
       tag: SongMetadataTag.TITLE,
       operator: FilterConditionOperator.EQUAL,
+      value: SongMetadataValue.create({
+        value: {
+          $case: "stringValue",
+          stringValue: "",
+        },
+      }),
     });
 
   const [errorMessage, setErrorMessage] = useState("");
@@ -99,7 +105,7 @@ export function useSearchEditor() {
           });
           return;
         }
-        conditions.push(defaultFilterCondition(uuidv4()));
+        conditions.push(getDefaultFilterCondition(uuidv4()));
       });
       updateEditingSearch(newSearch, false);
     },
@@ -136,7 +142,7 @@ export function useSearchEditor() {
     const newSearch = produce(currentSearch, (draft) => {
       draft.queries!.push(
         Query.create({
-          conditions: [defaultFilterCondition(uuidv4())],
+          conditions: [getDefaultFilterCondition(uuidv4())],
         })
       );
     });
