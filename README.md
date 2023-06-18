@@ -23,6 +23,8 @@ On the other hand, the following features are out of scope:
 - Metadata editing
 - ...etc
 
+Sola MPD only supports MPD version 0.21 or later.
+
 ## How to use
 
 Sola MPD can be deployed using Docker in your local network.
@@ -94,7 +96,7 @@ This plugin is quite specific to my use case, but you can use this as a referenc
 
 ## For developers
 
-Sola MPD is built in TypeScript with utilizing React, Next.js, Protocol Buffers and so on.
+Sola MPD is written in TypeScript with React, Next.js, Protocol Buffers and so on.
 
 ```
 # 1. Install dependencies, set up a husky hook for format/lint
