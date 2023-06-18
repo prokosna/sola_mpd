@@ -1,0 +1,18 @@
+syntax = "proto3";
+
+import "filter.proto";
+import "song_table.proto";
+
+message Query {
+  repeated FilterCondition conditions = 1;
+}
+
+message Search {
+  string name = 1;
+  repeated Query queries = 2;
+  repeated SongTableColumn columns = 3;
+}
+
+message SavedSearches {
+  repeated Search searches = 1;
+}

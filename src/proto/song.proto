@@ -1,0 +1,56 @@
+syntax = "proto3";
+
+import "google/protobuf/timestamp.proto";
+import "google/protobuf/wrappers.proto";
+
+message AudioFormat {
+  Encoding encoding = 1;
+  uint32 sampling_rate = 2;
+  uint32 bits = 3;
+  uint32 channels = 4;
+
+  enum Encoding {
+    UNKNOWN = 0;
+    PCM = 1;
+    DSD = 2;
+  }
+}
+
+message Song {
+  string path = 1;
+  map<string, MetadataValue> metadata = 2;
+
+  enum MetadataTag {
+    UNKNOWN = 0;
+    TITLE = 1;
+    ARTIST = 2;
+    ALBUM_ARTIST = 3;
+    ALBUM = 4;
+    GENRE = 5;
+    COMPOSER = 6;
+    TRACK = 7;
+    DISC = 8;
+    DATE = 9;
+    DURATION = 10;
+    FORMAT = 11;
+    UPDATED_AT = 12;
+    ID = 13;
+    POSITION = 14;
+    COMMENT = 15;
+    LABEL = 16;
+  }
+
+  message MetadataValue {
+    oneof value {
+      google.protobuf.StringValue string_value = 2;
+      google.protobuf.Int32Value int_value = 3;
+      google.protobuf.FloatValue float_value = 4;
+      AudioFormat format = 5;
+      google.protobuf.Timestamp timestamp = 6;
+    }
+  }
+}
+
+message SongList {
+  repeated Song songs = 1;
+}
