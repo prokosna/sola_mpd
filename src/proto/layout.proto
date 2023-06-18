@@ -1,0 +1,24 @@
+syntax = "proto3";
+
+message FileExploreLayout {
+  float side_pane_width = 1;
+}
+
+message SearchLayout {
+  float side_pane_width = 1;
+}
+
+message BrowserLayout {
+  float side_pane_width = 1;
+}
+
+message PlaylistLayout {
+  float side_pane_width = 1;
+}
+
+message LayoutState {
+  FileExploreLayout file_explore_layout = 1;
+  SearchLayout search_layout = 2;
+  BrowserLayout browser_layout = 3;
+  PlaylistLayout playlist_layout = 4;
+}

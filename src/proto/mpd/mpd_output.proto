@@ -1,0 +1,8 @@
+syntax = "proto3";
+
+message MpdOutputDevice {
+  int32 id = 1;
+  string name = 2;
+  string plugin = 3;
+  bool is_enabled = 4;
+}

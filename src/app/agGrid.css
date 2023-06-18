@@ -1,0 +1,8 @@
+.ag-theme-alpine {
+  --ag-grid-size: 4px;
+  --ag-border-color: #cbd5e0;
+}
+
+.ag-font-weight-bold {
+  font-weight: bold;
+}

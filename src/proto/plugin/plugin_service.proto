@@ -1,0 +1,9 @@
+syntax = "proto3";
+package sola;
+
+import "plugin/plugin.proto";
+
+service PluginService {
+  rpc Register(PluginRegisterRequest) returns (PluginRegisterResponse) {}
+  rpc Execute(PluginExecuteRequest) returns (stream PluginExecuteResponse) {}
+}
