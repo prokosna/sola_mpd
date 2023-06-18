@@ -8,7 +8,7 @@ import { FilterCondition, FilterConditionOperator } from "@/models/filter";
 import { MpdRequest } from "@/models/mpd/mpd_command";
 import { MpdProfile } from "@/models/mpd/mpd_profile";
 import { Query, SavedSearches, Search } from "@/models/search";
-import { Song, SongMetadataTag } from "@/models/song";
+import { Song, SongMetadataTag, SongMetadataValue } from "@/models/song";
 import { SongTableColumn } from "@/models/song_table";
 import { ApiUtils } from "@/utils/ApiUtils";
 import { FilterUtils } from "@/utils/FilterUtils";
@@ -25,6 +25,12 @@ function getDefaultSearch(): Search {
             uuid: uuidv4(),
             tag: SongMetadataTag.TITLE,
             operator: FilterConditionOperator.EQUAL,
+            value: SongMetadataValue.create({
+              value: {
+                $case: "stringValue",
+                stringValue: "",
+              },
+            }),
           }),
         ],
       }),
