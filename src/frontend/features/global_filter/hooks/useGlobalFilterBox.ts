@@ -16,7 +16,7 @@ export function useGlobalFilterBox() {
       }
       const timeoutId = setTimeout(() => {
         updateGlobalSearchText(v);
-      }, 1000);
+      }, 500);
       lastInvocation.current = timeoutId;
     },
     [updateGlobalSearchText]
