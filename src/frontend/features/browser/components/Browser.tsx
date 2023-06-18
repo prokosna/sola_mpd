@@ -26,7 +26,7 @@ export default function Browser() {
   return (
     <>
       <VStack h="full" spacing={0}>
-        <Box w="100%">
+        <Box w="100%" backgroundColor="brand.50">
           <BrowserFilterBreadcrumbs></BrowserFilterBreadcrumbs>
         </Box>
         <Box w="100%" h="full">

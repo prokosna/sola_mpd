@@ -49,6 +49,20 @@ export function useBrowserFilterBreadcrumbs() {
     [browserFilters, updateBrowserFilters]
   );
 
+  const onResetClicked = useCallback(async () => {
+    if (browserFilters === undefined) {
+      return;
+    }
+    const newBrowserFilters = BrowserUtils.normalizeBrowserFilters(
+      produce(browserFilters, (draft) => {
+        for (const filter of draft) {
+          filter.selectedValues = [];
+        }
+      })
+    );
+    await updateBrowserFilters(newBrowserFilters);
+  }, [browserFilters, updateBrowserFilters]);
+
   const filterBreadcrumbsGroup = useMemo(() => {
     if (
       browserFilters === undefined ||
@@ -71,5 +85,6 @@ export function useBrowserFilterBreadcrumbs() {
   return {
     filterBreadcrumbsGroup,
     onCloseClicked,
+    onResetClicked,
   };
 }
