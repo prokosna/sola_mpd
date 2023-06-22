@@ -13,7 +13,7 @@ export default function Landing() {
 
   useEffect(() => {
     if (profile !== undefined) {
-      router.push(ROUTE_HOME_PLAY_QUEUE);
+      router.replace(ROUTE_HOME_PLAY_QUEUE);
     }
   }, [profile, router]);
 
