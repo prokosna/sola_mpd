@@ -31,6 +31,7 @@ export type SongTableProps = {
 
 export default function SongTable(props: SongTableProps) {
   const {
+    ref,
     gridRef,
     rowData,
     columnDefs,
@@ -47,6 +48,7 @@ export default function SongTable(props: SongTableProps) {
   return (
     <>
       <div
+        ref={ref}
         className="ag-theme-alpine"
         style={{ height: "100%", width: "100%" }}
       >

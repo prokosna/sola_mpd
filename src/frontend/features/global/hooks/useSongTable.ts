@@ -15,6 +15,7 @@ import { TriggerEvent, useContextMenu } from "react-contexify";
 import { SongTableProps } from "../components/SongTable";
 import { useAppStore } from "../store/AppStore";
 
+import { useKeyCombination } from "@/frontend/common_hooks/useKeyCombination";
 import { Song } from "@/models/song";
 import { FilterUtils } from "@/utils/FilterUtils";
 import { SongTableUtils } from "@/utils/SongTableUtils";
@@ -43,6 +44,9 @@ export function useSongTable(props: SongTableProps) {
 
   const contextMenu = useContextMenu({ id });
 
+  // For shortcut keys
+  const ref = useRef(null);
+
   // Ag Grid API
   const gridRef = useRef<AgGridReact>(null);
 
@@ -57,6 +61,25 @@ export function useSongTable(props: SongTableProps) {
     }
     api.redrawRows();
   }, [currentSong, getRowClassBySong]);
+
+  // Ctrl + A to select all songs
+  useKeyCombination(ref, ["Control", "a"], async () => {
+    const api = gridRef.current?.api;
+    if (api === undefined) {
+      console.log("api undefined");
+      return;
+    }
+    const songs: Song[] = [];
+    api.forEachNodeAfterFilterAndSort((node) => {
+      const song = SongTableUtils.convertNodeToSong(songsMap, node);
+      if (song === undefined) {
+        return;
+      }
+      songs.push(song);
+      node.setSelected(true);
+    });
+    onSongsSelected(songs);
+  });
 
   const columnDefs = useMemo(() => {
     return tableColumns.map((v, i) => ({
@@ -288,6 +311,7 @@ export function useSongTable(props: SongTableProps) {
   );
 
   return {
+    ref,
     gridRef,
     rowData,
     columnDefs,
