@@ -179,7 +179,7 @@ export class SongTableUtils {
     return targetSongs;
   }
 
-  private static convertNodeToSong(
+  static convertNodeToSong(
     songsMap: Map<string, Song>,
     node: IRowNode
   ): Song | undefined {
