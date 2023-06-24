@@ -1,8 +1,6 @@
 syntax = "proto3";
 package sola;
 
-import "song.proto";
-
 message Plugin {
   string host = 1;
   int32 port = 2;
