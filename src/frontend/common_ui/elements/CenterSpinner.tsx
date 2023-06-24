@@ -5,7 +5,7 @@ import React from "react";
 export function CenterSpinner() {
   return (
     <>
-      <Center w="100%" h="100%">
+      <Center w="100vw" h="100vh">
         <Spinner boxSize="24" thickness="6px" color="brand.500"></Spinner>
       </Center>
     </>
