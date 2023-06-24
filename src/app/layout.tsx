@@ -2,10 +2,11 @@ import NextTopLoader from "nextjs-toploader";
 
 import { Providers } from "./providers";
 
-// There is an issue that ag-grid css is not applied if it is specified here
-// Need to put css imports in every files which include <AgGridReact>
 import "allotment/dist/style.css";
 import "react-contexify/dist/ReactContexify.css";
+import "ag-grid-community/styles/ag-grid.min.css";
+import "ag-grid-community/styles/ag-theme-alpine.min.css";
+import "@/app/agGrid.css";
 import "./global.css";
 
 export const metadata = {
