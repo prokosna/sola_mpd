@@ -19,6 +19,8 @@ export type SystemSlice = {
   appMessage: AppMessage | undefined;
   appMessageTimeoutId: ReturnType<typeof setTimeout> | undefined;
   updateAppMessage: (appMessage: AppMessage) => Promise<void>;
+  isSongTableLoading: boolean;
+  setIsSongTableLoading: (isLoading: boolean) => void;
 };
 
 export const createSystemSlice: StateCreator<AllSlices, [], [], SystemSlice> = (
@@ -44,6 +46,12 @@ export const createSystemSlice: StateCreator<AllSlices, [], [], SystemSlice> = (
     set({
       appMessage,
       appMessageTimeoutId: id,
+    });
+  },
+  isSongTableLoading: false,
+  setIsSongTableLoading: (isLoading: boolean) => {
+    set({
+      isSongTableLoading: isLoading,
     });
   },
 });

@@ -30,6 +30,8 @@ export const createPlaylistSlice: StateCreator<
   currentPlaylist: undefined,
   playlists: [],
   pullPlaylistSongs: async (profile: MpdProfile, currentPlaylist: Playlist) => {
+    get().setIsSongTableLoading(true);
+
     const req = MpdRequest.create({
       profile,
       command: {

@@ -1,8 +1,10 @@
 "use client";
+import { CircularProgress } from "@chakra-ui/react";
 import { AgGridReact } from "ag-grid-react";
 import React from "react";
 
 import { useSongTable } from "../hooks/useSongTable";
+import { useAppStore } from "../store/AppStore";
 
 import SongTableContextMenu, {
   SongTableContextMenuItem,
@@ -42,15 +44,17 @@ export default function SongTable(props: SongTableProps) {
     onRowDragEnd,
     onRowDoubleClicked,
     onSelectionChanged,
+    onRowDataUpdated,
     getRowClass,
   } = useSongTable(props);
+  const isSongTableLoading = useAppStore((state) => state.isSongTableLoading);
 
   return (
     <>
       <div
         ref={ref}
         className="ag-theme-alpine"
-        style={{ height: "100%", width: "100%" }}
+        style={{ height: "100%", width: "100%", position: "relative" }}
       >
         <AgGridReact
           ref={gridRef}
@@ -63,6 +67,7 @@ export default function SongTable(props: SongTableProps) {
           onColumnResized={onColumnsResized}
           onCellContextMenu={onContextMenuOpen}
           onSelectionChanged={onSelectionChanged}
+          onRowDataUpdated={onRowDataUpdated}
           animateRows={true}
           colResizeDefault={"shift"}
           rowSelection={"multiple"}
@@ -72,6 +77,16 @@ export default function SongTable(props: SongTableProps) {
           rowClass={"ag-theme-alpine"}
           getRowClass={getRowClass}
         ></AgGridReact>
+        {isSongTableLoading && (
+          <CircularProgress
+            top={"50%"}
+            left={"50%"}
+            transform={"translate(-50%, -50%)"}
+            position={"absolute"}
+            isIndeterminate
+            color="brand.500"
+          />
+        )}
       </div>
       <SongTableContextMenu
         id={props.id}
