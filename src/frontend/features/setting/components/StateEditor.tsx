@@ -11,7 +11,7 @@ import {
   Textarea,
   Text,
 } from "@chakra-ui/react";
-import React, { useState, ChangeEvent } from "react";
+import React, { useState, ChangeEvent, useEffect } from "react";
 
 import { JSONSerializable } from "@/types/serialization";
 
@@ -28,6 +28,11 @@ export default function StateEditor<T>(props: StateEditorProps<T>) {
   const [value, setValue] = useState(jsonText);
   const [newState, setNewState] = useState<T>(props.state);
   const [errorMessage, setErrorMessage] = useState("");
+
+  useEffect(() => {
+    setValue(jsonText);
+  }, [jsonText]);
+
   const handleInputChange = (e: ChangeEvent<HTMLTextAreaElement>) => {
     const inputValue = e.target.value;
     setValue(inputValue);

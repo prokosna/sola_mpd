@@ -49,9 +49,9 @@ export default function Profiles() {
               </Tr>
             </Thead>
 
-            {profiles.map((profile, index) => (
-              <Tbody key={index}>
-                <Tr>
+            <Tbody>
+              {profiles.map((profile, index) => (
+                <Tr key={index}>
                   <Td>{profile.name}</Td>
                   <Td>{profile.host}</Td>
                   <Td isNumeric>{profile.port}</Td>
@@ -69,8 +69,8 @@ export default function Profiles() {
                     <Td></Td>
                   )}
                 </Tr>
-              </Tbody>
-            ))}
+              ))}
+            </Tbody>
           </Table>
         </TableContainer>
       </VStack>
