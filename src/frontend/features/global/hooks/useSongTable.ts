@@ -3,6 +3,7 @@ import {
   ColumnResizedEvent,
   DisplayedColumnsChangedEvent,
   RowClassParams,
+  RowDataUpdatedEvent,
   RowDoubleClickedEvent,
   RowDragEndEvent,
   SelectionChangedEvent,
@@ -23,6 +24,9 @@ import { SongTableUtils } from "@/utils/SongTableUtils";
 export function useSongTable(props: SongTableProps) {
   const globalFilterTokens = useAppStore((state) => state.globalFilterTokens);
   const currentSong = useAppStore((state) => state.currentSong);
+  const setIsSongTableLoading = useAppStore(
+    (state) => state.setIsSongTableLoading
+  );
 
   const {
     id,
@@ -310,6 +314,13 @@ export function useSongTable(props: SongTableProps) {
     [songsMap, onSongsSelected]
   );
 
+  const onRowDataUpdated = useCallback(
+    (_: RowDataUpdatedEvent) => {
+      setIsSongTableLoading(false);
+    },
+    [setIsSongTableLoading]
+  );
+
   return {
     ref,
     gridRef,
@@ -322,6 +333,7 @@ export function useSongTable(props: SongTableProps) {
     onRowDragEnd,
     onRowDoubleClicked,
     onSelectionChanged,
+    onRowDataUpdated,
     getRowClass,
   };
 }

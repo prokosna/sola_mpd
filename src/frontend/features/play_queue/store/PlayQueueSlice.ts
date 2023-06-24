@@ -17,9 +17,11 @@ export const createPlayQueueSlice: StateCreator<
   [],
   [],
   PlayQueueSlice
-> = (set) => ({
+> = (set, get) => ({
   playQueueSongs: [],
   pullPlayQueueSongs: async (profile: MpdProfile) => {
+    get().setIsSongTableLoading(true);
+
     const req = MpdRequest.create({
       profile,
       command: { $case: "playlistinfo", playlistinfo: {} },

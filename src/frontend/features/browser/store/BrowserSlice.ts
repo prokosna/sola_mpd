@@ -41,6 +41,8 @@ export const createBrowserSlice: StateCreator<
     profile: MpdProfile,
     browserFilters: BrowserFilter[]
   ) => {
+    get().setIsSongTableLoading(true);
+
     const conditions = browserFilters
       .filter((v) => v.selectedValues !== undefined)
       .map((v) => BrowserUtils.convertBrowserFiltersToConditions(v))

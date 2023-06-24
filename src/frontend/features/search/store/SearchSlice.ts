@@ -71,6 +71,8 @@ export const createSearchSlice: StateCreator<AllSlices, [], [], SearchSlice> = (
   searchSongTableColumns: undefined,
   getDefaultSearch: getDefaultSearch,
   pullSearchSongs: async (profile: MpdProfile, search: Search) => {
+    get().setIsSongTableLoading(true);
+
     const searchConditions = SearchUtils.convertSearchToConditions(search);
     const songsList = await Promise.all(
       searchConditions.map((searchCondition) => {

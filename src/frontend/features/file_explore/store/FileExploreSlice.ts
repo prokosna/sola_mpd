@@ -27,6 +27,8 @@ export const createFileExploreSlice: StateCreator<
   fileExploreFolders: undefined,
   selectedFileExploreFolder: undefined,
   pullFileExploreSongs: async (profile: MpdProfile, folder: Folder) => {
+    get().setIsSongTableLoading(true);
+
     const req = MpdRequest.create({
       profile,
       command: { $case: "listSongsInFolder", listSongsInFolder: { folder } },
