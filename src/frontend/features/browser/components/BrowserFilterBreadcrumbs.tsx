@@ -35,7 +35,7 @@ export default function BrowserFilterBreadcrumbs() {
       >
         <Center w="25px" px="1px">
           <IconButton
-            variant="outline"
+            variant="ghost"
             colorScheme="gray"
             aria-label="Reset filters"
             size="xs"
@@ -56,7 +56,6 @@ export default function BrowserFilterBreadcrumbs() {
                     label={SongUtils.convertSongMetadataValueToString(
                       v.metadataValue
                     )}
-                    bg="brand.600"
                   >
                     <Tag
                       key={SongUtils.convertSongMetadataValueToString(
@@ -65,7 +64,7 @@ export default function BrowserFilterBreadcrumbs() {
                       size={"sm"}
                       borderRadius="full"
                       variant="outline"
-                      colorScheme="brand"
+                      color="brand.900"
                       maxWidth="200px"
                       minWidth="50px"
                     >

@@ -101,7 +101,7 @@ export class SongUtils {
   }
 
   static convertAudioFormatToString(format: AudioFormat): string {
-    return `${format.encoding}:${format.channels}ch/${format.bits}bit/${format.samplingRate}Hz`;
+    return `${format.encoding}: ${format.channels}ch ${format.bits}bit ${format.samplingRate}Hz`;
   }
 
   static listAllSongMetadataTags(): SongMetadataTag[] {
