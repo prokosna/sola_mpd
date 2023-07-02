@@ -113,7 +113,7 @@ export default function Player() {
           gridTemplateColumns={"minmax(0, 1fr) 366px"}
           h="full"
           gap="0"
-          bg={"brand.100"}
+          bg={"brand.50"}
         >
           <GridItem area={"info"}>
             <Flex h="full" pl="3" pt="2" align={"center"} justify={"start"}>
