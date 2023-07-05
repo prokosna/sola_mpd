@@ -754,7 +754,7 @@ class MpdClient {
 
     const position =
       mpdSong.pos && typeof mpdSong.pos === "string" && !isNaN(+mpdSong.pos)
-        ? ~mpdSong.pos
+        ? +mpdSong.pos
         : undefined;
     song.metadata[SongMetadataTag.POSITION] = SongMetadataValue.create({
       value: {

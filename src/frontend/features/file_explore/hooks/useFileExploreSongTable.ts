@@ -15,9 +15,12 @@ import { PluginPluginType } from "@/models/plugin/plugin";
 import { Song } from "@/models/song";
 import { SongTableColumn } from "@/models/song_table";
 import { MpdUtils } from "@/utils/MpdUtils";
-import { SongTableUtils } from "@/utils/SongTableUtils";
+import { SongTableKeyType, SongTableUtils } from "@/utils/SongTableUtils";
 
 export function useFileExploreSongTable() {
+  // In the file explore, a unique key is each song path.
+  const songTableKeyType = SongTableKeyType.PATH;
+
   const profile = useAppStore((state) => state.profileState?.currentProfile);
   const fileExploreSongs = useFileExploreSongs();
   const commonSongTableState = useAppStore(
@@ -65,37 +68,35 @@ export function useFileExploreSongTable() {
 
   const onDoubleClicked = useCallback(
     async (song: Song, songs: Song[]) => {
-      // Replace the play queue with current songs and play from the target song
       if (profile === undefined) {
         return;
       }
-      const clearCommand = MpdRequest.create({
+      const addCommand = MpdRequest.create({
         profile,
         command: {
-          $case: "clear",
-          clear: {},
+          $case: "add",
+          add: { uri: song.path },
         },
       });
-      const addCommands = songs.map((v) =>
-        MpdRequest.create({
-          profile,
-          command: {
-            $case: "add",
-            add: { uri: v.path },
-          },
-        })
-      );
-      const pos = songs.findIndex((v) => v.path === song.path);
-      if (pos < 0) {
-        throw new Error(`Song not found: ${song.path}`);
+      await MpdUtils.command(addCommand);
+      const getCommand = MpdRequest.create({
+        profile,
+        command: {
+          $case: "playlistinfo",
+          playlistinfo: {},
+        },
+      });
+      const res = await MpdUtils.command(getCommand);
+      if (res.command?.$case !== "playlistinfo") {
+        throw Error(`Invalid MPD response: ${res}`);
       }
-      await MpdUtils.commandBulk([clearCommand, ...addCommands]);
+      const queueSongs = res.command.playlistinfo.songs;
       const playCommand = MpdRequest.create({
         profile,
         command: {
           $case: "play",
           play: {
-            target: { $case: "pos", pos: String(pos) },
+            target: { $case: "pos", pos: String(queueSongs.length - 1) },
           },
         },
       });
@@ -114,7 +115,8 @@ export function useFileExploreSongTable() {
           }
           const targetSongs = SongTableUtils.getTrueTargetSongs(
             song,
-            selectedSongs
+            selectedSongs,
+            songTableKeyType
           );
           if (targetSongs === undefined) {
             return;
@@ -144,7 +146,8 @@ export function useFileExploreSongTable() {
           }
           const targetSongs = SongTableUtils.getTrueTargetSongs(
             song,
-            selectedSongs
+            selectedSongs,
+            songTableKeyType
           );
           if (targetSongs === undefined) {
             return;
@@ -181,7 +184,8 @@ export function useFileExploreSongTable() {
           }
           const targetSongs = SongTableUtils.getTrueTargetSongs(
             song,
-            selectedSongs
+            selectedSongs,
+            songTableKeyType
           );
           if (targetSongs === undefined) {
             return;
@@ -212,7 +216,8 @@ export function useFileExploreSongTable() {
           onClick: async (song: Song | undefined, selectedSongs: Song[]) => {
             const targetSongs = SongTableUtils.getTrueTargetSongs(
               song,
-              selectedSongs
+              selectedSongs,
+              songTableKeyType
             );
             if (targetSongs === undefined) {
               return;
@@ -290,6 +295,7 @@ export function useFileExploreSongTable() {
   return {
     tableProps: {
       id: COMPONENT_ID_FILE_EXPLORE_MAIN_PANE,
+      songTableKeyType,
       songs: fileExploreSongs,
       tableColumns: commonSongTableState?.columns || [],
       isSortingEnabled: false,

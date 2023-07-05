@@ -15,10 +15,13 @@ import { PluginPluginType } from "@/models/plugin/plugin";
 import { Song, SongMetadataTag } from "@/models/song";
 import { SongTableColumn } from "@/models/song_table";
 import { MpdUtils } from "@/utils/MpdUtils";
-import { SongTableUtils } from "@/utils/SongTableUtils";
+import { SongTableKeyType, SongTableUtils } from "@/utils/SongTableUtils";
 import { SongUtils } from "@/utils/SongUtils";
 
 export function usePlayQueueSongTable() {
+  // In the play queue, a unique key is ID provided by MPD.
+  const songTableKeyType = SongTableKeyType.ID;
+
   const profile = useAppStore((state) => state.profileState?.currentProfile);
   const currentSong = useAppStore((state) => state.currentSong);
   const playQueueSongs = usePlayQueueSongs();
@@ -42,7 +45,8 @@ export function usePlayQueueSongTable() {
       }
       const ops = SongTableUtils.convertOrderingToOperations(
         playQueueSongs,
-        orderedSongs
+        orderedSongs,
+        songTableKeyType
       );
       const commands = ops.map((op) =>
         MpdRequest.create({
@@ -58,7 +62,7 @@ export function usePlayQueueSongTable() {
       );
       await MpdUtils.commandBulk(commands);
     },
-    [profile, playQueueSongs]
+    [profile, playQueueSongs, songTableKeyType]
   );
 
   const onColumnsUpdated = useCallback(
@@ -116,12 +120,20 @@ export function usePlayQueueSongTable() {
 
   const getRowClassBySong = useCallback(
     (row: Song) => {
-      if (row.path === currentSong?.path) {
+      if (currentSong === undefined) {
+        return;
+      }
+      const rowKey = SongTableUtils.getSongTableKey(songTableKeyType, row);
+      const currentSongKey = SongTableUtils.getSongTableKey(
+        songTableKeyType,
+        currentSong
+      );
+      if (rowKey === currentSongKey) {
         return "ag-font-weight-bold";
       }
       return;
     },
-    [currentSong]
+    [currentSong, songTableKeyType]
   );
 
   const contextMenuItems: SongTableContextMenuItem[][] = [
@@ -134,7 +146,8 @@ export function usePlayQueueSongTable() {
           }
           const targetSongs = SongTableUtils.getTrueTargetSongs(
             song,
-            selectedSongs
+            selectedSongs,
+            songTableKeyType
           );
           if (targetSongs === undefined) {
             return;
@@ -193,7 +206,8 @@ export function usePlayQueueSongTable() {
           }
           const targetSongs = SongTableUtils.getTrueTargetSongs(
             song,
-            selectedSongs
+            selectedSongs,
+            songTableKeyType
           );
           if (targetSongs === undefined) {
             return;
@@ -224,7 +238,8 @@ export function usePlayQueueSongTable() {
           onClick: async (song: Song | undefined, selectedSongs: Song[]) => {
             const targetSongs = SongTableUtils.getTrueTargetSongs(
               song,
-              selectedSongs
+              selectedSongs,
+              songTableKeyType
             );
             if (targetSongs === undefined) {
               return;
@@ -305,6 +320,7 @@ export function usePlayQueueSongTable() {
   return {
     tableProps: {
       id: COMPONENT_ID_PLAY_QUEUE,
+      songTableKeyType,
       songs: playQueueSongs,
       tableColumns: commonSongTableState?.columns || [],
       isSortingEnabled: false,

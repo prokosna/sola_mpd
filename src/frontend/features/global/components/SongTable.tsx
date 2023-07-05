@@ -15,9 +15,11 @@ import "ag-grid-community/styles/ag-theme-alpine.min.css";
 import "@/app/agGrid.css";
 import { Song } from "@/models/song";
 import { SongTableColumn } from "@/models/song_table";
+import { SongTableKeyType } from "@/utils/SongTableUtils";
 
 export type SongTableProps = {
   id: string;
+  songTableKeyType: SongTableKeyType;
   songs: Song[];
   tableColumns: SongTableColumn[];
   isSortingEnabled: boolean;
@@ -45,6 +47,7 @@ export default function SongTable(props: SongTableProps) {
     onRowDoubleClicked,
     onSelectionChanged,
     onRowDataUpdated,
+    getRowId,
     getRowClass,
   } = useSongTable(props);
   const isSongTableLoading = useAppStore((state) => state.isSongTableLoading);
@@ -76,6 +79,7 @@ export default function SongTable(props: SongTableProps) {
           preventDefaultOnContextMenu={true}
           rowClass={"ag-theme-alpine"}
           getRowClass={getRowClass}
+          getRowId={getRowId}
         ></AgGridReact>
         {isSongTableLoading && (
           <CircularProgress

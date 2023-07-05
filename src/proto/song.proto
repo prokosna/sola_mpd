@@ -19,6 +19,9 @@ message AudioFormat {
 message Song {
   string path = 1;
   map<string, MetadataValue> metadata = 2;
+  // index can be used for the application specific usage. This is different
+  // from MetadataTag.POSITION which is managed by MPD.
+  int32 index = 3;
 
   enum MetadataTag {
     UNKNOWN = 0;

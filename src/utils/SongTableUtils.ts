@@ -8,6 +8,22 @@ import { SongUtils } from "./SongUtils";
 import { Song, SongMetadataTag, SongMetadataValue } from "@/models/song";
 import { SongTableColumn } from "@/models/song_table";
 
+/**
+ * What value is used for the row key in a song table
+ */
+export enum SongTableKeyType {
+  PATH = "PATH",
+  INDEX_PATH = "INDEX_PATH",
+  ID = "ID",
+}
+
+export type SongTableRowDataType = {
+  [tag: string]: string | number | Date | undefined;
+};
+
+/**
+ * Utility type to get songs in a table with its index (position)
+ */
 export type SongsInTable = {
   targetSong: Song | undefined;
   songsSorted: Song[];
@@ -15,6 +31,25 @@ export type SongsInTable = {
 };
 
 export class SongTableUtils {
+  static getSongTableKey(keyType: SongTableKeyType, song: Song): string {
+    switch (keyType) {
+      case SongTableKeyType.ID:
+        const id = SongUtils.getSongMetadataAsString(song, SongMetadataTag.ID);
+        if (id === "") {
+          console.warn(
+            `ID is specified as a song table key, but empty: ${song}`
+          );
+        }
+        return id;
+      case SongTableKeyType.PATH:
+        return song.path;
+      case SongTableKeyType.INDEX_PATH:
+        return `${song.index}_${song.path}`;
+      default:
+        throw Error(`Unsupported song table key: ${keyType}`);
+    }
+  }
+
   static getSongTableColumnsWithoutSorting(
     columns: SongTableColumn[]
   ): SongTableColumn[] {
@@ -45,7 +80,8 @@ export class SongTableUtils {
 
   static convertOrderingToOperations(
     prevOrder: Song[],
-    newOrder: Song[]
+    newOrder: Song[],
+    keyType: SongTableKeyType
   ): {
     id: string;
     to: number;
@@ -53,7 +89,9 @@ export class SongTableUtils {
     const ops: { id: string; to: number }[] = [];
     newOrder.forEach((song, index) => {
       const prevSong = prevOrder[index];
-      if (prevSong.path !== song.path) {
+      const prevSongKey = this.getSongTableKey(keyType, prevSong);
+      const songKey = this.getSongTableKey(keyType, song);
+      if (prevSongKey !== songKey) {
         ops.push({
           id: SongUtils.getSongMetadataAsString(song, SongMetadataTag.ID),
           to: index,
@@ -92,30 +130,32 @@ export class SongTableUtils {
   static getSongsFromGrid(
     songsMap: Map<string, Song>,
     gridApi: GridApi,
-    targetPath?: string
+    targetKey?: string
   ): SongsInTable {
     const nodes: IRowNode[] = [];
     let targetNode: IRowNode | undefined = undefined;
     gridApi.forEachNodeAfterFilterAndSort((node) => {
       nodes.push(node);
-      if (targetPath !== undefined && node.data?.path === targetPath) {
+      if (targetKey !== undefined && node.data?.key === targetKey) {
         targetNode = node;
       }
     });
 
-    const selectedIndices = nodes
-      .map((v, index) => (v.isSelected() ? index : undefined))
-      .filter((v) => v !== undefined) as number[];
     const targetSong =
       targetNode !== undefined
         ? this.convertNodeToSong(songsMap, targetNode)
         : undefined;
-    const songsSorted = nodes
-      .map((v) => this.convertNodeToSong(songsMap, v))
-      .filter((v) => v !== undefined) as Song[];
-    const selectedSongsSorted = selectedIndices.map(
-      (index) => songsSorted[index]
-    );
+    const songsSorted: Song[] = [];
+    const selectedSongsSorted: Song[] = [];
+    nodes.forEach((node) => {
+      const song = this.convertNodeToSong(songsMap, node);
+      if (song !== undefined) {
+        songsSorted.push(song);
+        if (node.isSelected()) {
+          selectedSongsSorted.push(song);
+        }
+      }
+    });
 
     return {
       targetSong,
@@ -162,12 +202,15 @@ export class SongTableUtils {
 
   static getTrueTargetSongs(
     song: Song | undefined,
-    selectedSongs: Song[]
+    selectedSongs: Song[],
+    keyType: SongTableKeyType
   ): Song[] | undefined {
     const targetSongs = [];
     if (
       song !== undefined &&
-      !selectedSongs.map((v) => v.path).includes(song.path)
+      !selectedSongs
+        .map((v) => this.getSongTableKey(keyType, v))
+        .includes(this.getSongTableKey(keyType, song))
     ) {
       targetSongs.push(song);
     } else {
@@ -183,13 +226,13 @@ export class SongTableUtils {
     songsMap: Map<string, Song>,
     node: IRowNode
   ): Song | undefined {
-    const path = node.data?.path;
-    if (path == null) {
+    const key = node.data?.key;
+    if (key == null) {
       return undefined;
     }
-    const song = songsMap.get(path);
+    const song = songsMap.get(key);
     if (song === undefined) {
-      throw new Error(`No song found: ${path}`);
+      throw new Error(`No song found: ${key}`);
     }
     return song;
   }

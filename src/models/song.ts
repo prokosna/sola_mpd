@@ -63,6 +63,11 @@ export function audioFormatEncodingToNumber(object: AudioFormatEncoding): number
 export interface Song {
   path: string;
   metadata: { [key: string]: SongMetadataValue };
+  /**
+   * index can be used for the application specific usage. This is different
+   * from MetadataTag.POSITION which is managed by MPD.
+   */
+  index: number;
 }
 
 export enum SongMetadataTag {
@@ -341,7 +346,7 @@ export const AudioFormat = {
 };
 
 function createBaseSong(): Song {
-  return { path: "", metadata: {} };
+  return { path: "", metadata: {}, index: 0 };
 }
 
 export const Song = {
@@ -352,6 +357,9 @@ export const Song = {
     Object.entries(message.metadata).forEach(([key, value]) => {
       SongMetadataEntry.encode({ key: key as any, value }, writer.uint32(18).fork()).ldelim();
     });
+    if (message.index !== 0) {
+      writer.uint32(24).int32(message.index);
+    }
     return writer;
   },
 
@@ -379,6 +387,13 @@ export const Song = {
             message.metadata[entry2.key] = entry2.value;
           }
           continue;
+        case 3:
+          if (tag !== 24) {
+            break;
+          }
+
+          message.index = reader.int32();
+          continue;
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -397,6 +412,7 @@ export const Song = {
           return acc;
         }, {})
         : {},
+      index: isSet(object.index) ? Number(object.index) : 0,
     };
   },
 
@@ -409,6 +425,7 @@ export const Song = {
         obj.metadata[k] = SongMetadataValue.toJSON(v);
       });
     }
+    message.index !== undefined && (obj.index = Math.round(message.index));
     return obj;
   },
 
@@ -428,6 +445,7 @@ export const Song = {
       },
       {},
     );
+    message.index = object.index ?? 0;
     return message;
   },
 };
