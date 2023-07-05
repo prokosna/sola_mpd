@@ -78,7 +78,7 @@ export default function HomeLayout({
               overflowX={"clip"}
               overflowY={"auto"}
               as={motion.div}
-              width={"250px"}
+              minW={"250px"}
               {...getDisclosureProps()}
               hidden={hidden}
               initial={true}
