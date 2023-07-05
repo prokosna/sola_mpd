@@ -24,7 +24,7 @@ import { MpdUtils } from "@/utils/MpdUtils";
 export type PlaylistSelectModalProps = {
   isOpen: boolean;
   isOnly?: "NEW" | "SELECT";
-  onOk: (playlistName: string) => Promise<void>;
+  onOk: (playlistName: string, excludeDuplications: boolean) => Promise<void>;
   onCancel: () => Promise<void>;
 };
 
@@ -46,6 +46,7 @@ export default function PlaylistSelectModal(props: PlaylistSelectModalProps) {
   const [selectedName, setSelectedName] = useState("");
   const [newName, setNewName] = useState("");
   const [createNew, setCreateNew] = useState(isOnly === "NEW");
+  const [excludeDuplications, setExcludeDuplications] = useState(false);
   const [errorMessageSelect, setErrorMessageSelect] = useState("");
   const [errorMessageNew, setErrorMessageNew] = useState("");
 
@@ -59,6 +60,7 @@ export default function PlaylistSelectModal(props: PlaylistSelectModalProps) {
     setSelectedName("");
     setNewName("");
     setCreateNew(false);
+    setExcludeDuplications(false);
     setErrorMessageSelect("");
     setErrorMessageNew("");
   }, []);
@@ -96,14 +98,14 @@ export default function PlaylistSelectModal(props: PlaylistSelectModalProps) {
         title: "Playlist created",
         description: `Playlist ${newName} has been created.`,
       });
-      await onOk(newName);
+      await onOk(newName, excludeDuplications);
       reset();
     } else {
       if (selectedName === "") {
         setErrorMessageSelect("Please select a playlist.");
         return;
       }
-      await onOk(selectedName);
+      await onOk(selectedName, excludeDuplications);
       reset();
     }
   }, [
@@ -113,6 +115,7 @@ export default function PlaylistSelectModal(props: PlaylistSelectModalProps) {
     playlistMetadataList,
     toast,
     onOk,
+    excludeDuplications,
     reset,
     selectedName,
   ]);
@@ -173,6 +176,15 @@ export default function PlaylistSelectModal(props: PlaylistSelectModalProps) {
                 </Checkbox>
               </FormControl>
             ) : null}
+            <FormControl>
+              <Checkbox
+                colorScheme="brand"
+                checked={excludeDuplications}
+                onChange={(e) => setExcludeDuplications(e.target.checked)}
+              >
+                Exclude duplications
+              </Checkbox>
+            </FormControl>
           </ModalBody>
 
           <ModalFooter>
