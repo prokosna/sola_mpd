@@ -227,8 +227,27 @@ export function useBrowserSongTable() {
   const playlistModal = useDisclosure();
   const latestSelectedSongs = useRef<Song[]>([]);
   const onAddSongsToPlaylist = useCallback(
-    async (playlistName: string) => {
-      const commands = latestSelectedSongs.current.map((v) =>
+    async (playlistName: string, excludeDuplications: boolean) => {
+      let targetSongs = latestSelectedSongs.current;
+      if (excludeDuplications) {
+        const req = MpdRequest.create({
+          profile,
+          command: {
+            $case: "listplaylistinfo",
+            listplaylistinfo: { name: playlistName },
+          },
+        });
+        const res = await MpdUtils.command(req);
+        if (res.command?.$case !== "listplaylistinfo") {
+          throw Error(`Invalid MPD response: ${res}`);
+        }
+        const existingSongs = res.command.listplaylistinfo.songs;
+        const existingSongPaths = existingSongs.map((v) => v.path);
+        targetSongs = targetSongs.filter(
+          (v) => !existingSongPaths.includes(v.path)
+        );
+      }
+      const commands = targetSongs.map((v) =>
         MpdRequest.create({
           profile,
           command: {
@@ -242,7 +261,7 @@ export function useBrowserSongTable() {
       toast({
         status: "success",
         title: "Songs added",
-        description: `${latestSelectedSongs.current.length} songs have been added to ${playlistName}.`,
+        description: `${targetSongs.length} songs have been added to ${playlistName}.`,
       });
     },
     [playlistModal, profile, toast]
