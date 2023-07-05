@@ -760,7 +760,7 @@ export const PluginRegisterResponse = {
 };
 
 function createBasePluginExecuteRequest(): PluginExecuteRequest {
-  return { host: "", port: 0, pluginParameters: {}, requestParameters: {}, payload: new Uint8Array() };
+  return { host: "", port: 0, pluginParameters: {}, requestParameters: {}, payload: new Uint8Array(0) };
 }
 
 export const PluginExecuteRequest = {
@@ -856,7 +856,7 @@ export const PluginExecuteRequest = {
           return acc;
         }, {})
         : {},
-      payload: isSet(object.payload) ? bytesFromBase64(object.payload) : new Uint8Array(),
+      payload: isSet(object.payload) ? bytesFromBase64(object.payload) : new Uint8Array(0),
     };
   },
 
@@ -877,7 +877,7 @@ export const PluginExecuteRequest = {
       });
     }
     message.payload !== undefined &&
-      (obj.payload = base64FromBytes(message.payload !== undefined ? message.payload : new Uint8Array()));
+      (obj.payload = base64FromBytes(message.payload !== undefined ? message.payload : new Uint8Array(0)));
     return obj;
   },
 
@@ -907,7 +907,7 @@ export const PluginExecuteRequest = {
       },
       {},
     );
-    message.payload = object.payload ?? new Uint8Array();
+    message.payload = object.payload ?? new Uint8Array(0);
     return message;
   },
 };

@@ -12,13 +12,18 @@ export type SongTableContextMenuProps = {
 
 export type SongTableContextMenuItem = {
   name: string;
-  onClick: (song: Song | undefined, selectedSongs: Song[]) => void;
+  onClick: (
+    song: Song | undefined,
+    selectedSongs: Song[],
+    songs: Song[]
+  ) => void;
 };
 
 interface ItemProps {
   columns: SongTableColumn[];
   song: Song | undefined;
   selectedSongs: Song[];
+  songs: Song[];
 }
 
 export default function SongTableContextMenu(props: SongTableContextMenuProps) {
@@ -30,7 +35,11 @@ export default function SongTableContextMenu(props: SongTableContextMenuProps) {
       .flat()
       .filter((v) => v.name === params.id)
       .forEach((v) =>
-        v.onClick(params.props!.song, params.props!.selectedSongs)
+        v.onClick(
+          params.props!.song,
+          params.props!.selectedSongs,
+          params.props!.songs
+        )
       );
   }
 
