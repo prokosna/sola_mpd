@@ -103,7 +103,7 @@ export function useSongTable(props: SongTableProps) {
         return;
       }
       selectedSongs.push(song);
-      node.setSelected(true);
+      node.setSelected(true, false, true);
     });
     onSongsSelected(selectedSongs);
   });
