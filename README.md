@@ -15,7 +15,7 @@ This client has the following features:
 - File Explore (inspired by GMPC)
 - Quick search box (inspired by MusicBee)
 - Plugin for integration with other services
-- Flexible song table layout including multi-column sorting (powered by [AG Grid](https://www.ag-grid.com/))
+- Intuitive playlist editing and flexible song table layout including multi-column sorting (powered by [AG Grid](https://www.ag-grid.com/))
 
 On the other hand, the following features are out of scope:
 
