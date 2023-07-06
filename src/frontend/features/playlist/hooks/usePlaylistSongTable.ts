@@ -290,6 +290,62 @@ export function usePlaylistSongTable() {
         },
       },
       {
+        name: "Drop Duplicates",
+        onClick: async (
+          song: Song | undefined,
+          selectedSongs: Song[],
+          songs: Song[]
+        ) => {
+          if (profile === undefined || currentPlaylist === undefined) {
+            return;
+          }
+
+          const uniqueSongs: Song[] = songs.reduce((unique: Song[], song) => {
+            return unique.some((v) => v.path === song.path)
+              ? unique
+              : [...unique, song];
+          }, []);
+
+          if (songs.length === uniqueSongs.length) {
+            toast({
+              status: "info",
+              title: "No duplicated songs",
+              description: "There are no duplicated songs to remove.",
+            });
+            return;
+          }
+
+          const clearCommand = MpdRequest.create({
+            profile,
+            command: {
+              $case: "playlistclear",
+              playlistclear: { name: currentPlaylist.name },
+            },
+          });
+          const addCommands = uniqueSongs.map((v) =>
+            MpdRequest.create({
+              profile,
+              command: {
+                $case: "playlistadd",
+                playlistadd: {
+                  name: currentPlaylist.name,
+                  uri: v.path,
+                },
+              },
+            })
+          );
+          await MpdUtils.commandBulk([clearCommand, ...addCommands]);
+          toast({
+            status: "success",
+            title: "Songs removed",
+            description: `${
+              songs.length - uniqueSongs.length
+            } duplicated songs have been removed from ${currentPlaylist.name}.`,
+          });
+          pullPlaylistSongs(profile, currentPlaylist);
+        },
+      },
+      {
         name: "Add to Playlist",
         onClick: async (song: Song | undefined, selectedSongs: Song[]) => {
           if (profile === undefined) {
