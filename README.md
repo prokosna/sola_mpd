@@ -45,7 +45,7 @@ $ git clone git@github.com:prokosna/sola_mpd
 $ cd sola_mpd
 ```
 
-4. Build a docker image
+4. Build a docker image (It takes several minutes.)
 
 ```
 $ docker/build.sh
