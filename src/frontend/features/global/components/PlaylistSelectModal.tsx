@@ -182,7 +182,7 @@ export default function PlaylistSelectModal(props: PlaylistSelectModalProps) {
                 checked={excludeDuplications}
                 onChange={(e) => setExcludeDuplications(e.target.checked)}
               >
-                Exclude duplications
+                Exclude duplicated songs
               </Checkbox>
             </FormControl>
           </ModalBody>
