@@ -11,19 +11,19 @@ This client has the following features:
 - [x] Flesible metadata browser (inspired by [GMPC](http://gmpclient.org/))
 - [x] MPD Playlist management
 - [x] Advanced search
-  - =, !=, has, regular expression, etc
+  - `=`, `!=`, `has`, `regular expression`, etc
   - Flexible AND/OR combinations
   - Saved searches (a.k.a Smart Playlist inspired by [MusicBee](https://www.getmusicbee.com/))
-- [x] File Explore
-- [x] Quick search box (inspired by MusicBee)
+- [x] Database file tree
+- [x] Quick filtering box (inspired by MusicBee)
 - [x] Plugin for integration with other services
 - [x] Intuitive song table editing (powered by [AG Grid](https://www.ag-grid.com/))
 - [x] Multiple MPD servers
 
 On the other hand, the following features are out of scope for now:
 
-- [] Cover art
-- [] Metadata editing
+- [ ] Cover art
+- [ ] Metadata editing
 
 Feel free to file an issue if you are interested in some of missing capabilities.
 
