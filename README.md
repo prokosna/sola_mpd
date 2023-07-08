@@ -1,6 +1,6 @@
 # Sola MPD
 
-![screenshot](https://github-production-user-asset-6210df.s3.amazonaws.com/16056246/251957510-cdf378a7-e3c4-44ee-919d-2a5e82dfdf5f.gif)
+![screenshot](https://github.com/prokosna/sola_mpd/assets/16056246/51764941-9e41-4e61-a6db-a0ac3e204236)
 
 Sola MPD is a web-based MPD client focused on usability, playlist editability and search functionality.
 
@@ -96,6 +96,7 @@ $ docker/start.sh
 | Add (Context menu)     | Add the selected songs to the play queue                                                                                    |
 | Replace (Context menu) | Replace the current play queue with the selected songs                                                                      |
 | Edit Columns           | Edit the metadata to be used as columns - The order can be changed by directly dragging & dropping the column on the table. |
+| Space                  | Pause or resume playback                                                                                                    |
 
 ## Plugin
 
