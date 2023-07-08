@@ -76,7 +76,7 @@ export class MpdUtils {
     }
     const left = condition.tag.replaceAll("_", "").toLowerCase();
     const right = this.escapeConditionArg(
-      SongUtils.convertSongMetadataValueToString(condition.value)
+      SongUtils.convertSongMetadataValueToString(condition.value),
     );
     switch (condition.operator) {
       case FilterConditionOperator.EQUAL:

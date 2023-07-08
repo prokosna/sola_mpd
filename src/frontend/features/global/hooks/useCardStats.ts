@@ -38,8 +38,8 @@ export function useCardStats() {
       return [
         ...new Set(
           selectedSongs.map((v) =>
-            SongUtils.getSongMetadataAsString(v, SongMetadataTag.ALBUM)
-          )
+            SongUtils.getSongMetadataAsString(v, SongMetadataTag.ALBUM),
+          ),
         ),
       ].length;
     }
@@ -51,8 +51,8 @@ export function useCardStats() {
       return [
         ...new Set(
           selectedSongs.map((v) =>
-            SongUtils.getSongMetadataAsString(v, SongMetadataTag.ARTIST)
-          )
+            SongUtils.getSongMetadataAsString(v, SongMetadataTag.ARTIST),
+          ),
         ),
       ].length;
     }
@@ -64,10 +64,10 @@ export function useCardStats() {
       return StringUtils.displayDuration(
         selectedSongs
           .map((v) =>
-            SongUtils.getSongMetadataAsNumber(v, SongMetadataTag.DURATION)
+            SongUtils.getSongMetadataAsNumber(v, SongMetadataTag.DURATION),
           )
           .filter((v) => !isNaN(Number(v)))
-          .reduce((a, b) => (a as number) + (b as number), 0) as number
+          .reduce((a, b) => (a as number) + (b as number), 0) as number,
       );
     }
     if (mpdStats?.totalPlaytime === undefined) {

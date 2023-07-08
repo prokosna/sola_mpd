@@ -3,7 +3,7 @@ import { ProtoSerializable } from "@/types/serialization";
 export class ApiUtils {
   static async get<R>(
     endpoint: string,
-    resType: ProtoSerializable<R>
+    resType: ProtoSerializable<R>,
   ): Promise<R> {
     const ret = await fetch(endpoint);
     if (!ret.ok) {
@@ -17,7 +17,7 @@ export class ApiUtils {
   static async post<T>(
     endpoint: string,
     reqType: ProtoSerializable<T>,
-    payload: T
+    payload: T,
   ): Promise<void> {
     const bytes = reqType.encode(payload).finish();
     const ret = await fetch(endpoint, {

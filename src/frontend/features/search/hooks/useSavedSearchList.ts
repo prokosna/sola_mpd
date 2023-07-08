@@ -65,7 +65,7 @@ export function useSavedSearchList() {
       }
 
       const index = savedSearches.findIndex(
-        (v) => v.name === node.data["SavedSearch"]
+        (v) => v.name === node.data["SavedSearch"],
       );
       if (index < 0) {
         return;
@@ -73,7 +73,7 @@ export function useSavedSearchList() {
 
       updateEditingSearch(savedSearches[index], true);
     },
-    [savedSearches, updateEditingSearch]
+    [savedSearches, updateEditingSearch],
   );
 
   const contextMenu = useContextMenu({ id: COMPONENT_ID_SEARCH_SIDE_PANE });
@@ -90,7 +90,7 @@ export function useSavedSearchList() {
               }
 
               const index = savedSearches.findIndex(
-                (v) => v.name === selected?.name
+                (v) => v.name === selected?.name,
               );
               if (index < 0) {
                 return;
@@ -120,7 +120,7 @@ export function useSavedSearchList() {
       }
 
       const targetSearch = savedSearches?.filter(
-        (v) => v.name === targetName
+        (v) => v.name === targetName,
       )[0];
       if (targetSearch === undefined) {
         return;
@@ -131,7 +131,7 @@ export function useSavedSearchList() {
         props: targetSearch,
       });
     },
-    [contextMenu, savedSearches]
+    [contextMenu, savedSearches],
   );
 
   return {

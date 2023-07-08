@@ -8,5 +8,5 @@ export const mpdProfileStateRepository = new FileRepository<MpdProfileState>(
   MpdProfileState.create({
     profiles: [],
   }),
-  MpdProfileState
+  MpdProfileState,
 );

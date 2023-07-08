@@ -8,7 +8,7 @@ import { JSONSerializable } from "@/types/serialization";
 export function useStateEditor<T>(
   state: T | undefined,
   stateType: JSONSerializable<T>,
-  update: (newState: T) => Promise<void>
+  update: (newState: T) => Promise<void>,
 ) {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const toast = useToast();
@@ -23,7 +23,7 @@ export function useStateEditor<T>(
       });
       onClose();
     },
-    [onClose, toast, update]
+    [onClose, toast, update],
   );
 
   if (state === undefined) {

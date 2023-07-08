@@ -70,8 +70,8 @@ export const useAppStore = create<AllSlices>()(
       ...createFileExploreSlice(...a),
       ...createSearchSlice(...a),
       ...createPluginSlice(...a),
-    }))
-  )
+    })),
+  ),
 );
 
 // Initialize things unrelated to the front end
@@ -90,7 +90,7 @@ async function initialize() {
         useAppStore.getState().refreshWebSocket(profile);
       }
     },
-    { fireImmediately: true }
+    { fireImmediately: true },
   );
 }
 

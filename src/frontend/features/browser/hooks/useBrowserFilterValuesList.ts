@@ -6,10 +6,10 @@ export function useBrowserFilterValuesList() {
   const profile = useAppStore((state) => state.profileState?.currentProfile);
   const browserFilters = useAppStore((state) => state.browserFilters);
   const browserFilterValuesList = useAppStore(
-    (state) => state.browserFilterValuesList
+    (state) => state.browserFilterValuesList,
   );
   const pullBrowserFilterValuesList = useAppStore(
-    (state) => state.pullBrowserFilterValuesList
+    (state) => state.pullBrowserFilterValuesList,
   );
 
   useEffect(() => {

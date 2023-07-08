@@ -18,7 +18,7 @@ export function usePlaylistResizablePane() {
       });
       pushLayoutState(newLayoutState);
     },
-    [layoutState, pushLayoutState]
+    [layoutState, pushLayoutState],
   );
 
   const resizablePaneWidth = useResizablePaneWidth({

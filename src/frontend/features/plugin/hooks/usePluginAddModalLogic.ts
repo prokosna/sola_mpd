@@ -43,7 +43,7 @@ export function usePluginAddModalLogic(props: { onClose: () => void }) {
       const resp = await PluginUtils.register(socket, req);
       if (resp.info === undefined) {
         setInputErrorMessage(
-          "Plugin implementation is incorrect: info is undefined"
+          "Plugin implementation is incorrect: info is undefined",
         );
         return;
       }
@@ -88,7 +88,7 @@ export function usePluginAddModalLogic(props: { onClose: () => void }) {
             delete draft[key];
           }
         });
-      }
+      },
     );
     if (Object.keys(newParameterErrorMessages).length > 0) {
       setParameterErrorMessages(newParameterErrorMessages);

@@ -76,7 +76,7 @@ export function useMpdProfileForm() {
     }
     if (compareVersions(version, "0.21") < 0) {
       setValidationError(
-        `MPD version is ${version}: Please use 0.21 or later.`
+        `MPD version is ${version}: Please use 0.21 or later.`,
       );
       return;
     }

@@ -46,13 +46,13 @@ class MpdClient {
 
   async subscribe(
     profile: MpdProfile,
-    callback: (event: MpdEvent) => void
+    callback: (event: MpdEvent) => void,
   ): Promise<(name?: string) => void> {
     const client = await this.connect(profile);
     const handle = (name?: string) => {
       if (name == null) {
         callback(
-          MpdEvent.create({ eventType: MpdEventEventType.DISCONNECTED })
+          MpdEvent.create({ eventType: MpdEventEventType.DISCONNECTED }),
         );
         return;
       }
@@ -75,7 +75,7 @@ class MpdClient {
           break;
         case "playlist":
           callback(
-            MpdEvent.create({ eventType: MpdEventEventType.PLAY_QUEUE })
+            MpdEvent.create({ eventType: MpdEventEventType.PLAY_QUEUE }),
           );
           break;
         case "stored_playlist":
@@ -92,7 +92,7 @@ class MpdClient {
 
   async unsubscribe(
     profile: MpdProfile,
-    handle: (name?: string) => void
+    handle: (name?: string) => void,
   ): Promise<boolean> {
     try {
       const client = await this.connect(profile);
@@ -182,7 +182,7 @@ class MpdClient {
             return mpd.cmd("delete", req.command.delete.target.pos);
           default:
             throw new Error(
-              `Unsupported command: ${req.command.delete.target}`
+              `Unsupported command: ${req.command.delete.target}`,
             );
         }
       case "move": {
@@ -212,7 +212,7 @@ class MpdClient {
         return mpd.cmd(
           "playlistadd",
           req.command.playlistadd.name,
-          req.command.playlistadd.uri
+          req.command.playlistadd.uri,
         );
       case "playlistclear":
         return mpd.cmd("playlistclear", req.command.playlistclear.name);
@@ -220,20 +220,20 @@ class MpdClient {
         return mpd.cmd(
           "playlistdelete",
           req.command.playlistdelete.name,
-          req.command.playlistdelete.pos
+          req.command.playlistdelete.pos,
         );
       case "playlistmove":
         return mpd.cmd(
           "playlistmove",
           req.command.playlistmove.name,
           req.command.playlistmove.from,
-          req.command.playlistmove.to
+          req.command.playlistmove.to,
         );
       case "rename":
         return mpd.cmd(
           "rename",
           req.command.rename.name,
-          req.command.rename.newName
+          req.command.rename.newName,
         );
       case "rm":
         return mpd.cmd("rm", req.command.rm.name);
@@ -243,7 +243,7 @@ class MpdClient {
       // Database
       case "list": {
         const tag = MpdUtils.convertSongMetadataTagToMpdTag(
-          req.command.list.tag
+          req.command.list.tag,
         );
         const conditions = req.command.list.conditions;
         const expression = MpdUtils.convertConditionsToString(conditions);
@@ -821,7 +821,7 @@ class MpdClient {
 
   private static castMpdStats(
     version: string,
-    stats: unknown
+    stats: unknown,
   ): MpdStats | undefined {
     type MpdStatsRaw = {
       uptime: string;
@@ -911,7 +911,7 @@ class MpdClient {
   }
 
   private static castMpdOutputDevices(
-    outputs: unknown[]
+    outputs: unknown[],
   ): MpdOutputDevice[] | undefined {
     type MpdOutputRaw = {
       outputid: string;

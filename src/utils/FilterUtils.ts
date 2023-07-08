@@ -13,7 +13,7 @@ type ComparableConditionValue = string | number | RegExp;
 export class FilterUtils {
   static filterSongsByAndConditions(
     songs: Song[],
-    conditions: FilterCondition[]
+    conditions: FilterCondition[],
   ): Song[] {
     let filteredSongs = songs;
     for (const condition of conditions) {
@@ -21,12 +21,12 @@ export class FilterUtils {
         this.convertFilterConditionToComparableValue(condition);
       filteredSongs = filteredSongs.filter((v) => {
         const songValue = this.convertSongMetadataValueToComparableValue(
-          v.metadata[condition.tag]
+          v.metadata[condition.tag],
         );
         return this.compareValues(
           songValue,
           conditionValue,
-          condition.operator
+          condition.operator,
         );
       });
     }
@@ -36,11 +36,11 @@ export class FilterUtils {
   static filterSongsByGlobalFilter(
     songs: Song[],
     tokens: string[],
-    targetColumns: SongTableColumn[]
+    targetColumns: SongTableColumn[],
   ): Song[] {
     const conditionsGroup = this.convertGlobalFilterToConditions(
       tokens,
-      targetColumns
+      targetColumns,
     );
     let filteredSongs = songs;
     for (const conditions of conditionsGroup) {
@@ -56,21 +56,21 @@ export class FilterUtils {
         // OR - Any columns should match to the condition
         conditions.some((condition) => {
           const songValue = this.convertSongMetadataValueToComparableValue(
-            song.metadata[condition.tag]
+            song.metadata[condition.tag],
           );
           return this.compareValues(
             songValue,
             conditionValue,
-            condition.operator
+            condition.operator,
           );
-        })
+        }),
       );
     }
     return filteredSongs;
   }
 
   static convertOperatorToDisplayName(
-    operator: FilterConditionOperator
+    operator: FilterConditionOperator,
   ): string {
     switch (operator) {
       case FilterConditionOperator.UNKNOWN:
@@ -128,7 +128,7 @@ export class FilterUtils {
       .filter((v) => isNaN(Number(v)))
       .map(
         (v) =>
-          FilterConditionOperator[v as keyof typeof FilterConditionOperator]
+          FilterConditionOperator[v as keyof typeof FilterConditionOperator],
       )
       .filter((v) => v !== FilterConditionOperator.UNKNOWN);
   }
@@ -136,7 +136,7 @@ export class FilterUtils {
   private static compareValues(
     songValue: ComparableSongMetadataValue | undefined,
     conditionValue: ComparableConditionValue | undefined,
-    operator: FilterConditionOperator
+    operator: FilterConditionOperator,
   ): boolean {
     if (songValue === undefined || conditionValue === undefined) {
       return true;
@@ -194,7 +194,7 @@ export class FilterUtils {
   }
 
   private static convertSongMetadataValueToComparableValue(
-    value: SongMetadataValue
+    value: SongMetadataValue,
   ): ComparableSongMetadataValue | undefined {
     let songValue: undefined | string | number = undefined;
     const raw = value.value;
@@ -208,7 +208,7 @@ export class FilterUtils {
         break;
       case "format":
         songValue = SongUtils.convertAudioFormatToString(
-          raw.format
+          raw.format,
         ).toLowerCase();
         break;
       case "intValue":
@@ -226,7 +226,7 @@ export class FilterUtils {
   }
 
   private static convertFilterConditionToComparableValue(
-    condition: FilterCondition
+    condition: FilterCondition,
   ): ComparableConditionValue | undefined {
     let conditionValue: undefined | number | string | RegExp = undefined;
     switch (condition.value?.value?.$case) {
@@ -239,7 +239,7 @@ export class FilterUtils {
         break;
       case "format":
         conditionValue = SongUtils.convertSongMetadataValueToString(
-          condition.value
+          condition.value,
         ).toLowerCase();
         break;
       case "intValue":
@@ -264,7 +264,7 @@ export class FilterUtils {
 
   private static convertGlobalFilterToConditions(
     tokens: string[],
-    targetColumns: SongTableColumn[]
+    targetColumns: SongTableColumn[],
   ): FilterCondition[][] {
     return tokens.map((token) =>
       targetColumns.map((column) => {
@@ -279,7 +279,7 @@ export class FilterUtils {
           }),
           operator: FilterConditionOperator.CONTAIN,
         });
-      })
+      }),
     );
   }
 }

@@ -15,7 +15,7 @@ export class SongUtils {
 
   static getSongMetadataAsNumber(
     song: Song,
-    tag: SongMetadataTag
+    tag: SongMetadataTag,
   ): number | undefined {
     const value = song.metadata[tag];
     switch (value?.value?.$case) {

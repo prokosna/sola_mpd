@@ -34,5 +34,5 @@ export const browserStateRepository = new FileRepository<BrowserState>(
       }),
     ],
   }),
-  BrowserState
+  BrowserState,
 );

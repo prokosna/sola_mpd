@@ -45,7 +45,7 @@ export function usePlayer() {
     }
     return SongUtils.getSongMetadataAsString(
       currentSong,
-      SongMetadataTag.TITLE
+      SongMetadataTag.TITLE,
     );
   }, [currentSong]);
 
@@ -55,7 +55,7 @@ export function usePlayer() {
     }
     return SongUtils.getSongMetadataAsString(
       currentSong,
-      SongMetadataTag.ALBUM
+      SongMetadataTag.ALBUM,
     );
   }, [currentSong]);
 
@@ -65,19 +65,19 @@ export function usePlayer() {
     }
     const artist = SongUtils.getSongMetadataAsString(
       currentSong,
-      SongMetadataTag.ARTIST
+      SongMetadataTag.ARTIST,
     );
     const albumArtist = SongUtils.getSongMetadataAsString(
       currentSong,
-      SongMetadataTag.ALBUM_ARTIST
+      SongMetadataTag.ALBUM_ARTIST,
     );
     const composer = SongUtils.getSongMetadataAsString(
       currentSong,
-      SongMetadataTag.COMPOSER
+      SongMetadataTag.COMPOSER,
     );
     const date = SongUtils.getSongMetadataAsString(
       currentSong,
-      SongMetadataTag.DATE
+      SongMetadataTag.DATE,
     );
     let text = "";
     text += artist !== "" ? artist : albumArtist;
@@ -106,7 +106,7 @@ export function usePlayer() {
       return "";
     }
     return `${StringUtils.displayDuration(
-      mpdPlayerStatus.elapsed
+      mpdPlayerStatus.elapsed,
     )} / ${StringUtils.displayDuration(mpdPlayerStatus.duration)}`;
   }
 
@@ -280,7 +280,7 @@ export function usePlayer() {
       });
       await MpdUtils.command(command);
     },
-    [profile]
+    [profile],
   );
 
   const lastSeekClicked = useRef(new Date());
@@ -317,7 +317,7 @@ export function usePlayer() {
       });
       await MpdUtils.command(command);
     },
-    [profile, mpdPlayerStatus]
+    [profile, mpdPlayerStatus],
   );
 
   return {

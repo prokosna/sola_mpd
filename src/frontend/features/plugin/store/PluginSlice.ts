@@ -14,19 +14,19 @@ export type PluginSlice = {
   pullPluginState: (socket: Socket) => Promise<void>;
   updatePluginState: (
     socket: Socket,
-    pluginState: PluginState
+    pluginState: PluginState,
   ) => Promise<void>;
 };
 
 export const createPluginSlice: StateCreator<AllSlices, [], [], PluginSlice> = (
   set,
-  get
+  get,
 ) => ({
   pluginState: undefined,
   pullPluginState: async (socket: Socket) => {
     const pluginState = await ApiUtils.get<PluginState>(
       ENDPOINT_APP_PLUGIN_STATE,
-      PluginState
+      PluginState,
     );
 
     // Check availability
@@ -46,7 +46,7 @@ export const createPluginSlice: StateCreator<AllSlices, [], [], PluginSlice> = (
           p.isAvailable = false;
         }
         return p;
-      })
+      }),
     );
     const newPluginState = await produce(pluginState, (draft) => {
       draft.plugins = newPlugins;
@@ -64,7 +64,7 @@ export const createPluginSlice: StateCreator<AllSlices, [], [], PluginSlice> = (
     await ApiUtils.post<PluginState>(
       ENDPOINT_APP_PLUGIN_STATE,
       PluginState,
-      pluginState
+      pluginState,
     );
 
     set({

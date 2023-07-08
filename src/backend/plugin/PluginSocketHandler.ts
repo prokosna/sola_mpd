@@ -17,7 +17,7 @@ export class PluginSocketHandler {
     const req = PluginRegisterRequest.decode(bytes);
     const client = new PluginServiceClient(
       `${req.host}:${req.port}`,
-      grpc.credentials.createInsecure()
+      grpc.credentials.createInsecure(),
     );
 
     client.register(req, (err, resp) => {
@@ -46,7 +46,7 @@ export class PluginSocketHandler {
     const req = PluginExecuteRequest.decode(bytes);
     const client = new PluginServiceClient(
       `${req.host}:${req.port}`,
-      grpc.credentials.createInsecure()
+      grpc.credentials.createInsecure(),
     );
     const stream = client.execute(req);
 

@@ -4,7 +4,7 @@ import { useAppStore } from "../../global/store/AppStore";
 
 export function useGlobalFilterBox() {
   const updateGlobalSearchText = useAppStore(
-    (state) => state.updateGlobalFilterText
+    (state) => state.updateGlobalFilterText,
   );
 
   const lastInvocation = useRef<ReturnType<typeof setTimeout>>();
@@ -19,7 +19,7 @@ export function useGlobalFilterBox() {
       }, 500);
       lastInvocation.current = timeoutId;
     },
-    [updateGlobalSearchText]
+    [updateGlobalSearchText],
   );
 
   const onTextCleared = useCallback(() => {

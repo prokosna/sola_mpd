@@ -18,13 +18,13 @@ export type LayoutSlice = {
   updateLayoutState: (layoutState: LayoutState) => Promise<void>;
   pullCommonSongTableState: () => Promise<void>;
   updateCommonSongTableState: (
-    commonSongTableState: CommonSongTableState
+    commonSongTableState: CommonSongTableState,
   ) => Promise<void>;
 };
 
 export const createLayoutSlice: StateCreator<AllSlices, [], [], LayoutSlice> = (
   set,
-  get
+  get,
 ) => ({
   layoutState: undefined,
   commonSongTableState: undefined,
@@ -41,7 +41,7 @@ export const createLayoutSlice: StateCreator<AllSlices, [], [], LayoutSlice> = (
     await ApiUtils.post<LayoutState>(
       ENDPOINT_APP_LAYOUT_STATE,
       LayoutState,
-      layoutState
+      layoutState,
     );
   },
   updateLayoutState: async (layoutState: LayoutState) => {
@@ -51,7 +51,7 @@ export const createLayoutSlice: StateCreator<AllSlices, [], [], LayoutSlice> = (
     await ApiUtils.post<LayoutState>(
       ENDPOINT_APP_LAYOUT_STATE,
       LayoutState,
-      layoutState
+      layoutState,
     );
     set({
       layoutState,
@@ -60,14 +60,14 @@ export const createLayoutSlice: StateCreator<AllSlices, [], [], LayoutSlice> = (
   pullCommonSongTableState: async () => {
     const state = await ApiUtils.get(
       ENDPOINT_APP_COMMON_SONG_TABLE_STATE,
-      CommonSongTableState
+      CommonSongTableState,
     );
     set({
       commonSongTableState: state,
     });
   },
   updateCommonSongTableState: async (
-    commonSongTableState: CommonSongTableState
+    commonSongTableState: CommonSongTableState,
   ) => {
     if (get().commonSongTableState === undefined) {
       await get().pullCommonSongTableState();
@@ -75,7 +75,7 @@ export const createLayoutSlice: StateCreator<AllSlices, [], [], LayoutSlice> = (
     await ApiUtils.post(
       ENDPOINT_APP_COMMON_SONG_TABLE_STATE,
       CommonSongTableState,
-      commonSongTableState
+      commonSongTableState,
     );
     set({
       commonSongTableState,

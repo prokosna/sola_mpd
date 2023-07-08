@@ -37,7 +37,7 @@ export class SongTableUtils {
         const id = SongUtils.getSongMetadataAsString(song, SongMetadataTag.ID);
         if (id === "") {
           console.warn(
-            `ID is specified as a song table key, but empty: ${song}`
+            `ID is specified as a song table key, but empty: ${song}`,
           );
         }
         return id;
@@ -51,7 +51,7 @@ export class SongTableUtils {
   }
 
   static getSongTableColumnsWithoutSorting(
-    columns: SongTableColumn[]
+    columns: SongTableColumn[],
   ): SongTableColumn[] {
     return columns.map((v) => {
       return produce(v, (draft) => {
@@ -81,7 +81,7 @@ export class SongTableUtils {
   static convertOrderingToOperations(
     prevOrder: Song[],
     newOrder: Song[],
-    keyType: SongTableKeyType
+    keyType: SongTableKeyType,
   ): {
     id: string;
     to: number;
@@ -102,7 +102,7 @@ export class SongTableUtils {
   }
 
   static convertAgGridColumnsToSongTableColumns(
-    agGridColumns: Column[]
+    agGridColumns: Column[],
   ): SongTableColumn[] {
     return agGridColumns.map((col) => {
       const sortOrder = col.getSortIndex();
@@ -130,7 +130,7 @@ export class SongTableUtils {
   static getSongsFromGrid(
     songsMap: Map<string, Song>,
     gridApi: GridApi,
-    targetKey?: string
+    targetKey?: string,
   ): SongsInTable {
     const nodes: IRowNode[] = [];
     let targetNode: IRowNode | undefined = undefined;
@@ -166,7 +166,7 @@ export class SongTableUtils {
 
   static convertSongMetadataForGridRowValue(
     tag: SongMetadataTag,
-    value: SongMetadataValue
+    value: SongMetadataValue,
   ): [string, string | number | Date | undefined] {
     const v = (() => {
       switch (value.value?.$case) {
@@ -186,11 +186,11 @@ export class SongTableUtils {
   }
 
   static normalizeMetadataColumns(
-    columns: SongTableColumn[]
+    columns: SongTableColumn[],
   ): SongTableColumn[] {
     return produce(columns, (draft) => {
       const sorted = Array.from(
-        columns.filter((v) => v.sortOrder !== undefined && v.sortOrder >= 0)
+        columns.filter((v) => v.sortOrder !== undefined && v.sortOrder >= 0),
       ).sort((a, b) => a.sortOrder! - b.sortOrder!);
       for (const column of draft) {
         if (column.sortOrder !== undefined && column.sortOrder >= 0) {
@@ -203,7 +203,7 @@ export class SongTableUtils {
   static getTrueTargetSongs(
     song: Song | undefined,
     selectedSongs: Song[],
-    keyType: SongTableKeyType
+    keyType: SongTableKeyType,
   ): Song[] | undefined {
     const targetSongs = [];
     if (
@@ -224,7 +224,7 @@ export class SongTableUtils {
 
   static convertNodeToSong(
     songsMap: Map<string, Song>,
-    node: IRowNode
+    node: IRowNode,
   ): Song | undefined {
     const key = node.data?.key;
     if (key == null) {

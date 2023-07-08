@@ -26,11 +26,11 @@ export function usePlayQueueSongTable() {
   const currentSong = useAppStore((state) => state.currentSong);
   const playQueueSongs = usePlayQueueSongs();
   const commonSongTableState = useAppStore(
-    (state) => state.commonSongTableState
+    (state) => state.commonSongTableState,
   );
   const updateSelectedSongs = useAppStore((state) => state.updateSelectedSongs);
   const updateCommonSongTableState = useAppStore(
-    (state) => state.updateCommonSongTableState
+    (state) => state.updateCommonSongTableState,
   );
   const toast = useToast();
   // Plugin
@@ -46,7 +46,7 @@ export function usePlayQueueSongTable() {
       const ops = SongTableUtils.convertOrderingToOperations(
         playQueueSongs,
         orderedSongs,
-        songTableKeyType
+        songTableKeyType,
       );
       const commands = ops.map((op) =>
         MpdRequest.create({
@@ -58,11 +58,11 @@ export function usePlayQueueSongTable() {
               to: String(op.to),
             },
           },
-        })
+        }),
       );
       await MpdUtils.commandBulk(commands);
     },
-    [profile, playQueueSongs, songTableKeyType]
+    [profile, playQueueSongs, songTableKeyType],
   );
 
   const onColumnsUpdated = useCallback(
@@ -85,14 +85,14 @@ export function usePlayQueueSongTable() {
       });
       await updateCommonSongTableState(newCommonSongTableState);
     },
-    [commonSongTableState, updateCommonSongTableState]
+    [commonSongTableState, updateCommonSongTableState],
   );
 
   const onSongsSelected = useCallback(
     async (selectedSongs: Song[]) => {
       updateSelectedSongs(selectedSongs);
     },
-    [updateSelectedSongs]
+    [updateSelectedSongs],
   );
 
   const onDoubleClicked = useCallback(
@@ -115,7 +115,7 @@ export function usePlayQueueSongTable() {
       });
       await MpdUtils.command(command);
     },
-    [profile]
+    [profile],
   );
 
   const getRowClassBySong = useCallback(
@@ -126,14 +126,14 @@ export function usePlayQueueSongTable() {
       const rowKey = SongTableUtils.getSongTableKey(songTableKeyType, row);
       const currentSongKey = SongTableUtils.getSongTableKey(
         songTableKeyType,
-        currentSong
+        currentSong,
       );
       if (rowKey === currentSongKey) {
         return "ag-font-weight-bold";
       }
       return;
     },
-    [currentSong, songTableKeyType]
+    [currentSong, songTableKeyType],
   );
 
   const contextMenuItems: SongTableContextMenuItem[][] = [
@@ -147,7 +147,7 @@ export function usePlayQueueSongTable() {
           const targetSongs = SongTableUtils.getTrueTargetSongs(
             song,
             selectedSongs,
-            songTableKeyType
+            songTableKeyType,
           );
           if (targetSongs === undefined) {
             return;
@@ -162,12 +162,12 @@ export function usePlayQueueSongTable() {
                     $case: "id",
                     id: SongUtils.getSongMetadataAsString(
                       v,
-                      SongMetadataTag.ID
+                      SongMetadataTag.ID,
                     ),
                   },
                 },
               },
-            })
+            }),
           );
           await MpdUtils.commandBulk(commands);
           toast({
@@ -207,7 +207,7 @@ export function usePlayQueueSongTable() {
           const targetSongs = SongTableUtils.getTrueTargetSongs(
             song,
             selectedSongs,
-            songTableKeyType
+            songTableKeyType,
           );
           if (targetSongs === undefined) {
             return;
@@ -239,7 +239,7 @@ export function usePlayQueueSongTable() {
             const targetSongs = SongTableUtils.getTrueTargetSongs(
               song,
               selectedSongs,
-              songTableKeyType
+              songTableKeyType,
             );
             if (targetSongs === undefined) {
               return;
@@ -277,7 +277,7 @@ export function usePlayQueueSongTable() {
         const existingSongs = res.command.listplaylistinfo.songs;
         const existingSongPaths = existingSongs.map((v) => v.path);
         targetSongs = targetSongs.filter(
-          (v) => !existingSongPaths.includes(v.path)
+          (v) => !existingSongPaths.includes(v.path),
         );
       }
       const commands = targetSongs.map((v) =>
@@ -287,7 +287,7 @@ export function usePlayQueueSongTable() {
             $case: "playlistadd",
             playlistadd: { name: playlistName, uri: v.path },
           },
-        })
+        }),
       );
       await MpdUtils.commandBulk(commands);
       playlistModal.onClose();
@@ -297,7 +297,7 @@ export function usePlayQueueSongTable() {
         description: `${targetSongs.length} songs have been added to ${playlistName}.`,
       });
     },
-    [playlistModal, profile, toast]
+    [playlistModal, profile, toast],
   );
   const onCancelToAddSongsPlaylist = useCallback(async () => {
     latestSelectedSongs.current = [];
@@ -327,7 +327,7 @@ export function usePlayQueueSongTable() {
       await updateCommonSongTableState(newCommonSongTableState);
       columnModal.onClose();
     },
-    [columnModal, commonSongTableState, updateCommonSongTableState]
+    [columnModal, commonSongTableState, updateCommonSongTableState],
   );
   const onCancelToUpdateColumns = useCallback(async () => {
     columnModal.onClose();

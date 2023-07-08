@@ -11,7 +11,7 @@ export class FileRepository<T> {
   constructor(
     localFilePath: string,
     defaultValue: T,
-    tType: JSONSerializable<T>
+    tType: JSONSerializable<T>,
   ) {
     this.localFilePath = localFilePath;
     this.tType = tType;
@@ -43,7 +43,7 @@ export class FileRepository<T> {
         if (err) {
           console.error(err);
         }
-      }
+      },
     );
   }
 }

@@ -16,23 +16,23 @@ export function useSearchEditor() {
   const profile = useAppStore((state) => state.profileState?.currentProfile);
   const editingSearch = useAppStore((state) => state.editingSearch);
   const isEditingSearchSaved = useAppStore(
-    (state) => state.isEditingSearchSaved
+    (state) => state.isEditingSearchSaved,
   );
   const searchSongTableColumns = useAppStore(
-    (state) => state.searchSongTableColumns
+    (state) => state.searchSongTableColumns,
   );
   const commonSongTableState = useAppStore(
-    (state) => state.commonSongTableState
+    (state) => state.commonSongTableState,
   );
   const savedSearches = useAppStore((state) => state.savedSearches);
   const pullSearchSongs = useAppStore((state) => state.pullSearchSongs);
   const updateEditingSearch = useAppStore((state) => state.updateEditingSearch);
   const updateSavedSearches = useAppStore((state) => state.updateSavedSearches);
   const updateIsEditingSearchSaved = useAppStore(
-    (state) => state.updateIsEditingSearchSaved
+    (state) => state.updateIsEditingSearchSaved,
   );
   const updateSearchSongTableColumns = useAppStore(
-    (state) => state.updateSearchSongTableColumns
+    (state) => state.updateSearchSongTableColumns,
   );
   const getDefaultSearch = useAppStore((state) => state.getDefaultSearch);
   const updateSearchSongs = useAppStore((state) => state.updateSearchSongs);
@@ -64,7 +64,7 @@ export function useSearchEditor() {
       updateIsEditingSearchSaved(false);
       setCurrentSearch(search);
     },
-    [updateIsEditingSearchSaved]
+    [updateIsEditingSearchSaved],
   );
 
   useEffect(() => {
@@ -89,7 +89,7 @@ export function useSearchEditor() {
 
   const songMetadataTagOptionsForDisplay =
     SongUtils.listAllSongMetadataTags().filter((v) =>
-      SongTableUtils.convertSongMetadataTagToDisplayName(v)
+      SongTableUtils.convertSongMetadataTagToDisplayName(v),
     );
 
   const operatorOptions = FilterUtils.listAllFilterConditionOperators();
@@ -109,7 +109,7 @@ export function useSearchEditor() {
       });
       updateEditingSearch(newSearch, false);
     },
-    [currentSearch, toast, updateEditingSearch]
+    [currentSearch, toast, updateEditingSearch],
   );
 
   const onConditionRemoved = useCallback(
@@ -120,7 +120,7 @@ export function useSearchEditor() {
       const newSearch = produce(currentSearch, (draft) => {
         for (const query of draft.queries!) {
           const index = query.conditions.findIndex(
-            (filter) => filter.uuid === uuid
+            (filter) => filter.uuid === uuid,
           );
           if (index >= 0) {
             query.conditions.splice(index, 1);
@@ -132,7 +132,7 @@ export function useSearchEditor() {
       });
       updateEditingSearch(newSearch, false);
     },
-    [currentSearch, updateEditingSearch]
+    [currentSearch, updateEditingSearch],
   );
 
   const onQueryAdded = useCallback(() => {
@@ -143,7 +143,7 @@ export function useSearchEditor() {
       draft.queries!.push(
         Query.create({
           conditions: [getDefaultFilterCondition(uuidv4())],
-        })
+        }),
       );
     });
     updateEditingSearch(newSearch, false);

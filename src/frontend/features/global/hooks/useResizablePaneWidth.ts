@@ -7,12 +7,12 @@ export function useResizablePaneWidth(props: {
   const { leftPaneWidth, onWidthChanged } = props;
 
   const timeoutId = useRef<ReturnType<typeof setTimeout> | undefined>(
-    undefined
+    undefined,
   );
 
   const leftPaneWidthStr = useMemo(
     () => (leftPaneWidth !== undefined ? `${leftPaneWidth}px` : undefined),
-    [leftPaneWidth]
+    [leftPaneWidth],
   );
 
   const rightPaneWidthStr = useMemo(
@@ -20,7 +20,7 @@ export function useResizablePaneWidth(props: {
       leftPaneWidth !== undefined
         ? `calc(100% - ${leftPaneWidth}px)`
         : undefined,
-    [leftPaneWidth]
+    [leftPaneWidth],
   );
 
   const onPaneWidthChanged = useCallback(
@@ -36,7 +36,7 @@ export function useResizablePaneWidth(props: {
         onWidthChanged(leftSize);
       }, 1000);
     },
-    [leftPaneWidth, onWidthChanged]
+    [leftPaneWidth, onWidthChanged],
   );
 
   return {

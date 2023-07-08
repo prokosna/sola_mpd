@@ -25,7 +25,7 @@ export type SystemSlice = {
 
 export const createSystemSlice: StateCreator<AllSlices, [], [], SystemSlice> = (
   set,
-  get
+  get,
 ) => ({
   appMessage: undefined,
   appMessageTimeoutId: undefined,

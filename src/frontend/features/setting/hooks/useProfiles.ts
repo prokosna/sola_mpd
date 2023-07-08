@@ -14,7 +14,7 @@ export function useProfiles() {
   const deleteProfile = useCallback(
     (profile: MpdProfile) => {
       const index = profileState?.profiles?.findIndex(
-        (v) => v.name === profile.name
+        (v) => v.name === profile.name,
       );
       if (index === undefined || index < 0) {
         return;
@@ -38,7 +38,7 @@ export function useProfiles() {
       });
       updateProfileState(newProfileState);
     },
-    [profileState, toast, updateProfileState]
+    [profileState, toast, updateProfileState],
   );
 
   return {

@@ -15,7 +15,7 @@ export type SongTableContextMenuItem = {
   onClick: (
     song: Song | undefined,
     selectedSongs: Song[],
-    songs: Song[]
+    songs: Song[],
   ) => void;
 };
 
@@ -38,8 +38,8 @@ export default function SongTableContextMenu(props: SongTableContextMenuProps) {
         v.onClick(
           params.props!.song,
           params.props!.selectedSongs,
-          params.props!.songs
-        )
+          params.props!.songs,
+        ),
       );
   }
 
@@ -49,11 +49,11 @@ export default function SongTableContextMenu(props: SongTableContextMenuProps) {
         <Item key={v.name} id={v.name} onClick={onClick}>
           {v.name}
         </Item>
-      ))
+      )),
     )
     .reduce(
       (prev, curr, index) => [...prev, ...curr, <Separator key={index} />],
-      []
+      [],
     )
     .slice(0, -1);
 

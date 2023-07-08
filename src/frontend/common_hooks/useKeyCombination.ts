@@ -3,7 +3,7 @@ import { MutableRefObject, useEffect, useRef } from "react";
 export function useKeyCombination(
   ref: MutableRefObject<HTMLElement | null> | undefined,
   keys: string[],
-  callback: () => void
+  callback: () => void,
 ): void {
   const keysPressed = useRef(new Set<string>());
 

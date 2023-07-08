@@ -22,7 +22,7 @@ export class BrowserUtils {
   }
 
   static convertBrowserFiltersToConditions(
-    browserFilter: BrowserFilter
+    browserFilter: BrowserFilter,
   ): FilterCondition | undefined {
     if (browserFilter.selectedValues === undefined) {
       return;
@@ -40,8 +40,8 @@ export class BrowserUtils {
     const regValue = browserFilter.selectedValues
       .map((v) =>
         MpdUtils.escapeRegexString(
-          SongUtils.convertSongMetadataValueToString(v)
-        )
+          SongUtils.convertSongMetadataValueToString(v),
+        ),
       )
       .join("|");
     return FilterCondition.create({
@@ -57,7 +57,7 @@ export class BrowserUtils {
   }
 
   static normalizeBrowserFilters(
-    browserFilters: BrowserFilter[]
+    browserFilters: BrowserFilter[],
   ): BrowserFilter[] {
     const newBrowserFilters = produce(browserFilters, (draft) => {
       draft.sort((a, b) => a.order - b.order);
@@ -81,7 +81,7 @@ export class BrowserUtils {
       }
 
       const minOrderIndex = Math.min(
-        ...draft.filter((v) => v.selectedOrder > 0).map((v) => v.selectedOrder)
+        ...draft.filter((v) => v.selectedOrder > 0).map((v) => v.selectedOrder),
       );
       for (const filter of draft.filter((v) => v.selectedOrder > 0)) {
         filter.selectedOrder -= minOrderIndex - 1;
