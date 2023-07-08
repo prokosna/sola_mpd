@@ -21,14 +21,14 @@ export function useSearchSongTable() {
   const profile = useAppStore((state) => state.profileState?.currentProfile);
   const searchSongs = useAppStore((state) => state.searchSongs);
   const searchSongTableColumns = useAppStore(
-    (state) => state.searchSongTableColumns
+    (state) => state.searchSongTableColumns,
   );
   const updateIsEditingSearchSaved = useAppStore(
-    (state) => state.updateIsEditingSearchSaved
+    (state) => state.updateIsEditingSearchSaved,
   );
   const updateSelectedSongs = useAppStore((state) => state.updateSelectedSongs);
   const updateSearchSongTableColumns = useAppStore(
-    (state) => state.updateSearchSongTableColumns
+    (state) => state.updateSearchSongTableColumns,
   );
   const toast = useToast();
   // Plugin
@@ -48,14 +48,14 @@ export function useSearchSongTable() {
       searchSongTableColumns,
       updateIsEditingSearchSaved,
       updateSearchSongTableColumns,
-    ]
+    ],
   );
 
   const onSongsSelected = useCallback(
     async (selectedSongs: Song[]) => {
       updateSelectedSongs(selectedSongs);
     },
-    [updateSelectedSongs]
+    [updateSelectedSongs],
   );
 
   const onDoubleClicked = useCallback(
@@ -94,7 +94,7 @@ export function useSearchSongTable() {
       });
       await MpdUtils.command(playCommand);
     },
-    [profile]
+    [profile],
   );
 
   const contextMenuItems: SongTableContextMenuItem[][] = [
@@ -108,7 +108,7 @@ export function useSearchSongTable() {
           const targetSongs = SongTableUtils.getTrueTargetSongs(
             song,
             selectedSongs,
-            songTableKeyType
+            songTableKeyType,
           );
           if (targetSongs === undefined) {
             return;
@@ -117,7 +117,7 @@ export function useSearchSongTable() {
             MpdRequest.create({
               profile,
               command: { $case: "add", add: { uri: v.path } },
-            })
+            }),
           );
           await MpdUtils.commandBulk(requests);
           toast({
@@ -136,7 +136,7 @@ export function useSearchSongTable() {
           const targetSongs = SongTableUtils.getTrueTargetSongs(
             song,
             selectedSongs,
-            songTableKeyType
+            songTableKeyType,
           );
           if (targetSongs === undefined) {
             return;
@@ -152,7 +152,7 @@ export function useSearchSongTable() {
                 $case: "add",
                 add: { uri: v.path },
               },
-            })
+            }),
           );
           await MpdUtils.commandBulk([clearCommand, ...addCommands]);
           toast({
@@ -171,7 +171,7 @@ export function useSearchSongTable() {
           const targetSongs = SongTableUtils.getTrueTargetSongs(
             song,
             selectedSongs,
-            songTableKeyType
+            songTableKeyType,
           );
           if (targetSongs === undefined) {
             return;
@@ -203,7 +203,7 @@ export function useSearchSongTable() {
             const targetSongs = SongTableUtils.getTrueTargetSongs(
               song,
               selectedSongs,
-              songTableKeyType
+              songTableKeyType,
             );
             if (targetSongs === undefined) {
               return;
@@ -241,7 +241,7 @@ export function useSearchSongTable() {
         const existingSongs = res.command.listplaylistinfo.songs;
         const existingSongPaths = existingSongs.map((v) => v.path);
         targetSongs = targetSongs.filter(
-          (v) => !existingSongPaths.includes(v.path)
+          (v) => !existingSongPaths.includes(v.path),
         );
       }
       const commands = targetSongs.map((v) =>
@@ -251,7 +251,7 @@ export function useSearchSongTable() {
             $case: "playlistadd",
             playlistadd: { name: playlistName, uri: v.path },
           },
-        })
+        }),
       );
       await MpdUtils.commandBulk(commands);
       playlistModal.onClose();
@@ -261,7 +261,7 @@ export function useSearchSongTable() {
         description: `${targetSongs.length} songs have been added to ${playlistName}.`,
       });
     },
-    [playlistModal, profile, toast]
+    [playlistModal, profile, toast],
   );
   const onCancelToAddSongsPlaylist = useCallback(async () => {
     latestSelectedSongs.current = [];
@@ -278,7 +278,7 @@ export function useSearchSongTable() {
       await updateSearchSongTableColumns(newColumns);
       columnModal.onClose();
     },
-    [columnModal, searchSongTableColumns, updateSearchSongTableColumns]
+    [columnModal, searchSongTableColumns, updateSearchSongTableColumns],
   );
   const onCancelToUpdateColumns = useCallback(async () => {
     columnModal.onClose();

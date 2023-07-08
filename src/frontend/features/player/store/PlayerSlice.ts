@@ -18,7 +18,7 @@ export type PlayerSlice = {
 };
 
 export const createPlayerSlice: StateCreator<AllSlices, [], [], PlayerSlice> = (
-  set
+  set,
 ) => ({
   currentSong: undefined,
   mpdPlayerStatus: undefined,

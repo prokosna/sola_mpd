@@ -41,7 +41,7 @@ export function useSongTable(props: SongTableProps) {
   const globalFilterTokens = useAppStore((state) => state.globalFilterTokens);
   const currentSong = useAppStore((state) => state.currentSong);
   const setIsSongTableLoading = useAppStore(
-    (state) => state.setIsSongTableLoading
+    (state) => state.setIsSongTableLoading,
   );
 
   const targetSongs: Song[] = useMemo(() => {
@@ -50,7 +50,7 @@ export function useSongTable(props: SongTableProps) {
       targetSongs = FilterUtils.filterSongsByGlobalFilter(
         songs,
         globalFilterTokens,
-        tableColumns
+        tableColumns,
       );
     }
     targetSongs = targetSongs.map((song, index) => {
@@ -65,7 +65,7 @@ export function useSongTable(props: SongTableProps) {
       targetSongs.map((v) => [
         SongTableUtils.getSongTableKey(songTableKeyType, v),
         v,
-      ])
+      ]),
     );
   }, [songTableKeyType, targetSongs]);
 
@@ -139,7 +139,7 @@ export function useSongTable(props: SongTableProps) {
       for (const column of tableColumns) {
         const [tag, value] = SongTableUtils.convertSongMetadataForGridRowValue(
           column.tag,
-          v.metadata[column.tag]
+          v.metadata[column.tag],
         );
         row[tag] = value;
       }
@@ -151,7 +151,7 @@ export function useSongTable(props: SongTableProps) {
     (params: GetRowIdParams<SongTableRowDataType>) => {
       return String(params.data.key);
     },
-    []
+    [],
   );
 
   const getRowClass = useCallback(
@@ -169,7 +169,7 @@ export function useSongTable(props: SongTableProps) {
       }
       return getRowClassBySong(targetSong);
     },
-    [getRowClassBySong, targetSongsMap]
+    [getRowClassBySong, targetSongsMap],
   );
 
   // Event handlers
@@ -204,11 +204,11 @@ export function useSongTable(props: SongTableProps) {
       if (selectedSongsSorted.length === 1 && targetSong !== undefined) {
         const firstKey = SongTableUtils.getSongTableKey(
           songTableKeyType,
-          selectedSongsSorted[0]
+          selectedSongsSorted[0],
         );
         const targetKey = SongTableUtils.getSongTableKey(
           songTableKeyType,
-          targetSong
+          targetSong,
         );
         if (firstKey !== targetKey) {
           selectedSongsSorted = [];
@@ -231,7 +231,7 @@ export function useSongTable(props: SongTableProps) {
       contextMenu,
       tableColumns,
       songTableKeyType,
-    ]
+    ],
   );
 
   const onSortChanged = useCallback(
@@ -251,7 +251,7 @@ export function useSongTable(props: SongTableProps) {
       }
       onColumnsUpdated(currentColumns);
     },
-    [isSortingEnabled, onColumnsUpdated, tableColumns]
+    [isSortingEnabled, onColumnsUpdated, tableColumns],
   );
 
   const onColumnsMoved = useCallback(
@@ -271,7 +271,7 @@ export function useSongTable(props: SongTableProps) {
       }
       onColumnsUpdated(currentColumns);
     },
-    [isSortingEnabled, onColumnsUpdated, tableColumns]
+    [isSortingEnabled, onColumnsUpdated, tableColumns],
   );
 
   const onColumnsResized = useCallback(
@@ -294,7 +294,7 @@ export function useSongTable(props: SongTableProps) {
       }
       onColumnsUpdated(currentColumns);
     },
-    [isSortingEnabled, onColumnsUpdated, tableColumns]
+    [isSortingEnabled, onColumnsUpdated, tableColumns],
   );
 
   const onRowDragEnd = useCallback(
@@ -302,11 +302,11 @@ export function useSongTable(props: SongTableProps) {
       const { api } = event;
       const { songsSorted } = SongTableUtils.getSongsFromGrid(
         targetSongsMap,
-        api
+        api,
       );
       onSongsReordered(songsSorted);
     },
-    [targetSongsMap, onSongsReordered]
+    [targetSongsMap, onSongsReordered],
   );
 
   const onRowDoubleClicked = useCallback(
@@ -323,14 +323,14 @@ export function useSongTable(props: SongTableProps) {
       const { targetSong, songsSorted } = SongTableUtils.getSongsFromGrid(
         targetSongsMap,
         api,
-        targetKey
+        targetKey,
       );
       if (targetSong === undefined) {
         return;
       }
       onDoubleClicked(targetSong, songsSorted);
     },
-    [targetSongsMap, onDoubleClicked]
+    [targetSongsMap, onDoubleClicked],
   );
 
   const onSelectionChanged = useCallback(
@@ -338,18 +338,18 @@ export function useSongTable(props: SongTableProps) {
       const { api } = event;
       const { selectedSongsSorted } = SongTableUtils.getSongsFromGrid(
         targetSongsMap,
-        api
+        api,
       );
       onSongsSelected(selectedSongsSorted);
     },
-    [targetSongsMap, onSongsSelected]
+    [targetSongsMap, onSongsSelected],
   );
 
   const onRowDataUpdated = useCallback(
     (_: RowDataUpdatedEvent) => {
       setIsSongTableLoading(false);
     },
-    [setIsSongTableLoading]
+    [setIsSongTableLoading],
   );
 
   return {

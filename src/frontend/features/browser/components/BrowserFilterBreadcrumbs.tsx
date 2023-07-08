@@ -50,16 +50,16 @@ export default function BrowserFilterBreadcrumbs() {
                 {group.map((v) => (
                   <Tooltip
                     key={SongUtils.convertSongMetadataValueToString(
-                      v.metadataValue
+                      v.metadataValue,
                     )}
                     hasArrow
                     label={SongUtils.convertSongMetadataValueToString(
-                      v.metadataValue
+                      v.metadataValue,
                     )}
                   >
                     <Tag
                       key={SongUtils.convertSongMetadataValueToString(
-                        v.metadataValue
+                        v.metadataValue,
                       )}
                       size={"sm"}
                       borderRadius="full"
@@ -70,7 +70,7 @@ export default function BrowserFilterBreadcrumbs() {
                     >
                       <TagLabel>
                         {SongUtils.convertSongMetadataValueToString(
-                          v.metadataValue
+                          v.metadataValue,
                         )}
                       </TagLabel>
                       {v.isPlaceholder ? null : (

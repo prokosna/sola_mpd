@@ -21,7 +21,7 @@ export function usePlaylistSelectList() {
   const profile = useAppStore((state) => state.profileState?.currentProfile);
   const playlists = useAppStore((state) => state.playlists);
   const updateCurrentPlaylist = useAppStore(
-    (state) => state.updateCurrentPlaylist
+    (state) => state.updateCurrentPlaylist,
   );
   const pullPlaylists = useAppStore((state) => state.pullPlaylists);
   const toast = useToast();
@@ -53,7 +53,7 @@ export function usePlaylistSelectList() {
       .map((v) => ({
         ["Playlist"]: v.name,
         ["Metadata"]: `${v.name} modified at ${TimeUtils.convertDateToString(
-          v.updatedAt
+          v.updatedAt,
         )}`,
       }));
   }, [playlists]);
@@ -71,7 +71,7 @@ export function usePlaylistSelectList() {
       }
 
       const index = playlists.findIndex(
-        (v) => v.name === node.data["Playlist"]
+        (v) => v.name === node.data["Playlist"],
       );
       if (index < 0) {
         return;
@@ -79,7 +79,7 @@ export function usePlaylistSelectList() {
 
       updateCurrentPlaylist(playlists[index]);
     },
-    [playlists, profile, updateCurrentPlaylist]
+    [playlists, profile, updateCurrentPlaylist],
   );
 
   const contextMenu = useContextMenu({ id: COMPONENT_ID_PLAYLIST_SIDE_PANE });
@@ -96,7 +96,7 @@ export function usePlaylistSelectList() {
               }
 
               const index = playlists.findIndex(
-                (v) => v.name === selected.name
+                (v) => v.name === selected.name,
               );
               if (index < 0) {
                 return;
@@ -141,7 +141,7 @@ export function usePlaylistSelectList() {
         props: targetPlaylist,
       });
     },
-    [contextMenu, playlists]
+    [contextMenu, playlists],
   );
 
   return {

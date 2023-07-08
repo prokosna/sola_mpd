@@ -8,5 +8,5 @@ export const savedSearchRepository = new FileRepository<SavedSearches>(
   SavedSearches.create({
     searches: [],
   }),
-  SavedSearches
+  SavedSearches,
 );

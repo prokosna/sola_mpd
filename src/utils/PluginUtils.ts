@@ -13,7 +13,7 @@ import { PluginRequestMessage, PluginResponseMessage } from "@/types/websocket";
 export class PluginUtils {
   static async register(
     socket: Socket,
-    req: PluginRegisterRequest
+    req: PluginRegisterRequest,
   ): Promise<PluginRegisterResponse> {
     const callbackEvent = `${Date.now()}_${Math.random()}`;
 
@@ -39,7 +39,7 @@ export class PluginUtils {
 
   static execute(
     socket: Socket,
-    req: PluginExecuteRequest
+    req: PluginExecuteRequest,
   ): Observable<PluginExecuteResponse> {
     const callbackEvent = `${Date.now()}_${Math.random()}`;
 
@@ -66,7 +66,7 @@ export class PluginUtils {
           subject.complete();
           socket.off(callbackEvent);
         }
-      }
+      },
     );
     socket.emit(WS_PLUGIN_EXECUTE, reqMsg);
 

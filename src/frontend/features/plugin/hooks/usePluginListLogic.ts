@@ -21,7 +21,7 @@ export function usePluginListLogic() {
         return;
       }
       const index = pluginState.plugins.findIndex(
-        (v) => `${v.host}:${v.port}` === `${plugin.host}:${plugin.port}`
+        (v) => `${v.host}:${v.port}` === `${plugin.host}:${plugin.port}`,
       );
       if (index < 0) {
         return;
@@ -36,7 +36,7 @@ export function usePluginListLogic() {
         description: `Plugin ${plugin.info?.name} has been removed.`,
       });
     },
-    [pluginState, socket, toast, updatePluginState]
+    [pluginState, socket, toast, updatePluginState],
   );
 
   return {

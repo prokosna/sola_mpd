@@ -29,7 +29,7 @@ const httpServer = createServer(
       res.statusCode = 500;
       res.end("internal server error");
     }
-  }
+  },
 )
   .once("error", (err: any) => {
     console.error(err);

@@ -18,13 +18,13 @@ export type BrowserSlice = {
   browserFilterValuesList: Map<SongMetadataTag, string[]>;
   pullBrowserSongs: (
     profile: MpdProfile,
-    browserFilters: BrowserFilter[]
+    browserFilters: BrowserFilter[],
   ) => Promise<void>;
   pullBrowserFilters: () => Promise<void>;
   updateBrowserFilters: (browserFilters: BrowserFilter[]) => Promise<void>;
   pullBrowserFilterValuesList: (
     profile: MpdProfile,
-    browserFilters: BrowserFilter[]
+    browserFilters: BrowserFilter[],
   ) => Promise<void>;
 };
 
@@ -39,7 +39,7 @@ export const createBrowserSlice: StateCreator<
   browserFilterValuesList: new Map(),
   pullBrowserSongs: async (
     profile: MpdProfile,
-    browserFilters: BrowserFilter[]
+    browserFilters: BrowserFilter[],
   ) => {
     const conditions = browserFilters
       .filter((v) => v.selectedValues !== undefined)
@@ -69,7 +69,7 @@ export const createBrowserSlice: StateCreator<
   pullBrowserFilters: async () => {
     const state = await ApiUtils.get<BrowserState>(
       ENDPOINT_APP_BROWSER_STATE,
-      BrowserState
+      BrowserState,
     );
 
     set({
@@ -86,7 +86,7 @@ export const createBrowserSlice: StateCreator<
     await ApiUtils.post<BrowserState>(
       ENDPOINT_APP_BROWSER_STATE,
       BrowserState,
-      BrowserState.create({ filters })
+      BrowserState.create({ filters }),
     );
 
     set({
@@ -95,12 +95,12 @@ export const createBrowserSlice: StateCreator<
   },
   pullBrowserFilterValuesList: async (
     profile: MpdProfile,
-    browserFilters: BrowserFilter[]
+    browserFilters: BrowserFilter[],
   ) => {
     const selectedFiltersSorted = Array.from(
       browserFilters.filter(
-        (v) => v.selectedValues !== undefined && v.selectedValues.length !== 0
-      )
+        (v) => v.selectedValues !== undefined && v.selectedValues.length !== 0,
+      ),
     ).sort((a, b) => a.selectedOrder - b.selectedOrder);
 
     const filterValuesSet: [SongMetadataTag, string[]][] = await Promise.all(
@@ -128,7 +128,7 @@ export const createBrowserSlice: StateCreator<
         }
         const values = res.command.list.values;
         return [filter.tag, values];
-      })
+      }),
     );
 
     set({

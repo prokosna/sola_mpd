@@ -24,7 +24,7 @@ export function useBrowserResizablePane() {
       });
       pushLayoutState(newLayoutState);
     },
-    [layoutState, pushLayoutState]
+    [layoutState, pushLayoutState],
   );
 
   const resizablePaneWidth = useResizablePaneWidth({

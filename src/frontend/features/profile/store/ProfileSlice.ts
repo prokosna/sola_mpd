@@ -22,7 +22,7 @@ export const createProfileSlice: StateCreator<
   pullProfileState: async () => {
     const profileState = await ApiUtils.get<MpdProfileState>(
       ENDPOINT_APP_MPD_PROFILE_STATE,
-      MpdProfileState
+      MpdProfileState,
     );
     set({
       profileState,
@@ -36,7 +36,7 @@ export const createProfileSlice: StateCreator<
     await ApiUtils.post<MpdProfileState>(
       ENDPOINT_APP_MPD_PROFILE_STATE,
       MpdProfileState,
-      profileState
+      profileState,
     );
 
     set({

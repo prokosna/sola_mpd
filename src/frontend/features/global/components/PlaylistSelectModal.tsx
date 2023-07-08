@@ -52,7 +52,7 @@ export default function PlaylistSelectModal(props: PlaylistSelectModalProps) {
 
   const existingNames = useMemo(() => {
     return Array.from(playlistMetadataList.map((v) => v.name)).sort((a, b) =>
-      a > b ? 1 : -1
+      a > b ? 1 : -1,
     );
   }, [playlistMetadataList]);
 

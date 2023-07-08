@@ -93,7 +93,7 @@ export default function PluginAddModal(props: PluginAddModalProps) {
                           plugin.pluginParameters,
                           (draft) => {
                             draft[key] = newValue;
-                          }
+                          },
                         );
                         const newPlugin = produce(plugin, (draft) => {
                           draft.pluginParameters = newParams;

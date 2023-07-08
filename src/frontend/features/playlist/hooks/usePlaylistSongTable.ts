@@ -26,10 +26,10 @@ export function usePlaylistSongTable() {
   const currentPlaylist = useAppStore((state) => state.currentPlaylist);
   const playlistSongs = usePlaylistSongs();
   const commonSongTableState = useAppStore(
-    (state) => state.commonSongTableState
+    (state) => state.commonSongTableState,
   );
   const updateCommonSongTableState = useAppStore(
-    (state) => state.updateCommonSongTableState
+    (state) => state.updateCommonSongTableState,
   );
   const updateSelectedSongs = useAppStore((state) => state.updateSelectedSongs);
   const pullPlaylistSongs = useAppStore((state) => state.pullPlaylistSongs);
@@ -61,12 +61,12 @@ export function usePlaylistSongTable() {
               uri: v.path,
             },
           },
-        })
+        }),
       );
       await MpdUtils.commandBulk([clearCommand, ...addCommands]);
       pullPlaylistSongs(profile, currentPlaylist);
     },
-    [profile, currentPlaylist, pullPlaylistSongs]
+    [profile, currentPlaylist, pullPlaylistSongs],
   );
 
   const onColumnsUpdated = useCallback(
@@ -89,14 +89,14 @@ export function usePlaylistSongTable() {
       });
       await updateCommonSongTableState(newCommonSongTableState);
     },
-    [commonSongTableState, updateCommonSongTableState]
+    [commonSongTableState, updateCommonSongTableState],
   );
 
   const onSongsSelected = useCallback(
     async (selectedSongs: Song[]) => {
       updateSelectedSongs(selectedSongs);
     },
-    [updateSelectedSongs]
+    [updateSelectedSongs],
   );
 
   const onDoubleClicked = useCallback(
@@ -135,7 +135,7 @@ export function usePlaylistSongTable() {
       });
       await MpdUtils.command(playCommand);
     },
-    [profile]
+    [profile],
   );
 
   const contextMenuItems: SongTableContextMenuItem[][] = [
@@ -149,7 +149,7 @@ export function usePlaylistSongTable() {
           const targetSongs = SongTableUtils.getTrueTargetSongs(
             song,
             selectedSongs,
-            songTableKeyType
+            songTableKeyType,
           );
           if (targetSongs === undefined) {
             return;
@@ -161,7 +161,7 @@ export function usePlaylistSongTable() {
                 $case: "add",
                 add: { uri: v.path },
               },
-            })
+            }),
           );
           await MpdUtils.commandBulk(commands);
           toast({
@@ -180,7 +180,7 @@ export function usePlaylistSongTable() {
           const targetSongs = SongTableUtils.getTrueTargetSongs(
             song,
             selectedSongs,
-            songTableKeyType
+            songTableKeyType,
           );
           if (targetSongs === undefined) {
             return;
@@ -199,7 +199,7 @@ export function usePlaylistSongTable() {
                 $case: "add",
                 add: { uri: v.path },
               },
-            })
+            }),
           );
           await MpdUtils.commandBulk([clearCommand, ...addCommands]);
           toast({
@@ -214,7 +214,7 @@ export function usePlaylistSongTable() {
         onClick: async (
           song: Song | undefined,
           selectedSongs: Song[],
-          songs: Song[]
+          songs: Song[],
         ) => {
           if (profile === undefined || currentPlaylist === undefined) {
             return;
@@ -222,7 +222,7 @@ export function usePlaylistSongTable() {
           const targetSongs = SongTableUtils.getTrueTargetSongs(
             song,
             selectedSongs,
-            songTableKeyType
+            songTableKeyType,
           );
           if (targetSongs === undefined) {
             return;
@@ -232,7 +232,7 @@ export function usePlaylistSongTable() {
           // To effectively remove songs from the playlist,
           // clear the playlist and then add remaining songs again.
           const targetKeys = targetSongs.map((v) =>
-            SongTableUtils.getSongTableKey(songTableKeyType, v)
+            SongTableUtils.getSongTableKey(songTableKeyType, v),
           );
           const remainingSongs = songs.filter((v) => {
             const key = SongTableUtils.getSongTableKey(songTableKeyType, v);
@@ -256,7 +256,7 @@ export function usePlaylistSongTable() {
                   uri: v.path,
                 },
               },
-            })
+            }),
           );
           await MpdUtils.commandBulk([clearCommand, ...addCommands]);
           toast({
@@ -294,7 +294,7 @@ export function usePlaylistSongTable() {
         onClick: async (
           song: Song | undefined,
           selectedSongs: Song[],
-          songs: Song[]
+          songs: Song[],
         ) => {
           if (profile === undefined || currentPlaylist === undefined) {
             return;
@@ -332,7 +332,7 @@ export function usePlaylistSongTable() {
                   uri: v.path,
                 },
               },
-            })
+            }),
           );
           await MpdUtils.commandBulk([clearCommand, ...addCommands]);
           toast({
@@ -354,7 +354,7 @@ export function usePlaylistSongTable() {
           const targetSongs = SongTableUtils.getTrueTargetSongs(
             song,
             selectedSongs,
-            songTableKeyType
+            songTableKeyType,
           );
           if (targetSongs === undefined) {
             return;
@@ -386,7 +386,7 @@ export function usePlaylistSongTable() {
             const targetSongs = SongTableUtils.getTrueTargetSongs(
               song,
               selectedSongs,
-              songTableKeyType
+              songTableKeyType,
             );
             if (targetSongs === undefined) {
               return;
@@ -424,7 +424,7 @@ export function usePlaylistSongTable() {
         const existingSongs = res.command.listplaylistinfo.songs;
         const existingSongPaths = existingSongs.map((v) => v.path);
         targetSongs = targetSongs.filter(
-          (v) => !existingSongPaths.includes(v.path)
+          (v) => !existingSongPaths.includes(v.path),
         );
       }
       const commands = targetSongs.map((v) =>
@@ -434,7 +434,7 @@ export function usePlaylistSongTable() {
             $case: "playlistadd",
             playlistadd: { name: playlistName, uri: v.path },
           },
-        })
+        }),
       );
       await MpdUtils.commandBulk(commands);
       playlistModal.onClose();
@@ -444,7 +444,7 @@ export function usePlaylistSongTable() {
         description: `${targetSongs.length} songs have been added to ${playlistName}.`,
       });
     },
-    [playlistModal, profile, toast]
+    [playlistModal, profile, toast],
   );
   const onCancelToAddSongsPlaylist = useCallback(async () => {
     latestSelectedSongs.current = [];
@@ -474,7 +474,7 @@ export function usePlaylistSongTable() {
       await updateCommonSongTableState(newCommonSongTableState);
       columnModal.onClose();
     },
-    [columnModal, commonSongTableState, updateCommonSongTableState]
+    [columnModal, commonSongTableState, updateCommonSongTableState],
   );
   const onCancelToUpdateColumns = useCallback(async () => {
     columnModal.onClose();

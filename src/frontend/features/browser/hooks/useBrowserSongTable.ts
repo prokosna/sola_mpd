@@ -29,10 +29,10 @@ export function useBrowserSongTable() {
   const profile = useAppStore((state) => state.profileState?.currentProfile);
   const browserSongs = useBrowserSongs();
   const commonSongTableState = useAppStore(
-    (state) => state.commonSongTableState
+    (state) => state.commonSongTableState,
   );
   const updateCommonSongTableState = useAppStore(
-    (state) => state.updateCommonSongTableState
+    (state) => state.updateCommonSongTableState,
   );
   const updateSelectedSongs = useAppStore((state) => state.updateSelectedSongs);
   const toast = useToast();
@@ -51,14 +51,14 @@ export function useBrowserSongTable() {
       });
       updateCommonSongTableState(newCommonSongTableState);
     },
-    [commonSongTableState, updateCommonSongTableState]
+    [commonSongTableState, updateCommonSongTableState],
   );
 
   const onSongsSelected = useCallback(
     async (selectedSongs: Song[]) => {
       updateSelectedSongs(selectedSongs);
     },
-    [updateSelectedSongs]
+    [updateSelectedSongs],
   );
 
   const onDoubleClicked = useCallback(
@@ -97,7 +97,7 @@ export function useBrowserSongTable() {
       });
       await MpdUtils.command(playCommand);
     },
-    [profile]
+    [profile],
   );
 
   const contextMenuItems: SongTableContextMenuItem[][] = [
@@ -111,7 +111,7 @@ export function useBrowserSongTable() {
           const targetSongs = SongTableUtils.getTrueTargetSongs(
             song,
             selectedSongs,
-            songTableKeyType
+            songTableKeyType,
           );
           if (targetSongs === undefined) {
             return;
@@ -120,7 +120,7 @@ export function useBrowserSongTable() {
             MpdRequest.create({
               profile,
               command: { $case: "add", add: { uri: v.path } },
-            })
+            }),
           );
           await MpdUtils.commandBulk(requests);
           toast({
@@ -139,7 +139,7 @@ export function useBrowserSongTable() {
           const targetSongs = SongTableUtils.getTrueTargetSongs(
             song,
             selectedSongs,
-            songTableKeyType
+            songTableKeyType,
           );
           if (targetSongs === undefined) {
             return;
@@ -155,7 +155,7 @@ export function useBrowserSongTable() {
                 $case: "add",
                 add: { uri: v.path },
               },
-            })
+            }),
           );
           await MpdUtils.commandBulk([clearCommand, ...addCommands]);
           toast({
@@ -174,7 +174,7 @@ export function useBrowserSongTable() {
           const targetSongs = SongTableUtils.getTrueTargetSongs(
             song,
             selectedSongs,
-            songTableKeyType
+            songTableKeyType,
           );
           if (targetSongs === undefined) {
             return;
@@ -206,7 +206,7 @@ export function useBrowserSongTable() {
             const targetSongs = SongTableUtils.getTrueTargetSongs(
               song,
               selectedSongs,
-              songTableKeyType
+              songTableKeyType,
             );
             if (targetSongs === undefined) {
               return;
@@ -244,7 +244,7 @@ export function useBrowserSongTable() {
         const existingSongs = res.command.listplaylistinfo.songs;
         const existingSongPaths = existingSongs.map((v) => v.path);
         targetSongs = targetSongs.filter(
-          (v) => !existingSongPaths.includes(v.path)
+          (v) => !existingSongPaths.includes(v.path),
         );
       }
       const commands = targetSongs.map((v) =>
@@ -254,7 +254,7 @@ export function useBrowserSongTable() {
             $case: "playlistadd",
             playlistadd: { name: playlistName, uri: v.path },
           },
-        })
+        }),
       );
       await MpdUtils.commandBulk(commands);
       playlistModal.onClose();
@@ -264,7 +264,7 @@ export function useBrowserSongTable() {
         description: `${targetSongs.length} songs have been added to ${playlistName}.`,
       });
     },
-    [playlistModal, profile, toast]
+    [playlistModal, profile, toast],
   );
   const onCancelToAddSongsPlaylist = useCallback(async () => {
     latestSelectedSongs.current = [];
@@ -284,7 +284,7 @@ export function useBrowserSongTable() {
       await updateCommonSongTableState(newCommonSongTableState);
       columnModal.onClose();
     },
-    [columnModal, commonSongTableState, updateCommonSongTableState]
+    [columnModal, commonSongTableState, updateCommonSongTableState],
   );
   const onCancelToUpdateColumns = useCallback(async () => {
     columnModal.onClose();

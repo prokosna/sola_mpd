@@ -6,10 +6,10 @@ import { useAppStore } from "../../global/store/AppStore";
 export function useFileExploreTreePane() {
   const profile = useAppStore((state) => state.profileState?.currentProfile);
   const pullFileExploreFolders = useAppStore(
-    (state) => state.pullFileExploreFolders
+    (state) => state.pullFileExploreFolders,
   );
   const updateSelectedFileExploreFolder = useAppStore(
-    (state) => state.updateSelectedFileExploreFolder
+    (state) => state.updateSelectedFileExploreFolder,
   );
   const fileExploreFolders = useAppStore((state) => state.fileExploreFolders);
 
@@ -45,7 +45,7 @@ export function useFileExploreTreePane() {
         return;
       }
       const selectedNodes = fileExploreFolders.filter((v) =>
-        nodes.includes(v.path)
+        nodes.includes(v.path),
       );
       const selectedNode = selectedNodes[0];
       if (selectedNode === undefined) {
@@ -53,7 +53,7 @@ export function useFileExploreTreePane() {
       }
       updateSelectedFileExploreFolder(selectedNode);
     },
-    [fileExploreFolders, updateSelectedFileExploreFolder]
+    [fileExploreFolders, updateSelectedFileExploreFolder],
   );
 
   return {

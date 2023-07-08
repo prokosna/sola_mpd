@@ -28,5 +28,5 @@ export const customTheme = extendTheme(
       error: baseTheme.colors.red,
     },
   },
-  withDefaultColorScheme({ colorScheme: "brand" })
+  withDefaultColorScheme({ colorScheme: "brand" }),
 );

@@ -18,7 +18,7 @@ type PluginExecutionModalLogicProps = {
 };
 
 export function usePluginExecutionModalLogic(
-  props: PluginExecutionModalLogicProps
+  props: PluginExecutionModalLogicProps,
 ) {
   const { onClose, plugin, songs } = props;
   const socket = useSocket();
@@ -42,7 +42,7 @@ export function usePluginExecutionModalLogic(
         acc[cur] = "";
         return acc;
       },
-      {} as { [key: string]: string }
+      {} as { [key: string]: string },
     );
     setParameters(initialParams);
   }, [plugin?.info]);

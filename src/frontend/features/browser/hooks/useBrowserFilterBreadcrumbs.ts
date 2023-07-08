@@ -16,7 +16,7 @@ export type FilterBreadcrumb = {
 export function useBrowserFilterBreadcrumbs() {
   const browserFilters = useAppStore((state) => state.browserFilters);
   const updateBrowserFilters = useAppStore(
-    (state) => state.updateBrowserFilters
+    (state) => state.updateBrowserFilters,
   );
 
   const onCloseClicked = useCallback(
@@ -31,7 +31,7 @@ export function useBrowserFilterBreadcrumbs() {
       }
 
       const valueIndex = browserFilters[filterIndex].selectedValues.findIndex(
-        (v) => equal(v, value)
+        (v) => equal(v, value),
       );
       if (valueIndex < 0) {
         console.warn("Selected value not found");
@@ -41,12 +41,12 @@ export function useBrowserFilterBreadcrumbs() {
       const newBrowserFilters = BrowserUtils.normalizeBrowserFilters(
         produce(browserFilters, (draft) => {
           draft[filterIndex].selectedValues.splice(valueIndex, 1);
-        })
+        }),
       );
 
       await updateBrowserFilters(newBrowserFilters);
     },
-    [browserFilters, updateBrowserFilters]
+    [browserFilters, updateBrowserFilters],
   );
 
   const onResetClicked = useCallback(async () => {
@@ -58,7 +58,7 @@ export function useBrowserFilterBreadcrumbs() {
         for (const filter of draft) {
           filter.selectedValues = [];
         }
-      })
+      }),
     );
     await updateBrowserFilters(newBrowserFilters);
   }, [browserFilters, updateBrowserFilters]);

@@ -47,7 +47,7 @@ export function useProfileSelector() {
       });
       updateProfileState(newProfileState);
     },
-    [profileState, toast, updateProfileState]
+    [profileState, toast, updateProfileState],
   );
   const enabledOutputDevice = mpdDevices?.filter((v) => v.isEnabled)[0];
 

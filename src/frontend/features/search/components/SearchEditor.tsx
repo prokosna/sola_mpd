@@ -80,7 +80,7 @@ export default function SearchEditor() {
           <GridItem area={"tag"}>
             <Select
               value={SongTableUtils.convertSongMetadataTagToDisplayName(
-                condition.tag
+                condition.tag,
               )}
               size="sm"
               onChange={(e) => {
@@ -88,15 +88,15 @@ export default function SearchEditor() {
                   produce(currentSearch, (draft) => {
                     draft.queries[queryIndex].conditions[index].tag =
                       SongTableUtils.convertSongMetadataTagFromDisplayName(
-                        e.target.value
+                        e.target.value,
                       );
-                  })
+                  }),
                 );
               }}
             >
               {songMetadataTagOptionsForDisplay
                 .map((v) =>
-                  SongTableUtils.convertSongMetadataTagToDisplayName(v)
+                  SongTableUtils.convertSongMetadataTagToDisplayName(v),
                 )
                 .map((v, i) => (
                   <option key={i} value={v}>
@@ -108,7 +108,7 @@ export default function SearchEditor() {
           <GridItem area={"operator"}>
             <Select
               value={FilterUtils.convertOperatorToDisplayName(
-                condition.operator
+                condition.operator,
               )}
               size="sm"
               onChange={(e) => {
@@ -116,7 +116,7 @@ export default function SearchEditor() {
                   produce(currentSearch, (draft) => {
                     draft.queries[queryIndex].conditions[index].operator =
                       FilterUtils.convertDisplayNameToOperator(e.target.value);
-                  })
+                  }),
                 );
               }}
             >
@@ -134,16 +134,16 @@ export default function SearchEditor() {
               size="sm"
               type="text"
               value={SongUtils.convertSongMetadataValueToString(
-                condition.value
+                condition.value,
               )}
               onChange={(e) => {
                 updateCurrentSearch(
                   produce(currentSearch, (draft) => {
                     draft.queries[queryIndex].conditions[index].value =
                       SongUtils.convertStringToSongMetadataValue(
-                        e.target.value
+                        e.target.value,
                       );
-                  })
+                  }),
                 );
               }}
             ></Input>
@@ -190,7 +190,7 @@ export default function SearchEditor() {
               </Button>
             </Center>,
           ],
-          []
+          [],
         )
         .slice(0, -1)
         .flat(),
@@ -245,7 +245,7 @@ export default function SearchEditor() {
                 updateCurrentSearch(
                   produce(currentSearch, (draft) => {
                     draft.name = e.target.value;
-                  })
+                  }),
                 );
               }}
             ></Input>

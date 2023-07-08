@@ -19,5 +19,5 @@ export const layoutStateRepository = new FileRepository<LayoutState>(
       sidePaneWidth: 300,
     },
   }),
-  LayoutState
+  LayoutState,
 );

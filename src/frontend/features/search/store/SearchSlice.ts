@@ -49,20 +49,20 @@ export type SearchSlice = {
   pullSearchSongs: (profile: MpdProfile, search: Search) => Promise<void>;
   updateEditingSearch: (
     search: Search,
-    isRestoredFromSavedSearch?: boolean
+    isRestoredFromSavedSearch?: boolean,
   ) => Promise<void>;
   pullSavedSearches: () => Promise<void>;
   updateSavedSearches: (searches: Search[]) => Promise<void>;
   updateIsEditingSearchSaved: (isEditing: boolean) => Promise<void>;
   updateSearchSongTableColumns: (
-    columns: SongTableColumn[] | undefined
+    columns: SongTableColumn[] | undefined,
   ) => Promise<void>;
   updateSearchSongs: (songs: Song[]) => void;
 };
 
 export const createSearchSlice: StateCreator<AllSlices, [], [], SearchSlice> = (
   set,
-  get
+  get,
 ) => ({
   searchSongs: [],
   editingSearch: getDefaultSearch(),
@@ -101,10 +101,10 @@ export const createSearchSlice: StateCreator<AllSlices, [], [], SearchSlice> = (
           }
           return FilterUtils.filterSongsByAndConditions(
             songs,
-            nonMpdConditions
+            nonMpdConditions,
           );
         });
-      })
+      }),
     );
 
     const songs = SearchUtils.mergeSongsList(songsList.map((songs) => songs));
@@ -114,7 +114,7 @@ export const createSearchSlice: StateCreator<AllSlices, [], [], SearchSlice> = (
   },
   updateEditingSearch: async (
     search: Search,
-    isRestoredFromSavedSearch?: boolean
+    isRestoredFromSavedSearch?: boolean,
   ) => {
     set({
       editingSearch: search,
@@ -128,7 +128,7 @@ export const createSearchSlice: StateCreator<AllSlices, [], [], SearchSlice> = (
   pullSavedSearches: async () => {
     const savedSearches = await ApiUtils.get<SavedSearches>(
       ENDPOINT_APP_SAVED_SEARCHES,
-      SavedSearches
+      SavedSearches,
     );
     set({
       savedSearches: savedSearches.searches,
@@ -141,7 +141,7 @@ export const createSearchSlice: StateCreator<AllSlices, [], [], SearchSlice> = (
     await ApiUtils.post<SavedSearches>(
       ENDPOINT_APP_SAVED_SEARCHES,
       SavedSearches,
-      savedSearches
+      savedSearches,
     );
     set({
       savedSearches: searches,
@@ -153,7 +153,7 @@ export const createSearchSlice: StateCreator<AllSlices, [], [], SearchSlice> = (
     });
   },
   updateSearchSongTableColumns: async (
-    columns: SongTableColumn[] | undefined
+    columns: SongTableColumn[] | undefined,
   ) => {
     set({
       searchSongTableColumns: columns,

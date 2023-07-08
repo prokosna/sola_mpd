@@ -15,18 +15,18 @@ export function useSettingStates() {
   const pullLayoutState = useAppStore((state) => state.pullLayoutState);
 
   const commonSongTableState = useAppStore(
-    (state) => state.commonSongTableState
+    (state) => state.commonSongTableState,
   );
   const updateCommonSongTableState = useAppStore(
-    (state) => state.updateCommonSongTableState
+    (state) => state.updateCommonSongTableState,
   );
   const pullCommonSongTableState = useAppStore(
-    (state) => state.pullCommonSongTableState
+    (state) => state.pullCommonSongTableState,
   );
 
   const browserFilters = useAppStore((state) => state.browserFilters);
   const updateBrowserFilters = useAppStore(
-    (state) => state.updateBrowserFilters
+    (state) => state.updateBrowserFilters,
   );
   const pullBrowserFilters = useAppStore((state) => state.pullBrowserFilters);
   const browserState = useMemo(() => {
@@ -36,7 +36,7 @@ export function useSettingStates() {
     async (state: BrowserState) => {
       updateBrowserFilters(state.filters);
     },
-    [updateBrowserFilters]
+    [updateBrowserFilters],
   );
 
   const searches = useAppStore((state) => state.savedSearches);
@@ -46,7 +46,7 @@ export function useSettingStates() {
     async (searches: SavedSearches) => {
       updateSearches(searches.searches);
     },
-    [updateSearches]
+    [updateSearches],
   );
   const pullSavedSearches = useAppStore((state) => state.pullSavedSearches);
 

@@ -14,7 +14,7 @@ export type PlaylistSlice = {
   playlists: Playlist[];
   pullPlaylistSongs: (
     profile: MpdProfile,
-    currentPlaylist: Playlist
+    currentPlaylist: Playlist,
   ) => Promise<void>;
   updateCurrentPlaylist: (playlist: Playlist) => Promise<void>;
   pullPlaylists: (profile: MpdProfile) => Promise<void>;

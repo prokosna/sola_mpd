@@ -13,7 +13,7 @@ export type GenericContextMenuItem<T> = {
 };
 
 export default function GenericContextMenu<T>(
-  props: GenericContextMenuProps<T>
+  props: GenericContextMenuProps<T>,
 ) {
   function onClick(params: ItemParams<T, unknown>) {
     props.items
@@ -47,11 +47,11 @@ export default function GenericContextMenu<T>(
             ))}
           </Submenu>
         );
-      })
+      }),
     )
     .reduce(
       (prev, curr, index) => [...prev, ...curr, <Separator key={index} />],
-      []
+      [],
     )
     .slice(0, -1);
 

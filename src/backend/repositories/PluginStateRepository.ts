@@ -8,5 +8,5 @@ export const pluginStateRepository = new FileRepository<PluginState>(
   PluginState.create({
     plugins: [],
   }),
-  PluginState
+  PluginState,
 );

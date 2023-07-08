@@ -25,7 +25,7 @@ export function useMpdProfileManager() {
       }
       return undefined;
     },
-    []
+    [],
   );
 
   return {

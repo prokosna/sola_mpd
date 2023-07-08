@@ -42,27 +42,27 @@ export default function SettingStates() {
   const profileEditor = useStateEditor<MpdProfileState>(
     profileState,
     MpdProfileState,
-    updateProfileState
+    updateProfileState,
   );
   const layoutEditor = useStateEditor<LayoutState>(
     layoutState,
     LayoutState,
-    updateLayoutState
+    updateLayoutState,
   );
   const commonSongTableEditor = useStateEditor<CommonSongTableState>(
     commonSongTableState,
     CommonSongTableState,
-    updateCommonSongTableState
+    updateCommonSongTableState,
   );
   const browserStateEditor = useStateEditor<BrowserState>(
     browserState,
     BrowserState,
-    updateBrowserState
+    updateBrowserState,
   );
   const savedSearchesEditor = useStateEditor<SavedSearches>(
     savedSearches,
     SavedSearches,
-    updateSavedSearches
+    updateSavedSearches,
   );
 
   if (

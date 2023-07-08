@@ -37,7 +37,7 @@ export default function ColumnEditModal(props: ColumnEditModalProps) {
 
   const [inUseTagsState, setInUseTagsState] = useState<SongMetadataTag[]>([]);
   const availableTags = SongUtils.listAllSongMetadataTags().filter(
-    (v) => !inUseTagsState.includes(v)
+    (v) => !inUseTagsState.includes(v),
   );
 
   useEffect(() => {
@@ -78,7 +78,7 @@ export default function ColumnEditModal(props: ColumnEditModalProps) {
   const onSubmitted = useCallback(() => {
     // Remove
     let newColumns = SongTableUtils.normalizeMetadataColumns(
-      currentColumns.filter((v) => inUseTagsState.includes(v.tag))
+      currentColumns.filter((v) => inUseTagsState.includes(v.tag)),
     );
 
     // Add
@@ -94,7 +94,7 @@ export default function ColumnEditModal(props: ColumnEditModalProps) {
               tag,
               widthFlex: flexWidthAvg,
               isSortDesc: false,
-            })
+            }),
           );
         }
       }
@@ -142,7 +142,7 @@ export default function ColumnEditModal(props: ColumnEditModalProps) {
                               onClick={() => onSelectAvailableTag(v)}
                             >
                               {SongTableUtils.convertSongMetadataTagToDisplayName(
-                                v
+                                v,
                               )}
                             </Button>
                           </ListItem>
@@ -187,7 +187,7 @@ export default function ColumnEditModal(props: ColumnEditModalProps) {
                               onClick={() => onSelectInUseTag(v)}
                             >
                               {SongTableUtils.convertSongMetadataTagToDisplayName(
-                                v
+                                v,
                               )}
                             </Button>
                           </ListItem>

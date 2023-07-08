@@ -22,7 +22,7 @@ export function useBrowserFilterList(metadataTag: SongMetadataTag) {
   const browserFilterValuesList = useBrowserFilterValuesList();
   const globalFilterTokens = useAppStore((state) => state.globalFilterTokens);
   const updateBrowserFilters = useAppStore(
-    (state) => state.updateBrowserFilters
+    (state) => state.updateBrowserFilters,
   );
 
   const columnName =
@@ -47,7 +47,7 @@ export function useBrowserFilterList(metadataTag: SongMetadataTag) {
     }
 
     const trueSelectedValues = browserFilters[filterIndex].selectedValues.map(
-      (v) => SongUtils.convertSongMetadataValueToString(v)
+      (v) => SongUtils.convertSongMetadataValueToString(v),
     );
 
     api.getModel().forEachNode((node) => {
@@ -69,7 +69,7 @@ export function useBrowserFilterList(metadataTag: SongMetadataTag) {
     let targetValues = values;
     if (globalFilterTokens !== undefined) {
       targetValues = values.filter((v) =>
-        globalFilterTokens.every((token) => v.toLowerCase().includes(token))
+        globalFilterTokens.every((token) => v.toLowerCase().includes(token)),
       );
     }
     return targetValues.map((v) => {
@@ -108,7 +108,7 @@ export function useBrowserFilterList(metadataTag: SongMetadataTag) {
       const selectedValuesStore = browserFilters[
         filterIndex
       ].selectedValues.map((v) =>
-        SongUtils.convertSongMetadataValueToString(v)
+        SongUtils.convertSongMetadataValueToString(v),
       );
       if (selectedValuesAgGrid.length === selectedValuesStore.length) {
         if (
@@ -131,17 +131,17 @@ export function useBrowserFilterList(metadataTag: SongMetadataTag) {
       const newBrowserFilters = BrowserUtils.normalizeBrowserFilters(
         produce(browserFilters, (draft) => {
           draft[filterIndex].selectedValues = selectedMetadataValues;
-        })
+        }),
       );
 
       await updateBrowserFilters(newBrowserFilters);
     },
-    [profile, browserFilters, filterIndex, updateBrowserFilters, columnName]
+    [profile, browserFilters, filterIndex, updateBrowserFilters, columnName],
   );
 
   const songMetadataTagsInUse = browserFilters?.map((v) => v.tag) || [];
   const availableSongMetadataTags = BrowserUtils.listBrowserFilterTags().filter(
-    (v) => !songMetadataTagsInUse.includes(v)
+    (v) => !songMetadataTagsInUse.includes(v),
   );
   const contextMenuId = `${COMPONENT_ID_BROWSER_FILTER_LIST_PREFIX}_${metadataTag}`;
   const contextMenu = useContextMenu({
@@ -158,7 +158,7 @@ export function useBrowserFilterList(metadataTag: SongMetadataTag) {
               return;
             }
             const index = browserFilters.findIndex(
-              (filter) => filter.tag === metadataTag
+              (filter) => filter.tag === metadataTag,
             );
             if (index < 0) {
               return;
@@ -188,7 +188,7 @@ export function useBrowserFilterList(metadataTag: SongMetadataTag) {
                 return;
               }
               const index = browserFilters.findIndex(
-                (filter) => filter.tag === metadataTag
+                (filter) => filter.tag === metadataTag,
               );
               if (index < 0) {
                 return;
@@ -206,7 +206,7 @@ export function useBrowserFilterList(metadataTag: SongMetadataTag) {
                     selectedOrder: -1,
                     selectedValues: [],
                     order: currentOrder + 1,
-                  })
+                  }),
                 );
               });
               const normalizedNewBrowserFilters =
@@ -230,7 +230,7 @@ export function useBrowserFilterList(metadataTag: SongMetadataTag) {
                 return;
               }
               const index = browserFilters.findIndex(
-                (filter) => filter.tag === metadataTag
+                (filter) => filter.tag === metadataTag,
               );
               if (index < 0) {
                 return;
@@ -251,7 +251,7 @@ export function useBrowserFilterList(metadataTag: SongMetadataTag) {
     (event: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
       contextMenu.show({ event: event as TriggerEvent });
     },
-    [contextMenu]
+    [contextMenu],
   );
 
   return {
