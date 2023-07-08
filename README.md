@@ -87,16 +87,16 @@ $ docker/start.sh
 
 ## Usage tips (table operations)
 
-| Action                 | Description                                                                                                                 |
-| ---------------------- | --------------------------------------------------------------------------------------------------------------------------- |
-| Double click           | Add the song to the end of the play queue and play that song                                                                |
-| Shift + select a song  | Range selection                                                                                                             |
-| Ctrl + select a song   | Multiple selection                                                                                                          |
-| Ctrl + A               | Select all visible songs                                                                                                    |
-| Add (Context menu)     | Add the selected songs to the play queue                                                                                    |
-| Replace (Context menu) | Replace the current play queue with the selected songs                                                                      |
-| Edit Columns           | Edit the metadata to be used as columns - The order can be changed by directly dragging & dropping the column on the table. |
-| Space                  | Pause or resume playback                                                                                                    |
+| Action                      | Description                                                                                                                 |
+| --------------------------- | --------------------------------------------------------------------------------------------------------------------------- |
+| Double click                | Add the song to the end of the play queue and play that song                                                                |
+| Shift + select a song       | Range selection                                                                                                             |
+| Ctrl + select a song        | Multiple selection                                                                                                          |
+| Ctrl + A                    | Select all visible songs                                                                                                    |
+| Space                       | Pause or resume playback                                                                                                    |
+| Add (Context menu)          | Add the selected songs to the play queue                                                                                    |
+| Replace (Context menu)      | Replace the current play queue with the selected songs                                                                      |
+| Edit Columns (Context menu) | Edit the metadata to be used as columns - The order can be changed by directly dragging & dropping the column on the table. |
 
 ## Plugin
 
