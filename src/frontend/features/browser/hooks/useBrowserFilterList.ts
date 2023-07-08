@@ -1,6 +1,7 @@
 import { SelectionChangedEvent } from "ag-grid-community";
 import { AgGridReact } from "ag-grid-react";
 import { produce } from "immer";
+import { normalizeSync } from "normalize-diacritics";
 import { useCallback, useEffect, useMemo, useRef } from "react";
 import { TriggerEvent, useContextMenu } from "react-contexify";
 
@@ -69,7 +70,9 @@ export function useBrowserFilterList(metadataTag: SongMetadataTag) {
     let targetValues = values;
     if (globalFilterTokens !== undefined) {
       targetValues = values.filter((v) =>
-        globalFilterTokens.every((token) => v.toLowerCase().includes(token)),
+        globalFilterTokens.every((token) =>
+          normalizeSync(v).toLowerCase().includes(token),
+        ),
       );
     }
     return targetValues.map((v) => {
