@@ -1,38 +1,62 @@
 # Sola MPD
 
-![screenshot](https://github.com/prokosna/sola_mpd/assets/16056246/703fc35f-f5b0-4dae-855f-01248f1f3512)
-
-Sola MPD is a web-based MPD client emphasizes usability, playlist editability and search functionality.
+Sola MPD is a web-based MPD client focused on usability, playlist editability and search functionality.
 
 This client has the following features:
 
-- Player
-- Play queue
-- Metadata browser (inspired by [GMPC](http://gmpclient.org/))
-- Playlist
-- Search
-  - AND, OR, regular expression, etc
+- [x] Playback control (Play, Resume, Next, and so on)
+- [x] Play queue
+- [x] Flesible metadata browser (inspired by [GMPC](http://gmpclient.org/))
+- [x] MPD Playlist management
+- [x] Advanced search
+  - `=`, `!=`, `has`, `regular expression`, etc
+  - Flexible AND/OR combinations
   - Saved searches (a.k.a Smart Playlist inspired by [MusicBee](https://www.getmusicbee.com/))
-- File Explore (inspired by GMPC)
-- Quick search box (inspired by MusicBee)
-- Plugin for integration with other services
-- Intuitive playlist editing and flexible song table layout including multi-column sorting (powered by [AG Grid](https://www.ag-grid.com/))
+- [x] Database file tree
+- [x] Quick filtering box (inspired by MusicBee)
+- [x] Plugin for integration with other services
+- [x] Intuitive song table editing (powered by [AG Grid](https://www.ag-grid.com/))
+- [x] Multiple MPD servers
 
 On the other hand, the following features are out of scope for now:
 
-- Cover art
-- Metadata editing
-- ...etc
+- [ ] Cover art
+- [ ] Metadata editing
 
-Sola MPD only supports MPD version 0.21 or later.
+Feel free to file an issue if you are interested in some of missing capabilities.
 
-## How to use
+**Sola MPD only supports MPD version 0.21 or later.**
 
-Sola MPD can be deployed using Docker in your local network.
+## Screenshot gifs
 
-It can be deployed on the same server as the MPD server or on a different server, as long as it can communicate with the MPD server.
+### Intuitive control
 
-1. [Install Docker Engine on your server](https://docs.docker.com/engine/install/)
+![sola_mpd_usage_queue](https://github.com/prokosna/sola_mpd/assets/16056246/8da62b48-c8f2-4c2f-a669-74fdfffe36c7)
+
+### Flexible browsing
+
+![sola_mpd_usage_browser](https://github.com/prokosna/sola_mpd/assets/16056246/22f8c76d-6f35-4da2-9cba-94b539dc35fa)
+
+### Advanced search
+
+![sola_mpd_usage_search](https://github.com/prokosna/sola_mpd/assets/16056246/203ad3e9-f1a2-420d-a66b-38ad1a44f6a6)
+
+## How to install
+
+Sola MPD is a web based client and needs to be deployed on your server in the local network.
+
+It can be the same server as the MPD server or on a different server, as long as it can communicate with the MPD server.
+
+Sola MPD only requires [Docker](https://docs.docker.com/engine/install/) installed on the server.
+
+1. Ensure a docker process is running on the server
+
+```
+$ docker ps
+```
+
+If you have any issues, please confirm if you installed Docker correctly.
+
 2. Clone this repository on your server
 
 ```
@@ -45,7 +69,7 @@ $ git clone git@github.com:prokosna/sola_mpd
 $ cd sola_mpd
 ```
 
-4. Build a docker image (It takes several minutes.)
+4. Build a docker image (It takes several minutes. Please have a :coffee:)
 
 ```
 $ docker/build.sh
@@ -59,7 +83,11 @@ $ docker/start.sh [--port 3000]
 
 6. Access to http://[Your Server IP]:3000 from your browser
 
-When you want to update, the following commands are what you need:
+## How to update
+
+The main branch should be always the latest working branch.
+
+You just need to stop the running container, pull the latest main branch and run the latest container.
 
 ```
 $ cd sola_mpd
@@ -68,6 +96,19 @@ $ docker/remove.sh
 $ docker/build.sh
 $ docker/start.sh
 ```
+
+## Usage tips (operations & shortcut keys)
+
+| Action                      | Description                                                                                                                 |
+| --------------------------- | --------------------------------------------------------------------------------------------------------------------------- |
+| Double click                | Add the song to the end of the play queue and play that song                                                                |
+| Shift + select a song       | Range selection                                                                                                             |
+| Ctrl + select a song        | Multiple selection                                                                                                          |
+| Ctrl + A                    | Select all visible songs                                                                                                    |
+| Space                       | Pause or resume playback                                                                                                    |
+| Add (Context menu)          | Add the selected songs to the play queue                                                                                    |
+| Replace (Context menu)      | Replace the current play queue with the selected songs                                                                      |
+| Edit Columns (Context menu) | Edit the metadata to be used as columns - The order can be changed by directly dragging & dropping the column on the table. |
 
 ## Plugin
 
