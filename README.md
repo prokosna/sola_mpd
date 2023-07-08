@@ -85,7 +85,7 @@ $ docker/build.sh
 $ docker/start.sh
 ```
 
-## Usage tips (table operations)
+## Usage tips (operations & shortcut keys)
 
 | Action                      | Description                                                                                                                 |
 | --------------------------- | --------------------------------------------------------------------------------------------------------------------------- |
