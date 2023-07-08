@@ -1,7 +1,5 @@
 # Sola MPD
 
-![sola_mpd_usage_queue](https://github.com/prokosna/sola_mpd/assets/16056246/8da62b48-c8f2-4c2f-a669-74fdfffe36c7)
-
 Sola MPD is a web-based MPD client focused on usability, playlist editability and search functionality.
 
 This client has the following features:
@@ -30,6 +28,10 @@ Feel free to file an issue if you are interested in some of missing capabilities
 **Sola MPD only supports MPD version 0.21 or later.**
 
 ## Screenshot gifs
+
+### Intuitive playlist editing
+
+![sola_mpd_usage_queue](https://github.com/prokosna/sola_mpd/assets/16056246/8da62b48-c8f2-4c2f-a669-74fdfffe36c7)
 
 ### Browsing and saving as a playlist
 
