@@ -1,6 +1,6 @@
 # Sola MPD
 
-![screenshot](https://github-production-user-asset-6210df.s3.amazonaws.com/16056246/251957510-cdf378a7-e3c4-44ee-919d-2a5e82dfdf5f)
+![screenshot](https://github-production-user-asset-6210df.s3.amazonaws.com/16056246/251957510-cdf378a7-e3c4-44ee-919d-2a5e82dfdf5f.gif)
 
 Sola MPD is a web-based MPD client focused on usability, playlist editability and search functionality.
 
