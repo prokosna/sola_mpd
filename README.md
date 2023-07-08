@@ -1,6 +1,6 @@
 # Sola MPD
 
-Sola MPD is a web-based MPD client focused on usability, playlist editability and search functionality.
+Sola MPD is a web-based MPD client focused on usability with flexible browsing and advanced search.
 
 This client has the following features:
 
