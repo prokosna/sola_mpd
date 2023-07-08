@@ -29,11 +29,11 @@ Feel free to file an issue if you are interested in some of missing capabilities
 
 ## Screenshot gifs
 
-### Intuitive playlist editing
+### Intuitive control
 
 ![sola_mpd_usage_queue](https://github.com/prokosna/sola_mpd/assets/16056246/8da62b48-c8f2-4c2f-a669-74fdfffe36c7)
 
-### Browsing and saving as a playlist
+### Flexible browsing
 
 ![sola_mpd_usage_browser](https://github.com/prokosna/sola_mpd/assets/16056246/22f8c76d-6f35-4da2-9cba-94b539dc35fa)
 
