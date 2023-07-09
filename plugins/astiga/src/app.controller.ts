@@ -22,7 +22,7 @@ export class AppController implements PluginServiceController {
   constructor(private readonly appService: AppService) {}
 
   register(
-    _: PluginRegisterRequest
+    _: PluginRegisterRequest,
   ):
     | PluginRegisterResponse
     | Promise<PluginRegisterResponse>
@@ -60,7 +60,7 @@ export class AppController implements PluginServiceController {
         user,
         password,
         playlistName,
-        songs
+        songs,
       );
       return ret;
     } catch (e) {

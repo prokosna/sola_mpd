@@ -2,7 +2,7 @@ import dayjs from "dayjs";
 import { Song, SongMetadataTag, SongMetadataValue } from "./models/song";
 
 export function convertSongMetadataValueToString(
-  value?: SongMetadataValue
+  value?: SongMetadataValue,
 ): string {
   switch (value?.value?.$case) {
     case "floatValue":
@@ -22,7 +22,7 @@ export function convertSongMetadataValueToString(
 
 export function getSongMetadataAsString(
   song: Song,
-  tag: SongMetadataTag
+  tag: SongMetadataTag,
 ): string {
   const metadata = song.metadata[tag];
   return convertSongMetadataValueToString(metadata);

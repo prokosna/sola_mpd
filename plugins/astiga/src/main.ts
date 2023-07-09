@@ -15,7 +15,7 @@ async function bootstrap() {
           includeDirs: ["./src/proto"],
         },
       },
-    }
+    },
   );
   await app.listen();
 }
