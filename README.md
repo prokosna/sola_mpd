@@ -43,7 +43,7 @@ Feel free to file an issue if you are interested in some of missing capabilities
 
 ### Dark theme
 
-![sola_mpd_usage_dark](https://github.com/prokosna/sola_mpd/assets/16056246/6e8a7aa6-9f0d-4a8d-8fcc-559cae719d44)
+![sola_mpd_usage_dark](https://github.com/prokosna/sola_mpd/assets/16056246/de0133fb-bfc4-4a30-be02-e0338397fb24)
 
 ## How to install
 
