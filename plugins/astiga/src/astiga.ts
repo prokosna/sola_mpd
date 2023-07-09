@@ -45,8 +45,18 @@ export class AstigaClient {
       if (this.cache.has(query)) {
         songs = this.cache.get(query);
       } else {
-        songs = await this.search(query);
-        this.cache.set(query, songs);
+        // Sometimes Astiga search returns an empty result even though there should be some results.
+        // Retry several times per query.
+        let count = 0;
+        while (count < 10) {
+          songs = await this.search(query);
+          this.cache.set(query, songs);
+          if (songs.length == 0) {
+            await sleep(100);
+            count += 1;
+            continue;
+          }
+        }
       }
       for (const song of songs) {
         if (
