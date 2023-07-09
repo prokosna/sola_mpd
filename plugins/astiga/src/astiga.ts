@@ -56,6 +56,7 @@ export class AstigaClient {
             count += 1;
             continue;
           }
+          break;
         }
       }
       for (const song of songs) {
