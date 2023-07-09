@@ -17,11 +17,11 @@ This client has the following features:
 - [x] Plugin for integration with other services
 - [x] Intuitive song table editing (powered by [AG Grid](https://www.ag-grid.com/))
 - [x] Multiple MPD servers
+- [x] Dark theme
 
 On the other hand, the following features are out of scope for now:
 
 - [ ] Cover art
-- [ ] Metadata editing
 
 Feel free to file an issue if you are interested in some of missing capabilities.
 
@@ -40,6 +40,10 @@ Feel free to file an issue if you are interested in some of missing capabilities
 ### Advanced search
 
 ![sola_mpd_usage_search](https://github.com/prokosna/sola_mpd/assets/16056246/203ad3e9-f1a2-420d-a66b-38ad1a44f6a6)
+
+### Dark theme
+
+![sola_mpd_usage_dark](https://github.com/prokosna/sola_mpd/assets/16056246/de0133fb-bfc4-4a30-be02-e0338397fb24)
 
 ## How to install
 

@@ -1,5 +1,5 @@
 "use client";
-import { Center, Image } from "@chakra-ui/react";
+import { Center } from "@chakra-ui/react";
 import { useRouter } from "next/navigation";
 import React, { useEffect } from "react";
 
@@ -23,13 +23,6 @@ export default function Landing() {
         <Center zIndex="1" position="absolute" w="500px">
           <MpdProfileForm></MpdProfileForm>
         </Center>
-        <Image
-          w="100%"
-          h="100%"
-          src="/bg.png"
-          alt="Background"
-          fit="cover"
-        ></Image>
       </Center>
     </>
   );

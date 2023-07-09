@@ -1,5 +1,5 @@
 "use client";
-import { Box, VStack } from "@chakra-ui/react";
+import { Box, VStack, useColorMode } from "@chakra-ui/react";
 import { Allotment } from "allotment";
 import React from "react";
 
@@ -14,6 +14,7 @@ import { CenterSpinner } from "@/frontend/common_ui/elements/CenterSpinner";
 export default function Browser() {
   const { isLoading, leftPaneWidthStr, rightPaneWidthStr, onPaneWidthChanged } =
     useBrowserResizablePane();
+  const { colorMode } = useColorMode();
 
   if (
     isLoading ||
@@ -26,11 +27,14 @@ export default function Browser() {
   return (
     <>
       <VStack h="full" spacing={0}>
-        <Box w="100%" backgroundColor="brand.50">
+        <Box className="browser-breadcrumbs-bg" w="100%">
           <BrowserFilterBreadcrumbs></BrowserFilterBreadcrumbs>
         </Box>
         <Box w="100%" h="full">
           <Allotment
+            className={
+              colorMode === "light" ? "allotment-light" : "allotment-dark"
+            }
             onChange={(sizes) => {
               onPaneWidthChanged(sizes[0], sizes[1]);
             }}

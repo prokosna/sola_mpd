@@ -121,10 +121,9 @@ export default function ColumnEditModal(props: ColumnEditModalProps) {
                 <VStack>
                   <Text>Available tags</Text>
                   <Box
+                    className="layout-border-all"
                     w="180px"
                     h="200px"
-                    border={"solid 1px"}
-                    borderColor={"gray.300"}
                     overflow={"auto"}
                   >
                     <List>
@@ -166,10 +165,9 @@ export default function ColumnEditModal(props: ColumnEditModalProps) {
                 <VStack>
                   <Text>Tags in use</Text>
                   <Box
+                    className="layout-border-all"
                     w="180px"
                     h="200px"
-                    border={"solid 1px"}
-                    borderColor={"gray.300"}
                     overflow={"auto"}
                   >
                     <List>

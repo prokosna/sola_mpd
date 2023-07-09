@@ -1,4 +1,5 @@
 "use client";
+import { useColorMode } from "@chakra-ui/react";
 import React from "react";
 import { Item, ItemParams, Menu, Separator, Submenu } from "react-contexify";
 
@@ -15,6 +16,8 @@ export type GenericContextMenuItem<T> = {
 export default function GenericContextMenu<T>(
   props: GenericContextMenuProps<T>,
 ) {
+  const { colorMode } = useColorMode();
+
   function onClick(params: ItemParams<T, unknown>) {
     props.items
       .flat()
@@ -57,7 +60,7 @@ export default function GenericContextMenu<T>(
 
   return (
     <>
-      <Menu id={props.id} animation={"scale"} theme={"light"}>
+      <Menu id={props.id} animation={"scale"} theme={colorMode}>
         {items}
       </Menu>
     </>

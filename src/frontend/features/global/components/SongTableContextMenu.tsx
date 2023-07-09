@@ -1,4 +1,5 @@
 "use client";
+import { useColorMode } from "@chakra-ui/react";
 import React from "react";
 import { Item, ItemParams, Menu, Separator } from "react-contexify";
 
@@ -27,6 +28,8 @@ interface ItemProps {
 }
 
 export default function SongTableContextMenu(props: SongTableContextMenuProps) {
+  const { colorMode } = useColorMode();
+
   function onClick(params: ItemParams<ItemProps, unknown>) {
     if (params.props === undefined) {
       return;
@@ -59,7 +62,7 @@ export default function SongTableContextMenu(props: SongTableContextMenuProps) {
 
   return (
     <>
-      <Menu id={props.id} animation={"scale"} theme={"light"}>
+      <Menu id={props.id} animation={"scale"} theme={colorMode}>
         {items}
       </Menu>
     </>

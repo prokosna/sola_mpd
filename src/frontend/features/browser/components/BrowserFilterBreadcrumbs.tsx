@@ -27,12 +27,7 @@ export default function BrowserFilterBreadcrumbs() {
 
   return (
     <>
-      <Flex
-        borderTop={"1px solid"}
-        borderTopColor={"gray.300"}
-        borderLeft={"1px solid"}
-        borderLeftColor={"gray.300"}
-      >
+      <Flex className="layout-border-top layout-border-left">
         <Center w="25px" px="1px">
           <IconButton
             variant="ghost"
@@ -61,14 +56,14 @@ export default function BrowserFilterBreadcrumbs() {
                       key={SongUtils.convertSongMetadataValueToString(
                         v.metadataValue,
                       )}
+                      className="browser-breadcrumbs-tag"
                       size={"sm"}
                       borderRadius="full"
                       variant="outline"
-                      color="brand.900"
                       maxWidth="200px"
                       minWidth="50px"
                     >
-                      <TagLabel>
+                      <TagLabel className="browser-breadcrumbs-tag-label">
                         {SongUtils.convertSongMetadataValueToString(
                           v.metadataValue,
                         )}

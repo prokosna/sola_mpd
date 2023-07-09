@@ -80,12 +80,12 @@ export function MpdProfileForm() {
           </Button>
           <Center>
             {form.isValidated ? (
-              <Text color="brand.400" as="b">
+              <Text color="brand.500" as="b">
                 Successfully connected!
               </Text>
             ) : undefined}
             {form.validationError !== "" ? (
-              <Text color="error.400" as="b">
+              <Text color="error.500" as="b">
                 {form.validationError}
               </Text>
             ) : undefined}

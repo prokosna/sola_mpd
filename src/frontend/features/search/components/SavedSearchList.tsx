@@ -1,4 +1,4 @@
-import { Box, Flex, Text } from "@chakra-ui/react";
+import { Box, Flex, Text, useColorMode } from "@chakra-ui/react";
 import { AgGridReact } from "ag-grid-react";
 import React from "react";
 
@@ -6,18 +6,20 @@ import GenericContextMenu from "../../global/components/GenericContextMenu";
 import { useSavedSearchList } from "../hooks/useSavedSearchList";
 
 import { Search } from "@/models/search";
+import "ag-grid-community/styles/ag-grid.min.css";
+import "ag-grid-community/styles/ag-theme-alpine.min.css";
+import "@/app/agGrid.css";
 
 export default function SavedSearchList() {
   const { gridProps, contextMenuProps } = useSavedSearchList();
+  const { colorMode } = useColorMode();
 
   return (
     <>
       <Box
+        className="layout-border-left layout-general-header-bg"
         w="100%"
         h="100%"
-        borderLeft={"1px solid"}
-        borderColor={"gray.300"}
-        backgroundColor={"#f8f8f8"}
       >
         <Flex w="100%" h="49px" alignItems={"center"}>
           <Text as={"b"} px={18}>
@@ -25,7 +27,9 @@ export default function SavedSearchList() {
           </Text>
         </Flex>
         <div
-          className="ag-theme-alpine"
+          className={
+            colorMode === "light" ? "ag-theme-alpine" : "ag-theme-alpine-dark"
+          }
           style={{ height: "calc(100% - 49px)", width: "100%" }}
         >
           <AgGridReact
