@@ -16,7 +16,7 @@ export class AppService {
     user: string,
     password: string,
     playlistName: string,
-    songs: Song[]
+    songs: Song[],
   ): Observable<PluginExecuteResponse> {
     const subject = new Subject<PluginExecuteResponse>();
 
@@ -29,7 +29,7 @@ export class AppService {
             message: "Calculating difference...",
             progressPercentage: 0,
             status: PluginExecuteResponseStatus.OK,
-          })
+          }),
         );
 
         let playlist = await client.getOrCreatePlaylist(playlistName);
@@ -43,7 +43,7 @@ export class AppService {
                 "Existing songs don't match to target songs. Deleting playlist...",
               progressPercentage: 0,
               status: PluginExecuteResponseStatus.OK,
-            })
+            }),
           );
           await client.delete(playlist);
           playlist = await client.getOrCreatePlaylist(playlistName);
@@ -60,7 +60,7 @@ export class AppService {
               }/${total}) Adding "${title}" to ${playlistName} `,
               progressPercentage: Math.floor(((index + 1) / total) * 100),
               status: PluginExecuteResponseStatus.OK,
-            })
+            }),
           );
 
           const astigaSong = await client.find(song);
@@ -70,7 +70,7 @@ export class AppService {
                 message: `Failed to find "${title}" in Astiga`,
                 progressPercentage: Math.floor(((index + 1) / total) * 100),
                 status: PluginExecuteResponseStatus.WARN,
-              })
+              }),
             );
             continue;
           }

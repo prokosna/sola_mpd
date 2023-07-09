@@ -23,7 +23,7 @@ export class AstigaClient {
   constructor(
     private url: string,
     private user: string,
-    private password: string
+    private password: string,
   ) {
     this.url = this.url.replace(/\/+$/, "");
     this.cache = new Map();
@@ -106,7 +106,7 @@ export class AstigaClient {
       new Map([
         ["playlistId", playlist],
         ["songIdToAdd", song.id],
-      ])
+      ]),
     );
     try {
       await fetchRetry(`${endpoint}?${searchParams}`, {
@@ -167,7 +167,7 @@ export class AstigaClient {
       new Map([
         ["query", query],
         ["songCount", "10000"],
-      ])
+      ]),
     );
     try {
       const resp = await fetchRetry(`${endpoint}?${searchParams}`, {
@@ -207,7 +207,7 @@ export class AstigaClient {
     const parameters = new Map([...preset, ...options]);
     const searchParams = new URLSearchParams();
     Object.keys(Object.fromEntries(parameters)).forEach((k) =>
-      searchParams.set(k, parameters.get(k))
+      searchParams.set(k, parameters.get(k)),
     );
     return searchParams;
   }
@@ -241,7 +241,7 @@ export class AstigaClient {
   private makeQuery(
     title: string | undefined,
     album: string | undefined,
-    artist: string | undefined
+    artist: string | undefined,
   ): string {
     let query = "";
     if (title !== undefined && title !== "") {
