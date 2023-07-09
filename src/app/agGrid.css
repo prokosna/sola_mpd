@@ -1,15 +1,15 @@
 .ag-theme-alpine {
   --ag-grid-size: 4px;
-  --ag-border-color: #CBD5E0; /* gray.300 */
-  --ag-header-background-color: #F7FAFC; /* gray.50 */
+  --ag-border-color: #cbd5e0; /* gray.300 */
+  --ag-header-background-color: #f7fafc; /* gray.50 */
 }
 
 .ag-theme-alpine-dark {
   --ag-grid-size: 4px;
-  --ag-border-color: #4A5568; /* gray.600 */
-  --ag-header-background-color: #2D3748; /* gray.700 */
-  --ag-background-color: #1A202C; /* gray.800 */
-  --ag-odd-row-background-color: #242C3A; /* gray.750 */
+  --ag-border-color: #4a5568; /* gray.600 */
+  --ag-header-background-color: #2d3748; /* gray.700 */
+  --ag-background-color: #1a202c; /* gray.800 */
+  --ag-odd-row-background-color: #242c3a; /* gray.750 */
 }
 
 .ag-font-weight-bold {
