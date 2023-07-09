@@ -219,7 +219,6 @@ export default function Player() {
                 placement="top"
               >
                 <IconButton
-                  isDisabled={currentSong === undefined}
                   onClick={onRandomToggled}
                   variant={isRandom === true ? "solid" : "ghost"}
                   colorScheme="brand"
@@ -234,7 +233,6 @@ export default function Player() {
                 placement="top"
               >
                 <IconButton
-                  isDisabled={currentSong === undefined}
                   onClick={onRepeatToggled}
                   variant={isRepeat === true ? "solid" : "ghost"}
                   colorScheme="brand"
@@ -251,7 +249,6 @@ export default function Player() {
                 placement="top"
               >
                 <IconButton
-                  isDisabled={currentSong === undefined}
                   onClick={onConsumeToggled}
                   variant={isConsume === true ? "solid" : "ghost"}
                   colorScheme="brand"
