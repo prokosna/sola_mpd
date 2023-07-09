@@ -48,10 +48,7 @@ export class AstigaClient {
         // Sometimes Astiga search returns an empty result even though there should be some results.
         // Retry several times per query.
         let count = 0;
-        while (true) {
-          if (count >= 10) {
-            break;
-          }
+        while (count < 10) {
           songs = await this.search(query);
           this.cache.set(query, songs);
           if (songs.length == 0) {
