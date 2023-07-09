@@ -1,5 +1,5 @@
 "use client";
-import { Box } from "@chakra-ui/react";
+import { Box, useColorMode } from "@chakra-ui/react";
 import { AgGridReact } from "ag-grid-react";
 import React from "react";
 
@@ -14,12 +14,15 @@ import { Playlist } from "@/models/playlist";
 
 export default function PlaylistSelectPane() {
   const { gridProps, contextMenuProps } = usePlaylistSelectList();
+  const { colorMode } = useColorMode();
 
   return (
     <>
-      <Box w="100%" h="full" borderLeft={"1px solid"} borderColor={"gray.300"}>
+      <Box className="layout-border-left" w="100%" h="full">
         <div
-          className="ag-theme-alpine"
+          className={
+            colorMode === "light" ? "ag-theme-alpine" : "ag-theme-alpine-dark"
+          }
           style={{ height: "100%", width: "100%" }}
         >
           <AgGridReact

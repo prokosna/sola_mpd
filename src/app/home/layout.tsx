@@ -14,6 +14,7 @@ import React, { useState } from "react";
 import { IoMenu } from "react-icons/io5";
 
 import BrandLogo from "@/frontend/features/global/components/BrandLogo";
+import ColorModeSwitchButton from "@/frontend/features/global/components/ColorModeSwitchButton";
 import ProfileSelector from "@/frontend/features/global/components/ProfileSelector";
 import SideNav from "@/frontend/features/global/components/SideNav";
 import GlobalFilterBox from "@/frontend/features/global_filter/components/GlobalFilterBox";
@@ -62,6 +63,7 @@ export default function HomeLayout({
                 <GlobalFilterBox></GlobalFilterBox>
                 <HStack h="100%" justify={"end"} align={"center"}>
                   <ProfileSelector></ProfileSelector>
+                  <ColorModeSwitchButton></ColorModeSwitchButton>
                   <SettingEntryButton></SettingEntryButton>
                 </HStack>
               </HStack>
@@ -71,10 +73,7 @@ export default function HomeLayout({
         <GridItem area={"main"}>
           <Flex h="calc(100vh - 180px)" w="100vw">
             <Box
-              borderTop={"1px solid"}
-              borderTopColor={"gray.300"}
-              borderBottom={"1px solid"}
-              borderBottomColor={"gray.300"}
+              className="layout-border-top layout-border-bottom"
               overflowX={"clip"}
               overflowY={"auto"}
               as={motion.div}

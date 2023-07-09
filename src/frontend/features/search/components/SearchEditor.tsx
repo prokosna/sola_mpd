@@ -211,27 +211,22 @@ export default function SearchEditor() {
   return (
     <>
       <Flex
+        className="layout-border-top layout-border-left layout-general-header-bg"
         w="100%"
         h="49px"
         alignItems={"center"}
-        borderLeft={"1px solid"}
-        borderTop={"1px solid"}
-        borderColor={"gray.300"}
-        backgroundColor={"#f8f8f8"}
       >
         <Text as={"b"} px={18}>
           Editor
         </Text>
       </Flex>
       <Box
+        className="layout-border-top layout-border-left"
         px={4}
         pt={2}
         pb={2}
         w="100%"
         h="calc(100% - 49px)"
-        borderLeft={"1px solid"}
-        borderTop={"1px solid"}
-        borderColor={"gray.300"}
         overflow={"auto"}
       >
         <Flex>

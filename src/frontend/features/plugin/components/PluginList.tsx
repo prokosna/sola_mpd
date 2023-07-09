@@ -16,6 +16,7 @@ import {
   Tag,
   TagLabel,
   useDisclosure,
+  useColorModeValue,
 } from "@chakra-ui/react";
 import React from "react";
 import { IoAdd } from "react-icons/io5";
@@ -27,16 +28,18 @@ import PluginAddModal from "./PluginAddModal";
 export default function PluginList() {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const { plugins, removePlugin } = usePluginListLogic();
+  const availableColor = useColorModeValue("brand.50", "brand.700");
+  const unavailableColor = useColorModeValue("gray.50", "gray.600");
+  const endpointColor = useColorModeValue("brand.600", "brand.300");
+  const addPluginColor = useColorModeValue("gray.200", "gray.700");
 
   return (
     <>
       <Box
+        className="layout-border-top layout-border-left"
         w="100%"
         h="full"
         p="30px"
-        borderTop={"1px solid"}
-        borderLeft={"1px solid"}
-        borderColor={"gray.300"}
       >
         <Wrap spacing="30px">
           {plugins.map((plugin, index) => (
@@ -44,7 +47,9 @@ export default function PluginList() {
               <Card
                 w="300px"
                 h="350px"
-                backgroundColor={plugin.isAvailable ? "brand.50" : "gray.50"}
+                backgroundColor={
+                  plugin.isAvailable ? availableColor : unavailableColor
+                }
                 variant={"elevated"}
                 borderRadius={"36px"}
               >
@@ -76,7 +81,7 @@ export default function PluginList() {
                         </Tag>
                       )}
                     </Heading>
-                    <Text color="brand.600" fontSize="xl">
+                    <Text color={endpointColor} fontSize="xl">
                       {`${plugin.host}:${plugin.port}`}
                     </Text>
                     <Text maxH={"140px"} overflow={"clip"}>
@@ -103,14 +108,14 @@ export default function PluginList() {
             <Card
               w="300px"
               h="350px"
-              backgroundColor={"gray.50"}
+              backgroundColor={unavailableColor}
               variant="elevated"
               borderRadius={"36px"}
             >
               <CardBody>
                 <AbsoluteCenter axis="both">
                   <IconButton
-                    color="gray.200"
+                    color={addPluginColor}
                     aria-label="add plugin"
                     variant="ghost"
                     fontSize={"96px"}

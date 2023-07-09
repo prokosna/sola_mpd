@@ -1,4 +1,5 @@
 "use client";
+import { useColorMode } from "@chakra-ui/react";
 import { AgGridReact } from "ag-grid-react";
 import React from "react";
 
@@ -17,11 +18,14 @@ export type BrowserFilterListProps = {
 
 export default function BrowserFilterList(props: BrowserFilterListProps) {
   const { gridProps, contextMenuProps } = useBrowserFilterList(props.tag);
+  const { colorMode } = useColorMode();
 
   return (
     <>
       <div
-        className="ag-theme-alpine"
+        className={
+          colorMode === "light" ? "ag-theme-alpine" : "ag-theme-alpine-dark"
+        }
         style={{ height: "100%", width: "100%" }}
         onContextMenu={(e) => gridProps.onContextMenuOpen(e)}
       >

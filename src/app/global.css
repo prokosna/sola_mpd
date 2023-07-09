@@ -1,5 +1,10 @@
 /* Allotment design customization */
-:root {
+.allotment-light {
+  --focus-border: #3182ce; /* blue.500 */
+  --separator-border: #cbd5e0; /* gray.300 */
+}
+
+.allotment-dark {
   --focus-border: #3182ce;
-  --separator-border: #cbd5e0;
+  --separator-border: #4A5568; /* gray.600 */
 }

@@ -1,5 +1,5 @@
 "use client";
-import { Box, useToken } from "@chakra-ui/react";
+import { Box, useColorMode, useToken } from "@chakra-ui/react";
 import { ReactTree, ThemeSettings } from "@naisutech/react-tree";
 import React from "react";
 
@@ -9,36 +9,70 @@ import FullWidthSkeleton from "@/frontend/common_ui/elements/FullWidthSkeleton";
 
 export default function FileExploreTreePane() {
   const { data, onSongFoldersSelected } = useFileExploreTreePane();
-  const [brand600] = useToken("colors", ["brand.600"]);
+  const [brand600, gray800, gray300, gray600, brand50, brand100] = useToken(
+    "colors",
+    ["brand.600", "gray.800", "gray.300", "gray.600", "brand.50", "brand.100"],
+  );
+  const { colorMode } = useColorMode();
 
   const customThemes: ThemeSettings = {
     brand: {
       text: {
         fontSize: "std",
-        color: "#000",
-        selectedColor: "#333",
-        hoverColor: "#555",
+        color: "#000000",
+        selectedColor: "#000000",
+        hoverColor: "#000000",
       },
       nodes: {
         height: "2.5rem",
         folder: {
-          bgColor: "#fff",
-          selectedBgColor: "#eee",
-          hoverBgColor: "#ccc",
+          bgColor: "#FFFFFF",
+          selectedBgColor: brand100,
+          hoverBgColor: brand50,
         },
         leaf: {
-          bgColor: "#fff",
-          selectedBgColor: "#eee",
-          hoverBgColor: "#ccc",
+          bgColor: "#FFFFFF",
+          selectedBgColor: brand100,
+          hoverBgColor: brand50,
         },
         separator: {
           border: "1px solid",
-          borderColor: "#eee",
+          borderColor: gray300,
         },
         icons: {
           size: "1rem",
           folderColor: brand600,
-          leafColor: "#64abd4",
+          leafColor: brand600,
+        },
+      },
+    },
+    brandDark: {
+      text: {
+        fontSize: "std",
+        color: "#FFFFFF",
+        selectedColor: "#FFFFFF",
+        hoverColor: "#FFFFFF",
+      },
+      nodes: {
+        height: "2.5rem",
+        folder: {
+          bgColor: gray800,
+          selectedBgColor: "#234C71",
+          hoverBgColor: "#1A2C41",
+        },
+        leaf: {
+          bgColor: gray800,
+          selectedBgColor: "#234C71",
+          hoverBgColor: "#1A2C41",
+        },
+        separator: {
+          border: "1px solid",
+          borderColor: gray600,
+        },
+        icons: {
+          size: "1rem",
+          folderColor: brand600,
+          leafColor: brand600,
         },
       },
     },
@@ -47,11 +81,9 @@ export default function FileExploreTreePane() {
   return (
     <>
       <Box
+        className="layout-border-top layout-border-left"
         w="100%"
         h="100%"
-        borderTop={"1px solid"}
-        borderLeft={"1px solid"}
-        borderColor="gray.300"
         overflowX={"clip"}
         overflowY={"auto"}
       >
@@ -62,7 +94,7 @@ export default function FileExploreTreePane() {
             nodes={data}
             onToggleSelectedNodes={onSongFoldersSelected}
             showEmptyItems={false}
-            theme="brand"
+            theme={colorMode === "light" ? "brand" : "brandDark"}
             themes={customThemes}
           />
         )}

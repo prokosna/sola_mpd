@@ -17,6 +17,7 @@ This client has the following features:
 - [x] Plugin for integration with other services
 - [x] Intuitive song table editing (powered by [AG Grid](https://www.ag-grid.com/))
 - [x] Multiple MPD servers
+- [x] Dark theme
 
 On the other hand, the following features are out of scope for now:
 

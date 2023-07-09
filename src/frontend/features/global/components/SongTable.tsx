@@ -1,5 +1,5 @@
 "use client";
-import { CircularProgress } from "@chakra-ui/react";
+import { CircularProgress, useColorMode } from "@chakra-ui/react";
 import { AgGridReact } from "ag-grid-react";
 import React from "react";
 
@@ -51,12 +51,15 @@ export default function SongTable(props: SongTableProps) {
     getRowClass,
   } = useSongTable(props);
   const isSongTableLoading = useAppStore((state) => state.isSongTableLoading);
+  const { colorMode } = useColorMode();
 
   return (
     <>
       <div
         ref={ref}
-        className="ag-theme-alpine"
+        className={
+          colorMode === "light" ? "ag-theme-alpine" : "ag-theme-alpine-dark"
+        }
         style={{ height: "100%", width: "100%", position: "relative" }}
       >
         <AgGridReact
@@ -77,7 +80,9 @@ export default function SongTable(props: SongTableProps) {
           rowDragManaged={true}
           rowDragMultiRow={true}
           preventDefaultOnContextMenu={true}
-          rowClass={"ag-theme-alpine"}
+          rowClass={
+            colorMode === "light" ? "ag-theme-alpine" : "ag-theme-alpine-dark"
+          }
           getRowClass={getRowClass}
           getRowId={getRowId}
         ></AgGridReact>

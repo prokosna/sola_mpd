@@ -1,5 +1,5 @@
 "use client";
-import { Box } from "@chakra-ui/react";
+import { Box, useColorMode } from "@chakra-ui/react";
 import { Allotment } from "allotment";
 import React from "react";
 
@@ -13,6 +13,7 @@ import { CenterSpinner } from "@/frontend/common_ui/elements/CenterSpinner";
 export default function FileExplore() {
   const { isLoading, leftPaneWidthStr, rightPaneWidthStr, onPaneWidthChanged } =
     useFileExploreResizablePane();
+  const { colorMode } = useColorMode();
 
   if (
     isLoading ||
@@ -26,6 +27,9 @@ export default function FileExplore() {
     <>
       <Box w="100%" h="full">
         <Allotment
+          className={
+            colorMode === "light" ? "allotment-light" : "allotment-dark"
+          }
           onChange={(sizes) => {
             onPaneWidthChanged(sizes[0], sizes[1]);
           }}

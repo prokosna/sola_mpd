@@ -8,13 +8,7 @@ import SettingStates from "./SettingStates";
 export default function Setting() {
   return (
     <>
-      <Box
-        w="100%"
-        h="full"
-        borderTop={"1px solid"}
-        borderLeft={"1px solid"}
-        borderColor={"gray.300"}
-      >
+      <Box className="layout-border-top layout-border-left" w="100%" h="full">
         <Tabs>
           <TabList>
             <Tab>Profiles</Tab>

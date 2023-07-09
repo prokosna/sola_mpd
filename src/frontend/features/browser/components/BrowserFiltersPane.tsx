@@ -1,5 +1,5 @@
 "use client";
-import { Box, VStack } from "@chakra-ui/react";
+import { Box, VStack, useColorMode } from "@chakra-ui/react";
 import { Allotment } from "allotment";
 import React from "react";
 
@@ -11,6 +11,7 @@ import FullWidthSkeleton from "@/frontend/common_ui/elements/FullWidthSkeleton";
 
 export default function BrowserFiltersPane() {
   const browserFilters = useAppStore((state) => state.browserFilters);
+  const { colorMode } = useColorMode();
 
   if (browserFilters === undefined) {
     return <FullWidthSkeleton></FullWidthSkeleton>;
@@ -23,7 +24,12 @@ export default function BrowserFiltersPane() {
   return (
     <>
       <VStack h="full" spacing={0}>
-        <Allotment vertical={true}>
+        <Allotment
+          className={
+            colorMode === "light" ? "allotment-light" : "allotment-dark"
+          }
+          vertical={true}
+        >
           {tags.map((tag, index) => (
             <Allotment.Pane key={index} minSize={20}>
               <Box key={index} w="100%" h="full">
