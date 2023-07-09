@@ -22,7 +22,6 @@ This client has the following features:
 On the other hand, the following features are out of scope for now:
 
 - [ ] Cover art
-- [ ] Metadata editing
 
 Feel free to file an issue if you are interested in some of missing capabilities.
 
@@ -41,6 +40,10 @@ Feel free to file an issue if you are interested in some of missing capabilities
 ### Advanced search
 
 ![sola_mpd_usage_search](https://github.com/prokosna/sola_mpd/assets/16056246/203ad3e9-f1a2-420d-a66b-38ad1a44f6a6)
+
+### Dark theme
+
+![sola_mpd_usage_dark](https://github.com/prokosna/sola_mpd/assets/16056246/6e8a7aa6-9f0d-4a8d-8fcc-559cae719d44)
 
 ## How to install
 
