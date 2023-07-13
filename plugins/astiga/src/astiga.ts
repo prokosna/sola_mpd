@@ -1,5 +1,6 @@
 import { Song, SongMetadataTag } from "./models/song";
 import { getSongMetadataAsString, sleep } from "./utils";
+import { LRUCache } from "lru-cache";
 
 type AstigaSong = {
   id: string;
@@ -18,7 +19,7 @@ const fetchRetry = async (url: string, options: RequestInit, n = 3) => {
 };
 
 export class AstigaClient {
-  private cache: Map<string, AstigaSong[]>;
+  private cache: LRUCache<string, AstigaSong[]>;
 
   constructor(
     private url: string,
@@ -26,7 +27,7 @@ export class AstigaClient {
     private password: string,
   ) {
     this.url = this.url.replace(/\/+$/, "");
-    this.cache = new Map();
+    this.cache = new LRUCache({ max: 500 });
   }
 
   async find(song: Song): Promise<AstigaSong | undefined> {
@@ -35,9 +36,8 @@ export class AstigaClient {
     const album = getSongMetadataAsString(song, SongMetadataTag.ALBUM);
     const queries = [
       this.makeQuery(undefined, album, undefined),
-      this.makeQuery(undefined, album, artist),
       this.makeQuery(undefined, undefined, artist),
-      this.makeQuery(title, undefined, artist),
+      this.makeQuery(undefined, album, artist),
       this.makeQuery(title, undefined, undefined),
     ];
     for (const query of queries) {

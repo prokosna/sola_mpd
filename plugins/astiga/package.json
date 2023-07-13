@@ -1,6 +1,6 @@
 {
   "name": "astiga",
-  "version": "1.0.5",
+  "version": "1.0.6",
   "author": "prokosna",
   "private": true,
   "scripts": {
@@ -25,6 +25,7 @@
     "@nestjs/microservices": "^10.0.5",
     "@nestjs/platform-express": "^10.0.5",
     "dayjs": "^1.11.9",
+    "lru-cache": "^10.0.0",
     "protobufjs": "^7.2.4",
     "reflect-metadata": "^0.1.13",
     "rxjs": "^7.8.1"
