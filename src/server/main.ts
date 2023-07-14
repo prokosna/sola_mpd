@@ -39,7 +39,9 @@ const httpServer = createServer(
     console.info(`> Ready on http://${hostname}:${port}`);
   });
 
-const io = new Server(httpServer);
+const io = new Server(httpServer, {
+  maxHttpBufferSize: 5 * 1e8,
+});
 webSocketManager.initialize(io);
 
 app.prepare().then(() => {
