@@ -103,8 +103,8 @@ export function useSongTable(props: SongTableProps) {
         return;
       }
       selectedSongs.push(song);
-      node.setSelected(true, false);
     });
+    api.selectAllFiltered();
     onSongsSelected(selectedSongs);
   });
 
