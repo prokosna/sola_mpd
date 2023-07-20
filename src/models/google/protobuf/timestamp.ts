@@ -165,8 +165,12 @@ export const Timestamp = {
 
   toJSON(message: Timestamp): unknown {
     const obj: any = {};
-    message.seconds !== undefined && (obj.seconds = Math.round(message.seconds));
-    message.nanos !== undefined && (obj.nanos = Math.round(message.nanos));
+    if (message.seconds !== 0) {
+      obj.seconds = Math.round(message.seconds);
+    }
+    if (message.nanos !== 0) {
+      obj.nanos = Math.round(message.nanos);
+    }
     return obj;
   },
 
@@ -182,10 +186,10 @@ export const Timestamp = {
   },
 };
 
-declare var self: any | undefined;
-declare var window: any | undefined;
-declare var global: any | undefined;
-var tsProtoGlobalThis: any = (() => {
+declare const self: any | undefined;
+declare const window: any | undefined;
+declare const global: any | undefined;
+const tsProtoGlobalThis: any = (() => {
   if (typeof globalThis !== "undefined") {
     return globalThis;
   }

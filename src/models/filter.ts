@@ -203,10 +203,18 @@ export const FilterCondition = {
 
   toJSON(message: FilterCondition): unknown {
     const obj: any = {};
-    message.uuid !== undefined && (obj.uuid = message.uuid);
-    message.tag !== undefined && (obj.tag = songMetadataTagToJSON(message.tag));
-    message.value !== undefined && (obj.value = message.value ? SongMetadataValue.toJSON(message.value) : undefined);
-    message.operator !== undefined && (obj.operator = filterConditionOperatorToJSON(message.operator));
+    if (message.uuid !== "") {
+      obj.uuid = message.uuid;
+    }
+    if (message.tag !== SongMetadataTag.UNKNOWN) {
+      obj.tag = songMetadataTagToJSON(message.tag);
+    }
+    if (message.value !== undefined) {
+      obj.value = SongMetadataValue.toJSON(message.value);
+    }
+    if (message.operator !== FilterConditionOperator.UNKNOWN) {
+      obj.operator = filterConditionOperatorToJSON(message.operator);
+    }
     return obj;
   },
 
@@ -226,10 +234,10 @@ export const FilterCondition = {
   },
 };
 
-declare var self: any | undefined;
-declare var window: any | undefined;
-declare var global: any | undefined;
-var tsProtoGlobalThis: any = (() => {
+declare const self: any | undefined;
+declare const window: any | undefined;
+declare const global: any | undefined;
+const tsProtoGlobalThis: any = (() => {
   if (typeof globalThis !== "undefined") {
     return globalThis;
   }

@@ -64,10 +64,8 @@ export const Query = {
 
   toJSON(message: Query): unknown {
     const obj: any = {};
-    if (message.conditions) {
-      obj.conditions = message.conditions.map((e) => e ? FilterCondition.toJSON(e) : undefined);
-    } else {
-      obj.conditions = [];
+    if (message.conditions?.length) {
+      obj.conditions = message.conditions.map((e) => FilterCondition.toJSON(e));
     }
     return obj;
   },
@@ -148,16 +146,14 @@ export const Search = {
 
   toJSON(message: Search): unknown {
     const obj: any = {};
-    message.name !== undefined && (obj.name = message.name);
-    if (message.queries) {
-      obj.queries = message.queries.map((e) => e ? Query.toJSON(e) : undefined);
-    } else {
-      obj.queries = [];
+    if (message.name !== "") {
+      obj.name = message.name;
     }
-    if (message.columns) {
-      obj.columns = message.columns.map((e) => e ? SongTableColumn.toJSON(e) : undefined);
-    } else {
-      obj.columns = [];
+    if (message.queries?.length) {
+      obj.queries = message.queries.map((e) => Query.toJSON(e));
+    }
+    if (message.columns?.length) {
+      obj.columns = message.columns.map((e) => SongTableColumn.toJSON(e));
     }
     return obj;
   },
@@ -216,10 +212,8 @@ export const SavedSearches = {
 
   toJSON(message: SavedSearches): unknown {
     const obj: any = {};
-    if (message.searches) {
-      obj.searches = message.searches.map((e) => e ? Search.toJSON(e) : undefined);
-    } else {
-      obj.searches = [];
+    if (message.searches?.length) {
+      obj.searches = message.searches.map((e) => Search.toJSON(e));
     }
     return obj;
   },

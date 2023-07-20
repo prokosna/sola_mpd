@@ -144,14 +144,30 @@ export const MpdStats = {
 
   toJSON(message: MpdStats): unknown {
     const obj: any = {};
-    message.version !== undefined && (obj.version = message.version);
-    message.artistsCount !== undefined && (obj.artistsCount = Math.round(message.artistsCount));
-    message.albumsCount !== undefined && (obj.albumsCount = Math.round(message.albumsCount));
-    message.songsCount !== undefined && (obj.songsCount = Math.round(message.songsCount));
-    message.uptime !== undefined && (obj.uptime = Math.round(message.uptime));
-    message.totalPlaytime !== undefined && (obj.totalPlaytime = Math.round(message.totalPlaytime));
-    message.lastUpdated !== undefined && (obj.lastUpdated = message.lastUpdated.toISOString());
-    message.playtime !== undefined && (obj.playtime = Math.round(message.playtime));
+    if (message.version !== "") {
+      obj.version = message.version;
+    }
+    if (message.artistsCount !== 0) {
+      obj.artistsCount = Math.round(message.artistsCount);
+    }
+    if (message.albumsCount !== 0) {
+      obj.albumsCount = Math.round(message.albumsCount);
+    }
+    if (message.songsCount !== 0) {
+      obj.songsCount = Math.round(message.songsCount);
+    }
+    if (message.uptime !== 0) {
+      obj.uptime = Math.round(message.uptime);
+    }
+    if (message.totalPlaytime !== 0) {
+      obj.totalPlaytime = Math.round(message.totalPlaytime);
+    }
+    if (message.lastUpdated !== undefined) {
+      obj.lastUpdated = message.lastUpdated.toISOString();
+    }
+    if (message.playtime !== 0) {
+      obj.playtime = Math.round(message.playtime);
+    }
     return obj;
   },
 

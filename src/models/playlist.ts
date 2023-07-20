@@ -63,8 +63,12 @@ export const Playlist = {
 
   toJSON(message: Playlist): unknown {
     const obj: any = {};
-    message.name !== undefined && (obj.name = message.name);
-    message.updatedAt !== undefined && (obj.updatedAt = message.updatedAt.toISOString());
+    if (message.name !== "") {
+      obj.name = message.name;
+    }
+    if (message.updatedAt !== undefined) {
+      obj.updatedAt = message.updatedAt.toISOString();
+    }
     return obj;
   },
 

@@ -148,7 +148,9 @@ export const MpdEvent = {
 
   toJSON(message: MpdEvent): unknown {
     const obj: any = {};
-    message.eventType !== undefined && (obj.eventType = mpdEventEventTypeToJSON(message.eventType));
+    if (message.eventType !== MpdEventEventType.UNKNOWN) {
+      obj.eventType = mpdEventEventTypeToJSON(message.eventType);
+    }
     return obj;
   },
 
@@ -163,10 +165,10 @@ export const MpdEvent = {
   },
 };
 
-declare var self: any | undefined;
-declare var window: any | undefined;
-declare var global: any | undefined;
-var tsProtoGlobalThis: any = (() => {
+declare const self: any | undefined;
+declare const window: any | undefined;
+declare const global: any | undefined;
+const tsProtoGlobalThis: any = (() => {
   if (typeof globalThis !== "undefined") {
     return globalThis;
   }

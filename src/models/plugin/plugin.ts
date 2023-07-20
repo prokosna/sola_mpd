@@ -279,16 +279,27 @@ export const Plugin = {
 
   toJSON(message: Plugin): unknown {
     const obj: any = {};
-    message.host !== undefined && (obj.host = message.host);
-    message.port !== undefined && (obj.port = Math.round(message.port));
-    message.info !== undefined && (obj.info = message.info ? PluginInfo.toJSON(message.info) : undefined);
-    obj.pluginParameters = {};
-    if (message.pluginParameters) {
-      Object.entries(message.pluginParameters).forEach(([k, v]) => {
-        obj.pluginParameters[k] = v;
-      });
+    if (message.host !== "") {
+      obj.host = message.host;
     }
-    message.isAvailable !== undefined && (obj.isAvailable = message.isAvailable);
+    if (message.port !== 0) {
+      obj.port = Math.round(message.port);
+    }
+    if (message.info !== undefined) {
+      obj.info = PluginInfo.toJSON(message.info);
+    }
+    if (message.pluginParameters) {
+      const entries = Object.entries(message.pluginParameters);
+      if (entries.length > 0) {
+        obj.pluginParameters = {};
+        entries.forEach(([k, v]) => {
+          obj.pluginParameters[k] = v;
+        });
+      }
+    }
+    if (message.isAvailable === true) {
+      obj.isAvailable = message.isAvailable;
+    }
     return obj;
   },
 
@@ -368,8 +379,12 @@ export const PluginPluginParametersEntry = {
 
   toJSON(message: PluginPluginParametersEntry): unknown {
     const obj: any = {};
-    message.key !== undefined && (obj.key = message.key);
-    message.value !== undefined && (obj.value = message.value);
+    if (message.key !== "") {
+      obj.key = message.key;
+    }
+    if (message.value !== "") {
+      obj.value = message.value;
+    }
     return obj;
   },
 
@@ -532,25 +547,29 @@ export const PluginInfo = {
 
   toJSON(message: PluginInfo): unknown {
     const obj: any = {};
-    message.name !== undefined && (obj.name = message.name);
-    message.version !== undefined && (obj.version = message.version);
-    message.description !== undefined && (obj.description = message.description);
-    message.contextMenuTitle !== undefined && (obj.contextMenuTitle = message.contextMenuTitle);
-    message.contextMenuDescription !== undefined && (obj.contextMenuDescription = message.contextMenuDescription);
-    if (message.supportedTypes) {
+    if (message.name !== "") {
+      obj.name = message.name;
+    }
+    if (message.version !== "") {
+      obj.version = message.version;
+    }
+    if (message.description !== "") {
+      obj.description = message.description;
+    }
+    if (message.contextMenuTitle !== "") {
+      obj.contextMenuTitle = message.contextMenuTitle;
+    }
+    if (message.contextMenuDescription !== "") {
+      obj.contextMenuDescription = message.contextMenuDescription;
+    }
+    if (message.supportedTypes?.length) {
       obj.supportedTypes = message.supportedTypes.map((e) => pluginPluginTypeToJSON(e));
-    } else {
-      obj.supportedTypes = [];
     }
-    if (message.requiredPluginParameters) {
-      obj.requiredPluginParameters = message.requiredPluginParameters.map((e) => e);
-    } else {
-      obj.requiredPluginParameters = [];
+    if (message.requiredPluginParameters?.length) {
+      obj.requiredPluginParameters = message.requiredPluginParameters;
     }
-    if (message.requiredRequestParameters) {
-      obj.requiredRequestParameters = message.requiredRequestParameters.map((e) => e);
-    } else {
-      obj.requiredRequestParameters = [];
+    if (message.requiredRequestParameters?.length) {
+      obj.requiredRequestParameters = message.requiredRequestParameters;
     }
     return obj;
   },
@@ -614,10 +633,8 @@ export const PluginState = {
 
   toJSON(message: PluginState): unknown {
     const obj: any = {};
-    if (message.plugins) {
-      obj.plugins = message.plugins.map((e) => e ? Plugin.toJSON(e) : undefined);
-    } else {
-      obj.plugins = [];
+    if (message.plugins?.length) {
+      obj.plugins = message.plugins.map((e) => Plugin.toJSON(e));
     }
     return obj;
   },
@@ -684,8 +701,12 @@ export const PluginRegisterRequest = {
 
   toJSON(message: PluginRegisterRequest): unknown {
     const obj: any = {};
-    message.host !== undefined && (obj.host = message.host);
-    message.port !== undefined && (obj.port = Math.round(message.port));
+    if (message.host !== "") {
+      obj.host = message.host;
+    }
+    if (message.port !== 0) {
+      obj.port = Math.round(message.port);
+    }
     return obj;
   },
 
@@ -742,7 +763,9 @@ export const PluginRegisterResponse = {
 
   toJSON(message: PluginRegisterResponse): unknown {
     const obj: any = {};
-    message.info !== undefined && (obj.info = message.info ? PluginInfo.toJSON(message.info) : undefined);
+    if (message.info !== undefined) {
+      obj.info = PluginInfo.toJSON(message.info);
+    }
     return obj;
   },
 
@@ -862,22 +885,33 @@ export const PluginExecuteRequest = {
 
   toJSON(message: PluginExecuteRequest): unknown {
     const obj: any = {};
-    message.host !== undefined && (obj.host = message.host);
-    message.port !== undefined && (obj.port = Math.round(message.port));
-    obj.pluginParameters = {};
+    if (message.host !== "") {
+      obj.host = message.host;
+    }
+    if (message.port !== 0) {
+      obj.port = Math.round(message.port);
+    }
     if (message.pluginParameters) {
-      Object.entries(message.pluginParameters).forEach(([k, v]) => {
-        obj.pluginParameters[k] = v;
-      });
+      const entries = Object.entries(message.pluginParameters);
+      if (entries.length > 0) {
+        obj.pluginParameters = {};
+        entries.forEach(([k, v]) => {
+          obj.pluginParameters[k] = v;
+        });
+      }
     }
-    obj.requestParameters = {};
     if (message.requestParameters) {
-      Object.entries(message.requestParameters).forEach(([k, v]) => {
-        obj.requestParameters[k] = v;
-      });
+      const entries = Object.entries(message.requestParameters);
+      if (entries.length > 0) {
+        obj.requestParameters = {};
+        entries.forEach(([k, v]) => {
+          obj.requestParameters[k] = v;
+        });
+      }
     }
-    message.payload !== undefined &&
-      (obj.payload = base64FromBytes(message.payload !== undefined ? message.payload : new Uint8Array(0)));
+    if (message.payload.length !== 0) {
+      obj.payload = base64FromBytes(message.payload);
+    }
     return obj;
   },
 
@@ -963,8 +997,12 @@ export const PluginExecuteRequestPluginParametersEntry = {
 
   toJSON(message: PluginExecuteRequestPluginParametersEntry): unknown {
     const obj: any = {};
-    message.key !== undefined && (obj.key = message.key);
-    message.value !== undefined && (obj.value = message.value);
+    if (message.key !== "") {
+      obj.key = message.key;
+    }
+    if (message.value !== "") {
+      obj.value = message.value;
+    }
     return obj;
   },
 
@@ -1035,8 +1073,12 @@ export const PluginExecuteRequestRequestParametersEntry = {
 
   toJSON(message: PluginExecuteRequestRequestParametersEntry): unknown {
     const obj: any = {};
-    message.key !== undefined && (obj.key = message.key);
-    message.value !== undefined && (obj.value = message.value);
+    if (message.key !== "") {
+      obj.key = message.key;
+    }
+    if (message.value !== "") {
+      obj.value = message.value;
+    }
     return obj;
   },
 
@@ -1123,9 +1165,15 @@ export const PluginExecuteResponse = {
 
   toJSON(message: PluginExecuteResponse): unknown {
     const obj: any = {};
-    message.message !== undefined && (obj.message = message.message);
-    message.progressPercentage !== undefined && (obj.progressPercentage = Math.round(message.progressPercentage));
-    message.status !== undefined && (obj.status = pluginExecuteResponseStatusToJSON(message.status));
+    if (message.message !== "") {
+      obj.message = message.message;
+    }
+    if (message.progressPercentage !== 0) {
+      obj.progressPercentage = Math.round(message.progressPercentage);
+    }
+    if (message.status !== PluginExecuteResponseStatus.UNKNOWN) {
+      obj.status = pluginExecuteResponseStatusToJSON(message.status);
+    }
     return obj;
   },
 
@@ -1142,10 +1190,10 @@ export const PluginExecuteResponse = {
   },
 };
 
-declare var self: any | undefined;
-declare var window: any | undefined;
-declare var global: any | undefined;
-var tsProtoGlobalThis: any = (() => {
+declare const self: any | undefined;
+declare const window: any | undefined;
+declare const global: any | undefined;
+const tsProtoGlobalThis: any = (() => {
   if (typeof globalThis !== "undefined") {
     return globalThis;
   }

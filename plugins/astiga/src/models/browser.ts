@@ -101,14 +101,18 @@ export const BrowserFilter = {
 
   toJSON(message: BrowserFilter): unknown {
     const obj: any = {};
-    message.tag !== undefined && (obj.tag = songMetadataTagToJSON(message.tag));
-    if (message.selectedValues) {
-      obj.selectedValues = message.selectedValues.map((e) => e ? SongMetadataValue.toJSON(e) : undefined);
-    } else {
-      obj.selectedValues = [];
+    if (message.tag !== SongMetadataTag.UNKNOWN) {
+      obj.tag = songMetadataTagToJSON(message.tag);
     }
-    message.order !== undefined && (obj.order = Math.round(message.order));
-    message.selectedOrder !== undefined && (obj.selectedOrder = Math.round(message.selectedOrder));
+    if (message.selectedValues?.length) {
+      obj.selectedValues = message.selectedValues.map((e) => SongMetadataValue.toJSON(e));
+    }
+    if (message.order !== 0) {
+      obj.order = Math.round(message.order);
+    }
+    if (message.selectedOrder !== 0) {
+      obj.selectedOrder = Math.round(message.selectedOrder);
+    }
     return obj;
   },
 
@@ -167,10 +171,8 @@ export const BrowserState = {
 
   toJSON(message: BrowserState): unknown {
     const obj: any = {};
-    if (message.filters) {
-      obj.filters = message.filters.map((e) => e ? BrowserFilter.toJSON(e) : undefined);
-    } else {
-      obj.filters = [];
+    if (message.filters?.length) {
+      obj.filters = message.filters.map((e) => BrowserFilter.toJSON(e));
     }
     return obj;
   },

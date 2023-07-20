@@ -48,7 +48,9 @@ export const Folder = {
 
   toJSON(message: Folder): unknown {
     const obj: any = {};
-    message.path !== undefined && (obj.path = message.path);
+    if (message.path !== "") {
+      obj.path = message.path;
+    }
     return obj;
   },
 

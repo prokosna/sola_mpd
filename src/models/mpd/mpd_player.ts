@@ -298,23 +298,51 @@ export const MpdPlayerStatus = {
 
   toJSON(message: MpdPlayerStatus): unknown {
     const obj: any = {};
-    message.isRepeat !== undefined && (obj.isRepeat = message.isRepeat);
-    message.isRandom !== undefined && (obj.isRandom = message.isRandom);
-    message.isSingle !== undefined && (obj.isSingle = message.isSingle);
-    message.isConsume !== undefined && (obj.isConsume = message.isConsume);
-    message.playQueueLength !== undefined && (obj.playQueueLength = Math.round(message.playQueueLength));
-    message.playbackState !== undefined &&
-      (obj.playbackState = mpdPlayerStatusPlaybackStateToJSON(message.playbackState));
-    message.song !== undefined && (obj.song = Math.round(message.song));
-    message.songId !== undefined && (obj.songId = Math.round(message.songId));
-    message.nextSong !== undefined && (obj.nextSong = Math.round(message.nextSong));
-    message.nextSongId !== undefined && (obj.nextSongId = Math.round(message.nextSongId));
-    message.elapsed !== undefined && (obj.elapsed = message.elapsed);
-    message.duration !== undefined && (obj.duration = message.duration);
-    message.bitrate !== undefined && (obj.bitrate = message.bitrate);
-    message.audioFormat !== undefined &&
-      (obj.audioFormat = message.audioFormat ? AudioFormat.toJSON(message.audioFormat) : undefined);
-    message.isDatabaseUpdating !== undefined && (obj.isDatabaseUpdating = message.isDatabaseUpdating);
+    if (message.isRepeat === true) {
+      obj.isRepeat = message.isRepeat;
+    }
+    if (message.isRandom === true) {
+      obj.isRandom = message.isRandom;
+    }
+    if (message.isSingle === true) {
+      obj.isSingle = message.isSingle;
+    }
+    if (message.isConsume === true) {
+      obj.isConsume = message.isConsume;
+    }
+    if (message.playQueueLength !== 0) {
+      obj.playQueueLength = Math.round(message.playQueueLength);
+    }
+    if (message.playbackState !== MpdPlayerStatusPlaybackState.UNKNOWN) {
+      obj.playbackState = mpdPlayerStatusPlaybackStateToJSON(message.playbackState);
+    }
+    if (message.song !== 0) {
+      obj.song = Math.round(message.song);
+    }
+    if (message.songId !== 0) {
+      obj.songId = Math.round(message.songId);
+    }
+    if (message.nextSong !== 0) {
+      obj.nextSong = Math.round(message.nextSong);
+    }
+    if (message.nextSongId !== 0) {
+      obj.nextSongId = Math.round(message.nextSongId);
+    }
+    if (message.elapsed !== undefined) {
+      obj.elapsed = message.elapsed;
+    }
+    if (message.duration !== undefined) {
+      obj.duration = message.duration;
+    }
+    if (message.bitrate !== undefined) {
+      obj.bitrate = message.bitrate;
+    }
+    if (message.audioFormat !== undefined) {
+      obj.audioFormat = AudioFormat.toJSON(message.audioFormat);
+    }
+    if (message.isDatabaseUpdating === true) {
+      obj.isDatabaseUpdating = message.isDatabaseUpdating;
+    }
     return obj;
   },
 
@@ -386,7 +414,9 @@ export const MpdPlayerVolume = {
 
   toJSON(message: MpdPlayerVolume): unknown {
     const obj: any = {};
-    message.volume !== undefined && (obj.volume = message.volume);
+    if (message.volume !== undefined) {
+      obj.volume = message.volume;
+    }
     return obj;
   },
 
@@ -401,10 +431,10 @@ export const MpdPlayerVolume = {
   },
 };
 
-declare var self: any | undefined;
-declare var window: any | undefined;
-declare var global: any | undefined;
-var tsProtoGlobalThis: any = (() => {
+declare const self: any | undefined;
+declare const window: any | undefined;
+declare const global: any | undefined;
+const tsProtoGlobalThis: any = (() => {
   if (typeof globalThis !== "undefined") {
     return globalThis;
   }

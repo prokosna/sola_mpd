@@ -81,9 +81,15 @@ export const MpdProfile = {
 
   toJSON(message: MpdProfile): unknown {
     const obj: any = {};
-    message.name !== undefined && (obj.name = message.name);
-    message.host !== undefined && (obj.host = message.host);
-    message.port !== undefined && (obj.port = Math.round(message.port));
+    if (message.name !== "") {
+      obj.name = message.name;
+    }
+    if (message.host !== "") {
+      obj.host = message.host;
+    }
+    if (message.port !== 0) {
+      obj.port = Math.round(message.port);
+    }
     return obj;
   },
 
@@ -154,12 +160,11 @@ export const MpdProfileState = {
 
   toJSON(message: MpdProfileState): unknown {
     const obj: any = {};
-    message.currentProfile !== undefined &&
-      (obj.currentProfile = message.currentProfile ? MpdProfile.toJSON(message.currentProfile) : undefined);
-    if (message.profiles) {
-      obj.profiles = message.profiles.map((e) => e ? MpdProfile.toJSON(e) : undefined);
-    } else {
-      obj.profiles = [];
+    if (message.currentProfile !== undefined) {
+      obj.currentProfile = MpdProfile.toJSON(message.currentProfile);
+    }
+    if (message.profiles?.length) {
+      obj.profiles = message.profiles.map((e) => MpdProfile.toJSON(e));
     }
     return obj;
   },
