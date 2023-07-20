@@ -40,7 +40,7 @@ export default function PluginAddModal(props: PluginAddModalProps) {
 
   return (
     <>
-      <Modal isOpen={props.isOpen} onClose={closeModal} isCentered>
+      <Modal isOpen={props.isOpen} onClose={closeModal} size={"xl"} isCentered>
         <ModalOverlay />
         <ModalContent>
           {plugin === undefined ? (

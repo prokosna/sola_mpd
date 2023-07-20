@@ -74,7 +74,7 @@ export default function Profiles() {
           </Table>
         </TableContainer>
       </VStack>
-      <Modal isOpen={isOpen} onClose={onClose} isCentered>
+      <Modal isOpen={isOpen} onClose={onClose} size={"xl"} isCentered>
         <ModalOverlay />
         <ModalContent>
           <ModalBody p={0}>
