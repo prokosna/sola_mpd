@@ -36,6 +36,7 @@ export function useSavedSearchList() {
         resizable: false,
         sortable: false,
         tooltipField: "Metadata",
+        cellDataType: false,
       },
     ];
   }, []);
