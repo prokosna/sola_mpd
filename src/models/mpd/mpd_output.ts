@@ -86,10 +86,18 @@ export const MpdOutputDevice = {
 
   toJSON(message: MpdOutputDevice): unknown {
     const obj: any = {};
-    message.id !== undefined && (obj.id = Math.round(message.id));
-    message.name !== undefined && (obj.name = message.name);
-    message.plugin !== undefined && (obj.plugin = message.plugin);
-    message.isEnabled !== undefined && (obj.isEnabled = message.isEnabled);
+    if (message.id !== 0) {
+      obj.id = Math.round(message.id);
+    }
+    if (message.name !== "") {
+      obj.name = message.name;
+    }
+    if (message.plugin !== "") {
+      obj.plugin = message.plugin;
+    }
+    if (message.isEnabled === true) {
+      obj.isEnabled = message.isEnabled;
+    }
     return obj;
   },
 

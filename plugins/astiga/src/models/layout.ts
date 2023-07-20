@@ -69,7 +69,9 @@ export const FileExploreLayout = {
 
   toJSON(message: FileExploreLayout): unknown {
     const obj: any = {};
-    message.sidePaneWidth !== undefined && (obj.sidePaneWidth = message.sidePaneWidth);
+    if (message.sidePaneWidth !== 0) {
+      obj.sidePaneWidth = message.sidePaneWidth;
+    }
     return obj;
   },
 
@@ -125,7 +127,9 @@ export const SearchLayout = {
 
   toJSON(message: SearchLayout): unknown {
     const obj: any = {};
-    message.sidePaneWidth !== undefined && (obj.sidePaneWidth = message.sidePaneWidth);
+    if (message.sidePaneWidth !== 0) {
+      obj.sidePaneWidth = message.sidePaneWidth;
+    }
     return obj;
   },
 
@@ -181,7 +185,9 @@ export const BrowserLayout = {
 
   toJSON(message: BrowserLayout): unknown {
     const obj: any = {};
-    message.sidePaneWidth !== undefined && (obj.sidePaneWidth = message.sidePaneWidth);
+    if (message.sidePaneWidth !== 0) {
+      obj.sidePaneWidth = message.sidePaneWidth;
+    }
     return obj;
   },
 
@@ -237,7 +243,9 @@ export const PlaylistLayout = {
 
   toJSON(message: PlaylistLayout): unknown {
     const obj: any = {};
-    message.sidePaneWidth !== undefined && (obj.sidePaneWidth = message.sidePaneWidth);
+    if (message.sidePaneWidth !== 0) {
+      obj.sidePaneWidth = message.sidePaneWidth;
+    }
     return obj;
   },
 
@@ -330,15 +338,18 @@ export const LayoutState = {
 
   toJSON(message: LayoutState): unknown {
     const obj: any = {};
-    message.fileExploreLayout !== undefined && (obj.fileExploreLayout = message.fileExploreLayout
-      ? FileExploreLayout.toJSON(message.fileExploreLayout)
-      : undefined);
-    message.searchLayout !== undefined &&
-      (obj.searchLayout = message.searchLayout ? SearchLayout.toJSON(message.searchLayout) : undefined);
-    message.browserLayout !== undefined &&
-      (obj.browserLayout = message.browserLayout ? BrowserLayout.toJSON(message.browserLayout) : undefined);
-    message.playlistLayout !== undefined &&
-      (obj.playlistLayout = message.playlistLayout ? PlaylistLayout.toJSON(message.playlistLayout) : undefined);
+    if (message.fileExploreLayout !== undefined) {
+      obj.fileExploreLayout = FileExploreLayout.toJSON(message.fileExploreLayout);
+    }
+    if (message.searchLayout !== undefined) {
+      obj.searchLayout = SearchLayout.toJSON(message.searchLayout);
+    }
+    if (message.browserLayout !== undefined) {
+      obj.browserLayout = BrowserLayout.toJSON(message.browserLayout);
+    }
+    if (message.playlistLayout !== undefined) {
+      obj.playlistLayout = PlaylistLayout.toJSON(message.playlistLayout);
+    }
     return obj;
   },
 

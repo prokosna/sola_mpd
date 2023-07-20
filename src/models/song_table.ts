@@ -92,10 +92,18 @@ export const SongTableColumn = {
 
   toJSON(message: SongTableColumn): unknown {
     const obj: any = {};
-    message.tag !== undefined && (obj.tag = songMetadataTagToJSON(message.tag));
-    message.sortOrder !== undefined && (obj.sortOrder = message.sortOrder);
-    message.isSortDesc !== undefined && (obj.isSortDesc = message.isSortDesc);
-    message.widthFlex !== undefined && (obj.widthFlex = Math.round(message.widthFlex));
+    if (message.tag !== SongMetadataTag.UNKNOWN) {
+      obj.tag = songMetadataTagToJSON(message.tag);
+    }
+    if (message.sortOrder !== undefined) {
+      obj.sortOrder = message.sortOrder;
+    }
+    if (message.isSortDesc === true) {
+      obj.isSortDesc = message.isSortDesc;
+    }
+    if (message.widthFlex !== 0) {
+      obj.widthFlex = Math.round(message.widthFlex);
+    }
     return obj;
   },
 
@@ -156,10 +164,8 @@ export const CommonSongTableState = {
 
   toJSON(message: CommonSongTableState): unknown {
     const obj: any = {};
-    if (message.columns) {
-      obj.columns = message.columns.map((e) => e ? SongTableColumn.toJSON(e) : undefined);
-    } else {
-      obj.columns = [];
+    if (message.columns?.length) {
+      obj.columns = message.columns.map((e) => SongTableColumn.toJSON(e));
     }
     return obj;
   },

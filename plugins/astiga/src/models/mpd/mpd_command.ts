@@ -47,7 +47,7 @@ export interface MpdCommandControlPauseResponse {
 }
 
 export interface MpdCommandControlPlayRequest {
-  target?: { $case: "pos"; pos: string } | { $case: "id"; id: string };
+  target?: { $case: "pos"; pos: string } | { $case: "id"; id: string } | undefined;
 }
 
 export interface MpdCommandControlPlayResponse {
@@ -61,7 +61,11 @@ export interface MpdCommandControlPreviousResponse {
 
 export interface MpdCommandControlSeekRequest {
   time: number;
-  target?: { $case: "pos"; pos: string } | { $case: "id"; id: string } | { $case: "current"; current: boolean };
+  target?:
+    | { $case: "pos"; pos: string }
+    | { $case: "id"; id: string }
+    | { $case: "current"; current: boolean }
+    | undefined;
 }
 
 export interface MpdCommandControlSeekResponse {
@@ -159,14 +163,14 @@ export interface MpdCommandQueueClearResponse {
 }
 
 export interface MpdCommandQueueDeleteRequest {
-  target?: { $case: "pos"; pos: string } | { $case: "id"; id: string };
+  target?: { $case: "pos"; pos: string } | { $case: "id"; id: string } | undefined;
 }
 
 export interface MpdCommandQueueDeleteResponse {
 }
 
 export interface MpdCommandQueueMoveRequest {
-  from?: { $case: "fromPos"; fromPos: string } | { $case: "fromId"; fromId: string };
+  from?: { $case: "fromPos"; fromPos: string } | { $case: "fromId"; fromId: string } | undefined;
   to: string;
 }
 
@@ -359,7 +363,8 @@ export interface MpdRequest {
     | { $case: "outputs"; outputs: MpdCommandAudioOutputsRequest }
     | { $case: "listAllSongs"; listAllSongs: MpdCommandUtilityListAllSongsRequest }
     | { $case: "listAllFolders"; listAllFolders: MpdCommandUtilityListAllFoldersRequest }
-    | { $case: "listSongsInFolder"; listSongsInFolder: MpdCommandUtilityListSongsInFolderRequest };
+    | { $case: "listSongsInFolder"; listSongsInFolder: MpdCommandUtilityListSongsInFolderRequest }
+    | undefined;
 }
 
 export interface MpdRequestBulk {
@@ -405,7 +410,8 @@ export interface MpdResponse {
     | { $case: "outputs"; outputs: MpdCommandAudioOutputsResponse }
     | { $case: "listAllSongs"; listAllSongs: MpdCommandUtilityListAllSongsResponse }
     | { $case: "listAllFolders"; listAllFolders: MpdCommandUtilityListAllFoldersResponse }
-    | { $case: "listSongsInFolder"; listSongsInFolder: MpdCommandUtilityListSongsInFolderResponse };
+    | { $case: "listSongsInFolder"; listSongsInFolder: MpdCommandUtilityListSongsInFolderResponse }
+    | undefined;
 }
 
 export const _PACKAGE_NAME = "";
@@ -583,7 +589,9 @@ export const MpdCommandConnectionPingResponse = {
 
   toJSON(message: MpdCommandConnectionPingResponse): unknown {
     const obj: any = {};
-    message.version !== undefined && (obj.version = message.version);
+    if (message.version !== "") {
+      obj.version = message.version;
+    }
     return obj;
   },
 
@@ -775,7 +783,9 @@ export const MpdCommandControlPauseRequest = {
 
   toJSON(message: MpdCommandControlPauseRequest): unknown {
     const obj: any = {};
-    message.pause !== undefined && (obj.pause = message.pause);
+    if (message.pause === true) {
+      obj.pause = message.pause;
+    }
     return obj;
   },
 
@@ -895,8 +905,12 @@ export const MpdCommandControlPlayRequest = {
 
   toJSON(message: MpdCommandControlPlayRequest): unknown {
     const obj: any = {};
-    message.target?.$case === "pos" && (obj.pos = message.target?.pos);
-    message.target?.$case === "id" && (obj.id = message.target?.id);
+    if (message.target?.$case === "pos") {
+      obj.pos = message.target.pos;
+    }
+    if (message.target?.$case === "id") {
+      obj.id = message.target.id;
+    }
     return obj;
   },
 
@@ -1138,10 +1152,18 @@ export const MpdCommandControlSeekRequest = {
 
   toJSON(message: MpdCommandControlSeekRequest): unknown {
     const obj: any = {};
-    message.time !== undefined && (obj.time = message.time);
-    message.target?.$case === "pos" && (obj.pos = message.target?.pos);
-    message.target?.$case === "id" && (obj.id = message.target?.id);
-    message.target?.$case === "current" && (obj.current = message.target?.current);
+    if (message.time !== 0) {
+      obj.time = message.time;
+    }
+    if (message.target?.$case === "pos") {
+      obj.pos = message.target.pos;
+    }
+    if (message.target?.$case === "id") {
+      obj.id = message.target.id;
+    }
+    if (message.target?.$case === "current") {
+      obj.current = message.target.current;
+    }
     return obj;
   },
 
@@ -1382,7 +1404,9 @@ export const MpdCommandPlaybackConsumeRequest = {
 
   toJSON(message: MpdCommandPlaybackConsumeRequest): unknown {
     const obj: any = {};
-    message.enable !== undefined && (obj.enable = message.enable);
+    if (message.enable === true) {
+      obj.enable = message.enable;
+    }
     return obj;
   },
 
@@ -1490,7 +1514,9 @@ export const MpdCommandPlaybackRandomRequest = {
 
   toJSON(message: MpdCommandPlaybackRandomRequest): unknown {
     const obj: any = {};
-    message.enable !== undefined && (obj.enable = message.enable);
+    if (message.enable === true) {
+      obj.enable = message.enable;
+    }
     return obj;
   },
 
@@ -1596,7 +1622,9 @@ export const MpdCommandPlaybackRepeatRequest = {
 
   toJSON(message: MpdCommandPlaybackRepeatRequest): unknown {
     const obj: any = {};
-    message.enable !== undefined && (obj.enable = message.enable);
+    if (message.enable === true) {
+      obj.enable = message.enable;
+    }
     return obj;
   },
 
@@ -1702,7 +1730,9 @@ export const MpdCommandPlaybackSetVolRequest = {
 
   toJSON(message: MpdCommandPlaybackSetVolRequest): unknown {
     const obj: any = {};
-    message.vol !== undefined && (obj.vol = Math.round(message.vol));
+    if (message.vol !== 0) {
+      obj.vol = Math.round(message.vol);
+    }
     return obj;
   },
 
@@ -1852,7 +1882,9 @@ export const MpdCommandPlaybackGetVolResponse = {
 
   toJSON(message: MpdCommandPlaybackGetVolResponse): unknown {
     const obj: any = {};
-    message.vol !== undefined && (obj.vol = message.vol ? MpdPlayerVolume.toJSON(message.vol) : undefined);
+    if (message.vol !== undefined) {
+      obj.vol = MpdPlayerVolume.toJSON(message.vol);
+    }
     return obj;
   },
 
@@ -1914,7 +1946,9 @@ export const MpdCommandPlaybackSingleRequest = {
 
   toJSON(message: MpdCommandPlaybackSingleRequest): unknown {
     const obj: any = {};
-    message.enable !== undefined && (obj.enable = message.enable);
+    if (message.enable === true) {
+      obj.enable = message.enable;
+    }
     return obj;
   },
 
@@ -2112,7 +2146,9 @@ export const MpdCommandStatusCurrentSongResponse = {
 
   toJSON(message: MpdCommandStatusCurrentSongResponse): unknown {
     const obj: any = {};
-    message.song !== undefined && (obj.song = message.song ? Song.toJSON(message.song) : undefined);
+    if (message.song !== undefined) {
+      obj.song = Song.toJSON(message.song);
+    }
     return obj;
   },
 
@@ -2216,7 +2252,9 @@ export const MpdCommandStatusStatusResponse = {
 
   toJSON(message: MpdCommandStatusStatusResponse): unknown {
     const obj: any = {};
-    message.status !== undefined && (obj.status = message.status ? MpdPlayerStatus.toJSON(message.status) : undefined);
+    if (message.status !== undefined) {
+      obj.status = MpdPlayerStatus.toJSON(message.status);
+    }
     return obj;
   },
 
@@ -2320,7 +2358,9 @@ export const MpdCommandStatusStatsResponse = {
 
   toJSON(message: MpdCommandStatusStatsResponse): unknown {
     const obj: any = {};
-    message.stats !== undefined && (obj.stats = message.stats ? MpdStats.toJSON(message.stats) : undefined);
+    if (message.stats !== undefined) {
+      obj.stats = MpdStats.toJSON(message.stats);
+    }
     return obj;
   },
 
@@ -2424,7 +2464,9 @@ export const MpdCommandQueueAddRequest = {
 
   toJSON(message: MpdCommandQueueAddRequest): unknown {
     const obj: any = {};
-    message.uri !== undefined && (obj.uri = message.uri);
+    if (message.uri !== "") {
+      obj.uri = message.uri;
+    }
     return obj;
   },
 
@@ -2630,8 +2672,12 @@ export const MpdCommandQueueDeleteRequest = {
 
   toJSON(message: MpdCommandQueueDeleteRequest): unknown {
     const obj: any = {};
-    message.target?.$case === "pos" && (obj.pos = message.target?.pos);
-    message.target?.$case === "id" && (obj.id = message.target?.id);
+    if (message.target?.$case === "pos") {
+      obj.pos = message.target.pos;
+    }
+    if (message.target?.$case === "id") {
+      obj.id = message.target.id;
+    }
     return obj;
   },
 
@@ -2765,9 +2811,15 @@ export const MpdCommandQueueMoveRequest = {
 
   toJSON(message: MpdCommandQueueMoveRequest): unknown {
     const obj: any = {};
-    message.from?.$case === "fromPos" && (obj.fromPos = message.from?.fromPos);
-    message.from?.$case === "fromId" && (obj.fromId = message.from?.fromId);
-    message.to !== undefined && (obj.to = message.to);
+    if (message.from?.$case === "fromPos") {
+      obj.fromPos = message.from.fromPos;
+    }
+    if (message.from?.$case === "fromId") {
+      obj.fromId = message.from.fromId;
+    }
+    if (message.to !== "") {
+      obj.to = message.to;
+    }
     return obj;
   },
 
@@ -2921,10 +2973,8 @@ export const MpdCommandQueuePlaylistInfoResponse = {
 
   toJSON(message: MpdCommandQueuePlaylistInfoResponse): unknown {
     const obj: any = {};
-    if (message.songs) {
-      obj.songs = message.songs.map((e) => e ? Song.toJSON(e) : undefined);
-    } else {
-      obj.songs = [];
+    if (message.songs?.length) {
+      obj.songs = message.songs.map((e) => Song.toJSON(e));
     }
     return obj;
   },
@@ -3120,7 +3170,9 @@ export const MpdCommandStoredPlaylistListPlaylistInfoRequest = {
 
   toJSON(message: MpdCommandStoredPlaylistListPlaylistInfoRequest): unknown {
     const obj: any = {};
-    message.name !== undefined && (obj.name = message.name);
+    if (message.name !== "") {
+      obj.name = message.name;
+    }
     return obj;
   },
 
@@ -3183,10 +3235,8 @@ export const MpdCommandStoredPlaylistListPlaylistInfoResponse = {
 
   toJSON(message: MpdCommandStoredPlaylistListPlaylistInfoResponse): unknown {
     const obj: any = {};
-    if (message.songs) {
-      obj.songs = message.songs.map((e) => e ? Song.toJSON(e) : undefined);
-    } else {
-      obj.songs = [];
+    if (message.songs?.length) {
+      obj.songs = message.songs.map((e) => Song.toJSON(e));
     }
     return obj;
   },
@@ -3297,10 +3347,8 @@ export const MpdCommandStoredPlaylistListPlaylistsResponse = {
 
   toJSON(message: MpdCommandStoredPlaylistListPlaylistsResponse): unknown {
     const obj: any = {};
-    if (message.playlists) {
-      obj.playlists = message.playlists.map((e) => e ? Playlist.toJSON(e) : undefined);
-    } else {
-      obj.playlists = [];
+    if (message.playlists?.length) {
+      obj.playlists = message.playlists.map((e) => Playlist.toJSON(e));
     }
     return obj;
   },
@@ -3371,8 +3419,12 @@ export const MpdCommandStoredPlaylistPlaylistAddRequest = {
 
   toJSON(message: MpdCommandStoredPlaylistPlaylistAddRequest): unknown {
     const obj: any = {};
-    message.name !== undefined && (obj.name = message.name);
-    message.uri !== undefined && (obj.uri = message.uri);
+    if (message.name !== "") {
+      obj.name = message.name;
+    }
+    if (message.uri !== "") {
+      obj.uri = message.uri;
+    }
     return obj;
   },
 
@@ -3481,7 +3533,9 @@ export const MpdCommandStoredPlaylistPlaylistClearRequest = {
 
   toJSON(message: MpdCommandStoredPlaylistPlaylistClearRequest): unknown {
     const obj: any = {};
-    message.name !== undefined && (obj.name = message.name);
+    if (message.name !== "") {
+      obj.name = message.name;
+    }
     return obj;
   },
 
@@ -3599,8 +3653,12 @@ export const MpdCommandStoredPlaylistPlaylistDeleteRequest = {
 
   toJSON(message: MpdCommandStoredPlaylistPlaylistDeleteRequest): unknown {
     const obj: any = {};
-    message.name !== undefined && (obj.name = message.name);
-    message.pos !== undefined && (obj.pos = message.pos);
+    if (message.name !== "") {
+      obj.name = message.name;
+    }
+    if (message.pos !== "") {
+      obj.pos = message.pos;
+    }
     return obj;
   },
 
@@ -3733,9 +3791,15 @@ export const MpdCommandStoredPlaylistPlaylistMoveRequest = {
 
   toJSON(message: MpdCommandStoredPlaylistPlaylistMoveRequest): unknown {
     const obj: any = {};
-    message.name !== undefined && (obj.name = message.name);
-    message.from !== undefined && (obj.from = message.from);
-    message.to !== undefined && (obj.to = message.to);
+    if (message.name !== "") {
+      obj.name = message.name;
+    }
+    if (message.from !== "") {
+      obj.from = message.from;
+    }
+    if (message.to !== "") {
+      obj.to = message.to;
+    }
     return obj;
   },
 
@@ -3858,8 +3922,12 @@ export const MpdCommandStoredPlaylistRenameRequest = {
 
   toJSON(message: MpdCommandStoredPlaylistRenameRequest): unknown {
     const obj: any = {};
-    message.name !== undefined && (obj.name = message.name);
-    message.newName !== undefined && (obj.newName = message.newName);
+    if (message.name !== "") {
+      obj.name = message.name;
+    }
+    if (message.newName !== "") {
+      obj.newName = message.newName;
+    }
     return obj;
   },
 
@@ -3968,7 +4036,9 @@ export const MpdCommandStoredPlaylistRemoveRequest = {
 
   toJSON(message: MpdCommandStoredPlaylistRemoveRequest): unknown {
     const obj: any = {};
-    message.name !== undefined && (obj.name = message.name);
+    if (message.name !== "") {
+      obj.name = message.name;
+    }
     return obj;
   },
 
@@ -4076,7 +4146,9 @@ export const MpdCommandStoredPlaylistSaveRequest = {
 
   toJSON(message: MpdCommandStoredPlaylistSaveRequest): unknown {
     const obj: any = {};
-    message.name !== undefined && (obj.name = message.name);
+    if (message.name !== "") {
+      obj.name = message.name;
+    }
     return obj;
   },
 
@@ -4243,11 +4315,11 @@ export const MpdCommandDatabaseListRequest = {
 
   toJSON(message: MpdCommandDatabaseListRequest): unknown {
     const obj: any = {};
-    message.tag !== undefined && (obj.tag = songMetadataTagToJSON(message.tag));
-    if (message.conditions) {
-      obj.conditions = message.conditions.map((e) => e ? FilterCondition.toJSON(e) : undefined);
-    } else {
-      obj.conditions = [];
+    if (message.tag !== SongMetadataTag.UNKNOWN) {
+      obj.tag = songMetadataTagToJSON(message.tag);
+    }
+    if (message.conditions?.length) {
+      obj.conditions = message.conditions.map((e) => FilterCondition.toJSON(e));
     }
     return obj;
   },
@@ -4307,10 +4379,8 @@ export const MpdCommandDatabaseListResponse = {
 
   toJSON(message: MpdCommandDatabaseListResponse): unknown {
     const obj: any = {};
-    if (message.values) {
-      obj.values = message.values.map((e) => e);
-    } else {
-      obj.values = [];
+    if (message.values?.length) {
+      obj.values = message.values;
     }
     return obj;
   },
@@ -4373,10 +4443,8 @@ export const MpdCommandDatabaseSearchRequest = {
 
   toJSON(message: MpdCommandDatabaseSearchRequest): unknown {
     const obj: any = {};
-    if (message.conditions) {
-      obj.conditions = message.conditions.map((e) => e ? FilterCondition.toJSON(e) : undefined);
-    } else {
-      obj.conditions = [];
+    if (message.conditions?.length) {
+      obj.conditions = message.conditions.map((e) => FilterCondition.toJSON(e));
     }
     return obj;
   },
@@ -4435,10 +4503,8 @@ export const MpdCommandDatabaseSearchResponse = {
 
   toJSON(message: MpdCommandDatabaseSearchResponse): unknown {
     const obj: any = {};
-    if (message.songs) {
-      obj.songs = message.songs.map((e) => e ? Song.toJSON(e) : undefined);
-    } else {
-      obj.songs = [];
+    if (message.songs?.length) {
+      obj.songs = message.songs.map((e) => Song.toJSON(e));
     }
     return obj;
   },
@@ -4681,10 +4747,8 @@ export const MpdCommandAudioOutputsResponse = {
 
   toJSON(message: MpdCommandAudioOutputsResponse): unknown {
     const obj: any = {};
-    if (message.devices) {
-      obj.devices = message.devices.map((e) => e ? MpdOutputDevice.toJSON(e) : undefined);
-    } else {
-      obj.devices = [];
+    if (message.devices?.length) {
+      obj.devices = message.devices.map((e) => MpdOutputDevice.toJSON(e));
     }
     return obj;
   },
@@ -4835,10 +4899,8 @@ export const MpdCommandUtilityListAllSongsResponse = {
 
   toJSON(message: MpdCommandUtilityListAllSongsResponse): unknown {
     const obj: any = {};
-    if (message.songs) {
-      obj.songs = message.songs.map((e) => e ? Song.toJSON(e) : undefined);
-    } else {
-      obj.songs = [];
+    if (message.songs?.length) {
+      obj.songs = message.songs.map((e) => Song.toJSON(e));
     }
     return obj;
   },
@@ -4947,10 +5009,8 @@ export const MpdCommandUtilityListAllFoldersResponse = {
 
   toJSON(message: MpdCommandUtilityListAllFoldersResponse): unknown {
     const obj: any = {};
-    if (message.folders) {
-      obj.folders = message.folders.map((e) => e ? Folder.toJSON(e) : undefined);
-    } else {
-      obj.folders = [];
+    if (message.folders?.length) {
+      obj.folders = message.folders.map((e) => Folder.toJSON(e));
     }
     return obj;
   },
@@ -5011,7 +5071,9 @@ export const MpdCommandUtilityListSongsInFolderRequest = {
 
   toJSON(message: MpdCommandUtilityListSongsInFolderRequest): unknown {
     const obj: any = {};
-    message.folder !== undefined && (obj.folder = message.folder ? Folder.toJSON(message.folder) : undefined);
+    if (message.folder !== undefined) {
+      obj.folder = Folder.toJSON(message.folder);
+    }
     return obj;
   },
 
@@ -5073,10 +5135,8 @@ export const MpdCommandUtilityListSongsInFolderResponse = {
 
   toJSON(message: MpdCommandUtilityListSongsInFolderResponse): unknown {
     const obj: any = {};
-    if (message.songs) {
-      obj.songs = message.songs.map((e) => e ? Song.toJSON(e) : undefined);
-    } else {
-      obj.songs = [];
+    if (message.songs?.length) {
+      obj.songs = message.songs.map((e) => Song.toJSON(e));
     }
     return obj;
   },
@@ -5701,110 +5761,123 @@ export const MpdRequest = {
 
   toJSON(message: MpdRequest): unknown {
     const obj: any = {};
-    message.profile !== undefined && (obj.profile = message.profile ? MpdProfile.toJSON(message.profile) : undefined);
-    message.command?.$case === "ping" &&
-      (obj.ping = message.command?.ping ? MpdCommandConnectionPingRequest.toJSON(message.command?.ping) : undefined);
-    message.command?.$case === "next" &&
-      (obj.next = message.command?.next ? MpdCommandControlNextRequest.toJSON(message.command?.next) : undefined);
-    message.command?.$case === "pause" &&
-      (obj.pause = message.command?.pause ? MpdCommandControlPauseRequest.toJSON(message.command?.pause) : undefined);
-    message.command?.$case === "play" &&
-      (obj.play = message.command?.play ? MpdCommandControlPlayRequest.toJSON(message.command?.play) : undefined);
-    message.command?.$case === "previous" && (obj.previous = message.command?.previous
-      ? MpdCommandControlPreviousRequest.toJSON(message.command?.previous)
-      : undefined);
-    message.command?.$case === "seek" &&
-      (obj.seek = message.command?.seek ? MpdCommandControlSeekRequest.toJSON(message.command?.seek) : undefined);
-    message.command?.$case === "stop" &&
-      (obj.stop = message.command?.stop ? MpdCommandControlStopRequest.toJSON(message.command?.stop) : undefined);
-    message.command?.$case === "consume" && (obj.consume = message.command?.consume
-      ? MpdCommandPlaybackConsumeRequest.toJSON(message.command?.consume)
-      : undefined);
-    message.command?.$case === "random" && (obj.random = message.command?.random
-      ? MpdCommandPlaybackRandomRequest.toJSON(message.command?.random)
-      : undefined);
-    message.command?.$case === "repeat" && (obj.repeat = message.command?.repeat
-      ? MpdCommandPlaybackRepeatRequest.toJSON(message.command?.repeat)
-      : undefined);
-    message.command?.$case === "setvol" && (obj.setvol = message.command?.setvol
-      ? MpdCommandPlaybackSetVolRequest.toJSON(message.command?.setvol)
-      : undefined);
-    message.command?.$case === "getvol" && (obj.getvol = message.command?.getvol
-      ? MpdCommandPlaybackGetVolRequest.toJSON(message.command?.getvol)
-      : undefined);
-    message.command?.$case === "single" && (obj.single = message.command?.single
-      ? MpdCommandPlaybackSingleRequest.toJSON(message.command?.single)
-      : undefined);
-    message.command?.$case === "currentsong" && (obj.currentsong = message.command?.currentsong
-      ? MpdCommandStatusCurrentSongRequest.toJSON(message.command?.currentsong)
-      : undefined);
-    message.command?.$case === "status" &&
-      (obj.status = message.command?.status
-        ? MpdCommandStatusStatusRequest.toJSON(message.command?.status)
-        : undefined);
-    message.command?.$case === "stats" &&
-      (obj.stats = message.command?.stats ? MpdCommandStatusStatsRequest.toJSON(message.command?.stats) : undefined);
-    message.command?.$case === "add" &&
-      (obj.add = message.command?.add ? MpdCommandQueueAddRequest.toJSON(message.command?.add) : undefined);
-    message.command?.$case === "clear" &&
-      (obj.clear = message.command?.clear ? MpdCommandQueueClearRequest.toJSON(message.command?.clear) : undefined);
-    message.command?.$case === "delete" &&
-      (obj.delete = message.command?.delete ? MpdCommandQueueDeleteRequest.toJSON(message.command?.delete) : undefined);
-    message.command?.$case === "move" &&
-      (obj.move = message.command?.move ? MpdCommandQueueMoveRequest.toJSON(message.command?.move) : undefined);
-    message.command?.$case === "playlistinfo" && (obj.playlistinfo = message.command?.playlistinfo
-      ? MpdCommandQueuePlaylistInfoRequest.toJSON(message.command?.playlistinfo)
-      : undefined);
-    message.command?.$case === "shuffle" && (obj.shuffle = message.command?.shuffle
-      ? MpdCommandQueueShuffleRequest.toJSON(message.command?.shuffle)
-      : undefined);
-    message.command?.$case === "listplaylistinfo" && (obj.listplaylistinfo = message.command?.listplaylistinfo
-      ? MpdCommandStoredPlaylistListPlaylistInfoRequest.toJSON(message.command?.listplaylistinfo)
-      : undefined);
-    message.command?.$case === "listplaylists" && (obj.listplaylists = message.command?.listplaylists
-      ? MpdCommandStoredPlaylistListPlaylistsRequest.toJSON(message.command?.listplaylists)
-      : undefined);
-    message.command?.$case === "playlistadd" && (obj.playlistadd = message.command?.playlistadd
-      ? MpdCommandStoredPlaylistPlaylistAddRequest.toJSON(message.command?.playlistadd)
-      : undefined);
-    message.command?.$case === "playlistclear" && (obj.playlistclear = message.command?.playlistclear
-      ? MpdCommandStoredPlaylistPlaylistClearRequest.toJSON(message.command?.playlistclear)
-      : undefined);
-    message.command?.$case === "playlistdelete" && (obj.playlistdelete = message.command?.playlistdelete
-      ? MpdCommandStoredPlaylistPlaylistDeleteRequest.toJSON(message.command?.playlistdelete)
-      : undefined);
-    message.command?.$case === "playlistmove" && (obj.playlistmove = message.command?.playlistmove
-      ? MpdCommandStoredPlaylistPlaylistMoveRequest.toJSON(message.command?.playlistmove)
-      : undefined);
-    message.command?.$case === "rename" && (obj.rename = message.command?.rename
-      ? MpdCommandStoredPlaylistRenameRequest.toJSON(message.command?.rename)
-      : undefined);
-    message.command?.$case === "rm" &&
-      (obj.rm = message.command?.rm ? MpdCommandStoredPlaylistRemoveRequest.toJSON(message.command?.rm) : undefined);
-    message.command?.$case === "save" &&
-      (obj.save = message.command?.save
-        ? MpdCommandStoredPlaylistSaveRequest.toJSON(message.command?.save)
-        : undefined);
-    message.command?.$case === "list" &&
-      (obj.list = message.command?.list ? MpdCommandDatabaseListRequest.toJSON(message.command?.list) : undefined);
-    message.command?.$case === "search" && (obj.search = message.command?.search
-      ? MpdCommandDatabaseSearchRequest.toJSON(message.command?.search)
-      : undefined);
-    message.command?.$case === "update" && (obj.update = message.command?.update
-      ? MpdCommandDatabaseUpdateRequest.toJSON(message.command?.update)
-      : undefined);
-    message.command?.$case === "outputs" && (obj.outputs = message.command?.outputs
-      ? MpdCommandAudioOutputsRequest.toJSON(message.command?.outputs)
-      : undefined);
-    message.command?.$case === "listAllSongs" && (obj.listAllSongs = message.command?.listAllSongs
-      ? MpdCommandUtilityListAllSongsRequest.toJSON(message.command?.listAllSongs)
-      : undefined);
-    message.command?.$case === "listAllFolders" && (obj.listAllFolders = message.command?.listAllFolders
-      ? MpdCommandUtilityListAllFoldersRequest.toJSON(message.command?.listAllFolders)
-      : undefined);
-    message.command?.$case === "listSongsInFolder" && (obj.listSongsInFolder = message.command?.listSongsInFolder
-      ? MpdCommandUtilityListSongsInFolderRequest.toJSON(message.command?.listSongsInFolder)
-      : undefined);
+    if (message.profile !== undefined) {
+      obj.profile = MpdProfile.toJSON(message.profile);
+    }
+    if (message.command?.$case === "ping") {
+      obj.ping = MpdCommandConnectionPingRequest.toJSON(message.command.ping);
+    }
+    if (message.command?.$case === "next") {
+      obj.next = MpdCommandControlNextRequest.toJSON(message.command.next);
+    }
+    if (message.command?.$case === "pause") {
+      obj.pause = MpdCommandControlPauseRequest.toJSON(message.command.pause);
+    }
+    if (message.command?.$case === "play") {
+      obj.play = MpdCommandControlPlayRequest.toJSON(message.command.play);
+    }
+    if (message.command?.$case === "previous") {
+      obj.previous = MpdCommandControlPreviousRequest.toJSON(message.command.previous);
+    }
+    if (message.command?.$case === "seek") {
+      obj.seek = MpdCommandControlSeekRequest.toJSON(message.command.seek);
+    }
+    if (message.command?.$case === "stop") {
+      obj.stop = MpdCommandControlStopRequest.toJSON(message.command.stop);
+    }
+    if (message.command?.$case === "consume") {
+      obj.consume = MpdCommandPlaybackConsumeRequest.toJSON(message.command.consume);
+    }
+    if (message.command?.$case === "random") {
+      obj.random = MpdCommandPlaybackRandomRequest.toJSON(message.command.random);
+    }
+    if (message.command?.$case === "repeat") {
+      obj.repeat = MpdCommandPlaybackRepeatRequest.toJSON(message.command.repeat);
+    }
+    if (message.command?.$case === "setvol") {
+      obj.setvol = MpdCommandPlaybackSetVolRequest.toJSON(message.command.setvol);
+    }
+    if (message.command?.$case === "getvol") {
+      obj.getvol = MpdCommandPlaybackGetVolRequest.toJSON(message.command.getvol);
+    }
+    if (message.command?.$case === "single") {
+      obj.single = MpdCommandPlaybackSingleRequest.toJSON(message.command.single);
+    }
+    if (message.command?.$case === "currentsong") {
+      obj.currentsong = MpdCommandStatusCurrentSongRequest.toJSON(message.command.currentsong);
+    }
+    if (message.command?.$case === "status") {
+      obj.status = MpdCommandStatusStatusRequest.toJSON(message.command.status);
+    }
+    if (message.command?.$case === "stats") {
+      obj.stats = MpdCommandStatusStatsRequest.toJSON(message.command.stats);
+    }
+    if (message.command?.$case === "add") {
+      obj.add = MpdCommandQueueAddRequest.toJSON(message.command.add);
+    }
+    if (message.command?.$case === "clear") {
+      obj.clear = MpdCommandQueueClearRequest.toJSON(message.command.clear);
+    }
+    if (message.command?.$case === "delete") {
+      obj.delete = MpdCommandQueueDeleteRequest.toJSON(message.command.delete);
+    }
+    if (message.command?.$case === "move") {
+      obj.move = MpdCommandQueueMoveRequest.toJSON(message.command.move);
+    }
+    if (message.command?.$case === "playlistinfo") {
+      obj.playlistinfo = MpdCommandQueuePlaylistInfoRequest.toJSON(message.command.playlistinfo);
+    }
+    if (message.command?.$case === "shuffle") {
+      obj.shuffle = MpdCommandQueueShuffleRequest.toJSON(message.command.shuffle);
+    }
+    if (message.command?.$case === "listplaylistinfo") {
+      obj.listplaylistinfo = MpdCommandStoredPlaylistListPlaylistInfoRequest.toJSON(message.command.listplaylistinfo);
+    }
+    if (message.command?.$case === "listplaylists") {
+      obj.listplaylists = MpdCommandStoredPlaylistListPlaylistsRequest.toJSON(message.command.listplaylists);
+    }
+    if (message.command?.$case === "playlistadd") {
+      obj.playlistadd = MpdCommandStoredPlaylistPlaylistAddRequest.toJSON(message.command.playlistadd);
+    }
+    if (message.command?.$case === "playlistclear") {
+      obj.playlistclear = MpdCommandStoredPlaylistPlaylistClearRequest.toJSON(message.command.playlistclear);
+    }
+    if (message.command?.$case === "playlistdelete") {
+      obj.playlistdelete = MpdCommandStoredPlaylistPlaylistDeleteRequest.toJSON(message.command.playlistdelete);
+    }
+    if (message.command?.$case === "playlistmove") {
+      obj.playlistmove = MpdCommandStoredPlaylistPlaylistMoveRequest.toJSON(message.command.playlistmove);
+    }
+    if (message.command?.$case === "rename") {
+      obj.rename = MpdCommandStoredPlaylistRenameRequest.toJSON(message.command.rename);
+    }
+    if (message.command?.$case === "rm") {
+      obj.rm = MpdCommandStoredPlaylistRemoveRequest.toJSON(message.command.rm);
+    }
+    if (message.command?.$case === "save") {
+      obj.save = MpdCommandStoredPlaylistSaveRequest.toJSON(message.command.save);
+    }
+    if (message.command?.$case === "list") {
+      obj.list = MpdCommandDatabaseListRequest.toJSON(message.command.list);
+    }
+    if (message.command?.$case === "search") {
+      obj.search = MpdCommandDatabaseSearchRequest.toJSON(message.command.search);
+    }
+    if (message.command?.$case === "update") {
+      obj.update = MpdCommandDatabaseUpdateRequest.toJSON(message.command.update);
+    }
+    if (message.command?.$case === "outputs") {
+      obj.outputs = MpdCommandAudioOutputsRequest.toJSON(message.command.outputs);
+    }
+    if (message.command?.$case === "listAllSongs") {
+      obj.listAllSongs = MpdCommandUtilityListAllSongsRequest.toJSON(message.command.listAllSongs);
+    }
+    if (message.command?.$case === "listAllFolders") {
+      obj.listAllFolders = MpdCommandUtilityListAllFoldersRequest.toJSON(message.command.listAllFolders);
+    }
+    if (message.command?.$case === "listSongsInFolder") {
+      obj.listSongsInFolder = MpdCommandUtilityListSongsInFolderRequest.toJSON(message.command.listSongsInFolder);
+    }
     return obj;
   },
 
@@ -6078,10 +6151,8 @@ export const MpdRequestBulk = {
 
   toJSON(message: MpdRequestBulk): unknown {
     const obj: any = {};
-    if (message.requests) {
-      obj.requests = message.requests.map((e) => e ? MpdRequest.toJSON(e) : undefined);
-    } else {
-      obj.requests = [];
+    if (message.requests?.length) {
+      obj.requests = message.requests.map((e) => MpdRequest.toJSON(e));
     }
     return obj;
   },
@@ -6694,111 +6765,120 @@ export const MpdResponse = {
 
   toJSON(message: MpdResponse): unknown {
     const obj: any = {};
-    message.command?.$case === "ping" &&
-      (obj.ping = message.command?.ping ? MpdCommandConnectionPingResponse.toJSON(message.command?.ping) : undefined);
-    message.command?.$case === "next" &&
-      (obj.next = message.command?.next ? MpdCommandControlNextResponse.toJSON(message.command?.next) : undefined);
-    message.command?.$case === "pause" &&
-      (obj.pause = message.command?.pause ? MpdCommandControlPauseResponse.toJSON(message.command?.pause) : undefined);
-    message.command?.$case === "play" &&
-      (obj.play = message.command?.play ? MpdCommandControlPlayResponse.toJSON(message.command?.play) : undefined);
-    message.command?.$case === "previous" && (obj.previous = message.command?.previous
-      ? MpdCommandControlPreviousResponse.toJSON(message.command?.previous)
-      : undefined);
-    message.command?.$case === "seek" &&
-      (obj.seek = message.command?.seek ? MpdCommandControlSeekResponse.toJSON(message.command?.seek) : undefined);
-    message.command?.$case === "stop" &&
-      (obj.stop = message.command?.stop ? MpdCommandControlStopResponse.toJSON(message.command?.stop) : undefined);
-    message.command?.$case === "consume" && (obj.consume = message.command?.consume
-      ? MpdCommandPlaybackConsumeResponse.toJSON(message.command?.consume)
-      : undefined);
-    message.command?.$case === "random" && (obj.random = message.command?.random
-      ? MpdCommandPlaybackRandomResponse.toJSON(message.command?.random)
-      : undefined);
-    message.command?.$case === "repeat" && (obj.repeat = message.command?.repeat
-      ? MpdCommandPlaybackRepeatResponse.toJSON(message.command?.repeat)
-      : undefined);
-    message.command?.$case === "setvol" && (obj.setvol = message.command?.setvol
-      ? MpdCommandPlaybackSetVolResponse.toJSON(message.command?.setvol)
-      : undefined);
-    message.command?.$case === "getvol" && (obj.getvol = message.command?.getvol
-      ? MpdCommandPlaybackGetVolResponse.toJSON(message.command?.getvol)
-      : undefined);
-    message.command?.$case === "single" && (obj.single = message.command?.single
-      ? MpdCommandPlaybackSingleResponse.toJSON(message.command?.single)
-      : undefined);
-    message.command?.$case === "currentsong" && (obj.currentsong = message.command?.currentsong
-      ? MpdCommandStatusCurrentSongResponse.toJSON(message.command?.currentsong)
-      : undefined);
-    message.command?.$case === "status" &&
-      (obj.status = message.command?.status
-        ? MpdCommandStatusStatusResponse.toJSON(message.command?.status)
-        : undefined);
-    message.command?.$case === "stats" &&
-      (obj.stats = message.command?.stats ? MpdCommandStatusStatsResponse.toJSON(message.command?.stats) : undefined);
-    message.command?.$case === "add" &&
-      (obj.add = message.command?.add ? MpdCommandQueueAddResponse.toJSON(message.command?.add) : undefined);
-    message.command?.$case === "clear" &&
-      (obj.clear = message.command?.clear ? MpdCommandQueueClearResponse.toJSON(message.command?.clear) : undefined);
-    message.command?.$case === "delete" &&
-      (obj.delete = message.command?.delete
-        ? MpdCommandQueueDeleteResponse.toJSON(message.command?.delete)
-        : undefined);
-    message.command?.$case === "move" &&
-      (obj.move = message.command?.move ? MpdCommandQueueMoveResponse.toJSON(message.command?.move) : undefined);
-    message.command?.$case === "playlistinfo" && (obj.playlistinfo = message.command?.playlistinfo
-      ? MpdCommandQueuePlaylistInfoResponse.toJSON(message.command?.playlistinfo)
-      : undefined);
-    message.command?.$case === "shuffle" && (obj.shuffle = message.command?.shuffle
-      ? MpdCommandQueueShuffleResponse.toJSON(message.command?.shuffle)
-      : undefined);
-    message.command?.$case === "listplaylistinfo" && (obj.listplaylistinfo = message.command?.listplaylistinfo
-      ? MpdCommandStoredPlaylistListPlaylistInfoResponse.toJSON(message.command?.listplaylistinfo)
-      : undefined);
-    message.command?.$case === "listplaylists" && (obj.listplaylists = message.command?.listplaylists
-      ? MpdCommandStoredPlaylistListPlaylistsResponse.toJSON(message.command?.listplaylists)
-      : undefined);
-    message.command?.$case === "playlistadd" && (obj.playlistadd = message.command?.playlistadd
-      ? MpdCommandStoredPlaylistPlaylistAddResponse.toJSON(message.command?.playlistadd)
-      : undefined);
-    message.command?.$case === "playlistclear" && (obj.playlistclear = message.command?.playlistclear
-      ? MpdCommandStoredPlaylistPlaylistClearResponse.toJSON(message.command?.playlistclear)
-      : undefined);
-    message.command?.$case === "playlistdelete" && (obj.playlistdelete = message.command?.playlistdelete
-      ? MpdCommandStoredPlaylistPlaylistDeleteResponse.toJSON(message.command?.playlistdelete)
-      : undefined);
-    message.command?.$case === "playlistmove" && (obj.playlistmove = message.command?.playlistmove
-      ? MpdCommandStoredPlaylistPlaylistMoveResponse.toJSON(message.command?.playlistmove)
-      : undefined);
-    message.command?.$case === "rename" && (obj.rename = message.command?.rename
-      ? MpdCommandStoredPlaylistRenameResponse.toJSON(message.command?.rename)
-      : undefined);
-    message.command?.$case === "rm" &&
-      (obj.rm = message.command?.rm ? MpdCommandStoredPlaylistRemoveResponse.toJSON(message.command?.rm) : undefined);
-    message.command?.$case === "save" &&
-      (obj.save = message.command?.save
-        ? MpdCommandStoredPlaylistSaveResponse.toJSON(message.command?.save)
-        : undefined);
-    message.command?.$case === "list" &&
-      (obj.list = message.command?.list ? MpdCommandDatabaseListResponse.toJSON(message.command?.list) : undefined);
-    message.command?.$case === "search" && (obj.search = message.command?.search
-      ? MpdCommandDatabaseSearchResponse.toJSON(message.command?.search)
-      : undefined);
-    message.command?.$case === "update" && (obj.update = message.command?.update
-      ? MpdCommandDatabaseUpdateResponse.toJSON(message.command?.update)
-      : undefined);
-    message.command?.$case === "outputs" && (obj.outputs = message.command?.outputs
-      ? MpdCommandAudioOutputsResponse.toJSON(message.command?.outputs)
-      : undefined);
-    message.command?.$case === "listAllSongs" && (obj.listAllSongs = message.command?.listAllSongs
-      ? MpdCommandUtilityListAllSongsResponse.toJSON(message.command?.listAllSongs)
-      : undefined);
-    message.command?.$case === "listAllFolders" && (obj.listAllFolders = message.command?.listAllFolders
-      ? MpdCommandUtilityListAllFoldersResponse.toJSON(message.command?.listAllFolders)
-      : undefined);
-    message.command?.$case === "listSongsInFolder" && (obj.listSongsInFolder = message.command?.listSongsInFolder
-      ? MpdCommandUtilityListSongsInFolderResponse.toJSON(message.command?.listSongsInFolder)
-      : undefined);
+    if (message.command?.$case === "ping") {
+      obj.ping = MpdCommandConnectionPingResponse.toJSON(message.command.ping);
+    }
+    if (message.command?.$case === "next") {
+      obj.next = MpdCommandControlNextResponse.toJSON(message.command.next);
+    }
+    if (message.command?.$case === "pause") {
+      obj.pause = MpdCommandControlPauseResponse.toJSON(message.command.pause);
+    }
+    if (message.command?.$case === "play") {
+      obj.play = MpdCommandControlPlayResponse.toJSON(message.command.play);
+    }
+    if (message.command?.$case === "previous") {
+      obj.previous = MpdCommandControlPreviousResponse.toJSON(message.command.previous);
+    }
+    if (message.command?.$case === "seek") {
+      obj.seek = MpdCommandControlSeekResponse.toJSON(message.command.seek);
+    }
+    if (message.command?.$case === "stop") {
+      obj.stop = MpdCommandControlStopResponse.toJSON(message.command.stop);
+    }
+    if (message.command?.$case === "consume") {
+      obj.consume = MpdCommandPlaybackConsumeResponse.toJSON(message.command.consume);
+    }
+    if (message.command?.$case === "random") {
+      obj.random = MpdCommandPlaybackRandomResponse.toJSON(message.command.random);
+    }
+    if (message.command?.$case === "repeat") {
+      obj.repeat = MpdCommandPlaybackRepeatResponse.toJSON(message.command.repeat);
+    }
+    if (message.command?.$case === "setvol") {
+      obj.setvol = MpdCommandPlaybackSetVolResponse.toJSON(message.command.setvol);
+    }
+    if (message.command?.$case === "getvol") {
+      obj.getvol = MpdCommandPlaybackGetVolResponse.toJSON(message.command.getvol);
+    }
+    if (message.command?.$case === "single") {
+      obj.single = MpdCommandPlaybackSingleResponse.toJSON(message.command.single);
+    }
+    if (message.command?.$case === "currentsong") {
+      obj.currentsong = MpdCommandStatusCurrentSongResponse.toJSON(message.command.currentsong);
+    }
+    if (message.command?.$case === "status") {
+      obj.status = MpdCommandStatusStatusResponse.toJSON(message.command.status);
+    }
+    if (message.command?.$case === "stats") {
+      obj.stats = MpdCommandStatusStatsResponse.toJSON(message.command.stats);
+    }
+    if (message.command?.$case === "add") {
+      obj.add = MpdCommandQueueAddResponse.toJSON(message.command.add);
+    }
+    if (message.command?.$case === "clear") {
+      obj.clear = MpdCommandQueueClearResponse.toJSON(message.command.clear);
+    }
+    if (message.command?.$case === "delete") {
+      obj.delete = MpdCommandQueueDeleteResponse.toJSON(message.command.delete);
+    }
+    if (message.command?.$case === "move") {
+      obj.move = MpdCommandQueueMoveResponse.toJSON(message.command.move);
+    }
+    if (message.command?.$case === "playlistinfo") {
+      obj.playlistinfo = MpdCommandQueuePlaylistInfoResponse.toJSON(message.command.playlistinfo);
+    }
+    if (message.command?.$case === "shuffle") {
+      obj.shuffle = MpdCommandQueueShuffleResponse.toJSON(message.command.shuffle);
+    }
+    if (message.command?.$case === "listplaylistinfo") {
+      obj.listplaylistinfo = MpdCommandStoredPlaylistListPlaylistInfoResponse.toJSON(message.command.listplaylistinfo);
+    }
+    if (message.command?.$case === "listplaylists") {
+      obj.listplaylists = MpdCommandStoredPlaylistListPlaylistsResponse.toJSON(message.command.listplaylists);
+    }
+    if (message.command?.$case === "playlistadd") {
+      obj.playlistadd = MpdCommandStoredPlaylistPlaylistAddResponse.toJSON(message.command.playlistadd);
+    }
+    if (message.command?.$case === "playlistclear") {
+      obj.playlistclear = MpdCommandStoredPlaylistPlaylistClearResponse.toJSON(message.command.playlistclear);
+    }
+    if (message.command?.$case === "playlistdelete") {
+      obj.playlistdelete = MpdCommandStoredPlaylistPlaylistDeleteResponse.toJSON(message.command.playlistdelete);
+    }
+    if (message.command?.$case === "playlistmove") {
+      obj.playlistmove = MpdCommandStoredPlaylistPlaylistMoveResponse.toJSON(message.command.playlistmove);
+    }
+    if (message.command?.$case === "rename") {
+      obj.rename = MpdCommandStoredPlaylistRenameResponse.toJSON(message.command.rename);
+    }
+    if (message.command?.$case === "rm") {
+      obj.rm = MpdCommandStoredPlaylistRemoveResponse.toJSON(message.command.rm);
+    }
+    if (message.command?.$case === "save") {
+      obj.save = MpdCommandStoredPlaylistSaveResponse.toJSON(message.command.save);
+    }
+    if (message.command?.$case === "list") {
+      obj.list = MpdCommandDatabaseListResponse.toJSON(message.command.list);
+    }
+    if (message.command?.$case === "search") {
+      obj.search = MpdCommandDatabaseSearchResponse.toJSON(message.command.search);
+    }
+    if (message.command?.$case === "update") {
+      obj.update = MpdCommandDatabaseUpdateResponse.toJSON(message.command.update);
+    }
+    if (message.command?.$case === "outputs") {
+      obj.outputs = MpdCommandAudioOutputsResponse.toJSON(message.command.outputs);
+    }
+    if (message.command?.$case === "listAllSongs") {
+      obj.listAllSongs = MpdCommandUtilityListAllSongsResponse.toJSON(message.command.listAllSongs);
+    }
+    if (message.command?.$case === "listAllFolders") {
+      obj.listAllFolders = MpdCommandUtilityListAllFoldersResponse.toJSON(message.command.listAllFolders);
+    }
+    if (message.command?.$case === "listSongsInFolder") {
+      obj.listSongsInFolder = MpdCommandUtilityListSongsInFolderResponse.toJSON(message.command.listSongsInFolder);
+    }
     return obj;
   },
 

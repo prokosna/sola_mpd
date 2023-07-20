@@ -241,7 +241,8 @@ export interface SongMetadataValue {
     | { $case: "intValue"; intValue: number | undefined }
     | { $case: "floatValue"; floatValue: number | undefined }
     | { $case: "format"; format: AudioFormat }
-    | { $case: "timestamp"; timestamp: Date };
+    | { $case: "timestamp"; timestamp: Date }
+    | undefined;
 }
 
 export interface SongList {
@@ -326,10 +327,18 @@ export const AudioFormat = {
 
   toJSON(message: AudioFormat): unknown {
     const obj: any = {};
-    message.encoding !== undefined && (obj.encoding = audioFormatEncodingToJSON(message.encoding));
-    message.samplingRate !== undefined && (obj.samplingRate = Math.round(message.samplingRate));
-    message.bits !== undefined && (obj.bits = Math.round(message.bits));
-    message.channels !== undefined && (obj.channels = Math.round(message.channels));
+    if (message.encoding !== AudioFormatEncoding.UNKNOWN) {
+      obj.encoding = audioFormatEncodingToJSON(message.encoding);
+    }
+    if (message.samplingRate !== 0) {
+      obj.samplingRate = Math.round(message.samplingRate);
+    }
+    if (message.bits !== 0) {
+      obj.bits = Math.round(message.bits);
+    }
+    if (message.channels !== 0) {
+      obj.channels = Math.round(message.channels);
+    }
     return obj;
   },
 
@@ -420,14 +429,21 @@ export const Song = {
 
   toJSON(message: Song): unknown {
     const obj: any = {};
-    message.path !== undefined && (obj.path = message.path);
-    obj.metadata = {};
-    if (message.metadata) {
-      Object.entries(message.metadata).forEach(([k, v]) => {
-        obj.metadata[k] = SongMetadataValue.toJSON(v);
-      });
+    if (message.path !== "") {
+      obj.path = message.path;
     }
-    message.index !== undefined && (obj.index = Math.round(message.index));
+    if (message.metadata) {
+      const entries = Object.entries(message.metadata);
+      if (entries.length > 0) {
+        obj.metadata = {};
+        entries.forEach(([k, v]) => {
+          obj.metadata[k] = SongMetadataValue.toJSON(v);
+        });
+      }
+    }
+    if (message.index !== 0) {
+      obj.index = Math.round(message.index);
+    }
     return obj;
   },
 
@@ -506,8 +522,12 @@ export const SongMetadataEntry = {
 
   toJSON(message: SongMetadataEntry): unknown {
     const obj: any = {};
-    message.key !== undefined && (obj.key = message.key);
-    message.value !== undefined && (obj.value = message.value ? SongMetadataValue.toJSON(message.value) : undefined);
+    if (message.key !== "") {
+      obj.key = message.key;
+    }
+    if (message.value !== undefined) {
+      obj.value = SongMetadataValue.toJSON(message.value);
+    }
     return obj;
   },
 
@@ -620,12 +640,21 @@ export const SongMetadataValue = {
 
   toJSON(message: SongMetadataValue): unknown {
     const obj: any = {};
-    message.value?.$case === "stringValue" && (obj.stringValue = message.value?.stringValue);
-    message.value?.$case === "intValue" && (obj.intValue = message.value?.intValue);
-    message.value?.$case === "floatValue" && (obj.floatValue = message.value?.floatValue);
-    message.value?.$case === "format" &&
-      (obj.format = message.value?.format ? AudioFormat.toJSON(message.value?.format) : undefined);
-    message.value?.$case === "timestamp" && (obj.timestamp = message.value?.timestamp.toISOString());
+    if (message.value?.$case === "stringValue") {
+      obj.stringValue = message.value.stringValue;
+    }
+    if (message.value?.$case === "intValue") {
+      obj.intValue = message.value.intValue;
+    }
+    if (message.value?.$case === "floatValue") {
+      obj.floatValue = message.value.floatValue;
+    }
+    if (message.value?.$case === "format") {
+      obj.format = AudioFormat.toJSON(message.value.format);
+    }
+    if (message.value?.$case === "timestamp") {
+      obj.timestamp = message.value.timestamp.toISOString();
+    }
     return obj;
   },
 
@@ -705,10 +734,8 @@ export const SongList = {
 
   toJSON(message: SongList): unknown {
     const obj: any = {};
-    if (message.songs) {
-      obj.songs = message.songs.map((e) => e ? Song.toJSON(e) : undefined);
-    } else {
-      obj.songs = [];
+    if (message.songs?.length) {
+      obj.songs = message.songs.map((e) => Song.toJSON(e));
     }
     return obj;
   },
@@ -724,10 +751,10 @@ export const SongList = {
   },
 };
 
-declare var self: any | undefined;
-declare var window: any | undefined;
-declare var global: any | undefined;
-var tsProtoGlobalThis: any = (() => {
+declare const self: any | undefined;
+declare const window: any | undefined;
+declare const global: any | undefined;
+const tsProtoGlobalThis: any = (() => {
   if (typeof globalThis !== "undefined") {
     return globalThis;
   }
