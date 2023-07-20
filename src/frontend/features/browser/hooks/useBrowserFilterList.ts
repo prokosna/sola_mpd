@@ -88,6 +88,7 @@ export function useBrowserFilterList(metadataTag: SongMetadataTag) {
         resizable: false,
         sortable: false,
         tooltipField: columnName,
+        cellDataType: false,
       },
     ];
   }, [columnName]);

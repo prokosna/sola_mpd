@@ -43,6 +43,7 @@ export function usePlaylistSelectList() {
         resizable: false,
         sortable: false,
         tooltipField: "Metadata",
+        cellDataType: false,
       },
     ];
   }, []);

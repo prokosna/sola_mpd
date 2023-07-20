@@ -129,6 +129,7 @@ export function useSongTable(props: SongTableProps) {
         !isSortingEnabled || v.sortOrder === undefined || v.sortOrder < 0
           ? null
           : v.sortOrder,
+      cellDataType: false,
     }));
   }, [tableColumns, isReorderingEnabled, isSortingEnabled]);
 
