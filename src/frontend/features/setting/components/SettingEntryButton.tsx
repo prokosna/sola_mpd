@@ -12,6 +12,7 @@ export default function SettingEntryButton() {
     <>
       <Button
         m={0}
+        p={0}
         variant={"ghost"}
         onClick={() => {
           router.push(ROUTE_HOME_SETTINGS);
