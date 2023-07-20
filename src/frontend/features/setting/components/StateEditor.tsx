@@ -58,7 +58,12 @@ export default function StateEditor<T>(props: StateEditorProps<T>) {
 
   return (
     <>
-      <Modal isOpen={props.isOpen} onClose={props.onClose} isCentered>
+      <Modal
+        isOpen={props.isOpen}
+        onClose={props.onClose}
+        size={"xl"}
+        isCentered
+      >
         <ModalOverlay />
         <ModalContent>
           <ModalHeader>Setting</ModalHeader>

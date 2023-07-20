@@ -59,6 +59,7 @@ export default function PluginExecutionModal(props: PluginExecutionModalProps) {
         closeOnOverlayClick={false}
         isOpen={props.isOpen}
         onClose={closeModal}
+        size={"xl"}
         isCentered
       >
         <ModalOverlay />
@@ -103,9 +104,11 @@ export default function PluginExecutionModal(props: PluginExecutionModalProps) {
               <ModalHeader>{plugin.info.contextMenuTitle}</ModalHeader>
               <ModalBody>
                 {errorMessage === "" ? (
-                  <Text>{message}</Text>
+                  <Text noOfLines={1}>{message}</Text>
                 ) : (
-                  <Text color="red">{errorMessage}</Text>
+                  <Text noOfLines={1} color="red">
+                    {errorMessage}
+                  </Text>
                 )}
                 <Progress
                   hasStripe={progress !== 100}
