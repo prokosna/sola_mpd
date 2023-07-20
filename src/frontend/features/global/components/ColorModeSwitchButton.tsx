@@ -7,7 +7,7 @@ export default function ColorModeSwitchButton() {
   const { colorMode, toggleColorMode } = useColorMode();
   return (
     <>
-      <Button m={0} variant={"ghost"} onClick={toggleColorMode}>
+      <Button m={0} p={0} variant={"ghost"} onClick={toggleColorMode}>
         <Icon as={colorMode === "light" ? IoMoon : IoSunny} fontSize={24} />
       </Button>
     </>

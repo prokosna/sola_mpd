@@ -7,6 +7,7 @@ import {
   GridItem,
   HStack,
   Icon,
+  Spacer,
   useDisclosure,
 } from "@chakra-ui/react";
 import { motion } from "framer-motion";
@@ -63,8 +64,10 @@ export default function HomeLayout({
                 <GlobalFilterBox></GlobalFilterBox>
                 <HStack h="100%" justify={"end"} align={"center"}>
                   <ProfileSelector></ProfileSelector>
+                  <Spacer></Spacer>
                   <ColorModeSwitchButton></ColorModeSwitchButton>
                   <SettingEntryButton></SettingEntryButton>
+                  <Spacer></Spacer>
                 </HStack>
               </HStack>
             </Box>
