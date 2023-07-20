@@ -107,7 +107,10 @@ export default function PluginExecutionModal(props: PluginExecutionModalProps) {
                 ) : (
                   <Text color="red">{errorMessage}</Text>
                 )}
-                <Progress hasStripe={true} value={progress}></Progress>
+                <Progress
+                  hasStripe={progress !== 100}
+                  value={progress}
+                ></Progress>
                 <Divider my={3}></Divider>
                 <Text size="sm">Warning logs</Text>
                 <Textarea
