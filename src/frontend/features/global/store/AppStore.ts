@@ -1,5 +1,5 @@
 import { create } from "zustand";
-import { devtools, subscribeWithSelector } from "zustand/middleware";
+import { subscribeWithSelector } from "zustand/middleware";
 
 import {
   BrowserSlice,
@@ -54,24 +54,22 @@ export type AllSlices = LayoutSlice &
   PluginSlice;
 
 export const useAppStore = create<AllSlices>()(
-  devtools(
-    subscribeWithSelector((...a) => ({
-      ...createLayoutSlice(...a),
-      ...createWebSocketSlice(...a),
-      ...createMpdStatsSlice(...a),
-      ...createSystemSlice(...a),
-      ...createBrowserSlice(...a),
-      ...createPlayQueueSlice(...a),
-      ...createPlayerSlice(...a),
-      ...createPlaylistSlice(...a),
-      ...createProfileSlice(...a),
-      ...createGlobalFilterSlice(...a),
-      ...createSelectedSongsSlice(...a),
-      ...createFileExploreSlice(...a),
-      ...createSearchSlice(...a),
-      ...createPluginSlice(...a),
-    })),
-  ),
+  subscribeWithSelector((...a) => ({
+    ...createLayoutSlice(...a),
+    ...createWebSocketSlice(...a),
+    ...createMpdStatsSlice(...a),
+    ...createSystemSlice(...a),
+    ...createBrowserSlice(...a),
+    ...createPlayQueueSlice(...a),
+    ...createPlayerSlice(...a),
+    ...createPlaylistSlice(...a),
+    ...createProfileSlice(...a),
+    ...createGlobalFilterSlice(...a),
+    ...createSelectedSongsSlice(...a),
+    ...createFileExploreSlice(...a),
+    ...createSearchSlice(...a),
+    ...createPluginSlice(...a),
+  })),
 );
 
 // Initialize things unrelated to the front end
