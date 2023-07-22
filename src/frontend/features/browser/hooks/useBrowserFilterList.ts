@@ -63,22 +63,37 @@ export function useBrowserFilterList(metadataTag: SongMetadataTag) {
   }, [filterIndex, browserFilters, columnName, gridRef.current]); // React to gridRef.current (undefined => API)
 
   const rowData = useMemo(() => {
+    if (browserFilters === undefined || filterIndex < 0) {
+      return [];
+    }
+    const selectedValues = browserFilters[filterIndex].selectedValues.map((v) =>
+      SongUtils.convertSongMetadataValueToString(v),
+    );
+
     const values = browserFilterValuesList.get(metadataTag);
     if (values === undefined) {
       return [];
     }
     let targetValues = values;
     if (globalFilterTokens !== undefined) {
-      targetValues = values.filter((v) =>
-        globalFilterTokens.every((token) =>
-          normalizeSync(v).toLowerCase().includes(token),
-        ),
+      targetValues = values.filter(
+        (v) =>
+          globalFilterTokens.every((token) =>
+            normalizeSync(v).toLowerCase().includes(token),
+          ) || selectedValues.includes(v),
       );
     }
     return targetValues.map((v) => {
       return { [columnName]: v };
     });
-  }, [browserFilterValuesList, metadataTag, globalFilterTokens, columnName]);
+  }, [
+    browserFilters,
+    filterIndex,
+    browserFilterValuesList,
+    metadataTag,
+    globalFilterTokens,
+    columnName,
+  ]);
 
   const columnDefs = useMemo(() => {
     return [
