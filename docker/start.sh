@@ -15,6 +15,7 @@ EXTRA_ARGS=(
   -v sola_db:/app/db
   -e "USER=$USER"
   -p $PORT_OPT:3000
+  --add-host host.docker.internal:host-gateway
 )
 
 docker run -id --rm "${EXTRA_ARGS[@]}" $IMAGE_NAME
