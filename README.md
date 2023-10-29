@@ -87,6 +87,8 @@ $ docker/start.sh [--port 3000]
 
 6. Access to http://[Your Server IP]:3000 from your browser
 
+7. In the setup dialog, please enter the endpoint of your mpd server which can be accessed from the Sola MPD server. **If your mpd server is running on the same server, you need to use "host.docker.internal" instead of "localhost".**
+
 ## How to update
 
 The main branch should be always the latest working branch.
