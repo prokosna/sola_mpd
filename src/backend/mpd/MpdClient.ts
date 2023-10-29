@@ -310,7 +310,7 @@ class MpdClient {
       // Connection
       case "ping":
         await client.sendCommand(cmd);
-        const version = (client as any).PROTOCOL_VERSION as string;
+        const version = ((client as any).PROTOCOL_VERSION as string).trim();
         return MpdResponse.create({
           command: { $case: "ping", ping: { version } },
         });
@@ -382,7 +382,7 @@ class MpdClient {
         });
       }
       case "stats": {
-        const version = (client as any).PROTOCOL_VERSION as string;
+        const version = ((client as any).PROTOCOL_VERSION as string).trim();
         const ret = await client.sendCommand(cmd).then(this.objectParser);
         const stats = MpdClient.castMpdStats(version, ret);
         return MpdResponse.create({
