@@ -1,7 +1,13 @@
 {
-  "plugins": ["import", "unused-imports"],
+  "root": true,
+  "env": {
+    "jest": true
+  },
+  "parser": "@typescript-eslint/parser",
+  "plugins": ["import", "unused-imports", "@typescript-eslint"],
   "extends": [
-    "next/core-web-vitals",
+    "eslint:recommended",
+    "plugin:@typescript-eslint/recommended",
     "plugin:import/recommended",
     "plugin:import/typescript",
     "prettier"
@@ -14,11 +20,12 @@
     }
   },
   "rules": {
-    "react-hooks/exhaustive-deps": 2
+    "@typescript-eslint/no-unused-vars": "off",
+    "import/no-named-as-default-member": "off"
   },
   "overrides": [
     {
-      "files": ["src/**/*.{js,jsx,ts,tsx}"],
+      "files": ["**/src/**/*.{js,jsx,ts,tsx}"],
       "rules": {
         "no-unused-vars": "off",
         "unused-imports/no-unused-imports": "error",
@@ -45,6 +52,13 @@
               "order": "asc"
             },
             "newlines-between": "always"
+          }
+        ],
+        "prefer-const": [
+          "error",
+          {
+            "destructuring": "all",
+            "ignoreReadBeforeAssign": false
           }
         ]
       }

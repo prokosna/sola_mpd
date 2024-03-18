@@ -1,0 +1,12 @@
+{
+  "extends": ["../../.eslintrc.json", "plugin:require-extensions/recommended"],
+  "parserOptions": {
+    "project": ["tsconfig.json", "vitest.config.ts"],
+    "tsconfigRootDir": "plugins/astiga",
+    "sourceType": "module"
+  },
+  "env": {
+    "node": true
+  },
+  "plugins": ["require-extensions"]
+}
