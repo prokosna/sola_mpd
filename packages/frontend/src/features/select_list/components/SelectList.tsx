@@ -1,6 +1,7 @@
 import { CircularProgress, useColorMode } from "@chakra-ui/react";
+import { GetRowIdParams } from "ag-grid-community";
 import { AgGridReact } from "ag-grid-react";
-import { useEffect, useRef } from "react";
+import { useCallback, useEffect, useRef } from "react";
 
 import { ContextMenu, ContextMenuSection } from "../../context_menu";
 import { useAgGridReactData } from "../hooks/useAgGridReactData";
@@ -33,6 +34,11 @@ export function SelectList(props: SelectListProps) {
 
   // Context menu
   const onOpenContextMenu = useOnOpenContextMenu(props.id);
+
+  // Get Row ID
+  const getRowId = useCallback((params: GetRowIdParams) => {
+    return String(params.data.key);
+  }, []);
 
   // Handlers
   const onSelectionChanged = useOnSelectionChanged(props.onSelectValues);
@@ -94,6 +100,7 @@ export function SelectList(props: SelectListProps) {
           rowClass={
             colorMode === "light" ? "ag-theme-alpine" : "ag-theme-alpine-dark"
           }
+          getRowId={getRowId}
         ></AgGridReact>
         {props.isLoading && (
           <CircularProgress

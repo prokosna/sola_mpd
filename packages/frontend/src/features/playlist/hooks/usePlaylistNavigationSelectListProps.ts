@@ -50,6 +50,10 @@ export function usePlaylistNavigationSelectListProps():
                 return;
               }
 
+              if (params.clickedValue === selectedPlaylist?.name) {
+                setSelectedPlaylist(undefined);
+              }
+
               await mpdClient.command(
                 new MpdRequest({
                   profile,

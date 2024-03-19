@@ -42,9 +42,12 @@ export function PlaylistSelectModal(props: PlaylistSelectModalProps) {
     const playlist = new Playlist({
       name: playlistName,
     });
-    await addPlaylist(playlist);
+    if (isCreateNew) {
+      await addPlaylist(playlist);
+    }
     props.onOk(playlist);
-  }, [addPlaylist, playlistName, props]);
+    setIsCreateNew(props.isOnly === "NEW");
+  }, [addPlaylist, isCreateNew, playlistName, props]);
 
   const onClose = useCallback(() => {
     setPlaylistName("");
