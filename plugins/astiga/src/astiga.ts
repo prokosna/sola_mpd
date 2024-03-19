@@ -1,22 +1,15 @@
-import { Song, Song_MetadataTag } from "@sola_mpd/domain/src/models/song_pb.js";
-import { SongUtils } from "@sola_mpd/domain/src/utils/SongUtils.js";
+import { Song, SongMetadataTag } from "./models/song";
+import { getSongMetadataAsString, sleep } from "./utils";
 import { LRUCache } from "lru-cache";
 
-import {
-  AstigaCreatePlaylistResponseSchema,
-  AstigaGetPlaylistResponseSchema,
-  AstigaGetPlaylistsResponseSchema,
-  AstigaPlaylist,
-  AstigaSearch3ResponseSchema,
-  AstigaSong,
-} from "./types.js";
-import { sleep } from "./utils.js";
+type AstigaSong = {
+  id: string;
+  title: string;
+  artist: string;
+  album: string;
+};
 
-const fetchRetry = async (
-  url: string,
-  options: RequestInit,
-  n = 3,
-): Promise<Response> => {
+const fetchRetry = async (url: string, options: RequestInit, n = 3) => {
   try {
     return await fetch(url, options);
   } catch (err) {
@@ -38,18 +31,9 @@ export class AstigaClient {
   }
 
   async find(song: Song): Promise<AstigaSong | undefined> {
-    const title = SongUtils.getSongMetadataAsString(
-      song,
-      Song_MetadataTag.TITLE,
-    );
-    const artist = SongUtils.getSongMetadataAsString(
-      song,
-      Song_MetadataTag.ARTIST,
-    );
-    const album = SongUtils.getSongMetadataAsString(
-      song,
-      Song_MetadataTag.ALBUM,
-    );
+    const title = getSongMetadataAsString(song, SongMetadataTag.TITLE);
+    const artist = getSongMetadataAsString(song, SongMetadataTag.ARTIST);
+    const album = getSongMetadataAsString(song, SongMetadataTag.ALBUM);
     const queries = [
       this.makeQuery(undefined, album, undefined),
       this.makeQuery(undefined, undefined, artist),
@@ -57,9 +41,9 @@ export class AstigaClient {
       this.makeQuery(title, undefined, undefined),
     ];
     for (const query of queries) {
-      let songs: AstigaSong[] = [];
+      let songs: AstigaSong[];
       if (this.cache.has(query)) {
-        songs = this.cache.get(query)!;
+        songs = this.cache.get(query);
       } else {
         // Sometimes Astiga search returns an empty result even though there should be some results.
         // Retry several times per query.
@@ -108,62 +92,83 @@ export class AstigaClient {
     return toAddSongs;
   }
 
-  async getOrCreatePlaylist(name: string): Promise<AstigaPlaylist> {
+  async getOrCreatePlaylist(name: string): Promise<string> {
     const endpoint = `${this.url}/getPlaylists`;
     const searchParams = this.createRequest(new Map());
-    const resp = await fetchRetry(`${endpoint}?${searchParams}`, {
-      method: "GET",
-    });
-    const data = AstigaGetPlaylistsResponseSchema.parse(await resp.json());
-    const playlists = data["subsonic-response"].playlists.playlist;
-    const targetPlaylists = playlists.filter(
-      (playlist) => playlist["name"] === name,
-    );
-    if (targetPlaylists.length > 0) {
-      return targetPlaylists[0];
+    try {
+      const resp = await fetchRetry(`${endpoint}?${searchParams}`, {
+        method: "GET",
+      });
+      const data = await resp.json();
+      const playlists = data["subsonic-response"]["playlists"]["playlist"];
+      const targetPlaylists = playlists.filter((v) => v["name"] === name);
+      if (targetPlaylists.length > 0) {
+        return targetPlaylists[0]["id"];
+      }
+      return this.createPlaylist(name);
+    } catch (e) {
+      throw e;
     }
-    return this.createPlaylist(name);
   }
 
-  async add(song: AstigaSong, playlist: AstigaPlaylist): Promise<void> {
+  async add(song: AstigaSong, playlist: string): Promise<void> {
     const endpoint = `${this.url}/updatePlaylist`;
     const searchParams = this.createRequest(
       new Map([
-        ["playlistId", playlist.id],
+        ["playlistId", playlist],
         ["songIdToAdd", song.id],
       ]),
     );
-    await fetchRetry(`${endpoint}?${searchParams}`, {
-      method: "GET",
-    });
+    try {
+      await fetchRetry(`${endpoint}?${searchParams}`, {
+        method: "GET",
+      });
+    } catch (e) {
+      throw e;
+    }
   }
 
-  async delete(playlist: AstigaPlaylist): Promise<void> {
+  async delete(playlist: string): Promise<void> {
     const endpoint = `${this.url}/deletePlaylist`;
-    const searchParams = this.createRequest(new Map([["id", playlist.id]]));
-    await fetchRetry(`${endpoint}?${searchParams}`, {
-      method: "GET",
-    });
-    return;
+    const searchParams = this.createRequest(new Map([["id", playlist]]));
+    try {
+      await fetchRetry(`${endpoint}?${searchParams}`, {
+        method: "GET",
+      });
+      return;
+    } catch (e) {
+      throw e;
+    }
   }
 
-  async fetchSongs(playlist: AstigaPlaylist): Promise<AstigaSong[]> {
+  async fetchSongs(playlist: string): Promise<AstigaSong[]> {
     const endpoint = `${this.url}/getPlaylist`;
-    const searchParams = this.createRequest(new Map([["id", playlist.id]]));
-    const resp = await fetchRetry(`${endpoint}?${searchParams}`, {
-      method: "GET",
-    });
-    const data = AstigaGetPlaylistResponseSchema.parse(await resp.json());
-    return data["subsonic-response"].playlist.entry;
+    const searchParams = this.createRequest(new Map([["id", playlist]]));
+    try {
+      const resp = await fetchRetry(`${endpoint}?${searchParams}`, {
+        method: "GET",
+      });
+      const data = await resp.json();
+      const songs = data["subsonic-response"]["playlist"]["entry"];
+      return songs.map((v) => this.parse(v));
+    } catch (e) {
+      throw e;
+    }
+  }
+
+  private parse(v: any): AstigaSong {
+    return {
+      id: v["id"],
+      title: v["title"] || "",
+      album: v["album"] || "",
+      artist: v["artist"] || "",
+    };
   }
 
   private equal(a: Song, b: AstigaSong): boolean {
-    const title = SongUtils.getSongMetadataAsString(a, Song_MetadataTag.TITLE);
-    const artist = SongUtils.getSongMetadataAsString(
-      a,
-      Song_MetadataTag.ARTIST,
-    );
-    const album = SongUtils.getSongMetadataAsString(a, Song_MetadataTag.ALBUM);
+    const title = getSongMetadataAsString(a, SongMetadataTag.TITLE);
+    const artist = getSongMetadataAsString(a, SongMetadataTag.ARTIST);
+    const album = getSongMetadataAsString(a, SongMetadataTag.ALBUM);
     return b.title === title && b.artist === artist && b.album === album;
   }
 
@@ -175,21 +180,31 @@ export class AstigaClient {
         ["songCount", "10000"],
       ]),
     );
-    const resp = await fetchRetry(`${endpoint}?${searchParams}`, {
-      method: "GET",
-    });
-    const data = AstigaSearch3ResponseSchema.parse(await resp.json());
-    return data["subsonic-response"].searchResult3.song;
+    try {
+      const resp = await fetchRetry(`${endpoint}?${searchParams}`, {
+        method: "GET",
+      });
+      const data = await resp.json();
+      const songs = data["subsonic-response"]["searchResult3"]["song"];
+      return songs.map((v) => this.parse(v));
+    } catch (e) {
+      throw e;
+    }
   }
 
-  private async createPlaylist(name: string): Promise<AstigaPlaylist> {
+  private async createPlaylist(name: string): Promise<string> {
     const endpoint = `${this.url}/createPlaylist`;
     const searchParams = this.createRequest(new Map([["name", name]]));
-    const resp = await fetchRetry(`${endpoint}?${searchParams}`, {
-      method: "GET",
-    });
-    const data = AstigaCreatePlaylistResponseSchema.parse(await resp.json());
-    return data["subsonic-response"]["playlist"];
+    try {
+      const resp = await fetchRetry(`${endpoint}?${searchParams}`, {
+        method: "GET",
+      });
+      const data = await resp.json();
+      const playlist = data["subsonic-response"]["playlist"];
+      return playlist["id"];
+    } catch (e) {
+      throw e;
+    }
   }
 
   private createRequest(options: Map<string, string>): URLSearchParams {
@@ -202,8 +217,8 @@ export class AstigaClient {
     ]);
     const parameters = new Map([...preset, ...options]);
     const searchParams = new URLSearchParams();
-    Object.keys(Object.fromEntries(parameters)).forEach((key) =>
-      searchParams.set(key, parameters.get(key)!),
+    Object.keys(Object.fromEntries(parameters)).forEach((k) =>
+      searchParams.set(k, parameters.get(k)),
     );
     return searchParams;
   }
