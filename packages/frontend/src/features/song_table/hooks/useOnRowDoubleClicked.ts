@@ -3,10 +3,8 @@ import { RowDoubleClickedEvent } from "ag-grid-community";
 import { useCallback } from "react";
 
 import { getSongsInTableFromGrid } from "../helpers/table";
-import { SongTableKeyType } from "../types/songTable";
 
 export function useOnRowDoubleClicked(
-  keyType: SongTableKeyType,
   songsMap: Map<string, Song>,
   onDoubleClick: (clickedSong: Song, songs: Song[]) => Promise<void>,
 ) {
@@ -22,7 +20,7 @@ export function useOnRowDoubleClicked(
       }
 
       const { clickedSong, sortedSongs } = getSongsInTableFromGrid(
-        keyType,
+        targetKey,
         api,
         songsMap,
       );
@@ -31,6 +29,6 @@ export function useOnRowDoubleClicked(
       }
       onDoubleClick(clickedSong, sortedSongs);
     },
-    [keyType, songsMap, onDoubleClick],
+    [songsMap, onDoubleClick],
   );
 }

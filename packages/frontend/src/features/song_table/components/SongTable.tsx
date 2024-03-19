@@ -100,18 +100,12 @@ export function SongTable(props: SongTableProps) {
     props.isSortingEnabled,
     props.onUpdateColumns,
   );
-  const onRowDragEnd = useOnRowDragEnd(
-    props.songTableKeyType,
-    songsMap,
-    props.onReorderSongs,
-  );
+  const onRowDragEnd = useOnRowDragEnd(songsMap, props.onReorderSongs);
   const onSelectionChanged = useOnSelectionChanged(
-    props.songTableKeyType,
     songsMap,
     props.onSelectSongs,
   );
   const onRowDoubleClicked = useOnRowDoubleClicked(
-    props.songTableKeyType,
     songsMap,
     props.onDoubleClick,
   );
