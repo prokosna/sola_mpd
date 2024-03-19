@@ -42,13 +42,13 @@ export function SelectList(props: SelectListProps) {
   const { colorMode } = useColorMode();
 
   // Sync with selectedValues which can be updated outside of this component
-  const model = gridRef.current?.api.getModel();
+  const api = gridRef.current?.api;
   useEffect(() => {
-    if (model === undefined) {
+    if (api === undefined) {
       return;
     }
 
-    model.forEachNode((node) => {
+    api.forEachNode((node) => {
       const value = String(node.data.key);
       if (node.isSelected() && !props.selectedValues.includes(value)) {
         node.setSelected(false);
@@ -56,7 +56,7 @@ export function SelectList(props: SelectListProps) {
         node.setSelected(true);
       }
     });
-  }, [props.selectedValues, model]);
+  }, [props.selectedValues, api]);
 
   return (
     <>
