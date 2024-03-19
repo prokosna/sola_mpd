@@ -1,67 +1,79 @@
 {
   "name": "sola_mpd",
-  "version": "2.0.0",
+  "version": "1.5.3",
   "private": true,
   "author": "prokosna",
   "license": "MIT",
   "scripts": {
-    "build": "npm run build -ws --if-present",
-    "build:no_types": "npm run build:no_types -ws --if-present",
-    "start": "npm start -w packages/backend",
-    "dev": "npm-run-all --parallel dev_*",
-    "dev_domain": "npm run dev -w packages/domain",
-    "dev_frontend": "npm run dev -w packages/frontend",
-    "dev_backend": "npm run dev -w packages/backend",
-    "proto": "npm run proto -w packages/domain",
-    "lint": "eslint packages/**/src --ext js,jsx,ts,tsx --fix && eslint plugins/**/src --ext js,jsx,ts,tsx --fix",
-    "fmt": "npm-run-all --parallel fmt_*",
-    "fmt_prettier": "prettier packages/**/src --write && prettier plugins/**/src --write",
-    "fmt_clang": "find . -name '*.proto' | xargs clang-format --style '{ BasedOnStyle: Google }' -i",
+    "dev": "cross-env NODE_ENV=development nodemon",
+    "build": "next build && tsc --project tsconfig.server.json && tsc-alias --project tsconfig.server.json",
+    "start": "cross-env NODE_ENV=production node dist/server/main.js",
+    "lint": "npx eslint src --ext js,jsx,ts,tsx --fix",
+    "proto": "npx protoc -I ./src/proto --ts_proto_out ./src/models --ts_proto_opt=oneof=unions --ts_proto_opt=unrecognizedEnum=false --ts_proto_opt=stringEnums=true --ts_proto_opt=snakeToCamel=true --ts_proto_opt=useSnakeTypeName=false --ts_proto_opt=esModuleInterop=true --ts_proto_opt=nestJs=false --ts_proto_opt=outputServices=grpc-js --ts_proto_opt=outputEncodeMethods=true --ts_proto_opt=outputJsonMethods=true --ts_proto_opt=outputPartialMethods=true --ts_proto_opt=useExactTypes=true --ts_proto_opt=useDate=true ./src/proto/*.proto ./src/proto/**/*.proto",
     "prepare": "husky install",
-    "lint-staged": "npx lint-staged",
-    "test": "npm run test -ws --if-present"
+    "lint-staged": "npx lint-staged"
   },
   "lint-staged": {
     "*.{js,jsx,ts,tsx}": [
       "npx eslint --fix"
     ],
-    "*.{js,jsx,ts,tsx,json,md,css,yaml}": [
+    "*.{js,jsx,ts,tsx,json,md,css,yaml,proto}": [
       "npx prettier --write"
-    ],
-    "*.proto": [
-      "npx clang-format --style '{ BasedOnStyle: Google }' -i"
     ]
   },
-  "workspaces": [
-    "packages/domain",
-    "packages/frontend",
-    "packages/backend"
-  ],
+  "dependencies": {
+    "@chakra-ui/next-js": "^2.1.5",
+    "@chakra-ui/react": "^2.8.0",
+    "@emotion/react": "^11.11.1",
+    "@emotion/styled": "^11.11.0",
+    "@grpc/grpc-js": "^1.8.18",
+    "@naisutech/react-tree": "^3.1.0",
+    "@next/font": "^13.4.12",
+    "ag-grid-community": "^30.0.5",
+    "ag-grid-react": "^30.0.5",
+    "allotment": "^1.19.2",
+    "bufferutil": "^4.0.7",
+    "compare-versions": "^6.0.0",
+    "dayjs": "^1.11.9",
+    "fast-deep-equal": "^3.1.3",
+    "framer-motion": "^10.13.0",
+    "immer": "^10.0.2",
+    "mpd2": "^1.0.5",
+    "next": "^13.4.12",
+    "nextjs-toploader": "^1.4.2",
+    "normalize-diacritics": "^4.0.0",
+    "protobufjs": "^7.2.4",
+    "react": "^18.2.0",
+    "react-contexify": "^6.0.0",
+    "react-dom": "^18.2.0",
+    "react-icons": "^4.10.1",
+    "rxjs": "^7.8.1",
+    "socket.io": "^4.7.1",
+    "socket.io-client": "^4.7.1",
+    "typescript": "5.1.6",
+    "utf-8-validate": "^6.0.3",
+    "uuid": "^9.0.0",
+    "zustand": "^4.3.9"
+  },
   "devDependencies": {
-    "@swc/cli": "^0.1.63",
-    "@swc/core": "^1.3.102",
-    "@typescript-eslint/eslint-plugin": "^6.18.0",
-    "@typescript-eslint/parser": "^6.18.0",
-    "clang-format": "^1.8.0",
-    "eslint": "^8.56.0",
-    "eslint-config-prettier": "^9.1.0",
-    "eslint-import-resolver-typescript": "^3.6.1",
-    "eslint-plugin-import": "^2.29.1",
-    "eslint-plugin-react-hooks": "^4.6.0",
-    "eslint-plugin-react-refresh": "^0.4.5",
-    "eslint-plugin-require-extensions": "^0.1.3",
+    "@types/node": "20.4.3",
+    "@types/react": "18.2.15",
+    "@types/react-dom": "18.2.7",
+    "@types/uuid": "^9.0.2",
+    "cross-env": "^7.0.3",
+    "eslint": "8.45.0",
+    "eslint-config-next": "^13.4.12",
+    "eslint-config-prettier": "^8.8.0",
+    "eslint-import-resolver-typescript": "^3.5.5",
+    "eslint-plugin-import": "^2.27.5",
     "eslint-plugin-unused-imports": "^3.0.0",
     "husky": "^8.0.3",
-    "lint-staged": "^15.2.0",
-    "npm-run-all": "^4.1.5",
-    "prettier": "^3.1.1",
-    "supertest": "^6.3.3",
-    "typescript": "^5.3.3",
-    "vitest": "^1.1.3"
-  },
-  "dependencies": {
-    "@bufbuild/protobuf": "^1.7.2",
-    "@connectrpc/connect": "^1.3.0",
-    "dayjs": "^1.11.10"
+    "lint-staged": "^13.2.3",
+    "nodemon": "^3.0.1",
+    "prettier": "^3.0.0",
+    "ts-node": "^10.9.1",
+    "ts-proto": "^1.156.0",
+    "tsc-alias": "^1.8.7",
+    "tsconfig-paths": "^4.2.0"
   }
 }

@@ -12,7 +12,7 @@ source "$ROOT_DIR/docker/const.sh"
 
 EXTRA_ARGS=(
   --name "${CONTAINER_NAME}"
-  -v sola_db:/app/packages/backend/db
+  -v sola_db:/app/db
   -e "USER=$USER"
   -p $PORT_OPT:3000
   --add-host host.docker.internal:host-gateway
