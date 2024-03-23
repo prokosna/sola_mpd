@@ -17,9 +17,7 @@ export function listBrowserSongMetadataTags(): Song_MetadataTag[] {
     Song_MetadataTag.ALBUM_ARTIST,
     Song_MetadataTag.ARTIST,
     Song_MetadataTag.COMPOSER,
-    Song_MetadataTag.FORMAT,
     Song_MetadataTag.GENRE,
-    Song_MetadataTag.LABEL,
   ];
 }
 
