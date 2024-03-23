@@ -1,2 +1,3 @@
-src/models
+packages/domain/src/models
 plugins/astiga/src/models
+**/dist

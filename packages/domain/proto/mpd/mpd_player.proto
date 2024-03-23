@@ -1,0 +1,33 @@
+syntax = "proto3";
+
+import "song.proto";
+import "google/protobuf/wrappers.proto";
+
+message MpdPlayerStatus {
+  bool is_repeat = 1;
+  bool is_random = 2;
+  bool is_single = 3;
+  bool is_consume = 4;
+  int32 play_queue_length = 5;
+  PlaybackState playback_state = 6;
+  int32 song = 7;
+  int32 song_id = 8;
+  int32 next_song = 9;
+  int32 next_song_id = 10;
+  optional float elapsed = 11;
+  optional float duration = 12;
+  optional int32 bitrate = 13;
+  AudioFormat audio_format = 14;
+  bool is_database_updating = 16;
+
+  enum PlaybackState {
+    UNKNOWN = 0;
+    PLAY = 1;
+    STOP = 2;
+    PAUSE = 3;
+  }
+}
+
+message MpdPlayerVolume {
+  google.protobuf.Int32Value volume = 1;
+}

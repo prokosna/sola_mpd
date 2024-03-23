@@ -10,7 +10,7 @@ EXTRA_ARGS=(
   -v $ROOT_DIR/music:/music
   -v $ROOT_DIR/playlists:/playlists
   -e "USER=mpd"
-  -p 6600:6600
+  --net host
 )
 
 docker run -id --rm "${EXTRA_ARGS[@]}" $IMAGE_NAME

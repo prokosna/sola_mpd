@@ -1,11 +1,12 @@
 FROM node:20-alpine
 
 WORKDIR /app
-COPY package.json package-lock.json ./
-RUN npm ci
-
 COPY . .
-RUN npm run build
+RUN npm ci
+RUN npm run build:no_types
+
+RUN cp -R packages/frontend/dist packages/backend/dist/public
+RUN rm -rf packages/backend/db
 
 EXPOSE 3000
-CMD ["npm", "run", "start"]
+CMD ["npm", "start"]

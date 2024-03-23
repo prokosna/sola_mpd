@@ -1,12 +1,14 @@
 FROM node:20-alpine
 
 WORKDIR /app
-COPY package.json package-lock.json ./
+COPY --from=root_context . /app
 RUN npm ci
+RUN npm run -w packages/domain build_ts
 
+WORKDIR /app/plugins/astiga
 COPY . .
-RUN rm ./src/proto && mv ./temp_proto ./src/proto
+RUN npm ci
 RUN npm run build
 
 EXPOSE 3001
-CMD ["npm", "run", "start:prod"]
+CMD ["npm", "start"]

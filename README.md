@@ -144,7 +144,7 @@ This plugin is quite specific to my use case, but you can use this as a referenc
 
 ## For developers
 
-Sola MPD is written in TypeScript with React, Next.js, Protocol Buffers and so on.
+Sola MPD is written in TypeScript with React, Vite, Protocol Buffers and so on.
 
 ```
 # 1. Install dependencies, set up a husky hook for format/lint
@@ -153,6 +153,7 @@ $ npm i
 # 2. Compile protobuf messages as all objects are defined in the Protobuf format
 $ npm run proto
 
-# 3. Run a dev server (Currently hot-reload doesn't work due to the custom server issue of Next.js)
-$ npm run dev
+# 3. Run dev servers
+$ npm run -w packages/backend dev
+$ npm run -w packages/frontend dev
 ```

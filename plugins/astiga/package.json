@@ -1,74 +1,32 @@
 {
   "name": "astiga",
-  "version": "1.0.7",
-  "author": "prokosna",
+  "version": "2.0.1",
   "private": true,
+  "author": "prokosna",
+  "license": "MIT",
+  "type": "module",
   "scripts": {
-    "build": "nest build",
-    "format": "prettier --write \"src/**/*.ts\"",
-    "start": "nest start",
-    "start:dev": "nest start --watch",
-    "start:debug": "nest start --debug --watch",
-    "start:prod": "node dist/main",
-    "lint": "eslint \"{src,apps,libs,test}/**/*.ts\" --fix",
-    "test": "jest",
-    "test:watch": "jest --watch",
-    "test:cov": "jest --coverage",
-    "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
-    "test:e2e": "jest --config ./test/jest-e2e.json",
-    "proto": "npx protoc -I ../../src/proto --ts_proto_out ./src/models --ts_proto_opt=oneof=unions --ts_proto_opt=unrecognizedEnum=false --ts_proto_opt=stringEnums=true --ts_proto_opt=snakeToCamel=true --ts_proto_opt=useSnakeTypeName=false --ts_proto_opt=esModuleInterop=true --ts_proto_opt=nestJs=true --ts_proto_opt=outputEncodeMethods=true --ts_proto_opt=outputJsonMethods=true --ts_proto_opt=outputPartialMethods=true --ts_proto_opt=useExactTypes=true --ts_proto_opt=useDate=true ../../src/proto/*.proto ../../src/proto/**/*.proto"
-  },
-  "dependencies": {
-    "@grpc/grpc-js": "^1.8.18",
-    "@nestjs/common": "^10.1.0",
-    "@nestjs/core": "^10.1.0",
-    "@nestjs/microservices": "^10.1.0",
-    "@nestjs/platform-express": "^10.1.0",
-    "dayjs": "^1.11.9",
-    "lru-cache": "^10.0.0",
-    "protobufjs": "^7.2.4",
-    "reflect-metadata": "^0.1.13",
-    "rxjs": "^7.8.1"
+    "build": "npx swc src -d dist",
+    "start": "node dist/index.js",
+    "dev": "nodemon --watch src --ext ts --exec 'npm run build && npm start'",
+    "test": "npx vitest run"
   },
   "devDependencies": {
-    "@nestjs/cli": "^10.1.10",
-    "@nestjs/schematics": "^10.0.1",
-    "@nestjs/testing": "^10.1.0",
+    "@swc/cli": "^0.1.63",
+    "@swc/core": "^1.3.102",
     "@types/express": "^4.17.17",
-    "@types/jest": "29.5.3",
-    "@types/node": "20.4.2",
-    "@types/supertest": "^2.0.12",
-    "@typescript-eslint/eslint-plugin": "^6.1.0",
-    "@typescript-eslint/parser": "^6.1.0",
-    "eslint": "^8.45.0",
-    "eslint-config-prettier": "^8.8.0",
-    "eslint-plugin-prettier": "^5.0.0",
-    "jest": "29.6.1",
-    "prettier": "^3.0.0",
-    "source-map-support": "^0.5.21",
-    "supertest": "^6.3.3",
-    "ts-jest": "29.1.1",
-    "ts-loader": "^9.4.4",
+    "@types/node": "^20.3.1",
+    "nodemon": "^3.0.2",
     "ts-node": "^10.9.1",
-    "ts-proto": "^1.156.0",
-    "tsconfig-paths": "4.2.0",
-    "typescript": "^5.1.6"
+    "tsconfig-paths": "^4.2.0"
   },
-  "jest": {
-    "moduleFileExtensions": [
-      "js",
-      "json",
-      "ts"
-    ],
-    "rootDir": "src",
-    "testRegex": ".*\\.spec\\.ts$",
-    "transform": {
-      "^.+\\.(t|j)s$": "ts-jest"
-    },
-    "collectCoverageFrom": [
-      "**/*.(t|j)s"
-    ],
-    "coverageDirectory": "../coverage",
-    "testEnvironment": "node"
+  "dependencies": {
+    "@connectrpc/connect": "^1.3.0",
+    "@connectrpc/connect-express": "^1.3.0",
+    "@connectrpc/connect-node": "^1.3.0",
+    "@sola_mpd/domain": "file:../../packages/domain",
+    "express": "^4.18.2",
+    "lru-cache": "^10.2.0",
+    "zod": "^3.22.4"
   }
 }
