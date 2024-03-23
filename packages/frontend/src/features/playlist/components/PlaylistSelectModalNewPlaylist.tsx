@@ -4,7 +4,7 @@ import { useCallback, useState } from "react";
 import { usePlaylistsState } from "../states/playlist";
 
 export type PlaylistSelectModalNewPlaylistProps = {
-  onInput: (playlistName: string) => void;
+  onInput: (playlistName: string, isOk: boolean) => void;
 };
 
 export default function PlaylistSelectModalNewPlaylist(
@@ -16,6 +16,8 @@ export default function PlaylistSelectModalNewPlaylist(
   const onInput = useCallback(
     (name: string) => {
       if (name === "") {
+        setErrorMessage("The playlist name can't be empty.");
+        props.onInput(name, false);
         return;
       }
       const playlist = (playlists || []).find(
@@ -23,10 +25,11 @@ export default function PlaylistSelectModalNewPlaylist(
       );
       if (playlist !== undefined) {
         setErrorMessage("The playlist name is already used.");
+        props.onInput(name, false);
         return;
       }
       setErrorMessage("");
-      props.onInput(name);
+      props.onInput(name, true);
     },
     [playlists, props],
   );

@@ -29,13 +29,16 @@ export function PlaylistSelectModal(props: PlaylistSelectModalProps) {
 
   const [isCreateNew, setIsCreateNew] = useState(props.isOnly === "NEW");
   const [playlistName, setPlaylistName] = useState("");
+  const [isPlaylistNameOk, setIsPlaylistNameOk] = useState(false);
 
   const onSelect = useCallback((name: string) => {
     setPlaylistName(name);
+    setIsPlaylistNameOk(true);
   }, []);
 
-  const onInput = useCallback((name: string) => {
+  const onInput = useCallback((name: string, isOk: boolean) => {
     setPlaylistName(name);
+    setIsPlaylistNameOk(isOk);
   }, []);
 
   const onSubmit = useCallback(async () => {
@@ -43,11 +46,16 @@ export function PlaylistSelectModal(props: PlaylistSelectModalProps) {
       name: playlistName,
     });
     if (isCreateNew) {
-      await addPlaylist(playlist);
+      if (isPlaylistNameOk) {
+        await addPlaylist(playlist);
+      } else {
+        return;
+      }
     }
     props.onOk(playlist);
     setIsCreateNew(props.isOnly === "NEW");
-  }, [addPlaylist, isCreateNew, playlistName, props]);
+    setIsPlaylistNameOk(false);
+  }, [addPlaylist, isCreateNew, isPlaylistNameOk, playlistName, props]);
 
   const onClose = useCallback(() => {
     setPlaylistName("");
@@ -77,7 +85,10 @@ export function PlaylistSelectModal(props: PlaylistSelectModalProps) {
                 <Checkbox
                   colorScheme="brand"
                   checked={isCreateNew}
-                  onChange={(e) => setIsCreateNew(e.target.checked)}
+                  onChange={(e) => {
+                    setIsCreateNew(e.target.checked);
+                    setIsPlaylistNameOk(false);
+                  }}
                 >
                   Create a new playlist
                 </Checkbox>
@@ -90,9 +101,9 @@ export function PlaylistSelectModal(props: PlaylistSelectModalProps) {
               colorScheme="brand"
               mr={3}
               onClick={onSubmit}
-              disabled={playlistName === ""}
+              isDisabled={playlistName === "" || !isPlaylistNameOk}
             >
-              OK
+              Add
             </Button>
             <Button onClick={onClose} colorScheme="gray">
               Cancel
