@@ -1,0 +1,9 @@
+export const ROUTE_LANDING = "/landing";
+export const ROUTE_HOME = "/home";
+export const ROUTE_HOME_PLAY_QUEUE = "/home/play_queue";
+export const ROUTE_HOME_BROWSER = "/home/browser";
+export const ROUTE_HOME_PLAYLIST = "/home/playlists";
+export const ROUTE_HOME_FILE_EXPLORE = "/home/file_explore";
+export const ROUTE_HOME_SEARCH = "/home/search";
+export const ROUTE_HOME_PLUGIN = "/home/plugin";
+export const ROUTE_HOME_SETTINGS = "/home/settings";

@@ -1,0 +1,22 @@
+{
+  "compilerOptions": {
+    "module": "ESNext",
+    "moduleResolution": "node",
+    "declaration": true,
+    "removeComments": true,
+    "target": "ESNext",
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true,
+    "strict": true,
+    "noImplicitAny": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "noImplicitReturns": true,
+    "isolatedModules": true,
+    "skipLibCheck": true,
+    "emitDeclarationOnly": true,
+    "declarationMap": false,
+    "declarationDir": "./dist"
+  },
+  "include": ["src/**/*", "vitest.config.ts"]
+}
