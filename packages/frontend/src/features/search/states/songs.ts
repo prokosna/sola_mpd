@@ -62,7 +62,7 @@ const searchVisibleSongsAtom = atom(async (get) => {
   const end = performance.now();
   metricsTracker.appendMetric({
     page: "Search",
-    action: "Download",
+    action: "Filtering",
     elapsedTimeMillisecond: end - start,
   });
 

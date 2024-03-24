@@ -64,7 +64,7 @@ const playlistVisibleSongsAtom = atom(async (get) => {
   const end = performance.now();
   metricsTracker.appendMetric({
     page: "Playlist",
-    action: "Download",
+    action: "Filtering",
     elapsedTimeMillisecond: end - start,
   });
 
