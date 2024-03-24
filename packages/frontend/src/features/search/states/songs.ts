@@ -1,12 +1,17 @@
 import { Search } from "@sola_mpd/domain/src/models/search_pb.js";
 import { atom, useAtomValue, useSetAtom } from "jotai";
 import { unwrap } from "jotai/utils";
+import { useEffect } from "react";
 
 import { ROUTE_HOME_SEARCH } from "../../../const/routes";
 import { atomWithRefresh } from "../../../lib/jotai/atomWithRefresh";
 import { filterSongsByGlobalFilter } from "../../global_filter";
 import { globalFilterTokensAtom } from "../../global_filter/states/filter";
 import { pathnameAtom } from "../../location/states/location";
+import {
+  metricsTrackerAtom,
+  useRefreshMetrics,
+} from "../../metrics/states/tracker";
 import { mpdClientAtom } from "../../mpd/states/mpdClient";
 import { currentMpdProfileAtom } from "../../profile/states/persistent";
 import { fetchSearchSongs } from "../helpers/api";
@@ -24,7 +29,17 @@ const searchSongsAtom = atomWithRefresh(async (get) => {
     return [];
   }
 
-  return await fetchSearchSongs(mpdClient, currentMpdProfile, search);
+  const metricsTracker = get(metricsTrackerAtom);
+  const start = performance.now();
+  const songs = await fetchSearchSongs(mpdClient, currentMpdProfile, search);
+  const end = performance.now();
+  metricsTracker.appendMetric({
+    page: "Search",
+    action: "Download",
+    elapsedTimeMillisecond: end - start,
+  });
+
+  return songs;
 });
 
 const searchVisibleSongsAtom = atom(async (get) => {
@@ -37,11 +52,20 @@ const searchVisibleSongsAtom = atom(async (get) => {
     return searchSongs;
   }
 
+  const metricsTracker = get(metricsTrackerAtom);
+  const start = performance.now();
   const filteredSongs = filterSongsByGlobalFilter(
     searchSongs,
     globalFilterTokens,
     editingSearch.columns,
   );
+  const end = performance.now();
+  metricsTracker.appendMetric({
+    page: "Search",
+    action: "Filtering",
+    elapsedTimeMillisecond: end - start,
+  });
+
   return filteredSongs;
 });
 
@@ -59,7 +83,14 @@ export function useSetTargetSearchState() {
 }
 
 export function useSearchVisibleSongsState() {
-  return useAtomValue(unwrappedSearchSongs);
+  const songs = useAtomValue(unwrappedSearchSongs);
+  const refreshMetrics = useRefreshMetrics();
+
+  useEffect(() => {
+    refreshMetrics();
+  }, [refreshMetrics, songs]);
+
+  return songs;
 }
 
 export function useRefreshSearchSongsState() {

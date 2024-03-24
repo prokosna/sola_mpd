@@ -20,8 +20,11 @@ export function Browser() {
   const { colorMode } = useColorMode();
 
   const onChangeWidth = useCallback(
-    async (left: number) => {
+    async (left: number | undefined) => {
       if (browserLayout === undefined) {
+        return;
+      }
+      if (left === undefined) {
         return;
       }
       const newLayout = browserLayout.clone();

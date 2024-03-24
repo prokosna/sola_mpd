@@ -1,11 +1,16 @@
 import { atom, useAtomValue, useSetAtom } from "jotai";
 import { unwrap } from "jotai/utils";
+import { useEffect } from "react";
 
 import { ROUTE_HOME_PLAY_QUEUE } from "../../../const/routes";
 import { atomWithRefresh } from "../../../lib/jotai/atomWithRefresh";
 import { filterSongsByGlobalFilter } from "../../global_filter";
 import { globalFilterTokensAtom } from "../../global_filter/states/filter";
 import { pathnameAtom } from "../../location/states/location";
+import {
+  metricsTrackerAtom,
+  useRefreshMetrics,
+} from "../../metrics/states/tracker";
 import { mpdClientAtom } from "../../mpd/states/mpdClient";
 import { currentMpdProfileAtom } from "../../profile/states/persistent";
 import { commonSongTableStateAtom } from "../../song_table/states/commonSongTableState";
@@ -19,7 +24,17 @@ const playQueueSongsAtom = atomWithRefresh(async (get) => {
     return [];
   }
 
-  return await fetchPlayQueueSongs(mpdClient, currentMpdProfile);
+  const metricsTracker = get(metricsTrackerAtom);
+  const start = performance.now();
+  const songs = await fetchPlayQueueSongs(mpdClient, currentMpdProfile);
+  const end = performance.now();
+  metricsTracker.appendMetric({
+    page: "Play Queue",
+    action: "Download",
+    elapsedTimeMillisecond: end - start,
+  });
+
+  return songs;
 });
 
 const playQueueVisibleSongsAtom = atom(async (get) => {
@@ -32,11 +47,20 @@ const playQueueVisibleSongsAtom = atom(async (get) => {
     return playQueueSongs;
   }
 
+  const metricsTracker = get(metricsTrackerAtom);
+  const start = performance.now();
   const filteredSongs = filterSongsByGlobalFilter(
     playQueueSongs,
     globalFilterTokens,
     commonSongTableState.columns,
   );
+  const end = performance.now();
+  metricsTracker.appendMetric({
+    page: "Play Queue",
+    action: "Filtering",
+    elapsedTimeMillisecond: end - start,
+  });
+
   return filteredSongs;
 });
 
@@ -50,5 +74,12 @@ export function usePlayQueueVisibleSongsState() {
 }
 
 export function useRefreshPlayQueueSongsState() {
-  return useSetAtom(playQueueSongsAtom);
+  const songs = useSetAtom(playQueueSongsAtom);
+  const refreshMetrics = useRefreshMetrics();
+
+  useEffect(() => {
+    refreshMetrics();
+  }, [refreshMetrics, songs]);
+
+  return songs;
 }

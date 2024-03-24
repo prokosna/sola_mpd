@@ -1,11 +1,16 @@
 import { atom, useAtomValue, useSetAtom } from "jotai";
 import { unwrap } from "jotai/utils";
+import { useEffect } from "react";
 
 import { ROUTE_HOME_PLAYLIST } from "../../../const/routes";
 import { atomWithRefresh } from "../../../lib/jotai/atomWithRefresh";
 import { filterSongsByGlobalFilter } from "../../global_filter";
 import { globalFilterTokensAtom } from "../../global_filter/states/filter";
 import { pathnameAtom } from "../../location/states/location";
+import {
+  metricsTrackerAtom,
+  useRefreshMetrics,
+} from "../../metrics/states/tracker";
 import { mpdClientAtom } from "../../mpd/states/mpdClient";
 import { currentMpdProfileAtom } from "../../profile/states/persistent";
 import { commonSongTableStateAtom } from "../../song_table/states/commonSongTableState";
@@ -22,11 +27,21 @@ const playlistSongsAtom = atomWithRefresh(async (get) => {
     return [];
   }
 
-  return await fetchPlaylistSongs(
+  const metricsTracker = get(metricsTrackerAtom);
+  const start = performance.now();
+  const songs = await fetchPlaylistSongs(
     mpdClient,
     currentMpdProfile,
     selectedPlaylist,
   );
+  const end = performance.now();
+  metricsTracker.appendMetric({
+    page: "Playlist",
+    action: "Download",
+    elapsedTimeMillisecond: end - start,
+  });
+
+  return songs;
 });
 
 const playlistVisibleSongsAtom = atom(async (get) => {
@@ -39,11 +54,20 @@ const playlistVisibleSongsAtom = atom(async (get) => {
     return playlistSongs;
   }
 
+  const metricsTracker = get(metricsTrackerAtom);
+  const start = performance.now();
   const filteredSongs = filterSongsByGlobalFilter(
     playlistSongs,
     globalFilterTokens,
     commonSongTableState.columns,
   );
+  const end = performance.now();
+  metricsTracker.appendMetric({
+    page: "Playlist",
+    action: "Filtering",
+    elapsedTimeMillisecond: end - start,
+  });
+
   return filteredSongs;
 });
 
@@ -57,5 +81,12 @@ export function useRefreshPlaylistSongsState() {
 }
 
 export function usePlaylistVisibleSongsState() {
-  return useAtomValue(unwrappedPlaylistVisibleSongsAtom);
+  const songs = useAtomValue(unwrappedPlaylistVisibleSongsAtom);
+  const refreshMetrics = useRefreshMetrics();
+
+  useEffect(() => {
+    refreshMetrics();
+  }, [refreshMetrics, songs]);
+
+  return songs;
 }
