@@ -6,10 +6,10 @@
     "build": "npm-run-all --parallel build_*",
     "build:no_types": "npm run build_ts",
     "build_types": "npx tsc",
-    "build_ts": "npx swc src -d dist",
+    "build_ts": "npx swc src -d dist --strip-leading-paths",
     "dev": "npm-run-all --parallel dev_*",
     "dev_types": "npx tsc --watch",
-    "dev_ts": "npx swc src -d dist --watch",
+    "dev_ts": "npx swc src -d dist --watch --strip-leading-paths",
     "proto": "rm -rf ./src/models/* && npx buf generate --template buf.gen.yaml ./proto",
     "test": "npx vitest run"
   },

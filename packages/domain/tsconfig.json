@@ -16,7 +16,9 @@
     "skipLibCheck": true,
     "emitDeclarationOnly": true,
     "declarationMap": false,
-    "declarationDir": "./dist"
+    "declarationDir": "./dist",
+    "rootDir": "./src",
+    "outDir": "./dist"
   },
-  "include": ["src/**/*", "vitest.config.ts"]
+  "include": ["src/**/*"]
 }
