@@ -20,12 +20,7 @@ export function useFilterTextActionsWithDebounce() {
     [setGlobalFilterText],
   );
 
-  const onTextCleared = useCallback(() => {
-    setGlobalFilterText("");
-  }, [setGlobalFilterText]);
-
   return {
     onTextChanged,
-    onTextCleared,
   };
 }

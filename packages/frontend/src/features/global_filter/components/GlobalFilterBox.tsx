@@ -13,7 +13,7 @@ import { IoSearchOutline } from "react-icons/io5";
 import { useFilterTextActionsWithDebounce } from "../hooks/useFilterTextActionsWithDebounce";
 
 export function GlobalFilterBox() {
-  const { onTextChanged, onTextCleared } = useFilterTextActionsWithDebounce();
+  const { onTextChanged } = useFilterTextActionsWithDebounce();
   const inputRef = useRef<HTMLInputElement>(null);
 
   return (
@@ -40,7 +40,7 @@ export function GlobalFilterBox() {
                 if (inputRef.current != null) {
                   inputRef.current.value = "";
                 }
-                onTextCleared();
+                onTextChanged("");
               }}
             />
           </InputRightElement>
