@@ -19,7 +19,7 @@ export function CardStats() {
 
   return (
     <>
-      <Box w="100%" h="full" pb={0} px={6} pt={2}>
+      <Box w="100%" h="full">
         <CardStatsNumber {...songStatsProps} />
         <Divider mb={2}></Divider>
         <CardStatsNumber {...artistStatsProps} />
@@ -28,7 +28,7 @@ export function CardStats() {
         <Divider mb={2}></Divider>
         <CardStatsNumber {...durationStatsProps} />
         <Divider mb={2}></Divider>
-        <Box pb={2}>
+        <Box mb={0} pb={0}>
           <CardStatsDatabaseButton />
         </Box>
       </Box>

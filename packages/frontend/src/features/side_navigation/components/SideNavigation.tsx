@@ -16,6 +16,7 @@ import {
   ROUTE_HOME_PLUGIN,
   ROUTE_HOME_SEARCH,
 } from "../../../const/routes";
+import { Metrics } from "../../metrics";
 import { CardStats } from "../../stats";
 import { useSideNavigationItems } from "../hooks/useSideNavigationItems";
 
@@ -68,9 +69,13 @@ export function SideNavigation() {
             <SideNavigationItem key={item.name} {...item}></SideNavigationItem>
           ))}
         </Box>
-        <Divider></Divider>
-        <Box w="100%" h="full" p={0}>
-          <CardStats></CardStats>
+        <Divider />
+        <Box w="100%" h="full" pb={0} px={6} pt={2}>
+          <CardStats />
+        </Box>
+        <Divider />
+        <Box w="100%" h="full" pb={0} px={6} pt={2}>
+          <Metrics />
         </Box>
       </VStack>
     </>

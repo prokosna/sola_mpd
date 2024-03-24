@@ -1,11 +1,16 @@
 import { atom, useAtomValue } from "jotai";
 import { unwrap } from "jotai/utils";
+import { useEffect } from "react";
 
 import { ROUTE_HOME_BROWSER } from "../../../const/routes";
 import { atomWithRefresh } from "../../../lib/jotai/atomWithRefresh";
 import { filterSongsByGlobalFilter } from "../../global_filter";
 import { globalFilterTokensAtom } from "../../global_filter/states/filter";
 import { pathnameAtom } from "../../location/states/location";
+import {
+  metricsTrackerAtom,
+  useRefreshMetrics,
+} from "../../metrics/states/tracker";
 import { mpdClientAtom } from "../../mpd/states/mpdClient";
 import { currentMpdProfileAtom } from "../../profile/states/persistent";
 import { commonSongTableStateAtom } from "../../song_table/states/commonSongTableState";
@@ -22,7 +27,21 @@ const browserSongsAtom = atomWithRefresh(async (get) => {
     return [];
   }
 
-  return await fetchBrowserSongs(mpdClient, currentMpdProfile, browserFilters);
+  const metricsTracker = get(metricsTrackerAtom);
+  const start = performance.now();
+  const songs = await fetchBrowserSongs(
+    mpdClient,
+    currentMpdProfile,
+    browserFilters,
+  );
+  const end = performance.now();
+  metricsTracker.appendMetric({
+    page: "Browser",
+    action: "Download",
+    elapsedTimeMillisecond: end - start,
+  });
+
+  return songs;
 });
 
 const browserVisibleSongsAtom = atom(async (get) => {
@@ -35,11 +54,20 @@ const browserVisibleSongsAtom = atom(async (get) => {
     return browserSongs;
   }
 
+  const metricsTracker = get(metricsTrackerAtom);
+  const start = performance.now();
   const filteredSongs = filterSongsByGlobalFilter(
     browserSongs,
     globalFilterTokens,
     commonSongTableState.columns,
   );
+  const end = performance.now();
+  metricsTracker.appendMetric({
+    page: "Browser",
+    action: "Filtering",
+    elapsedTimeMillisecond: end - start,
+  });
+
   return filteredSongs;
 });
 
@@ -49,5 +77,12 @@ const unwrappedBrowserVisibleSongsAtom = unwrap(
 );
 
 export function useBrowserVisibleSongsState() {
-  return useAtomValue(unwrappedBrowserVisibleSongsAtom);
+  const songs = useAtomValue(unwrappedBrowserVisibleSongsAtom);
+  const refreshMetrics = useRefreshMetrics();
+
+  useEffect(() => {
+    refreshMetrics();
+  }, [refreshMetrics, songs]);
+
+  return songs;
 }
