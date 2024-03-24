@@ -19,8 +19,11 @@ export function FileExplore() {
   const { colorMode } = useColorMode();
 
   const onChangeWidth = useCallback(
-    async (left: number) => {
+    async (left: number | undefined) => {
       if (fileExploreLayout === undefined) {
+        return;
+      }
+      if (left === undefined) {
         return;
       }
       const newLayout = fileExploreLayout.clone();

@@ -19,8 +19,11 @@ export function Search() {
   const { colorMode } = useColorMode();
 
   const onChangeWidth = useCallback(
-    async (left: number) => {
+    async (left: number | undefined) => {
       if (searchLayout === undefined) {
+        return;
+      }
+      if (left === undefined) {
         return;
       }
       const newLayout = searchLayout.clone();
