@@ -29,6 +29,7 @@ app.use(errorHandler);
 // Socket.io
 const io = new SocketIOServer(server, {
   path: "/io/",
+  maxHttpBufferSize: 5.12e8,
 });
 SocketIoManager.initialize(io);
 
