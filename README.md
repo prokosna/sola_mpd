@@ -153,7 +153,10 @@ $ npm i
 # 2. Compile protobuf messages as all objects are defined in the Protobuf format
 $ npm run proto
 
-# 3. Run dev servers
+# 3. Build the domain package
+$ npm run -w packages/domain build
+
+# 4. Run dev servers
 $ npm run -w packages/backend dev
 $ npm run -w packages/frontend dev
 ```
