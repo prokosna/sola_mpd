@@ -34,7 +34,7 @@ export type SearchNavigationQueryEditorQueryConditionProps = {
   onUpdateQuery: (query: Query) => void;
 };
 
-export default function SearchNavigationQueryEditorQueryCondition(
+export function SearchNavigationQueryEditorQueryCondition(
   props: SearchNavigationQueryEditorQueryConditionProps,
 ) {
   const { query, isFirstQuery, index, onUpdateQuery } = props;

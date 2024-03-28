@@ -29,7 +29,7 @@ import {
 } from "../states/ui";
 import { EditingSearchStatus } from "../types/search";
 
-import SearchNavigationQueryEditorQuery from "./SearchNavigationQueryEditorQuery";
+import { SearchNavigationQueryEditorQuery } from "./SearchNavigationQueryEditorQuery";
 
 export function SearchNavigationQueryEditor() {
   const editingSearch = useEditingSearchState();

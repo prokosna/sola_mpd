@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { ROUTE_LANDING } from "../const/routes";
 import { CenterSpinner } from "../features/loading";
 
-export default function RootPage() {
+export function RootPage() {
   const navigate = useNavigate();
 
   useEffect(() => {

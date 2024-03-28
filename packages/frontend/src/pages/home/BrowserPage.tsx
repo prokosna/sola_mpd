@@ -1,6 +1,6 @@
 import { Browser } from "../../features/browser";
 
-export default function BrowserPage() {
+export function BrowserPage() {
   return (
     <>
       <Browser />

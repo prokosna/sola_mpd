@@ -7,7 +7,7 @@ export type PlaylistSelectModalFromListProps = {
   onSelect: (playlistName: string) => void;
 };
 
-export default function PlaylistSelectModalFromList(
+export function PlaylistSelectModalFromList(
   props: PlaylistSelectModalFromListProps,
 ) {
   const playlists = usePlaylistsState();

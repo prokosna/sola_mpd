@@ -14,8 +14,8 @@ import { useCallback, useState } from "react";
 
 import { useAddPlaylist } from "../states/playlist";
 
-import PlaylistSelectModalFromList from "./PlaylistSelectModalFromList";
-import PlaylistSelectModalNewPlaylist from "./PlaylistSelectModalNewPlaylist";
+import { PlaylistSelectModalFromList } from "./PlaylistSelectModalFromList";
+import { PlaylistSelectModalNewPlaylist } from "./PlaylistSelectModalNewPlaylist";
 
 export type PlaylistSelectModalProps = {
   isOpen: boolean;

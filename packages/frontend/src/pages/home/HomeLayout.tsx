@@ -30,7 +30,7 @@ import {
 } from "../../features/settings";
 import { SideNavigation } from "../../features/side_navigation";
 
-export default function HomeLayout() {
+export function HomeLayout() {
   const location = useLocation();
   const navigate = useNavigate();
   const { getButtonProps, getDisclosureProps, isOpen } = useDisclosure({
