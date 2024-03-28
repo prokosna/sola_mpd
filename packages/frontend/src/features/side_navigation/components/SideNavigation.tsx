@@ -6,11 +6,13 @@ import {
   IoMusicalNote,
   IoSearch,
   IoServer,
+  IoText,
 } from "react-icons/io5";
 
 import {
   ROUTE_HOME_BROWSER,
   ROUTE_HOME_FILE_EXPLORE,
+  ROUTE_HOME_FULL_TEXT_SEARCH,
   ROUTE_HOME_PLAYLIST,
   ROUTE_HOME_PLAY_QUEUE,
   ROUTE_HOME_PLUGIN,
@@ -51,6 +53,11 @@ export function SideNavigation() {
       name: "File Explore",
       icon: IoServer,
       link: ROUTE_HOME_FILE_EXPLORE,
+    },
+    {
+      name: "Full-Text Search",
+      icon: IoText,
+      link: ROUTE_HOME_FULL_TEXT_SEARCH,
     },
     {
       name: "Plugins",

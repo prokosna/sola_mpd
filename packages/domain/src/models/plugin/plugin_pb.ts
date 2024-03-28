@@ -101,6 +101,11 @@ export enum Plugin_PluginType {
    * @generated from enum value: ON_BROWSER = 5;
    */
   ON_BROWSER = 5,
+
+  /**
+   * @generated from enum value: ON_FULL_TEXT_SEARCH = 6;
+   */
+  ON_FULL_TEXT_SEARCH = 6,
 }
 // Retrieve enum metadata with: proto3.getEnumType(Plugin_PluginType)
 proto3.util.setEnumType(Plugin_PluginType, "sola.Plugin.PluginType", [
@@ -110,6 +115,7 @@ proto3.util.setEnumType(Plugin_PluginType, "sola.Plugin.PluginType", [
   { no: 3, name: "ON_PLAY_QUEUE" },
   { no: 4, name: "ON_FILE_EXPLORE" },
   { no: 5, name: "ON_BROWSER" },
+  { no: 6, name: "ON_FULL_TEXT_SEARCH" },
 ]);
 
 /**

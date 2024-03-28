@@ -4,6 +4,7 @@ import {
   ROUTE_HOME,
   ROUTE_HOME_BROWSER,
   ROUTE_HOME_FILE_EXPLORE,
+  ROUTE_HOME_FULL_TEXT_SEARCH,
   ROUTE_HOME_PLAYLIST,
   ROUTE_HOME_PLAY_QUEUE,
   ROUTE_HOME_PLUGIN,
@@ -16,6 +17,7 @@ import RootLayout from "./pages/RootLayout";
 import RootPage from "./pages/RootPage";
 import BrowserPage from "./pages/home/BrowserPage";
 import { FileExplorePage } from "./pages/home/FileExplorePage";
+import { FullTextSearchPage } from "./pages/home/FullTextSearchPage";
 import HomeLayout from "./pages/home/HomeLayout";
 import PlayQueuePage from "./pages/home/PlayQueuePage";
 import { PlaylistPage } from "./pages/home/PlaylistPage";
@@ -65,6 +67,10 @@ const router = createBrowserRouter([
           {
             path: ROUTE_HOME_SETTINGS.split("/").filter(Boolean).pop(),
             element: <SettingsPage />,
+          },
+          {
+            path: ROUTE_HOME_FULL_TEXT_SEARCH.split("/").filter(Boolean).pop(),
+            element: <FullTextSearchPage />,
           },
         ],
       },
