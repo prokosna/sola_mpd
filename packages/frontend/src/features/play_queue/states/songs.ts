@@ -70,11 +70,7 @@ const unwrappedPlayQueueVisibleSongsAtom = unwrap(
 );
 
 export function usePlayQueueVisibleSongsState() {
-  return useAtomValue(unwrappedPlayQueueVisibleSongsAtom);
-}
-
-export function useRefreshPlayQueueSongsState() {
-  const songs = useSetAtom(playQueueSongsAtom);
+  const songs = useAtomValue(unwrappedPlayQueueVisibleSongsAtom);
   const refreshMetrics = useRefreshMetrics();
 
   useEffect(() => {
@@ -82,4 +78,8 @@ export function useRefreshPlayQueueSongsState() {
   }, [refreshMetrics, songs]);
 
   return songs;
+}
+
+export function useRefreshPlayQueueSongsState() {
+  return useSetAtom(playQueueSongsAtom);
 }
