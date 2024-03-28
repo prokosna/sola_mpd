@@ -8,7 +8,7 @@ import {
   useCurrentMpdProfileState,
 } from "../../features/profile";
 
-export default function LandingPage() {
+export function LandingPage() {
   const navigate = useNavigate();
 
   const profile = useCurrentMpdProfileState();

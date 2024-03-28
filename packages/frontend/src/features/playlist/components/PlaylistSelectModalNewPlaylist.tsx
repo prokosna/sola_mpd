@@ -7,7 +7,7 @@ export type PlaylistSelectModalNewPlaylistProps = {
   onInput: (playlistName: string, isOk: boolean) => void;
 };
 
-export default function PlaylistSelectModalNewPlaylist(
+export function PlaylistSelectModalNewPlaylist(
   props: PlaylistSelectModalNewPlaylistProps,
 ) {
   const playlists = usePlaylistsState();

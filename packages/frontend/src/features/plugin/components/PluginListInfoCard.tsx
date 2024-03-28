@@ -19,7 +19,7 @@ export type PluginListInfoCardProps = {
   plugin: Plugin;
 };
 
-export default function PluginListInfoCard(props: PluginListInfoCardProps) {
+export function PluginListInfoCard(props: PluginListInfoCardProps) {
   const { plugin } = props;
 
   const { availableColor, unavailableColor, endpointColor } =

@@ -12,7 +12,7 @@ import { CenterSpinner } from "../../loading";
 import { usePluginDisplayColors } from "../hooks/usePluginDisplayColors";
 import { usePluginState } from "../states/persistent";
 
-import PluginListInfoCard from "./PluginListInfoCard";
+import { PluginListInfoCard } from "./PluginListInfoCard";
 
 type PluginListProps = {
   onOpen: () => void;

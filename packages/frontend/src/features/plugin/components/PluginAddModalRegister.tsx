@@ -22,9 +22,7 @@ export type PluginAddModalRegisterProps = {
   onCloseModal: () => void;
 };
 
-export default function PluginAddModalRegister(
-  props: PluginAddModalRegisterProps,
-) {
+export function PluginAddModalRegister(props: PluginAddModalRegisterProps) {
   const { pluginToAdd, onCloseModal } = props;
 
   const toast = useToast();

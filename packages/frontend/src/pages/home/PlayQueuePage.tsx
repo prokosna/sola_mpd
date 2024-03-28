@@ -1,6 +1,6 @@
 import { PlayQueue } from "../../features/play_queue";
 
-export default function PlayQueuePage() {
+export function PlayQueuePage() {
   return (
     <>
       <PlayQueue />

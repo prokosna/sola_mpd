@@ -2,8 +2,8 @@ import { Modal, ModalContent, ModalOverlay } from "@chakra-ui/react";
 import { Plugin } from "@sola_mpd/domain/src/models/plugin/plugin_pb.js";
 import { useCallback, useState } from "react";
 
-import PluginAddModalConnect from "./PluginAddModalConnect";
-import PluginAddModalRegister from "./PluginAddModalRegister";
+import { PluginAddModalConnect } from "./PluginAddModalConnect";
+import { PluginAddModalRegister } from "./PluginAddModalRegister";
 
 export type PluginAddModalProps = {
   isOpen: boolean;

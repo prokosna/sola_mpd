@@ -19,9 +19,7 @@ export type PluginAddModalConnectProps = {
   setPluginToAdd: React.Dispatch<React.SetStateAction<Plugin | undefined>>;
 };
 
-export default function PluginAddModalConnect(
-  props: PluginAddModalConnectProps,
-) {
+export function PluginAddModalConnect(props: PluginAddModalConnectProps) {
   const { setPluginToAdd } = props;
 
   const endpointRef = useRef<HTMLInputElement>(null);

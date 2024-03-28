@@ -12,19 +12,19 @@ import {
   ROUTE_HOME_SETTINGS,
   ROUTE_LANDING,
 } from "./const/routes";
-import ErrorPage from "./pages/ErrorPage";
-import RootLayout from "./pages/RootLayout";
-import RootPage from "./pages/RootPage";
-import BrowserPage from "./pages/home/BrowserPage";
+import { ErrorPage } from "./pages/ErrorPage";
+import { RootLayout } from "./pages/RootLayout";
+import { RootPage } from "./pages/RootPage";
+import { BrowserPage } from "./pages/home/BrowserPage";
 import { FileExplorePage } from "./pages/home/FileExplorePage";
 import { FullTextSearchPage } from "./pages/home/FullTextSearchPage";
-import HomeLayout from "./pages/home/HomeLayout";
-import PlayQueuePage from "./pages/home/PlayQueuePage";
+import { HomeLayout } from "./pages/home/HomeLayout";
+import { PlayQueuePage } from "./pages/home/PlayQueuePage";
 import { PlaylistPage } from "./pages/home/PlaylistPage";
 import { PluginsPage } from "./pages/home/PluginsPage";
 import { SearchPage } from "./pages/home/SearchPage";
 import { SettingsPage } from "./pages/home/SettingsPage";
-import LandingPage from "./pages/landing/LandingPage";
+import { LandingPage } from "./pages/landing/LandingPage";
 
 const router = createBrowserRouter([
   {

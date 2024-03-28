@@ -9,14 +9,14 @@ import {
 } from "../helpers/search";
 import { useSetEditingSearchState } from "../states/edit";
 
-import SearchNavigationQueryEditorQueryCondition from "./SearchNavigationQueryEditorQueryCondition";
+import { SearchNavigationQueryEditorQueryCondition } from "./SearchNavigationQueryEditorQueryCondition";
 
 export type SearchNavigationQueryEditorQueryProps = {
   editingSearch: Search;
   index: number;
 };
 
-export default function SearchNavigationQueryEditorQuery(
+export function SearchNavigationQueryEditorQuery(
   props: SearchNavigationQueryEditorQueryProps,
 ) {
   const { editingSearch, index } = props;

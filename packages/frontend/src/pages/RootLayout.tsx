@@ -10,7 +10,7 @@ import "../global.css";
 import { TopLoadingProgressBar } from "../features/loading";
 import { LocationObserver } from "../features/location";
 
-export default function RootLayout() {
+export function RootLayout() {
   return (
     <>
       <Suspense fallback={<TopLoadingProgressBar />}>
