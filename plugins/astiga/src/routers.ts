@@ -28,6 +28,7 @@ export function routes(router: ConnectRouter) {
             Plugin_PluginType.ON_PLAYLIST,
             Plugin_PluginType.ON_PLAY_QUEUE,
             Plugin_PluginType.ON_SAVED_SEARCH,
+            Plugin_PluginType.ON_FULL_TEXT_SEARCH,
           ],
           requiredPluginParameters: ["URL", "User", "Password"],
           requiredRequestParameters: ["Playlist Name"],

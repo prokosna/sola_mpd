@@ -17,6 +17,7 @@ message Plugin {
     ON_PLAY_QUEUE = 3;
     ON_FILE_EXPLORE = 4;
     ON_BROWSER = 5;
+    ON_FULL_TEXT_SEARCH = 6;
   }
 }
 
