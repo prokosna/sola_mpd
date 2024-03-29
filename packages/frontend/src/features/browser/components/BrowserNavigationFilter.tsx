@@ -20,7 +20,9 @@ export function BrowserNavigationFilter(props: BrowserNavigationFilterProps) {
   );
 
   if (selectListProps === undefined) {
-    return <FullWidthSkeleton />;
+    return (
+      <FullWidthSkeleton className="layout-border-top layout-border-left" />
+    );
   }
 
   return (

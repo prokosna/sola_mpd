@@ -89,7 +89,7 @@ export function SettingsStates() {
     savedSearches === undefined ||
     savedSearchesProps === undefined
   ) {
-    return <CenterSpinner />;
+    return <CenterSpinner className="layout-border-top layout-border-left" />;
   }
 
   return (

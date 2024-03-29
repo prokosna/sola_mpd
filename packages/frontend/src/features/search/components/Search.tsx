@@ -39,7 +39,7 @@ export function Search() {
   );
 
   if (!isReady) {
-    return <CenterSpinner />;
+    return <CenterSpinner className="layout-border-top layout-border-left" />;
   }
 
   return (

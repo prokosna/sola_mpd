@@ -25,7 +25,7 @@ export function Profiles() {
   const { isOpen, onOpen, onClose } = useDisclosure();
 
   if (mpdProfileState === undefined) {
-    return <CenterSpinner />;
+    return <CenterSpinner className="layout-border-top layout-border-left" />;
   }
 
   return (

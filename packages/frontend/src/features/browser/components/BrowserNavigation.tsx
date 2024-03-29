@@ -12,7 +12,9 @@ export function BrowserNavigation() {
   const { colorMode } = useColorMode();
 
   if (browserFilters === undefined) {
-    return <FullWidthSkeleton />;
+    return (
+      <FullWidthSkeleton className="layout-border-top layout-border-left" />
+    );
   }
 
   const usedTags = browserFilters.map((filter) => filter.tag);
