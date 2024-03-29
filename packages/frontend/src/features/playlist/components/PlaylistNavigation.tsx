@@ -8,7 +8,11 @@ export function PlaylistNavigation() {
   const selectListProps = usePlaylistNavigationSelectListProps();
 
   if (selectListProps === undefined) {
-    return <FullWidthSkeleton />;
+    return (
+      <Box w="100%" h="100%" className="layout-border-top layout-border-left">
+        <FullWidthSkeleton />
+      </Box>
+    );
   }
 
   return (

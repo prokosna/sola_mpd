@@ -77,7 +77,11 @@ export function SearchNavigationQueryEditor() {
   }, [editingSearch, setTargetSearch, setIsSearchLoading]);
 
   if (savedSearches === undefined) {
-    return <FullWidthSkeleton />;
+    return (
+      <Box w="100%" h="100%" className="layout-border-top layout-border-left">
+        <FullWidthSkeleton />
+      </Box>
+    );
   }
 
   return (

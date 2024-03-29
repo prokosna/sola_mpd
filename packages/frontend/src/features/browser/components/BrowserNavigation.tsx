@@ -1,4 +1,4 @@
-import { VStack, useColorMode } from "@chakra-ui/react";
+import { Box, VStack, useColorMode } from "@chakra-ui/react";
 import { Allotment } from "allotment";
 
 import { FullWidthSkeleton } from "../../loading";
@@ -12,7 +12,11 @@ export function BrowserNavigation() {
   const { colorMode } = useColorMode();
 
   if (browserFilters === undefined) {
-    return <FullWidthSkeleton />;
+    return (
+      <Box w="100%" h="100%" className="layout-border-top layout-border-left">
+        <FullWidthSkeleton />
+      </Box>
+    );
   }
 
   const usedTags = browserFilters.map((filter) => filter.tag);

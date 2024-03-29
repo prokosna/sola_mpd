@@ -12,7 +12,11 @@ export function FileExploreNavigation() {
   const { colorMode } = useColorMode();
 
   if (nodes === undefined) {
-    return <FullWidthSkeleton />;
+    return (
+      <Box w="100%" h="100%" className="layout-border-top layout-border-left">
+        <FullWidthSkeleton />
+      </Box>
+    );
   }
 
   return (

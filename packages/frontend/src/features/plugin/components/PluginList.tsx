@@ -1,5 +1,6 @@
 import {
   AbsoluteCenter,
+  Box,
   Card,
   CardBody,
   IconButton,
@@ -23,7 +24,11 @@ export function PluginList(props: PluginListProps) {
   const { unavailableColor, addPluginColor } = usePluginDisplayColors();
 
   if (pluginState === undefined) {
-    return <CenterSpinner />;
+    return (
+      <Box w="100%" h="100%" className="layout-border-top layout-border-left">
+        <CenterSpinner />
+      </Box>
+    );
   }
 
   return (

@@ -58,7 +58,11 @@ export function SearchContent() {
   );
 
   if (songTableProps === undefined || columnEditModalProps === undefined) {
-    return <CenterSpinner />;
+    return (
+      <Box w="100%" h="100%" className="layout-border-top layout-border-left">
+        <CenterSpinner />
+      </Box>
+    );
   }
 
   return (
