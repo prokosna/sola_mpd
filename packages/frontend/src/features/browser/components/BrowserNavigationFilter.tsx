@@ -21,9 +21,7 @@ export function BrowserNavigationFilter(props: BrowserNavigationFilterProps) {
 
   if (selectListProps === undefined) {
     return (
-      <Box w="100%" h="100%" className="layout-border-top layout-border-left">
-        <FullWidthSkeleton />
-      </Box>
+      <FullWidthSkeleton className="layout-border-top layout-border-left" />
     );
   }
 

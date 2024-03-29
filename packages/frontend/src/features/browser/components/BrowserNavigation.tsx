@@ -1,4 +1,4 @@
-import { Box, VStack, useColorMode } from "@chakra-ui/react";
+import { VStack, useColorMode } from "@chakra-ui/react";
 import { Allotment } from "allotment";
 
 import { FullWidthSkeleton } from "../../loading";
@@ -13,9 +13,7 @@ export function BrowserNavigation() {
 
   if (browserFilters === undefined) {
     return (
-      <Box w="100%" h="100%" className="layout-border-top layout-border-left">
-        <FullWidthSkeleton />
-      </Box>
+      <FullWidthSkeleton className="layout-border-top layout-border-left" />
     );
   }
 

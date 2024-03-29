@@ -40,11 +40,7 @@ export function Browser() {
   );
 
   if (!isReady) {
-    return (
-      <Box w="100%" h="100%" className="layout-border-top layout-border-left">
-        <CenterSpinner />
-      </Box>
-    );
+    return <CenterSpinner className="layout-border-top layout-border-left" />;
   }
 
   return (

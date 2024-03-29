@@ -1,5 +1,4 @@
 import {
-  Box,
   Button,
   Divider,
   Modal,
@@ -26,11 +25,7 @@ export function Profiles() {
   const { isOpen, onOpen, onClose } = useDisclosure();
 
   if (mpdProfileState === undefined) {
-    return (
-      <Box w="100%" h="100%" className="layout-border-top layout-border-left">
-        <CenterSpinner />
-      </Box>
-    );
+    return <CenterSpinner className="layout-border-top layout-border-left" />;
   }
 
   return (

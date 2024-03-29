@@ -1,5 +1,4 @@
 import {
-  Box,
   IconButton,
   Table,
   TableContainer,
@@ -90,11 +89,7 @@ export function SettingsStates() {
     savedSearches === undefined ||
     savedSearchesProps === undefined
   ) {
-    return (
-      <Box w="100%" h="100%" className="layout-border-top layout-border-left">
-        <CenterSpinner />
-      </Box>
-    );
+    return <CenterSpinner className="layout-border-top layout-border-left" />;
   }
 
   return (
