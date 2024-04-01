@@ -2,6 +2,7 @@ import { Song } from "@sola_mpd/domain/src/models/song_pb.js";
 import { SongTableColumn } from "@sola_mpd/domain/src/models/song_table_pb.js";
 import { useMemo } from "react";
 
+import { useIsTouchDevice } from "../../user_device";
 import {
   convertSongMetadataForGridRowValue,
   convertSongMetadataTagToDisplayName,
@@ -16,6 +17,8 @@ export function useAgGridReactData(
   isSortingEnabled: boolean,
   isReorderingEnabled: boolean,
 ) {
+  const isTouchDevice = useIsTouchDevice();
+
   // Convert Song to AdGrid item format (Column: Value)
   const rowData = useMemo(() => {
     return songs.map((song) => {
@@ -57,8 +60,10 @@ export function useAgGridReactData(
           ? null
           : column.sortOrder,
       cellDataType: false,
+      checkboxSelection: isTouchDevice && index === 0 ? true : false,
+      headerCheckboxSelection: isTouchDevice && index === 0 ? true : false,
     }));
-  }, [columns, isReorderingEnabled, isSortingEnabled]);
+  }, [columns, isReorderingEnabled, isSortingEnabled, isTouchDevice]);
 
   return {
     rowData,
