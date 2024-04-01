@@ -18,7 +18,7 @@ export function GlobalFilterBox() {
 
   return (
     <>
-      <Box w="35%" minW="300px" maxW="500px">
+      <Box w="35%" minW="100px" maxW="500px">
         <InputGroup>
           <InputLeftElement
             pointerEvents="none"
