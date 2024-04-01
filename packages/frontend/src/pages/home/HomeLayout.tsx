@@ -9,8 +9,7 @@ import {
   Spacer,
   useDisclosure,
 } from "@chakra-ui/react";
-import { motion } from "framer-motion";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import Div100vh from "react-div-100vh";
 import { IoMenu } from "react-icons/io5";
 import { Outlet, useLocation, useNavigate } from "react-router-dom";
@@ -34,10 +33,9 @@ import { SideNavigation } from "../../features/side_navigation";
 export function HomeLayout() {
   const location = useLocation();
   const navigate = useNavigate();
-  const { getButtonProps, getDisclosureProps, isOpen } = useDisclosure({
+  const { getButtonProps, isOpen } = useDisclosure({
     defaultIsOpen: true,
   });
-  const [hidden, setHidden] = useState(!isOpen);
 
   useEffect(() => {
     if (location.pathname === ROUTE_HOME) {
@@ -94,16 +92,9 @@ export function HomeLayout() {
                 className="layout-border-top layout-border-bottom"
                 overflowX={"clip"}
                 overflowY={"auto"}
-                as={motion.div}
-                minW={"250px"}
-                {...getDisclosureProps()}
-                hidden={hidden}
-                initial={true}
-                onAnimationStart={() => setHidden(false)}
-                onAnimationComplete={() => setHidden(!isOpen)}
-                animate={{ width: isOpen ? 250 : 0 }}
+                minW={isOpen ? "250px" : "20px"}
               >
-                <SideNavigation></SideNavigation>
+                <SideNavigation {...{ isCompact: !isOpen }}></SideNavigation>
               </Box>
               <Box flexGrow={"1"} overflowY={"auto"}>
                 <Outlet />
