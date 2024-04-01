@@ -8,6 +8,7 @@ export type SideNavigationItemProps = {
   icon: IconType;
   link: string;
   isSelected?: boolean;
+  isCompact: boolean;
 };
 
 export function SideNavigationItem(props: SideNavigationItemProps) {
@@ -36,12 +37,13 @@ export function SideNavigationItem(props: SideNavigationItemProps) {
         bg={props.isSelected ? "brand.600" : undefined}
         color={props.isSelected ? "white" : undefined}
         _hover={{
-          border: "solid 1px",
-          borderColor: "brand.600",
+          boxShadow: "0 0 0 1px var(--chakra-colors-brand-600)",
         }}
       >
-        <Icon as={props.icon} mr="4" fontSize="24"></Icon>
-        <Text fontWeight={"medium"}>{props.name}</Text>
+        <Icon as={props.icon} mr={props.isCompact ? 0 : 4} fontSize="24"></Icon>
+        {props.isCompact ? null : (
+          <Text fontWeight={"medium"}>{props.name}</Text>
+        )}
       </Flex>
     </Link>
   );
