@@ -13,7 +13,7 @@ export function MpdProfileSelector() {
 
   return (
     <>
-      <Box px={0} minW="300px">
+      <Box px={0} minW="100px" maxW="300px">
         {mpdProfileState?.currentProfile === undefined ||
         enabledOutputDevice === undefined ? (
           <Select placeholder="Loading profiles..."></Select>
