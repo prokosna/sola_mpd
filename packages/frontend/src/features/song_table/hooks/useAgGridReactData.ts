@@ -1,5 +1,6 @@
 import { Song } from "@sola_mpd/domain/src/models/song_pb.js";
 import { SongTableColumn } from "@sola_mpd/domain/src/models/song_table_pb.js";
+import { SuppressKeyboardEventParams } from "ag-grid-community";
 import { useMemo } from "react";
 
 import { useIsTouchDevice } from "../../user_device";
@@ -62,6 +63,9 @@ export function useAgGridReactData(
       cellDataType: false,
       checkboxSelection: isTouchDevice && index === 0 ? true : false,
       headerCheckboxSelection: isTouchDevice && index === 0 ? true : false,
+      suppressKeyboardEvent: (params: SuppressKeyboardEventParams) => {
+        return params.event.key === " ";
+      },
     }));
   }, [columns, isReorderingEnabled, isSortingEnabled, isTouchDevice]);
 
