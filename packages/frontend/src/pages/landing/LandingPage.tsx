@@ -27,7 +27,7 @@ export function LandingPage() {
 
   return (
     <>
-      <Box w="100%" h="100vh" bgImage="url('/bg.png')">
+      <Box w="100%" h="100dvh" bgImage="url('/bg.png')">
         <Center w="100%" h="100%" position="relative">
           <Center zIndex="1" position="absolute" w="500px">
             <MpdProfileForm {...mpdProfileFormProps}></MpdProfileForm>
