@@ -17,7 +17,7 @@
     "@sola_mpd/domain": "^0.0.0",
     "bufferutil": "^4.0.8",
     "cors": "^2.8.5",
-    "express": "^4.19.1",
+    "express": "^4.19.2",
     "mpd2": "^1.0.5",
     "socket.io": "^4.7.5",
     "utf-8-validate": "^6.0.3"
@@ -25,7 +25,7 @@
   "devDependencies": {
     "@types/cors": "^2.8.17",
     "@types/express": "^4.17.21",
-    "@types/node": "^20.11.30",
+    "@types/node": "^20.12.4",
     "nodemon": "^3.1.0",
     "ts-node": "^10.9.2",
     "tsconfig-paths": "^4.2.0"
