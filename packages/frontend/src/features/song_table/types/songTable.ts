@@ -10,8 +10,15 @@ export enum SongTableKeyType {
   ID = "ID",
 }
 
+export const SONGS_TAG_COMPACT = "songs";
+
+export type SongTableRowCompact = {
+  firstLine: string;
+  secondLine: string;
+};
+
 export type SongTableRowDataType = {
-  [tag: string]: string | number | Date | undefined;
+  [tag: string]: string | number | Date | SongTableRowCompact | undefined;
 };
 
 /**

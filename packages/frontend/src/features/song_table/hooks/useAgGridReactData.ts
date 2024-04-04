@@ -4,12 +4,18 @@ import { SuppressKeyboardEventParams } from "ag-grid-community";
 import { useMemo } from "react";
 
 import { useIsTouchDevice } from "../../user_device";
+import { CustomCellCompact } from "../components/CustomCellCompact";
 import {
+  convertSongForGridRowValueCompact,
   convertSongMetadataForGridRowValue,
   convertSongMetadataTagToDisplayName,
   getTableKeyOfSong,
 } from "../helpers/table";
-import { SongTableKeyType, SongTableRowDataType } from "../types/songTable";
+import {
+  SONGS_TAG_COMPACT,
+  SongTableKeyType,
+  SongTableRowDataType,
+} from "../types/songTable";
 
 export function useAgGridReactData(
   songs: Song[],
@@ -17,11 +23,20 @@ export function useAgGridReactData(
   columns: SongTableColumn[],
   isSortingEnabled: boolean,
   isReorderingEnabled: boolean,
+  isCompact: boolean,
 ) {
   const isTouchDevice = useIsTouchDevice();
 
   // Convert Song to AdGrid item format (Column: Value)
   const rowData = useMemo(() => {
+    if (isCompact) {
+      return songs.map((song) => {
+        const row: SongTableRowDataType = {};
+        row.key = getTableKeyOfSong(song, keyType);
+        row[SONGS_TAG_COMPACT] = convertSongForGridRowValueCompact(song);
+        return row;
+      });
+    }
     return songs.map((song) => {
       const row: SongTableRowDataType = {};
       row.key = getTableKeyOfSong(song, keyType);
@@ -34,10 +49,28 @@ export function useAgGridReactData(
       }
       return row;
     });
-  }, [songs, keyType, columns]);
+  }, [isCompact, songs, keyType, columns]);
 
   // Convert columns to AgGrid column definitions
   const columnDefs = useMemo(() => {
+    if (isCompact) {
+      return [
+        {
+          field: "Songs",
+          rowDrag: isReorderingEnabled,
+          flex: 1,
+          resizable: false,
+          sortable: false,
+          checkboxSelection: isTouchDevice,
+          headerCheckboxSelection: isTouchDevice,
+          suppressKeyboardEvent: (params: SuppressKeyboardEventParams) => {
+            return params.event.key === " ";
+          },
+          cellRenderer: CustomCellCompact,
+          autoHeight: true,
+        },
+      ];
+    }
     return columns.map((column, index) => ({
       field: convertSongMetadataTagToDisplayName(column.tag),
       rowDrag: index === 0 ? isReorderingEnabled : undefined,
@@ -67,7 +100,13 @@ export function useAgGridReactData(
         return params.event.key === " ";
       },
     }));
-  }, [columns, isReorderingEnabled, isSortingEnabled, isTouchDevice]);
+  }, [
+    columns,
+    isCompact,
+    isReorderingEnabled,
+    isSortingEnabled,
+    isTouchDevice,
+  ]);
 
   return {
     rowData,

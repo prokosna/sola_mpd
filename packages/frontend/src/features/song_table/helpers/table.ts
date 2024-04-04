@@ -10,6 +10,7 @@ import dayjs from "dayjs";
 import {
   SongTableContextMenuItemParams,
   SongTableKeyType,
+  SongTableRowCompact,
   SongsInTable,
 } from "../types/songTable";
 
@@ -128,6 +129,26 @@ export function convertSongMetadataForGridRowValue(
     }
   })();
   return [convertSongMetadataTagToDisplayName(tag), v];
+}
+
+export function convertSongForGridRowValueCompact(
+  song: Song,
+): SongTableRowCompact {
+  const title = SongUtils.getSongMetadataAsString(song, Song_MetadataTag.TITLE);
+  const artist = SongUtils.getSongMetadataAsString(
+    song,
+    Song_MetadataTag.ARTIST,
+  );
+  const albumArtist = SongUtils.getSongMetadataAsString(
+    song,
+    Song_MetadataTag.ALBUM_ARTIST,
+  );
+  const album = SongUtils.getSongMetadataAsString(song, Song_MetadataTag.ALBUM);
+
+  return {
+    firstLine: title,
+    secondLine: `${album} / ${artist ?? albumArtist ?? "-"}`,
+  };
 }
 
 export function getSongsInTableFromGrid(
