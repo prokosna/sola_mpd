@@ -6,7 +6,7 @@ import { AgGridReact } from "ag-grid-react";
 import { useCallback, useRef } from "react";
 
 import { ContextMenu, ContextMenuSection } from "../../context_menu";
-import { useUserDeviceType } from "../../user_device";
+import { useIsCompactMode } from "../../user_device";
 import { useAgGridReactData } from "../hooks/useAgGridReactData";
 import { useGetBoldClassForPlayingSong } from "../hooks/useGetBoldClassForPlayingSong";
 import { useKeyboardShortcutSelectAll } from "../hooks/useKeyboardShortcutSelectAll";
@@ -48,8 +48,7 @@ export type SongTableProps = {
 };
 
 export function SongTable(props: SongTableProps) {
-  const userDeviceType = useUserDeviceType();
-  const isCompact = userDeviceType === "middle" || userDeviceType === "small";
+  const isCompact = useIsCompactMode();
 
   const ref = useRef(null);
   const gridRef = useRef<AgGridReact>(null);
