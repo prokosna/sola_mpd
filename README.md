@@ -19,6 +19,8 @@ This client has the following features:
 - [x] Multiple MPD servers
 - [x] Dark theme
 - [x] Simple full-text search
+- [x] Responsive layout for tablets
+- [x] Support touch devices
 
 On the other hand, the following features are out of scope for now:
 
@@ -45,6 +47,10 @@ Feel free to file an issue if you are interested in some of missing capabilities
 ### Dark theme
 
 ![sola_mpd_usage_dark](https://github.com/prokosna/sola_mpd/assets/16056246/de0133fb-bfc4-4a30-be02-e0338397fb24)
+
+### Responsive layout for tablets
+
+![sola_mpd_responsive](https://github.com/prokosna/sola_mpd/assets/16056246/073c6575-04ad-4f7e-a271-f143258d6829)
 
 ## How to install
 
