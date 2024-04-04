@@ -13,12 +13,14 @@ import { IoVolumeMute } from "react-icons/io5";
 
 import { useMpdClientState } from "../../mpd";
 import { useCurrentMpdProfileState } from "../../profile";
+import { useIsCompactMode } from "../../user_device";
 import { usePlayerVolumeState } from "../states/volume";
 
 export function PlayerControlsButtonVolume() {
   const profile = useCurrentMpdProfileState();
   const mpdClient = useMpdClientState();
   const playerVolume = usePlayerVolumeState();
+  const isCompact = useIsCompactMode();
 
   const volume = playerVolume?.volume !== undefined ? playerVolume.volume : -1;
 
@@ -51,7 +53,7 @@ export function PlayerControlsButtonVolume() {
     <>
       <Tooltip
         label={volume < 0 ? "Volume disabled" : volume}
-        placement="left-start"
+        placement={isCompact ? "top" : "left-start"}
       >
         {volume < 0 ? (
           <IconButton
