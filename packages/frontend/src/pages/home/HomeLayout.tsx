@@ -30,6 +30,7 @@ import {
   SettingsEntryButton,
 } from "../../features/settings";
 import { SideNavigation } from "../../features/side_navigation";
+import { useUserDeviceType } from "../../features/user_device";
 
 export function HomeLayout() {
   useGlobalKeyShortcuts();
@@ -38,6 +39,7 @@ export function HomeLayout() {
   const { getButtonProps, isOpen } = useDisclosure({
     defaultIsOpen: true,
   });
+  const userDeviceType = useUserDeviceType();
 
   useEffect(() => {
     if (location.pathname === ROUTE_HOME) {
@@ -57,13 +59,16 @@ export function HomeLayout() {
         >
           <GridItem area={"header"}>
             <HStack spacing={"0px"}>
-              <Box minW="250px" h="80px">
+              <Box
+                minW={userDeviceType === "large" ? "250px" : "88px"}
+                h="80px"
+              >
                 <HStack h="100%" justify={"space-between"} align={"center"}>
                   <BrandLogo></BrandLogo>
                   <Button
                     {...getButtonProps()}
                     p={0}
-                    ml={0}
+                    ml={userDeviceType === "large" ? 0 : 2}
                     mr={2}
                     variant={"ghost"}
                     flexGrow={1}

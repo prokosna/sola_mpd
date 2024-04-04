@@ -6,6 +6,7 @@ import { AgGridReact } from "ag-grid-react";
 import { useCallback, useRef } from "react";
 
 import { ContextMenu, ContextMenuSection } from "../../context_menu";
+import { useIsCompactMode } from "../../user_device";
 import { useAgGridReactData } from "../hooks/useAgGridReactData";
 import { useGetBoldClassForPlayingSong } from "../hooks/useGetBoldClassForPlayingSong";
 import { useKeyboardShortcutSelectAll } from "../hooks/useKeyboardShortcutSelectAll";
@@ -47,6 +48,8 @@ export type SongTableProps = {
 };
 
 export function SongTable(props: SongTableProps) {
+  const isCompact = useIsCompactMode();
+
   const ref = useRef(null);
   const gridRef = useRef<AgGridReact>(null);
 
@@ -73,6 +76,7 @@ export function SongTable(props: SongTableProps) {
     props.columns,
     props.isSortingEnabled,
     props.isReorderingEnabled,
+    isCompact,
   );
 
   // Use bold for the playing song
@@ -132,11 +136,11 @@ export function SongTable(props: SongTableProps) {
           ref={gridRef}
           rowData={rowData}
           columnDefs={columnDefs}
-          onSortChanged={onSortChanged}
-          onColumnMoved={onColumnsMoved}
+          onSortChanged={!isCompact ? onSortChanged : undefined}
+          onColumnMoved={!isCompact ? onColumnsMoved : undefined}
           onRowDragEnd={onRowDragEnd}
           onRowDoubleClicked={onRowDoubleClicked}
-          onColumnResized={onColumnsResized}
+          onColumnResized={!isCompact ? onColumnsResized : undefined}
           onCellContextMenu={onOpenContextMenu}
           onSelectionChanged={onSelectionChanged}
           onRowDataUpdated={onRowDataUpdated}

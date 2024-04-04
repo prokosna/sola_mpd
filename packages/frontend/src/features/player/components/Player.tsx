@@ -1,11 +1,20 @@
 import { Flex, Grid, GridItem } from "@chakra-ui/react";
 
+import { useIsCompactMode } from "../../user_device";
+
+import { PlayerCompact } from "./PlayerCompact";
 import { PlayerControls } from "./PlayerControls";
 import { PlayerObserver } from "./PlayerObserver";
 import { PlayerSeekBar } from "./PlayerSeekBar";
 import { PlayerSongInformation } from "./PlayerSongInformation";
 
 export function Player() {
+  const isCompact = useIsCompactMode();
+
+  if (isCompact) {
+    return <PlayerCompact />;
+  }
+
   return (
     <>
       <Flex direction={"column"} w="100vw" h="full">
