@@ -50,7 +50,7 @@ Feel free to file an issue if you are interested in some of missing capabilities
 
 ### Responsive layout for tablets
 
-![sola_mpd_responsive](https://github.com/prokosna/sola_mpd/assets/16056246/073c6575-04ad-4f7e-a271-f143258d6829)
+![sola_mpd_responsive](https://github.com/prokosna/sola_mpd/assets/16056246/be76062a-af86-4826-a575-4869a837a524)
 
 ## How to install
 
