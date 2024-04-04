@@ -18,7 +18,7 @@ export function convertAgGridColumnsToSongTableColumns(
           return false;
       }
     })();
-    const flex = col.getActualWidth();
+    const flex = Math.floor(col.getActualWidth());
     const column = new SongTableColumn({
       tag: convertSongMetadataTagFromDisplayName(col.getColId()),
       sortOrder: sortOrder != null ? sortOrder : undefined,
