@@ -24,10 +24,12 @@ export function PlayerSongInformationTag() {
       </Tooltip>
     );
   } else {
-    <Tooltip label={formatString} placement="top-end">
-      <Tag px={1} ml={2} size={"sm"} variant="outline" colorScheme="teal">
-        <TagLabel>PCM</TagLabel>
-      </Tag>
-    </Tooltip>;
+    return (
+      <Tooltip label={formatString} placement="top-end">
+        <Tag px={1} ml={2} size={"sm"} variant="outline" colorScheme="teal">
+          <TagLabel>PCM</TagLabel>
+        </Tag>
+      </Tooltip>
+    );
   }
 }
