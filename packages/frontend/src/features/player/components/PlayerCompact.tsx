@@ -19,7 +19,14 @@ export function PlayerCompact() {
           gap="0"
         >
           <GridItem area={"info"}>
-            <Flex h="full" pt="2" align={"center"} justify={"center"}>
+            <Flex
+              h="full"
+              pt="2"
+              pl="2"
+              pr="2"
+              align={"center"}
+              justify={"center"}
+            >
               <PlayerSongInformationCompact />
             </Flex>
           </GridItem>
