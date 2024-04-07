@@ -10,6 +10,7 @@ import {
   convertSongMetadataForGridRowValue,
   convertSongMetadataTagToDisplayName,
   getTableKeyOfSong,
+  sortSongsByColumns,
 } from "../helpers/table";
 import {
   SONGS_TAG_COMPACT,
@@ -30,7 +31,7 @@ export function useAgGridReactData(
   // Convert Song to AdGrid item format (Column: Value)
   const rowData = useMemo(() => {
     if (isCompact) {
-      return songs.map((song) => {
+      return sortSongsByColumns(songs, columns).map((song) => {
         const row: SongTableRowDataType = {};
         row.key = getTableKeyOfSong(song, keyType);
         row[SONGS_TAG_COMPACT] = convertSongForGridRowValueCompact(song);

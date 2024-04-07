@@ -3,6 +3,7 @@ import {
   Song_MetadataTag,
   Song_MetadataValue,
 } from "@sola_mpd/domain/src/models/song_pb.js";
+import { SongTableColumn } from "@sola_mpd/domain/src/models/song_table_pb.js";
 import { SongUtils } from "@sola_mpd/domain/src/utils/SongUtils.js";
 import { GridApi, IRowNode } from "ag-grid-community";
 import dayjs from "dayjs";
@@ -186,4 +187,22 @@ export function getSongsInTableFromGrid(
     sortedSongs,
     selectedSortedSongs,
   };
+}
+
+export function sortSongsByColumns(
+  songs: Song[],
+  columns: SongTableColumn[],
+): Song[] {
+  const conditions = columns
+    .filter((column) => (column.sortOrder ?? -1) >= 0)
+    .sort((a, b) => a.sortOrder! - b.sortOrder!);
+  return songs.sort((a, b) => {
+    for (const condition of conditions) {
+      const comp = SongUtils.compareSongsByMetadataValue(a, b, condition.tag);
+      if (comp !== 0) {
+        return condition.isSortDesc ? -comp : comp;
+      }
+    }
+    return 0;
+  });
 }
