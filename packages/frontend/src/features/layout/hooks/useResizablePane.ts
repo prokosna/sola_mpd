@@ -1,9 +1,14 @@
-import { useCallback, useMemo, useRef } from "react";
+import { setSashSize } from "allotment";
+import { useCallback, useEffect, useMemo, useRef } from "react";
+
+import { useIsTouchDevice } from "../../user_device";
 
 export function useResizablePane(
   leftWidth: number | undefined,
   onChangeWidth: (left: number) => Promise<void>,
 ) {
+  const isTouchDevice = useIsTouchDevice();
+
   const timeoutId = useRef<ReturnType<typeof setTimeout> | undefined>(
     undefined,
   );
@@ -17,6 +22,12 @@ export function useResizablePane(
     () => (leftWidth !== undefined ? `calc(100% - ${leftWidth}px)` : undefined),
     [leftWidth],
   );
+
+  useEffect(() => {
+    if (isTouchDevice) {
+      setSashSize(40);
+    }
+  }, [isTouchDevice]);
 
   const onChange = useCallback(
     (left: number, _right: number) => {
