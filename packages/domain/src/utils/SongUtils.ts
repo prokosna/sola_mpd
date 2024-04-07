@@ -119,4 +119,61 @@ export class SongUtils {
       .map((v) => Song_MetadataTag[v as keyof typeof Song_MetadataTag])
       .filter((v) => v !== Song_MetadataTag.UNKNOWN);
   }
+
+  static compareSongsByMetadataValue(
+    songA: Song,
+    songB: Song,
+    tag: Song_MetadataTag,
+  ): number {
+    const valueA = songA.metadata[tag];
+    const valueB = songB.metadata[tag];
+    if (
+      valueA.value.case === "floatValue" &&
+      valueB.value.case === "floatValue"
+    ) {
+      return this.compareNumbers(
+        valueA.value.value.value,
+        valueB.value.value.value,
+      );
+    } else if (
+      valueA.value.case === "stringValue" &&
+      valueB.value.case === "stringValue"
+    ) {
+      return valueA.value.value.value.localeCompare(valueB.value.value.value);
+    } else if (
+      valueA.value.case === "intValue" &&
+      valueB.value.case === "intValue"
+    ) {
+      return this.compareNumbers(
+        valueA.value.value.value,
+        valueB.value.value.value,
+      );
+    } else if (
+      valueA.value.case === "timestamp" &&
+      valueB.value.case === "timestamp"
+    ) {
+      return dayjs(valueA.value.value.toDate())
+        .format("YYYY-MM-DD")
+        .localeCompare(dayjs(valueB.value.value.toDate()).format("YYYY-MM-DD"));
+    } else if (
+      valueA.value.case === "format" &&
+      valueB.value.case === "format"
+    ) {
+      return this.convertAudioFormatToString(valueA.value.value).localeCompare(
+        this.convertAudioFormatToString(valueB.value.value),
+      );
+    } else {
+      return 0;
+    }
+  }
+
+  private static compareNumbers(numA: number, numB: number): number {
+    if (numA === numB) {
+      return 0;
+    } else if (numA > numB) {
+      return 1;
+    } else {
+      return -1;
+    }
+  }
 }
