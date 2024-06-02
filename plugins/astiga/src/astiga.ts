@@ -12,6 +12,25 @@ import {
 } from "./types.js";
 import { sleep } from "./utils.js";
 
+// https://manual.manticoresearch.com/Searching/Full_text_matching/Escaping
+const specialCharacters: string[] = [
+  "\\",
+  "!",
+  '"',
+  "$",
+  "'",
+  "(",
+  ")",
+  "-",
+  "/",
+  "<",
+  "@",
+  "^",
+  "|",
+  "~",
+  "*",
+];
+
 const fetchRetry = async (
   url: string,
   options: RequestInit,
@@ -55,6 +74,11 @@ export class AstigaClient {
       this.makeQuery(undefined, undefined, artist),
       this.makeQuery(undefined, album, artist),
       this.makeQuery(title, undefined, undefined),
+      this.makeQuery(
+        this.replaceSpecialCharactersWithSpaces(title),
+        undefined,
+        undefined,
+      ),
     ];
     for (const query of queries) {
       let songs: AstigaSong[] = [];
@@ -209,29 +233,16 @@ export class AstigaClient {
   }
 
   private escape(src: string): string {
-    // https://manual.manticoresearch.com/Searching/Full_text_matching/Escaping
-    const chs: string[] = [
-      "\\",
-      "!",
-      '"',
-      "$",
-      "'",
-      "(",
-      ")",
-      "-",
-      "/",
-      "<",
-      "@",
-      "^",
-      "|",
-      "~",
-    ];
-
     let dest: string = src;
-    for (const ch of chs) {
+    for (const ch of specialCharacters) {
       dest = dest.split(ch).join(`\\${ch}`);
     }
     return dest;
+  }
+
+  private replaceSpecialCharactersWithSpaces(src: string): string {
+    const pattern = new RegExp(`[${specialCharacters.join("")}]`, "g");
+    return src.replace(pattern, " ");
   }
 
   private makeQuery(
