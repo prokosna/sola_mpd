@@ -29,7 +29,7 @@ EXTRA_ARGS=(
   -e "USER=$USER"
 )
 
-if [[ "$NETROWK_MODE" == "host" ]]; then
+if [[ "$NETWORK_MODE" = "host" ]]; then
   EXTRA_ARGS+=("--network" "host" "-e" "PORT=$PORT_OPT")
 else
   EXTRA_ARGS+=("-p" "$PORT_OPT:3001" "-e" "PORT=$PORT_OPT")
