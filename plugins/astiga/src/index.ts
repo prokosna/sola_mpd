@@ -15,3 +15,4 @@ app.use(
 
 const port = process.env.PORT || 3001;
 http.createServer(app).listen(port);
+console.info(`Running on ${port}`);
