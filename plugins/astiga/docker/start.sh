@@ -3,9 +3,16 @@
 set -e
 
 PORT_OPT="3001"
-if [[ "$1" == "--port" ]]; then
-  PORT_OPT="$2"
-fi
+NETWORK_MODE="bridge"
+
+while [[ "$#" -gt 0 ]]; do
+  case $1 in
+    --port) PORT_OPT="$2"; shift ;;
+    --host) NETWORK_MODE="host" ;;
+    *) echo "Unknown parameter: $1"; exit 1 ;;
+  esac
+  shift
+done
 
 ROOT_DIR="$(cd "$(dirname "$0")/.." || exit; pwd -P)"
 source "$ROOT_DIR/docker/const.sh"
@@ -13,7 +20,12 @@ source "$ROOT_DIR/docker/const.sh"
 EXTRA_ARGS=(
   --name "${CONTAINER_NAME}"
   -e "USER=$USER"
-  -p $PORT_OPT:3001
 )
+
+if [[ "$NETROWK_MODE" == "host" ]]; then
+  EXTRA_ARGS+=("--network" "host" "-e" "PORT=$PORT_OPT")
+else
+  EXTRA_ARGS+=("-p" "$PORT_OPT:3001" "-e" "PORT=$PORT_OPT")
+fi
 
 docker run -id --rm "${EXTRA_ARGS[@]}" $IMAGE_NAME
