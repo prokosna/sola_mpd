@@ -4,14 +4,21 @@ set -e
 
 PORT_OPT="3001"
 NETWORK_MODE="bridge"
-
 while [[ "$#" -gt 0 ]]; do
   case $1 in
-    --port) PORT_OPT="$2"; shift ;;
-    --host) NETWORK_MODE="host" ;;
-    *) echo "Unknown parameter: $1"; exit 1 ;;
+    --port)
+      PORT_OPT="$2"
+      shift 2
+      ;;
+    --host)
+      NETWORK_MODE="host"
+      shift
+      ;;
+    *)
+      echo "Unknown parameter passed: $1"
+      exit 1
+      ;;
   esac
-  shift
 done
 
 ROOT_DIR="$(cd "$(dirname "$0")/.." || exit; pwd -P)"
