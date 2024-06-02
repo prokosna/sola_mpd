@@ -141,8 +141,10 @@ $ cd sola_mpd/plugins/astiga
 
 ```
 $ docker/build.sh
-$ docker/start.sh [--port 3001]
+$ docker/start.sh [--port 3001] [--host]
 ```
+
+Note: If you have any network errors, please try `--host` which uses Docker host network mode.
 
 3. On the Plugin page in Sola MPD, enter the plugin endpoint (in this case `[Your Server IP]:3001`) and configure the plugin following a dialog.
 4. When the plugin is available, the right-click context menu has `Sync with Astiga` and you can create a playlist with selected songs on Sola MPD as long as the exact same songs are available on Astiga as well.
