@@ -1,4 +1,4 @@
-name: Version
+name: Create Pull Request for version bump
 
 on:
   push:
@@ -31,8 +31,12 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Push changes and tags
-        run: |
-          git push origin HEAD:main --follow-tags
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Create Pull Request
+        uses: peter-evans/create-pull-request@v6
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          commit-message: "chore: bump version to ${{ steps.version.outputs.new_version }}"
+          branch: version-bump
+          title: "Bump version to ${{ steps.version.outputs.new_version }}"
+          body: "This PR bumps the version to ${{ steps.version.outputs.new_version }}."
+          labels: version-bump
