@@ -27,16 +27,16 @@ jobs:
           git config user.email "github-actions[bot]@users.noreply.github.com"
 
       - name: Increment version
-        run: npm version patch
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          new_version=$(npm version patch)
+          echo "new_version=$new_version" >> $GITHUB_ENV
 
       - name: Create Pull Request
         uses: peter-evans/create-pull-request@v6
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
-          commit-message: "chore: bump version to ${{ steps.version.outputs.new_version }}"
+          commit-message: "chore: bump version to ${{ env.new_version }}"
           branch: version-bump
-          title: "Bump version to ${{ steps.version.outputs.new_version }}"
-          body: "This PR bumps the version to ${{ steps.version.outputs.new_version }}."
+          title: "Bump version to ${{ env.new_version }}"
+          body: "This PR bumps the version to ${{ env.new_version }}."
           labels: version-bump
