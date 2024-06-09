@@ -32,6 +32,12 @@ jobs:
           new_version=$(npm version patch)
           echo "new_version=$new_version" >> $GITHUB_ENV
 
+      - name: Delete existing version-bump branch if exists
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          git push origin --delete version-bump || true
+
       - name: Create Pull Request
         uses: peter-evans/create-pull-request@v6
         with:
