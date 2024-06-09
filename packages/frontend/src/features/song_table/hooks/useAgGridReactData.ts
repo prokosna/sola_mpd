@@ -70,7 +70,6 @@ export function useAgGridReactData(
             return params.event.key === " ";
           },
           cellRenderer: CustomCellCompact,
-          autoHeight: true,
         },
       ];
     }
