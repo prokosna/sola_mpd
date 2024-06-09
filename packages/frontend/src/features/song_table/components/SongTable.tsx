@@ -155,6 +155,7 @@ export function SongTable(props: SongTableProps) {
           }
           getRowClass={getBoldClassForPlayingSong}
           getRowId={getRowId}
+          rowHeight={isCompact ? 60 : 30}
         ></AgGridReact>
         {props.isLoading && (
           <CircularProgress

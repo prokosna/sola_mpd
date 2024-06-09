@@ -1,11 +1,11 @@
 .ag-theme-alpine {
-  --ag-grid-size: 4px;
+  --ag-grid-size: 2px;
   --ag-border-color: #cbd5e0; /* gray.300 */
   --ag-header-background-color: #f7fafc; /* gray.50 */
 }
 
 .ag-theme-alpine-dark {
-  --ag-grid-size: 4px;
+  --ag-grid-size: 2px;
   --ag-border-color: #4a5568; /* gray.600 */
   --ag-header-background-color: #2d3748; /* gray.700 */
   --ag-background-color: #1a202c; /* gray.800 */
