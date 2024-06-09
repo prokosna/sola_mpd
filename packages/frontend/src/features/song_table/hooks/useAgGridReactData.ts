@@ -31,7 +31,9 @@ export function useAgGridReactData(
   // Convert Song to AdGrid item format (Column: Value)
   const rowData = useMemo(() => {
     if (isCompact) {
-      return sortSongsByColumns(songs, columns).map((song) => {
+      return (
+        isSortingEnabled ? sortSongsByColumns(songs, columns) : songs
+      ).map((song) => {
         const row: SongTableRowDataType = {};
         row.key = getTableKeyOfSong(song, keyType);
         row[SONGS_TAG_COMPACT] = convertSongForGridRowValueCompact(song);
@@ -50,7 +52,7 @@ export function useAgGridReactData(
       }
       return row;
     });
-  }, [isCompact, songs, keyType, columns]);
+  }, [isCompact, isSortingEnabled, songs, columns, keyType]);
 
   // Convert columns to AgGrid column definitions
   const columnDefs = useMemo(() => {
