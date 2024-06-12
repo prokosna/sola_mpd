@@ -6,7 +6,9 @@ import {
   Input,
   Select,
 } from "@chakra-ui/react";
+import { FilterCondition_Operator } from "@sola_mpd/domain/src/models/filter_pb.js";
 import { Query } from "@sola_mpd/domain/src/models/search_pb.js";
+import { Song_MetadataTag } from "@sola_mpd/domain/src/models/song_pb.js";
 import { SongUtils } from "@sola_mpd/domain/src/utils/SongUtils.js";
 import { useCallback } from "react";
 import { IoTrashOutline } from "react-icons/io5";
@@ -23,6 +25,7 @@ import {
 import {
   addEditingQueryCondition,
   changeEditingQueryCondition,
+  isValidOperatorWithMetadataTag,
   listSearchSongMetadataTags,
   removeEditingQueryCondition,
 } from "../helpers/search";
@@ -52,6 +55,16 @@ export function SearchNavigationQueryEditorQueryCondition(
       const tag = convertSongMetadataTagFromDisplayName(value);
       const newCondition = condition.clone();
       newCondition.tag = tag;
+      if (
+        !isValidOperatorWithMetadataTag(newCondition.tag, newCondition.operator)
+      ) {
+        newCondition.operator =
+          listAllFilterConditionOperators()
+            .filter((operator) =>
+              isValidOperatorWithMetadataTag(newCondition.tag, operator),
+            )
+            .at(0) || FilterCondition_Operator.UNKNOWN;
+      }
       const newQuery = changeEditingQueryCondition(query, index, newCondition);
       onUpdateQuery(newQuery);
     },
@@ -145,6 +158,9 @@ export function SearchNavigationQueryEditorQueryCondition(
             onChange={(e) => onChangeOperator(e.target.value)}
           >
             {listAllFilterConditionOperators()
+              .filter((operator) =>
+                isValidOperatorWithMetadataTag(condition.tag, operator),
+              )
               .map((operator) => convertOperatorToDisplayName(operator))
               .map((operator, i) => (
                 <option key={i} value={operator}>
@@ -156,7 +172,9 @@ export function SearchNavigationQueryEditorQueryCondition(
         <GridItem area={"value"}>
           <Input
             size="sm"
-            type="text"
+            type={
+              condition.tag === Song_MetadataTag.UPDATED_AT ? "date" : "text"
+            }
             value={SongUtils.convertSongMetadataValueToString(condition.value!)}
             onChange={(e) => onChangeValue(e.target.value)}
           ></Input>
