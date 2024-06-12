@@ -187,3 +187,24 @@ export function removeEditingQueryCondition(
   newQuery.conditions = newConditions;
   return newQuery;
 }
+
+export function isValidOperatorWithMetadataTag(
+  tag: Song_MetadataTag,
+  operator: FilterCondition_Operator,
+): boolean {
+  if (![Song_MetadataTag.DURATION, Song_MetadataTag.UPDATED_AT].includes(tag)) {
+    return true;
+  }
+  if (
+    [
+      FilterCondition_Operator.CONTAIN,
+      FilterCondition_Operator.EQUAL,
+      FilterCondition_Operator.NOT_CONTAIN,
+      FilterCondition_Operator.NOT_EQUAL,
+      FilterCondition_Operator.REGEX,
+    ].includes(operator)
+  ) {
+    return false;
+  }
+  return true;
+}
