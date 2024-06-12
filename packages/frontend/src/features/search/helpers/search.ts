@@ -52,6 +52,8 @@ export function listSearchSongMetadataTags(): Song_MetadataTag[] {
     Song_MetadataTag.LABEL,
     Song_MetadataTag.DATE,
     Song_MetadataTag.DURATION,
+    Song_MetadataTag.TRACK,
+    Song_MetadataTag.DISC,
     Song_MetadataTag.UPDATED_AT,
   ];
 }
