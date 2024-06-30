@@ -1,6 +1,7 @@
 import { Flex, Grid, GridItem } from "@chakra-ui/react";
 
 import { PlayerControlsCompact } from "./PlayerControlsCompact";
+import { PlayerDurationCompact } from "./PlayerDurationCompact";
 import { PlayerObserver } from "./PlayerObserver";
 import { PlayerSeekBar } from "./PlayerSeekBar";
 import { PlayerSongInformationCompact } from "./PlayerSongInformationCompact";
@@ -8,8 +9,9 @@ import { PlayerSongInformationCompact } from "./PlayerSongInformationCompact";
 export function PlayerCompact() {
   return (
     <>
-      <Flex direction={"column"} w="100vw" h="full">
+      <Flex direction={"column"} w="100vw" h="full" position="relative">
         <PlayerSeekBar></PlayerSeekBar>
+        <PlayerDurationCompact></PlayerDurationCompact>
         <Grid
           className="player-surface-grid"
           templateAreas={`"info"

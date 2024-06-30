@@ -17,7 +17,7 @@ export function PlayerControls() {
       <PlayerControlsButtonResume></PlayerControlsButtonResume>
       <PlayerControlsButtonNext></PlayerControlsButtonNext>
 
-      <Center h="50%">
+      <Center h="30%">
         <Divider orientation="vertical"></Divider>
       </Center>
 
@@ -25,7 +25,7 @@ export function PlayerControls() {
       <PlayerControlsButtonRepeat></PlayerControlsButtonRepeat>
       <PlayerControlsButtonConsume></PlayerControlsButtonConsume>
 
-      <Center h="50%">
+      <Center h="30%">
         <Divider orientation="vertical"></Divider>
       </Center>
 
