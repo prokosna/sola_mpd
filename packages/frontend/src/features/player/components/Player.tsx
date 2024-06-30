@@ -4,6 +4,7 @@ import { useIsCompactMode } from "../../user_device";
 
 import { PlayerCompact } from "./PlayerCompact";
 import { PlayerControls } from "./PlayerControls";
+import { PlayerDuration } from "./PlayerDuration";
 import { PlayerObserver } from "./PlayerObserver";
 import { PlayerSeekBar } from "./PlayerSeekBar";
 import { PlayerSongInformation } from "./PlayerSongInformation";
@@ -17,8 +18,9 @@ export function Player() {
 
   return (
     <>
-      <Flex direction={"column"} w="100vw" h="full">
+      <Flex direction={"column"} w="100vw" h="full" position="relative">
         <PlayerSeekBar></PlayerSeekBar>
+        <PlayerDuration></PlayerDuration>
         <Grid
           className="player-surface-grid"
           templateAreas={`"info control"`}
