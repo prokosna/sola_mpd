@@ -31,7 +31,7 @@ export function PlayerCompact() {
             </Flex>
           </GridItem>
           <GridItem area={"control"}>
-            <Flex h="full" pb="2" align={"center"} justify={"center"}>
+            <Flex h="10" p="2" align={"center"} justify={"center"}>
               <PlayerControlsCompact />
             </Flex>
           </GridItem>
