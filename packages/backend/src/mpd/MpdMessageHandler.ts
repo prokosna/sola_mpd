@@ -41,9 +41,13 @@ export class MpdMessageHandler {
       socket.join(room);
 
       // Event listener
-      const handle = await mpdClient.subscribe(profile, (event: MpdEvent) => {
-        this.io.to(room).emit(SIO_MPD_EVENT, event.toJsonString());
-      });
+      const handle = await mpdClient.subscribe(
+        id,
+        profile,
+        (event: MpdEvent) => {
+          this.io.to(room).emit(SIO_MPD_EVENT, event.toJsonString());
+        },
+      );
       this.idHandlerMap.set(id, {
         profile,
         handle,
@@ -72,7 +76,7 @@ export class MpdMessageHandler {
   async disconnect(id: string): Promise<void> {
     const profileHandler = this.idHandlerMap.get(id);
     if (profileHandler != null) {
-      mpdClient.unsubscribe(profileHandler.profile, profileHandler.handle);
+      mpdClient.unsubscribe(id, profileHandler.profile, profileHandler.handle);
     }
   }
 }

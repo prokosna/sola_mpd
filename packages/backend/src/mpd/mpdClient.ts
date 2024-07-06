@@ -33,18 +33,19 @@ import { DeepMap } from "@sola_mpd/domain/src/utils/DeepMap.js";
 import { MpdUtils } from "@sola_mpd/domain/src/utils/MpdUtils.js";
 import dayjs from "dayjs";
 import mpd, { MPD } from "mpd2";
+import { v4 as uuidV4 } from "uuid";
 
 mpd.autoparseValues(false);
 
 class MpdClient {
-  private clients: DeepMap<MpdProfile, MPD.Client> = new DeepMap(new Map());
+  private clients: DeepMap<string, MPD.Client> = new DeepMap(new Map());
   private listParser = mpd.parseList;
   private objectParser = mpd.parseObject;
   private listParserBy = mpd.parseList.by;
 
-  private async connect(profile: MpdProfile): Promise<MPD.Client> {
-    if (this.clients.has(profile)) {
-      const client = this.clients.get(profile)!;
+  private async connect(tx: string, profile: MpdProfile): Promise<MPD.Client> {
+    if (this.clients.has(tx)) {
+      const client = this.clients.get(tx)!;
       return client;
     }
     const config = {
@@ -53,18 +54,19 @@ class MpdClient {
     };
     const client = await mpd.connect(config);
     client.once("close", () => {
-      this.clients.delete(profile);
+      this.clients.delete(tx);
       console.info("Removed closed client.");
     });
-    this.clients.set(profile, client);
+    this.clients.set(tx, client);
     return client;
   }
 
   async subscribe(
+    id: string,
     profile: MpdProfile,
     callback: (event: MpdEvent) => void,
   ): Promise<(name?: string) => void> {
-    const client = await this.connect(profile);
+    const client = await this.connect(id, profile);
     const handle = (name?: string) => {
       if (name == null) {
         callback(new MpdEvent({ eventType: MpdEvent_EventType.DISCONNECTED }));
@@ -103,11 +105,12 @@ class MpdClient {
   }
 
   async unsubscribe(
+    id: string,
     profile: MpdProfile,
     handle: (name?: string) => void,
   ): Promise<boolean> {
     try {
-      const client = await this.connect(profile);
+      const client = await this.connect(id, profile);
       client.off("system", handle);
       client.off("close", handle);
       return true;
@@ -118,6 +121,7 @@ class MpdClient {
   }
 
   async executeBulk(reqs: MpdRequest[]): Promise<void> {
+    const tx = uuidV4();
     const commandGroup: DeepMap<MpdProfile, MpdRequest[]> = new DeepMap();
     for (const req of reqs) {
       if (!commandGroup.has(req.profile!)) {
@@ -127,7 +131,7 @@ class MpdClient {
     }
 
     for (const [profile, reqs] of commandGroup) {
-      const client = await this.connect(profile);
+      const client = await this.connect(tx, profile);
       const cmds = reqs.map(this.convertCommand);
       await client.sendCommands(cmds);
     }
@@ -138,7 +142,8 @@ class MpdClient {
     if (profile === undefined) {
       throw new Error("Profile is undefined");
     }
-    const client = await this.connect(profile);
+    const tx = uuidV4();
+    const client = await this.connect(tx, profile);
     const cmd = this.convertCommand(req);
 
     switch (req.command?.case) {
