@@ -37,7 +37,7 @@ import { v4 as uuidV4 } from "uuid";
 
 mpd.autoparseValues(false);
 
-const MAX_COMMAND_CLIENTS = 3;
+const MAX_COMMAND_CLIENTS = 5;
 
 type ClientState = {
   id: string;
