@@ -33,115 +33,38 @@ import { DeepMap } from "@sola_mpd/domain/src/utils/DeepMap.js";
 import { MpdUtils } from "@sola_mpd/domain/src/utils/MpdUtils.js";
 import dayjs from "dayjs";
 import mpd, { MPD } from "mpd2";
-import { v4 as uuidV4 } from "uuid";
 
 mpd.autoparseValues(false);
 
-const MAX_COMMAND_CLIENTS = 5;
-
-type ClientState = {
-  id: string;
-  client: MPD.Client;
-  isInUse: boolean;
-};
-
 class MpdClient {
-  private subscriptionClients: DeepMap<MpdProfile, MPD.Client> = new DeepMap(
-    new Map(),
-  );
-  private commandClientPool: DeepMap<MpdProfile, ClientState[]> = new DeepMap(
-    new Map(),
-  );
+  private clients: DeepMap<MpdProfile, MPD.Client> = new DeepMap(new Map());
   private listParser = mpd.parseList;
   private objectParser = mpd.parseObject;
   private listParserBy = mpd.parseList.by;
 
-  private async getCommandClient(profile: MpdProfile): Promise<ClientState> {
-    if (!this.commandClientPool.has(profile)) {
-      this.commandClientPool.set(profile, []);
-    }
-    const pool = this.commandClientPool.get(profile)!;
-    const clients = pool.filter((v) => !v.isInUse);
-
-    if (clients.length > 0) {
-      const client = clients[0];
-      client.isInUse = true;
-      return client;
-    }
-
-    const id = uuidV4();
-    const config = {
-      host: profile.host,
-      port: profile.port,
-    };
-    const newClient = await mpd.connect(config);
-    newClient.once("close", () => {
-      const pool = this.commandClientPool.get(profile)!;
-      this.commandClientPool.set(
-        profile,
-        pool.filter((v) => v.id !== id),
-      );
-      console.info(`Removed closed command client: ${id}`);
-    });
-    const newClientState = {
-      id,
-      client: newClient,
-      isInUse: true,
-    };
-    pool.push(newClientState);
-    console.info(`Created new command client: ${id}`);
-    return newClientState;
-  }
-
-  private async disposeCommandClient(
-    profile: MpdProfile,
-    clientState: ClientState,
-  ) {
-    const pool = this.commandClientPool.get(profile) || [];
-    clientState.isInUse = false;
-    if (pool.findIndex((v) => v.id === clientState.id) < 0) {
-      // For some reason, this client doesn't exist in the pool
-      // Just make sure to disconnect
-      clientState.client.disconnect();
-      return;
-    }
-
-    if (pool.length > MAX_COMMAND_CLIENTS) {
-      // Too many clients, remove this client
-      this.commandClientPool.set(
-        profile,
-        pool.filter((v) => v.id !== clientState.id),
-      );
-      clientState.client.disconnect();
-    }
-  }
-
-  private async getSubscriptionClient(
-    profile: MpdProfile,
-  ): Promise<MPD.Client> {
-    const client = this.subscriptionClients.get(profile);
-    if (client !== undefined) {
+  private async connect(profile: MpdProfile): Promise<MPD.Client> {
+    if (this.clients.has(profile)) {
+      const client = this.clients.get(profile)!;
       return client;
     }
     const config = {
       host: profile.host,
       port: profile.port,
     };
-    const newClient = await mpd.connect(config);
-    newClient.once("close", () => {
-      this.subscriptionClients.delete(profile);
-      console.info("Removed closed subscription client");
+    const client = await mpd.connect(config);
+    client.once("close", () => {
+      this.clients.delete(profile);
+      console.info("Removed closed client");
     });
-    this.subscriptionClients.set(profile, newClient);
-    console.info("Created new subscription client");
-    return newClient;
+    this.clients.set(profile, client);
+    return client;
   }
 
   async subscribe(
     profile: MpdProfile,
     callback: (event: MpdEvent) => void,
   ): Promise<(name?: string) => void> {
-    const client = await this.getSubscriptionClient(profile);
+    const client = await this.connect(profile);
     const handle = (name?: string) => {
       if (name == null) {
         callback(new MpdEvent({ eventType: MpdEvent_EventType.DISCONNECTED }));
@@ -184,7 +107,7 @@ class MpdClient {
     handle: (name?: string) => void,
   ): Promise<boolean> {
     try {
-      const client = await this.getSubscriptionClient(profile);
+      const client = await this.connect(profile);
       client.off("system", handle);
       client.off("close", handle);
       return true;
@@ -204,10 +127,9 @@ class MpdClient {
     }
 
     for (const [profile, reqs] of commandGroup) {
-      const clientState = await this.getCommandClient(profile);
+      const client = await this.connect(profile);
       const cmds = reqs.map(this.convertCommand);
-      await clientState.client.sendCommands(cmds);
-      await this.disposeCommandClient(profile, clientState);
+      await client.sendCommands(cmds);
     }
   }
 
@@ -216,310 +138,295 @@ class MpdClient {
     if (profile === undefined) {
       throw new Error("Profile is undefined");
     }
-    const clientState = await this.getCommandClient(profile);
-    const client = clientState.client;
+    const client = await this.connect(profile);
     const cmd = this.convertCommand(req);
 
-    const doCommand = async () => {
-      switch (req.command?.case) {
-        // Connection
-        case "ping": {
-          await this.sendCommand(client, cmd);
-          const version = this.getVersion(client);
-          return new MpdResponse({
-            command: {
-              case: "ping",
-              value: { version },
-            },
-          });
-        }
-        // Control
-        case "next":
-          await this.sendCommand(client, cmd);
-          return new MpdResponse({ command: { case: "next", value: {} } });
-        case "pause":
-          await this.sendCommand(client, cmd);
-          return new MpdResponse({ command: { case: "pause", value: {} } });
-        case "play":
-          await this.sendCommand(client, cmd);
-          return new MpdResponse({ command: { case: "play", value: {} } });
-        case "previous":
-          await this.sendCommand(client, cmd);
-          return new MpdResponse({
-            command: { case: "previous", value: {} },
-          });
-        case "seek":
-          await this.sendCommand(client, cmd);
-          return new MpdResponse({ command: { case: "seek", value: {} } });
-        case "stop":
-          await this.sendCommand(client, cmd);
-          return new MpdResponse({ command: { case: "stop", value: {} } });
-
-        // Playback
-        case "consume":
-          await this.sendCommand(client, cmd);
-          return new MpdResponse({
-            command: { case: "consume", value: {} },
-          });
-        case "random":
-          await this.sendCommand(client, cmd);
-          return new MpdResponse({ command: { case: "random", value: {} } });
-        case "repeat":
-          await this.sendCommand(client, cmd);
-          return new MpdResponse({ command: { case: "repeat", value: {} } });
-        case "setvol":
-          await this.sendCommand(client, cmd);
-          return new MpdResponse({ command: { case: "setvol", value: {} } });
-        case "getvol": {
-          const ret = await this.sendCommand(client, cmd).then(
-            this.objectParser,
-          );
-          const vol = MpdClient.parseMpdPlayerVolume(ret);
-          if (vol !== undefined) {
-            return new MpdResponse({
-              command: {
-                case: "getvol",
-                value: { vol },
-              },
-            });
-          }
-          throw new Error(`Invalid volume: ${ret}`);
-        }
-        case "single":
-          await this.sendCommand(client, cmd);
-          return new MpdResponse({ command: { case: "single", value: {} } });
-
-        // Status
-        case "currentsong": {
-          const ret = await this.sendCommand(client, cmd).then(
-            this.objectParser,
-          );
-          const song = MpdClient.parseSong(ret);
-          return new MpdResponse({
-            command: {
-              case: "currentsong",
-              value: { song },
-            },
-          });
-        }
-        case "status": {
-          const ret = await this.sendCommand(client, cmd).then(
-            this.objectParser,
-          );
-          const status = MpdClient.parseMpdPlayerStatus(ret);
-          return new MpdResponse({
-            command: {
-              case: "status",
-              value: { status },
-            },
-          });
-        }
-        case "stats": {
-          const version = this.getVersion(client);
-          const ret = await this.sendCommand(client, cmd).then(
-            this.objectParser,
-          );
-          const stats = MpdClient.parseMpdStats(version, ret);
-          return new MpdResponse({
-            command: {
-              case: "stats",
-              value: { stats },
-            },
-          });
-        }
-
-        // Queue
-        case "add":
-          await this.sendCommand(client, cmd);
-          return new MpdResponse({ command: { case: "add", value: {} } });
-        case "clear":
-          await this.sendCommand(client, cmd);
-          return new MpdResponse({ command: { case: "clear", value: {} } });
-        case "delete":
-          await this.sendCommand(client, cmd);
-          return new MpdResponse({ command: { case: "delete", value: {} } });
-        case "move":
-          await this.sendCommand(client, cmd);
-          return new MpdResponse({ command: { case: "move", value: {} } });
-        case "playlistinfo": {
-          const ret = await this.sendCommand(client, cmd).then(this.listParser);
-          const songs = ret
-            .map((v) => MpdClient.parseSong(v))
-            .filter((v) => v !== undefined) as Song[];
-          return new MpdResponse({
-            command: {
-              case: "playlistinfo",
-              value: { songs },
-            },
-          });
-        }
-        case "shuffle":
-          await this.sendCommand(client, cmd);
-          return new MpdResponse({
-            command: { case: "shuffle", value: {} },
-          });
-
-        // StoredPlaylist
-        case "listplaylistinfo": {
-          const ret = await this.sendCommand(client, cmd).then(this.listParser);
-          const songs = ret
-            .map((v) => MpdClient.parseSong(v))
-            .filter((v) => v !== undefined) as Song[];
-          return new MpdResponse({
-            command: {
-              case: "listplaylistinfo",
-              value: {
-                songs,
-              },
-            },
-          });
-        }
-        case "listplaylists": {
-          const ret = await this.sendCommand(client, cmd).then(this.listParser);
-          const playlists = ret
-            .map((v) => MpdClient.parsePlaylist(v))
-            .filter((v) => v !== undefined) as Playlist[];
-          return new MpdResponse({
-            command: {
-              case: "listplaylists",
-              value: {
-                playlists,
-              },
-            },
-          });
-        }
-        case "playlistadd":
-          await this.sendCommand(client, cmd);
-          return new MpdResponse({
-            command: { case: "playlistadd", value: {} },
-          });
-        case "playlistclear":
-          await this.sendCommand(client, cmd);
-          return new MpdResponse({
-            command: { case: "playlistclear", value: {} },
-          });
-        case "playlistdelete":
-          await this.sendCommand(client, cmd);
-          return new MpdResponse({
-            command: { case: "playlistdelete", value: {} },
-          });
-        case "playlistmove":
-          await this.sendCommand(client, cmd);
-          return new MpdResponse({
-            command: { case: "playlistmove", value: {} },
-          });
-        case "rename":
-          await this.sendCommand(client, cmd);
-          return new MpdResponse({
-            command: { case: "rename", value: {} },
-          });
-        case "rm":
-          await this.sendCommand(client, cmd);
-          return new MpdResponse({
-            command: { case: "rm", value: {} },
-          });
-        case "save":
-          await this.sendCommand(client, cmd);
-          return new MpdResponse({
-            command: { case: "save", value: {} },
-          });
-
-        // Database
-        case "list": {
-          const ret = await this.sendCommand(client, cmd).then(this.listParser);
-          const values = ret
-            .flatMap((v) => Object.values(v))
-            .map((v) => String(v))
-            .filter((v) => !!v) as string[];
-          return new MpdResponse({
-            command: {
-              case: "list",
-              value: { values },
-            },
-          });
-        }
-        case "search": {
-          const ret = await this.sendCommand(client, cmd).then(this.listParser);
-          const songs = ret
-            .map((v) => MpdClient.parseSong(v))
-            .filter((v) => v !== undefined) as Song[];
-          return new MpdResponse({
-            command: {
-              case: "search",
-              value: { songs },
-            },
-          });
-        }
-        case "update":
-          await this.sendCommand(client, cmd);
-          return new MpdResponse({
-            command: { case: "update", value: {} },
-          });
-
-        // Audio
-        case "outputs": {
-          const ret = await this.sendCommand(client, cmd).then(this.listParser);
-          const devices = MpdClient.parseMpdOutputDevices(ret);
-          return new MpdResponse({
-            command: {
-              case: "outputs",
-              value: { devices },
-            },
-          });
-        }
-
-        // Utility
-        case "listAllSongs": {
-          const ret = await this.sendCommand(client, cmd).then(
-            this.listParserBy("file"),
-          );
-          const songs = ret
-            .map((v) => MpdClient.parseSong(v))
-            .filter((v) => v !== undefined) as Song[];
-          return new MpdResponse({
-            command: {
-              case: "listAllSongs",
-              value: { songs },
-            },
-          });
-        }
-        case "listAllFolders": {
-          const ret = await this.sendCommand(client, cmd).then(
-            this.listParserBy("directory"),
-          );
-          const folders = ret
-            .map((v) => MpdClient.parseFolder(v))
-            .filter((v) => v !== undefined) as Folder[];
-          return new MpdResponse({
-            command: {
-              case: "listAllFolders",
-              value: { folders },
-            },
-          });
-        }
-        case "listSongsInFolder": {
-          const ret = await this.sendCommand(client, cmd).then(
-            this.listParserBy("file"),
-          );
-          const songs = ret
-            .map((v) => MpdClient.parseSong(v))
-            .filter((v) => v !== undefined) as Song[];
-          return new MpdResponse({
-            command: {
-              case: "listSongsInFolder",
-              value: { songs },
-            },
-          });
-        }
-        default: {
-          throw new Error(`Unsupported command: ${req.toJsonString()}`);
-        }
+    switch (req.command?.case) {
+      // Connection
+      case "ping": {
+        await this.sendCommand(client, cmd);
+        const version = this.getVersion(client);
+        return new MpdResponse({
+          command: {
+            case: "ping",
+            value: { version },
+          },
+        });
       }
-    };
+      // Control
+      case "next":
+        await this.sendCommand(client, cmd);
+        return new MpdResponse({ command: { case: "next", value: {} } });
+      case "pause":
+        await this.sendCommand(client, cmd);
+        return new MpdResponse({ command: { case: "pause", value: {} } });
+      case "play":
+        await this.sendCommand(client, cmd);
+        return new MpdResponse({ command: { case: "play", value: {} } });
+      case "previous":
+        await this.sendCommand(client, cmd);
+        return new MpdResponse({
+          command: { case: "previous", value: {} },
+        });
+      case "seek":
+        await this.sendCommand(client, cmd);
+        return new MpdResponse({ command: { case: "seek", value: {} } });
+      case "stop":
+        await this.sendCommand(client, cmd);
+        return new MpdResponse({ command: { case: "stop", value: {} } });
 
-    const resp = await doCommand();
-    await this.disposeCommandClient(profile, clientState);
-    return resp;
+      // Playback
+      case "consume":
+        await this.sendCommand(client, cmd);
+        return new MpdResponse({
+          command: { case: "consume", value: {} },
+        });
+      case "random":
+        await this.sendCommand(client, cmd);
+        return new MpdResponse({ command: { case: "random", value: {} } });
+      case "repeat":
+        await this.sendCommand(client, cmd);
+        return new MpdResponse({ command: { case: "repeat", value: {} } });
+      case "setvol":
+        await this.sendCommand(client, cmd);
+        return new MpdResponse({ command: { case: "setvol", value: {} } });
+      case "getvol": {
+        const ret = await this.sendCommand(client, cmd).then(this.objectParser);
+        const vol = MpdClient.parseMpdPlayerVolume(ret);
+        if (vol !== undefined) {
+          return new MpdResponse({
+            command: {
+              case: "getvol",
+              value: { vol },
+            },
+          });
+        }
+        throw new Error(`Invalid volume: ${ret}`);
+      }
+      case "single":
+        await this.sendCommand(client, cmd);
+        return new MpdResponse({ command: { case: "single", value: {} } });
+
+      // Status
+      case "currentsong": {
+        const ret = await this.sendCommand(client, cmd).then(this.objectParser);
+        const song = MpdClient.parseSong(ret);
+        return new MpdResponse({
+          command: {
+            case: "currentsong",
+            value: { song },
+          },
+        });
+      }
+      case "status": {
+        const ret = await this.sendCommand(client, cmd).then(this.objectParser);
+        const status = MpdClient.parseMpdPlayerStatus(ret);
+        return new MpdResponse({
+          command: {
+            case: "status",
+            value: { status },
+          },
+        });
+      }
+      case "stats": {
+        const version = this.getVersion(client);
+        const ret = await this.sendCommand(client, cmd).then(this.objectParser);
+        const stats = MpdClient.parseMpdStats(version, ret);
+        return new MpdResponse({
+          command: {
+            case: "stats",
+            value: { stats },
+          },
+        });
+      }
+
+      // Queue
+      case "add":
+        await this.sendCommand(client, cmd);
+        return new MpdResponse({ command: { case: "add", value: {} } });
+      case "clear":
+        await this.sendCommand(client, cmd);
+        return new MpdResponse({ command: { case: "clear", value: {} } });
+      case "delete":
+        await this.sendCommand(client, cmd);
+        return new MpdResponse({ command: { case: "delete", value: {} } });
+      case "move":
+        await this.sendCommand(client, cmd);
+        return new MpdResponse({ command: { case: "move", value: {} } });
+      case "playlistinfo": {
+        const ret = await this.sendCommand(client, cmd).then(this.listParser);
+        const songs = ret
+          .map((v) => MpdClient.parseSong(v))
+          .filter((v) => v !== undefined) as Song[];
+        return new MpdResponse({
+          command: {
+            case: "playlistinfo",
+            value: { songs },
+          },
+        });
+      }
+      case "shuffle":
+        await this.sendCommand(client, cmd);
+        return new MpdResponse({
+          command: { case: "shuffle", value: {} },
+        });
+
+      // StoredPlaylist
+      case "listplaylistinfo": {
+        const ret = await this.sendCommand(client, cmd).then(this.listParser);
+        const songs = ret
+          .map((v) => MpdClient.parseSong(v))
+          .filter((v) => v !== undefined) as Song[];
+        return new MpdResponse({
+          command: {
+            case: "listplaylistinfo",
+            value: {
+              songs,
+            },
+          },
+        });
+      }
+      case "listplaylists": {
+        const ret = await this.sendCommand(client, cmd).then(this.listParser);
+        const playlists = ret
+          .map((v) => MpdClient.parsePlaylist(v))
+          .filter((v) => v !== undefined) as Playlist[];
+        return new MpdResponse({
+          command: {
+            case: "listplaylists",
+            value: {
+              playlists,
+            },
+          },
+        });
+      }
+      case "playlistadd":
+        await this.sendCommand(client, cmd);
+        return new MpdResponse({
+          command: { case: "playlistadd", value: {} },
+        });
+      case "playlistclear":
+        await this.sendCommand(client, cmd);
+        return new MpdResponse({
+          command: { case: "playlistclear", value: {} },
+        });
+      case "playlistdelete":
+        await this.sendCommand(client, cmd);
+        return new MpdResponse({
+          command: { case: "playlistdelete", value: {} },
+        });
+      case "playlistmove":
+        await this.sendCommand(client, cmd);
+        return new MpdResponse({
+          command: { case: "playlistmove", value: {} },
+        });
+      case "rename":
+        await this.sendCommand(client, cmd);
+        return new MpdResponse({
+          command: { case: "rename", value: {} },
+        });
+      case "rm":
+        await this.sendCommand(client, cmd);
+        return new MpdResponse({
+          command: { case: "rm", value: {} },
+        });
+      case "save":
+        await this.sendCommand(client, cmd);
+        return new MpdResponse({
+          command: { case: "save", value: {} },
+        });
+
+      // Database
+      case "list": {
+        const ret = await this.sendCommand(client, cmd).then(this.listParser);
+        const values = ret
+          .flatMap((v) => Object.values(v))
+          .map((v) => String(v))
+          .filter((v) => !!v) as string[];
+        return new MpdResponse({
+          command: {
+            case: "list",
+            value: { values },
+          },
+        });
+      }
+      case "search": {
+        const ret = await this.sendCommand(client, cmd).then(this.listParser);
+        const songs = ret
+          .map((v) => MpdClient.parseSong(v))
+          .filter((v) => v !== undefined) as Song[];
+        return new MpdResponse({
+          command: {
+            case: "search",
+            value: { songs },
+          },
+        });
+      }
+      case "update":
+        await this.sendCommand(client, cmd);
+        return new MpdResponse({
+          command: { case: "update", value: {} },
+        });
+
+      // Audio
+      case "outputs": {
+        const ret = await this.sendCommand(client, cmd).then(this.listParser);
+        const devices = MpdClient.parseMpdOutputDevices(ret);
+        return new MpdResponse({
+          command: {
+            case: "outputs",
+            value: { devices },
+          },
+        });
+      }
+
+      // Utility
+      case "listAllSongs": {
+        const ret = await this.sendCommand(client, cmd).then(
+          this.listParserBy("file"),
+        );
+        const songs = ret
+          .map((v) => MpdClient.parseSong(v))
+          .filter((v) => v !== undefined) as Song[];
+        return new MpdResponse({
+          command: {
+            case: "listAllSongs",
+            value: { songs },
+          },
+        });
+      }
+      case "listAllFolders": {
+        const ret = await this.sendCommand(client, cmd).then(
+          this.listParserBy("directory"),
+        );
+        const folders = ret
+          .map((v) => MpdClient.parseFolder(v))
+          .filter((v) => v !== undefined) as Folder[];
+        return new MpdResponse({
+          command: {
+            case: "listAllFolders",
+            value: { folders },
+          },
+        });
+      }
+      case "listSongsInFolder": {
+        const ret = await this.sendCommand(client, cmd).then(
+          this.listParserBy("file"),
+        );
+        const songs = ret
+          .map((v) => MpdClient.parseSong(v))
+          .filter((v) => v !== undefined) as Song[];
+        return new MpdResponse({
+          command: {
+            case: "listSongsInFolder",
+            value: { songs },
+          },
+        });
+      }
+      default: {
+        throw new Error(`Unsupported command: ${req.toJsonString()}`);
+      }
+    }
   }
 
   private getVersion(client: MPD.Client): string {
