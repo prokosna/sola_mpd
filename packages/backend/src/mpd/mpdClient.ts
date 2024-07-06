@@ -37,45 +37,111 @@ import { v4 as uuidV4 } from "uuid";
 
 mpd.autoparseValues(false);
 
+const MAX_COMMAND_CLIENTS = 5;
+
+type ClientState = {
+  id: string;
+  client: MPD.Client;
+  isInUse: boolean;
+};
+
 class MpdClient {
-  private clients: DeepMap<string, MPD.Client> = new DeepMap(new Map());
+  private subscriptionClients: DeepMap<MpdProfile, MPD.Client> = new DeepMap(
+    new Map(),
+  );
+  private commandClientPool: DeepMap<MpdProfile, ClientState[]> = new DeepMap(
+    new Map(),
+  );
   private listParser = mpd.parseList;
   private objectParser = mpd.parseObject;
   private listParserBy = mpd.parseList.by;
 
-  private async connect(tx: string, profile: MpdProfile): Promise<MPD.Client> {
-    if (this.clients.has(tx)) {
-      const client = this.clients.get(tx)!;
+  private async getCommandClient(profile: MpdProfile): Promise<ClientState> {
+    if (!this.commandClientPool.has(profile)) {
+      this.commandClientPool.set(profile, []);
+    }
+    const pool = this.commandClientPool.get(profile)!;
+    const clients = pool.filter((v) => !v.isInUse);
+
+    if (clients.length > 0) {
+      const client = clients[0];
+      client.isInUse = true;
+      return client;
+    }
+
+    const id = uuidV4();
+    const config = {
+      host: profile.host,
+      port: profile.port,
+    };
+    const newClient = await mpd.connect(config);
+    newClient.once("close", () => {
+      const pool = this.commandClientPool.get(profile)!;
+      this.commandClientPool.set(
+        profile,
+        pool.filter((v) => v.id !== id),
+      );
+      console.info(`Removed closed command client: ${id}`);
+    });
+    const newClientState = {
+      id,
+      client: newClient,
+      isInUse: true,
+    };
+    pool.push(newClientState);
+    console.info(`Created new command client: ${id}`);
+    return newClientState;
+  }
+
+  private async disposeCommandClient(
+    profile: MpdProfile,
+    clientState: ClientState,
+  ) {
+    const pool = this.commandClientPool.get(profile) || [];
+    clientState.isInUse = false;
+    if (pool.findIndex((v) => v.id === clientState.id) < 0) {
+      // For some reason, this client doesn't exist in the pool
+      // Just make sure to disconnect
+      clientState.client.disconnect();
+      return;
+    }
+
+    if (pool.length > MAX_COMMAND_CLIENTS) {
+      // Too many clients, remove this client
+      this.commandClientPool.set(
+        profile,
+        pool.filter((v) => v.id !== clientState.id),
+      );
+      clientState.client.disconnect();
+    }
+  }
+
+  private async getSubscriptionClient(
+    profile: MpdProfile,
+  ): Promise<MPD.Client> {
+    const client = this.subscriptionClients.get(profile);
+    if (client !== undefined) {
       return client;
     }
     const config = {
       host: profile.host,
       port: profile.port,
     };
-    const client = await mpd.connect(config);
-    client.once("close", () => {
-      this.clients.delete(tx);
-      console.info("Removed closed client.");
+    const newClient = await mpd.connect(config);
+    newClient.once("close", () => {
+      this.subscriptionClients.delete(profile);
+      console.info("Removed closed subscription client");
     });
-    this.clients.set(tx, client);
-    return client;
-  }
-
-  private async disconnect(tx: string) {
-    const client = this.clients.get(tx);
-    if (client === undefined) {
-      return;
-    }
-    this.clients.delete(tx);
-    client.disconnect();
+    this.subscriptionClients.set(profile, newClient);
+    console.info("Created new subscription client");
+    return newClient;
   }
 
   async subscribe(
-    id: string,
     profile: MpdProfile,
     callback: (event: MpdEvent) => void,
   ): Promise<(name?: string) => void> {
-    const client = await this.connect(id, profile);
+    const client = await this.getSubscriptionClient(profile);
     const handle = (name?: string) => {
       if (name == null) {
         callback(new MpdEvent({ eventType: MpdEvent_EventType.DISCONNECTED }));
@@ -114,15 +180,13 @@ class MpdClient {
   }
 
   async unsubscribe(
-    id: string,
     profile: MpdProfile,
     handle: (name?: string) => void,
   ): Promise<boolean> {
     try {
-      const client = await this.connect(id, profile);
+      const client = await this.getSubscriptionClient(profile);
       client.off("system", handle);
       client.off("close", handle);
-      this.disconnect(id);
       return true;
     } catch (err) {
       console.error(err);
@@ -131,7 +195,6 @@ class MpdClient {
   }
 
   async executeBulk(reqs: MpdRequest[]): Promise<void> {
-    const tx = uuidV4();
     const commandGroup: DeepMap<MpdProfile, MpdRequest[]> = new DeepMap();
     for (const req of reqs) {
       if (!commandGroup.has(req.profile!)) {
@@ -141,11 +204,11 @@ class MpdClient {
     }
 
     for (const [profile, reqs] of commandGroup) {
-      const client = await this.connect(tx, profile);
+      const clientState = await this.getCommandClient(profile);
       const cmds = reqs.map(this.convertCommand);
-      await client.sendCommands(cmds);
+      await clientState.client.sendCommands(cmds);
+      await this.disposeCommandClient(profile, clientState);
     }
-    this.disconnect(tx);
   }
 
   async execute(req: MpdRequest): Promise<MpdResponse> {
@@ -153,8 +216,8 @@ class MpdClient {
     if (profile === undefined) {
       throw new Error("Profile is undefined");
     }
-    const tx = uuidV4();
-    const client = await this.connect(tx, profile);
+    const clientState = await this.getCommandClient(profile);
+    const client = clientState.client;
     const cmd = this.convertCommand(req);
 
     const doCommand = async () => {
@@ -453,8 +516,9 @@ class MpdClient {
         }
       }
     };
+
     const resp = await doCommand();
-    this.disconnect(tx);
+    await this.disposeCommandClient(profile, clientState);
     return resp;
   }
 
