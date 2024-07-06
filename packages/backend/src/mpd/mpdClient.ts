@@ -133,6 +133,7 @@ class MpdClient {
       console.info("Removed closed subscription client");
     });
     this.subscriptionClients.set(profile, newClient);
+    console.info("Created new subscription client");
     return newClient;
   }
 
