@@ -22,7 +22,7 @@ export function useSongStatsProps(
 
   return {
     isSelected,
-    label: isSelected ? "Songs Selected" : "Total Songs in DB",
+    label: isSelected ? "Selected Songs" : "Total Songs",
     count,
   };
 }

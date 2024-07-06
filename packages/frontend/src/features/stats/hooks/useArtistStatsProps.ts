@@ -23,7 +23,7 @@ export function useArtistStatsProps(
 
   return {
     isSelected,
-    label: isSelected ? "Artists from Selected Songs" : "Total Artists in DB",
+    label: isSelected ? "Artists of Selected Songs" : "Total Artists",
     count,
   };
 }

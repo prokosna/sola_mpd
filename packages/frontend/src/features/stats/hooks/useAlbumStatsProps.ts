@@ -23,7 +23,7 @@ export function useAlbumStatsProps(
 
   return {
     isSelected,
-    label: isSelected ? "Albums from Selected Songs" : "Total Albums in DB",
+    label: isSelected ? "Albums of Selected Songs" : "Total Albums",
     count,
   };
 }
