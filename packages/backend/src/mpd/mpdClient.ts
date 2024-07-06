@@ -76,7 +76,7 @@ class MpdClient {
     };
     const newClient = await mpd.connect(config);
     newClient.once("close", () => {
-      const pool = this.commandClientPool.get(profile) ?? [];
+      const pool = this.commandClientPool.get(profile)!;
       this.commandClientPool.set(
         profile,
         pool.filter((v) => v.id !== id),
