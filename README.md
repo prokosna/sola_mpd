@@ -153,7 +153,9 @@ This plugin is quite specific to my use case, but you can use this as a referenc
 
 ## For developers
 
-Sola MPD is written in TypeScript with React, Vite, Protocol Buffers and so on.
+### Setup a development environment
+
+Sola MPD is written in TypeScript with React, Vite, Protocol Buffers, Jotai, etc.
 
 ```
 # 1. Install dependencies, set up a husky hook for format/lint
@@ -169,3 +171,55 @@ $ npm run -w packages/domain build
 $ npm run -w packages/backend dev
 $ npm run -w packages/frontend dev
 ```
+
+### Frontend architecture
+
+```
+frontend
+└── src
+    ├── const
+    ├── features
+    │   ├── feature_a
+    │   │   ├── types
+    │   │   ├── actions
+    │   │   ├── commands
+    │   │   ├── queries
+    │   │   ├── atoms
+    │   │   ├── workflows
+    │   │   ├── components
+    │   │   └── index.ts
+    │   ...
+    ├── infrastructure
+    │   ├── socket
+    │   │   ├── atoms
+    │   │   ├── something.ts
+    │   │   └── index.ts
+    │   ├── mpd
+    ... ...
+```
+
+- types
+  - All types including domain events, functions, etc
+- actions: `useXxxAction()`
+  - Hooks providing callback functions for user inputs
+  - The callback just creates a domain event and set it to atom
+  - Can be dependent on set functions of `atoms`
+- queries: `useXxxState()`
+  - Hooks providing "final" states of `atoms` for `components`
+  - States shouldn't include any logic / conversion
+  - Can be dependent on `atoms`
+  - Can be async / sync depending on a use case
+- atoms: `xxxAtom`
+  - Contains Jotai atoms
+  - All dependencies exist here
+  - Typically each feature has `xxxDoneEventAtom` which represents a workflow trigger event and usual atoms which represent final states
+  - The states usually subscribe domain events and trigger a workflow to update the states
+- workflows: `useVerbXxxWorkflow()`
+  - Pure functions depending on pure TypeScript
+  - No side-effect is allowed
+  - External dependencies (infrastructure) have to be ingested via arguments
+- components: `Xxx.tsx`
+  - React components
+  - Can be dependent on `actions` and `queries`
+- index.ts
+  - Export APIs
