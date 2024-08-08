@@ -25,6 +25,17 @@ const zonesRestrictAccessFromStates = features.map((feature) => ({
     "Only access to index.ts or states of each feature is allowed from other features' states.",
 }));
 
+const infrastructureFolders = fs.readdirSync(
+  path.join(__dirname, "./src/infrastructure"),
+);
+const zoneRestrictAccessFromInfrastructure = infrastructureFolders.map(
+  (folder) => ({
+    from: path.join(__dirname, `./src/features/**/*`),
+    target: path.join(__dirname, `./src/infrastructure/${folder}/**/*`),
+    message: "Infrastructure can't be dependent on the features.",
+  }),
+);
+
 module.exports = {
   extends: ["../../.eslintrc.json", "plugin:react-hooks/recommended"],
   env: { browser: true, es2020: true, node: true },
@@ -42,6 +53,7 @@ module.exports = {
           ...zonesRestrictOutsideOfFeatures,
           ...zonesRestrictWithinFeatures,
           ...zonesRestrictAccessFromStates,
+          ...zoneRestrictAccessFromInfrastructure,
         ],
       },
     ],
