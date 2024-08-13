@@ -1,15 +1,15 @@
 import { Box, Select, useToast } from "@chakra-ui/react";
 
-import { useEnabledMpdDevice } from "../hooks/useEnabledMpdDevice";
-import { useOnChangeMpdProfile } from "../hooks/useOnChangeMpdProfile";
-import { useMpdProfileState } from "../states/persistent";
+import { useEnabledMpdDevice } from "../../output_devices";
+import { useChangeMpdProfileAction } from "../actions/useChangeMpdProfileAction";
+import { useMpdProfileState } from "../queries/useMpdProfileState";
 
 export function MpdProfileSelector() {
   const toast = useToast();
 
   const mpdProfileState = useMpdProfileState();
   const enabledOutputDevice = useEnabledMpdDevice();
-  const onChangeMpdProfile = useOnChangeMpdProfile();
+  const changeMpdProfileAction = useChangeMpdProfileAction()(mpdProfileState);
 
   return (
     <>
@@ -21,7 +21,7 @@ export function MpdProfileSelector() {
           <Select
             value={mpdProfileState.currentProfile.name}
             onChange={(e) => {
-              onChangeMpdProfile(e.target.value);
+              changeMpdProfileAction(e.target.value);
               toast({
                 status: "info",
                 title: "MPD profile changed",

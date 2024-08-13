@@ -191,9 +191,7 @@ frontend
     │   ...
     ├── infrastructure
     │   ├── socket
-    │   │   ├── atoms
     │   │   ├── something.ts
-    │   │   └── index.ts
     │   ├── mpd
     ... ...
 ```
@@ -218,6 +216,10 @@ frontend
   - Pure functions depending on pure TypeScript
   - No side-effect is allowed
   - External dependencies (infrastructure) have to be ingested via arguments
+- services: `XxxService`
+  - Interfaces to define interaction with external services
+  - Interfaces will be provided via atoms
+  - Implementation is placed in infrastructure
 - components: `Xxx.tsx`
   - React components
   - Can be dependent on `actions` and `queries`

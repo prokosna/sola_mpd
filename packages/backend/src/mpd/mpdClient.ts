@@ -616,7 +616,7 @@ class MpdClient {
       case "listSongsInFolder": {
         const folder = req.command.value.folder;
         if (folder === undefined) {
-          throw Error("Folder is undefined for listSongsInFolder");
+          throw new Error("Folder is undefined for listSongsInFolder");
         }
         return mpd.cmd("lsinfo", folder.path);
       }

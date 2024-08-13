@@ -5,7 +5,7 @@ import { useCallback } from "react";
 import { COMPONENT_ID_PLAYLIST_SIDE_PANE } from "../../../const/component";
 import { ContextMenuSection } from "../../context_menu";
 import { useMpdClientState } from "../../mpd";
-import { useCurrentMpdProfileState } from "../../profile";
+import { useCurrentMpdProfile } from "../../profile";
 import {
   SelectListProps,
   SelectListContextMenuItemParams,
@@ -21,7 +21,7 @@ export function usePlaylistNavigationSelectListProps():
   | undefined {
   const toast = useToast();
 
-  const profile = useCurrentMpdProfileState();
+  const profile = useCurrentMpdProfile();
   const mpdClient = useMpdClientState();
   const playlists = usePlaylistsState();
   const selectedPlaylist = useSelectedPlaylistState();

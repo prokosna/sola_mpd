@@ -9,7 +9,7 @@ import { COMPONENT_ID_PLAY_QUEUE } from "../../../const/component";
 import { ContextMenuSection } from "../../context_menu";
 import { useMpdClientState } from "../../mpd";
 import { usePluginContextMenuItems } from "../../plugin";
-import { useCurrentMpdProfileState } from "../../profile";
+import { useCurrentMpdProfile } from "../../profile";
 import {
   getSongTableContextMenuAddToPlaylist,
   getSongTableContextMenuEditColumns,
@@ -36,7 +36,7 @@ export function usePlayQueueSongTableProps(
   const songTableKeyType = SongTableKeyType.ID;
 
   const toast = useToast();
-  const profile = useCurrentMpdProfileState();
+  const profile = useCurrentMpdProfile();
   const songs = usePlayQueueVisibleSongsState();
   const commonSongTableState = useCommonSongTableState();
   const mpdClient = useMpdClientState();

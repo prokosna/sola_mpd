@@ -3,15 +3,12 @@ import { useCallback, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
 import { ROUTE_HOME_PLAY_QUEUE } from "../../const/routes";
-import {
-  MpdProfileForm,
-  useCurrentMpdProfileState,
-} from "../../features/profile";
+import { MpdProfileForm, useCurrentMpdProfile } from "../../features/profile";
 
 export function LandingPage() {
   const navigate = useNavigate();
 
-  const profile = useCurrentMpdProfileState();
+  const profile = useCurrentMpdProfile();
 
   useEffect(() => {
     if (profile !== undefined) {

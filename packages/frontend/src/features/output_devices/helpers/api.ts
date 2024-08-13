@@ -17,7 +17,7 @@ export async function fetchOutputDevices(
     }),
   );
   if (res.command.case !== "outputs") {
-    throw Error(`Invalid MPD response: ${res.toJsonString()}`);
+    throw new Error(`Invalid MPD response: ${res.toJsonString()}`);
   }
   return res.command.value.devices;
 }

@@ -4,7 +4,7 @@ import { useCallback } from "react";
 import { COMPONENT_ID_SEARCH_SIDE_PANE } from "../../../const/component";
 import { ContextMenuSection } from "../../context_menu";
 import { useMpdClientState } from "../../mpd";
-import { useCurrentMpdProfileState } from "../../profile";
+import { useCurrentMpdProfile } from "../../profile";
 import {
   SelectListProps,
   SelectListContextMenuItemParams,
@@ -19,7 +19,7 @@ import { useSetTargetSearchState } from "../states/songs";
 export function useSavedSearchesSelectListProps(): SelectListProps | undefined {
   const toast = useToast();
 
-  const profile = useCurrentMpdProfileState();
+  const profile = useCurrentMpdProfile();
   const mpdClient = useMpdClientState();
   const savedSearches = useSavedSearchesState();
   const setSavedSearches = useSetSavedSearchesState();

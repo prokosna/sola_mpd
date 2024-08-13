@@ -3,13 +3,13 @@ import { MpdPlayerStatus_PlaybackState } from "@sola_mpd/domain/src/models/mpd/m
 
 import { useMpdClientState } from "../../mpd";
 import { usePlayerStatusState } from "../../player";
-import { useCurrentMpdProfileState } from "../../profile";
+import { useCurrentMpdProfile } from "../../profile";
 
 import { useInputKeyCombination } from "./useInputKeyCombination";
 
 export function useGlobalKeyShortcuts() {
   const mpdClient = useMpdClientState();
-  const profile = useCurrentMpdProfileState();
+  const profile = useCurrentMpdProfile();
   const playerStatus = usePlayerStatusState();
 
   useInputKeyCombination(undefined, [" "], async () => {

@@ -18,9 +18,10 @@ import {
 import { useCallback, useState } from "react";
 import { useForm } from "react-hook-form";
 
-import { useAddMpdProfile } from "../hooks/useAddMpdProfile";
-import { useValidateMpdProfile } from "../hooks/useValidateMpdProfile";
-import { ProfileInputs } from "../types/profileInputs";
+import { useAddMpdProfileAction } from "../actions/useAddMpdProfileAction";
+import { useValidateMpdProfileInputsAction } from "../actions/useValidateMpdProfileInputsAction";
+import { useMpdProfileState } from "../queries/useMpdProfileState";
+import { MpdProfileInput } from "../types/profileInput";
 
 type MpdProfileFormProps = {
   onComplete: () => Promise<void>;
@@ -32,42 +33,37 @@ export function MpdProfileForm(props: MpdProfileFormProps) {
   const [validationErrorMessage, setValidationErrorMessage] = useState<
     string | undefined
   >(undefined);
+  const mpdProfileState = useMpdProfileState();
+  const validateMpdProfileInputsAction =
+    useValidateMpdProfileInputsAction()(mpdProfileState);
+  const addMpdProfileAction = useAddMpdProfileAction()(mpdProfileState);
 
   const {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<ProfileInputs>();
-
-  const validateMpdProfile = useValidateMpdProfile();
-  const addMpdProfile = useAddMpdProfile();
+  } = useForm<MpdProfileInput>();
 
   const onClickTest = useCallback(
-    async (data: ProfileInputs) => {
-      const errorMessage = await validateMpdProfile(data);
-      if (errorMessage !== undefined) {
-        setValidationErrorMessage(errorMessage);
-        setIsValidated(false);
-        return;
-      }
-      setValidationErrorMessage(undefined);
-      setIsValidated(true);
-      return;
+    async (mpdProfileInput: MpdProfileInput) => {
+      const result = await validateMpdProfileInputsAction(mpdProfileInput);
+      setValidationErrorMessage(result.error);
+      setIsValidated(result.isOk);
     },
-    [validateMpdProfile],
+    [validateMpdProfileInputsAction],
   );
 
   const onClickSave = useCallback(
-    async (data: ProfileInputs) => {
+    async (mpdProfileInput: MpdProfileInput) => {
       await props.onComplete();
-      await addMpdProfile(data);
+      await addMpdProfileAction(mpdProfileInput);
       toast({
         status: "success",
         title: "MPD profile successfully created",
-        description: `${data.name} profile have been created.`,
+        description: `${mpdProfileInput.name} profile have been created.`,
       });
     },
-    [addMpdProfile, props, toast],
+    [addMpdProfileAction, props, toast],
   );
 
   return (

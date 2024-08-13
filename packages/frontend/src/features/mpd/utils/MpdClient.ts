@@ -31,7 +31,7 @@ export class MpdClient {
     );
 
     if (res.command.case === "error") {
-      throw Error(res.command.value.message);
+      throw new Error(res.command.value.message);
     }
 
     return res;
@@ -53,7 +53,7 @@ export class MpdClient {
     );
 
     if (res.command.case === "error") {
-      throw Error(res.command.value.message);
+      throw new Error(res.command.value.message);
     }
 
     return res;

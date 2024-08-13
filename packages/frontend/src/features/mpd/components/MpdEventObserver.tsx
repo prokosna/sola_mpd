@@ -14,13 +14,13 @@ import {
   useRefreshPlaylistsState,
   useRefreshPlaylistSongsState,
 } from "../../playlist";
-import { useCurrentMpdProfileState } from "../../profile";
+import { useCurrentMpdProfile } from "../../profile";
 import { useSocketState, SocketIoClientUtils } from "../../socketio";
 import { useRefreshStatsState } from "../../stats";
 
 export function MpdEventObserver() {
   const socket = useSocketState();
-  const profile = useCurrentMpdProfileState();
+  const profile = useCurrentMpdProfile();
   const refreshStats = useRefreshStatsState();
   const refreshPlayQueueSongs = useRefreshPlayQueueSongsState();
   const refreshPlaylists = useRefreshPlaylistsState();

@@ -3,12 +3,12 @@ import { MpdRequest } from "@sola_mpd/domain/src/models/mpd/mpd_command_pb.js";
 import { useCallback, useRef } from "react";
 
 import { useMpdClientState } from "../../mpd";
-import { useCurrentMpdProfileState } from "../../profile";
+import { useCurrentMpdProfile } from "../../profile";
 import { getElapsedTimePercentage } from "../helpers/player";
 import { usePlayerStatusState } from "../states/status";
 
 export function PlayerSeekBar() {
-  const profile = useCurrentMpdProfileState();
+  const profile = useCurrentMpdProfile();
   const mpdClient = useMpdClientState();
   const playerStatus = usePlayerStatusState();
 

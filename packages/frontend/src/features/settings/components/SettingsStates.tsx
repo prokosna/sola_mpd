@@ -19,7 +19,10 @@ import { IoCreate } from "react-icons/io5";
 import { useBrowserState, useUpdateBrowserState } from "../../browser";
 import { useLayoutState, useSetLayoutState } from "../../layout";
 import { CenterSpinner } from "../../loading";
-import { useMpdProfileState, useSetMpdProfileState } from "../../profile";
+import {
+  useMpdProfileState,
+  useUpdateMpdProfileStateAction,
+} from "../../profile";
 import { useSavedSearchesState, useSetSavedSearchesState } from "../../search";
 import {
   useCommonSongTableState,
@@ -31,11 +34,11 @@ import { SettingsStatesEditor } from "./SettingsStatesEditor";
 
 export function SettingsStates() {
   const mpdProfileState = useMpdProfileState();
-  const setMpdProfileState = useSetMpdProfileState();
+  const updateMpdProfileState = useUpdateMpdProfileStateAction();
   const [onOpenProfileState, profileStateProps] =
     useSettingsStateEditorProps<MpdProfileState>(
       mpdProfileState,
-      setMpdProfileState,
+      updateMpdProfileState,
       MpdProfileState.fromJson,
     );
 

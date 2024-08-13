@@ -12,7 +12,7 @@ import {
   useRefreshMetrics,
 } from "../../metrics/states/tracker";
 import { mpdClientAtom } from "../../mpd/states/mpdClient";
-import { currentMpdProfileAtom } from "../../profile/states/persistent";
+import { currentMpdProfileAtom } from "../../profile/atoms/profile";
 import { commonSongTableStateAtom } from "../../song_table/states/commonSongTableState";
 import { fetchBrowserSongs } from "../helpers/api";
 

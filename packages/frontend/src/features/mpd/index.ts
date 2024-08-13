@@ -6,3 +6,6 @@ export { useMpdClientState } from "./states/mpdClient";
 
 // Utils
 export { MpdClient } from "./utils/MpdClient";
+
+// Atoms
+export { mpdServiceAtom } from "./atoms/mpdService";

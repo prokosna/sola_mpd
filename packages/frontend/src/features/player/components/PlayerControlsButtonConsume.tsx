@@ -3,14 +3,14 @@ import { useCallback } from "react";
 import { IoRestaurantOutline } from "react-icons/io5";
 
 import { useMpdClientState } from "../../mpd";
-import { useCurrentMpdProfileState } from "../../profile";
+import { useCurrentMpdProfile } from "../../profile";
 import { useCurrentSongState } from "../states/song";
 import { usePlayerStatusState } from "../states/status";
 
 import { PlayerControlsButton } from "./PlayerControlsButton";
 
 export function PlayerControlsButtonConsume() {
-  const profile = useCurrentMpdProfileState();
+  const profile = useCurrentMpdProfile();
   const mpdClient = useMpdClientState();
   const currentSong = useCurrentSongState();
   const playerStatus = usePlayerStatusState();

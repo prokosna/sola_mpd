@@ -5,7 +5,7 @@ import { Song } from "@sola_mpd/domain/src/models/song_pb.js";
 import { MutableRefObject, useCallback } from "react";
 
 import { useMpdClientState } from "../../mpd";
-import { useCurrentMpdProfileState } from "../../profile";
+import { useCurrentMpdProfile } from "../../profile";
 import { PlaylistSelectModalProps } from "../components/PlaylistSelectModal";
 
 export function usePlaylistSelectModalProps(
@@ -15,7 +15,7 @@ export function usePlaylistSelectModalProps(
 ): PlaylistSelectModalProps {
   const toast = useToast();
 
-  const profile = useCurrentMpdProfileState();
+  const profile = useCurrentMpdProfile();
   const mpdClient = useMpdClientState();
 
   const onOk = useCallback(

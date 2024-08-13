@@ -12,12 +12,12 @@ import { useCallback } from "react";
 import { IoVolumeMute } from "react-icons/io5";
 
 import { useMpdClientState } from "../../mpd";
-import { useCurrentMpdProfileState } from "../../profile";
+import { useCurrentMpdProfile } from "../../profile";
 import { useIsCompactMode } from "../../user_device";
 import { usePlayerVolumeState } from "../states/volume";
 
 export function PlayerControlsButtonVolume() {
-  const profile = useCurrentMpdProfileState();
+  const profile = useCurrentMpdProfile();
   const mpdClient = useMpdClientState();
   const playerVolume = usePlayerVolumeState();
   const isCompact = useIsCompactMode();

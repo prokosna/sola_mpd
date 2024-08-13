@@ -10,7 +10,7 @@ export async function fetchAllSongs(mpdClient: MpdClient, profile: MpdProfile) {
   });
   const res = await mpdClient.command(req);
   if (res.command.case !== "listAllSongs") {
-    throw Error(`Invalid MPD response: ${res.toJsonString()}`);
+    throw new Error(`Invalid MPD response: ${res.toJsonString()}`);
   }
   return res.command.value.songs;
 }

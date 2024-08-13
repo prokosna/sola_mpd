@@ -6,7 +6,7 @@ import {
 import { useCallback } from "react";
 import { IoTrash } from "react-icons/io5";
 
-import { useSetMpdProfileState } from "../../profile";
+import { useUpdateMpdProfileStateAction } from "../../profile";
 
 export type ProfilesProfileProps = {
   index: number;
@@ -18,7 +18,7 @@ export function ProfilesProfile(props: ProfilesProfileProps) {
   const { index, profile, mpdProfileState } = props;
 
   const toast = useToast();
-  const setMpdProfileState = useSetMpdProfileState();
+  const updateMpdProfileState = useUpdateMpdProfileStateAction();
 
   const onDelete = useCallback(() => {
     const newMpdProfileState = mpdProfileState.clone();
@@ -29,13 +29,13 @@ export function ProfilesProfile(props: ProfilesProfileProps) {
       return;
     }
     newMpdProfileState.profiles.splice(index, 1);
-    setMpdProfileState(newMpdProfileState);
+    updateMpdProfileState(newMpdProfileState);
     toast({
       status: "success",
       title: "Profile successfully deleted",
       description: `${profile.name} profile has been deleted.`,
     });
-  }, [mpdProfileState, profile.name, toast, setMpdProfileState]);
+  }, [mpdProfileState, updateMpdProfileState, toast, profile.name]);
 
   return (
     <>

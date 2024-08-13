@@ -17,7 +17,7 @@ export async function fetchCurrentSong(
     }),
   );
   if (res.command.case !== "currentsong") {
-    throw Error(`Invalid MPD response: ${res.toJsonString()}`);
+    throw new Error(`Invalid MPD response: ${res.toJsonString()}`);
   }
   return res.command.value.song;
 }
@@ -36,7 +36,7 @@ export async function fetchPlayerStatus(
     }),
   );
   if (res.command.case !== "status") {
-    throw Error(`Invalid MPD response: ${res.toJsonString()}`);
+    throw new Error(`Invalid MPD response: ${res.toJsonString()}`);
   }
   return res.command.value.status;
 }
@@ -55,7 +55,7 @@ export async function fetchPlayerVolume(
     }),
   );
   if (res.command.case !== "getvol") {
-    throw Error(`Invalid MPD response: ${res.toJsonString()}`);
+    throw new Error(`Invalid MPD response: ${res.toJsonString()}`);
   }
   return res.command.value.vol;
 }

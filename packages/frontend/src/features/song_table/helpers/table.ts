@@ -43,7 +43,7 @@ export function getTableKeyOfSong(song: Song, keyType: SongTableKeyType) {
       return `${song.index}_${song.path}`;
     }
     default:
-      throw Error(`Unsupported song table key: ${keyType}`);
+      throw new Error(`Unsupported song table key: ${keyType}`);
   }
 }
 

@@ -14,7 +14,7 @@ export async function fetchStats(mpdClient: MpdClient, profile: MpdProfile) {
     }),
   );
   if (res.command.case !== "stats") {
-    throw Error(`Invalid MPD response: ${res.toJsonString()}`);
+    throw new Error(`Invalid MPD response: ${res.toJsonString()}`);
   }
   return res.command.value.stats;
 }

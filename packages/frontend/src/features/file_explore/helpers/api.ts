@@ -19,7 +19,7 @@ export async function fetchFileExploreFolders(
     }),
   );
   if (res.command.case !== "listAllFolders") {
-    throw Error(`Invalid MPD response: ${res.toJsonString()}`);
+    throw new Error(`Invalid MPD response: ${res.toJsonString()}`);
   }
   return res.command.value.folders;
 }
@@ -41,7 +41,7 @@ export async function fetchFileExploreSongs(
     }),
   );
   if (res.command.case !== "listSongsInFolder") {
-    throw Error(`Invalid MPD response: ${res.toJsonString()}`);
+    throw new Error(`Invalid MPD response: ${res.toJsonString()}`);
   }
   return res.command.value.songs;
 }

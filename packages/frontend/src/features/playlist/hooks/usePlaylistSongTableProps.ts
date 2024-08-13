@@ -8,7 +8,7 @@ import { COMPONENT_ID_PLAYLIST_MAIN_PANE } from "../../../const/component";
 import { ContextMenuSection } from "../../context_menu";
 import { useMpdClientState } from "../../mpd";
 import { usePluginContextMenuItems } from "../../plugin";
-import { useCurrentMpdProfileState } from "../../profile";
+import { useCurrentMpdProfile } from "../../profile";
 import {
   getSongTableContextMenuAdd,
   getSongTableContextMenuAddToPlaylist,
@@ -38,7 +38,7 @@ export function usePlaylistSongTableProps(
   const songTableKeyType = SongTableKeyType.INDEX_PATH;
 
   const toast = useToast();
-  const profile = useCurrentMpdProfileState();
+  const profile = useCurrentMpdProfile();
   const songs = usePlaylistVisibleSongsState();
   const commonSongTableState = useCommonSongTableState();
   const mpdClient = useMpdClientState();
@@ -321,7 +321,7 @@ export function usePlaylistSongTableProps(
       });
       const res = await mpdClient.command(getCommand);
       if (res.command.case !== "playlistinfo") {
-        throw Error(`Invalid MPD response: ${res.toJsonString()}`);
+        throw new Error(`Invalid MPD response: ${res.toJsonString()}`);
       }
       const playQueueSongs = res.command.value.songs;
       await mpdClient.command(

@@ -57,7 +57,7 @@ export async function fetchBrowserFilterValuesMap(
         });
         const res = await mpdClient.command(req);
         if (res.command.case !== "list") {
-          throw Error(`Invalid MPD response: ${res.toJsonString()}`);
+          throw new Error(`Invalid MPD response: ${res.toJsonString()}`);
         }
         return [browserFilter.tag, res.command.value.values];
       }),
@@ -89,7 +89,7 @@ export async function fetchBrowserSongs(
   });
   const res = await mpdClient.command(req);
   if (res.command.case !== "search") {
-    throw Error(`Invalid MPD response: ${res.toJsonString()}`);
+    throw new Error(`Invalid MPD response: ${res.toJsonString()}`);
   }
   return res.command.value.songs;
 }

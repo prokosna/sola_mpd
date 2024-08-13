@@ -4,12 +4,12 @@ import { useCallback } from "react";
 
 import { useMpdClientState } from "../../mpd";
 import { usePlayerStatusState } from "../../player";
-import { useCurrentMpdProfileState } from "../../profile";
+import { useCurrentMpdProfile } from "../../profile";
 
 export function CardStatsDatabaseButton() {
   const toast = useToast();
 
-  const profile = useCurrentMpdProfileState();
+  const profile = useCurrentMpdProfile();
   const mpdClient = useMpdClientState();
   const playerStatus = usePlayerStatusState();
 

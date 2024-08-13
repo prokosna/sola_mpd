@@ -47,7 +47,7 @@ export async function fetchPlaylists(
     }),
   );
   if (res.command.case !== "listplaylists") {
-    throw Error(`Invalid MPD response: ${res.toJsonString()}`);
+    throw new Error(`Invalid MPD response: ${res.toJsonString()}`);
   }
   return res.command.value.playlists;
 }
@@ -69,7 +69,7 @@ export async function fetchPlaylistSongs(
     }),
   );
   if (res.command.case !== "listplaylistinfo") {
-    throw Error(`Invalid MPD response: ${res.toJsonString()}`);
+    throw new Error(`Invalid MPD response: ${res.toJsonString()}`);
   }
   return res.command.value.songs;
 }
