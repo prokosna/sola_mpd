@@ -3,7 +3,7 @@ import { LayoutState } from "@sola_mpd/domain/src/models/layout_pb.js";
 import { MpdProfileState } from "@sola_mpd/domain/src/models/mpd/mpd_profile_pb.js";
 import { PluginState } from "@sola_mpd/domain/src/models/plugin/plugin_pb.js";
 import { SavedSearches } from "@sola_mpd/domain/src/models/search_pb.js";
-import { CommonSongTableState } from "@sola_mpd/domain/src/models/song_table_pb.js";
+import { SongTableState } from "@sola_mpd/domain/src/models/song_table_pb.js";
 import express, { Request, Response, Router } from "express";
 
 import { wrap } from "../utils/wrap.js";
@@ -60,7 +60,7 @@ configsRouter.post(
   "/common_song_table_state",
   wrap(async (req: Request, res: Response) => {
     const body = req.body as Buffer;
-    const data = CommonSongTableState.fromBinary(new Uint8Array(body));
+    const data = SongTableState.fromBinary(new Uint8Array(body));
     commonSongTableStateRepository.update(data);
     res.end();
   }),

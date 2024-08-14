@@ -5,11 +5,11 @@ import { useCallback } from "react";
 import { TriggerEvent, useContextMenu } from "react-contexify";
 
 import { convertAgGridColumnsToSongTableColumns } from "../helpers/columns";
-import { getSongsInTableFromGrid, getTableKeyOfSong } from "../helpers/table";
 import {
   SongTableContextMenuItemParams,
   SongTableKeyType,
 } from "../types/songTable";
+import { getSongsInTableFromGrid, getTableKeyOfSong } from "../utils/songTable";
 
 export function useOnOpenContextMenu(
   id: string,

@@ -12,6 +12,7 @@ import {
   SongTableContextMenuItemParams,
   SongTableKeyType,
   SongTableRowCompact,
+  SongTableRowKeyValue,
   SongsInTable,
 } from "../types/songTable";
 
@@ -111,10 +112,10 @@ export function convertOrderingToOperations(
   return ops;
 }
 
-export function convertSongMetadataForGridRowValue(
+export function convertSongMetadataToSongTableRowKeyValue(
   tag: Song_MetadataTag,
   value: Song_MetadataValue,
-): [string, string | number | Date | undefined] {
+): SongTableRowKeyValue {
   const v = (() => {
     switch (value.value.case) {
       case "stringValue":
@@ -132,7 +133,7 @@ export function convertSongMetadataForGridRowValue(
   return [convertSongMetadataTagToDisplayName(tag), v];
 }
 
-export function convertSongForGridRowValueCompact(
+export function convertSongToSongTableRowCompact(
   song: Song,
 ): SongTableRowCompact {
   const title = SongUtils.getSongMetadataAsString(song, Song_MetadataTag.TITLE);

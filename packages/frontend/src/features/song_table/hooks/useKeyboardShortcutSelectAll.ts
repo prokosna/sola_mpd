@@ -3,7 +3,7 @@ import { AgGridReact } from "ag-grid-react";
 import { MutableRefObject, RefObject } from "react";
 
 import { useInputKeyCombination } from "../../keyboard_shortcut";
-import { convertNodeToSong } from "../helpers/table";
+import { convertNodeToSong } from "../utils/songTable";
 
 export function useKeyboardShortcutSelectAll(
   ref: MutableRefObject<null>,

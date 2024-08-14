@@ -10,8 +10,7 @@ import {
   SongTableContextMenuItemParams,
   SongTableKeyType,
 } from "../types/songTable";
-
-import { getTargetSongsForContextMenu } from "./table";
+import { getTargetSongsForContextMenu } from "../utils/songTable";
 
 export function getSongTableContextMenuAdd(
   songTableKeyType: SongTableKeyType,

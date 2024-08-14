@@ -5,7 +5,7 @@ export { SongTable, type SongTableProps } from "./components/SongTable";
 // Hooks
 export { useCommonColumnEditModalProps } from "./hooks/useCommonColumnEditModalProps";
 export { useOnUpdateCommonColumns } from "./hooks/useOnUpdateCommonColumns";
-export { useColumnEditModalProps } from "./hooks/useColumnEditModalProps";
+export { useColumnEditModalProps } from "./queries/useColumnEditModalProps";
 
 // States
 export {
@@ -30,7 +30,7 @@ export {
   convertSongMetadataTagToDisplayName,
   convertSongMetadataTagFromDisplayName,
   convertOrderingToOperations,
-} from "./helpers/table";
+} from "./utils/songTable";
 export {
   getSongTableContextMenuAdd,
   getSongTableContextMenuAddToPlaylist,

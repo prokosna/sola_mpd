@@ -1,7 +1,7 @@
 import { SongTableColumn } from "@sola_mpd/domain/src/models/song_table_pb.js";
 import { Column } from "ag-grid-community";
 
-import { convertSongMetadataTagFromDisplayName } from "./table";
+import { convertSongMetadataTagFromDisplayName } from "../utils/songTable";
 
 export function convertAgGridColumnsToSongTableColumns(
   agGridColumns: Column[],

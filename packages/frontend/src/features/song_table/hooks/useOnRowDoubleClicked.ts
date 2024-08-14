@@ -2,7 +2,7 @@ import { Song } from "@sola_mpd/domain/src/models/song_pb.js";
 import { RowDoubleClickedEvent } from "ag-grid-community";
 import { useCallback } from "react";
 
-import { getSongsInTableFromGrid } from "../helpers/table";
+import { getSongsInTableFromGrid } from "../utils/songTable";
 
 export function useOnRowDoubleClicked(
   songsMap: Map<string, Song>,

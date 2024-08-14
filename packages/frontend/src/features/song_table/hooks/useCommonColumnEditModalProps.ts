@@ -2,12 +2,12 @@ import { SongTableColumn } from "@sola_mpd/domain/src/models/song_table_pb.js";
 import { useCallback } from "react";
 
 import { ColumnEditModalProps } from "../components/ColumnEditModal";
+import { useColumnEditModalProps } from "../queries/useColumnEditModalProps";
 import {
   useCommonSongTableState,
   useSetCommonSongTableState,
 } from "../states/commonSongTableState";
 
-import { useColumnEditModalProps } from "./useColumnEditModalProps";
 
 export function useCommonColumnEditModalProps(
   isOpen: boolean,

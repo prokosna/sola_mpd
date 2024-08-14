@@ -3,8 +3,8 @@ import { RowClassParams } from "ag-grid-community";
 import { useCallback, useMemo } from "react";
 
 import { useCurrentSongState } from "../../player";
-import { getTableKeyOfSong } from "../helpers/table";
-import { SongTableKeyType, SongTableRowDataType } from "../types/songTable";
+import { SongTableKeyType, SongTableRowData } from "../types/songTable";
+import { getTableKeyOfSong } from "../utils/songTable";
 
 export function useGetBoldClassForPlayingSong(
   keyType: SongTableKeyType,
@@ -21,7 +21,7 @@ export function useGetBoldClassForPlayingSong(
   }, [currentSong, keyType]);
 
   return useCallback(
-    (params: RowClassParams<SongTableRowDataType>) => {
+    (params: RowClassParams<SongTableRowData>) => {
       if (params.data === undefined) {
         return;
       }

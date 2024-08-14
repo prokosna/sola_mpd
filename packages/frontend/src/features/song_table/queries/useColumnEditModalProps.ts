@@ -1,17 +1,22 @@
-import { SongTableColumn } from "@sola_mpd/domain/src/models/song_table_pb.js";
+import {
+  CommonSongTableState,
+  SongTableColumn,
+} from "@sola_mpd/domain/src/models/song_table_pb.js";
 import { useCallback } from "react";
 
 import { ColumnEditModalProps } from "../components/ColumnEditModal";
-import { useCommonSongTableState } from "../states/commonSongTableState";
+
+import { useCommonSongTable } from "./useCommonSongTable";
 
 export function useColumnEditModalProps(
+  songTableState: CommonSongTableState,
   isOpen: boolean,
   setIsOpenColumnEditModal: (open: boolean) => void,
   columns: SongTableColumn[] | undefined,
   onClickOk: (newColumns: SongTableColumn[]) => void,
   onClickCancel: () => void,
 ): ColumnEditModalProps | undefined {
-  const commonSongTableState = useCommonSongTableState();
+  const commonSongTableState = useCommonSongTable();
 
   const onOk = useCallback(
     async (newColumns: SongTableColumn[]) => {

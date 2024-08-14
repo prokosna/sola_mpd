@@ -7,7 +7,6 @@ import { useCallback, useRef } from "react";
 
 import { ContextMenu, ContextMenuSection } from "../../context_menu";
 import { useIsCompactMode } from "../../user_device";
-import { useAgGridReactData } from "../hooks/useAgGridReactData";
 import { useGetBoldClassForPlayingSong } from "../hooks/useGetBoldClassForPlayingSong";
 import { useKeyboardShortcutSelectAll } from "../hooks/useKeyboardShortcutSelectAll";
 import { useOnColumnsMoved } from "../hooks/useOnColumnsMoved";
@@ -20,10 +19,11 @@ import { useOnSelectionChanged } from "../hooks/useOnSelectionChanged";
 import { useOnSortChanged } from "../hooks/useOnSortChanged";
 import { useSongsMap } from "../hooks/useSongsMap";
 import { useSongsWithIndex } from "../hooks/useSongsWithIndex";
+import { useAgGridReactData } from "../queries/useAgGridReactData";
 import {
   SongTableContextMenuItemParams,
   SongTableKeyType,
-  SongTableRowDataType,
+  SongTableRowData,
 } from "../types/songTable";
 
 import "ag-grid-community/styles/ag-grid.min.css";
@@ -86,12 +86,9 @@ export function SongTable(props: SongTableProps) {
   );
 
   // Get Row ID
-  const getRowId = useCallback(
-    (params: GetRowIdParams<SongTableRowDataType>) => {
-      return String(params.data.key);
-    },
-    [],
-  );
+  const getRowId = useCallback((params: GetRowIdParams<SongTableRowData>) => {
+    return String(params.data.key);
+  }, []);
 
   // Handlers
   const onSortChanged = useOnSortChanged(

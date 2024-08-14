@@ -17,8 +17,17 @@ export type SongTableRowCompact = {
   secondLine: string;
 };
 
-export type SongTableRowDataType = {
-  [tag: string]: string | number | Date | SongTableRowCompact | undefined;
+export type SongTableRowValueType =
+  | string
+  | number
+  | Date
+  | SongTableRowCompact
+  | undefined;
+
+export type SongTableRowKeyValue = [string, SongTableRowValueType];
+
+export type SongTableRowData = {
+  [tag: string]: SongTableRowValueType;
 };
 
 /**
