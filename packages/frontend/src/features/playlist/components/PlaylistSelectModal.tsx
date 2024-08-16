@@ -19,7 +19,7 @@ import { PlaylistSelectModalNewPlaylist } from "./PlaylistSelectModalNewPlaylist
 
 export type PlaylistSelectModalProps = {
   isOpen: boolean;
-  isOnly?: "NEW" | "SELECT";
+  isOnly: "NEW" | "SELECT";
   onOk: (playlist: Playlist) => Promise<void>;
   onCancel: () => Promise<void>;
 };
@@ -80,7 +80,7 @@ export function PlaylistSelectModal(props: PlaylistSelectModalProps) {
             ) : (
               <PlaylistSelectModalFromList onSelect={onSelect} />
             )}
-            {props.isOnly === undefined ? (
+            {props.isOnly === "SELECT" ? (
               <FormControl>
                 <Checkbox
                   colorScheme="brand"

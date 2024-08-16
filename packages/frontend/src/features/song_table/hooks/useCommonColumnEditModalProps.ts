@@ -1,40 +1,27 @@
-import { SongTableColumn } from "@sola_mpd/domain/src/models/song_table_pb.js";
-import { useCallback } from "react";
+import {
+  SongTableColumn,
+  SongTableState,
+} from "@sola_mpd/domain/src/models/song_table_pb.js";
 
 import { ColumnEditModalProps } from "../components/ColumnEditModal";
-import { useColumnEditModalProps } from "../queries/useColumnEditModalProps";
-import {
-  useCommonSongTableState,
-  useSetCommonSongTableState,
-} from "../states/commonSongTableState";
 
+import { useColumnEditModal } from "./useColumnEditModal";
 
 export function useCommonColumnEditModalProps(
-  isOpen: boolean,
-  setIsOpenColumnEditModal: (open: boolean) => void,
-): ColumnEditModalProps | undefined {
-  const commonSongTableState = useCommonSongTableState();
-  const setCommonSongTableState = useSetCommonSongTableState();
+  commonSongTableState: SongTableState,
+  updateCommonSongTableColumnsAction: (
+    newColumns: SongTableColumn[],
+  ) => Promise<void>,
+): ColumnEditModalProps {
+  const onClickOk = (newColumns: SongTableColumn[]) => {
+    updateCommonSongTableColumnsAction(newColumns);
+  };
 
-  const onClickOk = useCallback(
-    (newColumns: SongTableColumn[]) => {
-      if (commonSongTableState === undefined) {
-        setIsOpenColumnEditModal(false);
-        return;
-      }
-      const newCommonSongTableState = commonSongTableState.clone();
-      newCommonSongTableState.columns = newColumns;
-      setCommonSongTableState(newCommonSongTableState);
-    },
-    [commonSongTableState, setIsOpenColumnEditModal, setCommonSongTableState],
-  );
+  const onClickCancel = () => {};
 
-  const onClickCancel = useCallback(() => {}, []);
-
-  const props = useColumnEditModalProps(
-    isOpen,
-    setIsOpenColumnEditModal,
-    commonSongTableState?.columns,
+  const props = useColumnEditModal(
+    commonSongTableState,
+    commonSongTableState.columns,
     onClickOk,
     onClickCancel,
   );

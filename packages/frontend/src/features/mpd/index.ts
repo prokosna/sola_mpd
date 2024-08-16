@@ -9,3 +9,6 @@ export { MpdClient } from "./utils/MpdClient";
 
 // Atoms
 export { mpdServiceAtom } from "./atoms/mpdService";
+
+// Services
+export { type MpdService, type MpdVersion } from "./services/MpdService";

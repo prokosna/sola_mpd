@@ -1,7 +1,7 @@
 import { useColorMode } from "@chakra-ui/react";
 import { Item, ItemParams, Menu, Separator, Submenu } from "react-contexify";
 
-import { ContextMenuProps } from "../types/contextMenu";
+import { ContextMenuProps } from "../types/contextMenuTypes";
 
 export function ContextMenu<T>(props: ContextMenuProps<T>) {
   const { colorMode } = useColorMode();
@@ -9,16 +9,21 @@ export function ContextMenu<T>(props: ContextMenuProps<T>) {
   function onClick(params: ItemParams<T, unknown>) {
     for (const section of props.sections) {
       for (const item of section.items) {
-        if (item.name === params.id) {
-          item.onClick!(params?.props);
-        }
-        if (item.subItems === undefined) {
-          continue;
-        }
-        for (const subItem of item.subItems) {
-          if (subItem.name === params.id) {
-            subItem.onClick(params?.props);
-          }
+        switch (item.type) {
+          case "Item":
+            if (item.name === params.id) {
+              item.onClick(params?.props);
+            }
+            break;
+          case "SubItemsParent":
+            for (const subItem of item.subItems) {
+              if (subItem.name === params.id) {
+                subItem.onClick(params?.props);
+              }
+            }
+            break;
+          default:
+            throw new Error(`Undefined context menu item type: ${item}`);
         }
       }
     }
@@ -27,7 +32,7 @@ export function ContextMenu<T>(props: ContextMenuProps<T>) {
   const items = props.sections
     .map((section) =>
       section.items.map((item) =>
-        item.subItems === undefined ? (
+        item.type === "Item" ? (
           <Item key={item.name} id={item.name} onClick={onClick}>
             {item.name}
           </Item>

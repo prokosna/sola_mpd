@@ -163,10 +163,10 @@ export function useSearchSongTableProps(
     isGlobalFilterEnabled: true,
     contextMenuSections,
     isLoading,
-    onReorderSongs,
-    onUpdateColumns,
-    onSelectSongs,
-    onDoubleClick,
-    onCompleteLoading,
+    reorderSongsAction: onReorderSongs,
+    updateColumnsAction: onUpdateColumns,
+    selectSongsAction: onSelectSongs,
+    addAndPlaySongAction: onDoubleClick,
+    completeLoadingAction: onCompleteLoading,
   };
 }

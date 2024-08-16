@@ -17,7 +17,7 @@ import { SongUtils } from "@sola_mpd/domain/src/utils/SongUtils.js";
 import { useCallback, useEffect, useState } from "react";
 import { IoChevronBack, IoChevronForward } from "react-icons/io5";
 
-import { normalizeSongTableColumns } from "../helpers/columns";
+import { normalizeSongTableColumns } from "../workflows/convertAgGridTableColumns";
 
 import { ColumnEditModalTagListBox } from "./ColumnEditModalTagListBox";
 

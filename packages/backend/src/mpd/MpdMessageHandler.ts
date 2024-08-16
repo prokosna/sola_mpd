@@ -73,6 +73,7 @@ export class MpdMessageHandler {
     const profileHandler = this.idHandlerMap.get(id);
     if (profileHandler != null) {
       mpdClient.unsubscribe(profileHandler.profile, profileHandler.handle);
+      this.idHandlerMap.delete(id);
     }
   }
 }

@@ -207,6 +207,10 @@ frontend
   - States shouldn't include any logic / conversion
   - Can be dependent on `atoms`
   - Can be async / sync depending on a use case
+- hooks: `useXxx()`
+  - Hooks to prepare something required for components
+  - Shouldn't directly use the queries.
+  - Dependency states should be passed via hook args.
 - atoms: `xxxAtom`
   - Contains Jotai atoms
   - All dependencies exist here

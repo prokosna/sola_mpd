@@ -1,17 +1,18 @@
 import { Song } from "@sola_mpd/domain/src/models/song_pb.js";
 import { SongTableColumn } from "@sola_mpd/domain/src/models/song_table_pb.js";
+import { SongUtils } from "@sola_mpd/domain/src/utils/SongUtils.js";
 
 import {
   SONGS_TAG_COMPACT,
   SongTableKeyType,
   SongTableRowData,
-} from "../types/songTable";
+} from "../types/songTableTypes";
+
 import {
   convertSongToSongTableRowCompact,
   convertSongMetadataToSongTableRowKeyValue,
   getTableKeyOfSong,
-  sortSongsByColumns,
-} from "../utils/songTable";
+} from "./convertAgGridTableSongs";
 
 export function createAgGridRowData(
   songs: Song[],
@@ -29,6 +30,24 @@ export function createAgGridRowData(
       row[tag] = value;
     }
     return row;
+  });
+}
+
+export function sortSongsByColumns(
+  songs: Song[],
+  columns: SongTableColumn[],
+): Song[] {
+  const conditions = columns
+    .filter((column) => (column.sortOrder ?? -1) >= 0)
+    .sort((a, b) => a.sortOrder! - b.sortOrder!);
+  return songs.sort((a, b) => {
+    for (const condition of conditions) {
+      const comp = SongUtils.compareSongsByMetadataValue(a, b, condition.tag);
+      if (comp !== 0) {
+        return condition.isSortDesc ? -comp : comp;
+      }
+    }
+    return 0;
   });
 }
 

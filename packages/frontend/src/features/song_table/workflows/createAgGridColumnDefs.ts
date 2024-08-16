@@ -3,7 +3,7 @@ import { ColDef, SuppressKeyboardEventParams } from "ag-grid-community";
 import { CustomCellRendererProps } from "ag-grid-react";
 import { ReactNode } from "react";
 
-import { convertSongMetadataTagToDisplayName } from "../utils/songTable";
+import { convertSongMetadataTagToDisplayName } from "./convertAgGridTableSongs";
 
 export function createAgGridColumnDefs(
   columns: SongTableColumn[],

@@ -3,7 +3,7 @@ export { Playlist } from "./components/Playlist";
 export { PlaylistSelectModal } from "./components/PlaylistSelectModal";
 
 // Hooks
-export { usePlaylistSelectModalProps } from "./hooks/usePlaylistSelectModalProps";
+export { usePlaylistSelectModal as usePlaylistSelectModalProps } from "./hooks/usePlaylistSelectModal";
 
 // States
 export { useRefreshPlaylistsState } from "./states/playlist";

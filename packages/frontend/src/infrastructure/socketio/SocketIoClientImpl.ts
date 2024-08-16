@@ -59,4 +59,17 @@ export class SocketIoClientImpl implements SocketIoClient {
       });
     });
   };
+
+  on = async (
+    event: string,
+    callback: (message: string) => void,
+  ): Promise<void> => {
+    const socket = await this.socket;
+    socket.on(event, callback);
+  };
+
+  off = async (event: string): Promise<void> => {
+    const socket = await this.socket;
+    socket.off(event);
+  };
 }

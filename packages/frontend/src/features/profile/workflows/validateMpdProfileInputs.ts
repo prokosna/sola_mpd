@@ -1,8 +1,8 @@
 import { MpdProfileState } from "@sola_mpd/domain/src/models/mpd/mpd_profile_pb.js";
 import { compareVersions } from "compare-versions";
 
-import { MpdVersion } from "../../mpd/MpdService";
-import { MpdProfileInput } from "../types/profileInput";
+import { MpdVersion } from "../../mpd";
+import { MpdProfileInput } from "../types/profileTypes";
 
 export type MpdProfileValidationResult = {
   isOk: boolean;

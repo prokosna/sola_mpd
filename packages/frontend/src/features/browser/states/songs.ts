@@ -13,7 +13,7 @@ import {
 } from "../../metrics/states/tracker";
 import { mpdClientAtom } from "../../mpd/states/mpdClient";
 import { currentMpdProfileAtom } from "../../profile/atoms/profile";
-import { commonSongTableStateAtom } from "../../song_table/states/commonSongTableState";
+import { commonSongTableStateAtom } from "../../song_table/atoms/commonSongTableState";
 import { fetchBrowserSongs } from "../helpers/api";
 
 import { browserFiltersAtom } from "./filters";

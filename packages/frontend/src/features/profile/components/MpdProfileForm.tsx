@@ -21,7 +21,7 @@ import { useForm } from "react-hook-form";
 import { useAddMpdProfileAction } from "../actions/useAddMpdProfileAction";
 import { useValidateMpdProfileInputsAction } from "../actions/useValidateMpdProfileInputsAction";
 import { useMpdProfileState } from "../queries/useMpdProfileState";
-import { MpdProfileInput } from "../types/profileInput";
+import { MpdProfileInput } from "../types/profileTypes";
 
 type MpdProfileFormProps = {
   onComplete: () => Promise<void>;

@@ -5,7 +5,7 @@ import {
 import { useSetAtom } from "jotai";
 
 import { publishMpdProfileStateChangedEventAtom } from "../atoms/profile";
-import { MpdProfileInput } from "../types/profileInput";
+import { MpdProfileInput } from "../types/profileTypes";
 
 export function useAddMpdProfileAction() {
   const setMpdProfileStateChangedEvent = useSetAtom(

@@ -2,7 +2,7 @@ import { Song } from "@sola_mpd/domain/src/models/song_pb.js";
 import { SongTableColumn } from "@sola_mpd/domain/src/models/song_table_pb.js";
 
 import { CustomCellCompact } from "../components/CustomCellCompact";
-import { SongTableKeyType } from "../types/songTable";
+import { SongTableKeyType } from "../types/songTableTypes";
 import {
   createAgGridColumnDefs,
   createAgGridColumnDefsCompact,

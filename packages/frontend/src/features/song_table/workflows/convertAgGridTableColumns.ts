@@ -1,12 +1,14 @@
 import { SongTableColumn } from "@sola_mpd/domain/src/models/song_table_pb.js";
 import { Column } from "ag-grid-community";
 
-import { convertSongMetadataTagFromDisplayName } from "../utils/songTable";
+import { convertSongMetadataTagFromDisplayName } from "./convertAgGridTableSongs";
 
 export function convertAgGridColumnsToSongTableColumns(
   agGridColumns: Column[],
+  baseColumns: SongTableColumn[],
+  isSortingEnabled: boolean,
 ) {
-  return agGridColumns.map((col) => {
+  const currentColumns = agGridColumns.map((col) => {
     const sortOrder = col.getSortIndex();
     const isSortDesc = (() => {
       switch (col.getSort()) {
@@ -27,6 +29,13 @@ export function convertAgGridColumnsToSongTableColumns(
     });
     return column;
   });
+
+  // In some views that sorting is not enabled while the columns are shared among all views, sorting attributes are not considered by Ag Grid.
+  // So need to copy sorting attributes manually from the base columns.
+  if (!isSortingEnabled) {
+    return copySortingAttributesToNewColumns(currentColumns, baseColumns);
+  }
+  return currentColumns;
 }
 
 export function copySortingAttributesToNewColumns(

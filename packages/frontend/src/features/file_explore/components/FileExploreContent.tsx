@@ -11,6 +11,8 @@ import {
   ColumnEditModal,
   SongTable,
   useCommonColumnEditModalProps,
+  useCommonSongTableState,
+  useUpdateCommonSongTableColumnsAction,
 } from "../../song_table";
 import { useFileExploreSongTableProps } from "../hooks/useFileExploreSongTableProps";
 
@@ -18,23 +20,25 @@ export function FileExploreContent() {
   const songsToAddToPlaylistRef = useRef<Song[]>([]);
   const [isOpenPlaylistSelectModal, setIsOpenPlaylistSelectModal] =
     useState(false);
-  const [isOpenColumnEditModal, setIsOpenColumnEditModal] = useState(false);
+  const commonSongTableState = useCommonSongTableState();
+  const updateCommonSongTableColumnsAction =
+    useUpdateCommonSongTableColumnsAction()(commonSongTableState);
+
+  const columnEditModalProps = useCommonColumnEditModalProps(
+    commonSongTableState,
+    updateCommonSongTableColumnsAction,
+  );
 
   const songTableProps = useFileExploreSongTableProps(
     songsToAddToPlaylistRef,
     setIsOpenPlaylistSelectModal,
-    setIsOpenColumnEditModal,
+    columnEditModalProps.open,
   );
 
   const playlistSelectModalProps = usePlaylistSelectModalProps(
     isOpenPlaylistSelectModal,
     songsToAddToPlaylistRef,
     setIsOpenPlaylistSelectModal,
-  );
-
-  const columnEditModalProps = useCommonColumnEditModalProps(
-    isOpenColumnEditModal,
-    setIsOpenColumnEditModal,
   );
 
   if (songTableProps === undefined || columnEditModalProps === undefined) {

@@ -2,7 +2,7 @@ import { MpdProfileState } from "@sola_mpd/domain/src/models/mpd/mpd_profile_pb.
 import { useAtomValue } from "jotai";
 
 import { mpdServiceAtom } from "../../mpd";
-import { MpdProfileInput } from "../types/profileInput";
+import { MpdProfileInput } from "../types/profileTypes";
 import {
   MpdProfileValidationResult,
   validateMpdProfileInputs,

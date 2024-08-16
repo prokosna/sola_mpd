@@ -4,13 +4,19 @@ export type ContextMenuProps<T> = {
 };
 
 export type ContextMenuSection<T> = {
-  items: ContextMenuItem<T>[];
+  items: (ContextMenuItem<T> | ContextMenuSubItemsParent<T>)[];
 };
 
 export type ContextMenuItem<T> = {
+  type: "Item";
   name: string;
-  onClick?: (params: T | undefined) => Promise<void>;
-  subItems?: ContextMenuSubItem<T>[];
+  onClick: (params: T | undefined) => Promise<void>;
+};
+
+export type ContextMenuSubItemsParent<T> = {
+  type: "SubItemsParent";
+  name: string;
+  subItems: ContextMenuSubItem<T>[];
 };
 
 export type ContextMenuSubItem<T> = {

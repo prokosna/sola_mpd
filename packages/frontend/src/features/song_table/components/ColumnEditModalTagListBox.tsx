@@ -1,7 +1,7 @@
 import { Box, Button, List, ListItem, Text } from "@chakra-ui/react";
 import { Song_MetadataTag } from "@sola_mpd/domain/src/models/song_pb.js";
 
-import { convertSongMetadataTagToDisplayName } from "../utils/songTable";
+import { convertSongMetadataTagToDisplayName } from "../workflows/convertAgGridTableSongs";
 
 export type ColumnEditModalTagListBoxProps = {
   title: string;

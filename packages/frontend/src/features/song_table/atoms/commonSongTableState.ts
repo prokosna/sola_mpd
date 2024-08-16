@@ -1,4 +1,4 @@
-import { CommonSongTableState } from "@sola_mpd/domain/src/models/song_table_pb.js";
+import { SongTableState } from "@sola_mpd/domain/src/models/song_table_pb.js";
 import { atom } from "jotai";
 import { atomWithDefault } from "jotai/utils";
 
@@ -24,7 +24,7 @@ export const commonSongTableStateSyncAtom = atomWithSync(
 // Write atoms
 export const publishCommonSongTableStateChangedEventAtom = atom(
   null,
-  async (get, set, newCommonSongTableState: CommonSongTableState) => {
+  async (get, set, newCommonSongTableState: SongTableState) => {
     const repository = get(commonSongTableStateRepositoryAtom);
     await repository.update(newCommonSongTableState);
     set(commonSongTableStateAtom, Promise.resolve(newCommonSongTableState));

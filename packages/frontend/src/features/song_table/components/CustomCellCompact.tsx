@@ -1,6 +1,6 @@
 import { CustomCellRendererProps } from "ag-grid-react";
 
-import { SONGS_TAG_COMPACT } from "../types/songTable";
+import { SONGS_TAG_COMPACT } from "../types/songTableTypes";
 
 export function CustomCellCompact(params: CustomCellRendererProps) {
   return (

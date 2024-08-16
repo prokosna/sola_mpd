@@ -1,6 +1,6 @@
-import { CommonSongTableState } from "@sola_mpd/domain/src/models/song_table_pb.js";
+import { SongTableState } from "@sola_mpd/domain/src/models/song_table_pb.js";
 
 export interface CommonSongTableStateRepository {
-  get: () => Promise<CommonSongTableState>;
-  update: (commonSongTableState: CommonSongTableState) => Promise<void>;
+  get: () => Promise<SongTableState>;
+  update: (songTableState: SongTableState) => Promise<void>;
 }

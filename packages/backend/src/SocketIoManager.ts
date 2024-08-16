@@ -2,6 +2,7 @@ import {
   SIO_MPD_COMMAND,
   SIO_MPD_COMMAND_BULK,
   SIO_MPD_SUBSCRIBE,
+  SIO_MPD_UNSUBSCRIBE,
   SIO_PLUGIN_EXECUTE,
   SIO_PLUGIN_REGISTER,
 } from "@sola_mpd/domain/src/const/socketio.js";
@@ -31,6 +32,10 @@ export class SocketIoManager {
         } catch (err) {
           console.error(err);
         }
+      });
+
+      socket.on(SIO_MPD_UNSUBSCRIBE, async (msg: ArrayBuffer) => {
+        await mpdHandler.disconnect(id);
       });
 
       socket.on(SIO_MPD_COMMAND, async (msg: ArrayBuffer, callback) => {

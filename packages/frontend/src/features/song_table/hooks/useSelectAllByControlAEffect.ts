@@ -3,15 +3,15 @@ import { AgGridReact } from "ag-grid-react";
 import { MutableRefObject, RefObject } from "react";
 
 import { useInputKeyCombination } from "../../keyboard_shortcut";
-import { convertNodeToSong } from "../utils/songTable";
+import { convertNodeToSong } from "../workflows/convertAgGridTableSongs";
 
-export function useKeyboardShortcutSelectAll(
-  ref: MutableRefObject<null>,
+export function useSelectAllByControlAEffect(
+  parentDivRef: MutableRefObject<null>,
   gridRef: RefObject<AgGridReact>,
   songsMap: Map<string, Song>,
-  onSelectSongs: (songs: Song[]) => void,
+  updateSelectedSongsAction: (newSelectedSongs: Song[]) => Promise<void>,
 ) {
-  useInputKeyCombination(ref, ["Control", "a"], async () => {
+  useInputKeyCombination(parentDivRef, ["Control", "a"], async () => {
     const api = gridRef.current?.api;
     if (api === undefined) {
       console.warn("api undefined");
@@ -26,8 +26,7 @@ export function useKeyboardShortcutSelectAll(
       }
       selectedSongs.push(song);
     });
-
     api.selectAllFiltered();
-    onSelectSongs(selectedSongs);
+    updateSelectedSongsAction(selectedSongs);
   });
 }
