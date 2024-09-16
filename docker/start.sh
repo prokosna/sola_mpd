@@ -41,4 +41,4 @@ else
   EXTRA_ARGS+=("-p" "$PORT_OPT:3000" "-e" "PORT=$PORT_OPT" "--add-host" "host.docker.internal:host-gateway" "--restart=$RESTART_OPT")
 fi
 
-docker run -id --rm "${EXTRA_ARGS[@]}" $IMAGE_NAME
+docker run -id "${EXTRA_ARGS[@]}" $IMAGE_NAME
