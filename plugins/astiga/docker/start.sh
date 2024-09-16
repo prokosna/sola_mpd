@@ -4,6 +4,7 @@ set -e
 
 PORT_OPT="3001"
 NETWORK_MODE="bridge"
+RESTART_OPT="no"
 while [[ "$#" -gt 0 ]]; do
   case $1 in
     --port)
@@ -12,6 +13,10 @@ while [[ "$#" -gt 0 ]]; do
       ;;
     --host)
       NETWORK_MODE="host"
+      shift
+      ;;
+    --always)
+      RESTART_OPT="always"
       shift
       ;;
     *)
@@ -30,9 +35,9 @@ EXTRA_ARGS=(
 )
 
 if [[ "$NETWORK_MODE" = "host" ]]; then
-  EXTRA_ARGS+=("--network" "host" "-e" "PORT=$PORT_OPT")
+  EXTRA_ARGS+=("--network" "host" "-e" "PORT=$PORT_OPT" "--restart=$RESTART_OPT")
 else
-  EXTRA_ARGS+=("-p" "$PORT_OPT:3001" "-e" "PORT=$PORT_OPT")
+  EXTRA_ARGS+=("-p" "$PORT_OPT:3001" "-e" "PORT=$PORT_OPT" "--restart=$RESTART_OPT")
 fi
 
 docker run -id --rm "${EXTRA_ARGS[@]}" $IMAGE_NAME
