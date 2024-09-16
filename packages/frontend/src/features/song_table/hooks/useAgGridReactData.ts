@@ -3,7 +3,6 @@ import { SongTableColumn } from "@sola_mpd/domain/src/models/song_table_pb.js";
 import { SuppressKeyboardEventParams } from "ag-grid-community";
 import { useMemo } from "react";
 
-import { useIsTouchDevice } from "../../user_device";
 import { CustomCellCompact } from "../components/CustomCellCompact";
 import {
   convertSongForGridRowValueCompact,
@@ -25,9 +24,8 @@ export function useAgGridReactData(
   isSortingEnabled: boolean,
   isReorderingEnabled: boolean,
   isCompact: boolean,
+  isTouchDevice: boolean,
 ) {
-  const isTouchDevice = useIsTouchDevice();
-
   // Convert Song to AdGrid item format (Column: Value)
   const rowData = useMemo(() => {
     if (isCompact) {
