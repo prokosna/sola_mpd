@@ -40,4 +40,4 @@ else
   EXTRA_ARGS+=("-p" "$PORT_OPT:3001" "-e" "PORT=$PORT_OPT" "--restart=$RESTART_OPT")
 fi
 
-docker run -id --rm "${EXTRA_ARGS[@]}" $IMAGE_NAME
+docker run -id "${EXTRA_ARGS[@]}" $IMAGE_NAME
