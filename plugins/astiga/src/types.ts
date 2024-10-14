@@ -1,7 +1,11 @@
 import { z } from "zod";
 
+const stringOrNumber = z
+  .union([z.string(), z.number()])
+  .transform((value) => String(value));
+
 export const AstigaSongSchema = z.object({
-  id: z.string(),
+  id: stringOrNumber,
   title: z.string().optional().or(z.literal("")),
   artist: z.string().optional().or(z.literal("")),
   album: z.string().optional().or(z.literal("")),
@@ -10,7 +14,7 @@ export const AstigaSongSchema = z.object({
 export type AstigaSong = z.infer<typeof AstigaSongSchema>;
 
 export const AstigaPlaylistSchema = z.object({
-  id: z.string(),
+  id: stringOrNumber,
   name: z.string(),
 });
 
