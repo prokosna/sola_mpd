@@ -1,0 +1,59 @@
+import { HttpClient } from "./HttpClient";
+
+export class HttpClientImplFetch implements HttpClient {
+  get = async <R>(
+    endpoint: string,
+    fromBinary: (bytes: Uint8Array) => R,
+  ): Promise<R> => {
+    const ret = await fetch(endpoint);
+    if (!ret.ok) {
+      const body = await ret.text();
+      throw new Error(`GET failed: ${body}`);
+    }
+    const body = await ret.arrayBuffer();
+    return fromBinary(new Uint8Array(body));
+  };
+
+  post = async (endpoint: string, payload: Uint8Array): Promise<void> => {
+    const bytes = payload.buffer.slice(
+      payload.byteOffset,
+      payload.byteLength + payload.byteOffset,
+    );
+    const ret = await fetch(endpoint, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/octet-stream",
+      },
+      body: bytes,
+    });
+    if (!ret.ok) {
+      const body = await ret.text();
+      throw new Error(`POST failed: ${body}`);
+    }
+    return;
+  };
+
+  put = async <R>(
+    endpoint: string,
+    payload: Uint8Array,
+    fromBinary: (bytes: Uint8Array) => R,
+  ): Promise<R> => {
+    const bytes = payload.buffer.slice(
+      payload.byteOffset,
+      payload.byteLength + payload.byteOffset,
+    );
+    const ret = await fetch(endpoint, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/octet-stream",
+      },
+      body: bytes,
+    });
+    if (!ret.ok) {
+      const body = await ret.text();
+      throw new Error(`PUT failed: ${body}`);
+    }
+    const body = await ret.arrayBuffer();
+    return fromBinary(new Uint8Array(body));
+  };
+}
