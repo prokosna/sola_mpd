@@ -187,11 +187,12 @@ frontend
     │   │   ├── queries (Provide UI-optimized data based on states)
     │   │   ├── presenters (Provide props for components)
     │   │   ├── components (Pure functional components)
+    │   │   ├── services (Interfaces for external services)
     │   │   └── index.ts
     │   ...
     ├── infrastructure
     │   ├── socket
-    │   │   ├── something.ts
+    │   │   ├── ServiceImpl.ts (Implementation of an exposed service)
     │   ├── mpd
     ... ...
 ```
