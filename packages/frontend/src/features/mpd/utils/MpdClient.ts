@@ -1,3 +1,6 @@
+/**
+ * @deprecated
+ */
 import {
   API_MPD_COMMAND,
   API_MPD_COMMAND_BULK,
