@@ -1,5 +1,5 @@
 import {
-  CommonSongTableState,
+  SongTableState,
   SongTableColumn,
 } from "@sola_mpd/domain/src/models/song_table_pb.js";
 import { useCallback } from "react";
@@ -8,7 +8,7 @@ import { copySortingAttributesToNewColumns } from "../helpers/columns";
 import { useSetCommonSongTableState } from "../states/commonSongTableState";
 
 export function useOnUpdateCommonColumns(
-  commonSongTableState?: CommonSongTableState,
+  commonSongTableState?: SongTableState,
   isSortingEnabled: boolean = true,
 ) {
   const setCommonSongTableState = useSetCommonSongTableState();

@@ -13,7 +13,7 @@ import { BrowserState } from "@sola_mpd/domain/src/models/browser_pb.js";
 import { LayoutState } from "@sola_mpd/domain/src/models/layout_pb.js";
 import { MpdProfileState } from "@sola_mpd/domain/src/models/mpd/mpd_profile_pb.js";
 import { SavedSearches } from "@sola_mpd/domain/src/models/search_pb.js";
-import { CommonSongTableState } from "@sola_mpd/domain/src/models/song_table_pb.js";
+import { SongTableState } from "@sola_mpd/domain/src/models/song_table_pb.js";
 import { IoCreate } from "react-icons/io5";
 
 import { useBrowserState, useUpdateBrowserState } from "../../browser";
@@ -51,10 +51,10 @@ export function SettingsStates() {
   const commonSongTableState = useCommonSongTableState();
   const setCommonSongTableState = useSetCommonSongTableState();
   const [onOpenCommonSongTableState, commonSongTableStateProps] =
-    useSettingsStateEditorProps<CommonSongTableState>(
+    useSettingsStateEditorProps<SongTableState>(
       commonSongTableState,
       setCommonSongTableState,
-      CommonSongTableState.fromJson,
+      SongTableState.fromJson,
     );
 
   const browserState = useBrowserState();
@@ -170,9 +170,7 @@ export function SettingsStates() {
       </VStack>
       <SettingsStatesEditor<MpdProfileState> {...profileStateProps} />
       <SettingsStatesEditor<LayoutState> {...layoutStateProps} />
-      <SettingsStatesEditor<CommonSongTableState>
-        {...commonSongTableStateProps}
-      />
+      <SettingsStatesEditor<SongTableState> {...commonSongTableStateProps} />
       <SettingsStatesEditor<BrowserState> {...browserStateProps} />
       <SettingsStatesEditor<SavedSearches> {...savedSearchesProps} />
     </>

@@ -1,4 +1,4 @@
-import { CommonSongTableState } from "@sola_mpd/domain/src/models/song_table_pb.js";
+import { SongTableState } from "@sola_mpd/domain/src/models/song_table_pb.js";
 import { useAtomValue, useSetAtom } from "jotai";
 import { unwrap } from "jotai/utils";
 import { useCallback } from "react";
@@ -28,7 +28,7 @@ export function useSetCommonSongTableState() {
   const refresh = useSetAtom(commonSongTableStateAtom);
 
   return useCallback(
-    async (commonSongTableState: CommonSongTableState) => {
+    async (commonSongTableState: SongTableState) => {
       await sendCommonSongTableState(commonSongTableState);
       refresh();
     },
@@ -37,7 +37,7 @@ export function useSetCommonSongTableState() {
 }
 
 export function useSaveCommonSongTableState() {
-  return useCallback(async (commonSongTableState: CommonSongTableState) => {
+  return useCallback(async (commonSongTableState: SongTableState) => {
     await sendCommonSongTableState(commonSongTableState);
   }, []);
 }
