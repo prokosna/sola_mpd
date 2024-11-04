@@ -153,7 +153,9 @@ This plugin is quite specific to my use case, but you can use this as a referenc
 
 ## For developers
 
-Sola MPD is written in TypeScript with React, Vite, Protocol Buffers and so on.
+### Setup a development environment
+
+Sola MPD is written in TypeScript with React, Vite, Protocol Buffers, Jotai, etc.th React, Vite, Protocol Buffers and so on.
 
 ```
 # 1. Install dependencies, set up a husky hook for format/lint
@@ -168,4 +170,28 @@ $ npm run -w packages/domain build
 # 4. Run dev servers
 $ npm run -w packages/backend dev
 $ npm run -w packages/frontend dev
+```
+
+### Frontend architecture
+
+```
+frontend
+└── src
+    ├── const
+    ├── features
+    │   ├── feature_a
+    │   │   ├── types
+    │   │   ├── states (Jotai atom states)
+    │   │   ├── workflows (Pure functions for business logic)
+    │   │   ├── actions (Provide UI handler functions)
+    │   │   ├── queries (Provide UI-optimized data based on states)
+    │   │   ├── presenters (Provide props for components)
+    │   │   ├── components (Pure functional components)
+    │   │   └── index.ts
+    │   ...
+    ├── infrastructure
+    │   ├── socket
+    │   │   ├── something.ts
+    │   ├── mpd
+    ... ...
 ```
