@@ -181,7 +181,7 @@ frontend
     ├── features
     │   ├── feature_a
     │   │   ├── types
-    │   │   ├── states (Jotai atom states)
+    │   │   ├── atoms (Jotai atom states)
     │   │   ├── workflows (Pure functions for business logic)
     │   │   ├── actions (Provide UI handler functions)
     │   │   ├── queries (Provide UI-optimized data based on states)
