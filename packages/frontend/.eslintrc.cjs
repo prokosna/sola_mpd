@@ -10,7 +10,7 @@ const zonesRestrictOutsideOfFeatures = features.map((feature) => ({
     "Access to the features from outside of the features folder is only allowed through re-exporting in index.ts.",
 }));
 const zonesRestrictWithinFeatures = features.map((feature) => ({
-  from: path.join(__dirname, `./src/features/${feature}/!(index.ts)/**/*`),
+  from: path.join(__dirname, `./src/features/${feature}/!(actions|queries|index.ts)/**/*`),
   target: path.join(__dirname, `./src/features/!(${feature})/!(states|atoms)/**/*`),
   message:
     "Access to the features from other features is only allowed only through re-exporting in index.ts.",
@@ -18,7 +18,7 @@ const zonesRestrictWithinFeatures = features.map((feature) => ({
 const zonesRestrictAccessFromStates = features.map((feature) => ({
   from: path.join(
     __dirname,
-    `./src/features/${feature}/!(states|index.ts)/**/*`,
+    `./src/features/${feature}/!(states|atoms|index.ts)/**/*`,
   ),
   target: [path.join(__dirname, `./src/features/!(${feature})/(states|atoms)/**/*`)],
   message:
