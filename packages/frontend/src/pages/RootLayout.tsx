@@ -1,3 +1,4 @@
+import { Provider } from "jotai";
 import { Suspense } from "react";
 import { Outlet } from "react-router-dom";
 
@@ -9,13 +10,18 @@ import "../agGrid.css";
 import "../global.css";
 import { TopLoadingProgressBar } from "../features/loading";
 import { LocationObserver } from "../features/location";
+import { useJotaiStore } from "../useJotaiStore";
 
 export function RootLayout() {
+  const store = useJotaiStore();
+
   return (
     <>
       <Suspense fallback={<TopLoadingProgressBar />}>
-        <Outlet />
-        <LocationObserver />
+        <Provider store={store}>
+          <Outlet />
+          <LocationObserver />
+        </Provider>
       </Suspense>
     </>
   );
