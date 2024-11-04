@@ -1,3 +1,5 @@
+import { SongTableState } from "@sola_mpd/domain/src/models/song_table_pb.js";
+import { atom } from "jotai";
 import { atomWithDefault } from "jotai/utils";
 
 import { atomWithSync } from "../../../lib/jotai/atomWithSync";
@@ -11,3 +13,12 @@ export const songTableStateAtom = atomWithDefault(async (get) => {
 });
 
 export const songTableStateSyncAtom = atomWithSync(songTableStateAtom);
+
+export const updateSongTableStateAtom = atom(
+  null,
+  async (get, set, newState: SongTableState) => {
+    const repository = get(songTableStateRepositoryAtom);
+    await repository.update(newState);
+    set(songTableStateAtom, Promise.resolve(newState));
+  },
+);
