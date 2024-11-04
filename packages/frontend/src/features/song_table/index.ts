@@ -37,3 +37,9 @@ export {
   getSongTableContextMenuEditColumns,
   getSongTableContextMenuReplace,
 } from "./helpers/menuItems";
+
+// Atoms
+export { songTableStateRepositoryAtom } from "./atoms/songTableStateRepositoryAtom";
+
+// Services
+export { type SongTableStateRepository } from "./services/SongTableStateRepository";
