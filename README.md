@@ -181,11 +181,9 @@ frontend
     ├── features
     │   ├── feature_a
     │   │   ├── types
-    │   │   ├── atoms (Jotai atom states - UI independent)
+    │   │   ├── states (Jotai atom states - UI independent)
     │   │   ├── workflows (Pure functions for business logic)
-    │   │   ├── actions (Provide UI handler functions)
-    │   │   ├── queries (Provide UI-optimized data based on states)
-    │   │   ├── presenters (Provide props for components)
+    │   │   ├── hooks (Provide hooks)
     │   │   ├── components (Pure functional components)
     │   │   ├── services (Interfaces for external services)
     │   │   └── index.ts

@@ -157,10 +157,10 @@ export function useFullTextSearchSongTableProps(
     isGlobalFilterEnabled: true,
     contextMenuSections,
     isLoading,
-    onReorderSongs,
-    onUpdateColumns,
-    onSelectSongs,
-    onDoubleClick,
-    onCompleteLoading,
+    reorderSongs: onReorderSongs,
+    updateColumns: onUpdateColumns,
+    selectSongs: onSelectSongs,
+    doubleClickSong: onDoubleClick,
+    completeLoading: onCompleteLoading,
   };
 }

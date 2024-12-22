@@ -1,19 +1,19 @@
 import { Box, Button, List, ListItem, Text } from "@chakra-ui/react";
 import { Song_MetadataTag } from "@sola_mpd/domain/src/models/song_pb.js";
 
-import { convertSongMetadataTagToDisplayName } from "../helpers/table";
+import { convertSongMetadataTagToDisplayName } from "../utils/tableUtils";
 
 export type ColumnEditModalTagListBoxProps = {
   title: string;
   selectedTag?: Song_MetadataTag;
   tags: Song_MetadataTag[];
-  onClick: (tag: Song_MetadataTag) => void;
+  selectTag: (tag: Song_MetadataTag) => void;
 };
 
 export function ColumnEditModalTagListBox(
   props: ColumnEditModalTagListBoxProps,
-) {
-  const { title, selectedTag, tags, onClick } = props;
+): JSX.Element {
+  const { title, selectedTag, tags, selectTag: onClick } = props;
 
   return (
     <>

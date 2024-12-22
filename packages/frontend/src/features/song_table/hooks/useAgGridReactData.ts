@@ -5,18 +5,30 @@ import { useMemo } from "react";
 
 import { CustomCellCompact } from "../components/CustomCellCompact";
 import {
+  SONGS_TAG_COMPACT,
+  SongTableColumnDefinition,
+  SongTableKeyType,
+  SongTableRowData,
+} from "../types/songTableTypes";
+import {
   convertSongForGridRowValueCompact,
   convertSongMetadataForGridRowValue,
   convertSongMetadataTagToDisplayName,
-  getTableKeyOfSong,
+  getSongTableKey,
   sortSongsByColumns,
-} from "../helpers/table";
-import {
-  SONGS_TAG_COMPACT,
-  SongTableKeyType,
-  SongTableRowDataType,
-} from "../types/songTable";
+} from "../utils/tableUtils";
 
+/**
+ * Uses ag-grid-react data for a table.
+ * @param songs Songs to be rendered.
+ * @param keyType Type of a key field of a table.
+ * @param columns Current columns.
+ * @param isSortingEnabled True if sorting is enabled.
+ * @param isReorderingEnabled True if reordering is enabled.
+ * @param isCompact True if the compact mode is enabled.
+ * @param isTouchDevice True if a user uses a touch device.
+ * @returns Data to be used for an ag-grid-react table.
+ */
 export function useAgGridReactData(
   songs: Song[],
   keyType: SongTableKeyType,
@@ -25,22 +37,22 @@ export function useAgGridReactData(
   isReorderingEnabled: boolean,
   isCompact: boolean,
   isTouchDevice: boolean,
-) {
-  // Convert Song to AdGrid item format (Column: Value)
+): { rowData: SongTableRowData[]; columnDefs: SongTableColumnDefinition[] } {
+  // Convert Song to AdGrid item format (Column -> Value).
   const rowData = useMemo(() => {
     if (isCompact) {
       return (
         isSortingEnabled ? sortSongsByColumns(songs, columns) : songs
       ).map((song) => {
-        const row: SongTableRowDataType = {};
-        row.key = getTableKeyOfSong(song, keyType);
+        const row: SongTableRowData = {};
+        row.key = getSongTableKey(song, keyType);
         row[SONGS_TAG_COMPACT] = convertSongForGridRowValueCompact(song);
         return row;
       });
     }
     return songs.map((song) => {
-      const row: SongTableRowDataType = {};
-      row.key = getTableKeyOfSong(song, keyType);
+      const row: SongTableRowData = {};
+      row.key = getSongTableKey(song, keyType);
       for (const column of columns) {
         const [tag, value] = convertSongMetadataForGridRowValue(
           column.tag,
@@ -64,7 +76,9 @@ export function useAgGridReactData(
           sortable: false,
           checkboxSelection: isTouchDevice,
           headerCheckboxSelection: isTouchDevice,
-          suppressKeyboardEvent: (params: SuppressKeyboardEventParams) => {
+          suppressKeyboardEvent: (
+            params: SuppressKeyboardEventParams,
+          ): boolean => {
             return params.event.key === " ";
           },
           cellRenderer: CustomCellCompact,
@@ -91,12 +105,12 @@ export function useAgGridReactData(
         !isSortingEnabled ||
         column.sortOrder === undefined ||
         column.sortOrder < 0
-          ? null
+          ? undefined
           : column.sortOrder,
       cellDataType: false,
       checkboxSelection: isTouchDevice && index === 0 ? true : false,
       headerCheckboxSelection: isTouchDevice && index === 0 ? true : false,
-      suppressKeyboardEvent: (params: SuppressKeyboardEventParams) => {
+      suppressKeyboardEvent: (params: SuppressKeyboardEventParams): boolean => {
         return params.event.key === " ";
       },
     }));

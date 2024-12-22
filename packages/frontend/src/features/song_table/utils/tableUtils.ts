@@ -3,7 +3,10 @@ import {
   Song_MetadataTag,
   Song_MetadataValue,
 } from "@sola_mpd/domain/src/models/song_pb.js";
-import { SongTableColumn } from "@sola_mpd/domain/src/models/song_table_pb.js";
+import {
+  SongTableColumn,
+  SongTableState,
+} from "@sola_mpd/domain/src/models/song_table_pb.js";
 import { SongUtils } from "@sola_mpd/domain/src/utils/SongUtils.js";
 import { GridApi, IRowNode } from "ag-grid-community";
 import dayjs from "dayjs";
@@ -13,26 +16,47 @@ import {
   SongTableKeyType,
   SongTableRowCompact,
   SongsInTable,
-} from "../types/songTable";
+} from "../types/songTableTypes";
 
-export function convertNodeToSong(songsMap: Map<string, Song>, node: IRowNode) {
+import { copySortingAttributesToNewColumns } from "./columnUtils";
+
+/**
+ * Convert a given node to Song using its key and SongsMap.
+ * @param songsMap SongKey -> Song mapping.
+ * @param node Node of a table in question.
+ * @returns Song represented by a given node.
+ */
+export function convertNodeToSong(
+  songsMap: Map<string, Song>,
+  node: IRowNode,
+): Song {
   const key = node.data?.key;
   if (key == null) {
-    return undefined;
+    throw new Error(
+      `Key is not defined for ${node}. This should be an implementation error.`,
+    );
   }
   const song = songsMap.get(key);
   if (song === undefined) {
-    throw new Error(`No song found: ${key}`);
+    throw new Error(`No song found for key=${key}.`);
   }
   return song;
 }
 
-export function getTableKeyOfSong(song: Song, keyType: SongTableKeyType) {
+/**
+ * Gets SongTableKey of a given song.
+ * @param song Song.
+ * @param keyType SongTableKeyType.
+ * @returns SongTableKey.
+ */
+export function getSongTableKey(song: Song, keyType: SongTableKeyType): string {
   switch (keyType) {
     case SongTableKeyType.ID: {
       const id = SongUtils.getSongMetadataAsString(song, Song_MetadataTag.ID);
       if (id === "") {
-        console.warn(`ID is specified as a song table key, but empty: ${song}`);
+        console.warn(
+          `ID is specified as a song table key, but ID is empty: ${song}`,
+        );
       }
       return id;
     }
@@ -43,7 +67,7 @@ export function getTableKeyOfSong(song: Song, keyType: SongTableKeyType) {
       return `${song.index}_${song.path}`;
     }
     default:
-      throw Error(`Unsupported song table key: ${keyType}`);
+      throw Error(`Unsupported song table key: ${keyType}.`);
   }
 }
 
@@ -57,8 +81,8 @@ export function getTargetSongsForContextMenu(
   if (
     params.clickedSong !== undefined &&
     !selectedSortedSongs
-      .map((song) => getTableKeyOfSong(song, keyType))
-      .includes(getTableKeyOfSong(clickedSong, keyType))
+      .map((song) => getSongTableKey(song, keyType))
+      .includes(getSongTableKey(clickedSong, keyType))
   ) {
     targetSongs.push(clickedSong);
   } else {
@@ -99,8 +123,8 @@ export function convertOrderingToOperations(
   const ops: { id: string; to: number }[] = [];
   orderedSongs.forEach((orderedSong, index) => {
     const currentSong = currentSongs[index];
-    const currentSongKey = getTableKeyOfSong(currentSong, keyType);
-    const orderedSongKey = getTableKeyOfSong(orderedSong, keyType);
+    const currentSongKey = getSongTableKey(currentSong, keyType);
+    const orderedSongKey = getSongTableKey(orderedSong, keyType);
     if (currentSongKey !== orderedSongKey) {
       ops.push({
         id: SongUtils.getSongMetadataAsString(orderedSong, Song_MetadataTag.ID),
@@ -152,23 +176,30 @@ export function convertSongForGridRowValueCompact(
   };
 }
 
+/**
+ * Gets SongsInTable representing a clicked song, sorted songs and selected songs.
+ * @param clickedSongKey Key field of a song which is clicked if exists.
+ * @param gridApi GridAPI of a table in question.
+ * @param songsMap SongTableKey -> Song mapping.
+ * @returns SongsInTable.
+ */
 export function getSongsInTableFromGrid(
-  key: string | undefined,
+  clickedSongKey: string | undefined,
   gridApi: GridApi,
   songsMap: Map<string, Song>,
 ): SongsInTable {
   const nodes: IRowNode[] = [];
-  let targetNode: IRowNode | undefined = undefined;
+  let clickedNode: IRowNode | undefined = undefined;
   gridApi.forEachNodeAfterFilterAndSort((node) => {
     nodes.push(node);
-    if (key !== undefined && node.data?.key === key) {
-      targetNode = node;
+    if (clickedSongKey !== undefined && node.data?.key === clickedSongKey) {
+      clickedNode = node;
     }
   });
 
   const clickedSong =
-    targetNode !== undefined
-      ? convertNodeToSong(songsMap, targetNode)
+    clickedNode !== undefined
+      ? convertNodeToSong(songsMap, clickedNode)
       : undefined;
   const sortedSongs: Song[] = [];
   const selectedSortedSongs: Song[] = [];
@@ -189,6 +220,12 @@ export function getSongsInTableFromGrid(
   };
 }
 
+/**
+ * Sorts songs by given columns.
+ * @param songs Songs.
+ * @param columns Columns.
+ * @returns Sorted songs.
+ */
 export function sortSongsByColumns(
   songs: Song[],
   columns: SongTableColumn[],
@@ -205,4 +242,21 @@ export function sortSongsByColumns(
     }
     return 0;
   });
+}
+
+export function createNewSongTableStateFromColumns(
+  columns: SongTableColumn[],
+  baseSongTableState: SongTableState,
+  isSortingEnabled: boolean,
+): SongTableState {
+  const newState = baseSongTableState.clone();
+  if (isSortingEnabled) {
+    newState.columns = columns;
+  } else {
+    newState.columns = copySortingAttributesToNewColumns(
+      columns,
+      baseSongTableState.columns,
+    );
+  }
+  return newState;
 }

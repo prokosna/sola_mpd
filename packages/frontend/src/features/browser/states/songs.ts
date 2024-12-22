@@ -13,7 +13,7 @@ import {
 } from "../../metrics/states/tracker";
 import { mpdClientAtom } from "../../mpd/states/mpdClient";
 import { currentMpdProfileAtom } from "../../profile/states/persistent";
-import { commonSongTableStateAtom } from "../../song_table/states/commonSongTableState";
+import { songTableStateSyncAtom } from "../../song_table/states/songTableState";
 import { fetchBrowserSongs } from "../helpers/api";
 
 import { browserFiltersAtom } from "./filters";
@@ -46,7 +46,7 @@ const browserSongsAtom = atomWithRefresh(async (get) => {
 
 const browserVisibleSongsAtom = atom(async (get) => {
   const browserSongs = await get(browserSongsAtom);
-  const commonSongTableState = await get(commonSongTableStateAtom);
+  const songTableState = await get(songTableStateSyncAtom);
   const globalFilterTokens = get(globalFilterTokensAtom);
   const pathname = get(pathnameAtom);
 
@@ -59,7 +59,7 @@ const browserVisibleSongsAtom = atom(async (get) => {
   const filteredSongs = filterSongsByGlobalFilter(
     browserSongs,
     globalFilterTokens,
-    commonSongTableState.columns,
+    songTableState.columns,
   );
   const end = performance.now();
   metricsTracker.appendMetric({

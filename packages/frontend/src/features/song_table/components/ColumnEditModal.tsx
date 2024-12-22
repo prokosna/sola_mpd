@@ -17,18 +17,23 @@ import { SongUtils } from "@sola_mpd/domain/src/utils/SongUtils.js";
 import { useCallback, useEffect, useState } from "react";
 import { IoChevronBack, IoChevronForward } from "react-icons/io5";
 
-import { normalizeSongTableColumns } from "../helpers/columns";
+import {
+  copySortingAttributesToNewColumns,
+  ensureTagsContainedInColumns,
+  getAverageWidthFlex,
+  normalizeSongTableColumns,
+} from "../utils/columnUtils";
 
 import { ColumnEditModalTagListBox } from "./ColumnEditModalTagListBox";
 
 export type ColumnEditModalProps = {
   columns: SongTableColumn[];
   isOpen: boolean;
-  onOk: (newColumns: SongTableColumn[]) => Promise<void>;
-  onCancel: () => Promise<void>;
+  updateColumns: (newColumns: SongTableColumn[]) => Promise<void>;
+  disposeModal: () => Promise<void>;
 };
 
-export function ColumnEditModal(props: ColumnEditModalProps) {
+export function ColumnEditModal(props: ColumnEditModalProps): JSX.Element {
   // Available tags in use
   const [activeTagsState, setActiveTagsState] = useState<Song_MetadataTag[]>(
     [],
@@ -51,24 +56,21 @@ export function ColumnEditModal(props: ColumnEditModalProps) {
   >(undefined);
 
   // Handlers
-  const onSelectActiveTag = useCallback((tag: Song_MetadataTag) => {
+  const onActiveTagSelected = useCallback((tag: Song_MetadataTag) => {
     setSelectedActiveTag(tag);
     setSelectedInactiveTag(undefined);
   }, []);
-
-  const onSelectInactiveTag = useCallback((tag: Song_MetadataTag) => {
+  const onInactiveTagSelected = useCallback((tag: Song_MetadataTag) => {
     setSelectedInactiveTag(tag);
     setSelectedActiveTag(undefined);
   }, []);
-
-  const onMoveItemToActive = useCallback(() => {
+  const onItemMovedToActive = useCallback(() => {
     if (selectedInactiveTag !== undefined) {
       setActiveTagsState([...activeTagsState, selectedInactiveTag]);
       setSelectedInactiveTag(undefined);
     }
   }, [activeTagsState, selectedInactiveTag]);
-
-  const onMoveItemFromActive = useCallback(() => {
+  const onItemMovedToInactive = useCallback(() => {
     if (selectedActiveTag !== undefined) {
       setActiveTagsState(
         activeTagsState.filter((tag) => tag !== selectedActiveTag),
@@ -78,43 +80,25 @@ export function ColumnEditModal(props: ColumnEditModalProps) {
   }, [activeTagsState, selectedActiveTag]);
 
   const onSubmit = useCallback(() => {
-    // Remove
-    const newColumns = normalizeSongTableColumns(
+    // Remove inactive tags from the columns.
+    const normalizedColumns = normalizeSongTableColumns(
       props.columns.filter((column) => activeTagsState.includes(column.tag)),
     );
 
-    // Calculate column width
-    const flexWidthSum = newColumns
-      .map((v) => v.widthFlex)
-      .reduce((a, b) => a + b, 0);
-    const flexWidthAvg = flexWidthSum / newColumns.length || 0;
-
-    // Add
-    for (const tag of activeTagsState) {
-      if (newColumns.every((column) => column.tag !== tag)) {
-        newColumns.push(
-          new SongTableColumn({
-            tag,
-            widthFlex: Math.floor(flexWidthAvg),
-            isSortDesc: false,
-          }),
-        );
-      }
-    }
-
-    // Copy attributes
-    props.onOk(
-      newColumns.map((newColumn) => {
-        for (const existingColumn of props.columns) {
-          if (newColumn.tag === existingColumn.tag) {
-            newColumn.isSortDesc = existingColumn.isSortDesc;
-            newColumn.sortOrder = existingColumn.sortOrder;
-            return newColumn;
-          }
-        }
-        return newColumn;
-      }),
+    // Add missing columns.
+    const averageWidthFlex = getAverageWidthFlex(normalizedColumns);
+    const activeColumns = ensureTagsContainedInColumns(
+      normalizedColumns,
+      activeTagsState,
+      averageWidthFlex,
     );
+
+    const newColumns = copySortingAttributesToNewColumns(
+      activeColumns,
+      props.columns,
+    );
+
+    props.updateColumns(newColumns);
   }, [activeTagsState, props]);
 
   return (
@@ -124,8 +108,8 @@ export function ColumnEditModal(props: ColumnEditModalProps) {
         closeOnOverlayClick={false}
         isOpen={props.isOpen}
         onClose={() => {
-          if (props.onCancel !== undefined) {
-            props.onCancel();
+          if (props.disposeModal !== undefined) {
+            props.disposeModal();
           }
         }}
       >
@@ -140,19 +124,19 @@ export function ColumnEditModal(props: ColumnEditModalProps) {
                     title="Active Tags"
                     selectedTag={selectedActiveTag}
                     tags={activeTagsState}
-                    onClick={onSelectActiveTag}
+                    selectTag={onActiveTagSelected}
                   ></ColumnEditModalTagListBox>
                 </VStack>
                 <VStack>
                   <IconButton
-                    aria-label={"move_from_active"}
+                    aria-label={"Move a selected item to inactive"}
                     icon={<IoChevronForward />}
-                    onClick={onMoveItemFromActive}
+                    onClick={onItemMovedToInactive}
                   ></IconButton>
                   <IconButton
-                    aria-label={"move_to_active"}
+                    aria-label={"Move a selected item to active"}
                     icon={<IoChevronBack />}
-                    onClick={onMoveItemToActive}
+                    onClick={onItemMovedToActive}
                   ></IconButton>
                 </VStack>
                 <VStack>
@@ -160,7 +144,7 @@ export function ColumnEditModal(props: ColumnEditModalProps) {
                     title="Inactive Tags"
                     selectedTag={selectedInactiveTag}
                     tags={inactiveTags}
-                    onClick={onSelectInactiveTag}
+                    selectTag={onInactiveTagSelected}
                   ></ColumnEditModalTagListBox>
                 </VStack>
               </HStack>
@@ -171,7 +155,7 @@ export function ColumnEditModal(props: ColumnEditModalProps) {
             <Button colorScheme="brand" mr={3} onClick={onSubmit}>
               OK
             </Button>
-            <Button onClick={props.onCancel} colorScheme="gray">
+            <Button onClick={props.disposeModal} colorScheme="gray">
               Cancel
             </Button>
           </ModalFooter>

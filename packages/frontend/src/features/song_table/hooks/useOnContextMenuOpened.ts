@@ -4,49 +4,54 @@ import { CellContextMenuEvent } from "ag-grid-community";
 import { useCallback } from "react";
 import { TriggerEvent, useContextMenu } from "react-contexify";
 
-import { convertAgGridColumnsToSongTableColumns } from "../helpers/columns";
-import { getSongsInTableFromGrid, getTableKeyOfSong } from "../helpers/table";
 import {
   SongTableContextMenuItemParams,
+  SongTableKey,
   SongTableKeyType,
-} from "../types/songTable";
+} from "../types/songTableTypes";
+import {
+  convertAgGridColumnsToSongTableColumns,
+  copySortingAttributesToNewColumns,
+} from "../utils/columnUtils";
+import { getSongsInTableFromGrid, getSongTableKey } from "../utils/tableUtils";
 
-export function useOnOpenContextMenu(
+/**
+ * Uses a callback function to open a context menu.
+ * @param id String value to represent a page where opening a context menu.
+ * @param keyType Type of a key represents a key field in a table.
+ * @param songsMap Song key -> Song map.
+ * @param columns Current columns.
+ * @param isSortingEnabled True if sorting is enabled.
+ * @returns Callback function to open a context menu.
+ */
+export function useOnContextMenuOpened(
   id: string,
   keyType: SongTableKeyType,
-  songsMap: Map<string, Song>,
+  songsMap: Map<SongTableKey, Song>,
   columns: SongTableColumn[],
   isSortingEnabled: boolean,
-) {
+): (event: CellContextMenuEvent) => void {
   const contextMenu = useContextMenu({ id });
   return useCallback(
     (event: CellContextMenuEvent) => {
       const { api, data } = event;
-      const targetKey: string | undefined = data?.key;
-      if (targetKey == null) {
+      const targetSongKey: string | undefined = data?.key;
+      if (targetSongKey == null) {
         return;
       }
       if (!event.event) {
         return;
       }
 
-      const currentColumns = convertAgGridColumnsToSongTableColumns(
+      const updatedColumns = convertAgGridColumnsToSongTableColumns(
         api.getAllGridColumns(),
       );
-      if (!isSortingEnabled) {
-        for (const currentColumn of currentColumns) {
-          const index = columns.findIndex(
-            (column) => column.tag === currentColumn.tag,
-          );
-          if (index >= 0) {
-            currentColumn.sortOrder = columns[index].sortOrder;
-            currentColumn.isSortDesc = columns[index].isSortDesc;
-          }
-        }
-      }
+      const currentColumns = isSortingEnabled
+        ? updatedColumns
+        : copySortingAttributesToNewColumns(updatedColumns, columns);
 
       let { clickedSong, sortedSongs, selectedSortedSongs } =
-        getSongsInTableFromGrid(targetKey, api, songsMap);
+        getSongsInTableFromGrid(targetSongKey, api, songsMap);
 
       if (clickedSong === undefined) {
         return;
@@ -55,8 +60,8 @@ export function useOnOpenContextMenu(
       // If a user selects only 1 single song, but opens the context menu
       // on another song, then the selected single song should be ignored.
       if (selectedSortedSongs.length === 1 && clickedSong !== undefined) {
-        const firstKey = getTableKeyOfSong(selectedSortedSongs[0], keyType);
-        const targetKey = getTableKeyOfSong(clickedSong, keyType);
+        const firstKey = getSongTableKey(selectedSortedSongs[0], keyType);
+        const targetKey = getSongTableKey(clickedSong, keyType);
         if (firstKey !== targetKey) {
           selectedSortedSongs = [];
         }

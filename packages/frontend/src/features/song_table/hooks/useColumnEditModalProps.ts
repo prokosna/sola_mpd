@@ -2,38 +2,42 @@ import { SongTableColumn } from "@sola_mpd/domain/src/models/song_table_pb.js";
 import { useCallback } from "react";
 
 import { ColumnEditModalProps } from "../components/ColumnEditModal";
-import { useCommonSongTableState } from "../states/commonSongTableState";
 
+/**
+ * Uses props for ColumnEditModal.
+ * @param isOpen True if the modal is open.
+ * @param columns Current columns to edit.
+ * @param setIsOpenColumnEditModal Function to set isOpen.
+ * @param updateColumns Function to update columns.
+ * @param disposeModal Function to dispose the modal.
+ * @returns Props.
+ */
 export function useColumnEditModalProps(
   isOpen: boolean,
+  columns: SongTableColumn[],
   setIsOpenColumnEditModal: (open: boolean) => void,
-  columns: SongTableColumn[] | undefined,
-  onClickOk: (newColumns: SongTableColumn[]) => void,
-  onClickCancel: () => void,
-): ColumnEditModalProps | undefined {
-  const commonSongTableState = useCommonSongTableState();
-
-  const onOk = useCallback(
+  updateColumns: (columns: SongTableColumn[]) => void,
+  disposeModal: () => void,
+): ColumnEditModalProps {
+  const wrappedUpdateColumns = useCallback(
     async (newColumns: SongTableColumn[]) => {
-      onClickOk(newColumns);
+      updateColumns(newColumns);
+      // Close the modal after updating the columns.
       setIsOpenColumnEditModal(false);
     },
-    [onClickOk, setIsOpenColumnEditModal],
+    [updateColumns, setIsOpenColumnEditModal],
   );
 
-  const onCancel = useCallback(async () => {
-    onClickCancel();
+  const wrappedDisposeModal = useCallback(async () => {
+    disposeModal();
+    // Make sure to close the modal.
     setIsOpenColumnEditModal(false);
-  }, [onClickCancel, setIsOpenColumnEditModal]);
-
-  if (columns === undefined || commonSongTableState === undefined) {
-    return undefined;
-  }
+  }, [disposeModal, setIsOpenColumnEditModal]);
 
   return {
-    columns: columns.length !== 0 ? columns : commonSongTableState.columns,
+    columns,
     isOpen,
-    onOk,
-    onCancel,
+    updateColumns: wrappedUpdateColumns,
+    disposeModal: wrappedDisposeModal,
   };
 }

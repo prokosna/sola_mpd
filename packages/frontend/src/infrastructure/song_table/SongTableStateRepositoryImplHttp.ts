@@ -9,14 +9,14 @@ export class SongTableStateRepositoryImplHttp
 {
   constructor(private client: HttpClient) {}
 
-  get = async (): Promise<SongTableState> => {
+  fetch = async (): Promise<SongTableState> => {
     return this.client.get<SongTableState>(
       API_CONFIGS_COMMON_SONG_TABLE_STATE,
       SongTableState.fromBinary,
     );
   };
 
-  update = async (commonSongTableState: SongTableState): Promise<void> => {
+  save = async (commonSongTableState: SongTableState): Promise<void> => {
     return this.client.post(
       API_CONFIGS_COMMON_SONG_TABLE_STATE,
       commonSongTableState.toBinary(),

@@ -12,7 +12,7 @@ import {
 } from "../../metrics/states/tracker";
 import { mpdClientAtom } from "../../mpd/states/mpdClient";
 import { currentMpdProfileAtom } from "../../profile/states/persistent";
-import { commonSongTableStateAtom } from "../../song_table/states/commonSongTableState";
+import { songTableStateSyncAtom } from "../../song_table/states/songTableState";
 import { fetchFileExploreSongs } from "../helpers/api";
 
 import { selectedFileExploreFolderAtom } from "./folders";
@@ -48,7 +48,7 @@ const fileExploreSongsAtom = atom(async (get) => {
 
 const fileExploreVisibleSongsAtom = atom(async (get) => {
   const fileExploreSongs = await get(fileExploreSongsAtom);
-  const commonSongTableState = await get(commonSongTableStateAtom);
+  const songTableState = await get(songTableStateSyncAtom);
   const globalFilterTokens = get(globalFilterTokensAtom);
   const pathname = get(pathnameAtom);
 
@@ -61,7 +61,7 @@ const fileExploreVisibleSongsAtom = atom(async (get) => {
   const filteredSongs = filterSongsByGlobalFilter(
     fileExploreSongs,
     globalFilterTokens,
-    commonSongTableState.columns,
+    songTableState.columns,
   );
   const sortedSongs = filteredSongs.toSorted((a, b) =>
     a.path > b.path ? 1 : -1,

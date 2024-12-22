@@ -13,7 +13,7 @@ import {
 } from "../../metrics/states/tracker";
 import { mpdClientAtom } from "../../mpd/states/mpdClient";
 import { currentMpdProfileAtom } from "../../profile/states/persistent";
-import { commonSongTableStateAtom } from "../../song_table/states/commonSongTableState";
+import { songTableStateSyncAtom } from "../../song_table/states/songTableState";
 import { fetchAllSongs } from "../helpers/api";
 
 const fullTextSearchSongsAtom = atomWithRefresh(async (get) => {
@@ -39,7 +39,7 @@ const fullTextSearchSongsAtom = atomWithRefresh(async (get) => {
 
 const fullTextSearchVisibleSongsAtom = atom(async (get) => {
   const fullTextSearchSongs = await get(fullTextSearchSongsAtom);
-  const commonSongTableState = await get(commonSongTableStateAtom);
+  const songTableState = await get(songTableStateSyncAtom);
   const globalFilterTokens = get(globalFilterTokensAtom);
   const pathname = get(pathnameAtom);
 
@@ -52,7 +52,7 @@ const fullTextSearchVisibleSongsAtom = atom(async (get) => {
   const filteredSongs = filterSongsByGlobalFilter(
     fullTextSearchSongs,
     globalFilterTokens,
-    commonSongTableState.columns,
+    songTableState.columns,
   );
   const end = performance.now();
   metricsTracker.appendMetric({

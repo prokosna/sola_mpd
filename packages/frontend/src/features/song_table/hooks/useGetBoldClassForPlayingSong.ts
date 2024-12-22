@@ -3,13 +3,23 @@ import { RowClassParams } from "ag-grid-community";
 import { useCallback, useMemo } from "react";
 
 import { useCurrentSongState } from "../../player";
-import { getTableKeyOfSong } from "../helpers/table";
-import { SongTableKeyType, SongTableRowDataType } from "../types/songTable";
+import {
+  SongTableKey,
+  SongTableKeyType,
+  SongTableRowData,
+} from "../types/songTableTypes";
+import { getSongTableKey } from "../utils/tableUtils";
 
+/**
+ * Uses a callback to get a bold text CSS class if a given row is in playing.
+ * @param keyType Song table key type.
+ * @param songsMap Songs map.
+ * @returns Bold text CSS class string or undefined.
+ */
 export function useGetBoldClassForPlayingSong(
   keyType: SongTableKeyType,
-  songsMap: Map<string, Song>,
-) {
+  songsMap: Map<SongTableKey, Song>,
+): (params: RowClassParams<SongTableRowData>) => string | undefined {
   const currentSong = useCurrentSongState();
 
   const currentSongKey = useMemo(() => {
@@ -17,11 +27,11 @@ export function useGetBoldClassForPlayingSong(
       return undefined;
     }
 
-    return getTableKeyOfSong(currentSong, keyType);
+    return getSongTableKey(currentSong, keyType);
   }, [currentSong, keyType]);
 
   return useCallback(
-    (params: RowClassParams<SongTableRowDataType>) => {
+    (params: RowClassParams<SongTableRowData>) => {
       if (params.data === undefined) {
         return;
       }
@@ -36,7 +46,7 @@ export function useGetBoldClassForPlayingSong(
         return;
       }
 
-      const rowKey = getTableKeyOfSong(targetSong, keyType);
+      const rowKey = getSongTableKey(targetSong, keyType);
       if (rowKey === currentSongKey) {
         return "ag-font-weight-bold";
       }
