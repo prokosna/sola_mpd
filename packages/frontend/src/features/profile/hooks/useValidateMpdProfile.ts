@@ -4,7 +4,7 @@ import { compareVersions } from "compare-versions";
 import { useCallback } from "react";
 
 import { useMpdClientState } from "../../mpd";
-import { useMpdProfileState } from "../states/persistent";
+import { useMpdProfileState } from "../states/mpdProfileState";
 import { ProfileInputs } from "../types/profileInputs";
 
 export function useValidateMpdProfile() {

@@ -1,35 +1,12 @@
-import { API_CONFIGS_SAVED_SEARCHES } from "@sola_mpd/domain/src/const/api.js";
 import { MpdRequest } from "@sola_mpd/domain/src/models/mpd/mpd_command_pb.js";
 import { MpdProfile } from "@sola_mpd/domain/src/models/mpd/mpd_profile_pb.js";
-import {
-  SavedSearches,
-  Search,
-} from "@sola_mpd/domain/src/models/search_pb.js";
+import { Search } from "@sola_mpd/domain/src/models/search_pb.js";
 import { Song } from "@sola_mpd/domain/src/models/song_pb.js";
 
-import { HttpApiClient } from "../../http_api";
 import { MpdClient } from "../../mpd";
 import { filterSongsByAndConditions } from "../../song_filter";
 
 import { convertSearchToConditions, mergeSongsList } from "./search";
-
-export async function fetchSavedSearches() {
-  const res = await HttpApiClient.get<SavedSearches>(
-    API_CONFIGS_SAVED_SEARCHES,
-    SavedSearches.fromBinary,
-  );
-  return res.searches;
-}
-
-export async function sendSavedSearches(searches: Search[]) {
-  const savedSearches = new SavedSearches({
-    searches,
-  });
-  return HttpApiClient.post(
-    API_CONFIGS_SAVED_SEARCHES,
-    savedSearches.toBinary(),
-  );
-}
 
 export async function fetchSearchSongs(
   mpdClient: MpdClient,

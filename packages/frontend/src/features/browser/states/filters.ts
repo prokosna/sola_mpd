@@ -11,7 +11,7 @@ import { filterStringsByGlobalFilter } from "../../global_filter";
 import { globalFilterTokensAtom } from "../../global_filter/states/filter";
 import { pathnameAtom } from "../../location/states/location";
 import { mpdClientAtom } from "../../mpd/states/mpdClient";
-import { currentMpdProfileAtom } from "../../profile/states/persistent";
+import { currentMpdProfileAtom } from "../../profile/states/mpdProfileState";
 import { fetchBrowserFilterValuesMap, sendBrowserState } from "../helpers/api";
 
 import { browserStateAtom } from "./persistent";

@@ -1,11 +1,4 @@
-import {
-  SIO_MPD_EVENT,
-  SIO_MPD_SUBSCRIBE,
-} from "@sola_mpd/domain/src/const/socketio.js";
-import {
-  MpdEvent,
-  MpdEvent_EventType,
-} from "@sola_mpd/domain/src/models/mpd/mpd_event_pb.js";
+import { MpdEvent_EventType } from "@sola_mpd/domain/src/models/mpd/mpd_event_pb.js";
 import { useEffect } from "react";
 
 import { useRefreshPlayQueueSongsState } from "../../play_queue";
@@ -15,11 +8,11 @@ import {
   useRefreshPlaylistSongsState,
 } from "../../playlist";
 import { useCurrentMpdProfileState } from "../../profile";
-import { useSocketState, SocketIoClientUtils } from "../../socketio";
 import { useRefreshStatsState } from "../../stats";
+import { useMpdListenerState } from "../states/mpdListener";
 
 export function MpdEventObserver() {
-  const socket = useSocketState();
+  const mpdListener = useMpdListenerState();
   const profile = useCurrentMpdProfileState();
   const refreshStats = useRefreshStatsState();
   const refreshPlayQueueSongs = useRefreshPlayQueueSongsState();
@@ -28,53 +21,42 @@ export function MpdEventObserver() {
   const refreshPlayerVolume = useRefreshPlayerVolumeState();
 
   useEffect(() => {
-    if (socket === undefined || profile === undefined) {
+    if (profile === undefined) {
       return;
     }
 
-    socket.on(SIO_MPD_EVENT, (msg: string) => {
-      const event = MpdEvent.fromJsonString(msg);
-      console.info(`MPD event: ${MpdEvent_EventType[event.eventType]}`);
-
-      switch (event.eventType) {
-        case MpdEvent_EventType.DATABASE:
-          refreshStats();
-          break;
-        case MpdEvent_EventType.UPDATE:
-          refreshStats();
-          break;
-        case MpdEvent_EventType.PLAYLIST:
-          refreshPlaylists();
-          refreshPlaylistSongs();
-          break;
-        case MpdEvent_EventType.PLAY_QUEUE:
-          refreshPlayQueueSongs();
-          break;
-        case MpdEvent_EventType.MIXER:
-          refreshPlayerVolume();
-          break;
-        case MpdEvent_EventType.OPTIONS:
-          break;
-        case MpdEvent_EventType.PLAYER:
-          break;
-        case MpdEvent_EventType.DISCONNECTED:
-          break;
-      }
+    mpdListener.on(MpdEvent_EventType.DATABASE, () => {
+      refreshStats();
     });
-
-    SocketIoClientUtils.emit(socket, SIO_MPD_SUBSCRIBE, profile.toBinary());
+    mpdListener.on(MpdEvent_EventType.UPDATE, () => {
+      refreshStats();
+    });
+    mpdListener.on(MpdEvent_EventType.PLAYLIST, () => {
+      refreshPlaylists();
+      refreshPlaylistSongs();
+    });
+    mpdListener.on(MpdEvent_EventType.PLAY_QUEUE, () => {
+      refreshPlayQueueSongs();
+    });
+    mpdListener.on(MpdEvent_EventType.MIXER, () => {
+      refreshPlayerVolume();
+    });
+    mpdListener.on(MpdEvent_EventType.OPTIONS, () => {});
+    mpdListener.on(MpdEvent_EventType.PLAYER, () => {});
+    mpdListener.on(MpdEvent_EventType.DISCONNECTED, () => {});
+    mpdListener.subscribe(profile);
 
     return () => {
-      socket.off(SIO_MPD_EVENT);
+      mpdListener.unsubscribe(profile);
     };
   }, [
+    mpdListener,
     profile,
     refreshPlayQueueSongs,
     refreshPlayerVolume,
     refreshPlaylistSongs,
     refreshPlaylists,
     refreshStats,
-    socket,
   ]);
 
   return undefined;

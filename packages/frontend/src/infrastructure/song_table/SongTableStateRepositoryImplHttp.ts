@@ -7,7 +7,7 @@ import { HttpClient } from "../http/HttpClient";
 export class SongTableStateRepositoryImplHttp
   implements SongTableStateRepository
 {
-  constructor(private client: HttpClient) {}
+  constructor(private readonly client: HttpClient) {}
 
   fetch = async (): Promise<SongTableState> => {
     return this.client.get<SongTableState>(

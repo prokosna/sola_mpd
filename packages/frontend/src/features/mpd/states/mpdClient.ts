@@ -1,21 +1,16 @@
-import { atom, useAtomValue } from "jotai";
-import { unwrap } from "jotai/utils";
+import { useAtomValue } from "jotai";
+import { atomWithDefault } from "jotai/utils";
 
-import { socketAtom } from "../../socketio/states/socketio";
-import { MpdClient } from "../utils/MpdClient";
+import { MpdClient } from "../services/MpdClient";
 
-const mpdClientAtom = atom(async (get) => {
-  const socket = await get(socketAtom);
-  return MpdClient.initialize(socket);
+export const mpdClientAtom = atomWithDefault<MpdClient>(() => {
+  throw new Error("Not initialized");
 });
 
-const unwrappedMpdClientAtom = unwrap(
-  mpdClientAtom,
-  (prev) => prev || undefined,
-);
-
-export { mpdClientAtom };
-
+/**
+ * useMpdClientState returns the current MpdClient instance.
+ * It throws an error if the atom is not initialized.
+ */
 export function useMpdClientState() {
-  return useAtomValue(unwrappedMpdClientAtom);
+  return useAtomValue(mpdClientAtom);
 }

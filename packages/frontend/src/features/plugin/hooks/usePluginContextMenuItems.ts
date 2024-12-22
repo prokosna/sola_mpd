@@ -12,7 +12,7 @@ import {
   useSetIsPluginExecutionModalOpenState,
   useIsPreviousPluginStillRunningState,
 } from "../states/execution";
-import { usePluginState } from "../states/persistent";
+import { usePluginState } from "../states/pluginState";
 
 export function usePluginContextMenuItems(
   pluginType: Plugin_PluginType,

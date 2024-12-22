@@ -2,12 +2,12 @@ import { useToast } from "@chakra-ui/react";
 import { Plugin } from "@sola_mpd/domain/src/models/plugin/plugin_pb.js";
 import { useCallback } from "react";
 
-import { usePluginState, useSetPluginState } from "../states/persistent";
+import { usePluginState, useSavePluginState } from "../states/pluginState";
 
 export function useOnRemovePlugin(plugin: Plugin) {
   const toast = useToast();
   const pluginState = usePluginState();
-  const setPluginState = useSetPluginState();
+  const setPluginState = useSavePluginState();
 
   const onRemovePlugin = useCallback(() => {
     if (pluginState === undefined) {

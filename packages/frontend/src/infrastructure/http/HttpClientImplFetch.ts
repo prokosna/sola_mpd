@@ -1,5 +1,10 @@
 import { HttpClient } from "./HttpClient";
 
+/**
+ * HttpClientImplFetch is an implementation of HttpClient that uses fetch api as the underlying transport.
+ * It provides methods to fetch data from the server and to emit events.
+ * It also provides methods to listen to events and to remove listeners.
+ */
 export class HttpClientImplFetch implements HttpClient {
   get = async <R>(
     endpoint: string,

@@ -11,6 +11,11 @@ import {
 import { MpdClient } from "../../features/mpd";
 import { HttpClient } from "../http/HttpClient";
 
+/**
+ * MpdClientImplHttp is an implementation of MpdClient that uses HTTP as the underlying transport.
+ * It provides methods to send commands to mpd via HTTP.
+ * It uses the HttpClient to send requests to the server.
+ */
 export class MpdClientImplHttp implements MpdClient {
   constructor(private client: HttpClient) {}
 

@@ -11,13 +11,19 @@ import { MpdProfile } from "@sola_mpd/domain/src/models/mpd/mpd_profile_pb.js";
 import { Server as IOServer, Socket } from "socket.io";
 
 import { mpdClient } from "./mpdClient.js";
-import { ProfileHandler } from "./types/ProfileHandler.js";
+import { MpdEventHandler } from "./types/MpdEventHandler.js";
 
+/**
+ * MpdMessageHandler is a class that handles messages from socket.io clients.
+ *
+ * It provides methods to subscribe and unsubscribe to events emitted by mpd.
+ * It also provides methods to send commands to mpd.
+ */
 export class MpdMessageHandler {
-  private idHandlerMap: Map<string, ProfileHandler>;
+  private idHandlersMap: Map<string, MpdEventHandler[]>;
 
   private constructor(private io: IOServer) {
-    this.idHandlerMap = new Map();
+    this.idHandlersMap = new Map();
   }
 
   static initialize(io: IOServer): MpdMessageHandler {
@@ -31,25 +37,64 @@ export class MpdMessageHandler {
     socket: Socket,
   ): Promise<void> {
     try {
-      if (this.idHandlerMap.has(id)) {
-        return;
+      const profile = MpdProfile.fromBinary(msg);
+      if (!this.idHandlersMap.has(id)) {
+        this.idHandlersMap.set(id, []);
       }
 
-      const profile = MpdProfile.fromBinary(msg);
+      if (
+        this.idHandlersMap
+          .get(id)!
+          .findIndex((handler) => handler.profile.name === profile.name) >= 0
+      ) {
+        return;
+      }
 
       const room = `${profile.host}:${profile.port}`;
       socket.join(room);
 
-      // Event listener
+      // Event listener.
       const handle = await mpdClient.subscribe(profile, (event: MpdEvent) => {
-        this.io.to(room).emit(SIO_MPD_EVENT, event.toJsonString());
+        this.io.to(room).emit(SIO_MPD_EVENT, event.toBinary());
       });
-      this.idHandlerMap.set(id, {
+
+      this.idHandlersMap.get(id)!.push({
         profile,
         handle,
       });
 
       console.info(`New client registered: ${id} for ${room}`);
+    } catch (err) {
+      console.error(err);
+      socket.emit(SIO_MESSAGE, err);
+    }
+    return;
+  }
+
+  async unsubscribeEvents(
+    id: string,
+    msg: Uint8Array,
+    socket: Socket,
+  ): Promise<void> {
+    if (!this.idHandlersMap.has(id)) {
+      return;
+    }
+
+    try {
+      const profile = MpdProfile.fromBinary(msg);
+      const handlerIndex = this.idHandlersMap
+        .get(id)!
+        .findIndex((handler) => handler.profile.name === profile.name);
+      if (handlerIndex < 0) {
+        return;
+      }
+
+      const handler = this.idHandlersMap.get(id)![handlerIndex];
+      const room = `${handler.profile.host}:${handler.profile.port}`;
+      socket.leave(room);
+      await mpdClient.unsubscribe(handler.profile, handler.handle);
+      this.idHandlersMap.get(id)!.splice(handlerIndex, 1);
+      console.info(`${id}.${profile.name} has been unsubscribed.`);
     } catch (err) {
       console.error(err);
       socket.emit(SIO_MESSAGE, err);
@@ -69,10 +114,15 @@ export class MpdMessageHandler {
     return;
   }
 
-  async disconnect(id: string): Promise<void> {
-    const profileHandler = this.idHandlerMap.get(id);
-    if (profileHandler != null) {
-      mpdClient.unsubscribe(profileHandler.profile, profileHandler.handle);
+  async disconnect(id: string, socket: Socket): Promise<void> {
+    const handlers = this.idHandlersMap.get(id);
+    if (handlers !== undefined) {
+      for (const handler of handlers) {
+        const room = `${handler.profile.host}:${handler.profile.port}`;
+        socket.leave(room);
+        await mpdClient.unsubscribe(handler.profile, handler.handle);
+      }
     }
+    this.idHandlersMap.delete(id);
   }
 }

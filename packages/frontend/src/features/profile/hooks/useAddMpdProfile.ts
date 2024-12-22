@@ -4,7 +4,7 @@ import { useCallback } from "react";
 import {
   useMpdProfileState,
   useSetMpdProfileState,
-} from "../states/persistent";
+} from "../states/mpdProfileState";
 import { ProfileInputs } from "../types/profileInputs";
 
 export function useAddMpdProfile() {

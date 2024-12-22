@@ -3,7 +3,7 @@ import { unwrap } from "jotai/utils";
 
 import { atomWithRefresh } from "../../../lib/jotai/atomWithRefresh";
 import { mpdClientAtom } from "../../mpd/states/mpdClient";
-import { currentMpdProfileAtom } from "../../profile/states/persistent";
+import { currentMpdProfileAtom } from "../../profile/states/mpdProfileState";
 import { fetchOutputDevices } from "../helpers/api";
 
 const outputDevicesAtom = atomWithRefresh(async (get) => {

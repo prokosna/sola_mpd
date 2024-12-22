@@ -13,7 +13,7 @@ import {
   useRefreshMetrics,
 } from "../../metrics/states/tracker";
 import { mpdClientAtom } from "../../mpd/states/mpdClient";
-import { currentMpdProfileAtom } from "../../profile/states/persistent";
+import { currentMpdProfileAtom } from "../../profile/states/mpdProfileState";
 import { fetchSearchSongs } from "../helpers/api";
 
 import { editingSearchAtom } from "./edit";

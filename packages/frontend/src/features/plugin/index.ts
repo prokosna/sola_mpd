@@ -5,3 +5,11 @@ export { PluginExecutionModal } from "./components/PluginExecutionModal";
 
 // Hooks
 export { usePluginContextMenuItems } from "./hooks/usePluginContextMenuItems";
+
+// States
+export { pluginStateRepositoryAtom } from "./states/pluginStateRepository";
+export { pluginServiceAtom } from "./states/pluginService";
+
+// Services
+export { type PluginStateRepository } from "./services/PluginStateRepository";
+export { type PluginService } from "./services/PluginService";

@@ -5,7 +5,7 @@ import { useCallback } from "react";
 
 import { atomWithRefresh } from "../../../lib/jotai/atomWithRefresh";
 import { mpdClientAtom } from "../../mpd/states/mpdClient";
-import { currentMpdProfileAtom } from "../../profile/states/persistent";
+import { currentMpdProfileAtom } from "../../profile/states/mpdProfileState";
 import { fetchFileExploreFolders } from "../helpers/api";
 
 const fileExploreFoldersAtom = atomWithRefresh(async (get) => {

@@ -2,6 +2,7 @@ import {
   SIO_MPD_COMMAND,
   SIO_MPD_COMMAND_BULK,
   SIO_MPD_SUBSCRIBE,
+  SIO_MPD_UNSUBSCRIBE,
   SIO_PLUGIN_EXECUTE,
   SIO_PLUGIN_REGISTER,
 } from "@sola_mpd/domain/src/const/socketio.js";
@@ -25,6 +26,7 @@ export class SocketIoManager {
       const id = socket.id;
       console.info(`Socket.io is connected: ${id}`);
 
+      // Subscribe MPD events for the given profile.
       socket.on(SIO_MPD_SUBSCRIBE, async (msg: ArrayBuffer) => {
         try {
           await mpdHandler.subscribeEvents(id, new Uint8Array(msg), socket);
@@ -33,6 +35,16 @@ export class SocketIoManager {
         }
       });
 
+      // Unsubscribe MPD events for the given profile.
+      socket.on(SIO_MPD_UNSUBSCRIBE, async (msg: ArrayBuffer) => {
+        try {
+          await mpdHandler.unsubscribeEvents(id, new Uint8Array(msg), socket);
+        } catch (err) {
+          console.error(err);
+        }
+      });
+
+      // Execute the given command.
       socket.on(SIO_MPD_COMMAND, async (msg: ArrayBuffer, callback) => {
         try {
           const res = await mpdHandler.command(new Uint8Array(msg));
@@ -52,6 +64,7 @@ export class SocketIoManager {
         }
       });
 
+      // Execute the given commands in bulk.
       socket.on(SIO_MPD_COMMAND_BULK, async (msg: ArrayBuffer, callback) => {
         try {
           await mpdHandler.commandBulk(new Uint8Array(msg));
@@ -71,6 +84,7 @@ export class SocketIoManager {
         }
       });
 
+      // Register a plugin.
       socket.on(SIO_PLUGIN_REGISTER, async (msg: ArrayBuffer, callback) => {
         try {
           const resp = await pluginHandler.register(new Uint8Array(msg));
@@ -80,6 +94,7 @@ export class SocketIoManager {
         }
       });
 
+      // Execute a plugin command.
       socket.on(SIO_PLUGIN_EXECUTE, async (msg: ArrayBuffer) => {
         try {
           for await (const [callbackEvent, resp] of pluginHandler.execute(
@@ -92,9 +107,10 @@ export class SocketIoManager {
         }
       });
 
+      // Disconnect.
       socket.on("disconnect", async () => {
         try {
-          await mpdHandler.disconnect(id);
+          await mpdHandler.disconnect(id, socket);
         } catch (err) {
           console.error(err);
         }

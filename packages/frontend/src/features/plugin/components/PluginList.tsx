@@ -10,7 +10,7 @@ import { IoAdd } from "react-icons/io5";
 
 import { CenterSpinner } from "../../loading";
 import { usePluginDisplayColors } from "../hooks/usePluginDisplayColors";
-import { usePluginState } from "../states/persistent";
+import { usePluginState } from "../states/pluginState";
 
 import { PluginListInfoCard } from "./PluginListInfoCard";
 

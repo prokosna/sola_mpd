@@ -4,7 +4,7 @@ import { unwrap } from "jotai/utils";
 import { atomWithRefresh } from "../../../lib/jotai/atomWithRefresh";
 import { useDeepProtoMemo } from "../../../lib/proto/hooks/useDeepProtoMemo";
 import { mpdClientAtom } from "../../mpd/states/mpdClient";
-import { currentMpdProfileAtom } from "../../profile/states/persistent";
+import { currentMpdProfileAtom } from "../../profile/states/mpdProfileState";
 import { fetchCurrentSong } from "../helpers/api";
 
 const currentSongAtom = atomWithRefresh(async (get) => {

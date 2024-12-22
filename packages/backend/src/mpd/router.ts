@@ -25,7 +25,7 @@ async function executeCommand(req: Request): Promise<Uint8Array> {
   const body = req.body as Buffer;
   const request = MpdRequest.fromBinary(new Uint8Array(body));
   const res = await mpdClient.execute(request);
-  return Buffer.from(res.toBinary());
+  return res.toBinary();
 }
 
 async function executeCommandBulk(req: Request): Promise<void> {

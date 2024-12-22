@@ -7,16 +7,15 @@ import {
 import { Song } from "@sola_mpd/domain/src/models/song_pb.js";
 import { useCallback } from "react";
 
-import { useSocketState } from "../../socketio";
-import { executePlugin } from "../helpers/socket";
 import {
   useSetPluginExecutionLatestResponseState,
   useSetPluginExecutionWarningLogsState,
   useAppendPluginExecutionWarningLogState,
 } from "../states/execution";
+import { usePluginService } from "../states/pluginService";
 
 export function useOnExecutePlugin() {
-  const socket = useSocketState();
+  const pluginService = usePluginService();
   const setPluginExecutionLatestResponse =
     useSetPluginExecutionLatestResponseState();
   const setPluginExecutionWarningLogs = useSetPluginExecutionWarningLogsState();
@@ -25,10 +24,6 @@ export function useOnExecutePlugin() {
 
   const onExecutePlugin = useCallback(
     (plugin: Plugin, songs: Song[], parameters: Map<string, string>) => {
-      if (socket === undefined) {
-        return undefined;
-      }
-
       const requestParameters: { [key: string]: string } = {};
       parameters.forEach((value, key) => {
         requestParameters[key] = value;
@@ -44,7 +39,7 @@ export function useOnExecutePlugin() {
 
       setPluginExecutionWarningLogs([]);
 
-      const observable = executePlugin(socket, req);
+      const observable = pluginService.execute(req);
       observable.subscribe({
         next: (resp: PluginExecuteResponse) => {
           if (resp.status === PluginExecuteResponse_Status.WARN) {
@@ -68,10 +63,10 @@ export function useOnExecutePlugin() {
       });
     },
     [
-      appendPluginExecutionWarningLog,
-      socket,
-      setPluginExecutionLatestResponse,
       setPluginExecutionWarningLogs,
+      pluginService,
+      setPluginExecutionLatestResponse,
+      appendPluginExecutionWarningLog,
     ],
   );
 

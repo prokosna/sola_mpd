@@ -2,7 +2,7 @@ import { Box, Select, useToast } from "@chakra-ui/react";
 
 import { useEnabledMpdDevice } from "../hooks/useEnabledMpdDevice";
 import { useOnChangeMpdProfile } from "../hooks/useOnChangeMpdProfile";
-import { useMpdProfileState } from "../states/persistent";
+import { useMpdProfileState } from "../states/mpdProfileState";
 
 export function MpdProfileSelector() {
   const toast = useToast();

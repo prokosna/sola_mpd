@@ -15,7 +15,7 @@ import {
 import { Plugin } from "@sola_mpd/domain/src/models/plugin/plugin_pb.js";
 import { useCallback, useState } from "react";
 
-import { usePluginState, useSetPluginState } from "../states/persistent";
+import { usePluginState, useSavePluginState } from "../states/pluginState";
 
 export type PluginAddModalRegisterProps = {
   pluginToAdd: Plugin;
@@ -30,7 +30,7 @@ export function PluginAddModalRegister(props: PluginAddModalRegisterProps) {
     new Map(),
   );
   const pluginState = usePluginState();
-  const setPluginState = useSetPluginState();
+  const setPluginState = useSavePluginState();
 
   const onRegisterPlugin = useCallback(() => {
     if (pluginState === undefined) {

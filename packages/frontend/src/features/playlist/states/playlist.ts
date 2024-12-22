@@ -4,7 +4,7 @@ import { unwrap } from "jotai/utils";
 
 import { atomWithRefresh } from "../../../lib/jotai/atomWithRefresh";
 import { mpdClientAtom } from "../../mpd/states/mpdClient";
-import { currentMpdProfileAtom } from "../../profile/states/persistent";
+import { currentMpdProfileAtom } from "../../profile/states/mpdProfileState";
 import { addPlaylist, fetchPlaylists } from "../helpers/api";
 
 const playlistsAtom = atomWithRefresh(async (get) => {
