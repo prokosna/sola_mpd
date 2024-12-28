@@ -35,12 +35,10 @@ export function Browser() {
     [browserLayout, updateLayout],
   );
 
-  const {
-    isReady,
-    leftPaneWidthStyle,
-    rightPaneWidthStyle,
-    handlePanelResize,
-  } = useResizablePane(browserLayout?.sidePaneWidth, handlePanelWidthChanged);
+  const { isReady, leftPaneWidthStyle, handlePanelResize } = useResizablePane(
+    browserLayout?.sidePaneWidth,
+    handlePanelWidthChanged,
+  );
 
   if (!isReady) {
     return <CenterSpinner className="layout-border-top layout-border-left" />;
@@ -61,10 +59,10 @@ export function Browser() {
               handlePanelResize(sizes[0], sizes[1]);
             }}
           >
-            <Allotment.Pane preferredSize={leftPaneWidthStyle} minSize={200}>
+            <Allotment.Pane preferredSize={leftPaneWidthStyle}>
               <BrowserNavigation />
             </Allotment.Pane>
-            <Allotment.Pane preferredSize={rightPaneWidthStyle}>
+            <Allotment.Pane>
               <BrowserContent />
             </Allotment.Pane>
           </Allotment>

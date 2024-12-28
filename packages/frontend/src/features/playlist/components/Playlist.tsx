@@ -38,12 +38,10 @@ export function Playlist() {
     [playlistLayout, updateLayout],
   );
 
-  const {
-    isReady,
-    leftPaneWidthStyle,
-    rightPaneWidthStyle,
-    handlePanelResize,
-  } = useResizablePane(playlistLayout?.sidePaneWidth, handlePanelWidthChanged);
+  const { isReady, leftPaneWidthStyle, handlePanelResize } = useResizablePane(
+    playlistLayout?.sidePaneWidth,
+    handlePanelWidthChanged,
+  );
 
   if (!isReady) {
     return <CenterSpinner className="layout-border-top layout-border-left" />;
@@ -60,10 +58,10 @@ export function Playlist() {
             handlePanelResize(sizes[0], sizes[1]);
           }}
         >
-          <Allotment.Pane preferredSize={leftPaneWidthStyle} minSize={200}>
+          <Allotment.Pane preferredSize={leftPaneWidthStyle}>
             <PlaylistNavigation />
           </Allotment.Pane>
-          <Allotment.Pane preferredSize={rightPaneWidthStyle}>
+          <Allotment.Pane>
             <PlaylistContent />
           </Allotment.Pane>
         </Allotment>

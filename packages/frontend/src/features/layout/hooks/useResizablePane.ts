@@ -21,12 +21,7 @@ export function useResizablePane(
   );
 
   const leftPaneWidthStyle = useMemo(
-    () => (leftWidth !== undefined ? `${leftWidth}px` : undefined),
-    [leftWidth],
-  );
-
-  const rightPaneWidthStyle = useMemo(
-    () => (leftWidth !== undefined ? `calc(100% - ${leftWidth}px)` : undefined),
+    () => (leftWidth !== undefined ? `${Math.min(90, leftWidth)}%` : undefined),
     [leftWidth],
   );
 
@@ -37,26 +32,25 @@ export function useResizablePane(
   }, [isTouchDevice]);
 
   const handlePanelResize = useCallback(
-    (left: number, _right: number) => {
-      if (leftWidth === undefined) {
+    (left: number, right: number) => {
+      if (isNaN(left) || isNaN(right)) {
         return;
       }
       if (timeoutId.current !== undefined) {
         clearTimeout(timeoutId.current);
         timeoutId.current = undefined;
       }
+      const leftPercentage = (left / (left + right)) * 100;
       timeoutId.current = setTimeout(() => {
-        onPanelWidthUpdated(left);
+        onPanelWidthUpdated(leftPercentage);
       }, 100);
     },
-    [leftWidth, onPanelWidthUpdated],
+    [onPanelWidthUpdated],
   );
 
   return {
-    isReady:
-      leftPaneWidthStyle !== undefined && rightPaneWidthStyle !== undefined,
+    isReady: leftPaneWidthStyle !== undefined,
     leftPaneWidthStyle,
-    rightPaneWidthStyle,
     handlePanelResize,
   };
 }

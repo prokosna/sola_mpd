@@ -19,7 +19,7 @@
     "@sola_mpd/domain": "^0.0.0",
     "ag-grid-community": "^31.2.0",
     "ag-grid-react": "^31.2.0",
-    "allotment": "^1.20.0",
+    "allotment": "^1.20.2",
     "bufferutil": "^4.0.8",
     "compare-versions": "^6.1.0",
     "jotai": "^2.7.2",

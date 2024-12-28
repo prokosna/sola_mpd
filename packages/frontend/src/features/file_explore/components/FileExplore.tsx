@@ -40,12 +40,7 @@ export function FileExplore() {
     [fileExploreLayout, updateLayout],
   );
 
-  const {
-    isReady,
-    leftPaneWidthStyle,
-    rightPaneWidthStyle,
-    handlePanelResize,
-  } = useResizablePane(
+  const { isReady, leftPaneWidthStyle, handlePanelResize } = useResizablePane(
     fileExploreLayout?.sidePaneWidth,
     handlePanelWidthChanged,
   );
@@ -65,10 +60,10 @@ export function FileExplore() {
             handlePanelResize(sizes[0], sizes[1]);
           }}
         >
-          <Allotment.Pane preferredSize={leftPaneWidthStyle} minSize={200}>
+          <Allotment.Pane preferredSize={leftPaneWidthStyle}>
             <FileExploreNavigation />
           </Allotment.Pane>
-          <Allotment.Pane preferredSize={rightPaneWidthStyle}>
+          <Allotment.Pane>
             <FileExploreContent />
           </Allotment.Pane>
         </Allotment>

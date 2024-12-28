@@ -36,12 +36,10 @@ export function Search() {
     [searchLayout, updateLayout],
   );
 
-  const {
-    isReady,
-    leftPaneWidthStyle,
-    rightPaneWidthStyle,
-    handlePanelResize,
-  } = useResizablePane(searchLayout?.sidePaneWidth, handlePanelWidthChanged);
+  const { isReady, leftPaneWidthStyle, handlePanelResize } = useResizablePane(
+    searchLayout?.sidePaneWidth,
+    handlePanelWidthChanged,
+  );
 
   if (!isReady) {
     return <CenterSpinner className="layout-border-top layout-border-left" />;
@@ -58,10 +56,10 @@ export function Search() {
             handlePanelResize(sizes[0], sizes[1]);
           }}
         >
-          <Allotment.Pane preferredSize={leftPaneWidthStyle} minSize={200}>
+          <Allotment.Pane preferredSize={leftPaneWidthStyle}>
             <SearchNavigation />
           </Allotment.Pane>
-          <Allotment.Pane preferredSize={rightPaneWidthStyle}>
+          <Allotment.Pane>
             <SearchContent />
           </Allotment.Pane>
         </Allotment>

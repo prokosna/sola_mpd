@@ -7,16 +7,16 @@ export const layoutStateRepository = new FileRepository<LayoutState>(
   DB_FILE_LAYOUT_STATE,
   new LayoutState({
     fileExploreLayout: {
-      sidePaneWidth: 300,
+      sidePaneWidth: 30,
     },
     searchLayout: {
-      sidePaneWidth: 300,
+      sidePaneWidth: 30,
     },
     browserLayout: {
-      sidePaneWidth: 300,
+      sidePaneWidth: 30,
     },
     playlistLayout: {
-      sidePaneWidth: 300,
+      sidePaneWidth: 30,
     },
   }),
 );
