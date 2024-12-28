@@ -1,2 +1,5 @@
 // States
-export { useOutputDevicesState } from "./states/devices";
+export {
+  useOutputDevicesState,
+  useEnabledOutputDeviceState as useEnabledOutputDevice,
+} from "./states/devicesState";

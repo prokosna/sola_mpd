@@ -16,7 +16,7 @@ import {
   convertSongMetadataTagToDisplayName,
   getSongTableKey,
   sortSongsByColumns,
-} from "../utils/tableUtils";
+} from "../utils/songTableTableUtils";
 
 /**
  * Uses ag-grid-react data for a table.

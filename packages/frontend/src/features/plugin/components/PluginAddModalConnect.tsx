@@ -13,17 +13,25 @@ import {
 import { Plugin } from "@sola_mpd/domain/src/models/plugin/plugin_pb.js";
 import { useRef } from "react";
 
-import { useOnConnectPlugin } from "../hooks/useOnConnectPlugin";
+import { useHandlePluginConnected } from "../hooks/useHandlePluginConnected";
 
 export type PluginAddModalConnectProps = {
-  setPluginToAdd: React.Dispatch<React.SetStateAction<Plugin | undefined>>;
+  setPluginToAdd: (plugin: Plugin | undefined) => void;
 };
 
+/**
+ * PluginAddModalConnect component for connecting to a plugin.
+ * It provides a form to input the plugin endpoint and handles the connection process.
+ *
+ * @param props - The props for the PluginAddModalConnect component
+ * @param props.setPluginToAdd - Function to set the plugin to be added
+ * @returns JSX element representing the PluginAddModalConnect form
+ */
 export function PluginAddModalConnect(props: PluginAddModalConnectProps) {
   const { setPluginToAdd } = props;
 
   const endpointRef = useRef<HTMLInputElement>(null);
-  const { errorMessage, onConnect } = useOnConnectPlugin(
+  const { errorMessage, handlePluginConnected } = useHandlePluginConnected(
     endpointRef,
     setPluginToAdd,
   );
@@ -43,7 +51,7 @@ export function PluginAddModalConnect(props: PluginAddModalConnectProps) {
       </ModalBody>
       <ModalFooter>
         <ButtonGroup spacing="2">
-          <Button variant="outline" onClick={onConnect}>
+          <Button variant="outline" onClick={handlePluginConnected}>
             Connect
           </Button>
         </ButtonGroup>

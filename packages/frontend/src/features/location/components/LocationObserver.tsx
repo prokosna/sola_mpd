@@ -1,4 +1,3 @@
-import { useSetAtom } from "jotai";
 import { useEffect } from "react";
 import { useLocation } from "react-router-dom";
 
@@ -9,11 +8,16 @@ import {
 import { useRefreshPlayQueueSongsState } from "../../play_queue";
 import { useRefreshPlaylistsState } from "../../playlist";
 import { useSetSelectedSongsState } from "../../song_table";
-import { pathnameAtom } from "../states/location";
+import { useSetPathname } from "../states/locationState";
 
+/**
+ * A component that observes location changes and performs necessary actions.
+ * It updates the pathname, resets selected songs, and refreshes specific states based on the current route.
+ */
 export function LocationObserver() {
   const location = useLocation();
-  const setPathname = useSetAtom(pathnameAtom);
+
+  const setPathname = useSetPathname();
   const setSelectedSongs = useSetSelectedSongsState();
   const refreshPlaylistsState = useRefreshPlaylistsState();
   const refreshPlayQueueSongsState = useRefreshPlayQueueSongsState();

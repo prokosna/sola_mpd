@@ -1,10 +1,12 @@
-import { useToast } from "@chakra-ui/react";
 import { MpdRequest } from "@sola_mpd/domain/src/models/mpd/mpd_command_pb.js";
 import { Plugin_PluginType } from "@sola_mpd/domain/src/models/plugin/plugin_pb.js";
 import { Song } from "@sola_mpd/domain/src/models/song_pb.js";
+import { SongTableColumn } from "@sola_mpd/domain/src/models/song_table_pb.js";
 import { MutableRefObject, useCallback } from "react";
 
 import { COMPONENT_ID_PLAYLIST_MAIN_PANE } from "../../../const/component";
+import { useNotification } from "../../../lib/chakra/hooks/useNotification";
+import { UpdateMode } from "../../../types/stateTypes";
 import { ContextMenuSection } from "../../context_menu";
 import { useMpdClientState } from "../../mpd";
 import { usePluginContextMenuItems } from "../../plugin";
@@ -15,38 +17,53 @@ import {
   getSongTableContextMenuEditColumns,
   getSongTableContextMenuReplace,
   SongTableProps,
-  getTableKeyOfSong,
   getTargetSongsForContextMenu,
-  useOnUpdateCommonColumns,
-  useCommonSongTableState,
   useSetSelectedSongsState,
   SongTableContextMenuItemParams,
   SongTableKeyType,
+  useSongTableState,
+  useUpdateSongTableState,
+  useHandleSongDoubleClick,
+  getSongTableKey,
 } from "../../song_table";
-import { useSelectedPlaylistState } from "../states/playlist";
-import { usePlaylistVisibleSongsState } from "../states/songs";
+import { usePlaylistSongsState } from "../states/playlistSongsState";
+import { useSelectedPlaylistState } from "../states/playlistState";
 import {
   useIsPlaylistLoadingState,
   useSetIsPlaylistLoadingState,
-} from "../states/ui";
+} from "../states/playlistUiState";
 
+/**
+ * Custom hook for managing Playlist Song Table properties.
+ *
+ * This hook handles the state and callbacks for the playlist song table,
+ * including context menu actions, song selection, and table updates.
+ *
+ * @param songsToAddToPlaylistRef - Mutable reference to store songs for playlist addition.
+ * @param setIsPlaylistSelectModalOpen - Function to set the visibility of the playlist select modal.
+ * @param setIsColumnEditModalOpen - Function to set the visibility of the column edit modal.
+ * @returns SongTableProps object or undefined if data is not ready.
+ */
 export function usePlaylistSongTableProps(
   songsToAddToPlaylistRef: MutableRefObject<Song[]>,
-  setIsOpenPlaylistSelectModal: (open: boolean) => void,
-  setIsOpenColumnEditModal: (open: boolean) => void,
+  setIsPlaylistSelectModalOpen: (open: boolean) => void,
+  setIsColumnEditModalOpen: (open: boolean) => void,
 ): SongTableProps | undefined {
   const songTableKeyType = SongTableKeyType.INDEX_PATH;
 
-  const toast = useToast();
+  const notify = useNotification();
+
   const profile = useCurrentMpdProfileState();
-  const songs = usePlaylistVisibleSongsState();
-  const commonSongTableState = useCommonSongTableState();
   const mpdClient = useMpdClientState();
   const isLoading = useIsPlaylistLoadingState();
+  const songs = usePlaylistSongsState();
+  const songTableState = useSongTableState();
   const selectedPlaylist = useSelectedPlaylistState();
-  const setIsLoading = useSetIsPlaylistLoadingState();
+  const setIsPlaylistLoading = useSetIsPlaylistLoadingState();
+  const updateSongTableState = useUpdateSongTableState();
   const setSelectedSongs = useSetSelectedSongsState();
-  const onUpdateColumns = useOnUpdateCommonColumns(commonSongTableState);
+
+  // Plugin context menu items
   const pluginContextMenuItems = usePluginContextMenuItems(
     Plugin_PluginType.ON_PLAYLIST,
     songTableKeyType,
@@ -58,13 +75,13 @@ export function usePlaylistSongTableProps(
         items: [
           getSongTableContextMenuAdd(
             songTableKeyType,
-            toast,
+            notify,
             profile,
             mpdClient,
           ),
           getSongTableContextMenuReplace(
             songTableKeyType,
-            toast,
+            notify,
             profile,
             mpdClient,
           ),
@@ -95,13 +112,11 @@ export function usePlaylistSongTableProps(
               // To effectively remove songs from the playlist,
               // clear the playlist and then add remaining songs again.
               const targetKeys = targetSongs.map((song) =>
-                getTableKeyOfSong(song, songTableKeyType),
+                getSongTableKey(song, songTableKeyType),
               );
               const remainingSongs = params.sortedSongs.filter(
                 (song) =>
-                  !targetKeys.includes(
-                    getTableKeyOfSong(song, songTableKeyType),
-                  ),
+                  !targetKeys.includes(getSongTableKey(song, songTableKeyType)),
               );
 
               const commands = [
@@ -129,7 +144,7 @@ export function usePlaylistSongTableProps(
                 ),
               );
               await mpdClient.commandBulk(commands);
-              toast({
+              notify({
                 status: "success",
                 title: "Songs successfully removed",
                 description: `${targetSongs.length} songs have been removed from the playlist "${selectedPlaylist.name}".`,
@@ -156,7 +171,7 @@ export function usePlaylistSongTableProps(
                   },
                 }),
               );
-              toast({
+              notify({
                 status: "success",
                 title: "Songs successfully cleared",
                 description: `All songs have been removed from the playlist "${selectedPlaylist.name}".`,
@@ -187,7 +202,7 @@ export function usePlaylistSongTableProps(
               );
 
               if (params.sortedSongs.length === uniqueSongs.length) {
-                toast({
+                notify({
                   status: "info",
                   title: "No duplicated songs",
                   description: "There are no duplicated songs to remove.",
@@ -220,7 +235,7 @@ export function usePlaylistSongTableProps(
                 ),
               );
               await mpdClient.commandBulk(commands);
-              toast({
+              notify({
                 status: "success",
                 title: "Songs successfully removed",
                 description: `${
@@ -238,12 +253,12 @@ export function usePlaylistSongTableProps(
           getSongTableContextMenuAddToPlaylist(
             songTableKeyType,
             songsToAddToPlaylistRef,
-            setIsOpenPlaylistSelectModal,
+            setIsPlaylistSelectModalOpen,
           ),
         ],
       },
       {
-        items: [getSongTableContextMenuEditColumns(setIsOpenColumnEditModal)],
+        items: [getSongTableContextMenuEditColumns(setIsColumnEditModalOpen)],
       },
     ];
   if (pluginContextMenuItems.length > 0) {
@@ -252,7 +267,7 @@ export function usePlaylistSongTableProps(
     });
   }
 
-  const onReorderSongs = useCallback(
+  const onSongsReordered = useCallback(
     async (orderedSongs: Song[]) => {
       if (
         profile === undefined ||
@@ -292,61 +307,29 @@ export function usePlaylistSongTableProps(
     [mpdClient, profile, selectedPlaylist, songs],
   );
 
-  const onSelectSongs = useCallback(
+  const onColumnsUpdated = useCallback(
+    async (updatedColumns: SongTableColumn[]) => {
+      const newSongTableState = songTableState.clone();
+      newSongTableState.columns = updatedColumns;
+      updateSongTableState(newSongTableState, UpdateMode.PERSIST);
+    },
+    [songTableState, updateSongTableState],
+  );
+
+  const onSongsSelected = useCallback(
     async (selectedSongs: Song[]) => {
       setSelectedSongs(selectedSongs);
     },
     [setSelectedSongs],
   );
 
-  const onDoubleClick = useCallback(
-    async (clickedSong: Song) => {
-      if (profile === undefined || mpdClient === undefined) {
-        return;
-      }
-      const addCommand = new MpdRequest({
-        profile,
-        command: {
-          case: "add",
-          value: { uri: clickedSong.path },
-        },
-      });
-      await mpdClient.command(addCommand);
-      const getCommand = new MpdRequest({
-        profile,
-        command: {
-          case: "playlistinfo",
-          value: {},
-        },
-      });
-      const res = await mpdClient.command(getCommand);
-      if (res.command.case !== "playlistinfo") {
-        throw Error(`Invalid MPD response: ${res.toJsonString()}`);
-      }
-      const playQueueSongs = res.command.value.songs;
-      await mpdClient.command(
-        new MpdRequest({
-          profile,
-          command: {
-            case: "play",
-            value: {
-              target: {
-                case: "pos",
-                value: String(playQueueSongs.length - 1),
-              },
-            },
-          },
-        }),
-      );
-    },
-    [mpdClient, profile],
-  );
+  const onSongDoubleClick = useHandleSongDoubleClick(mpdClient, profile);
 
-  const onCompleteLoading = useCallback(async () => {
-    setIsLoading(false);
-  }, [setIsLoading]);
+  const onLoadingCompleted = useCallback(async () => {
+    setIsPlaylistLoading(false);
+  }, [setIsPlaylistLoading]);
 
-  if (songs === undefined || commonSongTableState === undefined) {
+  if (songs === undefined || songTableState === undefined) {
     return undefined;
   }
 
@@ -354,16 +337,16 @@ export function usePlaylistSongTableProps(
     id: COMPONENT_ID_PLAYLIST_MAIN_PANE,
     songTableKeyType,
     songs,
-    columns: commonSongTableState.columns,
+    columns: songTableState.columns,
     isSortingEnabled: false,
     isReorderingEnabled: true,
     isGlobalFilterEnabled: true,
     contextMenuSections,
     isLoading,
-    reorderSongs: onReorderSongs,
-    updateColumns: onUpdateColumns,
-    selectSongs: onSelectSongs,
-    doubleClickSong: onDoubleClick,
-    completeLoading: onCompleteLoading,
+    onSongsReordered,
+    onColumnsUpdated,
+    onSongsSelected,
+    onSongDoubleClick,
+    onLoadingCompleted,
   };
 }

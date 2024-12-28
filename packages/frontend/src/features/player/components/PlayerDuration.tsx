@@ -1,19 +1,26 @@
 import { Box, Text } from "@chakra-ui/react";
-import { StringUtils } from "@sola_mpd/domain/src/utils/StringUtils.js";
+import { displayDuration } from "@sola_mpd/domain/src/utils/stringUtils.js";
 
-import { usePlayerStatusState } from "../states/status";
+import { usePlayerStatusState } from "../states/playerStatusState";
 
+/**
+ * PlayerDuration component displays the elapsed time and total duration of the currently playing track.
+ * It uses the player status to fetch and display the time information.
+ * The component is positioned absolutely and aligned to the right of its container.
+ *
+ * @returns A Box component containing the elapsed and total duration text.
+ */
 export function PlayerDuration() {
   const playerStatus = usePlayerStatusState();
 
   const elapsed =
     playerStatus?.elapsed === undefined
       ? ""
-      : StringUtils.displayDuration(playerStatus.elapsed);
+      : displayDuration(playerStatus.elapsed);
   const duration =
     playerStatus?.duration === undefined
       ? ""
-      : StringUtils.displayDuration(playerStatus.duration);
+      : displayDuration(playerStatus.duration);
 
   return (
     <Box

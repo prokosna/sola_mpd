@@ -4,6 +4,13 @@ import { useCurrentSongInformationLines } from "../hooks/useCurrentSongInformati
 
 import { PlayerSongInformationTag } from "./PlayerSongInformationTag";
 
+/**
+ * PlayerSongInformationCompact component displays a compact version of the current song's information.
+ * It uses the useCurrentSongInformationLines hook to fetch and display
+ * the song's title, album, and artist information in a condensed format.
+ *
+ * @returns The rendered compact song information component
+ */
 export function PlayerSongInformationCompact() {
   const { firstLine, secondLine, thirdLine } = useCurrentSongInformationLines();
 

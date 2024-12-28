@@ -2,6 +2,13 @@ import { Tag, TagLabel, Tooltip } from "@chakra-ui/react";
 
 import { useCurrentSongFormat } from "../hooks/useCurrentSongFormat";
 
+/**
+ * PlayerSongInformationTag component displays a tag with audio format information.
+ * It uses the useCurrentSongFormat hook to determine the audio quality
+ * and displays an appropriate tag (DSD, Hi-Res, or standard) with a tooltip.
+ *
+ * @returns A React component displaying the audio format tag
+ */
 export function PlayerSongInformationTag() {
   const { isHiRes, isDsd, formatString } = useCurrentSongFormat();
 

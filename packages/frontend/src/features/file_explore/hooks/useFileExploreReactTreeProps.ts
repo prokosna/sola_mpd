@@ -4,8 +4,16 @@ import { useCallback, useMemo } from "react";
 import {
   useFileExploreFoldersState,
   useSetSelectedFileExploreFolderState,
-} from "../states/folders";
+} from "../states/fileExploreFoldersState";
 
+/**
+ * Custom hook for managing File Explorer React Tree properties.
+ *
+ * This hook handles the state and callbacks for the file explorer tree,
+ * including folder selection and tree node generation.
+ *
+ * @returns An object containing the tree nodes and folder selection handler.
+ */
 export function useFileExploreReactTreeProps() {
   const fileExploreFolders = useFileExploreFoldersState();
   const setSelectedFileExploreFolder = useSetSelectedFileExploreFolderState();
@@ -28,7 +36,7 @@ export function useFileExploreReactTreeProps() {
     });
   }, [fileExploreFolders]);
 
-  const onSelectFolder = useCallback(
+  const handleFolderSelected = useCallback(
     (nodes: TreeNodeId[]) => {
       if (fileExploreFolders === undefined) {
         return;
@@ -46,6 +54,6 @@ export function useFileExploreReactTreeProps() {
 
   return {
     nodes,
-    onSelectFolder,
+    handleFolderSelected,
   };
 }

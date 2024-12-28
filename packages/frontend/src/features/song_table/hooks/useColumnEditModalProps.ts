@@ -8,36 +8,36 @@ import { ColumnEditModalProps } from "../components/ColumnEditModal";
  * @param isOpen True if the modal is open.
  * @param columns Current columns to edit.
  * @param setIsOpenColumnEditModal Function to set isOpen.
- * @param updateColumns Function to update columns.
- * @param disposeModal Function to dispose the modal.
+ * @param onColumnsUpdated Function to update columns.
+ * @param onModalDisposed Function to dispose the modal.
  * @returns Props.
  */
 export function useColumnEditModalProps(
   isOpen: boolean,
   columns: SongTableColumn[],
   setIsOpenColumnEditModal: (open: boolean) => void,
-  updateColumns: (columns: SongTableColumn[]) => void,
-  disposeModal: () => void,
+  onColumnsUpdated: (columns: SongTableColumn[]) => void,
+  onModalDisposed: () => void,
 ): ColumnEditModalProps {
-  const wrappedUpdateColumns = useCallback(
+  const handleColumnsUpdated = useCallback(
     async (newColumns: SongTableColumn[]) => {
-      updateColumns(newColumns);
+      onColumnsUpdated(newColumns);
       // Close the modal after updating the columns.
       setIsOpenColumnEditModal(false);
     },
-    [updateColumns, setIsOpenColumnEditModal],
+    [onColumnsUpdated, setIsOpenColumnEditModal],
   );
 
-  const wrappedDisposeModal = useCallback(async () => {
-    disposeModal();
+  const handleModalDisposed = useCallback(async () => {
+    onModalDisposed();
     // Make sure to close the modal.
     setIsOpenColumnEditModal(false);
-  }, [disposeModal, setIsOpenColumnEditModal]);
+  }, [onModalDisposed, setIsOpenColumnEditModal]);
 
   return {
     columns,
     isOpen,
-    updateColumns: wrappedUpdateColumns,
-    disposeModal: wrappedDisposeModal,
+    handleColumnsUpdated,
+    handleModalDisposed,
   };
 }

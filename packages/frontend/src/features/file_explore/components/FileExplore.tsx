@@ -2,40 +2,52 @@ import { Box, useColorMode } from "@chakra-ui/react";
 import { Allotment } from "allotment";
 import { useCallback } from "react";
 
+import { UpdateMode } from "../../../types/stateTypes";
 import {
   useResizablePane,
   useFileExploreLayoutState,
-  useSaveLayoutState,
+  useUpdateLayoutState,
 } from "../../layout";
 import { CenterSpinner } from "../../loading";
 
 import { FileExploreContent } from "./FileExploreContent";
 import { FileExploreNavigation } from "./FileExploreNavigation";
 
+/**
+ * FileExplore component for displaying and interacting with the file explorer.
+ *
+ * This component renders a resizable split view with a navigation pane on the left
+ * and a content pane on the right. It uses the Allotment component for resizable panels
+ * and manages the layout state for persisting panel sizes.
+ *
+ * @returns {JSX.Element} The rendered FileExplore component
+ */
 export function FileExplore() {
   const fileExploreLayout = useFileExploreLayoutState();
-  const saveLayout = useSaveLayoutState();
+  const updateLayout = useUpdateLayoutState();
 
   const { colorMode } = useColorMode();
 
-  const onChangeWidth = useCallback(
+  const handlePanelWidthChanged = useCallback(
     async (left: number | undefined) => {
-      if (fileExploreLayout === undefined) {
-        return;
-      }
       if (left === undefined) {
         return;
       }
       const newLayout = fileExploreLayout.clone();
       newLayout.sidePaneWidth = left;
-      saveLayout(newLayout);
+      updateLayout(newLayout, UpdateMode.PERSIST);
     },
-    [fileExploreLayout, saveLayout],
+    [fileExploreLayout, updateLayout],
   );
 
-  const { isReady, leftPaneWidth, rightPaneWidth, onChange } = useResizablePane(
+  const {
+    isReady,
+    leftPaneWidthStyle,
+    rightPaneWidthStyle,
+    handlePanelResize,
+  } = useResizablePane(
     fileExploreLayout?.sidePaneWidth,
-    onChangeWidth,
+    handlePanelWidthChanged,
   );
 
   if (!isReady) {
@@ -50,13 +62,13 @@ export function FileExplore() {
             colorMode === "light" ? "allotment-light" : "allotment-dark"
           }
           onChange={(sizes) => {
-            onChange(sizes[0], sizes[1]);
+            handlePanelResize(sizes[0], sizes[1]);
           }}
         >
-          <Allotment.Pane preferredSize={leftPaneWidth} minSize={200}>
+          <Allotment.Pane preferredSize={leftPaneWidthStyle} minSize={200}>
             <FileExploreNavigation />
           </Allotment.Pane>
-          <Allotment.Pane preferredSize={rightPaneWidth}>
+          <Allotment.Pane preferredSize={rightPaneWidthStyle}>
             <FileExploreContent />
           </Allotment.Pane>
         </Allotment>

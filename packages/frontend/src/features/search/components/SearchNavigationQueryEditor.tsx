@@ -14,34 +14,44 @@ import {
 import { useCallback, useState } from "react";
 
 import { FullWidthSkeleton } from "../../loading";
-import { changeEditingSearchName, getDefaultSearch } from "../helpers/search";
+import { useSavedSearchesState } from "../states/savedSearchesState";
 import {
   useEditingSearchState,
   useEditingSearchStatusState,
   useSaveEditingSearch,
   useSetEditingSearchState,
-} from "../states/edit";
-import { useSavedSearchesState } from "../states/persistent";
-import { useSetTargetSearchState } from "../states/songs";
+} from "../states/searchEditState";
+import { useSetTargetSearchState } from "../states/searchSongsState";
 import {
   useIsSearchLoadingState,
   useSetIsSearchLoadingState,
-} from "../states/ui";
-import { EditingSearchStatus } from "../types/search";
+} from "../states/searchUiState";
+import { EditingSearchStatus } from "../types/searchTypes";
+import {
+  changeEditingSearchName,
+  getDefaultSearch,
+} from "../utils/searchUtils";
 
 import { SearchNavigationQueryEditorQuery } from "./SearchNavigationQueryEditorQuery";
 
+/**
+ * SearchNavigationQueryEditor component renders the query editor for search navigation.
+ * It allows users to create, edit, and execute search queries.
+ * @returns JSX element representing the SearchNavigationQueryEditor component
+ */
 export function SearchNavigationQueryEditor() {
   const editingSearch = useEditingSearchState();
-  const setEditingSearch = useSetEditingSearchState();
-  const saveEditingSearch = useSaveEditingSearch();
   const editingSearchStatus = useEditingSearchStatusState();
   const savedSearches = useSavedSearchesState();
   const isSearchLoading = useIsSearchLoadingState();
+  const setEditingSearch = useSetEditingSearchState();
+  const saveEditingSearch = useSaveEditingSearch();
   const setIsSearchLoading = useSetIsSearchLoadingState();
   const setTargetSearch = useSetTargetSearchState();
 
-  const existingSearchNames = savedSearches?.map((search) => search.name);
+  const existingSearchNames = savedSearches?.searches.map(
+    (search) => search.name,
+  );
 
   const [nameErrorState, setNameErrorState] = useState("");
 
@@ -50,7 +60,7 @@ export function SearchNavigationQueryEditor() {
       ? true
       : !existingSearchNames.includes(editingSearch.name);
 
-  const onChangeName = useCallback(
+  const handleNameChanged = useCallback(
     (name: string) => {
       const newSearch = changeEditingSearchName(editingSearch, name);
       if (name === "") {
@@ -58,20 +68,20 @@ export function SearchNavigationQueryEditor() {
       } else {
         setNameErrorState("");
       }
-      setEditingSearch(newSearch);
+      setEditingSearch(newSearch, EditingSearchStatus.NOT_SAVED);
     },
     [editingSearch, setEditingSearch],
   );
 
-  const onClickReset = useCallback(() => {
-    setEditingSearch(getDefaultSearch());
+  const handleResetClick = useCallback(() => {
+    setEditingSearch(getDefaultSearch(), EditingSearchStatus.NOT_SAVED);
   }, [setEditingSearch]);
 
-  const onClickSave = useCallback(() => {
+  const handleSaveClick = useCallback(() => {
     saveEditingSearch();
   }, [saveEditingSearch]);
 
-  const onClickSearch = useCallback(() => {
+  const handleSearchClick = useCallback(() => {
     setIsSearchLoading(true);
     setTargetSearch(editingSearch);
   }, [editingSearch, setTargetSearch, setIsSearchLoading]);
@@ -110,7 +120,7 @@ export function SearchNavigationQueryEditor() {
               type="text"
               variant="flushed"
               value={editingSearch.name}
-              onChange={(e) => onChangeName(e.target.value)}
+              onChange={(e) => handleNameChanged(e.target.value)}
             ></Input>
             {nameErrorState !== "" ? (
               <FormErrorMessage>{nameErrorState}</FormErrorMessage>
@@ -143,7 +153,7 @@ export function SearchNavigationQueryEditor() {
             colorScheme="red"
             variant="outline"
             size="sm"
-            onClick={onClickReset}
+            onClick={handleResetClick}
           >
             Reset
           </Button>
@@ -152,11 +162,15 @@ export function SearchNavigationQueryEditor() {
             mx="2"
             size="sm"
             marginRight="auto"
-            onClick={onClickSave}
+            onClick={handleSaveClick}
           >
             {isNewSearch ? "Save" : "Update"}
           </Button>
-          <Button size="sm" onClick={onClickSearch} isLoading={isSearchLoading}>
+          <Button
+            size="sm"
+            onClick={handleSearchClick}
+            isLoading={isSearchLoading}
+          >
             Search
           </Button>
         </Flex>

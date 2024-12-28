@@ -1,30 +1,38 @@
-import { useToast } from "@chakra-ui/react";
 import { useCallback } from "react";
 
 import { COMPONENT_ID_SEARCH_SIDE_PANE } from "../../../const/component";
+import { useNotification } from "../../../lib/chakra/hooks/useNotification";
+import { UpdateMode } from "../../../types/stateTypes";
 import { ContextMenuSection } from "../../context_menu";
 import { useMpdClientState } from "../../mpd";
 import { useCurrentMpdProfileState } from "../../profile";
-import {
-  SelectListProps,
-  SelectListContextMenuItemParams,
-} from "../../select_list";
-import { useRestoreFromSavedSearch } from "../states/edit";
+import { SelectListContextMenuItemParams } from "../../select_list";
 import {
   useSavedSearchesState,
-  useSetSavedSearchesState,
-} from "../states/persistent";
-import { useSetTargetSearchState } from "../states/songs";
+  useUpdateSavedSearchesState,
+} from "../states/savedSearchesState";
+import { useSetEditingSearchState } from "../states/searchEditState";
+import { useSetTargetSearchState } from "../states/searchSongsState";
+import { EditingSearchStatus } from "../types/searchTypes";
 
-export function useSavedSearchesSelectListProps(): SelectListProps | undefined {
-  const toast = useToast();
+/**
+ * Custom hook to generate props for the SavedSearches SelectList component.
+ *
+ * This hook prepares the necessary props for rendering a SelectList of saved searches,
+ * including handling selection, context menu actions, and data loading.
+ *
+ * @returns The props for the SelectList component,
+ * or undefined if the necessary data is not yet available.
+ */
+export function useSavedSearchesSelectListProps() {
+  const notify = useNotification();
 
-  const profile = useCurrentMpdProfileState();
   const mpdClient = useMpdClientState();
+  const profile = useCurrentMpdProfileState();
   const savedSearches = useSavedSearchesState();
-  const setSavedSearches = useSetSavedSearchesState();
-  const restoreFromSavedSearch = useRestoreFromSavedSearch();
+  const updateSavedSearches = useUpdateSavedSearchesState();
   const setTargetSearch = useSetTargetSearchState();
+  const setEditingSearch = useSetEditingSearchState();
 
   const contextMenuSections: ContextMenuSection<SelectListContextMenuItemParams>[] =
     [
@@ -42,18 +50,21 @@ export function useSavedSearchesSelectListProps(): SelectListProps | undefined {
                 return;
               }
 
-              const index = savedSearches.findIndex(
+              const index = savedSearches.searches.findIndex(
                 (search) => search.name === params.clickedValue,
               );
               if (index < 0) {
                 return;
               }
 
-              const newSearches = [...savedSearches];
-              newSearches.splice(index, 1);
-              setSavedSearches(newSearches);
+              const newSavedSearches = savedSearches.clone();
+              newSavedSearches.searches.splice(index, 1);
+              updateSavedSearches(
+                newSavedSearches,
+                UpdateMode.LOCAL_STATE | UpdateMode.PERSIST,
+              );
 
-              toast({
+              notify({
                 status: "success",
                 title: "Saved search successfully deleted",
                 description: `Saved search "${params.clickedValue}" has been deleted.`,
@@ -64,25 +75,23 @@ export function useSavedSearchesSelectListProps(): SelectListProps | undefined {
       },
     ];
 
-  const onSelectValues = useCallback(
+  const onItemsSelected = useCallback(
     async (selectedValues: string[]) => {
       if (selectedValues.length >= 2) {
         throw new Error("Multiple playlists are selected.");
       } else if (selectedValues.length === 1) {
-        const savedSearch = savedSearches?.find(
+        const savedSearch = savedSearches?.searches.find(
           (search) => search.name === selectedValues[0],
         );
         if (savedSearch === undefined) {
           return;
         }
-        restoreFromSavedSearch(savedSearch);
+        setEditingSearch(savedSearch, EditingSearchStatus.SAVED);
         setTargetSearch(undefined);
       }
     },
-    [restoreFromSavedSearch, savedSearches, setTargetSearch],
+    [savedSearches?.searches, setEditingSearch, setTargetSearch],
   );
-
-  const onCompleteLoading = async () => {};
 
   if (savedSearches === undefined) {
     return;
@@ -90,13 +99,13 @@ export function useSavedSearchesSelectListProps(): SelectListProps | undefined {
 
   return {
     id: COMPONENT_ID_SEARCH_SIDE_PANE,
-    values: savedSearches.map((search) => search.name),
+    values: savedSearches.searches.map((search) => search.name),
     selectedValues: [],
-    header: undefined,
+    headerTitle: undefined,
     contextMenuSections,
     isLoading: false,
     allowMultipleSelection: false,
-    onSelectValues,
-    onCompleteLoading,
+    onItemsSelected,
+    onLoadingCompleted: async () => {},
   };
 }

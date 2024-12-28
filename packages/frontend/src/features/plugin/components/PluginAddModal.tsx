@@ -10,24 +10,34 @@ export type PluginAddModalProps = {
   onClose: () => void;
 };
 
+/**
+ * PluginAddModal component for adding new plugins.
+ * It manages the state of the plugin being added and renders either
+ * the connection or registration view based on that state.
+ *
+ * @param props - The props for the PluginAddModal component
+ * @param props.isOpen - Boolean indicating if the modal is open
+ * @param props.onClose - Function to call when closing the modal
+ * @returns JSX element representing the PluginAddModal
+ */
 export function PluginAddModal(props: PluginAddModalProps) {
   const { isOpen, onClose } = props;
   const [pluginToAdd, setPluginToAdd] = useState<Plugin | undefined>(undefined);
 
-  const onCloseModal = useCallback(() => {
+  const handleModalClosed = useCallback(() => {
     setPluginToAdd(undefined);
     onClose();
   }, [onClose]);
 
   return (
     <>
-      <Modal isOpen={isOpen} onClose={onCloseModal} size={"xl"} isCentered>
+      <Modal isOpen={isOpen} onClose={handleModalClosed} size={"xl"} isCentered>
         <ModalOverlay />
         <ModalContent>
           {pluginToAdd === undefined ? (
             <PluginAddModalConnect {...{ setPluginToAdd }} />
           ) : (
-            <PluginAddModalRegister {...{ pluginToAdd, onCloseModal }} />
+            <PluginAddModalRegister {...{ pluginToAdd, handleModalClosed }} />
           )}
         </ModalContent>
       </Modal>

@@ -10,29 +10,41 @@ import {
   ButtonGroup,
   Button,
   Text,
-  useToast,
 } from "@chakra-ui/react";
 import { Plugin } from "@sola_mpd/domain/src/models/plugin/plugin_pb.js";
 import { useCallback, useState } from "react";
 
-import { usePluginState, useSavePluginState } from "../states/pluginState";
+import { useNotification } from "../../../lib/chakra/hooks/useNotification";
+import { UpdateMode } from "../../../types/stateTypes";
+import { usePluginState, useUpdatePluginState } from "../states/pluginState";
 
 export type PluginAddModalRegisterProps = {
   pluginToAdd: Plugin;
-  onCloseModal: () => void;
+  handleModalClosed: () => void;
 };
 
+/**
+ * PluginAddModalRegister component for registering a new plugin.
+ * It displays plugin information and handles the registration process.
+ *
+ * @param props - The props for the PluginAddModalRegister component
+ * @param props.pluginToAdd - The Plugin object to be registered
+ * @param props.handleModalClosed - Function to call when closing the modal
+ * @returns JSX element representing the PluginAddModalRegister form
+ */
 export function PluginAddModalRegister(props: PluginAddModalRegisterProps) {
-  const { pluginToAdd, onCloseModal } = props;
+  const { pluginToAdd, handleModalClosed } = props;
 
-  const toast = useToast();
+  const notify = useNotification();
+
+  const pluginState = usePluginState();
+  const updatePluginState = useUpdatePluginState();
+
   const [parameterValues, setParameterValues] = useState<Map<string, string>>(
     new Map(),
   );
-  const pluginState = usePluginState();
-  const setPluginState = useSavePluginState();
 
-  const onRegisterPlugin = useCallback(() => {
+  const handlePluginRegistered = useCallback(() => {
     if (pluginState === undefined) {
       return;
     }
@@ -43,22 +55,25 @@ export function PluginAddModalRegister(props: PluginAddModalRegisterProps) {
 
     const newPluginState = pluginState.clone();
     newPluginState.plugins.push(pluginToAdd);
-    setPluginState(newPluginState);
+    updatePluginState(
+      newPluginState,
+      UpdateMode.LOCAL_STATE | UpdateMode.PERSIST,
+    );
 
-    toast({
+    notify({
       status: "success",
       title: "Plugin successfully added",
       description: `New plugin "${pluginToAdd.info?.name}" has been added.`,
     });
 
-    onCloseModal();
+    handleModalClosed();
   }, [
     pluginState,
     parameterValues,
     pluginToAdd,
-    setPluginState,
-    toast,
-    onCloseModal,
+    updatePluginState,
+    notify,
+    handleModalClosed,
   ]);
 
   return (
@@ -87,7 +102,7 @@ export function PluginAddModalRegister(props: PluginAddModalRegisterProps) {
       </ModalBody>
       <ModalFooter>
         <ButtonGroup spacing="2">
-          <Button variant="solid" onClick={onRegisterPlugin}>
+          <Button variant="solid" onClick={handlePluginRegistered}>
             Add
           </Button>
         </ButtonGroup>

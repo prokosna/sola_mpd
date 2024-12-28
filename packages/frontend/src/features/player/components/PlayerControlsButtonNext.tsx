@@ -4,16 +4,22 @@ import { IoPlaySkipForward } from "react-icons/io5";
 
 import { useMpdClientState } from "../../mpd";
 import { useCurrentMpdProfileState } from "../../profile";
-import { useCurrentSongState } from "../states/song";
+import { useCurrentSongState } from "../states/playerSongState";
 
 import { PlayerControlsButton } from "./PlayerControlsButton";
 
+/**
+ * Renders a button to play the next track in the player controls.
+ * This component handles the "Next" functionality in the music player.
+ *
+ * @returns A PlayerControlsButton component for playing the next track
+ */
 export function PlayerControlsButtonNext() {
   const profile = useCurrentMpdProfileState();
   const mpdClient = useMpdClientState();
   const currentSong = useCurrentSongState();
 
-  const onClick = useCallback(async () => {
+  const onButtonClicked = useCallback(async () => {
     if (profile === undefined || mpdClient === undefined) {
       return;
     }
@@ -32,7 +38,7 @@ export function PlayerControlsButtonNext() {
   const props = {
     label: "Play next",
     isDisabled: currentSong === undefined,
-    onClick,
+    onButtonClicked,
     icon: <IoPlaySkipForward size={"24"}></IoPlaySkipForward>,
     variant: "ghost",
   };

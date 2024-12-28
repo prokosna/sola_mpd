@@ -1,66 +1,79 @@
-import { useToast } from "@chakra-ui/react";
-import { MpdRequest } from "@sola_mpd/domain/src/models/mpd/mpd_command_pb.js";
 import { Plugin_PluginType } from "@sola_mpd/domain/src/models/plugin/plugin_pb.js";
 import { Song } from "@sola_mpd/domain/src/models/song_pb.js";
+import { SongTableColumn } from "@sola_mpd/domain/src/models/song_table_pb.js";
 import { MutableRefObject, useCallback } from "react";
 
 import { COMPONENT_ID_BROWSER } from "../../../const/component";
+import { useNotification } from "../../../lib/chakra/hooks/useNotification";
+import { UpdateMode } from "../../../types/stateTypes";
 import { ContextMenuSection } from "../../context_menu";
 import { useMpdClientState } from "../../mpd";
 import { usePluginContextMenuItems } from "../../plugin";
 import { useCurrentMpdProfileState } from "../../profile";
 import {
   SongTableProps,
-  useOnUpdateCommonColumns,
-  useCommonSongTableState,
-  useSetSelectedSongsState,
   SongTableContextMenuItemParams,
-  SongTableKeyType,
   getSongTableContextMenuAdd,
   getSongTableContextMenuAddToPlaylist,
   getSongTableContextMenuEditColumns,
   getSongTableContextMenuReplace,
+  useSongTableState,
+  useSetSelectedSongsState,
+  SongTableKeyType,
+  useUpdateSongTableState,
+  useHandleSongDoubleClick,
 } from "../../song_table";
-import { useBrowserVisibleSongsState } from "../states/songs";
+import { useBrowserSongsState } from "../states/browserSongsState";
 import {
-  useIsBrowserLoadingState,
   useSetIsBrowserLoadingState,
-} from "../states/ui";
+  useIsBrowserLoadingState,
+} from "../states/browserUiState";
 
+/**
+ * Returns song table props for the browser feature.
+ *
+ * @param songsToAddToPlaylistRef - the songs to add to playlist
+ * @param setIsPlaylistSelectModalOpen - the function to open or close the playlist select modal
+ * @param setIsColumnEditModalOpen - the function to open or close the column edit modal
+ */
 export function useBrowserSongTableProps(
   songsToAddToPlaylistRef: MutableRefObject<Song[]>,
-  setIsOpenPlaylistSelectModal: (open: boolean) => void,
-  setIsOpenColumnEditModal: (open: boolean) => void,
+  setIsPlaylistSelectModalOpen: (open: boolean) => void,
+  setIsColumnEditModalOpen: (open: boolean) => void,
 ): SongTableProps | undefined {
   const songTableKeyType = SongTableKeyType.PATH;
 
-  const toast = useToast();
+  const notify = useNotification();
+
   const profile = useCurrentMpdProfileState();
-  const songs = useBrowserVisibleSongsState();
-  const commonSongTableState = useCommonSongTableState();
   const mpdClient = useMpdClientState();
   const isLoading = useIsBrowserLoadingState();
-  const setIsLoading = useSetIsBrowserLoadingState();
+  const songs = useBrowserSongsState();
+  const songTableState = useSongTableState();
+  const setIsBrowserLoading = useSetIsBrowserLoadingState();
+  const updateSongTableState = useUpdateSongTableState();
   const setSelectedSongs = useSetSelectedSongsState();
-  const onUpdateColumns = useOnUpdateCommonColumns(commonSongTableState, true);
+
+  // Plugin context menu items
   const pluginContextMenuItems = usePluginContextMenuItems(
     Plugin_PluginType.ON_BROWSER,
     songTableKeyType,
   );
 
+  // Context menu
   const contextMenuSections: ContextMenuSection<SongTableContextMenuItemParams>[] =
     [
       {
         items: [
           getSongTableContextMenuAdd(
             songTableKeyType,
-            toast,
+            notify,
             profile,
             mpdClient,
           ),
           getSongTableContextMenuReplace(
             songTableKeyType,
-            toast,
+            notify,
             profile,
             mpdClient,
           ),
@@ -71,12 +84,12 @@ export function useBrowserSongTableProps(
           getSongTableContextMenuAddToPlaylist(
             songTableKeyType,
             songsToAddToPlaylistRef,
-            setIsOpenPlaylistSelectModal,
+            setIsPlaylistSelectModalOpen,
           ),
         ],
       },
       {
-        items: [getSongTableContextMenuEditColumns(setIsOpenColumnEditModal)],
+        items: [getSongTableContextMenuEditColumns(setIsColumnEditModalOpen)],
       },
     ];
   if (pluginContextMenuItems.length > 0) {
@@ -85,65 +98,34 @@ export function useBrowserSongTableProps(
     });
   }
 
-  const onReorderSongs = useCallback(async (_orderedSongs: Song[]) => {
+  // Handlers
+  const onSongsReordered = useCallback(async (_orderedSongs: Song[]) => {
     throw new Error("Reorder songs must be disabled in the browser.");
   }, []);
 
-  const onSelectSongs = useCallback(
+  const onColumnsUpdated = useCallback(
+    async (updatedColumns: SongTableColumn[]) => {
+      const newSongTableState = songTableState.clone();
+      newSongTableState.columns = updatedColumns;
+      updateSongTableState(newSongTableState, UpdateMode.PERSIST);
+    },
+    [songTableState, updateSongTableState],
+  );
+
+  const onSongsSelected = useCallback(
     async (selectedSongs: Song[]) => {
       setSelectedSongs(selectedSongs);
     },
     [setSelectedSongs],
   );
 
-  const onDoubleClick = useCallback(
-    async (clickedSong: Song) => {
-      if (profile === undefined || mpdClient === undefined) {
-        return;
-      }
-      const addCommand = new MpdRequest({
-        profile,
-        command: {
-          case: "add",
-          value: { uri: clickedSong.path },
-        },
-      });
-      await mpdClient.command(addCommand);
-      const getCommand = new MpdRequest({
-        profile,
-        command: {
-          case: "playlistinfo",
-          value: {},
-        },
-      });
-      const res = await mpdClient.command(getCommand);
-      if (res.command.case !== "playlistinfo") {
-        throw Error(`Invalid MPD response: ${res.toJsonString()}`);
-      }
-      const playQueueSongs = res.command.value.songs;
-      await mpdClient.command(
-        new MpdRequest({
-          profile,
-          command: {
-            case: "play",
-            value: {
-              target: {
-                case: "pos",
-                value: String(playQueueSongs.length - 1),
-              },
-            },
-          },
-        }),
-      );
-    },
-    [mpdClient, profile],
-  );
+  const onSongDoubleClick = useHandleSongDoubleClick(mpdClient, profile);
 
-  const onCompleteLoading = useCallback(async () => {
-    setIsLoading(false);
-  }, [setIsLoading]);
+  const onLoadingCompleted = useCallback(async () => {
+    setIsBrowserLoading(false);
+  }, [setIsBrowserLoading]);
 
-  if (songs === undefined || commonSongTableState === undefined) {
+  if (songs === undefined || songTableState === undefined) {
     return undefined;
   }
 
@@ -151,16 +133,16 @@ export function useBrowserSongTableProps(
     id: COMPONENT_ID_BROWSER,
     songTableKeyType,
     songs,
-    columns: commonSongTableState.columns,
+    columns: songTableState.columns,
     isSortingEnabled: true,
     isReorderingEnabled: false,
     isGlobalFilterEnabled: true,
     contextMenuSections,
     isLoading,
-    reorderSongs: onReorderSongs,
-    updateColumns: onUpdateColumns,
-    selectSongs: onSelectSongs,
-    doubleClickSong: onDoubleClick,
-    completeLoading: onCompleteLoading,
+    onSongsReordered,
+    onColumnsUpdated,
+    onSongsSelected,
+    onSongDoubleClick,
+    onLoadingCompleted,
   };
 }

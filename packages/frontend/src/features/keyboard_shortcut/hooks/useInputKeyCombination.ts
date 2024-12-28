@@ -1,9 +1,16 @@
 import { MutableRefObject, useEffect, useRef } from "react";
 
+/**
+ * A custom hook that listens for a specific key combination and triggers a callback.
+ *
+ * @param ref - A MutableRefObject to the HTML element to attach the event listener to. If undefined, listens globally.
+ * @param keys - An array of strings representing the keys that need to be pressed simultaneously.
+ * @param onPressed - The function to be called when the key combination is pressed.
+ */
 export function useInputKeyCombination(
   ref: MutableRefObject<HTMLElement | null> | undefined,
   keys: string[],
-  callback: () => void,
+  onPressed: () => void,
 ): void {
   const keysPressed = useRef(new Set<string>());
 
@@ -20,7 +27,7 @@ export function useInputKeyCombination(
 
       if (!isInputActive && keys.every((key) => keysPressed.current.has(key))) {
         keyboardEvent.preventDefault();
-        callback();
+        onPressed();
       }
     };
 
@@ -37,5 +44,5 @@ export function useInputKeyCombination(
       target.removeEventListener("keydown", onKeyDown);
       target.removeEventListener("keyup", onKeyUp);
     };
-  }, [ref, keys, callback]);
+  }, [ref, keys, onPressed]);
 }

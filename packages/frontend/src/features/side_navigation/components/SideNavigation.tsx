@@ -12,13 +12,12 @@ import {
 import {
   ROUTE_HOME_BROWSER,
   ROUTE_HOME_FILE_EXPLORE,
-  ROUTE_HOME_FULL_TEXT_SEARCH,
+  ROUTE_HOME_ALL_SONGS,
   ROUTE_HOME_PLAYLIST,
   ROUTE_HOME_PLAY_QUEUE,
   ROUTE_HOME_PLUGIN,
   ROUTE_HOME_SEARCH,
 } from "../../../const/routes";
-import { Metrics } from "../../metrics";
 import { CardStats } from "../../stats";
 import { useSideNavigationItems } from "../hooks/useSideNavigationItems";
 
@@ -27,6 +26,13 @@ import {
   SideNavigationItemProps,
 } from "./SideNavigationItem";
 
+/**
+ * Renders the side navigation component.
+ *
+ * @param {Object} props - The component props.
+ * @param {boolean} props.isCompact - Determines if the navigation should be displayed in compact mode.
+ * @returns {JSX.Element} The SideNavigation component.
+ */
 export function SideNavigation({ isCompact }: { isCompact: boolean }) {
   const baseItems: SideNavigationItemProps[] = [
     {
@@ -62,7 +68,7 @@ export function SideNavigation({ isCompact }: { isCompact: boolean }) {
     {
       name: "Full-Text Search",
       icon: IoText,
-      link: ROUTE_HOME_FULL_TEXT_SEARCH,
+      link: ROUTE_HOME_ALL_SONGS,
       isCompact,
     },
     {
@@ -90,9 +96,6 @@ export function SideNavigation({ isCompact }: { isCompact: boolean }) {
               <CardStats />
             </Box>
             <Divider />
-            <Box w="100%" h="full" pb={0} px={6} pt={2}>
-              <Metrics />
-            </Box>
           </>
         )}
       </VStack>

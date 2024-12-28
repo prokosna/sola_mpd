@@ -14,8 +14,15 @@ import { IoVolumeMute } from "react-icons/io5";
 import { useMpdClientState } from "../../mpd";
 import { useCurrentMpdProfileState } from "../../profile";
 import { useIsCompactMode } from "../../user_device";
-import { usePlayerVolumeState } from "../states/volume";
+import { usePlayerVolumeState } from "../states/playerVolumeState";
 
+/**
+ * Renders a volume control button and slider for the player.
+ * This component allows users to adjust the volume and mute/unmute the player.
+ * It adapts its appearance based on the current volume level and compact mode setting.
+ *
+ * @returns A volume control component with a button and slider
+ */
 export function PlayerControlsButtonVolume() {
   const profile = useCurrentMpdProfileState();
   const mpdClient = useMpdClientState();
@@ -24,7 +31,7 @@ export function PlayerControlsButtonVolume() {
 
   const volume = playerVolume?.volume !== undefined ? playerVolume.volume : -1;
 
-  const onClick = useCallback(
+  const onVolumeChanged = useCallback(
     async (volume: number) => {
       if (profile === undefined || mpdClient === undefined) {
         return;
@@ -75,7 +82,7 @@ export function PlayerControlsButtonVolume() {
               max={100}
               orientation="vertical"
               h="60%"
-              onChangeEnd={(v) => onClick(v)}
+              onChangeEnd={(v) => onVolumeChanged(v)}
             >
               <SliderTrack>
                 <SliderFilledTrack />

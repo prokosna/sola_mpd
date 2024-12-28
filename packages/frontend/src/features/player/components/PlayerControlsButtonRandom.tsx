@@ -4,18 +4,24 @@ import { IoShuffleOutline } from "react-icons/io5";
 
 import { useMpdClientState } from "../../mpd";
 import { useCurrentMpdProfileState } from "../../profile";
-import { useCurrentSongState } from "../states/song";
-import { usePlayerStatusState } from "../states/status";
+import { useCurrentSongState } from "../states/playerSongState";
+import { usePlayerStatusState } from "../states/playerStatusState";
 
 import { PlayerControlsButton } from "./PlayerControlsButton";
 
+/**
+ * Renders a button to toggle the random playback mode in the player controls.
+ * This component handles the "Random" functionality in the music player.
+ *
+ * @returns A PlayerControlsButton component for toggling random playback mode
+ */
 export function PlayerControlsButtonRandom() {
   const profile = useCurrentMpdProfileState();
   const mpdClient = useMpdClientState();
   const currentSong = useCurrentSongState();
   const playerStatus = usePlayerStatusState();
 
-  const onClick = useCallback(async () => {
+  const onButtonClicked = useCallback(async () => {
     if (profile === undefined || mpdClient === undefined) {
       return;
     }
@@ -36,7 +42,7 @@ export function PlayerControlsButtonRandom() {
   const props = {
     label: playerStatus?.isRandom ? "Random enabled" : "Random disabled",
     isDisabled: currentSong === undefined,
-    onClick,
+    onButtonClicked,
     icon: <IoShuffleOutline size={"24"}></IoShuffleOutline>,
     variant: playerStatus?.isRandom ? "solid" : "ghost",
   };

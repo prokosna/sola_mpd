@@ -13,21 +13,27 @@ import {
   Heading,
   Input,
   Text,
-  useToast,
 } from "@chakra-ui/react";
 import { useCallback, useState } from "react";
 import { useForm } from "react-hook-form";
 
+import { useNotification } from "../../../lib/chakra/hooks/useNotification";
 import { useAddMpdProfile } from "../hooks/useAddMpdProfile";
 import { useValidateMpdProfile } from "../hooks/useValidateMpdProfile";
-import { ProfileInputs } from "../types/profileInputs";
+import { ProfileInput } from "../types/profileTypes";
 
 type MpdProfileFormProps = {
-  onComplete: () => Promise<void>;
+  onProfileCreated: () => Promise<void>;
 };
 
+/**
+ * A form component for creating and validating MPD profiles.
+ * @param props - The properties for the MpdProfileForm component.
+ * @param props.onProfileCreated - A callback function to be called after a profile is successfully created.
+ */
 export function MpdProfileForm(props: MpdProfileFormProps) {
-  const toast = useToast();
+  const notify = useNotification();
+
   const [isValidated, setIsValidated] = useState(false);
   const [validationErrorMessage, setValidationErrorMessage] = useState<
     string | undefined
@@ -37,37 +43,36 @@ export function MpdProfileForm(props: MpdProfileFormProps) {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<ProfileInputs>();
+  } = useForm<ProfileInput>();
 
   const validateMpdProfile = useValidateMpdProfile();
   const addMpdProfile = useAddMpdProfile();
 
-  const onClickTest = useCallback(
-    async (data: ProfileInputs) => {
-      const errorMessage = await validateMpdProfile(data);
-      if (errorMessage !== undefined) {
-        setValidationErrorMessage(errorMessage);
+  const handleTestClick = useCallback(
+    async (data: ProfileInput) => {
+      const result = await validateMpdProfile(data);
+      if (result.isValid) {
+        setValidationErrorMessage(undefined);
+        setIsValidated(true);
+      } else {
+        setValidationErrorMessage(result.message);
         setIsValidated(false);
-        return;
       }
-      setValidationErrorMessage(undefined);
-      setIsValidated(true);
-      return;
     },
     [validateMpdProfile],
   );
 
-  const onClickSave = useCallback(
-    async (data: ProfileInputs) => {
-      await props.onComplete();
-      await addMpdProfile(data);
-      toast({
+  const handleSaveClick = useCallback(
+    async (input: ProfileInput) => {
+      await addMpdProfile(input);
+      notify({
         status: "success",
         title: "MPD profile successfully created",
-        description: `${data.name} profile have been created.`,
+        description: `${input.name} profile have been created.`,
       });
+      await props.onProfileCreated();
     },
-    [addMpdProfile, props, toast],
+    [addMpdProfile, props, notify],
   );
 
   return (
@@ -129,13 +134,13 @@ export function MpdProfileForm(props: MpdProfileFormProps) {
       <Divider />
       <CardFooter>
         <ButtonGroup spacing="2">
-          <Button variant="outline" onClick={handleSubmit(onClickTest)}>
+          <Button variant="outline" onClick={handleSubmit(handleTestClick)}>
             Test
           </Button>
           <Button
             variant="solid"
             isDisabled={!isValidated}
-            onClick={handleSubmit(onClickSave)}
+            onClick={handleSubmit(handleSaveClick)}
           >
             Save
           </Button>

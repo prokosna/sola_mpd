@@ -1,6 +1,9 @@
 // Hooks
 export { useResizablePane } from "./hooks/useResizablePane";
 
+// Services
+export { type LayoutStateRepository } from "./services/LayoutStateRepository";
+
 // States
 export {
   useLayoutState,
@@ -8,8 +11,5 @@ export {
   useSearchLayoutState,
   usePlaylistLayoutState,
   useBrowserLayoutState,
-  useSaveLayoutState,
+  useUpdateLayoutState,
 } from "./states/layoutState";
-
-// Services
-export { type LayoutStateRepository } from "./services/LayoutStateRepository";

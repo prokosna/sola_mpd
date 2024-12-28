@@ -5,11 +5,12 @@ import {
   PlaylistLayout,
   SearchLayout,
 } from "@sola_mpd/domain/src/models/layout_pb.js";
-import { useAtomValue } from "jotai";
-import { atomWithDefault, selectAtom, useResetAtom } from "jotai/utils";
+import { atom, useAtomValue, useSetAtom } from "jotai";
+import { atomWithDefault, useResetAtom } from "jotai/utils";
 import { useCallback } from "react";
 
 import { atomWithSync } from "../../../lib/jotai/atomWithSync";
+import { UpdateMode } from "../../../types/stateTypes";
 
 import { layoutStateRepositoryAtom } from "./layoutStateRepositry";
 
@@ -20,22 +21,25 @@ const layoutStateAtom = atomWithDefault(async (get) => {
 });
 const layoutStateSyncAtom = atomWithSync(layoutStateAtom);
 
-const fileExploreLayoutStateSyncAtom = selectAtom(
-  layoutStateSyncAtom,
-  (layoutState: LayoutState) => layoutState.fileExploreLayout!,
-);
-const playlistLayoutStateSyncAtom = selectAtom(
-  layoutStateSyncAtom,
-  (layoutState: LayoutState) => layoutState.playlistLayout!,
-);
-const searchLayoutStateSyncAtom = selectAtom(
-  layoutStateSyncAtom,
-  (layoutState: LayoutState) => layoutState.searchLayout!,
-);
-const browserLayoutStateSyncAtom = selectAtom(
-  layoutStateSyncAtom,
-  (layoutState: LayoutState) => layoutState.browserLayout!,
-);
+const fileExploreLayoutStateSyncAtom = atom(async (get) => {
+  const layoutState = await get(layoutStateSyncAtom);
+  return layoutState.fileExploreLayout!;
+});
+
+const playlistLayoutStateSyncAtom = atom(async (get) => {
+  const layoutState = await get(layoutStateSyncAtom);
+  return layoutState.playlistLayout!;
+});
+
+const searchLayoutStateSyncAtom = atom(async (get) => {
+  const layoutState = await get(layoutStateSyncAtom);
+  return layoutState.searchLayout!;
+});
+
+const browserLayoutStateSyncAtom = atom(async (get) => {
+  const layoutState = await get(layoutStateSyncAtom);
+  return layoutState.browserLayout!;
+});
 
 /**
  * Returns the current layout state.
@@ -88,32 +92,28 @@ export function useBrowserLayoutState(): BrowserLayout {
 }
 
 /**
- * Returns a function to call to refresh a state.
+ * Returns a function to update layout state.
  *
- * The state is automatically persisted.
- * @returns A function to refresh the layout state.
+ * The state is automatically updated and persisted with 1 second debounce.
+ * @returns Function to call to update a state.
  */
-export function useRefreshLayoutState(): () => void {
-  return useResetAtom(layoutStateAtom);
-}
-
-/**
- * Returns a function to call to save a state.
- *
- * The state is automatically persisted.
- * @returns Function to call to save a state.
- */
-export function useSaveLayoutState(): (
-  layout: FileExploreLayout | SearchLayout | BrowserLayout | PlaylistLayout,
-) => void {
-  const layoutState = useAtomValue(layoutStateSyncAtom);
+export function useUpdateLayoutState() {
+  const layoutState = useAtomValue(layoutStateAtom);
   const repository = useAtomValue(layoutStateRepositoryAtom);
+  const setLayoutState = useSetAtom(layoutStateAtom);
 
   return useCallback(
     async (
-      layout: FileExploreLayout | SearchLayout | BrowserLayout | PlaylistLayout,
+      layout:
+        | FileExploreLayout
+        | SearchLayout
+        | BrowserLayout
+        | PlaylistLayout
+        | LayoutState,
+      mode: UpdateMode,
     ): Promise<void> => {
-      const newLayoutState = layoutState.clone();
+      const newLayoutState =
+        layout instanceof LayoutState ? layout : layoutState.clone();
       if (layout instanceof FileExploreLayout) {
         newLayoutState.fileExploreLayout = layout;
       } else if (layout instanceof SearchLayout) {
@@ -123,8 +123,24 @@ export function useSaveLayoutState(): (
       } else if (layout instanceof PlaylistLayout) {
         newLayoutState.playlistLayout = layout;
       }
-      await repository.save(newLayoutState);
+
+      if (mode & UpdateMode.LOCAL_STATE) {
+        setLayoutState(Promise.resolve(newLayoutState));
+      }
+      if (mode & UpdateMode.PERSIST) {
+        await repository.save(newLayoutState);
+      }
     },
-    [layoutState, repository],
+    [layoutState, repository, setLayoutState],
   );
+}
+
+/**
+ * Returns a function to call to refresh a state.
+ *
+ * The state is automatically persisted.
+ * @returns A function to refresh the layout state.
+ */
+export function useRefreshLayoutState(): () => void {
+  return useResetAtom(layoutStateAtom);
 }

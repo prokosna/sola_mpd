@@ -11,6 +11,11 @@ import { useCurrentMpdProfileState } from "../../profile";
 import { useRefreshStatsState } from "../../stats";
 import { useMpdListenerState } from "../states/mpdListener";
 
+/**
+ * MpdEventObserver is a component that listens to MPD events and triggers
+ * appropriate state updates. It subscribes to various event types and
+ * refreshes the corresponding states when events occur.
+ */
 export function MpdEventObserver() {
   const mpdListener = useMpdListenerState();
   const profile = useCurrentMpdProfileState();
@@ -59,5 +64,5 @@ export function MpdEventObserver() {
     refreshStats,
   ]);
 
-  return undefined;
+  return null;
 }

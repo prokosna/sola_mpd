@@ -10,19 +10,30 @@ import {
   Tooltip,
 } from "@chakra-ui/react";
 import { BrowserFilter } from "@sola_mpd/domain/src/models/browser_pb.js";
-import { SongUtils } from "@sola_mpd/domain/src/utils/SongUtils.js";
+import { convertSongMetadataValueToString } from "@sola_mpd/domain/src/utils/songUtils.js";
 import { useCallback, useMemo } from "react";
 import { IoChevronForward, IoClose } from "react-icons/io5";
 
-import { resetAllFilters, selectFilterValues } from "../helpers/filter";
+import { UpdateMode } from "../../../types/stateTypes";
 import {
   useBrowserFiltersState,
-  useSetBrowserFiltersState,
-} from "../states/filters";
+  useUpdateBrowserFiltersState,
+} from "../states/browserFiltersState";
+import {
+  resetAllBrowserFilters,
+  selectBrowserFilterValues,
+} from "../utils/browserFilterUtils";
 
+/**
+ * Renders a breadcrumb navigation component for the browser.
+ * This component displays the currently selected filters as breadcrumbs,
+ * allowing users to visualize and interact with the active filtering state.
+ *
+ * @returns {JSX.Element} The BrowserNavigationBreadcrumbs component.
+ */
 export function BrowserNavigationBreadcrumbs() {
   const browserFilters = useBrowserFiltersState();
-  const setBrowserFilters = useSetBrowserFiltersState();
+  const updateBrowserFilters = useUpdateBrowserFiltersState();
   const selectedBrowserFilters = useMemo(
     () =>
       browserFilters
@@ -31,21 +42,24 @@ export function BrowserNavigationBreadcrumbs() {
     [browserFilters],
   );
 
-  const onClickReset = useCallback(() => {
+  const handleResetClick = useCallback(() => {
     if (browserFilters === undefined) {
       return;
     }
-    const newFilters = resetAllFilters(browserFilters);
-    setBrowserFilters(newFilters);
-  }, [browserFilters, setBrowserFilters]);
+    const newFilters = resetAllBrowserFilters(browserFilters);
+    updateBrowserFilters(
+      newFilters,
+      UpdateMode.LOCAL_STATE | UpdateMode.PERSIST,
+    );
+  }, [browserFilters, updateBrowserFilters]);
 
-  const onClickClose = useCallback(
+  const handleCloseClick = useCallback(
     (browserFilter: BrowserFilter, value: string) => {
       if (browserFilters === undefined) {
         return;
       }
       const selectedValues = browserFilter.selectedValues.map((selectedValue) =>
-        SongUtils.convertSongMetadataValueToString(selectedValue),
+        convertSongMetadataValueToString(selectedValue),
       );
       const index = selectedValues.findIndex(
         (selectedValue) => selectedValue === value,
@@ -54,14 +68,17 @@ export function BrowserNavigationBreadcrumbs() {
         return;
       }
       selectedValues.splice(index, 1);
-      const newFilters = selectFilterValues(
+      const newFilters = selectBrowserFilterValues(
         browserFilters,
         browserFilter,
         selectedValues,
       );
-      setBrowserFilters(newFilters);
+      updateBrowserFilters(
+        newFilters,
+        UpdateMode.LOCAL_STATE | UpdateMode.PERSIST,
+      );
     },
-    [browserFilters, setBrowserFilters],
+    [browserFilters, updateBrowserFilters],
   );
 
   if (
@@ -80,7 +97,7 @@ export function BrowserNavigationBreadcrumbs() {
             colorScheme="gray"
             aria-label="Reset filters"
             size="xs"
-            onClick={onClickReset}
+            onClick={handleResetClick}
             icon={<IoClose />}
           />
         </Center>
@@ -90,12 +107,12 @@ export function BrowserNavigationBreadcrumbs() {
               <BreadcrumbItem key={`breadcrumb_item_${browserFilter.tag}`}>
                 {browserFilter.selectedValues.map((value) => (
                   <Tooltip
-                    key={SongUtils.convertSongMetadataValueToString(value)}
+                    key={convertSongMetadataValueToString(value)}
                     hasArrow
-                    label={SongUtils.convertSongMetadataValueToString(value)}
+                    label={convertSongMetadataValueToString(value)}
                   >
                     <Tag
-                      key={SongUtils.convertSongMetadataValueToString(value)}
+                      key={convertSongMetadataValueToString(value)}
                       className="browser-breadcrumbs-tag"
                       size={"sm"}
                       borderRadius="full"
@@ -104,13 +121,13 @@ export function BrowserNavigationBreadcrumbs() {
                       minWidth="50px"
                     >
                       <TagLabel className="browser-breadcrumbs-tag-label">
-                        {SongUtils.convertSongMetadataValueToString(value)}
+                        {convertSongMetadataValueToString(value)}
                       </TagLabel>
                       <TagCloseButton
                         onClick={() =>
-                          onClickClose(
+                          handleCloseClick(
                             browserFilter,
-                            SongUtils.convertSongMetadataValueToString(value),
+                            convertSongMetadataValueToString(value),
                           )
                         }
                       ></TagCloseButton>

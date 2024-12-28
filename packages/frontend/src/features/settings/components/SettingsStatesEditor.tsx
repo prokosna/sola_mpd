@@ -21,6 +21,13 @@ export type SettingsStatesEditorProps<T> = {
   fromJson: (json: string) => T;
 };
 
+/**
+ * A generic component for editing settings states.
+ *
+ * @template T - Type extending Message
+ * @param props - The props for the SettingsStatesEditor component
+ * @returns A modal dialog for editing the state in JSON format
+ */
 export function SettingsStatesEditor<T extends Message>(
   props: SettingsStatesEditorProps<T>,
 ) {
@@ -35,7 +42,7 @@ export function SettingsStatesEditor<T extends Message>(
     setStateJsonText(baseJsonText);
   }, [baseJsonText]);
 
-  const onInput = useCallback(
+  const handleInput = useCallback(
     (value: string) => {
       setStateJsonText(value);
       try {
@@ -73,7 +80,7 @@ export function SettingsStatesEditor<T extends Message>(
             <Textarea
               h="300px"
               value={stateJsonText}
-              onChange={(e) => onInput(e.target.value)}
+              onChange={(e) => handleInput(e.target.value)}
               size="sm"
             />
             <Text fontSize="md" color={"red"} py={2}>

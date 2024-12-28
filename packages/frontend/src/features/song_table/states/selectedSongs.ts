@@ -5,7 +5,7 @@ import { useCallback } from "react";
 const selectedSongsAtom = atom<Song[]>([]);
 
 /**
- * Uses seleted songs at the current visible table.
+ * Uses selected songs at the current visible table.
  * @returns Selected songs.
  */
 export function useSelectedSongsState(): Song[] {

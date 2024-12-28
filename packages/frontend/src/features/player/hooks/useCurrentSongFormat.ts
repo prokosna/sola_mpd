@@ -2,11 +2,19 @@ import {
   AudioFormat_Encoding,
   Song_MetadataTag,
 } from "@sola_mpd/domain/src/models/song_pb.js";
-import { SongUtils } from "@sola_mpd/domain/src/utils/SongUtils.js";
+import { convertAudioFormatToString } from "@sola_mpd/domain/src/utils/songUtils.js";
 import { useMemo } from "react";
 
-import { useCurrentSongState } from "../states/song";
+import { useCurrentSongState } from "../states/playerSongState";
 
+/**
+ * A custom hook that returns the current song's audio format information.
+ *
+ * @returns An object containing:
+ *   - isHiRes: boolean indicating if the audio is high resolution
+ *   - isDsd: boolean indicating if the audio is DSD (Direct Stream Digital)
+ *   - formatString: string representation of the audio format
+ */
 export function useCurrentSongFormat() {
   const song = useCurrentSongState();
 
@@ -18,7 +26,7 @@ export function useCurrentSongFormat() {
     const format = song.metadata[Song_MetadataTag.FORMAT];
     if (format.value.case === "format") {
       const f = format.value.value;
-      const formatString = SongUtils.convertAudioFormatToString(f);
+      const formatString = convertAudioFormatToString(f);
       switch (f.encoding) {
         case AudioFormat_Encoding.DSD:
           return { isHiRes: true, isDsd: true, formatString };

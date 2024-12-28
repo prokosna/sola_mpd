@@ -1,9 +1,10 @@
 import { SongTableState } from "@sola_mpd/domain/src/models/song_table_pb.js";
-import { useAtomValue } from "jotai";
+import { useAtomValue, useSetAtom } from "jotai";
 import { atomWithDefault, useResetAtom } from "jotai/utils";
 import { useCallback } from "react";
 
 import { atomWithSync } from "../../../lib/jotai/atomWithSync";
+import { UpdateMode } from "../../../types/stateTypes";
 
 import { songTableStateRepositoryAtom } from "./songTableStateRepository";
 
@@ -13,30 +14,36 @@ const songTableStateAtom = atomWithDefault(async (get) => {
   return songTableState;
 });
 
-const songTableStateSyncAtom = atomWithSync(songTableStateAtom);
+export const songTableStateSyncAtom = atomWithSync(songTableStateAtom);
 
 /**
  * Uses the SongTableState which is commonly used across tables. Promise will be returned only at the beginning.
  * @returns SongTableState.
  */
-export function useSongTableState(): SongTableState {
+export function useSongTableState() {
   return useAtomValue(songTableStateSyncAtom);
 }
 
 /**
- * Returns a function to call to save a state.
- * @returns Function to call to save a state.
+ * Returns a function to update song table state.
+ *
+ * The state is automatically updated and persisted with 1 second debounce.
+ * @returns Function to call to update a state.
  */
-export function useSaveSongTableState(): (
-  state: SongTableState,
-) => Promise<void> {
+export function useUpdateSongTableState() {
   const repository = useAtomValue(songTableStateRepositoryAtom);
+  const setSongTableState = useSetAtom(songTableStateAtom);
 
   return useCallback(
-    async (state: SongTableState): Promise<void> => {
-      await repository.save(state);
+    async (state: SongTableState, mode: UpdateMode): Promise<void> => {
+      if (mode & UpdateMode.LOCAL_STATE) {
+        setSongTableState(Promise.resolve(state));
+      }
+      if (mode & UpdateMode.PERSIST) {
+        await repository.save(state);
+      }
     },
-    [repository],
+    [repository, setSongTableState],
   );
 }
 

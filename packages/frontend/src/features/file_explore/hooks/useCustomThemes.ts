@@ -1,7 +1,15 @@
 import { useToken } from "@chakra-ui/react";
 import { ThemeSettings } from "@naisutech/react-tree";
 
-export function useCustomThemes() {
+/**
+ * Custom hook that returns theme settings for the file explorer tree.
+ *
+ * This hook uses Chakra UI's useToken to get color values from the theme,
+ * and then constructs a ThemeSettings object for use with @naisutech/react-tree.
+ *
+ * @returns {ThemeSettings} Custom theme settings for the file explorer tree.
+ */
+export function useCustomThemes(): ThemeSettings {
   const [brand600, gray800, gray300, gray600, brand50, brand100] = useToken(
     "colors",
     ["brand.600", "gray.800", "gray.300", "gray.600", "brand.50", "brand.100"],

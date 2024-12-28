@@ -1,25 +1,27 @@
-import { useToast } from "@chakra-ui/react";
 import { MpdRequest } from "@sola_mpd/domain/src/models/mpd/mpd_command_pb.js";
 import { useCallback } from "react";
 
 import { COMPONENT_ID_PLAYLIST_SIDE_PANE } from "../../../const/component";
+import { useNotification } from "../../../lib/chakra/hooks/useNotification";
 import { ContextMenuSection } from "../../context_menu";
 import { useMpdClientState } from "../../mpd";
 import { useCurrentMpdProfileState } from "../../profile";
-import {
-  SelectListProps,
-  SelectListContextMenuItemParams,
-} from "../../select_list";
+import { SelectListContextMenuItemParams } from "../../select_list";
 import {
   usePlaylistsState,
   useSelectedPlaylistState,
   useSetSelectedPlaylistState,
-} from "../states/playlist";
+} from "../states/playlistState";
 
-export function usePlaylistNavigationSelectListProps():
-  | SelectListProps
-  | undefined {
-  const toast = useToast();
+/**
+ * Hook to provide props for the playlist navigation select list.
+ * This hook handles the logic for selecting, deleting, and managing playlists.
+ *
+ * @returns An object containing props for the SelectList component,
+ * or undefined if the required states are not available.
+ */
+export function usePlaylistNavigationSelectListProps() {
+  const notify = useNotification();
 
   const profile = useCurrentMpdProfileState();
   const mpdClient = useMpdClientState();
@@ -65,7 +67,7 @@ export function usePlaylistNavigationSelectListProps():
                   },
                 }),
               );
-              toast({
+              notify({
                 status: "success",
                 title: "Playlist successfully deleted",
                 description: `Playlist "${params.clickedValue}" has been deleted.`,
@@ -76,7 +78,7 @@ export function usePlaylistNavigationSelectListProps():
       },
     ];
 
-  const onSelectValues = useCallback(
+  const onItemsSelected = useCallback(
     async (selectedValues: string[]) => {
       if (selectedValues.length >= 2) {
         throw new Error("Multiple playlists are selected.");
@@ -92,8 +94,6 @@ export function usePlaylistNavigationSelectListProps():
     [playlists, setSelectedPlaylist],
   );
 
-  const onCompleteLoading = async () => {};
-
   if (playlists === undefined) {
     return;
   }
@@ -102,11 +102,11 @@ export function usePlaylistNavigationSelectListProps():
     id: COMPONENT_ID_PLAYLIST_SIDE_PANE,
     values: playlists.map((playlist) => playlist.name),
     selectedValues: selectedPlaylist ? [selectedPlaylist.name] : [],
-    header: undefined,
+    headerTitle: undefined,
     contextMenuSections,
     isLoading: false,
     allowMultipleSelection: false,
-    onSelectValues,
-    onCompleteLoading,
+    onItemsSelected: onItemsSelected,
+    onLoadingCompleted: async () => {},
   };
 }

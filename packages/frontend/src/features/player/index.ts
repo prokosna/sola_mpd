@@ -2,6 +2,6 @@
 export { Player } from "./components/Player";
 
 // States
-export { useCurrentSongState } from "./states/song";
-export { usePlayerStatusState } from "./states/status";
-export { useRefreshPlayerVolumeState } from "./states/volume";
+export { useCurrentSongState } from "./states/playerSongState";
+export { usePlayerStatusState } from "./states/playerStatusState";
+export { useRefreshPlayerVolumeState } from "./states/playerVolumeState";

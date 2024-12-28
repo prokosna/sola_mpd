@@ -4,9 +4,8 @@ export { Search } from "./components/Search";
 // States
 export {
   useSavedSearchesState,
-  useSetSavedSearchesState,
-} from "./states/persistent";
-export { savedSearchRepositoryAtom } from "./states/savedSearchRepository";
+  useUpdateSavedSearchesState,
+} from "./states/savedSearchesState";
 
 // Services
-export { type SavedSearchRepository } from "./services/SavedSearchRepository";
+export { type SavedSearchesRepository } from "./services/SavedSearchesRepository";

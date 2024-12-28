@@ -2,11 +2,18 @@ import { Song, Song_MetadataTag } from "@sola_mpd/domain/src/models/song_pb.js";
 import { useMemo } from "react";
 
 import { CardStatsNumberProps } from "../components/CardStatsNumber";
-import { getCountDistinct } from "../helpers/stats";
-import { useStatsState } from "../states/stats";
+import { useStatsState } from "../states/statsState";
+import { getMetadataValueCountDistinct } from "../utils/statsUtils";
 
+/**
+ * Custom hook to generate props for artist statistics.
+ *
+ * @param showSelectedStats - Boolean flag to determine if stats for selected songs should be shown.
+ * @param selectedSongs - Array of selected Song objects.
+ * @returns CardStatsNumberProps object containing artist statistics.
+ */
 export function useArtistStatsProps(
-  isSelected: boolean,
+  showSelectedStats: boolean,
   selectedSongs: Song[],
 ): CardStatsNumberProps {
   const stats = useStatsState();
@@ -15,15 +22,18 @@ export function useArtistStatsProps(
     if (stats === undefined) {
       return undefined;
     }
-    if (isSelected) {
-      return getCountDistinct(selectedSongs, Song_MetadataTag.ARTIST);
+    if (showSelectedStats) {
+      return getMetadataValueCountDistinct(
+        selectedSongs,
+        Song_MetadataTag.ARTIST,
+      );
     }
     return stats.artistsCount;
-  }, [isSelected, selectedSongs, stats]);
+  }, [showSelectedStats, selectedSongs, stats]);
 
   return {
-    isSelected,
-    label: isSelected ? "Artists of Selected Songs" : "Total Artists",
+    isSelected: showSelectedStats,
+    label: showSelectedStats ? "Artists of Selected Songs" : "Total Artists",
     count,
   };
 }

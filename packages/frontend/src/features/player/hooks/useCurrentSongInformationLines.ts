@@ -1,9 +1,19 @@
 import { Song_MetadataTag } from "@sola_mpd/domain/src/models/song_pb.js";
-import { SongUtils } from "@sola_mpd/domain/src/utils/SongUtils.js";
+import { getSongMetadataAsString } from "@sola_mpd/domain/src/utils/songUtils.js";
 import { useMemo } from "react";
 
-import { useCurrentSongState } from "../states/song";
+import { useCurrentSongState } from "../states/playerSongState";
 
+/**
+ * A custom hook that provides information about the currently playing song.
+ *
+ * @returns An object containing three lines of information about the current song:
+ *   - firstLine: Usually the song title
+ *   - secondLine: Usually the artist name
+ *   - thirdLine: Usually the album name
+ *
+ * If no song is currently playing, appropriate default values are returned.
+ */
 export function useCurrentSongInformationLines() {
   const song = useCurrentSongState();
 
@@ -11,33 +21,27 @@ export function useCurrentSongInformationLines() {
     if (song === undefined) {
       return "Not playing";
     }
-    return SongUtils.getSongMetadataAsString(song, Song_MetadataTag.TITLE);
+    return getSongMetadataAsString(song, Song_MetadataTag.TITLE);
   }, [song]);
 
   const secondLine = useMemo(() => {
     if (song === undefined) {
       return "";
     }
-    return SongUtils.getSongMetadataAsString(song, Song_MetadataTag.ALBUM);
+    return getSongMetadataAsString(song, Song_MetadataTag.ALBUM);
   }, [song]);
 
   const thirdLine = useMemo(() => {
     if (song === undefined) {
       return "";
     }
-    const artist = SongUtils.getSongMetadataAsString(
-      song,
-      Song_MetadataTag.ARTIST,
-    );
-    const albumArtist = SongUtils.getSongMetadataAsString(
+    const artist = getSongMetadataAsString(song, Song_MetadataTag.ARTIST);
+    const albumArtist = getSongMetadataAsString(
       song,
       Song_MetadataTag.ALBUM_ARTIST,
     );
-    const composer = SongUtils.getSongMetadataAsString(
-      song,
-      Song_MetadataTag.COMPOSER,
-    );
-    const date = SongUtils.getSongMetadataAsString(song, Song_MetadataTag.DATE);
+    const composer = getSongMetadataAsString(song, Song_MetadataTag.COMPOSER);
+    const date = getSongMetadataAsString(song, Song_MetadataTag.DATE);
     let text = "";
     text += artist !== "" ? artist : albumArtist;
     text += composer !== "" ? ` / ${composer}` : "";

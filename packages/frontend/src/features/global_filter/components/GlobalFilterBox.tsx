@@ -10,10 +10,17 @@ import {
 import { useRef } from "react";
 import { IoSearchOutline } from "react-icons/io5";
 
-import { useFilterTextActionsWithDebounce } from "../hooks/useFilterTextActionsWithDebounce";
+import { useHandleGlobalFilterTextChangeWithDebounce } from "../hooks/useHandleGlobalFilterTextChangeWithDebounce";
 
+/**
+ * GlobalFilterBox component provides a search input for global filtering.
+ * It uses a debounced text change handler to optimize performance.
+ *
+ * @returns A React component that renders an input box for global filtering.
+ */
 export function GlobalFilterBox() {
-  const { onTextChanged } = useFilterTextActionsWithDebounce();
+  const handleGlobalFilterTextChange =
+    useHandleGlobalFilterTextChangeWithDebounce();
   const inputRef = useRef<HTMLInputElement>(null);
 
   return (
@@ -31,7 +38,7 @@ export function GlobalFilterBox() {
             ref={inputRef}
             placeholder="Filter songs..."
             onChange={(e) => {
-              onTextChanged(e.target.value);
+              handleGlobalFilterTextChange(e.target.value);
             }}
           />
           <InputRightElement color="gray.500" fontSize="1.2em">
@@ -40,7 +47,7 @@ export function GlobalFilterBox() {
                 if (inputRef.current != null) {
                   inputRef.current.value = "";
                 }
-                onTextChanged("");
+                handleGlobalFilterTextChange("");
               }}
             />
           </InputRightElement>

@@ -14,34 +14,47 @@ import { Plugin } from "@sola_mpd/domain/src/models/plugin/plugin_pb.js";
 import { Song } from "@sola_mpd/domain/src/models/song_pb.js";
 import { useCallback, useState } from "react";
 
-import { useOnExecutePlugin } from "../hooks/useOnExecutePlugin";
+import { useHandlePluginExecuted } from "../hooks/useHandlePluginExecuted";
 import {
   useIsPreviousPluginStillRunningState,
   useSetIsPluginExecutionModalOpenState,
-} from "../states/execution";
+} from "../states/executionState";
 
 type PluginExecutionModalStartProps = {
   plugin: Plugin;
   songs: Song[];
 };
 
+/**
+ * PluginExecutionModalStart component
+ *
+ * This component renders the initial view of the plugin execution modal.
+ * It allows users to input parameters for the plugin execution and handles
+ * the execution process.
+ *
+ * @param props - The props for the PluginExecutionModalStart component
+ * @param props.plugin - The plugin to be executed
+ * @param props.songs - The list of songs to be processed by the plugin
+ * @returns JSX element representing the start view of the plugin execution modal
+ */
 export function PluginExecutionModalStart(
   props: PluginExecutionModalStartProps,
 ) {
   const { plugin, songs } = props;
 
+  const isPreviousPluginStillRunning = useIsPreviousPluginStillRunningState();
+  const handlePluginExecuted = useHandlePluginExecuted();
+  const setIsPluginExecutionModalOpen = useSetIsPluginExecutionModalOpenState();
+
   const [parameterValues, setParameterValues] = useState<Map<string, string>>(
     new Map(),
   );
-  const onExecutePlugin = useOnExecutePlugin();
-  const setIsPluginExecutionModalOpen = useSetIsPluginExecutionModalOpenState();
-  const isPreviousPluginStillRunning = useIsPreviousPluginStillRunningState();
 
-  const onExecute = useCallback(() => {
-    onExecutePlugin(plugin, songs, parameterValues);
+  const onExecuted = useCallback(() => {
+    handlePluginExecuted(plugin, songs, parameterValues);
     setIsPluginExecutionModalOpen("progress");
   }, [
-    onExecutePlugin,
+    handlePluginExecuted,
     parameterValues,
     plugin,
     songs,
@@ -83,7 +96,7 @@ export function PluginExecutionModalStart(
       </ModalBody>
       <ModalFooter>
         <ButtonGroup spacing="2">
-          <Button onClick={onExecute} isLoading={isPreviousPluginStillRunning}>
+          <Button onClick={onExecuted} isLoading={isPreviousPluginStillRunning}>
             Execute
           </Button>
           <Button

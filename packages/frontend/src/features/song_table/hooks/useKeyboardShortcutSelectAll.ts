@@ -4,7 +4,7 @@ import { MutableRefObject, RefObject } from "react";
 
 import { useInputKeyCombination } from "../../keyboard_shortcut";
 import { SongTableKey } from "../types/songTableTypes";
-import { convertNodeToSong } from "../utils/tableUtils";
+import { convertNodeToSong } from "../utils/songTableTableUtils";
 
 /**
  * Enables Select All keyboard shortcut on a given ref component.

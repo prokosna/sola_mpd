@@ -12,19 +12,26 @@ import {
 } from "@chakra-ui/react";
 import { Plugin } from "@sola_mpd/domain/src/models/plugin/plugin_pb.js";
 
-import { useOnRemovePlugin } from "../hooks/useOnRemovePlugin";
+import { useHandlePluginRemoved } from "../hooks/useHandlePluginRemoved";
 import { usePluginDisplayColors } from "../hooks/usePluginDisplayColors";
 
 export type PluginListInfoCardProps = {
   plugin: Plugin;
 };
 
+/**
+ * PluginListInfoCard component displays information about a single plugin.
+ *
+ * @param props - The props for the PluginListInfoCard component
+ * @param props.plugin - The Plugin object to display information for
+ * @returns JSX element representing the PluginListInfoCard
+ */
 export function PluginListInfoCard(props: PluginListInfoCardProps) {
   const { plugin } = props;
 
   const { availableColor, unavailableColor, endpointColor } =
     usePluginDisplayColors();
-  const onRemovePlugin = useOnRemovePlugin(plugin);
+  const handlePluginRemoved = useHandlePluginRemoved(plugin);
 
   return (
     <Card
@@ -75,7 +82,7 @@ export function PluginListInfoCard(props: PluginListInfoCardProps) {
           <Button
             variant="outline"
             colorScheme="brand"
-            onClick={onRemovePlugin}
+            onClick={handlePluginRemoved}
           >
             Remove
           </Button>

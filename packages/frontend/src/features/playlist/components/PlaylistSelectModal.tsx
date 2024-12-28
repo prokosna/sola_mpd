@@ -12,36 +12,48 @@ import {
 import { Playlist } from "@sola_mpd/domain/src/models/playlist_pb.js";
 import { useCallback, useState } from "react";
 
-import { useAddPlaylist } from "../states/playlist";
+import { useAddPlaylist } from "../hooks/useAddPlaylist";
 
 import { PlaylistSelectModalFromList } from "./PlaylistSelectModalFromList";
 import { PlaylistSelectModalNewPlaylist } from "./PlaylistSelectModalNewPlaylist";
 
 export type PlaylistSelectModalProps = {
   isOpen: boolean;
-  isOnly?: "NEW" | "SELECT";
   onOk: (playlist: Playlist) => Promise<void>;
   onCancel: () => Promise<void>;
 };
 
+/**
+ * PlaylistSelectModal component
+ *
+ * This component renders a modal for selecting or creating a playlist.
+ * It allows users to choose between selecting an existing playlist or creating a new one.
+ *
+ * @param props - The props for the PlaylistSelectModal component
+ * @param props.isOpen - Boolean indicating whether the modal is open
+ * @param props.onOk - Callback function to be called when a playlist is selected or created
+ * @param props.onCancel - Callback function to be called when the modal is cancelled
+ *
+ * @returns The rendered PlaylistSelectModal component
+ */
 export function PlaylistSelectModal(props: PlaylistSelectModalProps) {
   const addPlaylist = useAddPlaylist();
 
-  const [isCreateNew, setIsCreateNew] = useState(props.isOnly === "NEW");
+  const [isCreateNew, setIsCreateNew] = useState(true);
   const [playlistName, setPlaylistName] = useState("");
   const [isPlaylistNameOk, setIsPlaylistNameOk] = useState(false);
 
-  const onSelect = useCallback((name: string) => {
+  const handleSelect = useCallback((name: string) => {
     setPlaylistName(name);
     setIsPlaylistNameOk(true);
   }, []);
 
-  const onInput = useCallback((name: string, isOk: boolean) => {
+  const handleInput = useCallback((name: string, isOk: boolean) => {
     setPlaylistName(name);
     setIsPlaylistNameOk(isOk);
   }, []);
 
-  const onSubmit = useCallback(async () => {
+  const handleSubmit = useCallback(async () => {
     const playlist = new Playlist({
       name: playlistName,
     });
@@ -53,11 +65,11 @@ export function PlaylistSelectModal(props: PlaylistSelectModalProps) {
       }
     }
     props.onOk(playlist);
-    setIsCreateNew(props.isOnly === "NEW");
+    setIsCreateNew(true);
     setIsPlaylistNameOk(false);
   }, [addPlaylist, isCreateNew, isPlaylistNameOk, playlistName, props]);
 
-  const onClose = useCallback(() => {
+  const handleClose = useCallback(() => {
     setPlaylistName("");
     props.onCancel();
   }, [props]);
@@ -68,44 +80,40 @@ export function PlaylistSelectModal(props: PlaylistSelectModalProps) {
         isCentered
         closeOnOverlayClick={false}
         isOpen={props.isOpen}
-        onClose={onClose}
+        onClose={handleClose}
       >
         <ModalOverlay />
         <ModalContent>
           <ModalHeader>Select a playlist</ModalHeader>
-
           <ModalBody pb={6}>
             {isCreateNew ? (
-              <PlaylistSelectModalNewPlaylist onInput={onInput} />
+              <PlaylistSelectModalNewPlaylist onInput={handleInput} />
             ) : (
-              <PlaylistSelectModalFromList onSelect={onSelect} />
+              <PlaylistSelectModalFromList onSelect={handleSelect} />
             )}
-            {props.isOnly === undefined ? (
-              <FormControl>
-                <Checkbox
-                  colorScheme="brand"
-                  checked={isCreateNew}
-                  onChange={(e) => {
-                    setIsCreateNew(e.target.checked);
-                    setIsPlaylistNameOk(false);
-                  }}
-                >
-                  Create a new playlist
-                </Checkbox>
-              </FormControl>
-            ) : null}
+            <FormControl>
+              <Checkbox
+                colorScheme="brand"
+                checked={isCreateNew}
+                onChange={(e) => {
+                  setIsCreateNew(e.target.checked);
+                  setIsPlaylistNameOk(false);
+                }}
+              >
+                Create a new playlist
+              </Checkbox>
+            </FormControl>
           </ModalBody>
-
           <ModalFooter>
             <Button
               colorScheme="brand"
               mr={3}
-              onClick={onSubmit}
+              onClick={handleSubmit}
               isDisabled={playlistName === "" || !isPlaylistNameOk}
             >
               Add
             </Button>
-            <Button onClick={onClose} colorScheme="gray">
+            <Button onClick={handleClose} colorScheme="gray">
               Cancel
             </Button>
           </ModalFooter>

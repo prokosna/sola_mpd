@@ -9,7 +9,10 @@ import {
 import { FilterCondition_Operator } from "@sola_mpd/domain/src/models/filter_pb.js";
 import { Query } from "@sola_mpd/domain/src/models/search_pb.js";
 import { Song_MetadataTag } from "@sola_mpd/domain/src/models/song_pb.js";
-import { SongUtils } from "@sola_mpd/domain/src/utils/SongUtils.js";
+import {
+  convertSongMetadataValueToString,
+  convertStringToSongMetadataValue,
+} from "@sola_mpd/domain/src/utils/songUtils.js";
 import { useCallback } from "react";
 import { IoTrashOutline } from "react-icons/io5";
 
@@ -28,29 +31,40 @@ import {
   isValidOperatorWithMetadataTag,
   listSearchSongMetadataTags,
   removeEditingQueryCondition,
-} from "../helpers/search";
+} from "../utils/searchUtils";
 
 export type SearchNavigationQueryEditorQueryConditionProps = {
   query: Query;
   isFirstQuery: boolean;
   index: number;
-  onUpdateQuery: (query: Query) => void;
+  onQueryUpdated: (query: Query) => void;
 };
 
+/**
+ * SearchNavigationQueryEditorQueryCondition component renders a single condition editor within a query.
+ * It allows users to edit, add, and remove filter conditions for a search query.
+ *
+ * @param props - The component props
+ * @param props.query - The current Query object being edited
+ * @param props.isFirstQuery - Boolean indicating if this is the first query in the search
+ * @param props.index - The index of the current condition within the query
+ * @param props.onQueryUpdated - Callback function to handle updates to the query
+ * @returns JSX element representing a single condition editor
+ */
 export function SearchNavigationQueryEditorQueryCondition(
   props: SearchNavigationQueryEditorQueryConditionProps,
 ) {
-  const { query, isFirstQuery, index, onUpdateQuery } = props;
+  const { query, isFirstQuery, index, onQueryUpdated } = props;
 
   const condition = query.conditions[index];
   const isLastCondition = index === query.conditions.length - 1;
 
-  const onAddCondition = useCallback(() => {
+  const handleConditionAdded = useCallback(() => {
     const newQuery = addEditingQueryCondition(query);
-    onUpdateQuery(newQuery);
-  }, [onUpdateQuery, query]);
+    onQueryUpdated(newQuery);
+  }, [onQueryUpdated, query]);
 
-  const onChangeTag = useCallback(
+  const handleTagChange = useCallback(
     (value: string) => {
       const tag = convertSongMetadataTagFromDisplayName(value);
       const newCondition = condition.clone();
@@ -66,37 +80,37 @@ export function SearchNavigationQueryEditorQueryCondition(
             .at(0) || FilterCondition_Operator.UNKNOWN;
       }
       const newQuery = changeEditingQueryCondition(query, index, newCondition);
-      onUpdateQuery(newQuery);
+      onQueryUpdated(newQuery);
     },
-    [condition, index, onUpdateQuery, query],
+    [condition, index, onQueryUpdated, query],
   );
 
-  const onChangeOperator = useCallback(
+  const handleOperatorChange = useCallback(
     (value: string) => {
       const operator = convertDisplayNameToOperator(value);
       const newCondition = condition.clone();
       newCondition.operator = operator;
       const newQuery = changeEditingQueryCondition(query, index, newCondition);
-      onUpdateQuery(newQuery);
+      onQueryUpdated(newQuery);
     },
-    [condition, index, onUpdateQuery, query],
+    [condition, index, onQueryUpdated, query],
   );
 
-  const onChangeValue = useCallback(
+  const handleValueChange = useCallback(
     (value: string) => {
-      const metadataValue = SongUtils.convertStringToSongMetadataValue(value);
+      const metadataValue = convertStringToSongMetadataValue(value);
       const newCondition = condition.clone();
       newCondition.value = metadataValue;
       const newQuery = changeEditingQueryCondition(query, index, newCondition);
-      onUpdateQuery(newQuery);
+      onQueryUpdated(newQuery);
     },
-    [condition, index, onUpdateQuery, query],
+    [condition, index, onQueryUpdated, query],
   );
 
-  const onRemoveCondition = useCallback(() => {
+  const handleConditionRemoved = useCallback(() => {
     const newQuery = removeEditingQueryCondition(query, index);
-    onUpdateQuery(newQuery);
-  }, [index, onUpdateQuery, query]);
+    onQueryUpdated(newQuery);
+  }, [index, onQueryUpdated, query]);
 
   return (
     <>
@@ -116,7 +130,7 @@ export function SearchNavigationQueryEditorQueryCondition(
               size={"sm"}
               variant="outline"
               colorScheme="brand"
-              onClick={onAddCondition}
+              onClick={handleConditionAdded}
             >
               AND
             </Button>
@@ -140,7 +154,7 @@ export function SearchNavigationQueryEditorQueryCondition(
           <Select
             value={convertSongMetadataTagToDisplayName(condition.tag)}
             size="sm"
-            onChange={(e) => onChangeTag(e.target.value)}
+            onChange={(e) => handleTagChange(e.target.value)}
           >
             {listSearchSongMetadataTags()
               .map((tag) => convertSongMetadataTagToDisplayName(tag))
@@ -155,7 +169,7 @@ export function SearchNavigationQueryEditorQueryCondition(
           <Select
             value={convertOperatorToDisplayName(condition.operator)}
             size="sm"
-            onChange={(e) => onChangeOperator(e.target.value)}
+            onChange={(e) => handleOperatorChange(e.target.value)}
           >
             {listAllFilterConditionOperators()
               .filter((operator) =>
@@ -175,8 +189,8 @@ export function SearchNavigationQueryEditorQueryCondition(
             type={
               condition.tag === Song_MetadataTag.UPDATED_AT ? "date" : "text"
             }
-            value={SongUtils.convertSongMetadataValueToString(condition.value!)}
-            onChange={(e) => onChangeValue(e.target.value)}
+            value={convertSongMetadataValueToString(condition.value!)}
+            onChange={(e) => handleValueChange(e.target.value)}
           ></Input>
         </GridItem>
         <GridItem area={"trash"}>
@@ -195,7 +209,7 @@ export function SearchNavigationQueryEditorQueryCondition(
               icon={<IoTrashOutline />}
               aria-label={"trash"}
               colorScheme="gray"
-              onClick={onRemoveCondition}
+              onClick={handleConditionRemoved}
             ></IconButton>
           )}
         </GridItem>

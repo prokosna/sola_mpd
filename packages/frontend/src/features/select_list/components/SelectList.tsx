@@ -5,23 +5,31 @@ import { useCallback, useEffect, useRef } from "react";
 
 import { ContextMenu, ContextMenuSection } from "../../context_menu";
 import { useAgGridReactData } from "../hooks/useAgGridReactData";
-import { useOnOpenContextMenu } from "../hooks/useOnOpenContextMenu";
-import { useOnRowDataUpdated } from "../hooks/useOnRowDataUpdated";
-import { useOnSelectionChanged } from "../hooks/useOnSelectionChanged";
-import { SelectListContextMenuItemParams } from "../types/selectList";
+import { useHandleRowDataUpdated } from "../hooks/useHandleRowDataUpdated";
+import { useHandleSelectionChange } from "../hooks/useHandleSelectionChange";
+import { useOpenContextMenu } from "../hooks/useOpenContextMenu";
+import {
+  SelectListContextMenuItemParams,
+  SelectListRowValue,
+} from "../types/selectListTypes";
 
 export type SelectListProps = {
   id: string;
-  values: string[];
-  selectedValues: string[];
-  header?: string;
+  values: SelectListRowValue[];
+  selectedValues: SelectListRowValue[];
+  headerTitle?: string;
   contextMenuSections: ContextMenuSection<SelectListContextMenuItemParams>[];
   isLoading: boolean;
   allowMultipleSelection: boolean;
-  onSelectValues: (selectedValues: string[]) => Promise<void>;
-  onCompleteLoading: () => Promise<void>;
+  onItemsSelected: (selectedValues: SelectListRowValue[]) => Promise<void>;
+  onLoadingCompleted: () => Promise<void>;
 };
 
+/**
+ * Renders a selectable list component with customizable properties.
+ * @param props - The properties for the SelectList component.
+ * @returns A JSX element representing the SelectList.
+ */
 export function SelectList(props: SelectListProps) {
   const ref = useRef(null);
   const gridRef = useRef<AgGridReact>(null);
@@ -29,11 +37,11 @@ export function SelectList(props: SelectListProps) {
   // AgGridReact format
   const { rowData, columnDefs } = useAgGridReactData(
     props.values,
-    props.header,
+    props.headerTitle,
   );
 
   // Context menu
-  const onOpenContextMenu = useOnOpenContextMenu(props.id);
+  const openContextMenu = useOpenContextMenu(props.id);
 
   // Get Row ID
   const getRowId = useCallback((params: GetRowIdParams) => {
@@ -41,8 +49,10 @@ export function SelectList(props: SelectListProps) {
   }, []);
 
   // Handlers
-  const onSelectionChanged = useOnSelectionChanged(props.onSelectValues);
-  const onRowDataUpdated = useOnRowDataUpdated(props.onCompleteLoading);
+  const handleSelectionChange = useHandleSelectionChange(props.onItemsSelected);
+  const handleRowDataUpdated = useHandleRowDataUpdated(
+    props.onLoadingCompleted,
+  );
 
   // Color mode
   const { colorMode } = useColorMode();
@@ -74,10 +84,10 @@ export function SelectList(props: SelectListProps) {
         style={{ height: "100%", width: "100%", position: "relative" }}
       >
         <AgGridReact
-          {...(props.header === undefined && {
+          {...(props.headerTitle === undefined && {
             headerHeight: 0,
           })}
-          {...(props.header === undefined && {
+          {...(props.headerTitle === undefined && {
             containerStyle: {
               "--ag-borders": "none",
             },
@@ -85,9 +95,9 @@ export function SelectList(props: SelectListProps) {
           ref={gridRef}
           rowData={rowData}
           columnDefs={columnDefs}
-          onCellContextMenu={onOpenContextMenu}
-          onSelectionChanged={onSelectionChanged}
-          onRowDataUpdated={onRowDataUpdated}
+          onCellContextMenu={openContextMenu}
+          onSelectionChanged={handleSelectionChange}
+          onRowDataUpdated={handleRowDataUpdated}
           animateRows={false}
           rowSelection={props.allowMultipleSelection ? "multiple" : "single"}
           rowMultiSelectWithClick={props.allowMultipleSelection}

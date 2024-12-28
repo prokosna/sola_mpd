@@ -3,9 +3,16 @@ import { useCallback, useEffect, useMemo, useRef } from "react";
 
 import { useIsTouchDevice } from "../../user_device";
 
+/**
+ * A custom hook for managing resizable panes.
+ *
+ * @param leftWidth - The initial width of the left pane.
+ * @param onPanelWidthUpdated - A function to update the panel width asynchronously.
+ * @returns An object containing the current state and handlers for the resizable pane.
+ */
 export function useResizablePane(
   leftWidth: number | undefined,
-  onChangeWidth: (left: number) => Promise<void>,
+  onPanelWidthUpdated: (left: number) => Promise<void>,
 ) {
   const isTouchDevice = useIsTouchDevice();
 
@@ -13,12 +20,12 @@ export function useResizablePane(
     undefined,
   );
 
-  const leftPaneWidth = useMemo(
+  const leftPaneWidthStyle = useMemo(
     () => (leftWidth !== undefined ? `${leftWidth}px` : undefined),
     [leftWidth],
   );
 
-  const rightPaneWidth = useMemo(
+  const rightPaneWidthStyle = useMemo(
     () => (leftWidth !== undefined ? `calc(100% - ${leftWidth}px)` : undefined),
     [leftWidth],
   );
@@ -29,7 +36,7 @@ export function useResizablePane(
     }
   }, [isTouchDevice]);
 
-  const onChange = useCallback(
+  const handlePanelResize = useCallback(
     (left: number, _right: number) => {
       if (leftWidth === undefined) {
         return;
@@ -39,16 +46,17 @@ export function useResizablePane(
         timeoutId.current = undefined;
       }
       timeoutId.current = setTimeout(() => {
-        onChangeWidth(left);
+        onPanelWidthUpdated(left);
       }, 100);
     },
-    [leftWidth, onChangeWidth],
+    [leftWidth, onPanelWidthUpdated],
   );
 
   return {
-    isReady: leftPaneWidth !== undefined && rightPaneWidth !== undefined,
-    leftPaneWidth,
-    rightPaneWidth,
-    onChange,
+    isReady:
+      leftPaneWidthStyle !== undefined && rightPaneWidthStyle !== undefined,
+    leftPaneWidthStyle,
+    rightPaneWidthStyle,
+    handlePanelResize,
   };
 }

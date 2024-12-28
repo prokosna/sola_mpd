@@ -1,6 +1,6 @@
-import { useToast } from "@chakra-ui/react";
 import { Plugin_PluginType } from "@sola_mpd/domain/src/models/plugin/plugin_pb.js";
 
+import { useNotification } from "../../../lib/chakra/hooks/useNotification";
 import { ContextMenuItem } from "../../context_menu";
 import {
   getTargetSongsForContextMenu,
@@ -11,18 +11,26 @@ import {
   useSetPluginExecutionPropsState,
   useSetIsPluginExecutionModalOpenState,
   useIsPreviousPluginStillRunningState,
-} from "../states/execution";
+} from "../states/executionState";
 import { usePluginState } from "../states/pluginState";
 
+/**
+ * Custom hook to generate context menu items for plugins.
+ *
+ * @param pluginType - The type of plugin to generate menu items for.
+ * @param songTableKeyType - The key type used in the song table.
+ * @returns An array of ContextMenuItem objects for the specified plugin type.
+ */
 export function usePluginContextMenuItems(
   pluginType: Plugin_PluginType,
   songTableKeyType: SongTableKeyType,
 ): ContextMenuItem<SongTableContextMenuItemParams>[] {
-  const toast = useToast();
+  const notify = useNotification();
+
   const pluginState = usePluginState();
+  const isPreviousPluginStillRunning = useIsPreviousPluginStillRunningState();
   const setPluginExecutionProps = useSetPluginExecutionPropsState();
   const setIsPluginExecutionModalOpen = useSetIsPluginExecutionModalOpenState();
-  const isPreviousPluginStillRunning = useIsPreviousPluginStillRunningState();
 
   const items: ContextMenuItem<SongTableContextMenuItemParams>[] = [];
   for (const plugin of pluginState?.plugins || []) {
@@ -39,7 +47,7 @@ export function usePluginContextMenuItems(
           return;
         }
         if (isPreviousPluginStillRunning) {
-          toast({
+          notify({
             status: "warning",
             title: "Previous plugin is still running",
             description: "Please wait until the previous plugin finishes.",

@@ -4,16 +4,22 @@ import { IoPlaySkipBack } from "react-icons/io5";
 
 import { useMpdClientState } from "../../mpd";
 import { useCurrentMpdProfileState } from "../../profile";
-import { useCurrentSongState } from "../states/song";
+import { useCurrentSongState } from "../states/playerSongState";
 
 import { PlayerControlsButton } from "./PlayerControlsButton";
 
+/**
+ * Renders a button to play the previous track in the player controls.
+ * This component handles the "Previous" functionality in the music player.
+ *
+ * @returns A PlayerControlsButton component for playing the previous track
+ */
 export function PlayerControlsButtonPrevious() {
   const profile = useCurrentMpdProfileState();
   const mpdClient = useMpdClientState();
   const currentSong = useCurrentSongState();
 
-  const onClick = useCallback(async () => {
+  const onButtonClicked = useCallback(async () => {
     if (profile === undefined || mpdClient === undefined) {
       return;
     }
@@ -32,7 +38,7 @@ export function PlayerControlsButtonPrevious() {
   const props = {
     label: "Play previous",
     isDisabled: currentSong === undefined,
-    onClick,
+    onButtonClicked,
     icon: <IoPlaySkipBack size={"24"}></IoPlaySkipBack>,
     variant: "ghost",
   };

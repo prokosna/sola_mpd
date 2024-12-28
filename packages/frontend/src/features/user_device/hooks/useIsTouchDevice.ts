@@ -1,6 +1,10 @@
 import { useState, useEffect } from "react";
 
-export function useIsTouchDevice() {
+/**
+ * A custom hook that detects if the device supports touch events.
+ * @returns {boolean} True if the device has touch support, false otherwise.
+ */
+export function useIsTouchDevice(): boolean {
   const [hasTouched, setHasTouched] = useState(false);
 
   useEffect(() => {

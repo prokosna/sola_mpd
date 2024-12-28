@@ -20,7 +20,7 @@ export function LandingPage() {
   }, [navigate, profile]);
 
   const mpdProfileFormProps = {
-    onComplete: useCallback(async () => {
+    onProfileCreated: useCallback(async () => {
       navigate(ROUTE_HOME_PLAY_QUEUE);
     }, [navigate]),
   };

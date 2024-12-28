@@ -1,9 +1,10 @@
 import { BrowserState } from "@sola_mpd/domain/src/models/browser_pb.js";
-import { useAtomValue } from "jotai";
+import { useAtomValue, useSetAtom } from "jotai";
 import { atomWithDefault, useResetAtom } from "jotai/utils";
 import { useCallback } from "react";
 
 import { atomWithSync } from "../../../lib/jotai/atomWithSync";
+import { UpdateMode } from "../../../types/stateTypes";
 
 import { browserStateRepositoryAtom } from "./browserStateRepository";
 
@@ -12,7 +13,8 @@ const browserStateAtom = atomWithDefault(async (get) => {
   const browserState = await repository.fetch();
   return browserState;
 });
-const browserStateSyncAtom = atomWithSync(browserStateAtom);
+
+export const browserStateSyncAtom = atomWithSync(browserStateAtom);
 
 /**
  * Returns the current browser state.
@@ -20,24 +22,28 @@ const browserStateSyncAtom = atomWithSync(browserStateAtom);
  * The state is automatically updated if the stored state changes.
  * @returns The current browser state.
  */
-export function useBrowserState(): BrowserState {
+export function useBrowserState() {
   return useAtomValue(browserStateSyncAtom);
 }
 
 /**
- * Returns a function to call to save a state.
- *
- * The state is automatically persisted.
- * @returns Function to call to save a state.
+ * Returns a function to update browser state.
+ * @returns Function to call to update a state.
  */
-export function useSaveBrowserState(): (state: BrowserState) => Promise<void> {
+export function useUpdateBrowserState() {
+  const setBrowserState = useSetAtom(browserStateAtom);
   const repository = useAtomValue(browserStateRepositoryAtom);
 
   return useCallback(
-    async (state: BrowserState): Promise<void> => {
-      await repository.save(state);
+    async (state: BrowserState, mode: UpdateMode) => {
+      if (mode & UpdateMode.LOCAL_STATE) {
+        setBrowserState(Promise.resolve(state));
+      }
+      if (mode & UpdateMode.PERSIST) {
+        await repository.save(state);
+      }
     },
-    [repository],
+    [setBrowserState, repository],
   );
 }
 

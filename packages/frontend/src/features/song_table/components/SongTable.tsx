@@ -9,13 +9,13 @@ import { ContextMenu, ContextMenuSection } from "../../context_menu";
 import { useIsCompactMode, useIsTouchDevice } from "../../user_device";
 import { useAgGridReactData } from "../hooks/useAgGridReactData";
 import { useGetBoldClassForPlayingSong } from "../hooks/useGetBoldClassForPlayingSong";
+import { useHandleColumnsUpdated } from "../hooks/useHandleColumnsUpdated";
+import { useHandleRowDataUpdated } from "../hooks/useHandleRowDataUpdated";
+import { useHandleRowDoubleClick } from "../hooks/useHandleRowDoubleClick";
+import { useHandleRowDragEnded } from "../hooks/useHandleRowDragEnded";
+import { useHandleSelectionChange } from "../hooks/useHandleSelectionChange";
 import { useKeyboardShortcutSelectAll } from "../hooks/useKeyboardShortcutSelectAll";
-import { useOnColumnsUpdated } from "../hooks/useOnColumnsUpdated";
-import { useOnContextMenuOpened } from "../hooks/useOnContextMenuOpened";
-import { useOnRowDataUpdated } from "../hooks/useOnRowDataUpdated";
-import { useOnRowDoubleClicked } from "../hooks/useOnRowDoubleClicked";
-import { useOnRowDragEnded } from "../hooks/useOnRowDragEnded";
-import { useOnSelectionChanged } from "../hooks/useOnSelectionChanged";
+import { useOpenContextMenu } from "../hooks/useOpenContextMenu";
 import { useSongsMap } from "../hooks/useSongsMap";
 import { useSongsWithIndex } from "../hooks/useSongsWithIndex";
 import {
@@ -38,11 +38,11 @@ export type SongTableProps = {
   isGlobalFilterEnabled: boolean;
   contextMenuSections: ContextMenuSection<SongTableContextMenuItemParams>[];
   isLoading: boolean;
-  reorderSongs: (orderedSongs: Song[]) => Promise<void>;
-  updateColumns: (updatedColumns: SongTableColumn[]) => Promise<void>;
-  selectSongs: (selectedSongs: Song[]) => Promise<void>;
-  doubleClickSong: (clickedSong: Song, songs: Song[]) => Promise<void>;
-  completeLoading: () => Promise<void>;
+  onSongsReordered: (orderedSongs: Song[]) => Promise<void>;
+  onColumnsUpdated: (updatedColumns: SongTableColumn[]) => Promise<void>;
+  onSongsSelected: (selectedSongs: Song[]) => Promise<void>;
+  onSongDoubleClick: (clickedSong: Song, songs: Song[]) => Promise<void>;
+  onLoadingCompleted: () => Promise<void>;
 };
 
 export function SongTable(props: SongTableProps): JSX.Element {
@@ -57,7 +57,7 @@ export function SongTable(props: SongTableProps): JSX.Element {
   const songsMap = useSongsMap(songsWithIndex, props.songTableKeyType);
 
   // Context menu
-  const onContextMenuOpened = useOnContextMenuOpened(
+  const openContextMenu = useOpenContextMenu(
     props.id,
     props.songTableKeyType,
     songsMap,
@@ -66,7 +66,7 @@ export function SongTable(props: SongTableProps): JSX.Element {
   );
 
   // Keyboard shortcut
-  useKeyboardShortcutSelectAll(ref, gridRef, songsMap, props.selectSongs);
+  useKeyboardShortcutSelectAll(ref, gridRef, songsMap, props.onSongsSelected);
 
   // AgGridReact format
   const { rowData, columnDefs } = useAgGridReactData(
@@ -91,28 +91,26 @@ export function SongTable(props: SongTableProps): JSX.Element {
   }, []);
 
   // Handlers
-  const onSortChanged = useOnColumnsUpdated(
+  const handleColumnsUpdated = useHandleColumnsUpdated(
     props.columns,
     props.isSortingEnabled,
-    props.updateColumns,
+    props.onColumnsUpdated,
   );
-  const onColumnsMoved = useOnColumnsUpdated(
-    props.columns,
-    props.isSortingEnabled,
-    props.updateColumns,
-  );
-  const onRowDragEnded = useOnRowDragEnded(songsMap, props.reorderSongs);
-  const onSelectionChanged = useOnSelectionChanged(songsMap, props.selectSongs);
-  const onRowDoubleClicked = useOnRowDoubleClicked(
+  const handleRowDragEnded = useHandleRowDragEnded(
     songsMap,
-    props.doubleClickSong,
+    props.onSongsReordered,
   );
-  const onColumnsResized = useOnColumnsUpdated(
-    props.columns,
-    props.isSortingEnabled,
-    props.updateColumns,
+  const handleSelectionChange = useHandleSelectionChange(
+    songsMap,
+    props.onSongsSelected,
   );
-  const onRowDataUpdated = useOnRowDataUpdated(props.completeLoading);
+  const handleRowDoubleClick = useHandleRowDoubleClick(
+    songsMap,
+    props.onSongDoubleClick,
+  );
+  const handleRowDataUpdated = useHandleRowDataUpdated(
+    props.onLoadingCompleted,
+  );
 
   // Color mode
   const { colorMode } = useColorMode();
@@ -130,14 +128,14 @@ export function SongTable(props: SongTableProps): JSX.Element {
           ref={gridRef}
           rowData={rowData}
           columnDefs={columnDefs}
-          onSortChanged={!isCompact ? onSortChanged : undefined}
-          onColumnMoved={!isCompact ? onColumnsMoved : undefined}
-          onRowDragEnd={onRowDragEnded}
-          onRowDoubleClicked={onRowDoubleClicked}
-          onColumnResized={!isCompact ? onColumnsResized : undefined}
-          onCellContextMenu={onContextMenuOpened}
-          onSelectionChanged={onSelectionChanged}
-          onRowDataUpdated={onRowDataUpdated}
+          onSortChanged={!isCompact ? handleColumnsUpdated : undefined}
+          onColumnMoved={!isCompact ? handleColumnsUpdated : undefined}
+          onRowDragEnd={handleRowDragEnded}
+          onRowDoubleClicked={handleRowDoubleClick}
+          onColumnResized={!isCompact ? handleColumnsUpdated : undefined}
+          onCellContextMenu={openContextMenu}
+          onSelectionChanged={handleSelectionChange}
+          onRowDataUpdated={handleRowDataUpdated}
           animateRows={true}
           colResizeDefault={"shift"}
           rowSelection={"multiple"}

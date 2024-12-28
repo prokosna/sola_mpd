@@ -6,6 +6,14 @@ import { PlayerObserver } from "./PlayerObserver";
 import { PlayerSeekBar } from "./PlayerSeekBar";
 import { PlayerSongInformationCompact } from "./PlayerSongInformationCompact";
 
+/**
+ * Renders a compact version of the player component.
+ * This component includes a seek bar, duration display, song information,
+ * and controls, all arranged in a compact layout suitable for smaller screens
+ * or minimized views.
+ *
+ * @returns JSX.Element The compact player component
+ */
 export function PlayerCompact() {
   return (
     <>

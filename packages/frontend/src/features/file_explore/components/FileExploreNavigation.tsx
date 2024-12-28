@@ -5,8 +5,16 @@ import { FullWidthSkeleton } from "../../loading";
 import { useCustomThemes } from "../hooks/useCustomThemes";
 import { useFileExploreReactTreeProps } from "../hooks/useFileExploreReactTreeProps";
 
+/**
+ * FileExploreNavigation component for rendering the navigation tree in the file explorer.
+ *
+ * This component uses the ReactTree to display a hierarchical structure of folders.
+ * It handles folder selection and applies custom themes based on the current color mode.
+ *
+ * @returns {JSX.Element} The rendered FileExploreNavigation component
+ */
 export function FileExploreNavigation() {
-  const { nodes, onSelectFolder } = useFileExploreReactTreeProps();
+  const { nodes, handleFolderSelected } = useFileExploreReactTreeProps();
   const customThemes = useCustomThemes();
 
   const { colorMode } = useColorMode();
@@ -28,7 +36,7 @@ export function FileExploreNavigation() {
       >
         <ReactTree
           nodes={nodes}
-          onToggleSelectedNodes={onSelectFolder}
+          onToggleSelectedNodes={handleFolderSelected}
           showEmptyItems={false}
           theme={colorMode === "light" ? "brand" : "brandDark"}
           themes={customThemes}

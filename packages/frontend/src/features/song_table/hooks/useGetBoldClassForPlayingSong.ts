@@ -8,7 +8,7 @@ import {
   SongTableKeyType,
   SongTableRowData,
 } from "../types/songTableTypes";
-import { getSongTableKey } from "../utils/tableUtils";
+import { getSongTableKey } from "../utils/songTableTableUtils";
 
 /**
  * Uses a callback to get a bold text CSS class if a given row is in playing.

@@ -20,6 +20,15 @@ import { MpdProfileForm, useMpdProfileState } from "../../profile";
 
 import { ProfilesProfile } from "./ProfilesProfile";
 
+/**
+ * Profiles component for managing MPD profiles.
+ *
+ * This component displays a list of existing MPD profiles and provides
+ * functionality to add new profiles. It uses the MpdProfileState and
+ * renders a table of profiles with options to edit or delete them.
+ *
+ * @returns JSX element representing the Profiles component
+ */
 export function Profiles() {
   const mpdProfileState = useMpdProfileState();
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -59,7 +68,7 @@ export function Profiles() {
         <ModalContent>
           <ModalBody p={0}>
             <MpdProfileForm
-              onComplete={async () => {
+              onProfileCreated={async () => {
                 onClose();
               }}
             ></MpdProfileForm>

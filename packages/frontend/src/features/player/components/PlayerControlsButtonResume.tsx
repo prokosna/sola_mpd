@@ -5,18 +5,25 @@ import { IoPause, IoPlay } from "react-icons/io5";
 
 import { useMpdClientState } from "../../mpd";
 import { useCurrentMpdProfileState } from "../../profile";
-import { useCurrentSongState } from "../states/song";
-import { usePlayerStatusState } from "../states/status";
+import { useCurrentSongState } from "../states/playerSongState";
+import { usePlayerStatusState } from "../states/playerStatusState";
 
 import { PlayerControlsButton } from "./PlayerControlsButton";
 
+/**
+ * Renders a button to play or pause the current track in the player controls.
+ * This component handles the "Play/Pause" functionality in the music player,
+ * toggling between play and pause states based on the current playback status.
+ *
+ * @returns A PlayerControlsButton component for playing or pausing the current track
+ */
 export function PlayerControlsButtonResume() {
   const profile = useCurrentMpdProfileState();
   const mpdClient = useMpdClientState();
   const currentSong = useCurrentSongState();
   const playerStatus = usePlayerStatusState();
 
-  const onClick = useCallback(async () => {
+  const onButtonClicked = useCallback(async () => {
     if (profile === undefined || mpdClient === undefined) {
       return;
     }
@@ -42,7 +49,7 @@ export function PlayerControlsButtonResume() {
         ? "Pause"
         : "Resume",
     isDisabled: currentSong === undefined,
-    onClick,
+    onButtonClicked,
     icon:
       playerStatus?.playbackState === MpdPlayerStatus_PlaybackState.PLAY ? (
         <IoPause size={"24"}></IoPause>

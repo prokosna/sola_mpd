@@ -4,7 +4,7 @@ import {
   ROUTE_HOME,
   ROUTE_HOME_BROWSER,
   ROUTE_HOME_FILE_EXPLORE,
-  ROUTE_HOME_FULL_TEXT_SEARCH,
+  ROUTE_HOME_ALL_SONGS,
   ROUTE_HOME_PLAYLIST,
   ROUTE_HOME_PLAY_QUEUE,
   ROUTE_HOME_PLUGIN,
@@ -15,9 +15,9 @@ import {
 import { ErrorPage } from "./pages/ErrorPage";
 import { RootLayout } from "./pages/RootLayout";
 import { RootPage } from "./pages/RootPage";
+import { AllSongsPage } from "./pages/home/AllSongsPage";
 import { BrowserPage } from "./pages/home/BrowserPage";
 import { FileExplorePage } from "./pages/home/FileExplorePage";
-import { FullTextSearchPage } from "./pages/home/FullTextSearchPage";
 import { HomeLayout } from "./pages/home/HomeLayout";
 import { PlayQueuePage } from "./pages/home/PlayQueuePage";
 import { PlaylistPage } from "./pages/home/PlaylistPage";
@@ -69,8 +69,8 @@ const router = createBrowserRouter([
             element: <SettingsPage />,
           },
           {
-            path: ROUTE_HOME_FULL_TEXT_SEARCH.split("/").filter(Boolean).pop(),
-            element: <FullTextSearchPage />,
+            path: ROUTE_HOME_ALL_SONGS.split("/").filter(Boolean).pop(),
+            element: <AllSongsPage />,
           },
         ],
       },

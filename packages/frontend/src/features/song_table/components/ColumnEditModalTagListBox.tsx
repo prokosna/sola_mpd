@@ -1,19 +1,29 @@
 import { Box, Button, List, ListItem, Text } from "@chakra-ui/react";
 import { Song_MetadataTag } from "@sola_mpd/domain/src/models/song_pb.js";
 
-import { convertSongMetadataTagToDisplayName } from "../utils/tableUtils";
+import { convertSongMetadataTagToDisplayName } from "../utils/songTableTableUtils";
 
 export type ColumnEditModalTagListBoxProps = {
   title: string;
   selectedTag?: Song_MetadataTag;
   tags: Song_MetadataTag[];
-  selectTag: (tag: Song_MetadataTag) => void;
+  handleTagSelected: (tag: Song_MetadataTag) => void;
 };
 
+/**
+ * A component that displays a list of song metadata tags for column editing.
+ *
+ * @param props - The properties for the ColumnEditModalTagListBox component
+ * @param props.title - The title of the list box
+ * @param props.selectedTag - The currently selected tag (optional)
+ * @param props.tags - An array of Song_MetadataTag to display
+ * @param props.handleTagSelected - A function to handle tag selection
+ * @returns JSX element representing the ColumnEditModalTagListBox
+ */
 export function ColumnEditModalTagListBox(
   props: ColumnEditModalTagListBoxProps,
 ): JSX.Element {
-  const { title, selectedTag, tags, selectTag: onClick } = props;
+  const { title, selectedTag, tags, handleTagSelected } = props;
 
   return (
     <>
@@ -31,7 +41,7 @@ export function ColumnEditModalTagListBox(
                   _hover={{
                     variant: "outline",
                   }}
-                  onClick={() => onClick(tag)}
+                  onClick={() => handleTagSelected(tag)}
                 >
                   {convertSongMetadataTagToDisplayName(tag)}
                 </Button>

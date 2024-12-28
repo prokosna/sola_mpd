@@ -4,6 +4,10 @@ export { SongTable, type SongTableProps } from "./components/SongTable";
 
 // Hooks
 export { useColumnEditModalProps } from "./hooks/useColumnEditModalProps";
+export { useHandleSongDoubleClick } from "./hooks/useHandleSongDoubleClick";
+
+// Services
+export { type SongTableStateRepository } from "./services/SongTableStateRepository";
 
 // States
 export {
@@ -12,32 +16,26 @@ export {
 } from "./states/selectedSongs";
 export {
   useSongTableState,
-  useSaveSongTableState,
+  useUpdateSongTableState,
 } from "./states/songTableState";
-
-// Atoms
-export { songTableStateRepositoryAtom } from "./states/songTableStateRepository";
 
 // Types
 export {
   type SongTableContextMenuItemParams,
-  SongTableKeyType as SongTableKeyType,
+  SongTableKeyType,
 } from "./types/songTableTypes";
 
-// Helpers
+// Utils
 export {
-  getSongTableKey as getTableKeyOfSong,
   getTargetSongsForContextMenu,
   convertSongMetadataTagToDisplayName,
   convertSongMetadataTagFromDisplayName,
   convertOrderingToOperations,
-} from "./utils/tableUtils";
+  getSongTableKey,
+} from "./utils/songTableTableUtils";
 export {
   getSongTableContextMenuAdd,
   getSongTableContextMenuAddToPlaylist,
   getSongTableContextMenuEditColumns,
   getSongTableContextMenuReplace,
-} from "./utils/menuItemUtils";
-
-// Services
-export { type SongTableStateRepository } from "./services/SongTableStateRepository";
+} from "./utils/songTableMenuItemUtils";

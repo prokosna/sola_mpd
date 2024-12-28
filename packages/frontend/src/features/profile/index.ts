@@ -6,7 +6,8 @@ export { MpdProfileSelector } from "./components/MpdProfileSelector";
 export {
   useCurrentMpdProfileState,
   useMpdProfileState,
-  useSetMpdProfileState,
+  useRefreshMpdProfileState,
+  useUpdateMpdProfileState,
 } from "./states/mpdProfileState";
 export { mpdProfileStateRepositoryAtom } from "./states/mpdProfileStateRepository";
 

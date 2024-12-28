@@ -2,6 +2,11 @@ import { Box, Text } from "@chakra-ui/react";
 
 import { useUserDeviceType } from "../../user_device";
 
+/**
+ * Renders the brand logo component.
+ * The logo is only displayed on large devices.
+ * @returns The BrandLogo component or null if not on a large device.
+ */
 export function BrandLogo() {
   const userDeviceType = useUserDeviceType();
 

@@ -2,11 +2,17 @@ import { VStack, useColorMode } from "@chakra-ui/react";
 import { Allotment } from "allotment";
 
 import { FullWidthSkeleton } from "../../loading";
-import { listBrowserSongMetadataTags } from "../helpers/filter";
-import { useBrowserFiltersState } from "../states/filters";
+import { useBrowserFiltersState } from "../states/browserFiltersState";
+import { listBrowserSongMetadataTags } from "../utils/browserFilterUtils";
 
 import { BrowserNavigationFilter } from "./BrowserNavigationFilter";
 
+/**
+ * Renders the navigation component for the browser feature.
+ * This component displays a list of filters for browsing music content.
+ * It uses the browser filters state to dynamically render filter components
+ * and handles the case when filters are not yet loaded.
+ */
 export function BrowserNavigation() {
   const browserFilters = useBrowserFiltersState();
   const { colorMode } = useColorMode();

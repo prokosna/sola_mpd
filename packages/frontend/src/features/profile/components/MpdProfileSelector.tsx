@@ -1,15 +1,21 @@
-import { Box, Select, useToast } from "@chakra-ui/react";
+import { Box, Select } from "@chakra-ui/react";
 
-import { useEnabledMpdDevice } from "../hooks/useEnabledMpdDevice";
-import { useOnChangeMpdProfile } from "../hooks/useOnChangeMpdProfile";
+import { useNotification } from "../../../lib/chakra/hooks/useNotification";
+import { useEnabledOutputDevice } from "../../output_devices";
+import { useChangeCurrentMpdProfile } from "../hooks/useChangeCurrentMpdProfile";
 import { useMpdProfileState } from "../states/mpdProfileState";
 
+/**
+ * Component for selecting an MPD profile.
+ * Displays a dropdown menu of available MPD profiles and allows the user to switch between them.
+ * @returns JSX.Element
+ */
 export function MpdProfileSelector() {
-  const toast = useToast();
+  const notify = useNotification();
 
   const mpdProfileState = useMpdProfileState();
-  const enabledOutputDevice = useEnabledMpdDevice();
-  const onChangeMpdProfile = useOnChangeMpdProfile();
+  const enabledOutputDevice = useEnabledOutputDevice();
+  const changeCurrentMpdProfile = useChangeCurrentMpdProfile();
 
   return (
     <>
@@ -20,9 +26,9 @@ export function MpdProfileSelector() {
         ) : (
           <Select
             value={mpdProfileState.currentProfile.name}
-            onChange={(e) => {
-              onChangeMpdProfile(e.target.value);
-              toast({
+            onChange={async (e) => {
+              await changeCurrentMpdProfile(e.target.value);
+              notify({
                 status: "info",
                 title: "MPD profile changed",
                 description: `MPD profile is changed to ${e.target.value}`,

@@ -1,19 +1,27 @@
-import { Button, useToast } from "@chakra-ui/react";
+import { Button } from "@chakra-ui/react";
 import { MpdRequest } from "@sola_mpd/domain/src/models/mpd/mpd_command_pb.js";
 import { useCallback } from "react";
 
+import { useNotification } from "../../../lib/chakra/hooks/useNotification";
 import { useMpdClientState } from "../../mpd";
 import { usePlayerStatusState } from "../../player";
 import { useCurrentMpdProfileState } from "../../profile";
 
+/**
+ * CardStatsDatabaseButton component renders a button that triggers an update of the MPD database.
+ * It uses MPD client, current profile, and player status to manage the update process.
+ * The component also provides user feedback through notifications.
+ *
+ * @returns {JSX.Element} A button component for updating the MPD database
+ */
 export function CardStatsDatabaseButton() {
-  const toast = useToast();
+  const notify = useNotification();
 
   const profile = useCurrentMpdProfileState();
   const mpdClient = useMpdClientState();
   const playerStatus = usePlayerStatusState();
 
-  const onClickDatabaseUpdateButton = useCallback(async () => {
+  const handleDatabaseUpdateButtonClick = useCallback(async () => {
     if (profile === undefined || mpdClient === undefined) {
       return;
     }
@@ -26,11 +34,12 @@ export function CardStatsDatabaseButton() {
         },
       }),
     );
-    toast({
+    notify({
+      status: "info",
       title: "Update MPD Database",
       description: "Database is now updating...",
     });
-  }, [mpdClient, profile, toast]);
+  }, [mpdClient, profile, notify]);
 
   return (
     <>
@@ -41,7 +50,7 @@ export function CardStatsDatabaseButton() {
         variant="outline"
         onClick={() => {
           if (!playerStatus?.isDatabaseUpdating) {
-            onClickDatabaseUpdateButton();
+            handleDatabaseUpdateButtonClick();
           }
         }}
       >

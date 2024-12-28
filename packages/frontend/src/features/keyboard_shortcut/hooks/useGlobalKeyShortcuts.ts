@@ -7,7 +7,14 @@ import { useCurrentMpdProfileState } from "../../profile";
 
 import { useInputKeyCombination } from "./useInputKeyCombination";
 
-export function useGlobalKeyShortcuts() {
+/**
+ * A custom hook that sets up global key shortcuts for media playback control.
+ * This hook listens for specific key combinations and triggers corresponding
+ * actions such as play/pause, next track, and previous track.
+ *
+ * @returns void
+ */
+export function useGlobalKeyShortcuts(): void {
   const mpdClient = useMpdClientState();
   const profile = useCurrentMpdProfileState();
   const playerStatus = usePlayerStatusState();

@@ -5,33 +5,42 @@ import { useCallback } from "react";
 
 import { useMpdClientState } from "../../mpd";
 import { useMpdProfileState } from "../states/mpdProfileState";
-import { ProfileInputs } from "../types/profileInputs";
+import { ProfileInput } from "../types/profileTypes";
+import { ValidationResult } from "../types/validationTypes";
+import { createValidationResult } from "../utils/validationUtils";
 
+/**
+ * Custom hook for validating MPD profile inputs.
+ * @returns A function that validates the provided profile inputs.
+ */
 export function useValidateMpdProfile() {
   const mpdClient = useMpdClientState();
   const mpdProfileState = useMpdProfileState();
 
   return useCallback(
-    async (inputs: ProfileInputs) => {
+    async (input: ProfileInput): Promise<ValidationResult> => {
       if (mpdClient === undefined) {
-        return "MpdClient is not ready. Please make sure the background app is running.";
+        return createValidationResult(
+          false,
+          "MpdClient is not ready. Please make sure the background app is running.",
+        );
       }
 
       if (
         mpdProfileState?.profiles
           .map((profile) => profile.name)
-          .includes(inputs.name)
+          .includes(input.name)
       ) {
-        return `${inputs.name} is already used.`;
+        return createValidationResult(false, `${input.name} is already used.`);
       }
 
       try {
         const res = await mpdClient.command(
           new MpdRequest({
             profile: new MpdProfile({
-              name: inputs.name,
-              host: inputs.host,
-              port: inputs.port,
+              name: input.name,
+              host: input.host,
+              port: input.port,
             }),
             command: {
               case: "ping",
@@ -41,17 +50,20 @@ export function useValidateMpdProfile() {
         );
 
         if (res.command.case !== "ping") {
-          return `Invalid MPD response: ${res}`;
+          return createValidationResult(false, `Invalid MPD response: ${res}`);
         }
 
         const version = res.command.value.version;
         if (compareVersions(version, "0.21") < 0) {
-          return `MPD version is ${version}: Please use 0.21 or later.`;
+          return createValidationResult(
+            false,
+            `MPD version is ${version}: Please use 0.21 or later.`,
+          );
         }
 
-        return undefined;
+        return createValidationResult(true);
       } catch (err) {
-        return String(err);
+        return createValidationResult(false, String(err));
       }
     },
     [mpdClient, mpdProfileState?.profiles],

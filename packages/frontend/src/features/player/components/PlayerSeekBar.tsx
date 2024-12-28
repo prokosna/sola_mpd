@@ -4,9 +4,16 @@ import { useCallback, useRef } from "react";
 
 import { useMpdClientState } from "../../mpd";
 import { useCurrentMpdProfileState } from "../../profile";
-import { getElapsedTimePercentage } from "../helpers/player";
-import { usePlayerStatusState } from "../states/status";
+import { usePlayerStatusState } from "../states/playerStatusState";
+import { getElapsedTimePercentage } from "../utils/playerDisplayUtils";
 
+/**
+ * PlayerSeekBar component renders a slider for seeking through the current track.
+ * It displays the progress of the currently playing song and allows users to
+ * change the playback position by interacting with the slider.
+ *
+ * @returns A Slider component representing the seek bar of the player
+ */
 export function PlayerSeekBar() {
   const profile = useCurrentMpdProfileState();
   const mpdClient = useMpdClientState();
@@ -15,7 +22,7 @@ export function PlayerSeekBar() {
   const elapsedTimePercentage = getElapsedTimePercentage(playerStatus);
 
   const lastSeekClicked = useRef(new Date());
-  const onClick = useCallback(
+  const handleSeekBarClick = useCallback(
     async (value: number) => {
       if (profile === undefined || mpdClient === undefined) {
         return;
@@ -68,7 +75,7 @@ export function PlayerSeekBar() {
       value={elapsedTimePercentage}
       colorScheme="brand"
       onChange={(v) => {
-        onClick(v);
+        handleSeekBarClick(v);
       }}
     >
       <SliderTrack h="10px">

@@ -13,7 +13,7 @@ import {
 } from "@chakra-ui/react";
 import { Song_MetadataTag } from "@sola_mpd/domain/src/models/song_pb.js";
 import { SongTableColumn } from "@sola_mpd/domain/src/models/song_table_pb.js";
-import { SongUtils } from "@sola_mpd/domain/src/utils/SongUtils.js";
+import { listAllSongMetadataTags } from "@sola_mpd/domain/src/utils/songUtils.js";
 import { useCallback, useEffect, useState } from "react";
 import { IoChevronBack, IoChevronForward } from "react-icons/io5";
 
@@ -22,17 +22,27 @@ import {
   ensureTagsContainedInColumns,
   getAverageWidthFlex,
   normalizeSongTableColumns,
-} from "../utils/columnUtils";
+} from "../utils/songTableColumnUtils";
 
 import { ColumnEditModalTagListBox } from "./ColumnEditModalTagListBox";
 
 export type ColumnEditModalProps = {
   columns: SongTableColumn[];
   isOpen: boolean;
-  updateColumns: (newColumns: SongTableColumn[]) => Promise<void>;
-  disposeModal: () => Promise<void>;
+  handleColumnsUpdated: (newColumns: SongTableColumn[]) => Promise<void>;
+  handleModalDisposed: () => Promise<void>;
 };
 
+/**
+ * A modal component for editing song table columns.
+ *
+ * @param props - The properties for the ColumnEditModal component
+ * @param props.columns - The current columns configuration
+ * @param props.isOpen - Boolean indicating if the modal is open
+ * @param props.handleColumnsUpdated - Function to handle column updates
+ * @param props.handleModalDisposed - Function to handle modal disposal
+ * @returns JSX element representing the ColumnEditModal
+ */
 export function ColumnEditModal(props: ColumnEditModalProps): JSX.Element {
   // Available tags in use
   const [activeTagsState, setActiveTagsState] = useState<Song_MetadataTag[]>(
@@ -43,12 +53,13 @@ export function ColumnEditModal(props: ColumnEditModalProps): JSX.Element {
       setActiveTagsState(props.columns.map((column) => column.tag));
     }
   }, [props.columns, props.isOpen]);
+
   const [selectedActiveTag, setSelectedActiveTag] = useState<
     Song_MetadataTag | undefined
   >(undefined);
 
   // Available tags not in use
-  const inactiveTags = SongUtils.listAllSongMetadataTags().filter(
+  const inactiveTags = listAllSongMetadataTags().filter(
     (v) => !activeTagsState.includes(v),
   );
   const [selectedInactiveTag, setSelectedInactiveTag] = useState<
@@ -56,21 +67,21 @@ export function ColumnEditModal(props: ColumnEditModalProps): JSX.Element {
   >(undefined);
 
   // Handlers
-  const onActiveTagSelected = useCallback((tag: Song_MetadataTag) => {
+  const handleActiveTagSelected = useCallback((tag: Song_MetadataTag) => {
     setSelectedActiveTag(tag);
     setSelectedInactiveTag(undefined);
   }, []);
-  const onInactiveTagSelected = useCallback((tag: Song_MetadataTag) => {
+  const handleInactiveTagSelected = useCallback((tag: Song_MetadataTag) => {
     setSelectedInactiveTag(tag);
     setSelectedActiveTag(undefined);
   }, []);
-  const onItemMovedToActive = useCallback(() => {
+  const handleItemMovedToActive = useCallback(() => {
     if (selectedInactiveTag !== undefined) {
       setActiveTagsState([...activeTagsState, selectedInactiveTag]);
       setSelectedInactiveTag(undefined);
     }
   }, [activeTagsState, selectedInactiveTag]);
-  const onItemMovedToInactive = useCallback(() => {
+  const handleItemMovedToInactive = useCallback(() => {
     if (selectedActiveTag !== undefined) {
       setActiveTagsState(
         activeTagsState.filter((tag) => tag !== selectedActiveTag),
@@ -79,7 +90,7 @@ export function ColumnEditModal(props: ColumnEditModalProps): JSX.Element {
     }
   }, [activeTagsState, selectedActiveTag]);
 
-  const onSubmit = useCallback(() => {
+  const handleSubmit = useCallback(() => {
     // Remove inactive tags from the columns.
     const normalizedColumns = normalizeSongTableColumns(
       props.columns.filter((column) => activeTagsState.includes(column.tag)),
@@ -98,7 +109,7 @@ export function ColumnEditModal(props: ColumnEditModalProps): JSX.Element {
       props.columns,
     );
 
-    props.updateColumns(newColumns);
+    props.handleColumnsUpdated(newColumns);
   }, [activeTagsState, props]);
 
   return (
@@ -108,8 +119,8 @@ export function ColumnEditModal(props: ColumnEditModalProps): JSX.Element {
         closeOnOverlayClick={false}
         isOpen={props.isOpen}
         onClose={() => {
-          if (props.disposeModal !== undefined) {
-            props.disposeModal();
+          if (props.handleModalDisposed !== undefined) {
+            props.handleModalDisposed();
           }
         }}
       >
@@ -124,19 +135,19 @@ export function ColumnEditModal(props: ColumnEditModalProps): JSX.Element {
                     title="Active Tags"
                     selectedTag={selectedActiveTag}
                     tags={activeTagsState}
-                    selectTag={onActiveTagSelected}
+                    handleTagSelected={handleActiveTagSelected}
                   ></ColumnEditModalTagListBox>
                 </VStack>
                 <VStack>
                   <IconButton
                     aria-label={"Move a selected item to inactive"}
                     icon={<IoChevronForward />}
-                    onClick={onItemMovedToInactive}
+                    onClick={handleItemMovedToInactive}
                   ></IconButton>
                   <IconButton
                     aria-label={"Move a selected item to active"}
                     icon={<IoChevronBack />}
-                    onClick={onItemMovedToActive}
+                    onClick={handleItemMovedToActive}
                   ></IconButton>
                 </VStack>
                 <VStack>
@@ -144,7 +155,7 @@ export function ColumnEditModal(props: ColumnEditModalProps): JSX.Element {
                     title="Inactive Tags"
                     selectedTag={selectedInactiveTag}
                     tags={inactiveTags}
-                    selectTag={onInactiveTagSelected}
+                    handleTagSelected={handleInactiveTagSelected}
                   ></ColumnEditModalTagListBox>
                 </VStack>
               </HStack>
@@ -152,10 +163,10 @@ export function ColumnEditModal(props: ColumnEditModalProps): JSX.Element {
           </ModalBody>
 
           <ModalFooter>
-            <Button colorScheme="brand" mr={3} onClick={onSubmit}>
+            <Button colorScheme="brand" mr={3} onClick={handleSubmit}>
               OK
             </Button>
-            <Button onClick={props.disposeModal} colorScheme="gray">
+            <Button onClick={props.handleModalDisposed} colorScheme="gray">
               Cancel
             </Button>
           </ModalFooter>

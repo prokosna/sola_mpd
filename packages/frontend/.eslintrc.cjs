@@ -10,25 +10,25 @@ const zonesRestrictOutsideOfFeatures = features.map((feature) => ({
     "Access to the features from outside of the features folder is only allowed through re-exporting in index.ts.",
 }));
 const zonesRestrictWithinFeatures = features.map((feature) => ({
-  from: path.join(__dirname, `./src/features/${feature}/!(actions|queries|index.ts)/**/*`),
-  target: path.join(__dirname, `./src/features/!(${feature})/!(states|atoms)/**/*`),
+  from: path.join(__dirname, `./src/features/${feature}/!(index.ts)/**/*`),
+  target: path.join(__dirname, `./src/features/!(${feature})/!(states)/**/*`),
   message:
     "Access to the features from other features is only allowed only through re-exporting in index.ts.",
 }));
 const zonesRestrictAccessFromStates = features.map((feature) => ({
   from: path.join(
     __dirname,
-    `./src/features/${feature}/!(states|atoms|index.ts)/**/*`,
+    `./src/features/${feature}/!(states|index.ts)/**/*`,
   ),
-  target: [path.join(__dirname, `./src/features/!(${feature})/(states|atoms)/**/*`)],
+  target: [path.join(__dirname, `./src/features/!(${feature})/states/**/*`)],
   message:
     "Only access to index.ts or states of each feature is allowed from other features' states.",
 }));
 const zonesRestrictAccessToInfrastructure = features.map((feature) => ({
   from: path.join(__dirname, "./src/infrastructure/**/*"),
   target: path.join(__dirname, `./src/features/${feature}/**/*`),
-  message: "Features can't access to the infrastructure layer."
-}))
+  message: "Features can't access to the infrastructure layer.",
+}));
 
 module.exports = {
   extends: ["../../.eslintrc.json", "plugin:react-hooks/recommended"],

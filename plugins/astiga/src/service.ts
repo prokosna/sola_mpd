@@ -3,7 +3,7 @@ import {
   PluginExecuteResponse_Status,
 } from "@sola_mpd/domain/src/models/plugin/plugin_pb.js";
 import { Song, Song_MetadataTag } from "@sola_mpd/domain/src/models/song_pb.js";
-import { SongUtils } from "@sola_mpd/domain/src/utils/SongUtils.js";
+import { getSongMetadataAsString } from "@sola_mpd/domain/src/utils/songUtils.js";
 
 import { AstigaClient } from "./astiga.js";
 import { sleep } from "./utils.js";
@@ -44,10 +44,7 @@ export async function* syncWithAstiga(
   // Sync
   const total = diffSongs.length;
   for (const [index, song] of diffSongs.entries()) {
-    const title = SongUtils.getSongMetadataAsString(
-      song,
-      Song_MetadataTag.TITLE,
-    );
+    const title = getSongMetadataAsString(song, Song_MetadataTag.TITLE);
     yield new PluginExecuteResponse({
       message: `(${index + 1}/${total}) Adding "${title}" to "${playlistName}"`,
       progressPercentage: Math.floor(((index + 1) / total) * 100),

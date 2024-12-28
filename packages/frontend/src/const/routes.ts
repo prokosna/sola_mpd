@@ -7,4 +7,4 @@ export const ROUTE_HOME_FILE_EXPLORE = "/home/file_explore";
 export const ROUTE_HOME_SEARCH = "/home/search";
 export const ROUTE_HOME_PLUGIN = "/home/plugin";
 export const ROUTE_HOME_SETTINGS = "/home/settings";
-export const ROUTE_HOME_FULL_TEXT_SEARCH = "/home/full_text_search";
+export const ROUTE_HOME_ALL_SONGS = "/home/all_songs";

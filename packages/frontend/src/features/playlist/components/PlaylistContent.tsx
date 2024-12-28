@@ -1,39 +1,66 @@
 import { Box } from "@chakra-ui/react";
-import { Song } from "@sola_mpd/domain/src/models/song_pb.js";
-import { useRef, useState } from "react";
+import { SongTableColumn } from "@sola_mpd/domain/src/models/song_table_pb.js";
+import { useCallback, useState } from "react";
 
+import { UpdateMode } from "../../../types/stateTypes";
 import { CenterSpinner } from "../../loading";
 import {
   ColumnEditModal,
   SongTable,
-  useCommonColumnEditModalProps,
+  useColumnEditModalProps,
+  useSongTableState,
+  useUpdateSongTableState,
 } from "../../song_table";
-import { usePlaylistSelectModalProps } from "../hooks/usePlaylistSelectModalProps";
+import { usePlaylistSelectModal } from "../hooks/usePlaylistSelectModalProps";
 import { usePlaylistSongTableProps } from "../hooks/usePlaylistSongTableProps";
 
 import { PlaylistSelectModal } from "./PlaylistSelectModal";
 
+/**
+ * PlaylistContent component for displaying the content of the playlist.
+ *
+ * This component renders the main content area of the playlist, including
+ * the song table, playlist select modal, and column edit modal. It manages
+ * the state for these components and handles interactions such as updating
+ * columns and adding songs to playlists.
+ *
+ * @returns The rendered PlaylistContent component
+ */
 export function PlaylistContent() {
-  const songsToAddToPlaylistRef = useRef<Song[]>([]);
-  const [isOpenPlaylistSelectModal, setIsOpenPlaylistSelectModal] =
-    useState(false);
-  const [isOpenColumnEditModal, setIsOpenColumnEditModal] = useState(false);
+  const songTableState = useSongTableState();
+  const updateSongTableState = useUpdateSongTableState();
+
+  const [isColumnEditModalOpen, setIsColumnEditModalOpen] = useState(false);
+
+  const {
+    songsToAddToPlaylistRef,
+    setIsPlaylistSelectModalOpen,
+    playlistSelectModalProps,
+  } = usePlaylistSelectModal();
 
   const songTableProps = usePlaylistSongTableProps(
     songsToAddToPlaylistRef,
-    setIsOpenPlaylistSelectModal,
-    setIsOpenColumnEditModal,
+    setIsPlaylistSelectModalOpen,
+    setIsColumnEditModalOpen,
   );
 
-  const playlistSelectModalProps = usePlaylistSelectModalProps(
-    isOpenPlaylistSelectModal,
-    songsToAddToPlaylistRef,
-    setIsOpenPlaylistSelectModal,
+  const onColumnsUpdated = useCallback(
+    async (columns: SongTableColumn[]) => {
+      const newSongTableState = songTableState.clone();
+      newSongTableState.columns = columns;
+      await updateSongTableState(
+        newSongTableState,
+        UpdateMode.LOCAL_STATE | UpdateMode.PERSIST,
+      );
+    },
+    [songTableState, updateSongTableState],
   );
-
-  const columnEditModalProps = useCommonColumnEditModalProps(
-    isOpenColumnEditModal,
-    setIsOpenColumnEditModal,
+  const columnEditModalProps = useColumnEditModalProps(
+    isColumnEditModalOpen,
+    songTableState.columns,
+    setIsColumnEditModalOpen,
+    onColumnsUpdated,
+    async () => {},
   );
 
   if (songTableProps === undefined || columnEditModalProps === undefined) {

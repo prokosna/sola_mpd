@@ -1,4 +1,4 @@
-import { IconButton, Td, Tr, useToast } from "@chakra-ui/react";
+import { IconButton, Td, Tr } from "@chakra-ui/react";
 import {
   MpdProfile,
   MpdProfileState,
@@ -6,7 +6,9 @@ import {
 import { useCallback } from "react";
 import { IoTrash } from "react-icons/io5";
 
-import { useSetMpdProfileState } from "../../profile";
+import { useNotification } from "../../../lib/chakra/hooks/useNotification";
+import { UpdateMode } from "../../../types/stateTypes";
+import { useUpdateMpdProfileState } from "../../profile";
 
 export type ProfilesProfileProps = {
   index: number;
@@ -14,13 +16,27 @@ export type ProfilesProfileProps = {
   mpdProfileState: MpdProfileState;
 };
 
+/**
+ * ProfilesProfile component for rendering individual MPD profile entries.
+ *
+ * This component displays a single MPD profile in a table row format,
+ * including the profile's name, host, and port. It also provides
+ * functionality to delete the profile.
+ *
+ * @param props - The properties for the ProfilesProfile component
+ * @param props.index - The index of the profile in the list
+ * @param props.profile - The MpdProfile object containing profile details
+ * @param props.mpdProfileState - The current state of all MPD profiles
+ * @returns JSX element representing a single profile row
+ */
 export function ProfilesProfile(props: ProfilesProfileProps) {
   const { index, profile, mpdProfileState } = props;
 
-  const toast = useToast();
-  const setMpdProfileState = useSetMpdProfileState();
+  const notify = useNotification();
 
-  const onDelete = useCallback(() => {
+  const updateMpdProfileState = useUpdateMpdProfileState();
+
+  const handleProfileDeleted = useCallback(() => {
     const newMpdProfileState = mpdProfileState.clone();
     const index = newMpdProfileState.profiles.findIndex(
       (p) => p.name === profile.name,
@@ -29,13 +45,16 @@ export function ProfilesProfile(props: ProfilesProfileProps) {
       return;
     }
     newMpdProfileState.profiles.splice(index, 1);
-    setMpdProfileState(newMpdProfileState);
-    toast({
+    updateMpdProfileState(
+      newMpdProfileState,
+      UpdateMode.LOCAL_STATE | UpdateMode.PERSIST,
+    );
+    notify({
       status: "success",
       title: "Profile successfully deleted",
       description: `${profile.name} profile has been deleted.`,
     });
-  }, [mpdProfileState, profile.name, toast, setMpdProfileState]);
+  }, [mpdProfileState, notify, profile.name, updateMpdProfileState]);
 
   return (
     <>
@@ -50,7 +69,7 @@ export function ProfilesProfile(props: ProfilesProfileProps) {
               aria-label="Delete"
               size="xs"
               icon={<IoTrash />}
-              onClick={onDelete}
+              onClick={handleProfileDeleted}
             />
           </Td>
         ) : (

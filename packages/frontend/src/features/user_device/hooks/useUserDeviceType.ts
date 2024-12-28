@@ -2,6 +2,10 @@ import { useState, useEffect } from "react";
 
 type UserDeviceType = "large" | "middle" | "small";
 
+/**
+ * A custom hook that returns the current user device type based on window width.
+ * @returns {UserDeviceType} The current device type: "large", "middle", or "small".
+ */
 export function useUserDeviceType(): UserDeviceType {
   const getDeviceType = (width: number): UserDeviceType => {
     if (width < 520) {

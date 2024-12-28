@@ -30,7 +30,10 @@ import {
   Song_MetadataValue,
 } from "@sola_mpd/domain/src/models/song_pb.js";
 import { DeepMap } from "@sola_mpd/domain/src/utils/DeepMap.js";
-import { MpdUtils } from "@sola_mpd/domain/src/utils/MpdUtils.js";
+import {
+  convertConditionsToString,
+  convertSongMetadataTagToMpdTag,
+} from "@sola_mpd/domain/src/utils/mpdUtils.js";
 import dayjs from "dayjs";
 import mpd, { MPD } from "mpd2";
 
@@ -587,18 +590,16 @@ class MpdClient {
 
       // Database
       case "list": {
-        const tag = MpdUtils.convertSongMetadataTagToMpdTag(
-          req.command.value.tag,
-        );
+        const tag = convertSongMetadataTagToMpdTag(req.command.value.tag);
         const conditions = req.command.value.conditions;
-        const expression = MpdUtils.convertConditionsToString(conditions);
+        const expression = convertConditionsToString(conditions);
         return expression === ""
           ? mpd.cmd("list", tag)
           : mpd.cmd("list", tag, expression);
       }
       case "search": {
         const conditions = req.command.value.conditions;
-        const expression = MpdUtils.convertConditionsToString(conditions);
+        const expression = convertConditionsToString(conditions);
         return mpd.cmd("search", expression);
       }
       case "update":

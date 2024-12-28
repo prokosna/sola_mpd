@@ -18,12 +18,23 @@ import {
   usePluginExecutionLatestResponseState,
   usePluginExecutionWarningLogsState,
   useSetIsPluginExecutionModalOpenState,
-} from "../states/execution";
+} from "../states/executionState";
 
 type PluginExecutionModalProgressProps = {
   plugin: Plugin;
 };
 
+/**
+ * PluginExecutionModalProgress component
+ *
+ * This component displays the progress of a plugin execution in a modal.
+ * It shows the current status, progress bar, and any warning logs.
+ *
+ * @param props - The props for the component
+ * @param props.plugin - The plugin being executed
+ *
+ * @returns JSX element representing the progress modal content
+ */
 export function PluginExecutionModalProgress(
   props: PluginExecutionModalProgressProps,
 ) {

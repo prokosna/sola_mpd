@@ -3,10 +3,13 @@ import {
   PluginState,
 } from "@sola_mpd/domain/src/models/plugin/plugin_pb.js";
 import { useAtomValue, useSetAtom } from "jotai";
-import { atomWithDefault, unwrap } from "jotai/utils";
+import { atomWithDefault, useResetAtom } from "jotai/utils";
 import { useCallback } from "react";
 
-import { pluginServiceAtom } from "./pluginService";
+import { atomWithSync } from "../../../lib/jotai/atomWithSync";
+import { UpdateMode } from "../../../types/stateTypes";
+
+import { pluginServiceAtom } from "./pluginServiceState";
 import { pluginStateRepositoryAtom } from "./pluginStateRepository";
 
 const pluginStateAtom = atomWithDefault(async (get) => {
@@ -45,26 +48,42 @@ const pluginStateAtom = atomWithDefault(async (get) => {
   });
 });
 
-const unwrappedPluginStateAtom = unwrap(
-  pluginStateAtom,
-  (prev) => prev || undefined,
-);
+const pluginStateSyncAtom = atomWithSync(pluginStateAtom);
 
+/**
+ * A hook that returns the current plugin state.
+ * @returns The current PluginState.
+ */
 export function usePluginState() {
-  return useAtomValue(unwrappedPluginStateAtom);
+  return useAtomValue(pluginStateSyncAtom);
 }
 
+/**
+ * A hook that returns a function to refresh the plugin state.
+ * This can be used to trigger a re-fetch of the plugins and their latest information.
+ * @returns A function that, when called, will refresh the plugin state.
+ */
 export function useRefreshPluginState() {
-  return useSetAtom(pluginStateAtom);
+  return useResetAtom(pluginStateAtom);
 }
 
-export function useSavePluginState() {
+/**
+ * Returns a function to update the plugin state.
+ * @returns A function that updates the plugin state locally and/or persists it.
+ */
+export function useUpdatePluginState() {
+  const setPluginState = useSetAtom(pluginStateAtom);
   const repository = useAtomValue(pluginStateRepositoryAtom);
 
   return useCallback(
-    async (pluginState: PluginState) => {
-      await repository.save(pluginState);
+    async (pluginState: PluginState, mode: UpdateMode) => {
+      if (mode & UpdateMode.LOCAL_STATE) {
+        setPluginState(Promise.resolve(pluginState));
+      }
+      if (mode & UpdateMode.PERSIST) {
+        await repository.save(pluginState);
+      }
     },
-    [repository],
+    [repository, setPluginState],
   );
 }

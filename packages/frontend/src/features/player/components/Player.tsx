@@ -9,6 +9,14 @@ import { PlayerObserver } from "./PlayerObserver";
 import { PlayerSeekBar } from "./PlayerSeekBar";
 import { PlayerSongInformation } from "./PlayerSongInformation";
 
+/**
+ * Renders the main Player component.
+ * This component displays either a compact or full-size player interface
+ * based on the current mode. It includes controls for playback, song information,
+ * and a seek bar.
+ *
+ * @returns The rendered Player component
+ */
 export function Player() {
   const isCompact = useIsCompactMode();
 

@@ -1,5 +1,5 @@
 import { Song, Song_MetadataTag } from "@sola_mpd/domain/src/models/song_pb.js";
-import { SongUtils } from "@sola_mpd/domain/src/utils/SongUtils.js";
+import { getSongMetadataAsString } from "@sola_mpd/domain/src/utils/songUtils.js";
 import { LRUCache } from "lru-cache";
 
 import {
@@ -57,18 +57,9 @@ export class AstigaClient {
   }
 
   async find(song: Song): Promise<AstigaSong | undefined> {
-    const title = SongUtils.getSongMetadataAsString(
-      song,
-      Song_MetadataTag.TITLE,
-    );
-    const artist = SongUtils.getSongMetadataAsString(
-      song,
-      Song_MetadataTag.ARTIST,
-    );
-    const album = SongUtils.getSongMetadataAsString(
-      song,
-      Song_MetadataTag.ALBUM,
-    );
+    const title = getSongMetadataAsString(song, Song_MetadataTag.TITLE);
+    const artist = getSongMetadataAsString(song, Song_MetadataTag.ARTIST);
+    const album = getSongMetadataAsString(song, Song_MetadataTag.ALBUM);
     const queries = [
       this.makeQuery(undefined, album, undefined),
       this.makeQuery(undefined, undefined, artist),
@@ -182,12 +173,9 @@ export class AstigaClient {
   }
 
   private equal(a: Song, b: AstigaSong): boolean {
-    const title = SongUtils.getSongMetadataAsString(a, Song_MetadataTag.TITLE);
-    const artist = SongUtils.getSongMetadataAsString(
-      a,
-      Song_MetadataTag.ARTIST,
-    );
-    const album = SongUtils.getSongMetadataAsString(a, Song_MetadataTag.ALBUM);
+    const title = getSongMetadataAsString(a, Song_MetadataTag.TITLE);
+    const artist = getSongMetadataAsString(a, Song_MetadataTag.ARTIST);
+    const album = getSongMetadataAsString(a, Song_MetadataTag.ALBUM);
     return b.title === title && b.artist === artist && b.album === album;
   }
 

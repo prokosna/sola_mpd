@@ -5,15 +5,27 @@ import {
   useSetIsPluginExecutionModalOpenState,
   usePluginExecutionLatestResponseState,
   usePluginExecutionPropsState,
-} from "../states/execution";
+} from "../states/executionState";
 
+/**
+ * PluginExecutionIndicator component
+ *
+ * This component displays the execution progress of a plugin.
+ * It shows a circular progress indicator when a plugin is running,
+ * and an error indicator if the execution fails.
+ *
+ * The component uses various hooks to access the current plugin state,
+ * execution response, and to control the visibility of the execution modal.
+ *
+ * @returns JSX.Element | null
+ */
 export function PluginExecutionIndicator() {
-  const setIsPluginExecutionModalOpen = useSetIsPluginExecutionModalOpenState();
-  const latestResponse = usePluginExecutionLatestResponseState();
   const { plugin } = usePluginExecutionPropsState();
+  const latestResponse = usePluginExecutionLatestResponseState();
+  const setIsPluginExecutionModalOpen = useSetIsPluginExecutionModalOpenState();
 
   if (plugin === undefined) {
-    return <></>;
+    return null;
   }
 
   return (
@@ -36,9 +48,7 @@ export function PluginExecutionIndicator() {
           <CircularProgress isIndeterminate size="40px" color="red.400">
             <CircularProgressLabel>Error</CircularProgressLabel>
           </CircularProgress>
-        ) : (
-          <></>
-        )}
+        ) : null}
       </Box>
     </>
   );

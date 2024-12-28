@@ -16,44 +16,70 @@ import { SavedSearches } from "@sola_mpd/domain/src/models/search_pb.js";
 import { SongTableState } from "@sola_mpd/domain/src/models/song_table_pb.js";
 import { IoCreate } from "react-icons/io5";
 
+import { UpdateMode } from "../../../types/stateTypes";
 import { useBrowserState, useUpdateBrowserState } from "../../browser";
-import { useLayoutState, useSetLayoutState } from "../../layout";
+import { useLayoutState, useUpdateLayoutState } from "../../layout";
 import { CenterSpinner } from "../../loading";
-import { useMpdProfileState, useSetMpdProfileState } from "../../profile";
-import { useSavedSearchesState, useSetSavedSearchesState } from "../../search";
+import { useMpdProfileState, useUpdateMpdProfileState } from "../../profile";
 import {
-  useCommonSongTableState,
-  useSetCommonSongTableState,
-} from "../../song_table";
+  useSavedSearchesState,
+  useUpdateSavedSearchesState,
+} from "../../search";
+import { useSongTableState, useUpdateSongTableState } from "../../song_table";
 import { useSettingsStateEditorProps } from "../hooks/useSettingsStateEditorProps";
 
 import { SettingsStatesEditor } from "./SettingsStatesEditor";
 
+/**
+ * SettingsStates component renders a table of various application states
+ * and provides buttons to edit each state directly.
+ *
+ * This component uses several hooks to fetch and update different states
+ * such as MpdProfileState, LayoutState, BrowserState, SongTableState,
+ * and SavedSearches. It also utilizes the SettingsStatesEditor for each state.
+ *
+ * @returns A React component that displays a table of editable application states
+ */
 export function SettingsStates() {
   const mpdProfileState = useMpdProfileState();
-  const setMpdProfileState = useSetMpdProfileState();
+  const updateMpdProfileState = useUpdateMpdProfileState();
   const [onOpenProfileState, profileStateProps] =
     useSettingsStateEditorProps<MpdProfileState>(
       mpdProfileState,
-      setMpdProfileState,
+      async (newState: MpdProfileState) => {
+        updateMpdProfileState(
+          newState,
+          UpdateMode.LOCAL_STATE | UpdateMode.PERSIST,
+        );
+      },
       MpdProfileState.fromJson,
     );
 
   const layoutState = useLayoutState();
-  const setLayoutState = useSetLayoutState();
+  const updateLayoutState = useUpdateLayoutState();
   const [onOpenLayoutState, layoutStateProps] =
     useSettingsStateEditorProps<LayoutState>(
       layoutState,
-      setLayoutState,
+      async (newState: LayoutState) => {
+        updateLayoutState(
+          newState,
+          UpdateMode.LOCAL_STATE | UpdateMode.PERSIST,
+        );
+      },
       LayoutState.fromJson,
     );
 
-  const commonSongTableState = useCommonSongTableState();
-  const setCommonSongTableState = useSetCommonSongTableState();
-  const [onOpenCommonSongTableState, commonSongTableStateProps] =
+  const songTableState = useSongTableState();
+  const updateSongTableState = useUpdateSongTableState();
+  const [onOpenSongTableState, songTableStateProps] =
     useSettingsStateEditorProps<SongTableState>(
-      commonSongTableState,
-      setCommonSongTableState,
+      songTableState,
+      async (newState: SongTableState) => {
+        updateSongTableState(
+          newState,
+          UpdateMode.LOCAL_STATE | UpdateMode.PERSIST,
+        );
+      },
       SongTableState.fromJson,
     );
 
@@ -62,17 +88,25 @@ export function SettingsStates() {
   const [onOpenBrowserState, browserStateProps] =
     useSettingsStateEditorProps<BrowserState>(
       browserState,
-      updateBrowserState,
+      async (newState: BrowserState) => {
+        updateBrowserState(
+          newState,
+          UpdateMode.LOCAL_STATE | UpdateMode.PERSIST,
+        );
+      },
       BrowserState.fromJson,
     );
 
   const savedSearches = useSavedSearchesState();
-  const setSavedSearches = useSetSavedSearchesState();
+  const updateSavedSearches = useUpdateSavedSearchesState();
   const [onOpenSavedSearches, savedSearchesProps] =
     useSettingsStateEditorProps<SavedSearches>(
-      new SavedSearches({ searches: savedSearches || [] }),
+      savedSearches,
       async (savedSearches: SavedSearches) => {
-        setSavedSearches(savedSearches.searches);
+        updateSavedSearches(
+          savedSearches,
+          UpdateMode.LOCAL_STATE | UpdateMode.PERSIST,
+        );
       },
       SavedSearches.fromJson,
     );
@@ -82,8 +116,8 @@ export function SettingsStates() {
     profileStateProps === undefined ||
     layoutState === undefined ||
     layoutStateProps === undefined ||
-    commonSongTableState === undefined ||
-    commonSongTableStateProps === undefined ||
+    songTableState === undefined ||
+    songTableStateProps === undefined ||
     browserState === undefined ||
     browserStateProps === undefined ||
     savedSearches === undefined ||
@@ -136,7 +170,7 @@ export function SettingsStates() {
                     aria-label="Edit"
                     size="xs"
                     icon={<IoCreate />}
-                    onClick={onOpenCommonSongTableState}
+                    onClick={onOpenSongTableState}
                   />
                 </Td>
               </Tr>
@@ -170,7 +204,7 @@ export function SettingsStates() {
       </VStack>
       <SettingsStatesEditor<MpdProfileState> {...profileStateProps} />
       <SettingsStatesEditor<LayoutState> {...layoutStateProps} />
-      <SettingsStatesEditor<SongTableState> {...commonSongTableStateProps} />
+      <SettingsStatesEditor<SongTableState> {...songTableStateProps} />
       <SettingsStatesEditor<BrowserState> {...browserStateProps} />
       <SettingsStatesEditor<SavedSearches> {...savedSearchesProps} />
     </>

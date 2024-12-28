@@ -2,7 +2,7 @@ import { Song } from "@sola_mpd/domain/src/models/song_pb.js";
 import { useMemo } from "react";
 
 import { SongTableKey, SongTableKeyType } from "../types/songTableTypes";
-import { getSongTableKey } from "../utils/tableUtils";
+import { getSongTableKey } from "../utils/songTableTableUtils";
 
 /**
  * Uses Key -> Song mapping.
