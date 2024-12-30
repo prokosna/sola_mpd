@@ -8,13 +8,13 @@ import { fetchOutputDevices } from "../utils/outputDeviceUtils";
 
 const outputDevicesAtom = atomWithRefresh(async (get) => {
   const mpdClient = get(mpdClientAtom);
-  const profile = await get(currentMpdProfileSyncAtom);
+  const profile = get(currentMpdProfileSyncAtom);
 
   if (profile === undefined) {
     return undefined;
   }
 
-  return fetchOutputDevices(mpdClient, profile);
+  return await fetchOutputDevices(mpdClient, profile);
 });
 
 const outputDevicesSyncAtom = atomWithSync(outputDevicesAtom);

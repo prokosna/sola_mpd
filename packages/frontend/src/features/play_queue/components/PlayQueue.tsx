@@ -41,6 +41,9 @@ export function PlayQueue() {
 
   const onColumnsUpdated = useCallback(
     async (columns: SongTableColumn[]) => {
+      if (songTableState === undefined) {
+        return;
+      }
       const newSongTableState = songTableState.clone();
       newSongTableState.columns = columns;
       await updateSongTableState(
@@ -52,7 +55,7 @@ export function PlayQueue() {
   );
   const columnEditModalProps = useColumnEditModalProps(
     isColumnEditModalOpen,
-    songTableState.columns,
+    songTableState?.columns || [],
     setIsColumnEditModalOpen,
     onColumnsUpdated,
     async () => {},

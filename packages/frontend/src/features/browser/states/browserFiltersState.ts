@@ -15,31 +15,35 @@ import { fetchBrowserFilterValues } from "../utils/browserFilterUtils";
 
 import { browserStateSyncAtom, useUpdateBrowserState } from "./browserState";
 
-export const browserFiltersSyncAtom = atom(async (get) => {
-  const browserState = await get(browserStateSyncAtom);
-  return browserState.filters;
+export const browserFiltersSyncAtom = atom((get) => {
+  const browserState = get(browserStateSyncAtom);
+  return browserState?.filters;
 });
 
 const browserFilterValuesMapSyncAtom = atom(async (get) => {
   const mpdClient = get(mpdClientAtom);
-  const browserFilters = await get(browserFiltersSyncAtom);
-  const currentMpdProfile = await get(currentMpdProfileSyncAtom);
+  const browserFilters = get(browserFiltersSyncAtom);
+  const currentMpdProfile = get(currentMpdProfileSyncAtom);
 
-  if (currentMpdProfile === undefined) {
+  if (currentMpdProfile === undefined || browserFilters === undefined) {
     return new Map<Song_MetadataTag, string[]>();
   }
 
-  return fetchBrowserFilterValues(mpdClient, currentMpdProfile, browserFilters);
+  return await fetchBrowserFilterValues(
+    mpdClient,
+    currentMpdProfile,
+    browserFilters,
+  );
 });
 
 // Browser filter values map filtered by global filter tokens.
 const filteredBrowserFilterValuesMapSyncAtom = atom(async (get) => {
-  const browserFilters = await get(browserFiltersSyncAtom);
+  const browserFilters = get(browserFiltersSyncAtom);
   const valuesMap = await get(browserFilterValuesMapSyncAtom);
   const globalFilterTokens = get(globalFilterTokensAtom);
   const pathname = get(pathnameAtom);
 
-  if (pathname !== ROUTE_HOME_BROWSER) {
+  if (pathname !== ROUTE_HOME_BROWSER || browserFilters === undefined) {
     return valuesMap;
   }
 
@@ -95,6 +99,9 @@ export function useUpdateBrowserFiltersState() {
 
   return useCallback(
     async (browserFilters: BrowserFilter[], mode: UpdateMode) => {
+      if (browserState === undefined) {
+        return;
+      }
       const newBrowserState = browserState.clone();
       newBrowserState.filters = browserFilters;
       await updateBrowserState(newBrowserState, mode);

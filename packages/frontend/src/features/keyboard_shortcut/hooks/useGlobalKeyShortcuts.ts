@@ -2,7 +2,7 @@ import { MpdRequest } from "@sola_mpd/domain/src/models/mpd/mpd_command_pb.js";
 import { MpdPlayerStatus_PlaybackState } from "@sola_mpd/domain/src/models/mpd/mpd_player_pb.js";
 
 import { useMpdClientState } from "../../mpd";
-import { usePlayerStatusState } from "../../player";
+import { usePlayerStatusPlaybackState } from "../../player";
 import { useCurrentMpdProfileState } from "../../profile";
 
 import { useInputKeyCombination } from "./useInputKeyCombination";
@@ -17,13 +17,13 @@ import { useInputKeyCombination } from "./useInputKeyCombination";
 export function useGlobalKeyShortcuts(): void {
   const mpdClient = useMpdClientState();
   const profile = useCurrentMpdProfileState();
-  const playerStatus = usePlayerStatusState();
+  const playerPlaybackState = usePlayerStatusPlaybackState();
 
   useInputKeyCombination(undefined, [" "], async () => {
     if (mpdClient === undefined || profile === undefined) {
       return;
     }
-    switch (playerStatus?.playbackState) {
+    switch (playerPlaybackState) {
       case MpdPlayerStatus_PlaybackState.STOP:
         mpdClient.command(
           new MpdRequest({

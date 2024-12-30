@@ -1,5 +1,3 @@
-import { MpdPlayerStatus } from "@sola_mpd/domain/src/models/mpd/mpd_player_pb.js";
-
 /**
  * Calculates the elapsed time percentage of the current song.
  *
@@ -7,14 +5,11 @@ import { MpdPlayerStatus } from "@sola_mpd/domain/src/models/mpd/mpd_player_pb.j
  * @returns The elapsed time percentage as a number between 0 and 100, or -1 if unable to calculate.
  */
 export function getElapsedTimePercentage(
-  mpdPlayerStatus?: MpdPlayerStatus,
+  elapsed?: number,
+  duration?: number,
 ): number {
-  if (
-    mpdPlayerStatus?.duration === undefined ||
-    mpdPlayerStatus?.elapsed === undefined ||
-    mpdPlayerStatus?.duration === 0
-  ) {
+  if (duration === undefined || elapsed === undefined || duration === 0) {
     return -1;
   }
-  return (mpdPlayerStatus.elapsed / mpdPlayerStatus.duration) * 100;
+  return (elapsed / duration) * 100;
 }

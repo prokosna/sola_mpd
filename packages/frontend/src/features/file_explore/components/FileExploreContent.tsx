@@ -22,7 +22,7 @@ import { useFileExploreSongTableProps } from "../hooks/useFileExploreSongTablePr
  * state for these components and handles interactions such as adding songs to
  * playlists and editing table columns.
  *
- * @returns {JSX.Element} The rendered FileExploreContent component
+ * @returns The rendered FileExploreContent component
  */
 export function FileExploreContent() {
   const songTableState = useSongTableState();
@@ -44,6 +44,9 @@ export function FileExploreContent() {
 
   const onColumnsUpdated = useCallback(
     async (columns: SongTableColumn[]) => {
+      if (songTableState === undefined) {
+        return;
+      }
       const newSongTableState = songTableState.clone();
       newSongTableState.columns = columns;
       await updateSongTableState(
@@ -55,7 +58,7 @@ export function FileExploreContent() {
   );
   const columnEditModalProps = useColumnEditModalProps(
     isColumnEditModalOpen,
-    songTableState.columns,
+    songTableState?.columns || [],
     setIsColumnEditModalOpen,
     onColumnsUpdated,
     async () => {},

@@ -28,7 +28,7 @@ export function Playlist() {
 
   const handlePanelWidthChanged = useCallback(
     async (left: number | undefined) => {
-      if (left === undefined) {
+      if (left === undefined || playlistLayout === undefined) {
         return;
       }
       const newLayout = playlistLayout.clone();

@@ -4,7 +4,10 @@ import { useCallback, useRef } from "react";
 
 import { useMpdClientState } from "../../mpd";
 import { useCurrentMpdProfileState } from "../../profile";
-import { usePlayerStatusState } from "../states/playerStatusState";
+import {
+  usePlayerStatusDurationState,
+  usePlayerStatusElapsedState,
+} from "../states/playerStatusState";
 import { getElapsedTimePercentage } from "../utils/playerDisplayUtils";
 
 /**
@@ -17,9 +20,13 @@ import { getElapsedTimePercentage } from "../utils/playerDisplayUtils";
 export function PlayerSeekBar() {
   const profile = useCurrentMpdProfileState();
   const mpdClient = useMpdClientState();
-  const playerStatus = usePlayerStatusState();
+  const playerStatusElapsed = usePlayerStatusElapsedState();
+  const playerStatusDuration = usePlayerStatusDurationState();
 
-  const elapsedTimePercentage = getElapsedTimePercentage(playerStatus);
+  const elapsedTimePercentage = getElapsedTimePercentage(
+    playerStatusElapsed,
+    playerStatusDuration,
+  );
 
   const lastSeekClicked = useRef(new Date());
   const handleSeekBarClick = useCallback(
@@ -32,7 +39,7 @@ export function PlayerSeekBar() {
         return;
       }
 
-      if (playerStatus?.duration === undefined) {
+      if (playerStatusDuration === undefined) {
         return;
       }
 
@@ -45,7 +52,7 @@ export function PlayerSeekBar() {
       }
       lastSeekClicked.current = now;
 
-      const seekTo = (value / 100) * playerStatus.duration;
+      const seekTo = (value / 100) * playerStatusDuration;
       mpdClient.command(
         new MpdRequest({
           profile,
@@ -62,7 +69,7 @@ export function PlayerSeekBar() {
         }),
       );
     },
-    [mpdClient, playerStatus?.duration, profile],
+    [mpdClient, playerStatusDuration, profile],
   );
 
   return (

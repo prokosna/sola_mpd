@@ -5,7 +5,7 @@ import { IoShuffleOutline } from "react-icons/io5";
 import { useMpdClientState } from "../../mpd";
 import { useCurrentMpdProfileState } from "../../profile";
 import { useCurrentSongState } from "../states/playerSongState";
-import { usePlayerStatusState } from "../states/playerStatusState";
+import { usePlayerStatusIsRandomState } from "../states/playerStatusState";
 
 import { PlayerControlsButton } from "./PlayerControlsButton";
 
@@ -19,7 +19,7 @@ export function PlayerControlsButtonRandom() {
   const profile = useCurrentMpdProfileState();
   const mpdClient = useMpdClientState();
   const currentSong = useCurrentSongState();
-  const playerStatus = usePlayerStatusState();
+  const playerStatusIsRandom = usePlayerStatusIsRandomState();
 
   const onButtonClicked = useCallback(async () => {
     if (profile === undefined || mpdClient === undefined) {
@@ -32,19 +32,19 @@ export function PlayerControlsButtonRandom() {
         command: {
           case: "random",
           value: {
-            enable: !playerStatus?.isRandom,
+            enable: !playerStatusIsRandom,
           },
         },
       }),
     );
-  }, [mpdClient, playerStatus?.isRandom, profile]);
+  }, [mpdClient, playerStatusIsRandom, profile]);
 
   const props = {
-    label: playerStatus?.isRandom ? "Random enabled" : "Random disabled",
+    label: playerStatusIsRandom ? "Random enabled" : "Random disabled",
     isDisabled: currentSong === undefined,
     onButtonClicked,
     icon: <IoShuffleOutline size={"24"}></IoShuffleOutline>,
-    variant: playerStatus?.isRandom ? "solid" : "ghost",
+    variant: playerStatusIsRandom ? "solid" : "ghost",
   };
 
   return (

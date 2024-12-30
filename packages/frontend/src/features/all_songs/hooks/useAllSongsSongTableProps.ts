@@ -108,9 +108,12 @@ export function useAllSongsSongTableProps(
 
   const onColumnsUpdated = useCallback(
     async (updatedColumns: SongTableColumn[]) => {
+      if (songTableState === undefined) {
+        return;
+      }
       const newSongTableState = songTableState.clone();
       newSongTableState.columns = updatedColumns;
-      updateSongTableState(newSongTableState, UpdateMode.PERSIST);
+      await updateSongTableState(newSongTableState, UpdateMode.PERSIST);
     },
     [songTableState, updateSongTableState],
   );

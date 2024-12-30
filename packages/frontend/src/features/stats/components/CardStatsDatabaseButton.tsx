@@ -4,7 +4,7 @@ import { useCallback } from "react";
 
 import { useNotification } from "../../../lib/chakra/hooks/useNotification";
 import { useMpdClientState } from "../../mpd";
-import { usePlayerStatusState } from "../../player";
+import { usePlayerStatusIsDatabaseUpdatingState } from "../../player";
 import { useCurrentMpdProfileState } from "../../profile";
 
 /**
@@ -19,7 +19,8 @@ export function CardStatsDatabaseButton() {
 
   const profile = useCurrentMpdProfileState();
   const mpdClient = useMpdClientState();
-  const playerStatus = usePlayerStatusState();
+  const playerStatusIsDatabaseUpdating =
+    usePlayerStatusIsDatabaseUpdatingState();
 
   const handleDatabaseUpdateButtonClick = useCallback(async () => {
     if (profile === undefined || mpdClient === undefined) {
@@ -44,12 +45,12 @@ export function CardStatsDatabaseButton() {
   return (
     <>
       <Button
-        isLoading={playerStatus?.isDatabaseUpdating}
+        isLoading={playerStatusIsDatabaseUpdating}
         loadingText="Updating Database..."
         w="100%"
         variant="outline"
         onClick={() => {
-          if (!playerStatus?.isDatabaseUpdating) {
+          if (!playerStatusIsDatabaseUpdating) {
             handleDatabaseUpdateButtonClick();
           }
         }}

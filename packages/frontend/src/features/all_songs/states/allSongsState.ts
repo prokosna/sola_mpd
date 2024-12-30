@@ -26,13 +26,17 @@ const allSongsAtom = atomWithRefresh(async (get) => {
 
 export const allSongsSyncAtom = atomWithSync(allSongsAtom);
 
-const allSongsVisibleSongsSyncAtom = atom(async (get) => {
-  const allSongs = await get(allSongsSyncAtom);
-  const songTableState = await get(songTableStateSyncAtom);
+const allSongsVisibleSongsSyncAtom = atom((get) => {
+  const allSongs = get(allSongsSyncAtom);
+  const songTableState = get(songTableStateSyncAtom);
   const globalFilterTokens = get(globalFilterTokensAtom);
   const pathname = get(pathnameAtom);
 
-  if (pathname !== ROUTE_HOME_ALL_SONGS) {
+  if (
+    pathname !== ROUTE_HOME_ALL_SONGS ||
+    allSongs === undefined ||
+    songTableState === undefined
+  ) {
     return [];
   }
 

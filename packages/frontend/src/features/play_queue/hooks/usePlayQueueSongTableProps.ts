@@ -194,6 +194,9 @@ export function usePlayQueueSongTableProps(
 
   const onColumnsUpdated = useCallback(
     async (updatedColumns: SongTableColumn[]) => {
+      if (songTableState === undefined) {
+        return;
+      }
       const newSongTableState = songTableState.clone();
       newSongTableState.columns = updatedColumns;
       updateSongTableState(newSongTableState, UpdateMode.PERSIST);

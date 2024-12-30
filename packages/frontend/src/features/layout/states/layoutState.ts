@@ -5,8 +5,8 @@ import {
   PlaylistLayout,
   SearchLayout,
 } from "@sola_mpd/domain/src/models/layout_pb.js";
-import { atom, useAtomValue, useSetAtom } from "jotai";
-import { atomWithDefault, useResetAtom } from "jotai/utils";
+import { useAtomValue, useSetAtom } from "jotai";
+import { atomWithDefault, selectAtom, useResetAtom } from "jotai/utils";
 import { useCallback } from "react";
 
 import { atomWithSync } from "../../../lib/jotai/atomWithSync";
@@ -21,25 +21,41 @@ const layoutStateAtom = atomWithDefault(async (get) => {
 });
 const layoutStateSyncAtom = atomWithSync(layoutStateAtom);
 
-const fileExploreLayoutStateSyncAtom = atom(async (get) => {
-  const layoutState = await get(layoutStateSyncAtom);
-  return layoutState.fileExploreLayout!;
-});
+const fileExploreLayoutStateSyncAtom = selectAtom<
+  LayoutState | undefined,
+  FileExploreLayout | undefined
+>(
+  layoutStateSyncAtom,
+  (state, _prev) => state?.fileExploreLayout,
+  (a, b) => a?.equals(b) ?? false,
+);
 
-const playlistLayoutStateSyncAtom = atom(async (get) => {
-  const layoutState = await get(layoutStateSyncAtom);
-  return layoutState.playlistLayout!;
-});
+const playlistLayoutStateSyncAtom = selectAtom<
+  LayoutState | undefined,
+  PlaylistLayout | undefined
+>(
+  layoutStateSyncAtom,
+  (state, _prev) => state?.playlistLayout,
+  (a, b) => a?.equals(b) ?? false,
+);
 
-const searchLayoutStateSyncAtom = atom(async (get) => {
-  const layoutState = await get(layoutStateSyncAtom);
-  return layoutState.searchLayout!;
-});
+const searchLayoutStateSyncAtom = selectAtom<
+  LayoutState | undefined,
+  SearchLayout | undefined
+>(
+  layoutStateSyncAtom,
+  (state, _prev) => state?.searchLayout,
+  (a, b) => a?.equals(b) ?? false,
+);
 
-const browserLayoutStateSyncAtom = atom(async (get) => {
-  const layoutState = await get(layoutStateSyncAtom);
-  return layoutState.browserLayout!;
-});
+const browserLayoutStateSyncAtom = selectAtom<
+  LayoutState | undefined,
+  BrowserLayout | undefined
+>(
+  layoutStateSyncAtom,
+  (state, _prev) => state?.browserLayout,
+  (a, b) => a?.equals(b) ?? false,
+);
 
 /**
  * Returns the current layout state.
@@ -47,7 +63,7 @@ const browserLayoutStateSyncAtom = atom(async (get) => {
  * The state is automatically updated if the stored state changes.
  * @returns The current layout state.
  */
-export function useLayoutState(): LayoutState {
+export function useLayoutState() {
   return useAtomValue(layoutStateSyncAtom);
 }
 
@@ -57,7 +73,7 @@ export function useLayoutState(): LayoutState {
  * The state is automatically updated if the stored state changes.
  * @returns The current file explore layout state.
  */
-export function useFileExploreLayoutState(): FileExploreLayout {
+export function useFileExploreLayoutState() {
   return useAtomValue(fileExploreLayoutStateSyncAtom);
 }
 
@@ -67,7 +83,7 @@ export function useFileExploreLayoutState(): FileExploreLayout {
  * The state is automatically updated if the stored state changes.
  * @returns The current playlist layout state.
  */
-export function usePlaylistLayoutState(): PlaylistLayout {
+export function usePlaylistLayoutState() {
   return useAtomValue(playlistLayoutStateSyncAtom);
 }
 
@@ -77,7 +93,7 @@ export function usePlaylistLayoutState(): PlaylistLayout {
  * The state is automatically updated if the stored state changes.
  * @returns The current search layout state.
  */
-export function useSearchLayoutState(): SearchLayout {
+export function useSearchLayoutState() {
   return useAtomValue(searchLayoutStateSyncAtom);
 }
 
@@ -87,7 +103,7 @@ export function useSearchLayoutState(): SearchLayout {
  * The state is automatically updated if the stored state changes.
  * @returns The current browser layout state.
  */
-export function useBrowserLayoutState(): BrowserLayout {
+export function useBrowserLayoutState() {
   return useAtomValue(browserLayoutStateSyncAtom);
 }
 

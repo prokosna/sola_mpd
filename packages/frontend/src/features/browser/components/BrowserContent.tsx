@@ -37,6 +37,9 @@ export function BrowserContent() {
 
   const onColumnsUpdated = useCallback(
     async (columns: SongTableColumn[]) => {
+      if (songTableState === undefined) {
+        return;
+      }
       const newSongTableState = songTableState.clone();
       newSongTableState.columns = columns;
       await updateSongTableState(
@@ -48,7 +51,7 @@ export function BrowserContent() {
   );
   const columnEditModalProps = useColumnEditModalProps(
     isColumnEditModalOpen,
-    songTableState.columns,
+    songTableState?.columns || [],
     setIsColumnEditModalOpen,
     onColumnsUpdated,
     async () => {},

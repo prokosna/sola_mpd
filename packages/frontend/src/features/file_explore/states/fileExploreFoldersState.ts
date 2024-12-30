@@ -10,7 +10,7 @@ import { fetchFileExploreFolders } from "../utils/fileExploreFoldersUtils";
 
 const fileExploreFoldersAtom = atomWithRefresh(async (get) => {
   const mpdClient = get(mpdClientAtom);
-  const profile = await get(currentMpdProfileSyncAtom);
+  const profile = get(currentMpdProfileSyncAtom);
 
   if (profile === undefined) {
     return [];

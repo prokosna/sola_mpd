@@ -1,9 +1,7 @@
 import { Song } from "@sola_mpd/domain/src/models/song_pb.js";
-import { useAtom, useAtomValue, useSetAtom } from "jotai";
-import { atomWithRefresh } from "jotai/utils";
-import { atomEffect } from "jotai-effect";
+import { useAtomValue, useSetAtom } from "jotai";
+import { atomWithRefresh, selectAtom } from "jotai/utils";
 
-import { atomWithCompare } from "../../../lib/jotai/atomWithCompare";
 import { atomWithSync } from "../../../lib/jotai/atomWithSync";
 import { mpdClientAtom } from "../../mpd/states/mpdClient";
 import { currentMpdProfileSyncAtom } from "../../profile/states/mpdProfileState";
@@ -11,7 +9,7 @@ import { fetchCurrentSong } from "../utils/playerUtils";
 
 const currentSongAtom = atomWithRefresh(async (get) => {
   const mpdClient = get(mpdClientAtom);
-  const profile = await get(currentMpdProfileSyncAtom);
+  const profile = get(currentMpdProfileSyncAtom);
 
   if (profile === undefined) {
     return undefined;
@@ -22,19 +20,13 @@ const currentSongAtom = atomWithRefresh(async (get) => {
 
 const currentSongSyncAtom = atomWithSync(currentSongAtom);
 
-const setCurrentSongWithCompareEffectAtom = atomEffect((get, set) => {
-  const currentSongPromise = get(currentSongSyncAtom);
-  (async () => {
-    const currentSong = await currentSongPromise;
-    set(currentSongSyncWithCompareAtom, currentSong);
-  })();
-});
-
-const currentSongSyncWithCompareAtom = atomWithCompare<Song | undefined>(
-  undefined,
-  (prev, next) => {
-    return prev?.path === next?.path;
-  },
+const currentSongSyncWithCompareAtom = selectAtom<
+  Song | undefined,
+  Song | undefined
+>(
+  currentSongSyncAtom,
+  (state, _prev) => state,
+  (a, b) => a?.path === b?.path,
 );
 
 /**
@@ -43,7 +35,6 @@ const currentSongSyncWithCompareAtom = atomWithCompare<Song | undefined>(
  * @returns The current Song object or undefined if no song is playing.
  */
 export function useCurrentSongState() {
-  useAtom(setCurrentSongWithCompareEffectAtom);
   return useAtomValue(currentSongSyncWithCompareAtom);
 }
 

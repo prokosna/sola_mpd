@@ -8,7 +8,7 @@ import { fetchPlayerVolume } from "../utils/playerUtils";
 
 const playerVolumeAtom = atomWithRefresh(async (get) => {
   const mpdClient = get(mpdClientAtom);
-  const profile = await get(currentMpdProfileSyncAtom);
+  const profile = get(currentMpdProfileSyncAtom);
 
   if (profile === undefined) {
     return undefined;

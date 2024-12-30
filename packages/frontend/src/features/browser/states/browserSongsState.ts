@@ -15,10 +15,10 @@ import { browserFiltersSyncAtom } from "./browserFiltersState";
 
 const browserSongsAtom = atomWithRefresh(async (get) => {
   const mpdClient = get(mpdClientAtom);
-  const currentMpdProfile = await get(currentMpdProfileSyncAtom);
-  const browserFilters = await get(browserFiltersSyncAtom);
+  const currentMpdProfile = get(currentMpdProfileSyncAtom);
+  const browserFilters = get(browserFiltersSyncAtom);
 
-  if (currentMpdProfile === undefined) {
+  if (currentMpdProfile === undefined || browserFilters === undefined) {
     return [];
   }
 
@@ -33,13 +33,17 @@ const browserSongsAtom = atomWithRefresh(async (get) => {
 
 const browserSongsSyncAtom = atomWithSync(browserSongsAtom);
 
-const browserVisibleSongsSyncAtom = atom(async (get) => {
-  const browserSongs = await get(browserSongsSyncAtom);
-  const songTableState = await get(songTableStateSyncAtom);
+const browserVisibleSongsSyncAtom = atom((get) => {
+  const browserSongs = get(browserSongsSyncAtom);
+  const songTableState = get(songTableStateSyncAtom);
   const globalFilterTokens = get(globalFilterTokensAtom);
   const pathname = get(pathnameAtom);
 
-  if (pathname !== ROUTE_HOME_BROWSER) {
+  if (
+    pathname !== ROUTE_HOME_BROWSER ||
+    browserSongs === undefined ||
+    songTableState === undefined
+  ) {
     return [];
   }
 

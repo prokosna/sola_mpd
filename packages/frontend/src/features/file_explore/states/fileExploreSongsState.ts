@@ -14,7 +14,7 @@ import { selectedFileExploreFolderAtom } from "./fileExploreFoldersState";
 
 const fileExploreSongsAtom = atom(async (get) => {
   const mpdClient = get(mpdClientAtom);
-  const profile = await get(currentMpdProfileSyncAtom);
+  const profile = get(currentMpdProfileSyncAtom);
   const selectedFileExploreFolder = get(selectedFileExploreFolderAtom);
 
   if (profile === undefined || selectedFileExploreFolder === undefined) {
@@ -32,11 +32,11 @@ const fileExploreSongsAtom = atom(async (get) => {
 
 const fileExploreVisibleSongsAtom = atom(async (get) => {
   const fileExploreSongs = await get(fileExploreSongsAtom);
-  const songTableState = await get(songTableStateSyncAtom);
+  const songTableState = get(songTableStateSyncAtom);
   const globalFilterTokens = get(globalFilterTokensAtom);
   const pathname = get(pathnameAtom);
 
-  if (pathname !== ROUTE_HOME_FILE_EXPLORE) {
+  if (pathname !== ROUTE_HOME_FILE_EXPLORE || songTableState === undefined) {
     return fileExploreSongs.toSorted((a, b) => (a.path > b.path ? 1 : -1));
   }
 

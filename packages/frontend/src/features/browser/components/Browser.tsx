@@ -25,7 +25,7 @@ export function Browser() {
 
   const handlePanelWidthChanged = useCallback(
     async (left: number | undefined) => {
-      if (left === undefined) {
+      if (left === undefined || browserLayout === undefined) {
         return;
       }
       const newLayout = browserLayout.clone();

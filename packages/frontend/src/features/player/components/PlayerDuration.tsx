@@ -1,7 +1,10 @@
 import { Box, Text } from "@chakra-ui/react";
 import { displayDuration } from "@sola_mpd/domain/src/utils/stringUtils.js";
 
-import { usePlayerStatusState } from "../states/playerStatusState";
+import {
+  usePlayerStatusDurationState,
+  usePlayerStatusElapsedState,
+} from "../states/playerStatusState";
 
 /**
  * PlayerDuration component displays the elapsed time and total duration of the currently playing track.
@@ -11,16 +14,17 @@ import { usePlayerStatusState } from "../states/playerStatusState";
  * @returns A Box component containing the elapsed and total duration text.
  */
 export function PlayerDuration() {
-  const playerStatus = usePlayerStatusState();
+  const playerStatusElapsed = usePlayerStatusElapsedState();
+  const playerStatusDuration = usePlayerStatusDurationState();
 
   const elapsed =
-    playerStatus?.elapsed === undefined
+    playerStatusElapsed === undefined
       ? ""
-      : displayDuration(playerStatus.elapsed);
+      : displayDuration(playerStatusElapsed);
   const duration =
-    playerStatus?.duration === undefined
+    playerStatusDuration === undefined
       ? ""
-      : displayDuration(playerStatus.duration);
+      : displayDuration(playerStatusDuration);
 
   return (
     <Box

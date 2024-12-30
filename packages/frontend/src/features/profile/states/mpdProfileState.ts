@@ -18,9 +18,9 @@ const mpdProfileStateAtom = atomWithDefault(async (get) => {
 
 const mpdProfileStateSyncAtom = atomWithSync(mpdProfileStateAtom);
 
-export const currentMpdProfileSyncAtom = atom(async (get) => {
-  const profileState = await get(mpdProfileStateSyncAtom);
-  return profileState.currentProfile;
+export const currentMpdProfileSyncAtom = atom((get) => {
+  const profileState = get(mpdProfileStateSyncAtom);
+  return profileState?.currentProfile;
 });
 
 /**

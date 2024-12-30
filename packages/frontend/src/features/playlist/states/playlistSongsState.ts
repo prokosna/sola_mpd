@@ -15,7 +15,7 @@ import { selectedPlaylistAtom } from "./playlistState";
 
 const playlistSongsAtom = atomWithRefresh(async (get) => {
   const mpdClient = get(mpdClientAtom);
-  const profile = await get(currentMpdProfileSyncAtom);
+  const profile = get(currentMpdProfileSyncAtom);
   const selectedPlaylist = get(selectedPlaylistAtom);
 
   if (profile === undefined || selectedPlaylist === undefined) {
@@ -30,12 +30,16 @@ const playlistSongsAtom = atomWithRefresh(async (get) => {
 const playlistSongsSyncAtom = atomWithSync(playlistSongsAtom);
 
 const playlistVisibleSongsSyncAtom = atom(async (get) => {
-  const playlistSongs = await get(playlistSongsSyncAtom);
-  const songTableState = await get(songTableStateSyncAtom);
+  const playlistSongs = get(playlistSongsSyncAtom);
+  const songTableState = get(songTableStateSyncAtom);
   const globalFilterTokens = get(globalFilterTokensAtom);
   const pathname = get(pathnameAtom);
 
-  if (pathname !== ROUTE_HOME_PLAYLIST) {
+  if (
+    pathname !== ROUTE_HOME_PLAYLIST ||
+    playlistSongs === undefined ||
+    songTableState === undefined
+  ) {
     return [];
   }
 

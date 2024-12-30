@@ -63,6 +63,9 @@ export function useSaveEditingSearch() {
   const setEditingSearchStatus = useSetAtom(editingSearchStatusAtom);
 
   return useCallback(async () => {
+    if (savedSearches === undefined) {
+      return;
+    }
     const index = savedSearches.searches.findIndex(
       (search) => search.name === editingSearch.name,
     );

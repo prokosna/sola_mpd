@@ -9,13 +9,13 @@ import {
   Spacer,
   useDisclosure,
 } from "@chakra-ui/react";
-import { useEffect } from "react";
+import { Suspense, useEffect } from "react";
 import { IoMenu } from "react-icons/io5";
 import { Outlet, useLocation, useNavigate } from "react-router-dom";
 
 import { ROUTE_HOME, ROUTE_HOME_PLAY_QUEUE } from "../../const/routes";
 import { GlobalFilterBox } from "../../features/global_filter";
-import { useGlobalKeyShortcuts } from "../../features/keyboard_shortcut";
+import { CenterSpinner } from "../../features/loading";
 import { BrandLogo } from "../../features/logo";
 import { MpdEventObserver } from "../../features/mpd";
 import { Player } from "../../features/player";
@@ -32,7 +32,6 @@ import { SideNavigation } from "../../features/side_navigation";
 import { useUserDeviceType } from "../../features/user_device";
 
 export function HomeLayout() {
-  useGlobalKeyShortcuts();
   const location = useLocation();
   const navigate = useNavigate();
   const { getButtonProps, isOpen } = useDisclosure({
@@ -100,7 +99,13 @@ export function HomeLayout() {
               <SideNavigation {...{ isCompact: !isOpen }}></SideNavigation>
             </Box>
             <Box flexGrow={"1"} overflowY={"auto"}>
-              <Outlet />
+              <Suspense
+                fallback={
+                  <CenterSpinner className="layout-border-top layout-border-left" />
+                }
+              >
+                <Outlet />
+              </Suspense>
             </Box>
           </Flex>
         </GridItem>

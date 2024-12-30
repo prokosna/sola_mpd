@@ -1,4 +1,4 @@
-import { useAtomValue, useSetAtom } from "jotai";
+import { atom, useAtomValue, useSetAtom } from "jotai";
 import { atomWithRefresh } from "jotai/utils";
 
 import { atomWithSync } from "../../../lib/jotai/atomWithSync";
@@ -8,7 +8,7 @@ import { fetchPlayerStatus } from "../utils/playerUtils";
 
 const playerStatusAtom = atomWithRefresh(async (get) => {
   const mpdClient = get(mpdClientAtom);
-  const profile = await get(currentMpdProfileSyncAtom);
+  const profile = get(currentMpdProfileSyncAtom);
 
   if (profile === undefined) {
     return undefined;
@@ -19,13 +19,68 @@ const playerStatusAtom = atomWithRefresh(async (get) => {
 
 const playerStatusSyncAtom = atomWithSync(playerStatusAtom);
 
-/**
- * Custom hook to access the current player status state.
- * This hook retrieves the synchronized player status from the atom.
- * @returns The current MpdPlayerStatus object or undefined if not available.
- */
-export function usePlayerStatusState() {
-  return useAtomValue(playerStatusSyncAtom);
+const playerStatusPlaybackStateSyncAtom = atom((get) => {
+  return get(playerStatusSyncAtom)?.playbackState;
+});
+
+const playerStatusIsConsumeSyncAtom = atom((get) => {
+  return get(playerStatusSyncAtom)?.isConsume;
+});
+
+const playerStatusIsRandomSyncAtom = atom((get) => {
+  return get(playerStatusSyncAtom)?.isRandom;
+});
+
+const playerStatusIsRepeatSyncAtom = atom((get) => {
+  return get(playerStatusSyncAtom)?.isRepeat;
+});
+
+const playerStatusIsSingleSyncAtom = atom((get) => {
+  return get(playerStatusSyncAtom)?.isSingle;
+});
+
+const playerStatusIsDatabaseUpdatingSyncAtom = atom((get) => {
+  return get(playerStatusSyncAtom)?.isDatabaseUpdating;
+});
+
+const playerStatusElapsedSyncAtom = atom((get) => {
+  return get(playerStatusSyncAtom)?.elapsed;
+});
+
+const playerStatusDurationSyncAtom = atom((get) => {
+  return get(playerStatusSyncAtom)?.duration;
+});
+
+export function usePlayerStatusPlaybackState() {
+  return useAtomValue(playerStatusPlaybackStateSyncAtom);
+}
+
+export function usePlayerStatusIsConsumeState() {
+  return useAtomValue(playerStatusIsConsumeSyncAtom);
+}
+
+export function usePlayerStatusIsRandomState() {
+  return useAtomValue(playerStatusIsRandomSyncAtom);
+}
+
+export function usePlayerStatusIsRepeatState() {
+  return useAtomValue(playerStatusIsRepeatSyncAtom);
+}
+
+export function usePlayerStatusIsSingleState() {
+  return useAtomValue(playerStatusIsSingleSyncAtom);
+}
+
+export function usePlayerStatusIsDatabaseUpdatingState() {
+  return useAtomValue(playerStatusIsDatabaseUpdatingSyncAtom);
+}
+
+export function usePlayerStatusElapsedState() {
+  return useAtomValue(playerStatusElapsedSyncAtom);
+}
+
+export function usePlayerStatusDurationState() {
+  return useAtomValue(playerStatusDurationSyncAtom);
 }
 
 /**

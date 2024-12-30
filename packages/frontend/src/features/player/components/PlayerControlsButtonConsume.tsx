@@ -5,7 +5,7 @@ import { IoRestaurantOutline } from "react-icons/io5";
 import { useMpdClientState } from "../../mpd";
 import { useCurrentMpdProfileState } from "../../profile";
 import { useCurrentSongState } from "../states/playerSongState";
-import { usePlayerStatusState } from "../states/playerStatusState";
+import { usePlayerStatusIsConsumeState } from "../states/playerStatusState";
 
 import { PlayerControlsButton } from "./PlayerControlsButton";
 
@@ -19,7 +19,7 @@ export function PlayerControlsButtonConsume() {
   const profile = useCurrentMpdProfileState();
   const mpdClient = useMpdClientState();
   const currentSong = useCurrentSongState();
-  const playerStatus = usePlayerStatusState();
+  const playerStatusIsConsume = usePlayerStatusIsConsumeState();
 
   const onButtonClicked = useCallback(async () => {
     if (profile === undefined || mpdClient === undefined) {
@@ -31,19 +31,19 @@ export function PlayerControlsButtonConsume() {
         command: {
           case: "consume",
           value: {
-            enable: !playerStatus?.isConsume,
+            enable: !playerStatusIsConsume,
           },
         },
       }),
     );
-  }, [mpdClient, playerStatus?.isConsume, profile]);
+  }, [mpdClient, playerStatusIsConsume, profile]);
 
   const props = {
-    label: playerStatus?.isConsume ? "Consume enabled" : "Consume disabled",
+    label: playerStatusIsConsume ? "Consume enabled" : "Consume disabled",
     isDisabled: currentSong === undefined,
     onButtonClicked,
     icon: <IoRestaurantOutline size={"24"}></IoRestaurantOutline>,
-    variant: playerStatus?.isConsume ? "solid" : "ghost",
+    variant: playerStatusIsConsume ? "solid" : "ghost",
   };
 
   return (

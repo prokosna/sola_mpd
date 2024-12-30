@@ -26,7 +26,7 @@ export function Search() {
 
   const handlePanelWidthChanged = useCallback(
     async (left: number | undefined) => {
-      if (left === undefined) {
+      if (left === undefined || searchLayout === undefined) {
         return;
       }
       const newLayout = searchLayout.clone();

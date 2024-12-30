@@ -20,7 +20,7 @@ import { FileExploreNavigation } from "./FileExploreNavigation";
  * and a content pane on the right. It uses the Allotment component for resizable panels
  * and manages the layout state for persisting panel sizes.
  *
- * @returns {JSX.Element} The rendered FileExplore component
+ * @returns The rendered FileExplore component
  */
 export function FileExplore() {
   const fileExploreLayout = useFileExploreLayoutState();
@@ -30,7 +30,7 @@ export function FileExplore() {
 
   const handlePanelWidthChanged = useCallback(
     async (left: number | undefined) => {
-      if (left === undefined) {
+      if (left === undefined || fileExploreLayout === undefined) {
         return;
       }
       const newLayout = fileExploreLayout.clone();

@@ -5,7 +5,7 @@ import { IoRepeatOutline } from "react-icons/io5";
 import { useMpdClientState } from "../../mpd";
 import { useCurrentMpdProfileState } from "../../profile";
 import { useCurrentSongState } from "../states/playerSongState";
-import { usePlayerStatusState } from "../states/playerStatusState";
+import { usePlayerStatusIsRepeatState } from "../states/playerStatusState";
 
 import { PlayerControlsButton } from "./PlayerControlsButton";
 
@@ -19,7 +19,7 @@ export function PlayerControlsButtonRepeat() {
   const profile = useCurrentMpdProfileState();
   const mpdClient = useMpdClientState();
   const currentSong = useCurrentSongState();
-  const playerStatus = usePlayerStatusState();
+  const playerStatusIsRepeat = usePlayerStatusIsRepeatState();
 
   const onButtonClicked = useCallback(async () => {
     if (mpdClient === undefined) {
@@ -32,19 +32,19 @@ export function PlayerControlsButtonRepeat() {
         command: {
           case: "repeat",
           value: {
-            enable: !playerStatus?.isRepeat,
+            enable: !playerStatusIsRepeat,
           },
         },
       }),
     );
-  }, [mpdClient, playerStatus?.isRepeat, profile]);
+  }, [mpdClient, playerStatusIsRepeat, profile]);
 
   const props = {
-    label: playerStatus?.isRepeat ? "Repeat enabled" : "Repeat disabled",
+    label: playerStatusIsRepeat ? "Repeat enabled" : "Repeat disabled",
     isDisabled: currentSong === undefined,
     onButtonClicked,
     icon: <IoRepeatOutline size={"24"}></IoRepeatOutline>,
-    variant: playerStatus?.isRepeat ? "solid" : "ghost",
+    variant: playerStatusIsRepeat ? "solid" : "ghost",
   };
 
   return (

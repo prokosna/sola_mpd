@@ -17,7 +17,7 @@ const targetSearchAtom = atom<Search | undefined>(undefined);
 
 const searchSongsAtom = atomWithRefresh(async (get) => {
   const mpdClient = get(mpdClientAtom);
-  const profile = await get(currentMpdProfileSyncAtom);
+  const profile = get(currentMpdProfileSyncAtom);
   const search = get(targetSearchAtom);
 
   if (profile === undefined || search === undefined) {
@@ -31,13 +31,13 @@ const searchSongsAtom = atomWithRefresh(async (get) => {
 
 const searchSongsSyncAtom = atomWithSync(searchSongsAtom);
 
-const searchVisibleSongsSyncAtom = atom(async (get) => {
-  const searchSongs = await get(searchSongsSyncAtom);
+const searchVisibleSongsSyncAtom = atom((get) => {
+  const searchSongs = get(searchSongsSyncAtom);
   const editingSearch = get(editingSearchAtom);
   const globalFilterTokens = get(globalFilterTokensAtom);
   const pathname = get(pathnameAtom);
 
-  if (pathname !== ROUTE_HOME_SEARCH) {
+  if (pathname !== ROUTE_HOME_SEARCH || searchSongs === undefined) {
     return [];
   }
 

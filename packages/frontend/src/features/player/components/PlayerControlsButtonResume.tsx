@@ -6,7 +6,7 @@ import { IoPause, IoPlay } from "react-icons/io5";
 import { useMpdClientState } from "../../mpd";
 import { useCurrentMpdProfileState } from "../../profile";
 import { useCurrentSongState } from "../states/playerSongState";
-import { usePlayerStatusState } from "../states/playerStatusState";
+import { usePlayerStatusPlaybackState } from "../states/playerStatusState";
 
 import { PlayerControlsButton } from "./PlayerControlsButton";
 
@@ -21,7 +21,7 @@ export function PlayerControlsButtonResume() {
   const profile = useCurrentMpdProfileState();
   const mpdClient = useMpdClientState();
   const currentSong = useCurrentSongState();
-  const playerStatus = usePlayerStatusState();
+  const playerStatusPlaybackState = usePlayerStatusPlaybackState();
 
   const onButtonClicked = useCallback(async () => {
     if (profile === undefined || mpdClient === undefined) {
@@ -35,23 +35,22 @@ export function PlayerControlsButtonResume() {
           case: "pause",
           value: {
             pause:
-              playerStatus?.playbackState ===
-              MpdPlayerStatus_PlaybackState.PLAY,
+              playerStatusPlaybackState === MpdPlayerStatus_PlaybackState.PLAY,
           },
         },
       }),
     );
-  }, [mpdClient, playerStatus?.playbackState, profile]);
+  }, [mpdClient, playerStatusPlaybackState, profile]);
 
   const props = {
     label:
-      playerStatus?.playbackState === MpdPlayerStatus_PlaybackState.PLAY
+      playerStatusPlaybackState === MpdPlayerStatus_PlaybackState.PLAY
         ? "Pause"
         : "Resume",
     isDisabled: currentSong === undefined,
     onButtonClicked,
     icon:
-      playerStatus?.playbackState === MpdPlayerStatus_PlaybackState.PLAY ? (
+      playerStatusPlaybackState === MpdPlayerStatus_PlaybackState.PLAY ? (
         <IoPause size={"24"}></IoPause>
       ) : (
         <IoPlay size={"24"}></IoPlay>

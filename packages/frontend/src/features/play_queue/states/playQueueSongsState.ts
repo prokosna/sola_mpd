@@ -13,7 +13,7 @@ import { fetchPlayQueueSongs } from "../utils/playQueueSongsUtils";
 
 const playQueueSongsAtom = atomWithRefresh(async (get) => {
   const mpdClient = get(mpdClientAtom);
-  const profile = await get(currentMpdProfileSyncAtom);
+  const profile = get(currentMpdProfileSyncAtom);
 
   if (profile === undefined) {
     return [];
@@ -26,13 +26,17 @@ const playQueueSongsAtom = atomWithRefresh(async (get) => {
 
 const playQueueSongsSyncAtom = atomWithSync(playQueueSongsAtom);
 
-const playQueueVisibleSongsSyncAtom = atom(async (get) => {
-  const playQueueSongs = await get(playQueueSongsSyncAtom);
-  const songTableState = await get(songTableStateSyncAtom);
+const playQueueVisibleSongsSyncAtom = atom((get) => {
+  const playQueueSongs = get(playQueueSongsSyncAtom);
+  const songTableState = get(songTableStateSyncAtom);
   const globalFilterTokens = get(globalFilterTokensAtom);
   const pathname = get(pathnameAtom);
 
-  if (pathname !== ROUTE_HOME_PLAY_QUEUE) {
+  if (
+    pathname !== ROUTE_HOME_PLAY_QUEUE ||
+    playQueueSongs === undefined ||
+    songTableState === undefined
+  ) {
     return [];
   }
 

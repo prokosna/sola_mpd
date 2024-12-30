@@ -8,7 +8,7 @@ import { fetchStats } from "../utils/statsUtils";
 
 const statsAtom = atomWithRefresh(async (get) => {
   const mpdClient = get(mpdClientAtom);
-  const profile = await get(currentMpdProfileSyncAtom);
+  const profile = get(currentMpdProfileSyncAtom);
 
   if (profile === undefined) {
     return undefined;
