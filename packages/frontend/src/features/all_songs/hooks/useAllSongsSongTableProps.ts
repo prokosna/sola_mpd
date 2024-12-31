@@ -3,7 +3,7 @@ import { Song } from "@sola_mpd/domain/src/models/song_pb.js";
 import { SongTableColumn } from "@sola_mpd/domain/src/models/song_table_pb.js";
 import { MutableRefObject, useCallback } from "react";
 
-import { COMPONENT_ID_FULL_TEXT_SEARCH } from "../../../const/component";
+import { COMPONENT_ID_ALL_SONGS } from "../../../const/component";
 import { useNotification } from "../../../lib/chakra/hooks/useNotification";
 import { UpdateMode } from "../../../types/stateTypes";
 import { ContextMenuSection } from "../../context_menu";
@@ -136,7 +136,7 @@ export function useAllSongsSongTableProps(
   }
 
   return {
-    id: COMPONENT_ID_FULL_TEXT_SEARCH,
+    id: COMPONENT_ID_ALL_SONGS,
     songTableKeyType,
     songs,
     columns: songTableState.columns,

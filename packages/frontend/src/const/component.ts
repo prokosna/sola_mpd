@@ -6,4 +6,4 @@ export const COMPONENT_ID_PLAYLIST_MAIN_PANE = "playlist_main";
 export const COMPONENT_ID_SEARCH_MAIN_PANE = "search_main";
 export const COMPONENT_ID_SEARCH_SIDE_PANE = "search_side";
 export const COMPONENT_ID_BROWSER_FILTER_LIST_PREFIX = "browser_filter_list";
-export const COMPONENT_ID_FULL_TEXT_SEARCH = "full_text_search";
+export const COMPONENT_ID_ALL_SONGS = "all_songs";
