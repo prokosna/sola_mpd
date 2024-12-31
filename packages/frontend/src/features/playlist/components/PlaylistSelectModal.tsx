@@ -39,7 +39,7 @@ export type PlaylistSelectModalProps = {
 export function PlaylistSelectModal(props: PlaylistSelectModalProps) {
   const addPlaylist = useAddPlaylist();
 
-  const [isCreateNew, setIsCreateNew] = useState(true);
+  const [isCreateNew, setIsCreateNew] = useState(false);
   const [playlistName, setPlaylistName] = useState("");
   const [isPlaylistNameOk, setIsPlaylistNameOk] = useState(false);
 
@@ -65,12 +65,15 @@ export function PlaylistSelectModal(props: PlaylistSelectModalProps) {
       }
     }
     props.onOk(playlist);
-    setIsCreateNew(true);
+    setPlaylistName("");
+    setIsCreateNew(false);
     setIsPlaylistNameOk(false);
   }, [addPlaylist, isCreateNew, isPlaylistNameOk, playlistName, props]);
 
   const handleClose = useCallback(() => {
     setPlaylistName("");
+    setIsCreateNew(false);
+    setIsPlaylistNameOk(false);
     props.onCancel();
   }, [props]);
 
