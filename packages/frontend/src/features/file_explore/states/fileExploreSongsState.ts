@@ -17,8 +17,11 @@ const fileExploreSongsAtom = atom(async (get) => {
   const profile = get(currentMpdProfileSyncAtom);
   const selectedFileExploreFolder = get(selectedFileExploreFolderAtom);
 
-  if (profile === undefined || selectedFileExploreFolder === undefined) {
+  if (profile === undefined) {
     return undefined;
+  }
+  if (selectedFileExploreFolder === undefined) {
+    return [];
   }
 
   const songs = await fetchFileExploreSongs(
