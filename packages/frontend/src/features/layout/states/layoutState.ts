@@ -14,11 +14,13 @@ import { UpdateMode } from "../../../types/stateTypes";
 
 import { layoutStateRepositoryAtom } from "./layoutStateRepositry";
 
-const layoutStateAtom = atomWithDefault(async (get) => {
-  const repository = get(layoutStateRepositoryAtom);
-  const layoutState = await repository.fetch();
-  return layoutState;
-});
+const layoutStateAtom = atomWithDefault<Promise<LayoutState> | LayoutState>(
+  async (get) => {
+    const repository = get(layoutStateRepositoryAtom);
+    const layoutState = await repository.fetch();
+    return layoutState;
+  },
+);
 const layoutStateSyncAtom = atomWithSync(layoutStateAtom);
 
 const fileExploreLayoutStateSyncAtom = selectAtom<
@@ -141,7 +143,7 @@ export function useUpdateLayoutState() {
       }
 
       if (mode & UpdateMode.LOCAL_STATE) {
-        setLayoutState(Promise.resolve(newLayoutState));
+        setLayoutState(newLayoutState);
       }
       if (mode & UpdateMode.PERSIST) {
         await repository.save(newLayoutState);

@@ -8,11 +8,13 @@ import { UpdateMode } from "../../../types/stateTypes";
 
 import { browserStateRepositoryAtom } from "./browserStateRepository";
 
-const browserStateAtom = atomWithDefault(async (get) => {
-  const repository = get(browserStateRepositoryAtom);
-  const browserState = await repository.fetch();
-  return browserState;
-});
+const browserStateAtom = atomWithDefault<Promise<BrowserState> | BrowserState>(
+  async (get) => {
+    const repository = get(browserStateRepositoryAtom);
+    const browserState = await repository.fetch();
+    return browserState;
+  },
+);
 
 export const browserStateSyncAtom = atomWithSync(browserStateAtom);
 
@@ -37,7 +39,7 @@ export function useUpdateBrowserState() {
   return useCallback(
     async (state: BrowserState, mode: UpdateMode) => {
       if (mode & UpdateMode.LOCAL_STATE) {
-        setBrowserState(Promise.resolve(state));
+        setBrowserState(state);
       }
       if (mode & UpdateMode.PERSIST) {
         await repository.save(state);

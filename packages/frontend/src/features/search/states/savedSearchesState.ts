@@ -9,7 +9,9 @@ import { UpdateMode } from "../../../types/stateTypes";
 import {} from "../utils/searchSongsUtils";
 import { savedSearchesRepositoryAtom } from "./savedSearchesRepository";
 
-const savedSearchesAtom = atomWithDefault(async (get) => {
+const savedSearchesAtom = atomWithDefault<
+  Promise<SavedSearches> | SavedSearches
+>(async (get) => {
   const repository = get(savedSearchesRepositoryAtom);
   return await repository.fetch();
 });
@@ -44,7 +46,7 @@ export function useUpdateSavedSearchesState() {
   return useCallback(
     async (savedSearches: SavedSearches, mode: UpdateMode) => {
       if (mode & UpdateMode.LOCAL_STATE) {
-        setSavedSearches(Promise.resolve(savedSearches));
+        setSavedSearches(savedSearches);
       }
       if (mode & UpdateMode.PERSIST) {
         await repository.save(savedSearches);

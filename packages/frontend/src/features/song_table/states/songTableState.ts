@@ -8,7 +8,9 @@ import { UpdateMode } from "../../../types/stateTypes";
 
 import { songTableStateRepositoryAtom } from "./songTableStateRepository";
 
-const songTableStateAtom = atomWithDefault(async (get) => {
+const songTableStateAtom = atomWithDefault<
+  Promise<SongTableState> | SongTableState
+>(async (get) => {
   const repository = get(songTableStateRepositoryAtom);
   const songTableState = await repository.fetch();
   return songTableState;
@@ -37,7 +39,7 @@ export function useUpdateSongTableState() {
   return useCallback(
     async (state: SongTableState, mode: UpdateMode): Promise<void> => {
       if (mode & UpdateMode.LOCAL_STATE) {
-        setSongTableState(Promise.resolve(state));
+        setSongTableState(state);
       }
       if (mode & UpdateMode.PERSIST) {
         await repository.save(state);
