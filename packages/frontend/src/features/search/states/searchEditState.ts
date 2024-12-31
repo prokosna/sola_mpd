@@ -75,7 +75,7 @@ export function useSaveEditingSearch() {
       savedSearches.searches.push(editingSearch);
     }
     await updateSavedSearches(
-      savedSearches,
+      savedSearches.clone(),
       UpdateMode.LOCAL_STATE | UpdateMode.PERSIST,
     );
     setEditingSearchStatus(EditingSearchStatus.SAVED);
