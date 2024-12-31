@@ -18,7 +18,7 @@ This client has the following features:
 - [x] Intuitive song table editing (powered by [AG Grid](https://www.ag-grid.com/))
 - [x] Multiple MPD servers
 - [x] Dark theme
-- [x] Simple full-text search
+- [x] All songs (Simple full-text search)
 - [x] Responsive layout for tablets
 - [x] Support touch devices
 
@@ -170,27 +170,4 @@ $ npm run -w packages/domain build
 # 4. Run dev servers
 $ npm run -w packages/backend dev
 $ npm run -w packages/frontend dev
-```
-
-### Frontend architecture
-
-```
-frontend
-└── src
-    ├── const
-    ├── features
-    │   ├── feature_a
-    │   │   ├── types
-    │   │   ├── states (Jotai atom states - UI independent)
-    │   │   ├── workflows (Pure functions for business logic)
-    │   │   ├── hooks (Provide hooks)
-    │   │   ├── components (Pure functional components)
-    │   │   ├── services (Interfaces for external services)
-    │   │   └── index.ts
-    │   ...
-    ├── infrastructure
-    │   ├── socket
-    │   │   ├── ServiceImpl.ts (Implementation of an exposed service)
-    │   ├── mpd
-    ... ...
 ```
