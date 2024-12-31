@@ -66,7 +66,7 @@ export function SideNavigation({ isCompact }: { isCompact: boolean }) {
       isCompact,
     },
     {
-      name: "Full-Text Search",
+      name: "All Songs",
       icon: IoText,
       link: ROUTE_HOME_ALL_SONGS,
       isCompact,

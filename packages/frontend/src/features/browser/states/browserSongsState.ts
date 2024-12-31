@@ -19,7 +19,7 @@ const browserSongsAtom = atomWithRefresh(async (get) => {
   const browserFilters = get(browserFiltersSyncAtom);
 
   if (currentMpdProfile === undefined || browserFilters === undefined) {
-    return [];
+    return undefined;
   }
 
   const songs = await fetchBrowserSongs(
@@ -44,7 +44,7 @@ const browserVisibleSongsSyncAtom = atom((get) => {
     browserSongs === undefined ||
     songTableState === undefined
   ) {
-    return [];
+    return undefined;
   }
 
   const filteredSongs = filterSongsByGlobalFilter(

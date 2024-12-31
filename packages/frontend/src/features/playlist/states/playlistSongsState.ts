@@ -19,7 +19,7 @@ const playlistSongsAtom = atomWithRefresh(async (get) => {
   const selectedPlaylist = get(selectedPlaylistAtom);
 
   if (profile === undefined || selectedPlaylist === undefined) {
-    return [];
+    return undefined;
   }
 
   const songs = await fetchPlaylistSongs(mpdClient, profile, selectedPlaylist);
@@ -40,7 +40,7 @@ const playlistVisibleSongsSyncAtom = atom(async (get) => {
     playlistSongs === undefined ||
     songTableState === undefined
   ) {
-    return [];
+    return undefined;
   }
 
   const filteredSongs = filterSongsByGlobalFilter(

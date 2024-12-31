@@ -103,7 +103,7 @@ export function useAllSongsSongTableProps(
 
   // Handlers
   const onSongsReordered = useCallback(async (_orderedSongs: Song[]) => {
-    throw new Error("Reorder songs must be disabled in Full-Text Search.");
+    throw new Error("Reorder songs must be disabled in AllSongs.");
   }, []);
 
   const onColumnsUpdated = useCallback(

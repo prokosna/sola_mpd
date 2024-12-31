@@ -13,10 +13,10 @@ import { fetchAllSongs } from "../utils/allSongsUtils";
 
 const allSongsAtom = atomWithRefresh(async (get) => {
   const mpdClient = get(mpdClientAtom);
-  const profile = await get(currentMpdProfileSyncAtom);
+  const profile = get(currentMpdProfileSyncAtom);
 
   if (profile === undefined) {
-    return [];
+    return undefined;
   }
 
   const songs = await fetchAllSongs(mpdClient, profile);
@@ -37,7 +37,7 @@ const allSongsVisibleSongsSyncAtom = atom((get) => {
     allSongs === undefined ||
     songTableState === undefined
   ) {
-    return [];
+    return undefined;
   }
 
   const filteredSongs = filterSongsByGlobalFilter(

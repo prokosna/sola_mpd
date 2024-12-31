@@ -18,7 +18,7 @@ const fileExploreSongsAtom = atom(async (get) => {
   const selectedFileExploreFolder = get(selectedFileExploreFolderAtom);
 
   if (profile === undefined || selectedFileExploreFolder === undefined) {
-    return [];
+    return undefined;
   }
 
   const songs = await fetchFileExploreSongs(
@@ -30,14 +30,20 @@ const fileExploreSongsAtom = atom(async (get) => {
   return songs;
 });
 
-const fileExploreVisibleSongsAtom = atom(async (get) => {
-  const fileExploreSongs = await get(fileExploreSongsAtom);
+const fileExploreSongsSyncAtom = atomWithSync(fileExploreSongsAtom);
+
+const fileExploreVisibleSongsSyncAtom = atom((get) => {
+  const fileExploreSongs = get(fileExploreSongsSyncAtom);
   const songTableState = get(songTableStateSyncAtom);
   const globalFilterTokens = get(globalFilterTokensAtom);
   const pathname = get(pathnameAtom);
 
-  if (pathname !== ROUTE_HOME_FILE_EXPLORE || songTableState === undefined) {
-    return fileExploreSongs.toSorted((a, b) => (a.path > b.path ? 1 : -1));
+  if (
+    pathname !== ROUTE_HOME_FILE_EXPLORE ||
+    songTableState === undefined ||
+    fileExploreSongs === undefined
+  ) {
+    return undefined;
   }
 
   const filteredSongs = filterSongsByGlobalFilter(
@@ -51,10 +57,6 @@ const fileExploreVisibleSongsAtom = atom(async (get) => {
 
   return sortedSongs;
 });
-
-const fileExploreVisibleSongsSyncAtom = atomWithSync(
-  fileExploreVisibleSongsAtom,
-);
 
 /**
  * Hook to access the current visible songs state in the file explorer.
