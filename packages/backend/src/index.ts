@@ -6,8 +6,8 @@ import express, { ErrorRequestHandler } from "express";
 import { Server as SocketIOServer } from "socket.io";
 
 import { SocketIoManager } from "./SocketIoManager.js";
-import configsRouter from "./configs/router.js";
-import mpdRouter from "./mpd/router.js";
+import configsRouter from "./configs/configsRouter.js";
+import mpdRouter from "./mpd/mpdRouter.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -29,7 +29,7 @@ app.use(errorHandler);
 // Socket.io
 const io = new SocketIOServer(server, {
   path: "/io/",
-  maxHttpBufferSize: 5.12e8,
+  maxHttpBufferSize: 1.024e9,
 });
 SocketIoManager.initialize(io);
 
