@@ -114,7 +114,7 @@ export function SearchNavigationQueryEditor() {
         overflow={"auto"}
       >
         <Flex>
-          <FormControl w="75%" isInvalid={nameErrorState !== ""}>
+          <FormControl w="60%" isInvalid={nameErrorState !== ""}>
             <Input
               size="sm"
               type="text"
@@ -132,11 +132,11 @@ export function SearchNavigationQueryEditor() {
             </Tag>
           ) : editingSearchStatus === EditingSearchStatus.COLUMNS_UPDATED ? (
             <Tag h="50%" size={"md"} variant="outline" colorScheme="gray">
-              <TagLabel>Columns updated</TagLabel>
+              <TagLabel>Not Saved</TagLabel>
             </Tag>
           ) : (
             <Tag h="50%" size={"md"} variant="outline" colorScheme="gray">
-              <TagLabel>Not saved</TagLabel>
+              <TagLabel>Not Saved</TagLabel>
             </Tag>
           )}
         </Flex>
