@@ -20,8 +20,11 @@ const searchSongsAtom = atomWithRefresh(async (get) => {
   const profile = get(currentMpdProfileSyncAtom);
   const search = get(targetSearchAtom);
 
-  if (profile === undefined || search === undefined) {
+  if (profile === undefined) {
     return undefined;
+  }
+  if (search === undefined) {
+    return [];
   }
 
   const songs = await fetchSearchSongs(mpdClient, profile, search);

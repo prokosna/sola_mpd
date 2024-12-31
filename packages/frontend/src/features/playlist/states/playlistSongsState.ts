@@ -18,8 +18,11 @@ const playlistSongsAtom = atomWithRefresh(async (get) => {
   const profile = get(currentMpdProfileSyncAtom);
   const selectedPlaylist = get(selectedPlaylistAtom);
 
-  if (profile === undefined || selectedPlaylist === undefined) {
+  if (profile === undefined) {
     return undefined;
+  }
+  if (selectedPlaylist === undefined) {
+    return [];
   }
 
   const songs = await fetchPlaylistSongs(mpdClient, profile, selectedPlaylist);
