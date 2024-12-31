@@ -2,9 +2,11 @@ import { BrowserFilter } from "@sola_mpd/domain/src/models/browser_pb.js";
 import { Song_MetadataTag } from "@sola_mpd/domain/src/models/song_pb.js";
 import { convertSongMetadataValueToString } from "@sola_mpd/domain/src/utils/songUtils.js";
 import { atom, useAtomValue } from "jotai";
+import { atomFamily } from "jotai/utils";
 import { useCallback } from "react";
 
 import { ROUTE_HOME_BROWSER } from "../../../const/routes";
+import { atomWithSync } from "../../../lib/jotai/atomWithSync";
 import { UpdateMode } from "../../../types/stateTypes";
 import { filterStringsByGlobalFilter } from "../../global_filter";
 import { globalFilterTokensAtom } from "../../global_filter/states/globalFilterState";
@@ -20,7 +22,7 @@ export const browserFiltersSyncAtom = atom((get) => {
   return browserState?.filters;
 });
 
-const browserFilterValuesMapSyncAtom = atom(async (get) => {
+const browserFilterValuesMapAtom = atom(async (get) => {
   const mpdClient = get(mpdClientAtom);
   const browserFilters = get(browserFiltersSyncAtom);
   const currentMpdProfile = get(currentMpdProfileSyncAtom);
@@ -36,10 +38,12 @@ const browserFilterValuesMapSyncAtom = atom(async (get) => {
   );
 });
 
+const browserFilterValuesMapSyncAtom = atomWithSync(browserFilterValuesMapAtom);
+
 // Browser filter values map filtered by global filter tokens.
-const filteredBrowserFilterValuesMapSyncAtom = atom(async (get) => {
+const filteredBrowserFilterValuesMapSyncAtom = atom((get) => {
   const browserFilters = get(browserFiltersSyncAtom);
-  const valuesMap = await get(browserFilterValuesMapSyncAtom);
+  const valuesMap = get(browserFilterValuesMapSyncAtom);
   const globalFilterTokens = get(globalFilterTokensAtom);
   const pathname = get(pathnameAtom);
 
@@ -69,6 +73,11 @@ const filteredBrowserFilterValuesMapSyncAtom = atom(async (get) => {
   return filteredMap;
 });
 
+const filteredBrowserFilterValuesSyncAtomFamily = atomFamily(
+  (tag: Song_MetadataTag) =>
+    atom((get) => get(filteredBrowserFilterValuesMapSyncAtom)?.get(tag)),
+);
+
 /**
  * Returns the browser filters state.
  * @returns The browser filters state.
@@ -83,8 +92,7 @@ export function useBrowserFiltersState() {
  * @returns The browser filter values.
  */
 export function useBrowserFilterValuesState(tag: Song_MetadataTag) {
-  const valuesMap = useAtomValue(filteredBrowserFilterValuesMapSyncAtom);
-  return valuesMap?.get(tag);
+  return useAtomValue(filteredBrowserFilterValuesSyncAtomFamily(tag));
 }
 
 /**
