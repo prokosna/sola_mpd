@@ -38,6 +38,18 @@ export function useFileExploreFoldersState() {
 }
 
 /**
+ * Hook to access the current selected file explorer folder state.
+ *
+ * This hook retrieves the current selected folder in the file explorer,
+ * which is automatically updated when the underlying data changes.
+ *
+ * @returns A Folder object representing the current selected folder in the file explorer, or undefined if no folder is selected.
+ */
+export function useSelectedFileExploreFolderState() {
+  return useAtomValue(selectedFileExploreFolderAtom);
+}
+
+/**
  * Hook to set the selected file explorer folder state.
  *
  * This hook returns a function that can be used to update the selected folder

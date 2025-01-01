@@ -1,23 +1,19 @@
-import { Box, useColorMode } from "@chakra-ui/react";
-import { ReactTree } from "@naisutech/react-tree";
+import { Box } from "@chakra-ui/react";
 
+import { TreeView } from "../../../lib/chakra/components/TreeView";
 import { FullWidthSkeleton } from "../../loading";
-import { useCustomThemes } from "../hooks/useCustomThemes";
-import { useFileExploreReactTreeProps } from "../hooks/useFileExploreReactTreeProps";
+import { useFileExploreTreeViewNodes } from "../hooks/useFileExploreTreeViewNodes";
 
 /**
  * FileExploreNavigation component for rendering the navigation tree in the file explorer.
  *
- * This component uses the ReactTree to display a hierarchical structure of folders.
- * It handles folder selection and applies custom themes based on the current color mode.
+ * This component displays a hierarchical structure of folders using a custom tree view.
+ * It handles folder selection and navigation through the file system.
  *
  * @returns {JSX.Element} The rendered FileExploreNavigation component
  */
 export function FileExploreNavigation() {
-  const { nodes, handleFolderSelected } = useFileExploreReactTreeProps();
-  const customThemes = useCustomThemes();
-
-  const { colorMode } = useColorMode();
+  const nodes = useFileExploreTreeViewNodes();
 
   if (nodes === undefined) {
     return (
@@ -31,16 +27,10 @@ export function FileExploreNavigation() {
         className="layout-border-top layout-border-left"
         w="100%"
         h="100%"
-        overflowX={"clip"}
-        overflowY={"auto"}
+        overflowX="clip"
+        overflowY="auto"
       >
-        <ReactTree
-          nodes={nodes}
-          onToggleSelectedNodes={handleFolderSelected}
-          showEmptyItems={false}
-          theme={colorMode === "light" ? "brand" : "brandDark"}
-          themes={customThemes}
-        />
+        <TreeView {...{ nodes }} />
       </Box>
     </>
   );
