@@ -21,6 +21,7 @@ This client has the following features:
 - [x] All songs (Simple full-text search)
 - [x] Responsive layout for tablets
 - [x] Support touch devices
+- [x] Browse recently added artists, albums and composers
 
 On the other hand, the following features are out of scope for now:
 
