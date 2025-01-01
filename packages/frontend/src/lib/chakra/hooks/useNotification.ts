@@ -37,7 +37,7 @@ export function useNotification(): (params: NotificationParams) => void {
       status,
       duration: 3000,
       isClosable: true,
-      position: "bottom-right",
+      position: "bottom",
     };
 
     toast(options);
