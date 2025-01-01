@@ -168,6 +168,5 @@ $ npm run proto
 $ npm run -w packages/domain build
 
 # 4. Run dev servers
-$ npm run -w packages/backend dev
-$ npm run -w packages/frontend dev
+$ npm run dev
 ```
