@@ -12,21 +12,21 @@
     "test": "npx vitest run"
   },
   "devDependencies": {
-    "@swc/cli": "^0.3.12",
-    "@swc/core": "^1.4.12",
+    "@swc/cli": "^0.5.2",
+    "@swc/core": "^1.10.4",
     "@types/express": "^4.17.21",
-    "@types/node": "^20.12.4",
-    "nodemon": "^3.1.0",
+    "@types/node": "^20.17.11",
+    "nodemon": "^3.1.9",
     "ts-node": "^10.9.2",
     "tsconfig-paths": "^4.2.0"
   },
   "dependencies": {
-    "@connectrpc/connect": "^1.4.0",
-    "@connectrpc/connect-express": "^1.4.0",
-    "@connectrpc/connect-node": "^1.4.0",
+    "@connectrpc/connect": "^1.6.1",
+    "@connectrpc/connect-express": "^1.6.1",
+    "@connectrpc/connect-node": "^1.6.1",
     "@sola_mpd/domain": "file:../../packages/domain",
-    "express": "^4.19.2",
-    "lru-cache": "^10.2.0",
-    "zod": "^3.22.4"
+    "express": "^4.21.2",
+    "lru-cache": "^11.0.2",
+    "zod": "^3.24.1"
   }
 }
