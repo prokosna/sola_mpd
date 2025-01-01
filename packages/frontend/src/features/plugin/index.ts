@@ -13,3 +13,4 @@ export { type PluginService } from "./services/PluginService";
 // States
 export { pluginStateRepositoryAtom } from "./states/pluginStateRepository";
 export { pluginServiceAtom } from "./states/pluginServiceState";
+export { usePluginState, useUpdatePluginState } from "./states/pluginState";

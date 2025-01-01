@@ -12,6 +12,8 @@ import {
 import { BrowserState } from "@sola_mpd/domain/src/models/browser_pb.js";
 import { LayoutState } from "@sola_mpd/domain/src/models/layout_pb.js";
 import { MpdProfileState } from "@sola_mpd/domain/src/models/mpd/mpd_profile_pb.js";
+import { PluginState } from "@sola_mpd/domain/src/models/plugin/plugin_pb.js";
+import { RecentlyAddedState } from "@sola_mpd/domain/src/models/recently_added_pb.js";
 import { SavedSearches } from "@sola_mpd/domain/src/models/search_pb.js";
 import { SongTableState } from "@sola_mpd/domain/src/models/song_table_pb.js";
 import { IoCreate } from "react-icons/io5";
@@ -20,7 +22,12 @@ import { UpdateMode } from "../../../types/stateTypes";
 import { useBrowserState, useUpdateBrowserState } from "../../browser";
 import { useLayoutState, useUpdateLayoutState } from "../../layout";
 import { CenterSpinner } from "../../loading";
+import { usePluginState, useUpdatePluginState } from "../../plugin";
 import { useMpdProfileState, useUpdateMpdProfileState } from "../../profile";
+import {
+  useRecentlyAddedState,
+  useUpdateRecentlyAddedState,
+} from "../../recently_added";
 import {
   useSavedSearchesState,
   useUpdateSavedSearchesState,
@@ -111,6 +118,34 @@ export function SettingsStates() {
       SavedSearches.fromJson,
     );
 
+  const pluginState = usePluginState();
+  const updatePluginState = useUpdatePluginState();
+  const [onOpenPluginState, pluginStateProps] =
+    useSettingsStateEditorProps<PluginState>(
+      pluginState,
+      async (pluginState: PluginState) => {
+        updatePluginState(
+          pluginState,
+          UpdateMode.LOCAL_STATE | UpdateMode.PERSIST,
+        );
+      },
+      PluginState.fromJson,
+    );
+
+  const recentlyAddedState = useRecentlyAddedState();
+  const updateRecentlyAddedState = useUpdateRecentlyAddedState();
+  const [onOpenRecentlyAddedState, recentlyAddedStateProps] =
+    useSettingsStateEditorProps<RecentlyAddedState>(
+      recentlyAddedState,
+      async (recentlyAddedState: RecentlyAddedState) => {
+        updateRecentlyAddedState(
+          recentlyAddedState,
+          UpdateMode.LOCAL_STATE | UpdateMode.PERSIST,
+        );
+      },
+      RecentlyAddedState.fromJson,
+    );
+
   if (
     mpdProfileState === undefined ||
     profileStateProps === undefined ||
@@ -121,7 +156,11 @@ export function SettingsStates() {
     browserState === undefined ||
     browserStateProps === undefined ||
     savedSearches === undefined ||
-    savedSearchesProps === undefined
+    savedSearchesProps === undefined ||
+    pluginState === undefined ||
+    pluginStateProps === undefined ||
+    recentlyAddedState === undefined ||
+    recentlyAddedStateProps === undefined
   ) {
     return <CenterSpinner className="layout-border-top layout-border-left" />;
   }
@@ -187,6 +226,18 @@ export function SettingsStates() {
                 </Td>
               </Tr>
               <Tr>
+                <Td>Recently Added</Td>
+                <Td>
+                  <IconButton
+                    variant="outline"
+                    aria-label="Edit"
+                    size="xs"
+                    icon={<IoCreate />}
+                    onClick={onOpenRecentlyAddedState}
+                  />
+                </Td>
+              </Tr>
+              <Tr>
                 <Td>Saved Searches</Td>
                 <Td>
                   <IconButton
@@ -198,6 +249,18 @@ export function SettingsStates() {
                   />
                 </Td>
               </Tr>
+              <Tr>
+                <Td>Plugins</Td>
+                <Td>
+                  <IconButton
+                    variant="outline"
+                    aria-label="Edit"
+                    size="xs"
+                    icon={<IoCreate />}
+                    onClick={onOpenPluginState}
+                  />
+                </Td>
+              </Tr>
             </Tbody>
           </Table>
         </TableContainer>
@@ -206,7 +269,9 @@ export function SettingsStates() {
       <SettingsStatesEditor<LayoutState> {...layoutStateProps} />
       <SettingsStatesEditor<SongTableState> {...songTableStateProps} />
       <SettingsStatesEditor<BrowserState> {...browserStateProps} />
+      <SettingsStatesEditor<RecentlyAddedState> {...recentlyAddedStateProps} />
       <SettingsStatesEditor<SavedSearches> {...savedSearchesProps} />
+      <SettingsStatesEditor<PluginState> {...pluginStateProps} />
     </>
   );
 }

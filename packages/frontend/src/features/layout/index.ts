@@ -11,5 +11,6 @@ export {
   useSearchLayoutState,
   usePlaylistLayoutState,
   useBrowserLayoutState,
+  useRecentlyAddedLayoutState,
   useUpdateLayoutState,
 } from "./states/layoutState";

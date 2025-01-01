@@ -3,6 +3,7 @@ import {
   FileExploreLayout,
   LayoutState,
   PlaylistLayout,
+  RecentlyAddedLayout,
   SearchLayout,
 } from "@sola_mpd/domain/src/models/layout_pb.js";
 import { useAtomValue, useSetAtom } from "jotai";
@@ -59,6 +60,15 @@ const browserLayoutStateSyncAtom = selectAtom<
   (a, b) => a?.equals(b) ?? false,
 );
 
+const recentlyAddedLayoutStateSyncAtom = selectAtom<
+  LayoutState | undefined,
+  RecentlyAddedLayout | undefined
+>(
+  layoutStateSyncAtom,
+  (state, _prev) => state?.recentlyAddedLayout,
+  (a, b) => a?.equals(b) ?? false,
+);
+
 /**
  * Returns the current layout state.
  *
@@ -110,6 +120,16 @@ export function useBrowserLayoutState() {
 }
 
 /**
+ * Returns the current recently added layout state.
+ *
+ * The state is automatically updated if the stored state changes.
+ * @returns The current recently added layout state.
+ */
+export function useRecentlyAddedLayoutState() {
+  return useAtomValue(recentlyAddedLayoutStateSyncAtom);
+}
+
+/**
  * Returns a function to update layout state.
  *
  * The state is automatically updated and persisted with 1 second debounce.
@@ -127,6 +147,7 @@ export function useUpdateLayoutState() {
         | SearchLayout
         | BrowserLayout
         | PlaylistLayout
+        | RecentlyAddedLayout
         | LayoutState,
       mode: UpdateMode,
     ): Promise<void> => {
@@ -140,6 +161,8 @@ export function useUpdateLayoutState() {
         newLayoutState.browserLayout = layout;
       } else if (layout instanceof PlaylistLayout) {
         newLayoutState.playlistLayout = layout;
+      } else if (layout instanceof RecentlyAddedLayout) {
+        newLayoutState.recentlyAddedLayout = layout;
       }
 
       if (mode & UpdateMode.LOCAL_STATE) {

@@ -7,6 +7,7 @@ import { mpdListenerAtom } from "./features/mpd/states/mpdListener";
 import { pluginServiceAtom } from "./features/plugin/states/pluginServiceState";
 import { pluginStateRepositoryAtom } from "./features/plugin/states/pluginStateRepository";
 import { mpdProfileStateRepositoryAtom } from "./features/profile/states/mpdProfileStateRepository";
+import { recentlyAddedStateRepositoryAtom } from "./features/recently_added/states/recentlyAddedStateRepository";
 import { savedSearchesRepositoryAtom } from "./features/search/states/savedSearchesRepository";
 import { songTableStateRepositoryAtom } from "./features/song_table/states/songTableStateRepository";
 import { BrowserStateRepositoryImplHttp } from "./infrastructure/browser/BrowserStateRepositoryImplHttp";
@@ -17,6 +18,7 @@ import { MpdListenerImplSocketIo } from "./infrastructure/mpd/MpdListenerImplSoc
 import { MpdProfileStateRepositoryImplHttp } from "./infrastructure/mpd/MpdProfileStateRepositoryImplHttp";
 import { PluginServiceImplSocketIo } from "./infrastructure/plugin/PluginServiceImplSocketIo";
 import { PluginStateRepositoryImplHttp } from "./infrastructure/plugin/PluginStateRepositoryImplHttp";
+import { RecentlyAddedStateRepositoryImplHttp } from "./infrastructure/recently_added/RecentlyAddedStateRepositoryImplHttp";
 import { SavedSearchesRepositoryImplHttp } from "./infrastructure/search/SavedSearchesRepositoryImplHttp";
 import { SocketIoClientImpl } from "./infrastructure/socket_io/SocketIoClientImpl";
 import { SongTableStateRepositoryImplHttp } from "./infrastructure/song_table/SongTableStateRepositoryImplHttp";
@@ -60,6 +62,10 @@ export function useJotaiStore() {
     store.set(
       layoutStateRepositoryAtom,
       new LayoutStateRepositoryImplHttp(httpClient),
+    );
+    store.set(
+      recentlyAddedStateRepositoryAtom,
+      new RecentlyAddedStateRepositoryImplHttp(httpClient),
     );
 
     globalStore = store;

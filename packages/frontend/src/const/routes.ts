@@ -8,3 +8,4 @@ export const ROUTE_HOME_SEARCH = "/home/search";
 export const ROUTE_HOME_PLUGIN = "/home/plugin";
 export const ROUTE_HOME_SETTINGS = "/home/settings";
 export const ROUTE_HOME_ALL_SONGS = "/home/all_songs";
+export const ROUTE_HOME_RECENTLY_ADDED = "/home/recently_added";

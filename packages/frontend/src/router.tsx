@@ -11,6 +11,7 @@ import {
   ROUTE_HOME_SEARCH,
   ROUTE_HOME_SETTINGS,
   ROUTE_LANDING,
+  ROUTE_HOME_RECENTLY_ADDED,
 } from "./const/routes";
 import { ErrorPage } from "./pages/ErrorPage";
 import { RootLayout } from "./pages/RootLayout";
@@ -22,6 +23,7 @@ import { HomeLayout } from "./pages/home/HomeLayout";
 import { PlayQueuePage } from "./pages/home/PlayQueuePage";
 import { PlaylistPage } from "./pages/home/PlaylistPage";
 import { PluginsPage } from "./pages/home/PluginsPage";
+import { RecentlyAddedPage } from "./pages/home/RecentlyAddedPage";
 import { SearchPage } from "./pages/home/SearchPage";
 import { SettingsPage } from "./pages/home/SettingsPage";
 import { LandingPage } from "./pages/landing/LandingPage";
@@ -51,6 +53,10 @@ const router = createBrowserRouter([
           {
             path: ROUTE_HOME_PLAYLIST.split("/").filter(Boolean).pop(),
             element: <PlaylistPage />,
+          },
+          {
+            path: ROUTE_HOME_RECENTLY_ADDED.split("/").filter(Boolean).pop(),
+            element: <RecentlyAddedPage />,
           },
           {
             path: ROUTE_HOME_SEARCH.split("/").filter(Boolean).pop(),

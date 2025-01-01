@@ -18,5 +18,8 @@ export const layoutStateRepository = new FileRepository<LayoutState>(
     playlistLayout: {
       sidePaneWidth: 30,
     },
+    recentlyAddedLayout: {
+      sidePaneWidth: 30,
+    },
   }),
 );

@@ -1,7 +1,7 @@
 import fs from "fs";
 import path from "path";
 
-import { Message } from "@bufbuild/protobuf";
+import { Message, JsonObject } from "@bufbuild/protobuf";
 
 export class FileRepository<T extends Message<T>> {
   private localCache: T;
@@ -15,9 +15,19 @@ export class FileRepository<T extends Message<T>> {
     try {
       fs.mkdirSync(dirPath, { recursive: true });
       const fileContent = fs.readFileSync(this.localFilePath, "utf-8");
-      this.localCache = defaultValue
-        .getType()
-        .fromJson(JSON.parse(fileContent));
+
+      // Make sure that the local cache has all the latest necessary fields.
+      // Otherwise, copy the field from the default value.
+      const defaultValueJson = defaultValue.toJson();
+      const fileContentJson = JSON.parse(fileContent);
+      for (const [key, value] of Object.entries(
+        defaultValueJson as JsonObject,
+      )) {
+        if (!(key in fileContentJson)) {
+          fileContentJson[key] = value;
+        }
+      }
+      this.localCache = defaultValue.getType().fromJson(fileContentJson);
     } catch (_) {
       this.localCache = defaultValue;
       this.save();

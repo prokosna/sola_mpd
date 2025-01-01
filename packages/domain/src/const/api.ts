@@ -8,3 +8,5 @@ export const API_CONFIGS_LAYOUT_STATE = "/api/configs/layout_state";
 export const API_CONFIGS_MPD_PROFILE_STATE = "/api/configs/mpd_profile_state";
 export const API_CONFIGS_SAVED_SEARCHES = "/api/configs/saved_searches";
 export const API_CONFIGS_PLUGIN_STATE = "/api/configs/plugin_state";
+export const API_CONFIGS_RECENTLY_ADDED_STATE =
+  "/api/configs/recently_added_state";

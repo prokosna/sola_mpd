@@ -2,11 +2,12 @@ import { Box, Divider, VStack } from "@chakra-ui/react";
 import {
   IoBrowsers,
   IoCode,
+  IoLibrary,
   IoList,
   IoMusicalNote,
   IoSearch,
   IoServer,
-  IoText,
+  IoSparkles,
 } from "react-icons/io5";
 
 import {
@@ -17,6 +18,7 @@ import {
   ROUTE_HOME_PLAY_QUEUE,
   ROUTE_HOME_PLUGIN,
   ROUTE_HOME_SEARCH,
+  ROUTE_HOME_RECENTLY_ADDED,
 } from "../../../const/routes";
 import { CardStats } from "../../stats";
 import { useSideNavigationItems } from "../hooks/useSideNavigationItems";
@@ -54,6 +56,12 @@ export function SideNavigation({ isCompact }: { isCompact: boolean }) {
       isCompact,
     },
     {
+      name: "Recently Added",
+      icon: IoSparkles,
+      link: ROUTE_HOME_RECENTLY_ADDED,
+      isCompact,
+    },
+    {
       name: "Search",
       icon: IoSearch,
       link: ROUTE_HOME_SEARCH,
@@ -67,7 +75,7 @@ export function SideNavigation({ isCompact }: { isCompact: boolean }) {
     },
     {
       name: "All Songs",
-      icon: IoText,
+      icon: IoLibrary,
       link: ROUTE_HOME_ALL_SONGS,
       isCompact,
     },
