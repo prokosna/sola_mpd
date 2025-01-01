@@ -11,9 +11,9 @@
     "test": "npx vitest run"
   },
   "dependencies": {
-    "@connectrpc/connect": "^1.4.0",
-    "@connectrpc/connect-express": "^1.4.0",
-    "@connectrpc/connect-node": "^1.4.0",
+    "@connectrpc/connect": "^1.6.1",
+    "@connectrpc/connect-express": "^1.6.1",
+    "@connectrpc/connect-node": "^1.6.1",
     "@sola_mpd/domain": "^0.0.0",
     "bufferutil": "^4.0.9",
     "cors": "^2.8.5",
@@ -25,7 +25,7 @@
   "devDependencies": {
     "@types/cors": "^2.8.17",
     "@types/express": "^5.0.0",
-    "@types/node": "^20.12.4",
+    "@types/node": "^20.17.11",
     "nodemon": "^3.1.9",
     "ts-node": "^10.9.2",
     "tsconfig-paths": "^4.2.0"
