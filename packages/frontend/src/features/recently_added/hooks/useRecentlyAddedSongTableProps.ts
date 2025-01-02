@@ -3,7 +3,7 @@ import type { Song } from "@sola_mpd/domain/src/models/song_pb.js";
 import type { SongTableColumn } from "@sola_mpd/domain/src/models/song_table_pb.js";
 import { type MutableRefObject, useCallback } from "react";
 
-import { COMPONENT_ID_BROWSER } from "../../../const/component";
+import { COMPONENT_ID_RECENTLY_ADDED } from "../../../const/component";
 import { useNotification } from "../../../lib/chakra/hooks/useNotification";
 import { UpdateMode } from "../../../types/stateTypes";
 import type { ContextMenuSection } from "../../context_menu";
@@ -57,7 +57,7 @@ export function useRecentlyAddedSongTableProps(
 
 	// Plugin context menu items
 	const pluginContextMenuItems = usePluginContextMenuItems(
-		Plugin_PluginType.ON_BROWSER,
+		Plugin_PluginType.ON_RECENTLY_ADDED,
 		songTableKeyType,
 	);
 
@@ -134,7 +134,7 @@ export function useRecentlyAddedSongTableProps(
 	}
 
 	return {
-		id: COMPONENT_ID_BROWSER,
+		id: COMPONENT_ID_RECENTLY_ADDED,
 		songTableKeyType,
 		songs,
 		columns: songTableState.columns,
