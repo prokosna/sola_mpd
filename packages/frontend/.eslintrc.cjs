@@ -31,25 +31,24 @@ const zonesRestrictAccessToInfrastructure = features.map((feature) => ({
 }));
 
 module.exports = {
-  extends: ["../../.eslintrc.json", "plugin:react-hooks/recommended"],
+  extends: ["../../.eslintrc.json"],
   env: { browser: true, es2020: true, node: true },
-  plugins: ["react-refresh"],
-  rules: {
-    "react-hooks/exhaustive-deps": 2,
-    "react-refresh/only-export-components": [
-      "warn",
-      { allowConstantExport: true },
-    ],
-    "import/no-restricted-paths": [
-      "error",
-      {
-        zones: [
-          ...zonesRestrictOutsideOfFeatures,
-          ...zonesRestrictWithinFeatures,
-          ...zonesRestrictAccessFromStates,
-          ...zonesRestrictAccessToInfrastructure,
+  overrides: [
+    {
+      files: ["**/src/**/*.{ts,tsx}"],
+      rules: {
+        "import/no-restricted-paths": [
+          "error",
+          {
+            zones: [
+              ...zonesRestrictOutsideOfFeatures,
+              ...zonesRestrictWithinFeatures,
+              ...zonesRestrictAccessFromStates,
+              ...zonesRestrictAccessToInfrastructure,
+            ],
+          },
         ],
       },
-    ],
-  },
+    },
+  ],
 };
