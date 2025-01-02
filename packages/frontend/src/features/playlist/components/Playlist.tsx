@@ -4,9 +4,9 @@ import { useCallback } from "react";
 
 import { UpdateMode } from "../../../types/stateTypes";
 import {
-  useResizablePane,
-  usePlaylistLayoutState,
-  useUpdateLayoutState,
+	usePlaylistLayoutState,
+	useResizablePane,
+	useUpdateLayoutState,
 } from "../../layout";
 import { CenterSpinner } from "../../loading";
 
@@ -22,51 +22,51 @@ import { PlaylistNavigation } from "./PlaylistNavigation";
  * @returns Playlist view component
  */
 export function Playlist() {
-  const playlistLayout = usePlaylistLayoutState();
-  const updateLayout = useUpdateLayoutState();
+	const playlistLayout = usePlaylistLayoutState();
+	const updateLayout = useUpdateLayoutState();
 
-  const { colorMode } = useColorMode();
+	const { colorMode } = useColorMode();
 
-  const handlePanelWidthChanged = useCallback(
-    async (left: number | undefined) => {
-      if (left === undefined || playlistLayout === undefined) {
-        return;
-      }
-      const newLayout = playlistLayout.clone();
-      newLayout.sidePaneWidth = left;
-      updateLayout(newLayout, UpdateMode.PERSIST);
-    },
-    [playlistLayout, updateLayout],
-  );
+	const handlePanelWidthChanged = useCallback(
+		async (left: number | undefined) => {
+			if (left === undefined || playlistLayout === undefined) {
+				return;
+			}
+			const newLayout = playlistLayout.clone();
+			newLayout.sidePaneWidth = left;
+			updateLayout(newLayout, UpdateMode.PERSIST);
+		},
+		[playlistLayout, updateLayout],
+	);
 
-  const { isReady, leftPaneWidthStyle, handlePanelResize } = useResizablePane(
-    playlistLayout?.sidePaneWidth,
-    handlePanelWidthChanged,
-  );
+	const { isReady, leftPaneWidthStyle, handlePanelResize } = useResizablePane(
+		playlistLayout?.sidePaneWidth,
+		handlePanelWidthChanged,
+	);
 
-  if (!isReady) {
-    return <CenterSpinner className="layout-border-top layout-border-left" />;
-  }
+	if (!isReady) {
+		return <CenterSpinner className="layout-border-top layout-border-left" />;
+	}
 
-  return (
-    <>
-      <Box w="100%" h="full">
-        <Allotment
-          className={
-            colorMode === "light" ? "allotment-light" : "allotment-dark"
-          }
-          onChange={(sizes) => {
-            handlePanelResize(sizes[0], sizes[1]);
-          }}
-        >
-          <Allotment.Pane preferredSize={leftPaneWidthStyle}>
-            <PlaylistNavigation />
-          </Allotment.Pane>
-          <Allotment.Pane>
-            <PlaylistContent />
-          </Allotment.Pane>
-        </Allotment>
-      </Box>
-    </>
-  );
+	return (
+		<>
+			<Box w="100%" h="full">
+				<Allotment
+					className={
+						colorMode === "light" ? "allotment-light" : "allotment-dark"
+					}
+					onChange={(sizes) => {
+						handlePanelResize(sizes[0], sizes[1]);
+					}}
+				>
+					<Allotment.Pane preferredSize={leftPaneWidthStyle}>
+						<PlaylistNavigation />
+					</Allotment.Pane>
+					<Allotment.Pane>
+						<PlaylistContent />
+					</Allotment.Pane>
+				</Allotment>
+			</Box>
+		</>
+	);
 }

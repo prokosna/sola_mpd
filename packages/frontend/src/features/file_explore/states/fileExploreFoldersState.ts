@@ -1,4 +1,4 @@
-import { Folder } from "@sola_mpd/domain/src/models/file_explore_pb.js";
+import type { Folder } from "@sola_mpd/domain/src/models/file_explore_pb.js";
 import { atom, useAtomValue, useSetAtom } from "jotai";
 import { atomWithRefresh } from "jotai/utils";
 import { useCallback } from "react";
@@ -13,14 +13,14 @@ import { fetchFileExploreFolders } from "../utils/fileExploreFoldersUtils";
  * Fetches folder structure from MPD server.
  */
 const fileExploreFoldersAtom = atomWithRefresh(async (get) => {
-  const mpdClient = get(mpdClientAtom);
-  const profile = get(currentMpdProfileSyncAtom);
+	const mpdClient = get(mpdClientAtom);
+	const profile = get(currentMpdProfileSyncAtom);
 
-  if (profile === undefined) {
-    return [];
-  }
+	if (profile === undefined) {
+		return [];
+	}
 
-  return await fetchFileExploreFolders(mpdClient, profile);
+	return await fetchFileExploreFolders(mpdClient, profile);
 });
 
 /**
@@ -33,7 +33,7 @@ const fileExploreFoldersSyncAtom = atomWithSync(fileExploreFoldersAtom);
  * Defaults to undefined when no folder is selected.
  */
 export const selectedFileExploreFolderAtom = atom<Folder | undefined>(
-  undefined,
+	undefined,
 );
 
 /**
@@ -47,7 +47,7 @@ export const selectedFileExploreFolderAtom = atom<Folder | undefined>(
  * @returns Array of folders or empty array if no profile
  */
 export function useFileExploreFoldersState() {
-  return useAtomValue(fileExploreFoldersSyncAtom);
+	return useAtomValue(fileExploreFoldersSyncAtom);
 }
 
 /**
@@ -61,7 +61,7 @@ export function useFileExploreFoldersState() {
  * @returns Selected folder or undefined if none selected
  */
 export function useSelectedFileExploreFolderState() {
-  return useAtomValue(selectedFileExploreFolderAtom);
+	return useAtomValue(selectedFileExploreFolderAtom);
 }
 
 /**
@@ -74,16 +74,16 @@ export function useSelectedFileExploreFolderState() {
  * @returns A function that takes a Folder object and updates the selected folder state.
  */
 export function useSetSelectedFileExploreFolderState() {
-  const setSelectedFileExploreFolder = useSetAtom(
-    selectedFileExploreFolderAtom,
-  );
+	const setSelectedFileExploreFolder = useSetAtom(
+		selectedFileExploreFolderAtom,
+	);
 
-  return useCallback(
-    async (folder: Folder) => {
-      setSelectedFileExploreFolder(folder);
-    },
-    [setSelectedFileExploreFolder],
-  );
+	return useCallback(
+		async (folder: Folder) => {
+			setSelectedFileExploreFolder(folder);
+		},
+		[setSelectedFileExploreFolder],
+	);
 }
 
 /**
@@ -97,5 +97,5 @@ export function useSetSelectedFileExploreFolderState() {
  * @returns Refresh function to trigger new data fetch
  */
 export function useRefreshFileExploreFolders() {
-  return useSetAtom(fileExploreFoldersAtom);
+	return useSetAtom(fileExploreFoldersAtom);
 }

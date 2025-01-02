@@ -19,7 +19,7 @@ export const pathnameAtom = atom("");
  * @returns Current pathname string
  */
 export function usePathname() {
-  return useAtomValue(pathnameAtom);
+	return useAtomValue(pathnameAtom);
 }
 
 /**
@@ -32,5 +32,5 @@ export function usePathname() {
  * @returns Pathname setter function
  */
 export function useSetPathname() {
-  return useSetAtom(pathnameAtom);
+	return useSetAtom(pathnameAtom);
 }

@@ -15,48 +15,48 @@ import { useCurrentMpdProfileState } from "../../profile";
  * @returns {JSX.Element} A button component for updating the MPD database
  */
 export function CardStatsDatabaseButton() {
-  const notify = useNotification();
+	const notify = useNotification();
 
-  const profile = useCurrentMpdProfileState();
-  const mpdClient = useMpdClientState();
-  const playerStatusIsDatabaseUpdating =
-    usePlayerStatusIsDatabaseUpdatingState();
+	const profile = useCurrentMpdProfileState();
+	const mpdClient = useMpdClientState();
+	const playerStatusIsDatabaseUpdating =
+		usePlayerStatusIsDatabaseUpdatingState();
 
-  const handleDatabaseUpdateButtonClick = useCallback(async () => {
-    if (profile === undefined || mpdClient === undefined) {
-      return;
-    }
-    await mpdClient.command(
-      new MpdRequest({
-        profile,
-        command: {
-          case: "update",
-          value: {},
-        },
-      }),
-    );
-    notify({
-      status: "info",
-      title: "Update MPD Database",
-      description: "Database is now updating...",
-    });
-  }, [mpdClient, profile, notify]);
+	const handleDatabaseUpdateButtonClick = useCallback(async () => {
+		if (profile === undefined || mpdClient === undefined) {
+			return;
+		}
+		await mpdClient.command(
+			new MpdRequest({
+				profile,
+				command: {
+					case: "update",
+					value: {},
+				},
+			}),
+		);
+		notify({
+			status: "info",
+			title: "Update MPD Database",
+			description: "Database is now updating...",
+		});
+	}, [mpdClient, profile, notify]);
 
-  return (
-    <>
-      <Button
-        isLoading={playerStatusIsDatabaseUpdating}
-        loadingText="Updating Database..."
-        w="100%"
-        variant="outline"
-        onClick={() => {
-          if (!playerStatusIsDatabaseUpdating) {
-            handleDatabaseUpdateButtonClick();
-          }
-        }}
-      >
-        Update Database
-      </Button>
-    </>
-  );
+	return (
+		<>
+			<Button
+				isLoading={playerStatusIsDatabaseUpdating}
+				loadingText="Updating Database..."
+				w="100%"
+				variant="outline"
+				onClick={() => {
+					if (!playerStatusIsDatabaseUpdating) {
+						handleDatabaseUpdateButtonClick();
+					}
+				}}
+			>
+				Update Database
+			</Button>
+		</>
+	);
 }

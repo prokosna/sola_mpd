@@ -1,4 +1,4 @@
-import { Playlist } from "@sola_mpd/domain/src/models/playlist_pb.js";
+import type { Playlist } from "@sola_mpd/domain/src/models/playlist_pb.js";
 import { atom, useAtomValue, useSetAtom } from "jotai";
 import { atomWithRefresh } from "jotai/utils";
 
@@ -14,15 +14,15 @@ import { fetchPlaylists } from "../utils/playlistUtils";
  * profile-based access control.
  */
 const playlistsAtom = atomWithRefresh(async (get) => {
-  const mpdClient = get(mpdClientAtom);
-  const profile = get(currentMpdProfileSyncAtom);
+	const mpdClient = get(mpdClientAtom);
+	const profile = get(currentMpdProfileSyncAtom);
 
-  if (profile === undefined) {
-    return [];
-  }
+	if (profile === undefined) {
+		return [];
+	}
 
-  const playlists = await fetchPlaylists(mpdClient, profile);
-  return playlists.sort((a, b) => a.name.localeCompare(b.name));
+	const playlists = await fetchPlaylists(mpdClient, profile);
+	return playlists.sort((a, b) => a.name.localeCompare(b.name));
 });
 
 /**
@@ -49,7 +49,7 @@ export const selectedPlaylistAtom = atom<Playlist | undefined>(undefined);
  * @returns Current playlists or empty array
  */
 export function usePlaylistsState() {
-  return useAtomValue(playlistsSyncAtom);
+	return useAtomValue(playlistsSyncAtom);
 }
 
 /**
@@ -61,7 +61,7 @@ export function usePlaylistsState() {
  * @returns Refresh function
  */
 export function useRefreshPlaylistsState() {
-  return useSetAtom(playlistsAtom);
+	return useSetAtom(playlistsAtom);
 }
 
 /**
@@ -73,7 +73,7 @@ export function useRefreshPlaylistsState() {
  * @returns Selected playlist or undefined
  */
 export function useSelectedPlaylistState() {
-  return useAtomValue(selectedPlaylistAtom);
+	return useAtomValue(selectedPlaylistAtom);
 }
 
 /**
@@ -84,5 +84,5 @@ export function useSelectedPlaylistState() {
  * @returns Selection update function
  */
 export function useSetSelectedPlaylistState() {
-  return useSetAtom(selectedPlaylistAtom);
+	return useSetAtom(selectedPlaylistAtom);
 }

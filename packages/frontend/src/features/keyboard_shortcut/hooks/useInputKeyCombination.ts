@@ -1,4 +1,4 @@
-import { MutableRefObject, useEffect, useRef } from "react";
+import { type MutableRefObject, useEffect, useRef } from "react";
 
 /**
  * Advanced keyboard shortcut management hook.
@@ -42,41 +42,41 @@ import { MutableRefObject, useEffect, useRef } from "react";
  * @param onPressed Action callback
  */
 export function useInputKeyCombination(
-  ref: MutableRefObject<HTMLElement | null> | undefined,
-  keys: string[],
-  onPressed: () => void,
+	ref: MutableRefObject<HTMLElement | null> | undefined,
+	keys: string[],
+	onPressed: () => void,
 ): void {
-  const keysPressed = useRef(new Set<string>());
+	const keysPressed = useRef(new Set<string>());
 
-  useEffect(() => {
-    const onKeyDown = (event: Event) => {
-      const keyboardEvent = event as KeyboardEvent;
-      keysPressed.current.add(keyboardEvent.key);
+	useEffect(() => {
+		const onKeyDown = (event: Event) => {
+			const keyboardEvent = event as KeyboardEvent;
+			keysPressed.current.add(keyboardEvent.key);
 
-      const activeElement = document.activeElement;
-      const isInputActive =
-        activeElement?.tagName === "INPUT" ||
-        activeElement?.tagName === "TEXTAREA" ||
-        (activeElement as HTMLElement)?.isContentEditable;
+			const activeElement = document.activeElement;
+			const isInputActive =
+				activeElement?.tagName === "INPUT" ||
+				activeElement?.tagName === "TEXTAREA" ||
+				(activeElement as HTMLElement)?.isContentEditable;
 
-      if (!isInputActive && keys.every((key) => keysPressed.current.has(key))) {
-        keyboardEvent.preventDefault();
-        onPressed();
-      }
-    };
+			if (!isInputActive && keys.every((key) => keysPressed.current.has(key))) {
+				keyboardEvent.preventDefault();
+				onPressed();
+			}
+		};
 
-    const onKeyUp = (event: Event) => {
-      const keyboardEvent = event as KeyboardEvent;
-      keysPressed.current.delete(keyboardEvent.key);
-    };
+		const onKeyUp = (event: Event) => {
+			const keyboardEvent = event as KeyboardEvent;
+			keysPressed.current.delete(keyboardEvent.key);
+		};
 
-    const target = ref?.current || window;
-    target.addEventListener("keydown", onKeyDown);
-    target.addEventListener("keyup", onKeyUp);
+		const target = ref?.current || window;
+		target.addEventListener("keydown", onKeyDown);
+		target.addEventListener("keyup", onKeyUp);
 
-    return () => {
-      target.removeEventListener("keydown", onKeyDown);
-      target.removeEventListener("keyup", onKeyUp);
-    };
-  }, [ref, keys, onPressed]);
+		return () => {
+			target.removeEventListener("keydown", onKeyDown);
+			target.removeEventListener("keyup", onKeyUp);
+		};
+	}, [ref, keys, onPressed]);
 }

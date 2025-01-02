@@ -1,6 +1,6 @@
 import { atomWithDefault } from "jotai/utils";
 
-import { LayoutStateRepository } from "../services/LayoutStateRepository";
+import type { LayoutStateRepository } from "../services/LayoutStateRepository";
 
 /**
  * Repository provider atom for layout state management.
@@ -41,7 +41,7 @@ import { LayoutStateRepository } from "../services/LayoutStateRepository";
  * - Debug-friendly errors
  */
 export const layoutStateRepositoryAtom = atomWithDefault<LayoutStateRepository>(
-  () => {
-    throw new Error("Not initialized. Should be setup DI in the provider.");
-  },
+	() => {
+		throw new Error("Not initialized. Should be setup DI in the provider.");
+	},
 );

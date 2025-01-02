@@ -22,25 +22,25 @@ import { useFileExploreTreeViewNodes } from "../hooks/useFileExploreTreeViewNode
  * @returns Rendered navigation component with tree view
  */
 export function FileExploreNavigation() {
-  const nodes = useFileExploreTreeViewNodes();
+	const nodes = useFileExploreTreeViewNodes();
 
-  if (nodes === undefined) {
-    return (
-      <FullWidthSkeleton className="layout-border-top layout-border-left" />
-    );
-  }
+	if (nodes === undefined) {
+		return (
+			<FullWidthSkeleton className="layout-border-top layout-border-left" />
+		);
+	}
 
-  return (
-    <>
-      <Box
-        className="layout-border-top layout-border-left"
-        w="100%"
-        h="100%"
-        overflowX="clip"
-        overflowY="auto"
-      >
-        <TreeView {...{ nodes }} />
-      </Box>
-    </>
-  );
+	return (
+		<>
+			<Box
+				className="layout-border-top layout-border-left"
+				w="100%"
+				h="100%"
+				overflowX="clip"
+				overflowY="auto"
+			>
+				<TreeView {...{ nodes }} />
+			</Box>
+		</>
+	);
 }

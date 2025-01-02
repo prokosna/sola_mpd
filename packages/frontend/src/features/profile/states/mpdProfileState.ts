@@ -1,6 +1,6 @@
-import {
-  MpdProfile,
-  MpdProfileState,
+import type {
+	MpdProfile,
+	MpdProfileState,
 } from "@sola_mpd/domain/src/models/mpd/mpd_profile_pb.js";
 import { atom, useAtomValue, useSetAtom } from "jotai";
 import { atomWithDefault, useResetAtom } from "jotai/utils";
@@ -17,8 +17,8 @@ import { mpdProfileStateRepositoryAtom } from "./mpdProfileStateRepository";
  * Manages multiple profiles and tracks active one.
  */
 const mpdProfileStateAtom = atomWithDefault(async (get) => {
-  const repository = get(mpdProfileStateRepositoryAtom);
-  return repository.fetch();
+	const repository = get(mpdProfileStateRepositoryAtom);
+	return repository.fetch();
 });
 
 /**
@@ -34,8 +34,8 @@ const mpdProfileStateSyncAtom = atomWithSync(mpdProfileStateAtom);
  * Extracts active profile from state.
  */
 export const currentMpdProfileSyncAtom = atom((get) => {
-  const profileState = get(mpdProfileStateSyncAtom);
-  return profileState?.currentProfile;
+	const profileState = get(mpdProfileStateSyncAtom);
+	return profileState?.currentProfile;
 });
 
 /**
@@ -46,7 +46,7 @@ export const currentMpdProfileSyncAtom = atom((get) => {
  * @returns Current MPD profile state
  */
 export function useMpdProfileState() {
-  return useAtomValue(mpdProfileStateSyncAtom);
+	return useAtomValue(mpdProfileStateSyncAtom);
 }
 
 /**
@@ -57,7 +57,7 @@ export function useMpdProfileState() {
  * @returns Active profile or undefined
  */
 export function useCurrentMpdProfileState() {
-  return useAtomValue(currentMpdProfileSyncAtom);
+	return useAtomValue(currentMpdProfileSyncAtom);
 }
 
 /**
@@ -68,7 +68,7 @@ export function useCurrentMpdProfileState() {
  * @returns Refresh function
  */
 export function useRefreshMpdProfileState() {
-  return useResetAtom(mpdProfileStateAtom);
+	return useResetAtom(mpdProfileStateAtom);
 }
 
 /**
@@ -79,21 +79,21 @@ export function useRefreshMpdProfileState() {
  * @returns Update function with persistence options
  */
 export function useUpdateMpdProfileState() {
-  const repository = useAtomValue(mpdProfileStateRepositoryAtom);
-  const setMpdProfileState = useSetAtom(mpdProfileStateAtom);
+	const repository = useAtomValue(mpdProfileStateRepositoryAtom);
+	const setMpdProfileState = useSetAtom(mpdProfileStateAtom);
 
-  return useCallback(
-    async (newMpdProfileState: MpdProfileState, mode: UpdateMode) => {
-      await repository.save(newMpdProfileState);
-      if (mode & UpdateMode.LOCAL_STATE) {
-        setMpdProfileState(Promise.resolve(newMpdProfileState));
-      }
-      if (mode & UpdateMode.PERSIST) {
-        await repository.save(newMpdProfileState);
-      }
-    },
-    [repository, setMpdProfileState],
-  );
+	return useCallback(
+		async (newMpdProfileState: MpdProfileState, mode: UpdateMode) => {
+			await repository.save(newMpdProfileState);
+			if (mode & UpdateMode.LOCAL_STATE) {
+				setMpdProfileState(Promise.resolve(newMpdProfileState));
+			}
+			if (mode & UpdateMode.PERSIST) {
+				await repository.save(newMpdProfileState);
+			}
+		},
+		[repository, setMpdProfileState],
+	);
 }
 
 /**
@@ -105,26 +105,26 @@ export function useUpdateMpdProfileState() {
  * @throws When profile not found
  */
 export function useUpdateCurrentMpdProfile() {
-  const mpdProfileState = useAtomValue(mpdProfileStateAtom);
-  const repository = useAtomValue(mpdProfileStateRepositoryAtom);
-  const setMpdProfileState = useSetAtom(mpdProfileStateAtom);
+	const mpdProfileState = useAtomValue(mpdProfileStateAtom);
+	const repository = useAtomValue(mpdProfileStateRepositoryAtom);
+	const setMpdProfileState = useSetAtom(mpdProfileStateAtom);
 
-  return useCallback(
-    async (mpdProfile: MpdProfile, mode: UpdateMode) => {
-      if (!mpdProfileState.profiles.includes(mpdProfile)) {
-        throw Error(
-          `Invalid profile state: ${mpdProfile.toJsonString()} is not in profiles`,
-        );
-      }
-      const newMpdProfileState = mpdProfileState.clone();
-      newMpdProfileState.currentProfile = mpdProfile;
-      if (mode & UpdateMode.LOCAL_STATE) {
-        setMpdProfileState(Promise.resolve(newMpdProfileState));
-      }
-      if (mode & UpdateMode.PERSIST) {
-        await repository.save(newMpdProfileState);
-      }
-    },
-    [mpdProfileState, repository, setMpdProfileState],
-  );
+	return useCallback(
+		async (mpdProfile: MpdProfile, mode: UpdateMode) => {
+			if (!mpdProfileState.profiles.includes(mpdProfile)) {
+				throw Error(
+					`Invalid profile state: ${mpdProfile.toJsonString()} is not in profiles`,
+				);
+			}
+			const newMpdProfileState = mpdProfileState.clone();
+			newMpdProfileState.currentProfile = mpdProfile;
+			if (mode & UpdateMode.LOCAL_STATE) {
+				setMpdProfileState(Promise.resolve(newMpdProfileState));
+			}
+			if (mode & UpdateMode.PERSIST) {
+				await repository.save(newMpdProfileState);
+			}
+		},
+		[mpdProfileState, repository, setMpdProfileState],
+	);
 }

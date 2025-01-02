@@ -1,4 +1,4 @@
-import { SongTableState } from "@sola_mpd/domain/src/models/song_table_pb.js";
+import type { SongTableState } from "@sola_mpd/domain/src/models/song_table_pb.js";
 
 /**
  * Repository for managing song table state persistence.
@@ -8,6 +8,6 @@ import { SongTableState } from "@sola_mpd/domain/src/models/song_table_pb.js";
  * Abstracts the underlying storage mechanism.
  */
 export interface SongTableStateRepository {
-  fetch: () => Promise<SongTableState>;
-  save: (songTableState: SongTableState) => Promise<void>;
+	fetch: () => Promise<SongTableState>;
+	save: (songTableState: SongTableState) => Promise<void>;
 }

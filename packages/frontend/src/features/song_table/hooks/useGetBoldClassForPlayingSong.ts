@@ -1,12 +1,12 @@
-import { Song } from "@sola_mpd/domain/src/models/song_pb.js";
-import { RowClassParams } from "ag-grid-community";
+import type { Song } from "@sola_mpd/domain/src/models/song_pb.js";
+import type { RowClassParams } from "ag-grid-community";
 import { useCallback, useMemo } from "react";
 
 import { useCurrentSongState } from "../../player";
-import {
-  SongTableKey,
-  SongTableKeyType,
-  SongTableRowData,
+import type {
+	SongTableKey,
+	SongTableKeyType,
+	SongTableRowData,
 } from "../types/songTableTypes";
 import { getSongTableKey } from "../utils/songTableTableUtils";
 
@@ -22,41 +22,41 @@ import { getSongTableKey } from "../utils/songTableTableUtils";
  * @returns Row class callback
  */
 export function useGetBoldClassForPlayingSong(
-  keyType: SongTableKeyType,
-  songsMap: Map<SongTableKey, Song>,
+	keyType: SongTableKeyType,
+	songsMap: Map<SongTableKey, Song>,
 ): (params: RowClassParams<SongTableRowData>) => string | undefined {
-  const currentSong = useCurrentSongState();
+	const currentSong = useCurrentSongState();
 
-  const currentSongKey = useMemo(() => {
-    if (currentSong === undefined) {
-      return undefined;
-    }
+	const currentSongKey = useMemo(() => {
+		if (currentSong === undefined) {
+			return undefined;
+		}
 
-    return getSongTableKey(currentSong, keyType);
-  }, [currentSong, keyType]);
+		return getSongTableKey(currentSong, keyType);
+	}, [currentSong, keyType]);
 
-  return useCallback(
-    (params: RowClassParams<SongTableRowData>) => {
-      if (params.data === undefined) {
-        return;
-      }
+	return useCallback(
+		(params: RowClassParams<SongTableRowData>) => {
+			if (params.data === undefined) {
+				return;
+			}
 
-      const targetKey = params.data.key;
-      if (targetKey === undefined) {
-        return;
-      }
+			const targetKey = params.data.key;
+			if (targetKey === undefined) {
+				return;
+			}
 
-      const targetSong = songsMap.get(String(targetKey));
-      if (targetSong === undefined) {
-        return;
-      }
+			const targetSong = songsMap.get(String(targetKey));
+			if (targetSong === undefined) {
+				return;
+			}
 
-      const rowKey = getSongTableKey(targetSong, keyType);
-      if (rowKey === currentSongKey) {
-        return "ag-font-weight-bold";
-      }
-      return;
-    },
-    [currentSongKey, keyType, songsMap],
-  );
+			const rowKey = getSongTableKey(targetSong, keyType);
+			if (rowKey === currentSongKey) {
+				return "ag-font-weight-bold";
+			}
+			return;
+		},
+		[currentSongKey, keyType, songsMap],
+	);
 }

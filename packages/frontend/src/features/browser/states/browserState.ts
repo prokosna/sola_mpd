@@ -1,4 +1,4 @@
-import { BrowserState } from "@sola_mpd/domain/src/models/browser_pb.js";
+import type { BrowserState } from "@sola_mpd/domain/src/models/browser_pb.js";
 import { useAtomValue, useSetAtom } from "jotai";
 import { atomWithDefault, useResetAtom } from "jotai/utils";
 import { useCallback } from "react";
@@ -13,11 +13,11 @@ import { browserStateRepositoryAtom } from "./browserStateRepository";
  * Initializes with data from the repository.
  */
 const browserStateAtom = atomWithDefault<Promise<BrowserState> | BrowserState>(
-  async (get) => {
-    const repository = get(browserStateRepositoryAtom);
-    const browserState = await repository.fetch();
-    return browserState;
-  },
+	async (get) => {
+		const repository = get(browserStateRepositoryAtom);
+		const browserState = await repository.fetch();
+		return browserState;
+	},
 );
 
 /**
@@ -36,7 +36,7 @@ export const browserStateSyncAtom = atomWithSync(browserStateAtom);
  * @returns Current browser state or undefined
  */
 export function useBrowserState() {
-  return useAtomValue(browserStateSyncAtom);
+	return useAtomValue(browserStateSyncAtom);
 }
 
 /**
@@ -50,20 +50,20 @@ export function useBrowserState() {
  * @returns Function to update browser state
  */
 export function useUpdateBrowserState() {
-  const setBrowserState = useSetAtom(browserStateAtom);
-  const repository = useAtomValue(browserStateRepositoryAtom);
+	const setBrowserState = useSetAtom(browserStateAtom);
+	const repository = useAtomValue(browserStateRepositoryAtom);
 
-  return useCallback(
-    async (state: BrowserState, mode: UpdateMode) => {
-      if (mode & UpdateMode.LOCAL_STATE) {
-        setBrowserState(state);
-      }
-      if (mode & UpdateMode.PERSIST) {
-        await repository.save(state);
-      }
-    },
-    [setBrowserState, repository],
-  );
+	return useCallback(
+		async (state: BrowserState, mode: UpdateMode) => {
+			if (mode & UpdateMode.LOCAL_STATE) {
+				setBrowserState(state);
+			}
+			if (mode & UpdateMode.PERSIST) {
+				await repository.save(state);
+			}
+		},
+		[setBrowserState, repository],
+	);
 }
 
 /**
@@ -71,5 +71,5 @@ export function useUpdateBrowserState() {
  * @returns A function to refresh the browser state.
  */
 export function useRefreshBrowserState(): () => void {
-  return useResetAtom(browserStateAtom);
+	return useResetAtom(browserStateAtom);
 }

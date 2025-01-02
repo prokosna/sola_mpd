@@ -6,8 +6,8 @@ import { selectedPlaylistAtom } from "./playlistState";
 const isPlaylistLoadingAtom = atom(true);
 
 const setPlaylistLoadingTrueEffectAtom = atomEffect((get, set) => {
-  get(selectedPlaylistAtom);
-  set(isPlaylistLoadingAtom, true);
+	get(selectedPlaylistAtom);
+	set(isPlaylistLoadingAtom, true);
 });
 
 /**
@@ -18,8 +18,8 @@ const setPlaylistLoadingTrueEffectAtom = atomEffect((get, set) => {
  * @returns Current loading state
  */
 export function useIsPlaylistLoadingState() {
-  useAtom(setPlaylistLoadingTrueEffectAtom);
-  return useAtomValue(isPlaylistLoadingAtom);
+	useAtom(setPlaylistLoadingTrueEffectAtom);
+	return useAtomValue(isPlaylistLoadingAtom);
 }
 
 /**
@@ -28,5 +28,5 @@ export function useIsPlaylistLoadingState() {
  * @returns Loading state setter
  */
 export function useSetIsPlaylistLoadingState() {
-  return useSetAtom(isPlaylistLoadingAtom);
+	return useSetAtom(isPlaylistLoadingAtom);
 }

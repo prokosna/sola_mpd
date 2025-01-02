@@ -1,9 +1,9 @@
 import { Stat, StatHelpText, StatLabel, StatNumber } from "@chakra-ui/react";
 
 export type CardStatsNumberProps = {
-  isSelected: boolean;
-  label: string;
-  count?: number | string;
+	isSelected: boolean;
+	label: string;
+	count?: number | string;
 };
 
 /**
@@ -17,15 +17,15 @@ export type CardStatsNumberProps = {
  * @returns A Stat component with label and count
  */
 export function CardStatsNumber(props: CardStatsNumberProps) {
-  return (
-    <>
-      <Stat>
-        <StatLabel color={props.isSelected ? "brand.400" : undefined}>
-          {props.label}
-        </StatLabel>
-        <StatNumber>{props.count ?? "Loading"}</StatNumber>
-        <StatHelpText />
-      </Stat>
-    </>
-  );
+	return (
+		<>
+			<Stat>
+				<StatLabel color={props.isSelected ? "brand.400" : undefined}>
+					{props.label}
+				</StatLabel>
+				<StatNumber>{props.count ?? "Loading"}</StatNumber>
+				<StatHelpText />
+			</Stat>
+		</>
+	);
 }

@@ -13,14 +13,14 @@ import { fetchPlayerStatus } from "../utils/playerUtils";
  * access control. Returns undefined if no profile selected.
  */
 const playerStatusAtom = atomWithRefresh(async (get) => {
-  const mpdClient = get(mpdClientAtom);
-  const profile = get(currentMpdProfileSyncAtom);
+	const mpdClient = get(mpdClientAtom);
+	const profile = get(currentMpdProfileSyncAtom);
 
-  if (profile === undefined) {
-    return undefined;
-  }
+	if (profile === undefined) {
+		return undefined;
+	}
 
-  return await fetchPlayerStatus(mpdClient, profile);
+	return await fetchPlayerStatus(mpdClient, profile);
 });
 
 /**
@@ -37,7 +37,7 @@ const playerStatusSyncAtom = atomWithSync(playerStatusAtom);
  * Provides play, pause, or stop state from player status.
  */
 const playerStatusPlaybackStateSyncAtom = atom((get) => {
-  return get(playerStatusSyncAtom)?.playbackState;
+	return get(playerStatusSyncAtom)?.playbackState;
 });
 
 /**
@@ -46,7 +46,7 @@ const playerStatusPlaybackStateSyncAtom = atom((get) => {
  * Indicates if played songs are removed from queue.
  */
 const playerStatusIsConsumeSyncAtom = atom((get) => {
-  return get(playerStatusSyncAtom)?.isConsume;
+	return get(playerStatusSyncAtom)?.isConsume;
 });
 
 /**
@@ -55,7 +55,7 @@ const playerStatusIsConsumeSyncAtom = atom((get) => {
  * Indicates if songs are played in random order.
  */
 const playerStatusIsRandomSyncAtom = atom((get) => {
-  return get(playerStatusSyncAtom)?.isRandom;
+	return get(playerStatusSyncAtom)?.isRandom;
 });
 
 /**
@@ -64,7 +64,7 @@ const playerStatusIsRandomSyncAtom = atom((get) => {
  * Indicates if playlist repeats after reaching the end.
  */
 const playerStatusIsRepeatSyncAtom = atom((get) => {
-  return get(playerStatusSyncAtom)?.isRepeat;
+	return get(playerStatusSyncAtom)?.isRepeat;
 });
 
 /**
@@ -73,7 +73,7 @@ const playerStatusIsRepeatSyncAtom = atom((get) => {
  * Indicates if player stops after current song.
  */
 const playerStatusIsSingleSyncAtom = atom((get) => {
-  return get(playerStatusSyncAtom)?.isSingle;
+	return get(playerStatusSyncAtom)?.isSingle;
 });
 
 /**
@@ -82,7 +82,7 @@ const playerStatusIsSingleSyncAtom = atom((get) => {
  * Indicates if MPD is currently updating its database.
  */
 const playerStatusIsDatabaseUpdatingSyncAtom = atom((get) => {
-  return get(playerStatusSyncAtom)?.isDatabaseUpdating;
+	return get(playerStatusSyncAtom)?.isDatabaseUpdating;
 });
 
 /**
@@ -91,7 +91,7 @@ const playerStatusIsDatabaseUpdatingSyncAtom = atom((get) => {
  * Current position in song in seconds.
  */
 const playerStatusElapsedSyncAtom = atom((get) => {
-  return get(playerStatusSyncAtom)?.elapsed;
+	return get(playerStatusSyncAtom)?.elapsed;
 });
 
 /**
@@ -100,7 +100,7 @@ const playerStatusElapsedSyncAtom = atom((get) => {
  * Total length of current song in seconds.
  */
 const playerStatusDurationSyncAtom = atom((get) => {
-  return get(playerStatusSyncAtom)?.duration;
+	return get(playerStatusSyncAtom)?.duration;
 });
 
 /**
@@ -108,7 +108,7 @@ const playerStatusDurationSyncAtom = atom((get) => {
  * @returns Current state (play/pause/stop) or undefined
  */
 export function usePlayerStatusPlaybackState() {
-  return useAtomValue(playerStatusPlaybackStateSyncAtom);
+	return useAtomValue(playerStatusPlaybackStateSyncAtom);
 }
 
 /**
@@ -116,7 +116,7 @@ export function usePlayerStatusPlaybackState() {
  * @returns True if enabled, false otherwise
  */
 export function usePlayerStatusIsConsumeState() {
-  return useAtomValue(playerStatusIsConsumeSyncAtom);
+	return useAtomValue(playerStatusIsConsumeSyncAtom);
 }
 
 /**
@@ -124,7 +124,7 @@ export function usePlayerStatusIsConsumeState() {
  * @returns True if enabled, false otherwise
  */
 export function usePlayerStatusIsRandomState() {
-  return useAtomValue(playerStatusIsRandomSyncAtom);
+	return useAtomValue(playerStatusIsRandomSyncAtom);
 }
 
 /**
@@ -132,7 +132,7 @@ export function usePlayerStatusIsRandomState() {
  * @returns True if enabled, false otherwise
  */
 export function usePlayerStatusIsRepeatState() {
-  return useAtomValue(playerStatusIsRepeatSyncAtom);
+	return useAtomValue(playerStatusIsRepeatSyncAtom);
 }
 
 /**
@@ -140,7 +140,7 @@ export function usePlayerStatusIsRepeatState() {
  * @returns True if enabled, false otherwise
  */
 export function usePlayerStatusIsSingleState() {
-  return useAtomValue(playerStatusIsSingleSyncAtom);
+	return useAtomValue(playerStatusIsSingleSyncAtom);
 }
 
 /**
@@ -148,7 +148,7 @@ export function usePlayerStatusIsSingleState() {
  * @returns True if updating, false otherwise
  */
 export function usePlayerStatusIsDatabaseUpdatingState() {
-  return useAtomValue(playerStatusIsDatabaseUpdatingSyncAtom);
+	return useAtomValue(playerStatusIsDatabaseUpdatingSyncAtom);
 }
 
 /**
@@ -156,7 +156,7 @@ export function usePlayerStatusIsDatabaseUpdatingState() {
  * @returns Time in seconds or undefined
  */
 export function usePlayerStatusElapsedState() {
-  return useAtomValue(playerStatusElapsedSyncAtom);
+	return useAtomValue(playerStatusElapsedSyncAtom);
 }
 
 /**
@@ -164,7 +164,7 @@ export function usePlayerStatusElapsedState() {
  * @returns Time in seconds or undefined
  */
 export function usePlayerStatusDurationState() {
-  return useAtomValue(playerStatusDurationSyncAtom);
+	return useAtomValue(playerStatusDurationSyncAtom);
 }
 
 /**
@@ -176,5 +176,5 @@ export function usePlayerStatusDurationState() {
  * @returns Refresh function
  */
 export function useRefreshPlayerStatusState() {
-  return useSetAtom(playerStatusAtom);
+	return useSetAtom(playerStatusAtom);
 }

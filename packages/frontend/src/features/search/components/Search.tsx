@@ -4,9 +4,9 @@ import { useCallback } from "react";
 
 import { UpdateMode } from "../../../types/stateTypes";
 import {
-  useResizablePane,
-  useSearchLayoutState,
-  useUpdateLayoutState,
+	useResizablePane,
+	useSearchLayoutState,
+	useUpdateLayoutState,
 } from "../../layout";
 import { CenterSpinner } from "../../loading";
 
@@ -21,51 +21,51 @@ import { SearchNavigation } from "./SearchNavigation";
  * @returns Search component
  */
 export function Search() {
-  const searchLayout = useSearchLayoutState();
-  const updateLayout = useUpdateLayoutState();
+	const searchLayout = useSearchLayoutState();
+	const updateLayout = useUpdateLayoutState();
 
-  const { colorMode } = useColorMode();
+	const { colorMode } = useColorMode();
 
-  const handlePanelWidthChanged = useCallback(
-    async (left: number | undefined) => {
-      if (left === undefined || searchLayout === undefined) {
-        return;
-      }
-      const newLayout = searchLayout.clone();
-      newLayout.sidePaneWidth = left;
-      updateLayout(newLayout, UpdateMode.PERSIST);
-    },
-    [searchLayout, updateLayout],
-  );
+	const handlePanelWidthChanged = useCallback(
+		async (left: number | undefined) => {
+			if (left === undefined || searchLayout === undefined) {
+				return;
+			}
+			const newLayout = searchLayout.clone();
+			newLayout.sidePaneWidth = left;
+			updateLayout(newLayout, UpdateMode.PERSIST);
+		},
+		[searchLayout, updateLayout],
+	);
 
-  const { isReady, leftPaneWidthStyle, handlePanelResize } = useResizablePane(
-    searchLayout?.sidePaneWidth,
-    handlePanelWidthChanged,
-  );
+	const { isReady, leftPaneWidthStyle, handlePanelResize } = useResizablePane(
+		searchLayout?.sidePaneWidth,
+		handlePanelWidthChanged,
+	);
 
-  if (!isReady) {
-    return <CenterSpinner className="layout-border-top layout-border-left" />;
-  }
+	if (!isReady) {
+		return <CenterSpinner className="layout-border-top layout-border-left" />;
+	}
 
-  return (
-    <>
-      <Box w="100%" h="full">
-        <Allotment
-          className={
-            colorMode === "light" ? "allotment-light" : "allotment-dark"
-          }
-          onChange={(sizes) => {
-            handlePanelResize(sizes[0], sizes[1]);
-          }}
-        >
-          <Allotment.Pane preferredSize={leftPaneWidthStyle}>
-            <SearchNavigation />
-          </Allotment.Pane>
-          <Allotment.Pane>
-            <SearchContent />
-          </Allotment.Pane>
-        </Allotment>
-      </Box>
-    </>
-  );
+	return (
+		<>
+			<Box w="100%" h="full">
+				<Allotment
+					className={
+						colorMode === "light" ? "allotment-light" : "allotment-dark"
+					}
+					onChange={(sizes) => {
+						handlePanelResize(sizes[0], sizes[1]);
+					}}
+				>
+					<Allotment.Pane preferredSize={leftPaneWidthStyle}>
+						<SearchNavigation />
+					</Allotment.Pane>
+					<Allotment.Pane>
+						<SearchContent />
+					</Allotment.Pane>
+				</Allotment>
+			</Box>
+		</>
+	);
 }

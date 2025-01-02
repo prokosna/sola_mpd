@@ -18,26 +18,26 @@ import { PlayerControlsButtonVolume } from "./PlayerControlsButtonVolume";
  * @returns Compact player controls component
  */
 export function PlayerControlsCompact() {
-  return (
-    <>
-      <PlayerControlsButtonPrevious></PlayerControlsButtonPrevious>
-      <PlayerControlsButtonStop></PlayerControlsButtonStop>
-      <PlayerControlsButtonResume></PlayerControlsButtonResume>
-      <PlayerControlsButtonNext></PlayerControlsButtonNext>
+	return (
+		<>
+			<PlayerControlsButtonPrevious />
+			<PlayerControlsButtonStop />
+			<PlayerControlsButtonResume />
+			<PlayerControlsButtonNext />
 
-      <Center h="50%">
-        <Divider orientation="vertical"></Divider>
-      </Center>
+			<Center h="50%">
+				<Divider orientation="vertical" />
+			</Center>
 
-      <PlayerControlsButtonRandom></PlayerControlsButtonRandom>
-      <PlayerControlsButtonRepeat></PlayerControlsButtonRepeat>
-      <PlayerControlsButtonConsume></PlayerControlsButtonConsume>
+			<PlayerControlsButtonRandom />
+			<PlayerControlsButtonRepeat />
+			<PlayerControlsButtonConsume />
 
-      <Center h="50%">
-        <Divider orientation="vertical"></Divider>
-      </Center>
+			<Center h="50%">
+				<Divider orientation="vertical" />
+			</Center>
 
-      <PlayerControlsButtonVolume></PlayerControlsButtonVolume>
-    </>
-  );
+			<PlayerControlsButtonVolume />
+		</>
+	);
 }

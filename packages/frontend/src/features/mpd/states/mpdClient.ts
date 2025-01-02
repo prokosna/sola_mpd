@@ -1,7 +1,7 @@
 import { useAtomValue } from "jotai";
 import { atomWithDefault } from "jotai/utils";
 
-import { MpdClient } from "../services/MpdClient";
+import type { MpdClient } from "../services/MpdClient";
 
 /**
  * Provides access to the shared MPD client instance.
@@ -12,7 +12,7 @@ import { MpdClient } from "../services/MpdClient";
  * @throws Error if accessed before initialization
  */
 export const mpdClientAtom = atomWithDefault<MpdClient>(() => {
-  throw new Error("Not initialized. Should be setup DI in the provider.");
+	throw new Error("Not initialized. Should be setup DI in the provider.");
 });
 
 /**
@@ -26,5 +26,5 @@ export const mpdClientAtom = atomWithDefault<MpdClient>(() => {
  * @throws Error if client not initialized
  */
 export function useMpdClientState() {
-  return useAtomValue(mpdClientAtom);
+	return useAtomValue(mpdClientAtom);
 }

@@ -13,39 +13,39 @@ import { useCurrentSongState } from "../states/playerSongState";
  * - thirdLine: Artist info with composer and date
  */
 export function useCurrentSongInformationLines() {
-  const song = useCurrentSongState();
+	const song = useCurrentSongState();
 
-  const firstLine = useMemo(() => {
-    if (song === undefined) {
-      return "Not playing";
-    }
-    return getSongMetadataAsString(song, Song_MetadataTag.TITLE);
-  }, [song]);
+	const firstLine = useMemo(() => {
+		if (song === undefined) {
+			return "Not playing";
+		}
+		return getSongMetadataAsString(song, Song_MetadataTag.TITLE);
+	}, [song]);
 
-  const secondLine = useMemo(() => {
-    if (song === undefined) {
-      return "";
-    }
-    return getSongMetadataAsString(song, Song_MetadataTag.ALBUM);
-  }, [song]);
+	const secondLine = useMemo(() => {
+		if (song === undefined) {
+			return "";
+		}
+		return getSongMetadataAsString(song, Song_MetadataTag.ALBUM);
+	}, [song]);
 
-  const thirdLine = useMemo(() => {
-    if (song === undefined) {
-      return "";
-    }
-    const artist = getSongMetadataAsString(song, Song_MetadataTag.ARTIST);
-    const albumArtist = getSongMetadataAsString(
-      song,
-      Song_MetadataTag.ALBUM_ARTIST,
-    );
-    const composer = getSongMetadataAsString(song, Song_MetadataTag.COMPOSER);
-    const date = getSongMetadataAsString(song, Song_MetadataTag.DATE);
-    let text = "";
-    text += artist !== "" ? artist : albumArtist;
-    text += composer !== "" ? ` / ${composer}` : "";
-    text += date !== "" ? ` (${date})` : "";
-    return text;
-  }, [song]);
+	const thirdLine = useMemo(() => {
+		if (song === undefined) {
+			return "";
+		}
+		const artist = getSongMetadataAsString(song, Song_MetadataTag.ARTIST);
+		const albumArtist = getSongMetadataAsString(
+			song,
+			Song_MetadataTag.ALBUM_ARTIST,
+		);
+		const composer = getSongMetadataAsString(song, Song_MetadataTag.COMPOSER);
+		const date = getSongMetadataAsString(song, Song_MetadataTag.DATE);
+		let text = "";
+		text += artist !== "" ? artist : albumArtist;
+		text += composer !== "" ? ` / ${composer}` : "";
+		text += date !== "" ? ` (${date})` : "";
+		return text;
+	}, [song]);
 
-  return { firstLine, secondLine, thirdLine };
+	return { firstLine, secondLine, thirdLine };
 }

@@ -26,56 +26,56 @@ import { SongTableStateRepositoryImplHttp } from "./infrastructure/song_table/So
 let globalStore: ReturnType<typeof createStore> | undefined = undefined;
 
 export function useJotaiStore() {
-  const injectDependencies = async (): Promise<
-    ReturnType<typeof createStore>
-  > => {
-    const store = createStore();
+	const injectDependencies = async (): Promise<
+		ReturnType<typeof createStore>
+	> => {
+		const store = createStore();
 
-    // DI
-    const httpClient = new HttpClientImplFetch();
-    const socketIoClient = new SocketIoClientImpl();
-    await socketIoClient.isReady();
+		// DI
+		const httpClient = new HttpClientImplFetch();
+		const socketIoClient = new SocketIoClientImpl();
+		await socketIoClient.isReady();
 
-    store.set(mpdClientAtom, new MpdClientSocketIo(socketIoClient));
-    store.set(mpdListenerAtom, new MpdListenerImplSocketIo(socketIoClient));
-    store.set(
-      songTableStateRepositoryAtom,
-      new SongTableStateRepositoryImplHttp(httpClient),
-    );
-    store.set(
-      browserStateRepositoryAtom,
-      new BrowserStateRepositoryImplHttp(httpClient),
-    );
-    store.set(
-      pluginStateRepositoryAtom,
-      new PluginStateRepositoryImplHttp(httpClient),
-    );
-    store.set(pluginServiceAtom, new PluginServiceImplSocketIo(socketIoClient));
-    store.set(
-      mpdProfileStateRepositoryAtom,
-      new MpdProfileStateRepositoryImplHttp(httpClient),
-    );
-    store.set(
-      savedSearchesRepositoryAtom,
-      new SavedSearchesRepositoryImplHttp(httpClient),
-    );
-    store.set(
-      layoutStateRepositoryAtom,
-      new LayoutStateRepositoryImplHttp(httpClient),
-    );
-    store.set(
-      recentlyAddedStateRepositoryAtom,
-      new RecentlyAddedStateRepositoryImplHttp(httpClient),
-    );
+		store.set(mpdClientAtom, new MpdClientSocketIo(socketIoClient));
+		store.set(mpdListenerAtom, new MpdListenerImplSocketIo(socketIoClient));
+		store.set(
+			songTableStateRepositoryAtom,
+			new SongTableStateRepositoryImplHttp(httpClient),
+		);
+		store.set(
+			browserStateRepositoryAtom,
+			new BrowserStateRepositoryImplHttp(httpClient),
+		);
+		store.set(
+			pluginStateRepositoryAtom,
+			new PluginStateRepositoryImplHttp(httpClient),
+		);
+		store.set(pluginServiceAtom, new PluginServiceImplSocketIo(socketIoClient));
+		store.set(
+			mpdProfileStateRepositoryAtom,
+			new MpdProfileStateRepositoryImplHttp(httpClient),
+		);
+		store.set(
+			savedSearchesRepositoryAtom,
+			new SavedSearchesRepositoryImplHttp(httpClient),
+		);
+		store.set(
+			layoutStateRepositoryAtom,
+			new LayoutStateRepositoryImplHttp(httpClient),
+		);
+		store.set(
+			recentlyAddedStateRepositoryAtom,
+			new RecentlyAddedStateRepositoryImplHttp(httpClient),
+		);
 
-    globalStore = store;
-    return globalStore;
-  };
+		globalStore = store;
+		return globalStore;
+	};
 
-  if (globalStore === undefined) {
-    // Throw Promise to suspend until dependencies are ready.
-    throw injectDependencies();
-  }
+	if (globalStore === undefined) {
+		// Throw Promise to suspend until dependencies are ready.
+		throw injectDependencies();
+	}
 
-  return globalStore;
+	return globalStore;
 }

@@ -1,6 +1,6 @@
 import {
-  FilterCondition,
-  FilterCondition_Operator,
+	type FilterCondition,
+	FilterCondition_Operator,
 } from "../models/filter_pb.js";
 import { Song_MetadataTag } from "../models/song_pb.js";
 
@@ -17,7 +17,7 @@ import { convertSongMetadataValueToString } from "./songUtils.js";
  * escapeConditionArg("test'value") // returns "test\\'value"
  */
 export function escapeConditionArg(value: string | undefined): string {
-  return value?.replaceAll('"', '\\\\"').replaceAll("'", "\\'") || "";
+	return value?.replaceAll('"', '\\\\"').replaceAll("'", "\\'") || "";
 }
 
 /**
@@ -30,7 +30,7 @@ export function escapeConditionArg(value: string | undefined): string {
  * escapeExpression('say "hello"') // returns 'say \\"hello\\"'
  */
 export function escapeExpression(value: string): string {
-  return value.replaceAll("\\", "\\\\").replaceAll('"', '\\\\"');
+	return value.replaceAll("\\", "\\\\").replaceAll('"', '\\\\"');
 }
 
 /**
@@ -43,10 +43,10 @@ export function escapeExpression(value: string): string {
  * escapeRegexString("a[b]c") // returns "a\\\\[b\\\\]c"
  */
 export function escapeRegexString(value: string): string {
-  return value
-    .replace(/[|\\{}()[\]^$+*?.]/g, "\\$&")
-    .replace(/-/g, "\\x2d")
-    .replace(/\\/g, "\\\\\\\\");
+	return value
+		.replace(/[|\\{}()[\]^$+*?.]/g, "\\$&")
+		.replace(/-/g, "\\x2d")
+		.replace(/\\/g, "\\\\\\\\");
 }
 
 /**
@@ -59,15 +59,15 @@ export function escapeRegexString(value: string): string {
  * convertConditionsToString([condition1, condition2]) // returns "((cond1) AND (cond2))"
  */
 export function convertConditionsToString(
-  conditions: FilterCondition[],
+	conditions: FilterCondition[],
 ): string {
-  if (conditions.length === 0) {
-    return "";
-  }
-  const expression = conditions
-    .map((condition) => `(${convertConditionToString(condition)})`)
-    .join(" AND ");
-  return `(${expression})`;
+	if (conditions.length === 0) {
+		return "";
+	}
+	const expression = conditions
+		.map((condition) => `(${convertConditionToString(condition)})`)
+		.join(" AND ");
+	return `(${expression})`;
 }
 
 /**
@@ -84,28 +84,28 @@ export function convertConditionsToString(
  * convertConditionToString(condition) // returns 'title contains "Song"'
  */
 export function convertConditionToString(condition: FilterCondition): string {
-  if (condition.value === undefined) {
-    throw new Error("Condition value is undefined");
-  }
-  const left = Song_MetadataTag[condition.tag]
-    .replaceAll("_", "")
-    .toLowerCase();
-  const right = escapeConditionArg(
-    convertSongMetadataValueToString(condition.value),
-  );
-  switch (condition.operator) {
-    case FilterCondition_Operator.EQUAL:
-      return `${left} == "${right}"`;
-    case FilterCondition_Operator.NOT_EQUAL:
-      return `${left} != "${right}"`;
-    case FilterCondition_Operator.CONTAIN:
-      return `${left} contains "${right}"`;
-    case FilterCondition_Operator.NOT_CONTAIN:
-      return `!(${left} contains "${right}")`;
-    case FilterCondition_Operator.REGEX:
-      return `${left} =~ "${right}"`;
-  }
-  throw new Error("Unsupported condition operator");
+	if (condition.value === undefined) {
+		throw new Error("Condition value is undefined");
+	}
+	const left = Song_MetadataTag[condition.tag]
+		.replaceAll("_", "")
+		.toLowerCase();
+	const right = escapeConditionArg(
+		convertSongMetadataValueToString(condition.value),
+	);
+	switch (condition.operator) {
+		case FilterCondition_Operator.EQUAL:
+			return `${left} == "${right}"`;
+		case FilterCondition_Operator.NOT_EQUAL:
+			return `${left} != "${right}"`;
+		case FilterCondition_Operator.CONTAIN:
+			return `${left} contains "${right}"`;
+		case FilterCondition_Operator.NOT_CONTAIN:
+			return `!(${left} contains "${right}")`;
+		case FilterCondition_Operator.REGEX:
+			return `${left} =~ "${right}"`;
+	}
+	throw new Error("Unsupported condition operator");
 }
 
 /**
@@ -118,5 +118,5 @@ export function convertConditionToString(condition: FilterCondition): string {
  * convertSongMetadataTagToMpdTag(Song_MetadataTag.ALBUM_ARTIST) // returns "albumartist"
  */
 export function convertSongMetadataTagToMpdTag(tag: Song_MetadataTag): string {
-  return Song_MetadataTag[tag].toLowerCase().replaceAll("_", "");
+	return Song_MetadataTag[tag].toLowerCase().replaceAll("_", "");
 }

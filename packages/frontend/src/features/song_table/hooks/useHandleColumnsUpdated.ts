@@ -1,10 +1,10 @@
-import { SongTableColumn } from "@sola_mpd/domain/src/models/song_table_pb.js";
-import { AgGridEvent } from "ag-grid-community";
+import type { SongTableColumn } from "@sola_mpd/domain/src/models/song_table_pb.js";
+import type { AgGridEvent } from "ag-grid-community";
 import { useCallback } from "react";
 
 import {
-  convertAgGridColumnsToSongTableColumns,
-  copySortingAttributesToNewColumns,
+	convertAgGridColumnsToSongTableColumns,
+	copySortingAttributesToNewColumns,
 } from "../utils/songTableColumnUtils";
 
 /**
@@ -20,21 +20,21 @@ import {
  * @returns Column update handler
  */
 export function useHandleColumnsUpdated(
-  currentColumns: SongTableColumn[],
-  isSortingEnabled: boolean,
-  onColumnsUpdated: (columns: SongTableColumn[]) => Promise<void>,
+	currentColumns: SongTableColumn[],
+	isSortingEnabled: boolean,
+	onColumnsUpdated: (columns: SongTableColumn[]) => Promise<void>,
 ): (event: AgGridEvent) => void {
-  return useCallback(
-    (event: AgGridEvent) => {
-      const { api } = event;
-      const updatedColumns = convertAgGridColumnsToSongTableColumns(
-        api.getAllGridColumns(),
-      );
-      const newColumns = isSortingEnabled
-        ? updatedColumns
-        : copySortingAttributesToNewColumns(updatedColumns, currentColumns);
-      onColumnsUpdated(newColumns);
-    },
-    [currentColumns, isSortingEnabled, onColumnsUpdated],
-  );
+	return useCallback(
+		(event: AgGridEvent) => {
+			const { api } = event;
+			const updatedColumns = convertAgGridColumnsToSongTableColumns(
+				api.getAllGridColumns(),
+			);
+			const newColumns = isSortingEnabled
+				? updatedColumns
+				: copySortingAttributesToNewColumns(updatedColumns, currentColumns);
+			onColumnsUpdated(newColumns);
+		},
+		[currentColumns, isSortingEnabled, onColumnsUpdated],
+	);
 }

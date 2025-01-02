@@ -26,22 +26,22 @@ import { useSetGlobalFilterTextState } from "../states/globalFilterState";
  * @returns Debounced text change handler
  */
 export function useHandleGlobalFilterTextChangeWithDebounce() {
-  const setGlobalFilterText = useSetGlobalFilterTextState();
+	const setGlobalFilterText = useSetGlobalFilterTextState();
 
-  const lastInvocation = useRef<ReturnType<typeof setTimeout>>();
+	const lastInvocation = useRef<ReturnType<typeof setTimeout>>();
 
-  const handleTextChange = useCallback(
-    (text: string) => {
-      if (lastInvocation.current !== undefined) {
-        clearTimeout(lastInvocation.current);
-      }
-      const timeoutId = setTimeout(() => {
-        setGlobalFilterText(text);
-      }, 500);
-      lastInvocation.current = timeoutId;
-    },
-    [setGlobalFilterText],
-  );
+	const handleTextChange = useCallback(
+		(text: string) => {
+			if (lastInvocation.current !== undefined) {
+				clearTimeout(lastInvocation.current);
+			}
+			const timeoutId = setTimeout(() => {
+				setGlobalFilterText(text);
+			}, 500);
+			lastInvocation.current = timeoutId;
+		},
+		[setGlobalFilterText],
+	);
 
-  return handleTextChange;
+	return handleTextChange;
 }

@@ -9,8 +9,8 @@
  * @template T - Type of data passed to click handlers
  */
 export type ContextMenuProps<T> = {
-  id: string;
-  sections: ContextMenuSection<T>[];
+	id: string;
+	sections: ContextMenuSection<T>[];
 };
 
 /**
@@ -20,7 +20,7 @@ export type ContextMenuProps<T> = {
  * @template T - Type of data passed to item click handlers
  */
 export type ContextMenuSection<T> = {
-  items: ContextMenuItem<T>[];
+	items: ContextMenuItem<T>[];
 };
 
 /**
@@ -35,9 +35,9 @@ export type ContextMenuSection<T> = {
  * @template T - Type of data passed to click handler
  */
 export type ContextMenuItem<T> = {
-  name: string;
-  onClick?: (params: T | undefined) => Promise<void>;
-  subItems?: ContextMenuSubItem<T>[];
+	name: string;
+	onClick?: (params: T | undefined) => Promise<void>;
+	subItems?: ContextMenuSubItem<T>[];
 };
 
 /**
@@ -52,6 +52,6 @@ export type ContextMenuItem<T> = {
  * @template T - Type of data passed to click handler
  */
 export type ContextMenuSubItem<T> = {
-  name: string;
-  onClick: (params: T | undefined) => Promise<void>;
+	name: string;
+	onClick: (params: T | undefined) => Promise<void>;
 };

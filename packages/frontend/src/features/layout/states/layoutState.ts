@@ -1,10 +1,10 @@
 import {
-  BrowserLayout,
-  FileExploreLayout,
-  LayoutState,
-  PlaylistLayout,
-  RecentlyAddedLayout,
-  SearchLayout,
+	BrowserLayout,
+	FileExploreLayout,
+	LayoutState,
+	PlaylistLayout,
+	RecentlyAddedLayout,
+	SearchLayout,
 } from "@sola_mpd/domain/src/models/layout_pb.js";
 import { useAtomValue, useSetAtom } from "jotai";
 import { atomWithDefault, selectAtom, useResetAtom } from "jotai/utils";
@@ -38,11 +38,11 @@ import { layoutStateRepositoryAtom } from "./layoutStateRepositry";
  * - Manages derived states
  */
 const layoutStateAtom = atomWithDefault<Promise<LayoutState> | LayoutState>(
-  async (get) => {
-    const repository = get(layoutStateRepositoryAtom);
-    const layoutState = await repository.fetch();
-    return layoutState;
-  },
+	async (get) => {
+		const repository = get(layoutStateRepositoryAtom);
+		const layoutState = await repository.fetch();
+		return layoutState;
+	},
 );
 
 /**
@@ -55,48 +55,48 @@ const layoutStateSyncAtom = atomWithSync(layoutStateAtom);
  * Selectively updates on file explorer changes.
  */
 const fileExploreLayoutStateSyncAtom = selectAtom<
-  LayoutState | undefined,
-  FileExploreLayout | undefined
+	LayoutState | undefined,
+	FileExploreLayout | undefined
 >(
-  layoutStateSyncAtom,
-  (state, _prev) => state?.fileExploreLayout,
-  (a, b) => a?.equals(b) ?? false,
+	layoutStateSyncAtom,
+	(state, _prev) => state?.fileExploreLayout,
+	(a, b) => a?.equals(b) ?? false,
 );
 
 const playlistLayoutStateSyncAtom = selectAtom<
-  LayoutState | undefined,
-  PlaylistLayout | undefined
+	LayoutState | undefined,
+	PlaylistLayout | undefined
 >(
-  layoutStateSyncAtom,
-  (state, _prev) => state?.playlistLayout,
-  (a, b) => a?.equals(b) ?? false,
+	layoutStateSyncAtom,
+	(state, _prev) => state?.playlistLayout,
+	(a, b) => a?.equals(b) ?? false,
 );
 
 const searchLayoutStateSyncAtom = selectAtom<
-  LayoutState | undefined,
-  SearchLayout | undefined
+	LayoutState | undefined,
+	SearchLayout | undefined
 >(
-  layoutStateSyncAtom,
-  (state, _prev) => state?.searchLayout,
-  (a, b) => a?.equals(b) ?? false,
+	layoutStateSyncAtom,
+	(state, _prev) => state?.searchLayout,
+	(a, b) => a?.equals(b) ?? false,
 );
 
 const browserLayoutStateSyncAtom = selectAtom<
-  LayoutState | undefined,
-  BrowserLayout | undefined
+	LayoutState | undefined,
+	BrowserLayout | undefined
 >(
-  layoutStateSyncAtom,
-  (state, _prev) => state?.browserLayout,
-  (a, b) => a?.equals(b) ?? false,
+	layoutStateSyncAtom,
+	(state, _prev) => state?.browserLayout,
+	(a, b) => a?.equals(b) ?? false,
 );
 
 const recentlyAddedLayoutStateSyncAtom = selectAtom<
-  LayoutState | undefined,
-  RecentlyAddedLayout | undefined
+	LayoutState | undefined,
+	RecentlyAddedLayout | undefined
 >(
-  layoutStateSyncAtom,
-  (state, _prev) => state?.recentlyAddedLayout,
-  (a, b) => a?.equals(b) ?? false,
+	layoutStateSyncAtom,
+	(state, _prev) => state?.recentlyAddedLayout,
+	(a, b) => a?.equals(b) ?? false,
 );
 
 /**
@@ -111,7 +111,7 @@ const recentlyAddedLayoutStateSyncAtom = selectAtom<
  * @returns Current layout state
  */
 export function useLayoutState() {
-  return useAtomValue(layoutStateSyncAtom);
+	return useAtomValue(layoutStateSyncAtom);
 }
 
 /**
@@ -126,7 +126,7 @@ export function useLayoutState() {
  * @returns File explorer layout state
  */
 export function useFileExploreLayoutState() {
-  return useAtomValue(fileExploreLayoutStateSyncAtom);
+	return useAtomValue(fileExploreLayoutStateSyncAtom);
 }
 
 /**
@@ -141,7 +141,7 @@ export function useFileExploreLayoutState() {
  * @returns Playlist layout state
  */
 export function usePlaylistLayoutState() {
-  return useAtomValue(playlistLayoutStateSyncAtom);
+	return useAtomValue(playlistLayoutStateSyncAtom);
 }
 
 /**
@@ -156,7 +156,7 @@ export function usePlaylistLayoutState() {
  * @returns Search layout state
  */
 export function useSearchLayoutState() {
-  return useAtomValue(searchLayoutStateSyncAtom);
+	return useAtomValue(searchLayoutStateSyncAtom);
 }
 
 /**
@@ -171,7 +171,7 @@ export function useSearchLayoutState() {
  * @returns Browser layout state
  */
 export function useBrowserLayoutState() {
-  return useAtomValue(browserLayoutStateSyncAtom);
+	return useAtomValue(browserLayoutStateSyncAtom);
 }
 
 /**
@@ -186,7 +186,7 @@ export function useBrowserLayoutState() {
  * @returns Recently added layout state
  */
 export function useRecentlyAddedLayoutState() {
-  return useAtomValue(recentlyAddedLayoutStateSyncAtom);
+	return useAtomValue(recentlyAddedLayoutStateSyncAtom);
 }
 
 /**
@@ -212,44 +212,44 @@ export function useRecentlyAddedLayoutState() {
  * @returns Layout state updater
  */
 export function useUpdateLayoutState() {
-  const layoutState = useAtomValue(layoutStateAtom);
-  const repository = useAtomValue(layoutStateRepositoryAtom);
-  const setLayoutState = useSetAtom(layoutStateAtom);
+	const layoutState = useAtomValue(layoutStateAtom);
+	const repository = useAtomValue(layoutStateRepositoryAtom);
+	const setLayoutState = useSetAtom(layoutStateAtom);
 
-  return useCallback(
-    async (
-      layout:
-        | FileExploreLayout
-        | SearchLayout
-        | BrowserLayout
-        | PlaylistLayout
-        | RecentlyAddedLayout
-        | LayoutState,
-      mode: UpdateMode,
-    ): Promise<void> => {
-      const newLayoutState =
-        layout instanceof LayoutState ? layout : layoutState.clone();
-      if (layout instanceof FileExploreLayout) {
-        newLayoutState.fileExploreLayout = layout;
-      } else if (layout instanceof SearchLayout) {
-        newLayoutState.searchLayout = layout;
-      } else if (layout instanceof BrowserLayout) {
-        newLayoutState.browserLayout = layout;
-      } else if (layout instanceof PlaylistLayout) {
-        newLayoutState.playlistLayout = layout;
-      } else if (layout instanceof RecentlyAddedLayout) {
-        newLayoutState.recentlyAddedLayout = layout;
-      }
+	return useCallback(
+		async (
+			layout:
+				| FileExploreLayout
+				| SearchLayout
+				| BrowserLayout
+				| PlaylistLayout
+				| RecentlyAddedLayout
+				| LayoutState,
+			mode: UpdateMode,
+		): Promise<void> => {
+			const newLayoutState =
+				layout instanceof LayoutState ? layout : layoutState.clone();
+			if (layout instanceof FileExploreLayout) {
+				newLayoutState.fileExploreLayout = layout;
+			} else if (layout instanceof SearchLayout) {
+				newLayoutState.searchLayout = layout;
+			} else if (layout instanceof BrowserLayout) {
+				newLayoutState.browserLayout = layout;
+			} else if (layout instanceof PlaylistLayout) {
+				newLayoutState.playlistLayout = layout;
+			} else if (layout instanceof RecentlyAddedLayout) {
+				newLayoutState.recentlyAddedLayout = layout;
+			}
 
-      if (mode & UpdateMode.LOCAL_STATE) {
-        setLayoutState(newLayoutState);
-      }
-      if (mode & UpdateMode.PERSIST) {
-        await repository.save(newLayoutState);
-      }
-    },
-    [layoutState, repository, setLayoutState],
-  );
+			if (mode & UpdateMode.LOCAL_STATE) {
+				setLayoutState(newLayoutState);
+			}
+			if (mode & UpdateMode.PERSIST) {
+				await repository.save(newLayoutState);
+			}
+		},
+		[layoutState, repository, setLayoutState],
+	);
 }
 
 /**
@@ -276,5 +276,5 @@ export function useUpdateLayoutState() {
  * @returns State refresh function
  */
 export function useRefreshLayoutState(): () => void {
-  return useResetAtom(layoutStateAtom);
+	return useResetAtom(layoutStateAtom);
 }

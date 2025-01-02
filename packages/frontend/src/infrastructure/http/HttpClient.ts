@@ -4,16 +4,16 @@
  * It also provides methods to listen to events and to remove listeners.
  */
 export interface HttpClient {
-  get: <R>(
-    endpoint: string,
-    fromBinary: (bytes: Uint8Array) => R,
-  ) => Promise<R>;
+	get: <R>(
+		endpoint: string,
+		fromBinary: (bytes: Uint8Array) => R,
+	) => Promise<R>;
 
-  post: (endpoint: string, payload: Uint8Array) => Promise<void>;
+	post: (endpoint: string, payload: Uint8Array) => Promise<void>;
 
-  put: <R>(
-    endpoint: string,
-    payload: Uint8Array,
-    fromBinary: (bytes: Uint8Array) => R,
-  ) => Promise<R>;
+	put: <R>(
+		endpoint: string,
+		payload: Uint8Array,
+		fromBinary: (bytes: Uint8Array) => R,
+	) => Promise<R>;
 }

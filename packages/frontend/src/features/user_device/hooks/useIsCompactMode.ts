@@ -10,6 +10,6 @@ import { useUserDeviceType } from "./useUserDeviceType";
  * @returns True if compact mode needed
  */
 export function useIsCompactMode(): boolean {
-  const userDeviceType = useUserDeviceType();
-  return userDeviceType === "middle" || userDeviceType === "small";
+	const userDeviceType = useUserDeviceType();
+	return userDeviceType === "middle" || userDeviceType === "small";
 }

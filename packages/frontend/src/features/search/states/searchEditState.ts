@@ -1,4 +1,4 @@
-import { Search } from "@sola_mpd/domain/src/models/search_pb.js";
+import type { Search } from "@sola_mpd/domain/src/models/search_pb.js";
 import { atom, useAtomValue, useSetAtom } from "jotai";
 import { useCallback } from "react";
 
@@ -7,8 +7,8 @@ import { EditingSearchStatus } from "../types/searchTypes";
 import { getDefaultSearch } from "../utils/searchUtils";
 
 import {
-  savedSearchesSyncAtom,
-  useUpdateSavedSearchesState,
+	savedSearchesSyncAtom,
+	useUpdateSavedSearchesState,
 } from "./savedSearchesState";
 
 /**
@@ -33,7 +33,7 @@ const editingSearchStatusAtom = atom(EditingSearchStatus.NOT_SAVED);
  * @returns Current search being edited
  */
 export function useEditingSearchState() {
-  return useAtomValue(editingSearchAtom);
+	return useAtomValue(editingSearchAtom);
 }
 
 /**
@@ -44,7 +44,7 @@ export function useEditingSearchState() {
  * @returns Current edit status
  */
 export function useEditingSearchStatusState() {
-  return useAtomValue(editingSearchStatusAtom);
+	return useAtomValue(editingSearchStatusAtom);
 }
 
 /**
@@ -55,16 +55,16 @@ export function useEditingSearchStatusState() {
  * @returns Update function
  */
 export function useSetEditingSearchState() {
-  const setEditingSearch = useSetAtom(editingSearchAtom);
-  const setEditingSearchStatus = useSetAtom(editingSearchStatusAtom);
+	const setEditingSearch = useSetAtom(editingSearchAtom);
+	const setEditingSearchStatus = useSetAtom(editingSearchStatusAtom);
 
-  return useCallback(
-    (search: Search, status: EditingSearchStatus) => {
-      setEditingSearchStatus(status);
-      setEditingSearch(search);
-    },
-    [setEditingSearch, setEditingSearchStatus],
-  );
+	return useCallback(
+		(search: Search, status: EditingSearchStatus) => {
+			setEditingSearchStatus(status);
+			setEditingSearch(search);
+		},
+		[setEditingSearch, setEditingSearchStatus],
+	);
 }
 
 /**
@@ -75,32 +75,32 @@ export function useSetEditingSearchState() {
  * @returns Save function
  */
 export function useSaveEditingSearch() {
-  const editingSearch = useAtomValue(editingSearchAtom);
-  const savedSearches = useAtomValue(savedSearchesSyncAtom);
-  const updateSavedSearches = useUpdateSavedSearchesState();
-  const setEditingSearchStatus = useSetAtom(editingSearchStatusAtom);
+	const editingSearch = useAtomValue(editingSearchAtom);
+	const savedSearches = useAtomValue(savedSearchesSyncAtom);
+	const updateSavedSearches = useUpdateSavedSearchesState();
+	const setEditingSearchStatus = useSetAtom(editingSearchStatusAtom);
 
-  return useCallback(async () => {
-    if (savedSearches === undefined) {
-      return;
-    }
-    const index = savedSearches.searches.findIndex(
-      (search) => search.name === editingSearch.name,
-    );
-    if (index >= 0) {
-      savedSearches.searches[index] = editingSearch;
-    } else {
-      savedSearches.searches.push(editingSearch);
-    }
-    await updateSavedSearches(
-      savedSearches.clone(),
-      UpdateMode.LOCAL_STATE | UpdateMode.PERSIST,
-    );
-    setEditingSearchStatus(EditingSearchStatus.SAVED);
-  }, [
-    editingSearch,
-    savedSearches,
-    setEditingSearchStatus,
-    updateSavedSearches,
-  ]);
+	return useCallback(async () => {
+		if (savedSearches === undefined) {
+			return;
+		}
+		const index = savedSearches.searches.findIndex(
+			(search) => search.name === editingSearch.name,
+		);
+		if (index >= 0) {
+			savedSearches.searches[index] = editingSearch;
+		} else {
+			savedSearches.searches.push(editingSearch);
+		}
+		await updateSavedSearches(
+			savedSearches.clone(),
+			UpdateMode.LOCAL_STATE | UpdateMode.PERSIST,
+		);
+		setEditingSearchStatus(EditingSearchStatus.SAVED);
+	}, [
+		editingSearch,
+		savedSearches,
+		setEditingSearchStatus,
+		updateSavedSearches,
+	]);
 }

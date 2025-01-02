@@ -1,8 +1,8 @@
-import { MpdProfile } from "@sola_mpd/domain/src/models/mpd/mpd_profile_pb.js";
-import { Playlist } from "@sola_mpd/domain/src/models/playlist_pb.js";
+import type { MpdProfile } from "@sola_mpd/domain/src/models/mpd/mpd_profile_pb.js";
+import type { Playlist } from "@sola_mpd/domain/src/models/playlist_pb.js";
 import { useCallback } from "react";
 
-import { MpdClient } from "../../mpd";
+import type { MpdClient } from "../../mpd";
 import { addPlaylist } from "../utils/playlistUtils";
 
 /**
@@ -13,13 +13,13 @@ import { addPlaylist } from "../utils/playlistUtils";
  * @returns Callback for adding playlist
  */
 export function useAddPlaylist(mpdClient?: MpdClient, mpdProfile?: MpdProfile) {
-  return useCallback(
-    (playlist: Playlist) => {
-      if (mpdProfile === undefined || mpdClient === undefined) {
-        return;
-      }
-      return addPlaylist(mpdClient, mpdProfile, playlist);
-    },
-    [mpdClient, mpdProfile],
-  );
+	return useCallback(
+		(playlist: Playlist) => {
+			if (mpdProfile === undefined || mpdClient === undefined) {
+				return;
+			}
+			return addPlaylist(mpdClient, mpdProfile, playlist);
+		},
+		[mpdClient, mpdProfile],
+	);
 }

@@ -1,4 +1,4 @@
-import { ValidationResult } from "../types/validationTypes";
+import type { ValidationResult } from "../types/validationTypes";
 
 /**
  * Create validation result object.
@@ -8,8 +8,8 @@ import { ValidationResult } from "../types/validationTypes";
  * @returns Result object
  */
 export function createValidationResult(
-  isValid: boolean,
-  message?: string,
+	isValid: boolean,
+	message?: string,
 ): ValidationResult {
-  return { isValid, message };
+	return { isValid, message };
 }

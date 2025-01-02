@@ -12,19 +12,19 @@ import { usePlaylistNavigationSelectListProps } from "../hooks/usePlaylistNaviga
  * @returns Navigation component
  */
 export function PlaylistNavigation() {
-  const selectListProps = usePlaylistNavigationSelectListProps();
+	const selectListProps = usePlaylistNavigationSelectListProps();
 
-  if (selectListProps === undefined) {
-    return (
-      <FullWidthSkeleton className="layout-border-top layout-border-left" />
-    );
-  }
+	if (selectListProps === undefined) {
+		return (
+			<FullWidthSkeleton className="layout-border-top layout-border-left" />
+		);
+	}
 
-  return (
-    <>
-      <Box className="layout-border-left" w="100%" h="full">
-        <SelectList {...selectListProps} />
-      </Box>
-    </>
-  );
+	return (
+		<>
+			<Box className="layout-border-left" w="100%" h="full">
+				<SelectList {...selectListProps} />
+			</Box>
+		</>
+	);
 }

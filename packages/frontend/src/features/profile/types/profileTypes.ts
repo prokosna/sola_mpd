@@ -7,7 +7,7 @@
  * - port: Server port
  */
 export type ProfileInput = {
-  name: string;
-  host: string;
-  port: number;
+	name: string;
+	host: string;
+	port: number;
 };

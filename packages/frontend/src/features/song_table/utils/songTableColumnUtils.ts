@@ -1,6 +1,6 @@
-import { Song_MetadataTag } from "@sola_mpd/domain/src/models/song_pb.js";
+import type { Song_MetadataTag } from "@sola_mpd/domain/src/models/song_pb.js";
 import { SongTableColumn } from "@sola_mpd/domain/src/models/song_table_pb.js";
-import { Column } from "ag-grid-community";
+import type { Column } from "ag-grid-community";
 
 import { convertSongMetadataTagFromDisplayName } from "./songTableTableUtils";
 
@@ -14,29 +14,29 @@ import { convertSongMetadataTagFromDisplayName } from "./songTableTableUtils";
  * @returns SongTableColumn list
  */
 export function convertAgGridColumnsToSongTableColumns(
-  agGridColumns: Column[],
+	agGridColumns: Column[],
 ): SongTableColumn[] {
-  return agGridColumns.map((col) => {
-    const sortOrder = col.getSortIndex();
-    const isSortDesc = (() => {
-      switch (col.getSort()) {
-        case "asc":
-          return false;
-        case "desc":
-          return true;
-        default:
-          return false;
-      }
-    })();
-    const flex = Math.floor(col.getActualWidth());
-    const column = new SongTableColumn({
-      tag: convertSongMetadataTagFromDisplayName(col.getColId()),
-      sortOrder: sortOrder != null ? sortOrder : undefined,
-      isSortDesc,
-      widthFlex: flex,
-    });
-    return column;
-  });
+	return agGridColumns.map((col) => {
+		const sortOrder = col.getSortIndex();
+		const isSortDesc = (() => {
+			switch (col.getSort()) {
+				case "asc":
+					return false;
+				case "desc":
+					return true;
+				default:
+					return false;
+			}
+		})();
+		const flex = Math.floor(col.getActualWidth());
+		const column = new SongTableColumn({
+			tag: convertSongMetadataTagFromDisplayName(col.getColId()),
+			sortOrder: sortOrder != null ? sortOrder : undefined,
+			isSortDesc,
+			widthFlex: flex,
+		});
+		return column;
+	});
 }
 
 /**
@@ -50,20 +50,20 @@ export function convertAgGridColumnsToSongTableColumns(
  * @returns Merged column list
  */
 export function copySortingAttributesToNewColumns(
-  newColumns: SongTableColumn[],
-  baseColumns: SongTableColumn[],
+	newColumns: SongTableColumn[],
+	baseColumns: SongTableColumn[],
 ): SongTableColumn[] {
-  return newColumns.map((column) => {
-    for (const baseColumn of baseColumns) {
-      if (column.tag === baseColumn.tag) {
-        const newColumn = column.clone();
-        newColumn.isSortDesc = baseColumn.isSortDesc;
-        newColumn.sortOrder = baseColumn.sortOrder;
-        return newColumn;
-      }
-    }
-    return column;
-  });
+	return newColumns.map((column) => {
+		for (const baseColumn of baseColumns) {
+			if (column.tag === baseColumn.tag) {
+				const newColumn = column.clone();
+				newColumn.isSortDesc = baseColumn.isSortDesc;
+				newColumn.sortOrder = baseColumn.sortOrder;
+				return newColumn;
+			}
+		}
+		return column;
+	});
 }
 
 /**
@@ -77,19 +77,19 @@ export function copySortingAttributesToNewColumns(
  * @returns Normalized column list
  */
 export function normalizeSongTableColumns(
-  columns: SongTableColumn[],
+	columns: SongTableColumn[],
 ): SongTableColumn[] {
-  const sorted = Array.from(
-    columns.filter(
-      (column) => column.sortOrder !== undefined && column.sortOrder >= 0,
-    ),
-  ).sort((a, b) => a.sortOrder! - b.sortOrder!);
-  for (const column of columns) {
-    if (column.sortOrder !== undefined && column.sortOrder >= 0) {
-      column.sortOrder = sorted.findIndex((col) => col.tag === column.tag);
-    }
-  }
-  return columns;
+	const sorted = Array.from(
+		columns.filter(
+			(column) => column.sortOrder !== undefined && column.sortOrder >= 0,
+		),
+	).sort((a, b) => a.sortOrder! - b.sortOrder!);
+	for (const column of columns) {
+		if (column.sortOrder !== undefined && column.sortOrder >= 0) {
+			column.sortOrder = sorted.findIndex((col) => col.tag === column.tag);
+		}
+	}
+	return columns;
 }
 
 /**
@@ -102,10 +102,10 @@ export function normalizeSongTableColumns(
  * @returns Average flex width
  */
 export function getAverageWidthFlex(columns: SongTableColumn[]): number {
-  const sum = columns
-    .map((column) => column.widthFlex)
-    .reduce((a, b) => a + b, 0);
-  return Math.floor(sum / columns.length || 0);
+	const sum = columns
+		.map((column) => column.widthFlex)
+		.reduce((a, b) => a + b, 0);
+	return Math.floor(sum / columns.length || 0);
 }
 
 /**
@@ -121,20 +121,20 @@ export function getAverageWidthFlex(columns: SongTableColumn[]): number {
  * @returns Updated column list
  */
 export function ensureTagsContainedInColumns(
-  columns: SongTableColumn[],
-  tags: Song_MetadataTag[],
-  widthFlexInt: number,
+	columns: SongTableColumn[],
+	tags: Song_MetadataTag[],
+	widthFlexInt: number,
 ): SongTableColumn[] {
-  for (const tag of tags) {
-    if (columns.every((column) => column.tag !== tag)) {
-      columns.push(
-        new SongTableColumn({
-          tag,
-          widthFlex: widthFlexInt,
-          isSortDesc: false,
-        }),
-      );
-    }
-  }
-  return columns;
+	for (const tag of tags) {
+		if (columns.every((column) => column.tag !== tag)) {
+			columns.push(
+				new SongTableColumn({
+					tag,
+					widthFlex: widthFlexInt,
+					isSortDesc: false,
+				}),
+			);
+		}
+	}
+	return columns;
 }

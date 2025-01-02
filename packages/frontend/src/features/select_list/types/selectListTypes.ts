@@ -6,9 +6,9 @@
  * @property values All row values
  */
 export type SelectListContextMenuItemParams = {
-  clickedValue: SelectListRowValue;
-  selectedValues: SelectListRowValue[];
-  values: SelectListRowValue[];
+	clickedValue: SelectListRowValue;
+	selectedValues: SelectListRowValue[];
+	values: SelectListRowValue[];
 };
 
 /**
@@ -25,7 +25,7 @@ export type SelectListRowKeyValue = [string, SelectListRowValue];
  * Row data structure.
  */
 export type SelectListRowData = {
-  [tag: string]: SelectListRowValue;
+	[tag: string]: SelectListRowValue;
 };
 
 /**
@@ -38,9 +38,9 @@ export type SelectListRowData = {
  * @property cellDataType Data type flag
  */
 export type SelectListColumnDefinition = {
-  field: string;
-  flex: number;
-  resizable: boolean;
-  sortable: boolean;
-  cellDataType?: boolean;
+	field: string;
+	flex: number;
+	resizable: boolean;
+	sortable: boolean;
+	cellDataType?: boolean;
 };

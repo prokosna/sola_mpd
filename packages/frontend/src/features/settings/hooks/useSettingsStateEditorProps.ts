@@ -1,9 +1,9 @@
-import { Message } from "@bufbuild/protobuf";
+import type { Message } from "@bufbuild/protobuf";
 import { useDisclosure } from "@chakra-ui/react";
 import { useCallback } from "react";
 
 import { useNotification } from "../../../lib/chakra/hooks/useNotification";
-import { SettingsStatesEditorProps } from "../components/SettingsStatesEditor";
+import type { SettingsStatesEditorProps } from "../components/SettingsStatesEditor";
 
 /**
  * Manage settings state editor.
@@ -15,38 +15,38 @@ import { SettingsStatesEditorProps } from "../components/SettingsStatesEditor";
  * @returns [Modal opener, Editor props]
  */
 export function useSettingsStateEditorProps<T extends Message>(
-  state: T | undefined,
-  update: (newState: T) => Promise<void>,
-  fromJson: (json: string) => T,
+	state: T | undefined,
+	update: (newState: T) => Promise<void>,
+	fromJson: (json: string) => T,
 ): [() => void, SettingsStatesEditorProps<T> | undefined] {
-  const notify = useNotification();
+	const notify = useNotification();
 
-  const { isOpen, onOpen, onClose } = useDisclosure();
+	const { isOpen, onOpen, onClose } = useDisclosure();
 
-  const onSave = useCallback(
-    async (newState: T) => {
-      update(newState);
-      notify({
-        status: "success",
-        title: "State successfully updated",
-        description: "The state has been updated.",
-      });
-    },
-    [notify, update],
-  );
+	const onSave = useCallback(
+		async (newState: T) => {
+			update(newState);
+			notify({
+				status: "success",
+				title: "State successfully updated",
+				description: "The state has been updated.",
+			});
+		},
+		[notify, update],
+	);
 
-  if (state === undefined) {
-    return [onOpen, undefined];
-  }
+	if (state === undefined) {
+		return [onOpen, undefined];
+	}
 
-  return [
-    onOpen,
-    {
-      state,
-      onSave,
-      isOpen,
-      onClose,
-      fromJson,
-    },
-  ];
+	return [
+		onOpen,
+		{
+			state,
+			onSave,
+			isOpen,
+			onClose,
+			fromJson,
+		},
+	];
 }

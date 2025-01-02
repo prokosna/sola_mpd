@@ -2,10 +2,10 @@
 export { RecentlyAdded } from "./components/RecentlyAdded";
 
 // Services
-export { type RecentlyAddedStateRepository } from "./services/RecentlyAddedStateRepository";
+export type { RecentlyAddedStateRepository } from "./services/RecentlyAddedStateRepository";
 
 // States
 export {
-  useRecentlyAddedState,
-  useUpdateRecentlyAddedState,
+	useRecentlyAddedState,
+	useUpdateRecentlyAddedState,
 } from "./states/recentlyAddedState";

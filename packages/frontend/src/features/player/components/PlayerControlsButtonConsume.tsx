@@ -19,39 +19,39 @@ import { PlayerControlsButton } from "./PlayerControlsButton";
  * @returns Consume mode toggle button
  */
 export function PlayerControlsButtonConsume() {
-  const profile = useCurrentMpdProfileState();
-  const mpdClient = useMpdClientState();
-  const currentSong = useCurrentSongState();
-  const playerStatusIsConsume = usePlayerStatusIsConsumeState();
+	const profile = useCurrentMpdProfileState();
+	const mpdClient = useMpdClientState();
+	const currentSong = useCurrentSongState();
+	const playerStatusIsConsume = usePlayerStatusIsConsumeState();
 
-  const onButtonClicked = useCallback(async () => {
-    if (profile === undefined || mpdClient === undefined) {
-      return;
-    }
-    mpdClient.command(
-      new MpdRequest({
-        profile,
-        command: {
-          case: "consume",
-          value: {
-            enable: !playerStatusIsConsume,
-          },
-        },
-      }),
-    );
-  }, [mpdClient, playerStatusIsConsume, profile]);
+	const onButtonClicked = useCallback(async () => {
+		if (profile === undefined || mpdClient === undefined) {
+			return;
+		}
+		mpdClient.command(
+			new MpdRequest({
+				profile,
+				command: {
+					case: "consume",
+					value: {
+						enable: !playerStatusIsConsume,
+					},
+				},
+			}),
+		);
+	}, [mpdClient, playerStatusIsConsume, profile]);
 
-  const props = {
-    label: playerStatusIsConsume ? "Consume enabled" : "Consume disabled",
-    isDisabled: currentSong === undefined,
-    onButtonClicked,
-    icon: <IoRestaurantOutline size={"24"}></IoRestaurantOutline>,
-    variant: playerStatusIsConsume ? "solid" : "ghost",
-  };
+	const props = {
+		label: playerStatusIsConsume ? "Consume enabled" : "Consume disabled",
+		isDisabled: currentSong === undefined,
+		onButtonClicked,
+		icon: <IoRestaurantOutline size={"24"} />,
+		variant: playerStatusIsConsume ? "solid" : "ghost",
+	};
 
-  return (
-    <>
-      <PlayerControlsButton {...props}></PlayerControlsButton>
-    </>
-  );
+	return (
+		<>
+			<PlayerControlsButton {...props} />
+		</>
+	);
 }

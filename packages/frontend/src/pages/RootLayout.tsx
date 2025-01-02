@@ -13,16 +13,16 @@ import { LocationObserver } from "../features/location";
 import { useJotaiStore } from "../useJotaiStore";
 
 export function RootLayout() {
-  const store = useJotaiStore();
+	const store = useJotaiStore();
 
-  return (
-    <>
-      <Suspense fallback={<TopLoadingProgressBar />}>
-        <Provider store={store}>
-          <Outlet />
-          <LocationObserver />
-        </Provider>
-      </Suspense>
-    </>
-  );
+	return (
+		<>
+			<Suspense fallback={<TopLoadingProgressBar />}>
+				<Provider store={store}>
+					<Outlet />
+					<LocationObserver />
+				</Provider>
+			</Suspense>
+		</>
+	);
 }

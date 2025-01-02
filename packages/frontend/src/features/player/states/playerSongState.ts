@@ -1,4 +1,4 @@
-import { Song } from "@sola_mpd/domain/src/models/song_pb.js";
+import type { Song } from "@sola_mpd/domain/src/models/song_pb.js";
 import { useAtomValue, useSetAtom } from "jotai";
 import { atomWithRefresh, selectAtom } from "jotai/utils";
 
@@ -14,14 +14,14 @@ import { fetchCurrentSong } from "../utils/playerUtils";
  * access control. Returns undefined if no profile selected.
  */
 const currentSongAtom = atomWithRefresh(async (get) => {
-  const mpdClient = get(mpdClientAtom);
-  const profile = get(currentMpdProfileSyncAtom);
+	const mpdClient = get(mpdClientAtom);
+	const profile = get(currentMpdProfileSyncAtom);
 
-  if (profile === undefined) {
-    return undefined;
-  }
+	if (profile === undefined) {
+		return undefined;
+	}
 
-  return await fetchCurrentSong(mpdClient, profile);
+	return await fetchCurrentSong(mpdClient, profile);
 });
 
 /**
@@ -39,12 +39,12 @@ const currentSongSyncAtom = atomWithSync(currentSongAtom);
  * paths instead of entire objects.
  */
 const currentSongSyncWithCompareAtom = selectAtom<
-  Song | undefined,
-  Song | undefined
+	Song | undefined,
+	Song | undefined
 >(
-  currentSongSyncAtom,
-  (state, _prev) => state,
-  (a, b) => a?.path === b?.path,
+	currentSongSyncAtom,
+	(state, _prev) => state,
+	(a, b) => a?.path === b?.path,
 );
 
 /**
@@ -56,7 +56,7 @@ const currentSongSyncWithCompareAtom = selectAtom<
  * @returns Current song or undefined
  */
 export function useCurrentSongState() {
-  return useAtomValue(currentSongSyncWithCompareAtom);
+	return useAtomValue(currentSongSyncWithCompareAtom);
 }
 
 /**
@@ -68,5 +68,5 @@ export function useCurrentSongState() {
  * @returns Refresh function
  */
 export function useRefreshCurrentSongState() {
-  return useSetAtom(currentSongAtom);
+	return useSetAtom(currentSongAtom);
 }

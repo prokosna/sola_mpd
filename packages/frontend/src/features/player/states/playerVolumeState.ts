@@ -13,14 +13,14 @@ import { fetchPlayerVolume } from "../utils/playerUtils";
  * access control. Returns undefined if no profile selected.
  */
 const playerVolumeAtom = atomWithRefresh(async (get) => {
-  const mpdClient = get(mpdClientAtom);
-  const profile = get(currentMpdProfileSyncAtom);
+	const mpdClient = get(mpdClientAtom);
+	const profile = get(currentMpdProfileSyncAtom);
 
-  if (profile === undefined) {
-    return undefined;
-  }
+	if (profile === undefined) {
+		return undefined;
+	}
 
-  return await fetchPlayerVolume(mpdClient, profile);
+	return await fetchPlayerVolume(mpdClient, profile);
 });
 
 /**
@@ -40,7 +40,7 @@ const playerVolumeSyncAtom = atomWithSync(playerVolumeAtom);
  * @returns Volume (0-100) or undefined
  */
 export function usePlayerVolumeState() {
-  return useAtomValue(playerVolumeSyncAtom);
+	return useAtomValue(playerVolumeSyncAtom);
 }
 
 /**
@@ -52,5 +52,5 @@ export function usePlayerVolumeState() {
  * @returns Refresh function
  */
 export function useRefreshPlayerVolumeState() {
-  return useSetAtom(playerVolumeAtom);
+	return useSetAtom(playerVolumeAtom);
 }

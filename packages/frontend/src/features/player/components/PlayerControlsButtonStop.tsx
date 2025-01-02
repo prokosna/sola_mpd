@@ -17,37 +17,37 @@ import { PlayerControlsButton } from "./PlayerControlsButton";
  * @returns Stop button
  */
 export function PlayerControlsButtonStop() {
-  const profile = useCurrentMpdProfileState();
-  const mpdClient = useMpdClientState();
-  const currentSong = useCurrentSongState();
+	const profile = useCurrentMpdProfileState();
+	const mpdClient = useMpdClientState();
+	const currentSong = useCurrentSongState();
 
-  const onButtonClicked = useCallback(async () => {
-    if (profile === undefined || mpdClient === undefined) {
-      return;
-    }
+	const onButtonClicked = useCallback(async () => {
+		if (profile === undefined || mpdClient === undefined) {
+			return;
+		}
 
-    mpdClient.command(
-      new MpdRequest({
-        profile,
-        command: {
-          case: "stop",
-          value: {},
-        },
-      }),
-    );
-  }, [mpdClient, profile]);
+		mpdClient.command(
+			new MpdRequest({
+				profile,
+				command: {
+					case: "stop",
+					value: {},
+				},
+			}),
+		);
+	}, [mpdClient, profile]);
 
-  const props = {
-    label: "Stop",
-    isDisabled: currentSong === undefined,
-    onButtonClicked,
-    icon: <IoStop size={"24"}></IoStop>,
-    variant: "ghost",
-  };
+	const props = {
+		label: "Stop",
+		isDisabled: currentSong === undefined,
+		onButtonClicked,
+		icon: <IoStop size={"24"} />,
+		variant: "ghost",
+	};
 
-  return (
-    <>
-      <PlayerControlsButton {...props}></PlayerControlsButton>
-    </>
-  );
+	return (
+		<>
+			<PlayerControlsButton {...props} />
+		</>
+	);
 }

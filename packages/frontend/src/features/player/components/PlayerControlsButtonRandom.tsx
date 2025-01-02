@@ -18,40 +18,40 @@ import { PlayerControlsButton } from "./PlayerControlsButton";
  * @returns Random mode toggle button
  */
 export function PlayerControlsButtonRandom() {
-  const profile = useCurrentMpdProfileState();
-  const mpdClient = useMpdClientState();
-  const currentSong = useCurrentSongState();
-  const playerStatusIsRandom = usePlayerStatusIsRandomState();
+	const profile = useCurrentMpdProfileState();
+	const mpdClient = useMpdClientState();
+	const currentSong = useCurrentSongState();
+	const playerStatusIsRandom = usePlayerStatusIsRandomState();
 
-  const onButtonClicked = useCallback(async () => {
-    if (profile === undefined || mpdClient === undefined) {
-      return;
-    }
+	const onButtonClicked = useCallback(async () => {
+		if (profile === undefined || mpdClient === undefined) {
+			return;
+		}
 
-    mpdClient.command(
-      new MpdRequest({
-        profile,
-        command: {
-          case: "random",
-          value: {
-            enable: !playerStatusIsRandom,
-          },
-        },
-      }),
-    );
-  }, [mpdClient, playerStatusIsRandom, profile]);
+		mpdClient.command(
+			new MpdRequest({
+				profile,
+				command: {
+					case: "random",
+					value: {
+						enable: !playerStatusIsRandom,
+					},
+				},
+			}),
+		);
+	}, [mpdClient, playerStatusIsRandom, profile]);
 
-  const props = {
-    label: playerStatusIsRandom ? "Random enabled" : "Random disabled",
-    isDisabled: currentSong === undefined,
-    onButtonClicked,
-    icon: <IoShuffleOutline size={"24"}></IoShuffleOutline>,
-    variant: playerStatusIsRandom ? "solid" : "ghost",
-  };
+	const props = {
+		label: playerStatusIsRandom ? "Random enabled" : "Random disabled",
+		isDisabled: currentSong === undefined,
+		onButtonClicked,
+		icon: <IoShuffleOutline size={"24"} />,
+		variant: playerStatusIsRandom ? "solid" : "ghost",
+	};
 
-  return (
-    <>
-      <PlayerControlsButton {...props}></PlayerControlsButton>
-    </>
-  );
+	return (
+		<>
+			<PlayerControlsButton {...props} />
+		</>
+	);
 }

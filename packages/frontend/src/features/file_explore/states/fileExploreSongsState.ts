@@ -27,24 +27,24 @@ import { selectedFileExploreFolderAtom } from "./fileExploreFoldersState";
  * - Selected folder path
  */
 const fileExploreSongsAtom = atom(async (get) => {
-  const mpdClient = get(mpdClientAtom);
-  const profile = get(currentMpdProfileSyncAtom);
-  const selectedFileExploreFolder = get(selectedFileExploreFolderAtom);
+	const mpdClient = get(mpdClientAtom);
+	const profile = get(currentMpdProfileSyncAtom);
+	const selectedFileExploreFolder = get(selectedFileExploreFolderAtom);
 
-  if (profile === undefined) {
-    return undefined;
-  }
-  if (selectedFileExploreFolder === undefined) {
-    return [];
-  }
+	if (profile === undefined) {
+		return undefined;
+	}
+	if (selectedFileExploreFolder === undefined) {
+		return [];
+	}
 
-  const songs = await fetchFileExploreSongs(
-    mpdClient,
-    profile,
-    selectedFileExploreFolder,
-  );
+	const songs = await fetchFileExploreSongs(
+		mpdClient,
+		profile,
+		selectedFileExploreFolder,
+	);
 
-  return songs;
+	return songs;
 });
 
 /**
@@ -62,29 +62,29 @@ const fileExploreSongsSyncAtom = atomWithSync(fileExploreSongsAtom);
  * - Empty state handling
  */
 const fileExploreVisibleSongsSyncAtom = atom((get) => {
-  const fileExploreSongs = get(fileExploreSongsSyncAtom);
-  const songTableState = get(songTableStateSyncAtom);
-  const globalFilterTokens = get(globalFilterTokensAtom);
-  const pathname = get(pathnameAtom);
+	const fileExploreSongs = get(fileExploreSongsSyncAtom);
+	const songTableState = get(songTableStateSyncAtom);
+	const globalFilterTokens = get(globalFilterTokensAtom);
+	const pathname = get(pathnameAtom);
 
-  if (
-    pathname !== ROUTE_HOME_FILE_EXPLORE ||
-    songTableState === undefined ||
-    fileExploreSongs === undefined
-  ) {
-    return undefined;
-  }
+	if (
+		pathname !== ROUTE_HOME_FILE_EXPLORE ||
+		songTableState === undefined ||
+		fileExploreSongs === undefined
+	) {
+		return undefined;
+	}
 
-  const filteredSongs = filterSongsByGlobalFilter(
-    fileExploreSongs,
-    globalFilterTokens,
-    songTableState.columns,
-  );
-  const sortedSongs = filteredSongs.toSorted((a, b) =>
-    a.path > b.path ? 1 : -1,
-  );
+	const filteredSongs = filterSongsByGlobalFilter(
+		fileExploreSongs,
+		globalFilterTokens,
+		songTableState.columns,
+	);
+	const sortedSongs = filteredSongs.toSorted((a, b) =>
+		a.path > b.path ? 1 : -1,
+	);
 
-  return sortedSongs;
+	return sortedSongs;
 });
 
 /**
@@ -99,5 +99,5 @@ const fileExploreVisibleSongsSyncAtom = atom((get) => {
  * @returns Filtered array of songs or undefined if not ready
  */
 export function useFileExploreSongsState() {
-  return useAtomValue(fileExploreVisibleSongsSyncAtom);
+	return useAtomValue(fileExploreVisibleSongsSyncAtom);
 }

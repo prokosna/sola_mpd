@@ -1,6 +1,6 @@
 import {
-  PluginRegisterRequest,
-  PluginState,
+	PluginRegisterRequest,
+	PluginState,
 } from "@sola_mpd/domain/src/models/plugin/plugin_pb.js";
 import { useAtomValue, useSetAtom } from "jotai";
 import { atomWithDefault, useResetAtom } from "jotai/utils";
@@ -16,41 +16,41 @@ import { pluginStateRepositoryAtom } from "./pluginStateRepository";
  * Plugin state management.
  */
 const pluginStateAtom = atomWithDefault<Promise<PluginState> | PluginState>(
-  async (get) => {
-    const repository = get(pluginStateRepositoryAtom);
-    const pluginState = await repository.fetch();
-    const pluginService = get(pluginServiceAtom);
+	async (get) => {
+		const repository = get(pluginStateRepositoryAtom);
+		const pluginState = await repository.fetch();
+		const pluginService = get(pluginServiceAtom);
 
-    // Fetch the latest plugin info
-    const plugins = pluginState.plugins;
+		// Fetch the latest plugin info
+		const plugins = pluginState.plugins;
 
-    const newPlugins = await Promise.all(
-      plugins.map(async (plugin) => {
-        const newPlugin = plugin.clone();
-        newPlugin.isAvailable = false;
+		const newPlugins = await Promise.all(
+			plugins.map(async (plugin) => {
+				const newPlugin = plugin.clone();
+				newPlugin.isAvailable = false;
 
-        const req = new PluginRegisterRequest({
-          host: plugin.host,
-          port: plugin.port,
-        });
+				const req = new PluginRegisterRequest({
+					host: plugin.host,
+					port: plugin.port,
+				});
 
-        try {
-          const resp = await pluginService.register(req);
-          if (resp.info !== undefined) {
-            newPlugin.info = resp.info;
-            newPlugin.isAvailable = true;
-          }
-        } catch (e) {
-          console.error(e);
-        }
-        return newPlugin;
-      }),
-    );
+				try {
+					const resp = await pluginService.register(req);
+					if (resp.info !== undefined) {
+						newPlugin.info = resp.info;
+						newPlugin.isAvailable = true;
+					}
+				} catch (e) {
+					console.error(e);
+				}
+				return newPlugin;
+			}),
+		);
 
-    return new PluginState({
-      plugins: newPlugins,
-    });
-  },
+		return new PluginState({
+			plugins: newPlugins,
+		});
+	},
 );
 
 const pluginStateSyncAtom = atomWithSync(pluginStateAtom);
@@ -61,7 +61,7 @@ const pluginStateSyncAtom = atomWithSync(pluginStateAtom);
  * @returns Current state
  */
 export function usePluginState() {
-  return useAtomValue(pluginStateSyncAtom);
+	return useAtomValue(pluginStateSyncAtom);
 }
 
 /**
@@ -70,7 +70,7 @@ export function usePluginState() {
  * @returns Refresh function
  */
 export function useRefreshPluginState() {
-  return useResetAtom(pluginStateAtom);
+	return useResetAtom(pluginStateAtom);
 }
 
 /**
@@ -79,18 +79,18 @@ export function useRefreshPluginState() {
  * @returns Update function
  */
 export function useUpdatePluginState() {
-  const setPluginState = useSetAtom(pluginStateAtom);
-  const repository = useAtomValue(pluginStateRepositoryAtom);
+	const setPluginState = useSetAtom(pluginStateAtom);
+	const repository = useAtomValue(pluginStateRepositoryAtom);
 
-  return useCallback(
-    async (pluginState: PluginState, mode: UpdateMode) => {
-      if (mode & UpdateMode.LOCAL_STATE) {
-        setPluginState(pluginState);
-      }
-      if (mode & UpdateMode.PERSIST) {
-        await repository.save(pluginState);
-      }
-    },
-    [repository, setPluginState],
-  );
+	return useCallback(
+		async (pluginState: PluginState, mode: UpdateMode) => {
+			if (mode & UpdateMode.LOCAL_STATE) {
+				setPluginState(pluginState);
+			}
+			if (mode & UpdateMode.PERSIST) {
+				await repository.save(pluginState);
+			}
+		},
+		[repository, setPluginState],
+	);
 }

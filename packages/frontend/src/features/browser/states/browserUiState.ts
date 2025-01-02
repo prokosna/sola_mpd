@@ -14,9 +14,9 @@ const isBrowserLoadingAtom = atom(true);
  * when browser filters are updated.
  */
 const setBrowserLoadingTrueEffectAtom = atomEffect((get, set) => {
-  // Set isBrowserLoadingAtom to true when browserFiltersAtom is updated.
-  get(browserFiltersSyncAtom);
-  set(isBrowserLoadingAtom, true);
+	// Set isBrowserLoadingAtom to true when browserFiltersAtom is updated.
+	get(browserFiltersSyncAtom);
+	set(isBrowserLoadingAtom, true);
 });
 
 /**
@@ -29,8 +29,8 @@ const setBrowserLoadingTrueEffectAtom = atomEffect((get, set) => {
  * @returns Current loading state
  */
 export function useIsBrowserLoadingState() {
-  useAtom(setBrowserLoadingTrueEffectAtom);
-  return useAtomValue(isBrowserLoadingAtom);
+	useAtom(setBrowserLoadingTrueEffectAtom);
+	return useAtomValue(isBrowserLoadingAtom);
 }
 
 /**
@@ -43,5 +43,5 @@ export function useIsBrowserLoadingState() {
  * @returns Function to update loading state
  */
 export function useSetIsBrowserLoadingState() {
-  return useSetAtom(isBrowserLoadingAtom);
+	return useSetAtom(isBrowserLoadingAtom);
 }

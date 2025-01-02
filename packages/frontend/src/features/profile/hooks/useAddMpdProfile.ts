@@ -3,10 +3,10 @@ import { useCallback } from "react";
 
 import { UpdateMode } from "../../../types/stateTypes";
 import {
-  useMpdProfileState,
-  useUpdateMpdProfileState,
+	useMpdProfileState,
+	useUpdateMpdProfileState,
 } from "../states/mpdProfileState";
-import { ProfileInput } from "../types/profileTypes";
+import type { ProfileInput } from "../types/profileTypes";
 
 /**
  * Hook for adding new MPD profiles.
@@ -15,32 +15,32 @@ import { ProfileInput } from "../types/profileTypes";
  * @throws When state is not ready
  */
 export function useAddMpdProfile() {
-  const mpdProfileState = useMpdProfileState();
-  const updateMpdProfileState = useUpdateMpdProfileState();
+	const mpdProfileState = useMpdProfileState();
+	const updateMpdProfileState = useUpdateMpdProfileState();
 
-  return useCallback(
-    async (input: ProfileInput) => {
-      if (mpdProfileState === undefined) {
-        throw Error("MpdProfileState is not ready.");
-      }
+	return useCallback(
+		async (input: ProfileInput) => {
+			if (mpdProfileState === undefined) {
+				throw Error("MpdProfileState is not ready.");
+			}
 
-      const profile = new MpdProfile({
-        name: input.name,
-        host: input.host,
-        port: input.port,
-      });
+			const profile = new MpdProfile({
+				name: input.name,
+				host: input.host,
+				port: input.port,
+			});
 
-      const newMpdProfileState = mpdProfileState.clone();
-      newMpdProfileState.profiles.push(profile);
-      if (newMpdProfileState.currentProfile === undefined) {
-        newMpdProfileState.currentProfile = profile;
-      }
+			const newMpdProfileState = mpdProfileState.clone();
+			newMpdProfileState.profiles.push(profile);
+			if (newMpdProfileState.currentProfile === undefined) {
+				newMpdProfileState.currentProfile = profile;
+			}
 
-      return updateMpdProfileState(
-        newMpdProfileState,
-        UpdateMode.LOCAL_STATE | UpdateMode.PERSIST,
-      );
-    },
-    [mpdProfileState, updateMpdProfileState],
-  );
+			return updateMpdProfileState(
+				newMpdProfileState,
+				UpdateMode.LOCAL_STATE | UpdateMode.PERSIST,
+			);
+		},
+		[mpdProfileState, updateMpdProfileState],
+	);
 }

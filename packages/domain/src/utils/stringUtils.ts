@@ -1,3 +1,4 @@
+// biome-ignore lint/suspicious/noMisleadingCharacterClass: Expected usage.
 const normalizationRegex = new RegExp(/[\u0300-\u036F]/g);
 
 /**
@@ -6,25 +7,25 @@ const normalizationRegex = new RegExp(/[\u0300-\u036F]/g);
  * @returns Formatted string in the format "DD:HH:MM:SS", "HH:MM:SS", or "MM:SS"
  */
 export function displayDuration(duration: number): string {
-  const days = Math.floor(duration / (60 * 60 * 24));
-  let remaining = duration - days * 60 * 60 * 24;
-  const hours = Math.floor(remaining / (60 * 60));
-  remaining -= hours * 60 * 60;
-  const minutes = Math.floor(remaining / 60);
-  remaining -= minutes * 60;
-  const seconds = Math.floor(remaining);
+	const days = Math.floor(duration / (60 * 60 * 24));
+	let remaining = duration - days * 60 * 60 * 24;
+	const hours = Math.floor(remaining / (60 * 60));
+	remaining -= hours * 60 * 60;
+	const minutes = Math.floor(remaining / 60);
+	remaining -= minutes * 60;
+	const seconds = Math.floor(remaining);
 
-  const hoursStr = hours < 10 ? `0${hours}` : String(hours);
-  const minutesStr = minutes < 10 ? `0${minutes}` : String(minutes);
-  const secondsStr = seconds < 10 ? `0${seconds}` : String(seconds);
+	const hoursStr = hours < 10 ? `0${hours}` : String(hours);
+	const minutesStr = minutes < 10 ? `0${minutes}` : String(minutes);
+	const secondsStr = seconds < 10 ? `0${seconds}` : String(seconds);
 
-  if (days > 0) {
-    return `${days}:${hoursStr}:${minutesStr}:${secondsStr}`;
-  } else if (hours > 0) {
-    return `${hoursStr}:${minutesStr}:${secondsStr}`;
-  } else {
-    return `${minutesStr}:${secondsStr}`;
-  }
+	if (days > 0) {
+		return `${days}:${hoursStr}:${minutesStr}:${secondsStr}`;
+	}
+	if (hours > 0) {
+		return `${hoursStr}:${minutesStr}:${secondsStr}`;
+	}
+	return `${minutesStr}:${secondsStr}`;
 }
 
 /**
@@ -33,5 +34,5 @@ export function displayDuration(duration: number): string {
  * @returns Normalized string
  */
 export function normalize(input: string): string {
-  return input.normalize("NFD").replace(normalizationRegex, "").toLowerCase();
+	return input.normalize("NFD").replace(normalizationRegex, "").toLowerCase();
 }

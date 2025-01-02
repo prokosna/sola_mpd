@@ -13,17 +13,17 @@ import { PlayerSongInformationTag } from "./PlayerSongInformationTag";
  * @returns Compact song information component
  */
 export function PlayerSongInformationCompact() {
-  const { firstLine, secondLine, thirdLine } = useCurrentSongInformationLines();
+	const { firstLine, secondLine, thirdLine } = useCurrentSongInformationLines();
 
-  return (
-    <>
-      <VStack spacing={1} minW="100%">
-        <Text noOfLines={1}>
-          {`${firstLine} / ${secondLine}`}
-          <PlayerSongInformationTag></PlayerSongInformationTag>
-        </Text>
-        <Text noOfLines={1}>{`${thirdLine}`}</Text>
-      </VStack>
-    </>
-  );
+	return (
+		<>
+			<VStack spacing={1} minW="100%">
+				<Text noOfLines={1}>
+					{`${firstLine} / ${secondLine}`}
+					<PlayerSongInformationTag />
+				</Text>
+				<Text noOfLines={1}>{`${thirdLine}`}</Text>
+			</VStack>
+		</>
+	);
 }

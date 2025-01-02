@@ -1,5 +1,5 @@
-import { Search } from "@sola_mpd/domain/src/models/search_pb.js";
-import { SongTableColumn } from "@sola_mpd/domain/src/models/song_table_pb.js";
+import type { Search } from "@sola_mpd/domain/src/models/search_pb.js";
+import type { SongTableColumn } from "@sola_mpd/domain/src/models/song_table_pb.js";
 import { useCallback } from "react";
 
 import { useSetEditingSearchState } from "../states/searchEditState";
@@ -14,13 +14,13 @@ import { changeEditingSearchColumns } from "../utils/searchUtils";
  * @returns Column update handler
  */
 export function useHandleSearchColumnsUpdated() {
-  const setEditingSearch = useSetEditingSearchState();
+	const setEditingSearch = useSetEditingSearchState();
 
-  return useCallback(
-    async (editingSearch: Search, columns: SongTableColumn[]) => {
-      const newSearch = changeEditingSearchColumns(editingSearch, columns);
-      setEditingSearch(newSearch, EditingSearchStatus.COLUMNS_UPDATED);
-    },
-    [setEditingSearch],
-  );
+	return useCallback(
+		async (editingSearch: Search, columns: SongTableColumn[]) => {
+			const newSearch = changeEditingSearchColumns(editingSearch, columns);
+			setEditingSearch(newSearch, EditingSearchStatus.COLUMNS_UPDATED);
+		},
+		[setEditingSearch],
+	);
 }

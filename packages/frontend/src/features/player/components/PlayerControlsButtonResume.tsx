@@ -20,49 +20,49 @@ import { PlayerControlsButton } from "./PlayerControlsButton";
  * @returns Play/pause toggle button
  */
 export function PlayerControlsButtonResume() {
-  const profile = useCurrentMpdProfileState();
-  const mpdClient = useMpdClientState();
-  const currentSong = useCurrentSongState();
-  const playerStatusPlaybackState = usePlayerStatusPlaybackState();
+	const profile = useCurrentMpdProfileState();
+	const mpdClient = useMpdClientState();
+	const currentSong = useCurrentSongState();
+	const playerStatusPlaybackState = usePlayerStatusPlaybackState();
 
-  const onButtonClicked = useCallback(async () => {
-    if (profile === undefined || mpdClient === undefined) {
-      return;
-    }
+	const onButtonClicked = useCallback(async () => {
+		if (profile === undefined || mpdClient === undefined) {
+			return;
+		}
 
-    mpdClient.command(
-      new MpdRequest({
-        profile,
-        command: {
-          case: "pause",
-          value: {
-            pause:
-              playerStatusPlaybackState === MpdPlayerStatus_PlaybackState.PLAY,
-          },
-        },
-      }),
-    );
-  }, [mpdClient, playerStatusPlaybackState, profile]);
+		mpdClient.command(
+			new MpdRequest({
+				profile,
+				command: {
+					case: "pause",
+					value: {
+						pause:
+							playerStatusPlaybackState === MpdPlayerStatus_PlaybackState.PLAY,
+					},
+				},
+			}),
+		);
+	}, [mpdClient, playerStatusPlaybackState, profile]);
 
-  const props = {
-    label:
-      playerStatusPlaybackState === MpdPlayerStatus_PlaybackState.PLAY
-        ? "Pause"
-        : "Resume",
-    isDisabled: currentSong === undefined,
-    onButtonClicked,
-    icon:
-      playerStatusPlaybackState === MpdPlayerStatus_PlaybackState.PLAY ? (
-        <IoPause size={"24"}></IoPause>
-      ) : (
-        <IoPlay size={"24"}></IoPlay>
-      ),
-    variant: "ghost",
-  };
+	const props = {
+		label:
+			playerStatusPlaybackState === MpdPlayerStatus_PlaybackState.PLAY
+				? "Pause"
+				: "Resume",
+		isDisabled: currentSong === undefined,
+		onButtonClicked,
+		icon:
+			playerStatusPlaybackState === MpdPlayerStatus_PlaybackState.PLAY ? (
+				<IoPause size={"24"} />
+			) : (
+				<IoPlay size={"24"} />
+			),
+		variant: "ghost",
+	};
 
-  return (
-    <>
-      <PlayerControlsButton {...props}></PlayerControlsButton>
-    </>
-  );
+	return (
+		<>
+			<PlayerControlsButton {...props} />
+		</>
+	);
 }

@@ -1,7 +1,7 @@
-import { SongTableColumn } from "@sola_mpd/domain/src/models/song_table_pb.js";
+import type { SongTableColumn } from "@sola_mpd/domain/src/models/song_table_pb.js";
 import { useCallback } from "react";
 
-import { ColumnEditModalProps } from "../components/ColumnEditModal";
+import type { ColumnEditModalProps } from "../components/ColumnEditModal";
 
 /**
  * Creates props for column edit modal component.
@@ -18,31 +18,31 @@ import { ColumnEditModalProps } from "../components/ColumnEditModal";
  * @returns Modal component props
  */
 export function useColumnEditModalProps(
-  isOpen: boolean,
-  columns: SongTableColumn[],
-  setIsOpenColumnEditModal: (open: boolean) => void,
-  onColumnsUpdated: (columns: SongTableColumn[]) => void,
-  onModalDisposed: () => void,
+	isOpen: boolean,
+	columns: SongTableColumn[],
+	setIsOpenColumnEditModal: (open: boolean) => void,
+	onColumnsUpdated: (columns: SongTableColumn[]) => void,
+	onModalDisposed: () => void,
 ): ColumnEditModalProps {
-  const handleColumnsUpdated = useCallback(
-    async (newColumns: SongTableColumn[]) => {
-      onColumnsUpdated(newColumns);
-      // Close the modal after updating the columns.
-      setIsOpenColumnEditModal(false);
-    },
-    [onColumnsUpdated, setIsOpenColumnEditModal],
-  );
+	const handleColumnsUpdated = useCallback(
+		async (newColumns: SongTableColumn[]) => {
+			onColumnsUpdated(newColumns);
+			// Close the modal after updating the columns.
+			setIsOpenColumnEditModal(false);
+		},
+		[onColumnsUpdated, setIsOpenColumnEditModal],
+	);
 
-  const handleModalDisposed = useCallback(async () => {
-    onModalDisposed();
-    // Make sure to close the modal.
-    setIsOpenColumnEditModal(false);
-  }, [onModalDisposed, setIsOpenColumnEditModal]);
+	const handleModalDisposed = useCallback(async () => {
+		onModalDisposed();
+		// Make sure to close the modal.
+		setIsOpenColumnEditModal(false);
+	}, [onModalDisposed, setIsOpenColumnEditModal]);
 
-  return {
-    columns,
-    isOpen,
-    handleColumnsUpdated,
-    handleModalDisposed,
-  };
+	return {
+		columns,
+		isOpen,
+		handleColumnsUpdated,
+		handleModalDisposed,
+	};
 }

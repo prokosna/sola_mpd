@@ -2,8 +2,8 @@
 export { MpdEventObserver } from "./components/MpdEventObserver";
 
 // Services
-export { type MpdClient } from "./services/MpdClient";
-export { type MpdListener } from "./services/MpdListener";
+export type { MpdClient } from "./services/MpdClient";
+export type { MpdListener } from "./services/MpdListener";
 
 // States
 export { useMpdClientState } from "./states/mpdClient";

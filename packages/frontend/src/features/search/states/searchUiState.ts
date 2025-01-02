@@ -15,7 +15,7 @@ const isSearchLoadingAtom = atom(true);
  * @returns Current loading state
  */
 export function useIsSearchLoadingState() {
-  return useAtomValue(isSearchLoadingAtom);
+	return useAtomValue(isSearchLoadingAtom);
 }
 
 /**
@@ -26,5 +26,5 @@ export function useIsSearchLoadingState() {
  * @returns Update function
  */
 export function useSetIsSearchLoadingState() {
-  return useSetAtom(isSearchLoadingAtom);
+	return useSetAtom(isSearchLoadingAtom);
 }

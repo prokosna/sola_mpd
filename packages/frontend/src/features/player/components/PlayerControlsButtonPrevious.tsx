@@ -17,37 +17,37 @@ import { PlayerControlsButton } from "./PlayerControlsButton";
  * @returns Previous track button
  */
 export function PlayerControlsButtonPrevious() {
-  const profile = useCurrentMpdProfileState();
-  const mpdClient = useMpdClientState();
-  const currentSong = useCurrentSongState();
+	const profile = useCurrentMpdProfileState();
+	const mpdClient = useMpdClientState();
+	const currentSong = useCurrentSongState();
 
-  const onButtonClicked = useCallback(async () => {
-    if (profile === undefined || mpdClient === undefined) {
-      return;
-    }
+	const onButtonClicked = useCallback(async () => {
+		if (profile === undefined || mpdClient === undefined) {
+			return;
+		}
 
-    mpdClient.command(
-      new MpdRequest({
-        profile,
-        command: {
-          case: "previous",
-          value: {},
-        },
-      }),
-    );
-  }, [mpdClient, profile]);
+		mpdClient.command(
+			new MpdRequest({
+				profile,
+				command: {
+					case: "previous",
+					value: {},
+				},
+			}),
+		);
+	}, [mpdClient, profile]);
 
-  const props = {
-    label: "Play previous",
-    isDisabled: currentSong === undefined,
-    onButtonClicked,
-    icon: <IoPlaySkipBack size={"24"}></IoPlaySkipBack>,
-    variant: "ghost",
-  };
+	const props = {
+		label: "Play previous",
+		isDisabled: currentSong === undefined,
+		onButtonClicked,
+		icon: <IoPlaySkipBack size={"24"} />,
+		variant: "ghost",
+	};
 
-  return (
-    <>
-      <PlayerControlsButton {...props}></PlayerControlsButton>
-    </>
-  );
+	return (
+		<>
+			<PlayerControlsButton {...props} />
+		</>
+	);
 }

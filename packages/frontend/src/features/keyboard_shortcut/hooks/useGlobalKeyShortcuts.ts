@@ -41,50 +41,50 @@ import { useInputKeyCombination } from "./useInputKeyCombination";
  * - Input combination hook
  */
 export function useGlobalKeyShortcuts(): void {
-  const mpdClient = useMpdClientState();
-  const profile = useCurrentMpdProfileState();
-  const playerPlaybackState = usePlayerStatusPlaybackState();
+	const mpdClient = useMpdClientState();
+	const profile = useCurrentMpdProfileState();
+	const playerPlaybackState = usePlayerStatusPlaybackState();
 
-  useInputKeyCombination(undefined, [" "], async () => {
-    if (mpdClient === undefined || profile === undefined) {
-      return;
-    }
-    switch (playerPlaybackState) {
-      case MpdPlayerStatus_PlaybackState.STOP:
-        mpdClient.command(
-          new MpdRequest({
-            profile,
-            command: {
-              case: "pause",
-              value: { pause: false },
-            },
-          }),
-        );
-        break;
-      case MpdPlayerStatus_PlaybackState.PAUSE:
-        mpdClient.command(
-          new MpdRequest({
-            profile,
-            command: {
-              case: "pause",
-              value: { pause: false },
-            },
-          }),
-        );
-        break;
-      case MpdPlayerStatus_PlaybackState.PLAY:
-        mpdClient.command(
-          new MpdRequest({
-            profile,
-            command: {
-              case: "pause",
-              value: { pause: true },
-            },
-          }),
-        );
-        break;
-      default:
-        return;
-    }
-  });
+	useInputKeyCombination(undefined, [" "], async () => {
+		if (mpdClient === undefined || profile === undefined) {
+			return;
+		}
+		switch (playerPlaybackState) {
+			case MpdPlayerStatus_PlaybackState.STOP:
+				mpdClient.command(
+					new MpdRequest({
+						profile,
+						command: {
+							case: "pause",
+							value: { pause: false },
+						},
+					}),
+				);
+				break;
+			case MpdPlayerStatus_PlaybackState.PAUSE:
+				mpdClient.command(
+					new MpdRequest({
+						profile,
+						command: {
+							case: "pause",
+							value: { pause: false },
+						},
+					}),
+				);
+				break;
+			case MpdPlayerStatus_PlaybackState.PLAY:
+				mpdClient.command(
+					new MpdRequest({
+						profile,
+						command: {
+							case: "pause",
+							value: { pause: true },
+						},
+					}),
+				);
+				break;
+			default:
+				return;
+		}
+	});
 }

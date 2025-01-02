@@ -1,4 +1,4 @@
-import { RowDataUpdatedEvent } from "ag-grid-community";
+import type { RowDataUpdatedEvent } from "ag-grid-community";
 import { useCallback } from "react";
 
 /**
@@ -8,12 +8,12 @@ import { useCallback } from "react";
  * @returns Row data update handler
  */
 export function useHandleRowDataUpdated(
-  onLoadingCompleted: () => Promise<void>,
+	onLoadingCompleted: () => Promise<void>,
 ) {
-  return useCallback(
-    (_: RowDataUpdatedEvent) => {
-      onLoadingCompleted();
-    },
-    [onLoadingCompleted],
-  );
+	return useCallback(
+		(_: RowDataUpdatedEvent) => {
+			onLoadingCompleted();
+		},
+		[onLoadingCompleted],
+	);
 }

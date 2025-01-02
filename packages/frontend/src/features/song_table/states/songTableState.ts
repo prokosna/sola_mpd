@@ -1,4 +1,4 @@
-import { SongTableState } from "@sola_mpd/domain/src/models/song_table_pb.js";
+import type { SongTableState } from "@sola_mpd/domain/src/models/song_table_pb.js";
 import { useAtomValue, useSetAtom } from "jotai";
 import { atomWithDefault, useResetAtom } from "jotai/utils";
 import { useCallback } from "react";
@@ -15,11 +15,11 @@ import { songTableStateRepositoryAtom } from "./songTableStateRepository";
  * column settings, sorting, and view preferences across tables.
  */
 const songTableStateAtom = atomWithDefault<
-  Promise<SongTableState> | SongTableState
+	Promise<SongTableState> | SongTableState
 >(async (get) => {
-  const repository = get(songTableStateRepositoryAtom);
-  const songTableState = await repository.fetch();
-  return songTableState;
+	const repository = get(songTableStateRepositoryAtom);
+	const songTableState = await repository.fetch();
+	return songTableState;
 });
 
 /**
@@ -40,7 +40,7 @@ export const songTableStateSyncAtom = atomWithSync(songTableStateAtom);
  * @returns Current table state
  */
 export function useSongTableState() {
-  return useAtomValue(songTableStateSyncAtom);
+	return useAtomValue(songTableStateSyncAtom);
 }
 
 /**
@@ -53,20 +53,20 @@ export function useSongTableState() {
  * @returns Table state update function
  */
 export function useUpdateSongTableState() {
-  const repository = useAtomValue(songTableStateRepositoryAtom);
-  const setSongTableState = useSetAtom(songTableStateAtom);
+	const repository = useAtomValue(songTableStateRepositoryAtom);
+	const setSongTableState = useSetAtom(songTableStateAtom);
 
-  return useCallback(
-    async (state: SongTableState, mode: UpdateMode): Promise<void> => {
-      if (mode & UpdateMode.LOCAL_STATE) {
-        setSongTableState(state);
-      }
-      if (mode & UpdateMode.PERSIST) {
-        await repository.save(state);
-      }
-    },
-    [repository, setSongTableState],
-  );
+	return useCallback(
+		async (state: SongTableState, mode: UpdateMode): Promise<void> => {
+			if (mode & UpdateMode.LOCAL_STATE) {
+				setSongTableState(state);
+			}
+			if (mode & UpdateMode.PERSIST) {
+				await repository.save(state);
+			}
+		},
+		[repository, setSongTableState],
+	);
 }
 
 /**
@@ -74,5 +74,5 @@ export function useUpdateSongTableState() {
  * @returns Function to call to refresh a state.
  */
 export function useRefreshSongTableState(): () => void {
-  return useResetAtom(songTableStateAtom);
+	return useResetAtom(songTableStateAtom);
 }

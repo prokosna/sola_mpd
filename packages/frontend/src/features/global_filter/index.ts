@@ -3,6 +3,6 @@ export { GlobalFilterBox } from "./components/GlobalFilterBox";
 
 // Utils
 export {
-  filterSongsByGlobalFilter,
-  filterStringsByGlobalFilter,
+	filterSongsByGlobalFilter,
+	filterStringsByGlobalFilter,
 } from "./utils/globalFilterUtils";

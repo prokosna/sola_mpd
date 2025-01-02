@@ -1,8 +1,8 @@
-import { Song } from "@sola_mpd/domain/src/models/song_pb.js";
-import { SelectionChangedEvent } from "ag-grid-community";
+import type { Song } from "@sola_mpd/domain/src/models/song_pb.js";
+import type { SelectionChangedEvent } from "ag-grid-community";
 import { useCallback } from "react";
 
-import { SongTableKey } from "../types/songTableTypes";
+import type { SongTableKey } from "../types/songTableTypes";
 import { getSongsInTableFromGrid } from "../utils/songTableTableUtils";
 
 /**
@@ -17,19 +17,19 @@ import { getSongsInTableFromGrid } from "../utils/songTableTableUtils";
  * @returns Selection change handler
  */
 export function useHandleSelectionChange(
-  songsMap: Map<SongTableKey, Song>,
-  onSongsSelected: (selectedSongs: Song[]) => Promise<void>,
+	songsMap: Map<SongTableKey, Song>,
+	onSongsSelected: (selectedSongs: Song[]) => Promise<void>,
 ): (event: SelectionChangedEvent) => void {
-  return useCallback(
-    (event: SelectionChangedEvent) => {
-      const { api } = event;
-      const { selectedSortedSongs } = getSongsInTableFromGrid(
-        undefined,
-        api,
-        songsMap,
-      );
-      onSongsSelected(selectedSortedSongs);
-    },
-    [songsMap, onSongsSelected],
-  );
+	return useCallback(
+		(event: SelectionChangedEvent) => {
+			const { api } = event;
+			const { selectedSortedSongs } = getSongsInTableFromGrid(
+				undefined,
+				api,
+				songsMap,
+			);
+			onSongsSelected(selectedSortedSongs);
+		},
+		[songsMap, onSongsSelected],
+	);
 }

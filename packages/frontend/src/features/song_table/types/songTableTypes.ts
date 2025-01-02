@@ -1,7 +1,7 @@
-import { Song } from "@sola_mpd/domain/src/models/song_pb.js";
-import { SongTableColumn } from "@sola_mpd/domain/src/models/song_table_pb.js";
-import { SuppressKeyboardEventParams } from "ag-grid-community";
-import { CustomCellRendererProps } from "ag-grid-react";
+import type { Song } from "@sola_mpd/domain/src/models/song_pb.js";
+import type { SongTableColumn } from "@sola_mpd/domain/src/models/song_table_pb.js";
+import type { SuppressKeyboardEventParams } from "ag-grid-community";
+import type { CustomCellRendererProps } from "ag-grid-react";
 
 /**
  * Key type for song table row identification.
@@ -12,9 +12,9 @@ import { CustomCellRendererProps } from "ag-grid-react";
  * - ID: Song unique identifier
  */
 export enum SongTableKeyType {
-  PATH = "PATH",
-  INDEX_PATH = "INDEX_PATH",
-  ID = "ID",
+	PATH = "PATH",
+	INDEX_PATH = "INDEX_PATH",
+	ID = "ID",
 }
 
 /**
@@ -39,8 +39,8 @@ export const SONGS_TAG_COMPACT = "songs";
  * space-efficient display in compact view mode.
  */
 export type SongTableRowCompact = {
-  firstLine: string;
-  secondLine: string;
+	firstLine: string;
+	secondLine: string;
 };
 
 /**
@@ -50,11 +50,11 @@ export type SongTableRowCompact = {
  * in song table cells, including compact view format.
  */
 export type SongTableRowValue =
-  | string
-  | number
-  | Date
-  | SongTableRowCompact
-  | undefined;
+	| string
+	| number
+	| Date
+	| SongTableRowCompact
+	| undefined;
 
 /**
  * Song table cell key-value pair.
@@ -71,7 +71,7 @@ export type SongTableRowKeyValue = [string, SongTableRowValue];
  * key and all cell values mapped by field names.
  */
 export type SongTableRowData = {
-  [tag: string]: SongTableRowValue;
+	[tag: string]: SongTableRowValue;
 };
 
 /**
@@ -81,19 +81,19 @@ export type SongTableRowData = {
  * drag-and-drop, sorting, and custom rendering options.
  */
 export type SongTableColumnDefinition = {
-  field: string;
-  rowDrag?: boolean;
-  flex: number;
-  resizable: boolean;
-  sortable: boolean;
-  tooltipField?: string;
-  sort?: "asc" | "desc" | null;
-  sortIndex?: number;
-  cellDataType?: boolean;
-  checkboxSelection: boolean;
-  headerCheckboxSelection: boolean;
-  suppressKeyboardEvent: (params: SuppressKeyboardEventParams) => boolean;
-  cellRenderer?: (props: CustomCellRendererProps) => JSX.Element;
+	field: string;
+	rowDrag?: boolean;
+	flex: number;
+	resizable: boolean;
+	sortable: boolean;
+	tooltipField?: string;
+	sort?: "asc" | "desc" | null;
+	sortIndex?: number;
+	cellDataType?: boolean;
+	checkboxSelection: boolean;
+	headerCheckboxSelection: boolean;
+	suppressKeyboardEvent: (params: SuppressKeyboardEventParams) => boolean;
+	cellRenderer?: (props: CustomCellRendererProps) => JSX.Element;
 };
 
 /**
@@ -103,9 +103,9 @@ export type SongTableColumnDefinition = {
  * including selected songs, for table operations.
  */
 export type SongsInTable = {
-  clickedSong: Song | undefined;
-  sortedSongs: Song[];
-  selectedSortedSongs: Song[];
+	clickedSong: Song | undefined;
+	sortedSongs: Song[];
+	selectedSortedSongs: Song[];
 };
 
 /**
@@ -115,8 +115,8 @@ export type SongsInTable = {
  * access to table state and selected songs.
  */
 export type SongTableContextMenuItemParams = {
-  columns: SongTableColumn[];
-  clickedSong: Song;
-  sortedSongs: Song[];
-  selectedSortedSongs: Song[];
+	columns: SongTableColumn[];
+	clickedSong: Song;
+	sortedSongs: Song[];
+	selectedSortedSongs: Song[];
 };

@@ -17,20 +17,20 @@ import { ROUTE_HOME_SETTINGS } from "../../../const/routes";
  * ```
  */
 export function SettingsEntryButton() {
-  const navigate = useNavigate();
+	const navigate = useNavigate();
 
-  return (
-    <>
-      <Button
-        m={0}
-        p={0}
-        variant={"ghost"}
-        onClick={() => {
-          navigate(ROUTE_HOME_SETTINGS);
-        }}
-      >
-        <Icon as={IoSettings} fontSize={24} />
-      </Button>
-    </>
-  );
+	return (
+		<>
+			<Button
+				m={0}
+				p={0}
+				variant={"ghost"}
+				onClick={() => {
+					navigate(ROUTE_HOME_SETTINGS);
+				}}
+			>
+				<Icon as={IoSettings} fontSize={24} />
+			</Button>
+		</>
+	);
 }

@@ -7,9 +7,9 @@ import { currentMpdProfileSyncAtom } from "../../profile/states/mpdProfileState"
 const isPlayQueueLoadingAtom = atom(true);
 
 const setPlayQueueLoadingTrueEffectAtom = atomEffect((get, set) => {
-  get(mpdClientAtom);
-  get(currentMpdProfileSyncAtom);
-  set(isPlayQueueLoadingAtom, true);
+	get(mpdClientAtom);
+	get(currentMpdProfileSyncAtom);
+	set(isPlayQueueLoadingAtom, true);
 });
 
 /**
@@ -21,8 +21,8 @@ const setPlayQueueLoadingTrueEffectAtom = atomEffect((get, set) => {
  * @returns Current loading state
  */
 export function useIsPlayQueueLoadingState(): boolean {
-  useAtom(setPlayQueueLoadingTrueEffectAtom);
-  return useAtomValue(isPlayQueueLoadingAtom);
+	useAtom(setPlayQueueLoadingTrueEffectAtom);
+	return useAtomValue(isPlayQueueLoadingAtom);
 }
 
 /**
@@ -31,5 +31,5 @@ export function useIsPlayQueueLoadingState(): boolean {
  * @returns Loading state setter function
  */
 export function useSetIsPlayQueueLoadingState() {
-  return useSetAtom(isPlayQueueLoadingAtom);
+	return useSetAtom(isPlayQueueLoadingAtom);
 }

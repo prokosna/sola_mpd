@@ -12,14 +12,14 @@ import { fetchOutputDevices } from "../utils/outputDeviceUtils";
  * Fetches and manages device state.
  */
 const outputDevicesAtom = atomWithRefresh(async (get) => {
-  const mpdClient = get(mpdClientAtom);
-  const profile = get(currentMpdProfileSyncAtom);
+	const mpdClient = get(mpdClientAtom);
+	const profile = get(currentMpdProfileSyncAtom);
 
-  if (profile === undefined) {
-    return undefined;
-  }
+	if (profile === undefined) {
+		return undefined;
+	}
 
-  return await fetchOutputDevices(mpdClient, profile);
+	return await fetchOutputDevices(mpdClient, profile);
 });
 
 /**
@@ -37,7 +37,7 @@ const outputDevicesSyncAtom = atomWithSync(outputDevicesAtom);
  * @returns Current devices or undefined
  */
 export function useOutputDevicesState() {
-  return useAtomValue(outputDevicesSyncAtom);
+	return useAtomValue(outputDevicesSyncAtom);
 }
 
 /**
@@ -48,8 +48,8 @@ export function useOutputDevicesState() {
  * @returns Enabled device or undefined
  */
 export function useEnabledOutputDeviceState() {
-  const outputDevices = useAtomValue(outputDevicesSyncAtom);
-  return outputDevices?.find((device) => device.isEnabled);
+	const outputDevices = useAtomValue(outputDevicesSyncAtom);
+	return outputDevices?.find((device) => device.isEnabled);
 }
 
 /**
@@ -60,5 +60,5 @@ export function useEnabledOutputDeviceState() {
  * @returns Refresh function
  */
 export function useRefreshOutputDevicesState() {
-  return useSetAtom(outputDevicesAtom);
+	return useSetAtom(outputDevicesAtom);
 }

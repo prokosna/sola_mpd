@@ -1,7 +1,7 @@
-import { Song } from "@sola_mpd/domain/src/models/song_pb.js";
+import type { Song } from "@sola_mpd/domain/src/models/song_pb.js";
 import { useMemo } from "react";
 
-import { CardStatsNumberProps } from "../components/CardStatsNumber";
+import type { CardStatsNumberProps } from "../components/CardStatsNumber";
 import { useStatsState } from "../states/statsState";
 
 /**
@@ -12,24 +12,24 @@ import { useStatsState } from "../states/statsState";
  * @returns CardStatsNumberProps object containing song statistics.
  */
 export function useSongStatsProps(
-  showSelectedStats: boolean,
-  selectedSongs: Song[],
+	showSelectedStats: boolean,
+	selectedSongs: Song[],
 ): CardStatsNumberProps {
-  const stats = useStatsState();
+	const stats = useStatsState();
 
-  const count = useMemo(() => {
-    if (stats === undefined) {
-      return undefined;
-    }
-    if (showSelectedStats) {
-      return selectedSongs.length;
-    }
-    return stats.songsCount;
-  }, [showSelectedStats, selectedSongs.length, stats]);
+	const count = useMemo(() => {
+		if (stats === undefined) {
+			return undefined;
+		}
+		if (showSelectedStats) {
+			return selectedSongs.length;
+		}
+		return stats.songsCount;
+	}, [showSelectedStats, selectedSongs.length, stats]);
 
-  return {
-    isSelected: showSelectedStats,
-    label: showSelectedStats ? "Selected Songs" : "Total Songs",
-    count,
-  };
+	return {
+		isSelected: showSelectedStats,
+		label: showSelectedStats ? "Selected Songs" : "Total Songs",
+		count,
+	};
 }

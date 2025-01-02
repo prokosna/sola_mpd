@@ -1,10 +1,10 @@
 import { useMemo } from "react";
 
-import { TreeNode } from "../../../lib/chakra/types/treeViewTypes";
+import type { TreeNode } from "../../../lib/chakra/types/treeViewTypes";
 import {
-  useFileExploreFoldersState,
-  useSelectedFileExploreFolderState,
-  useSetSelectedFileExploreFolderState,
+	useFileExploreFoldersState,
+	useSelectedFileExploreFolderState,
+	useSetSelectedFileExploreFolderState,
 } from "../states/fileExploreFoldersState";
 
 /**
@@ -18,8 +18,8 @@ import {
  * @property selectedId - Currently selected folder path
  */
 export type FileExploreTreeViewProps = {
-  nodes: TreeNode[];
-  selectedId?: string;
+	nodes: TreeNode[];
+	selectedId?: string;
 };
 
 /**
@@ -40,53 +40,53 @@ export type FileExploreTreeViewProps = {
  * @returns Root-level tree nodes or undefined if loading
  */
 export function useFileExploreTreeViewNodes() {
-  const fileExploreFolders = useFileExploreFoldersState();
-  const selectedFolder = useSelectedFileExploreFolderState();
-  const setSelectedFileExploreFolder = useSetSelectedFileExploreFolderState();
+	const fileExploreFolders = useFileExploreFoldersState();
+	const selectedFolder = useSelectedFileExploreFolderState();
+	const setSelectedFileExploreFolder = useSetSelectedFileExploreFolderState();
 
-  const treeNodes = useMemo(() => {
-    if (fileExploreFolders === undefined) return undefined;
+	const treeNodes = useMemo(() => {
+		if (fileExploreFolders === undefined) return undefined;
 
-    const nodeMap = new Map<string, TreeNode>();
+		const nodeMap = new Map<string, TreeNode>();
 
-    fileExploreFolders.forEach((node) => {
-      const elements = node.path.split("/");
-      const label = elements[elements.length - 1];
-      nodeMap.set(node.path, {
-        id: node.path,
-        label,
-        children: [],
-        isSelected: node.path === selectedFolder?.path,
-        onClick: async (id) => {
-          const folder = fileExploreFolders.find((f) => f.path === id);
-          if (folder !== undefined) {
-            setSelectedFileExploreFolder(folder);
-          }
-        },
-      });
-    });
+		for (const node of fileExploreFolders) {
+			const elements = node.path.split("/");
+			const label = elements[elements.length - 1];
+			nodeMap.set(node.path, {
+				id: node.path,
+				label,
+				children: [],
+				isSelected: node.path === selectedFolder?.path,
+				onClick: async (id) => {
+					const folder = fileExploreFolders.find((f) => f.path === id);
+					if (folder !== undefined) {
+						setSelectedFileExploreFolder(folder);
+					}
+				},
+			});
+		}
 
-    fileExploreFolders.forEach((node) => {
-      const elements = node.path.split("/");
-      if (elements.length > 1) {
-        const parentPath = elements.slice(0, -1).join("/");
-        if (nodeMap.has(parentPath)) {
-          const parent = nodeMap.get(parentPath);
-          const current = nodeMap.get(node.path);
-          if (parent && current) {
-            parent.children.push(current);
-          }
-        }
-      }
-    });
+		for (const node of fileExploreFolders) {
+			const elements = node.path.split("/");
+			if (elements.length > 1) {
+				const parentPath = elements.slice(0, -1).join("/");
+				if (nodeMap.has(parentPath)) {
+					const parent = nodeMap.get(parentPath);
+					const current = nodeMap.get(node.path);
+					if (parent && current) {
+						parent.children.push(current);
+					}
+				}
+			}
+		}
 
-    return fileExploreFolders
-      .filter((node) => !node.path.includes("/"))
-      .map((node) => nodeMap.get(node.path))
-      .filter((node): node is TreeNode => node !== undefined);
-  }, [fileExploreFolders, selectedFolder, setSelectedFileExploreFolder]);
+		return fileExploreFolders
+			.filter((node) => !node.path.includes("/"))
+			.map((node) => nodeMap.get(node.path))
+			.filter((node): node is TreeNode => node !== undefined);
+	}, [fileExploreFolders, selectedFolder, setSelectedFileExploreFolder]);
 
-  if (treeNodes === undefined) return undefined;
+	if (treeNodes === undefined) return undefined;
 
-  return treeNodes;
+	return treeNodes;
 }

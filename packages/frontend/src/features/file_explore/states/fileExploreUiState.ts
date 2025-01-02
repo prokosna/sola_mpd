@@ -14,8 +14,8 @@ const isFileExploreLoadingAtom = atom(true);
  * when selected folder changes.
  */
 const setFileExploreLoadingTrueEffectAtom = atomEffect((get, set) => {
-  get(selectedFileExploreFolderAtom);
-  set(isFileExploreLoadingAtom, true);
+	get(selectedFileExploreFolderAtom);
+	set(isFileExploreLoadingAtom, true);
 });
 
 /**
@@ -29,8 +29,8 @@ const setFileExploreLoadingTrueEffectAtom = atomEffect((get, set) => {
  * @returns Current loading state
  */
 export function useIsFileExploreLoadingState(): boolean {
-  useAtom(setFileExploreLoadingTrueEffectAtom);
-  return useAtomValue(isFileExploreLoadingAtom);
+	useAtom(setFileExploreLoadingTrueEffectAtom);
+	return useAtomValue(isFileExploreLoadingAtom);
 }
 
 /**
@@ -44,5 +44,5 @@ export function useIsFileExploreLoadingState(): boolean {
  * @returns Function to update loading state
  */
 export function useSetIsFileExploreLoadingState() {
-  return useSetAtom(isFileExploreLoadingAtom);
+	return useSetAtom(isFileExploreLoadingAtom);
 }

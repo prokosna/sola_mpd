@@ -1,4 +1,4 @@
-import { LayoutState } from "@sola_mpd/domain/src/models/layout_pb.js";
+import type { LayoutState } from "@sola_mpd/domain/src/models/layout_pb.js";
 
 /**
  * Repository interface for layout state persistence.
@@ -41,6 +41,6 @@ import { LayoutState } from "@sola_mpd/domain/src/models/layout_pb.js";
  * ```
  */
 export interface LayoutStateRepository {
-  fetch: () => Promise<LayoutState>;
-  save: (layoutState: LayoutState) => Promise<void>;
+	fetch: () => Promise<LayoutState>;
+	save: (layoutState: LayoutState) => Promise<void>;
 }

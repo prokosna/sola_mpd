@@ -1,4 +1,4 @@
-import { Song } from "@sola_mpd/domain/src/models/song_pb.js";
+import type { Song } from "@sola_mpd/domain/src/models/song_pb.js";
 import { useMemo } from "react";
 
 /**
@@ -7,10 +7,10 @@ import { useMemo } from "react";
  * @returns Songs with the index field filled.
  */
 export function useSongsWithIndex(songs: Song[]): Song[] {
-  return useMemo(() => {
-    return songs.map((song, index) => {
-      song.index = index;
-      return song;
-    });
-  }, [songs]);
+	return useMemo(() => {
+		return songs.map((song, index) => {
+			song.index = index;
+			return song;
+		});
+	}, [songs]);
 }

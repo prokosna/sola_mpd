@@ -19,16 +19,16 @@ import { fetchPlayQueueSongs } from "../utils/playQueueSongsUtils";
  * is selected.
  */
 const playQueueSongsAtom = atomWithRefresh(async (get) => {
-  const mpdClient = get(mpdClientAtom);
-  const profile = get(currentMpdProfileSyncAtom);
+	const mpdClient = get(mpdClientAtom);
+	const profile = get(currentMpdProfileSyncAtom);
 
-  if (profile === undefined) {
-    return undefined;
-  }
+	if (profile === undefined) {
+		return undefined;
+	}
 
-  const songs = await fetchPlayQueueSongs(mpdClient, profile);
+	const songs = await fetchPlayQueueSongs(mpdClient, profile);
 
-  return songs;
+	return songs;
 });
 
 /**
@@ -47,26 +47,26 @@ const playQueueSongsSyncAtom = atomWithSync(playQueueSongsAtom);
  * dependencies change.
  */
 const playQueueVisibleSongsSyncAtom = atom((get) => {
-  const playQueueSongs = get(playQueueSongsSyncAtom);
-  const songTableState = get(songTableStateSyncAtom);
-  const globalFilterTokens = get(globalFilterTokensAtom);
-  const pathname = get(pathnameAtom);
+	const playQueueSongs = get(playQueueSongsSyncAtom);
+	const songTableState = get(songTableStateSyncAtom);
+	const globalFilterTokens = get(globalFilterTokensAtom);
+	const pathname = get(pathnameAtom);
 
-  if (
-    pathname !== ROUTE_HOME_PLAY_QUEUE ||
-    playQueueSongs === undefined ||
-    songTableState === undefined
-  ) {
-    return undefined;
-  }
+	if (
+		pathname !== ROUTE_HOME_PLAY_QUEUE ||
+		playQueueSongs === undefined ||
+		songTableState === undefined
+	) {
+		return undefined;
+	}
 
-  const filteredSongs = filterSongsByGlobalFilter(
-    playQueueSongs,
-    globalFilterTokens,
-    songTableState.columns,
-  );
+	const filteredSongs = filterSongsByGlobalFilter(
+		playQueueSongs,
+		globalFilterTokens,
+		songTableState.columns,
+	);
 
-  return filteredSongs;
+	return filteredSongs;
 });
 
 /**
@@ -78,7 +78,7 @@ const playQueueVisibleSongsSyncAtom = atom((get) => {
  * @returns Filtered songs array or undefined
  */
 export function usePlayQueueSongsState() {
-  return useAtomValue(playQueueVisibleSongsSyncAtom);
+	return useAtomValue(playQueueVisibleSongsSyncAtom);
 }
 
 /**
@@ -90,5 +90,5 @@ export function usePlayQueueSongsState() {
  * @returns Refresh function
  */
 export function useRefreshPlayQueueSongsState() {
-  return useSetAtom(playQueueSongsAtom);
+	return useSetAtom(playQueueSongsAtom);
 }

@@ -1,14 +1,14 @@
 import { MpdRequest } from "@sola_mpd/domain/src/models/mpd/mpd_command_pb.js";
-import { MpdProfile } from "@sola_mpd/domain/src/models/mpd/mpd_profile_pb.js";
-import { Song } from "@sola_mpd/domain/src/models/song_pb.js";
-import { MutableRefObject } from "react";
+import type { MpdProfile } from "@sola_mpd/domain/src/models/mpd/mpd_profile_pb.js";
+import type { Song } from "@sola_mpd/domain/src/models/song_pb.js";
+import type { MutableRefObject } from "react";
 
-import { NotificationParams } from "../../../lib/chakra/hooks/useNotification";
-import { ContextMenuItem } from "../../context_menu";
-import { MpdClient } from "../../mpd";
-import {
-  SongTableContextMenuItemParams,
-  SongTableKeyType,
+import type { NotificationParams } from "../../../lib/chakra/hooks/useNotification";
+import type { ContextMenuItem } from "../../context_menu";
+import type { MpdClient } from "../../mpd";
+import type {
+	SongTableContextMenuItemParams,
+	SongTableKeyType,
 } from "../types/songTableTypes";
 
 import { getTargetSongsForContextMenu } from "./songTableTableUtils";
@@ -27,48 +27,48 @@ import { getTargetSongsForContextMenu } from "./songTableTableUtils";
  * @returns Context menu item
  */
 export function getSongTableContextMenuAdd(
-  songTableKeyType: SongTableKeyType,
-  showNotification: (params: NotificationParams) => void,
-  profile?: MpdProfile,
-  mpdClient?: MpdClient,
+	songTableKeyType: SongTableKeyType,
+	showNotification: (params: NotificationParams) => void,
+	profile?: MpdProfile,
+	mpdClient?: MpdClient,
 ): ContextMenuItem<SongTableContextMenuItemParams> {
-  return {
-    name: "Add",
-    onClick: async (params?: SongTableContextMenuItemParams): Promise<void> => {
-      if (
-        params === undefined ||
-        mpdClient === undefined ||
-        profile === undefined
-      ) {
-        return;
-      }
-      const targetSongs = getTargetSongsForContextMenu(
-        params,
-        songTableKeyType,
-      );
-      if (targetSongs.length === 0) {
-        return;
-      }
-      const commands = targetSongs.map(
-        (song) =>
-          new MpdRequest({
-            profile,
-            command: {
-              case: "add",
-              value: {
-                uri: song.path,
-              },
-            },
-          }),
-      );
-      await mpdClient.commandBulk(commands);
-      showNotification({
-        status: "success",
-        title: "Added songs to queue",
-        description: `${targetSongs.length} songs have been added to the play queue.`,
-      });
-    },
-  };
+	return {
+		name: "Add",
+		onClick: async (params?: SongTableContextMenuItemParams): Promise<void> => {
+			if (
+				params === undefined ||
+				mpdClient === undefined ||
+				profile === undefined
+			) {
+				return;
+			}
+			const targetSongs = getTargetSongsForContextMenu(
+				params,
+				songTableKeyType,
+			);
+			if (targetSongs.length === 0) {
+				return;
+			}
+			const commands = targetSongs.map(
+				(song) =>
+					new MpdRequest({
+						profile,
+						command: {
+							case: "add",
+							value: {
+								uri: song.path,
+							},
+						},
+					}),
+			);
+			await mpdClient.commandBulk(commands);
+			showNotification({
+				status: "success",
+				title: "Added songs to queue",
+				description: `${targetSongs.length} songs have been added to the play queue.`,
+			});
+		},
+	};
 }
 
 /**
@@ -85,59 +85,59 @@ export function getSongTableContextMenuAdd(
  * @returns Context menu item
  */
 export function getSongTableContextMenuReplace(
-  songTableKeyType: SongTableKeyType,
-  showNotification: (params: NotificationParams) => void,
-  profile?: MpdProfile,
-  mpdClient?: MpdClient,
+	songTableKeyType: SongTableKeyType,
+	showNotification: (params: NotificationParams) => void,
+	profile?: MpdProfile,
+	mpdClient?: MpdClient,
 ): ContextMenuItem<SongTableContextMenuItemParams> {
-  return {
-    name: "Replace",
-    onClick: async (params?: SongTableContextMenuItemParams): Promise<void> => {
-      if (
-        params === undefined ||
-        mpdClient === undefined ||
-        profile === undefined
-      ) {
-        return;
-      }
-      const targetSongs = getTargetSongsForContextMenu(
-        params,
-        songTableKeyType,
-      );
-      if (targetSongs.length === 0) {
-        return;
-      }
-      const commands = [
-        new MpdRequest({
-          profile,
-          command: {
-            case: "clear",
-            value: {},
-          },
-        }),
-      ];
-      commands.push(
-        ...targetSongs.map(
-          (song) =>
-            new MpdRequest({
-              profile,
-              command: {
-                case: "add",
-                value: {
-                  uri: song.path,
-                },
-              },
-            }),
-        ),
-      );
-      await mpdClient.commandBulk(commands);
-      showNotification({
-        status: "success",
-        title: "Replaced queue with selected songs",
-        description: `The play queue has been replaced with ${targetSongs.length} songs.`,
-      });
-    },
-  };
+	return {
+		name: "Replace",
+		onClick: async (params?: SongTableContextMenuItemParams): Promise<void> => {
+			if (
+				params === undefined ||
+				mpdClient === undefined ||
+				profile === undefined
+			) {
+				return;
+			}
+			const targetSongs = getTargetSongsForContextMenu(
+				params,
+				songTableKeyType,
+			);
+			if (targetSongs.length === 0) {
+				return;
+			}
+			const commands = [
+				new MpdRequest({
+					profile,
+					command: {
+						case: "clear",
+						value: {},
+					},
+				}),
+			];
+			commands.push(
+				...targetSongs.map(
+					(song) =>
+						new MpdRequest({
+							profile,
+							command: {
+								case: "add",
+								value: {
+									uri: song.path,
+								},
+							},
+						}),
+				),
+			);
+			await mpdClient.commandBulk(commands);
+			showNotification({
+				status: "success",
+				title: "Replaced queue with selected songs",
+				description: `The play queue has been replaced with ${targetSongs.length} songs.`,
+			});
+		},
+	};
 }
 
 /**
@@ -153,27 +153,27 @@ export function getSongTableContextMenuReplace(
  * @returns Context menu item
  */
 export function getSongTableContextMenuAddToPlaylist(
-  songTableKeyType: SongTableKeyType,
-  songsToAddToPlaylistRef: MutableRefObject<Song[]>,
-  setIsPlaylistSelectModalOpen: (open: boolean) => void,
+	songTableKeyType: SongTableKeyType,
+	songsToAddToPlaylistRef: MutableRefObject<Song[]>,
+	setIsPlaylistSelectModalOpen: (open: boolean) => void,
 ): ContextMenuItem<SongTableContextMenuItemParams> {
-  return {
-    name: "Add to Playlist",
-    onClick: async (params?: SongTableContextMenuItemParams): Promise<void> => {
-      if (params === undefined) {
-        return;
-      }
-      const targetSongs = getTargetSongsForContextMenu(
-        params,
-        songTableKeyType,
-      );
-      if (targetSongs.length === 0) {
-        return;
-      }
-      songsToAddToPlaylistRef.current = targetSongs;
-      setIsPlaylistSelectModalOpen(true);
-    },
-  };
+	return {
+		name: "Add to Playlist",
+		onClick: async (params?: SongTableContextMenuItemParams): Promise<void> => {
+			if (params === undefined) {
+				return;
+			}
+			const targetSongs = getTargetSongsForContextMenu(
+				params,
+				songTableKeyType,
+			);
+			if (targetSongs.length === 0) {
+				return;
+			}
+			songsToAddToPlaylistRef.current = targetSongs;
+			setIsPlaylistSelectModalOpen(true);
+		},
+	};
 }
 
 /**
@@ -186,12 +186,12 @@ export function getSongTableContextMenuAddToPlaylist(
  * @returns Context menu item
  */
 export function getSongTableContextMenuEditColumns(
-  setIsColumnEditModalOpen: (open: boolean) => void,
+	setIsColumnEditModalOpen: (open: boolean) => void,
 ): ContextMenuItem<SongTableContextMenuItemParams> {
-  return {
-    name: "Edit Columns",
-    onClick: async (): Promise<void> => {
-      setIsColumnEditModalOpen(true);
-    },
-  };
+	return {
+		name: "Edit Columns",
+		onClick: async (): Promise<void> => {
+			setIsColumnEditModalOpen(true);
+		},
+	};
 }

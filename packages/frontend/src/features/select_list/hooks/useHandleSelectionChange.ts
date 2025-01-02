@@ -1,7 +1,7 @@
-import { SelectionChangedEvent } from "ag-grid-community";
+import type { SelectionChangedEvent } from "ag-grid-community";
 import { useCallback } from "react";
 
-import { SelectListRowValue } from "../types/selectListTypes";
+import type { SelectListRowValue } from "../types/selectListTypes";
 
 /**
  * Handle AG Grid selection changes.
@@ -10,20 +10,20 @@ import { SelectListRowValue } from "../types/selectListTypes";
  * @returns Selection change handler
  */
 export function useHandleSelectionChange(
-  onItemsSelected: (selectedValues: SelectListRowValue[]) => Promise<void>,
+	onItemsSelected: (selectedValues: SelectListRowValue[]) => Promise<void>,
 ) {
-  return useCallback(
-    (event: SelectionChangedEvent) => {
-      const { api } = event;
+	return useCallback(
+		(event: SelectionChangedEvent) => {
+			const { api } = event;
 
-      const selectedValues: SelectListRowValue[] = [];
-      api.forEachNodeAfterFilterAndSort((node) => {
-        if (node.isSelected()) {
-          selectedValues.push(node.data.key);
-        }
-      });
-      onItemsSelected(selectedValues);
-    },
-    [onItemsSelected],
-  );
+			const selectedValues: SelectListRowValue[] = [];
+			api.forEachNodeAfterFilterAndSort((node) => {
+				if (node.isSelected()) {
+					selectedValues.push(node.data.key);
+				}
+			});
+			onItemsSelected(selectedValues);
+		},
+		[onItemsSelected],
+	);
 }

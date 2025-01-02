@@ -1,4 +1,4 @@
-import { Search } from "@sola_mpd/domain/src/models/search_pb.js";
+import type { Search } from "@sola_mpd/domain/src/models/search_pb.js";
 import { atom, useAtomValue, useSetAtom } from "jotai";
 import { atomWithRefresh } from "jotai/utils";
 
@@ -26,20 +26,20 @@ const targetSearchAtom = atom<Search | undefined>(undefined);
  * Fetches and stores matching songs.
  */
 const searchSongsAtom = atomWithRefresh(async (get) => {
-  const mpdClient = get(mpdClientAtom);
-  const profile = get(currentMpdProfileSyncAtom);
-  const search = get(targetSearchAtom);
+	const mpdClient = get(mpdClientAtom);
+	const profile = get(currentMpdProfileSyncAtom);
+	const search = get(targetSearchAtom);
 
-  if (profile === undefined) {
-    return undefined;
-  }
-  if (search === undefined) {
-    return [];
-  }
+	if (profile === undefined) {
+		return undefined;
+	}
+	if (search === undefined) {
+		return [];
+	}
 
-  const songs = await fetchSearchSongs(mpdClient, profile, search);
+	const songs = await fetchSearchSongs(mpdClient, profile, search);
 
-  return songs;
+	return songs;
 });
 
 /**
@@ -65,22 +65,22 @@ const searchSongsSyncAtom = atomWithSync(searchSongsAtom);
  * - Column-based filtering
  */
 const searchVisibleSongsSyncAtom = atom((get) => {
-  const searchSongs = get(searchSongsSyncAtom);
-  const editingSearch = get(editingSearchAtom);
-  const globalFilterTokens = get(globalFilterTokensAtom);
-  const pathname = get(pathnameAtom);
+	const searchSongs = get(searchSongsSyncAtom);
+	const editingSearch = get(editingSearchAtom);
+	const globalFilterTokens = get(globalFilterTokensAtom);
+	const pathname = get(pathnameAtom);
 
-  if (pathname !== ROUTE_HOME_SEARCH || searchSongs === undefined) {
-    return undefined;
-  }
+	if (pathname !== ROUTE_HOME_SEARCH || searchSongs === undefined) {
+		return undefined;
+	}
 
-  const filteredSongs = filterSongsByGlobalFilter(
-    searchSongs,
-    globalFilterTokens,
-    editingSearch.columns,
-  );
+	const filteredSongs = filterSongsByGlobalFilter(
+		searchSongs,
+		globalFilterTokens,
+		editingSearch.columns,
+	);
 
-  return filteredSongs;
+	return filteredSongs;
 });
 
 /**
@@ -91,7 +91,7 @@ const searchVisibleSongsSyncAtom = atom((get) => {
  * @returns Current target search
  */
 export function useTargetSearchState() {
-  return useAtomValue(targetSearchAtom);
+	return useAtomValue(targetSearchAtom);
 }
 
 /**
@@ -102,7 +102,7 @@ export function useTargetSearchState() {
  * @returns Update function
  */
 export function useSetTargetSearchState() {
-  return useSetAtom(targetSearchAtom);
+	return useSetAtom(targetSearchAtom);
 }
 
 /**
@@ -113,7 +113,7 @@ export function useSetTargetSearchState() {
  * @returns Filtered song list
  */
 export function useSearchSongsState() {
-  return useAtomValue(searchVisibleSongsSyncAtom);
+	return useAtomValue(searchVisibleSongsSyncAtom);
 }
 
 /**
@@ -124,5 +124,5 @@ export function useSearchSongsState() {
  * @returns Refresh function
  */
 export function useRefreshSearchSongsState() {
-  return useSetAtom(searchSongsAtom);
+	return useSetAtom(searchSongsAtom);
 }

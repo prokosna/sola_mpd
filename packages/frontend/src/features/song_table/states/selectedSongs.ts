@@ -1,4 +1,4 @@
-import { Song } from "@sola_mpd/domain/src/models/song_pb.js";
+import type { Song } from "@sola_mpd/domain/src/models/song_pb.js";
 import { atom, useAtomValue, useSetAtom } from "jotai";
 import { useCallback } from "react";
 
@@ -19,8 +19,8 @@ const selectedSongsAtom = atom<Song[]>([]);
  * @returns Selected song list
  */
 export function useSelectedSongsState(): Song[] {
-  const selectedSongs = useAtomValue(selectedSongsAtom);
-  return selectedSongs;
+	const selectedSongs = useAtomValue(selectedSongsAtom);
+	return selectedSongs;
 }
 
 /**
@@ -33,12 +33,12 @@ export function useSelectedSongsState(): Song[] {
  * @returns Selection update function
  */
 export function useSetSelectedSongsState(): (songs: Song[]) => void {
-  const setSelectedSongs = useSetAtom(selectedSongsAtom);
+	const setSelectedSongs = useSetAtom(selectedSongsAtom);
 
-  return useCallback(
-    (songs: Song[]) => {
-      setSelectedSongs(songs);
-    },
-    [setSelectedSongs],
-  );
+	return useCallback(
+		(songs: Song[]) => {
+			setSelectedSongs(songs);
+		},
+		[setSelectedSongs],
+	);
 }

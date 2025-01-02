@@ -12,31 +12,31 @@ import { songTableStateSyncAtom } from "../../song_table/states/songTableState";
 import { fetchRecentlyAddedSongs } from "../utils/recentlyAddedSongsUtils";
 
 import {
-  recentlyAddedFiltersSyncAtom,
-  recentlyAddedSelectedFilterValuesAtom,
+	recentlyAddedFiltersSyncAtom,
+	recentlyAddedSelectedFilterValuesAtom,
 } from "./recentlyAddedFiltersState";
 
 /**
  * Recently added songs management.
  */
 const recentlyAddedSongsAtom = atomWithRefresh(async (get) => {
-  const mpdClient = get(mpdClientAtom);
-  const currentMpdProfile = get(currentMpdProfileSyncAtom);
-  const recentlyAddedFilters = get(recentlyAddedFiltersSyncAtom);
-  const selectedFilterValuesMap = get(recentlyAddedSelectedFilterValuesAtom);
+	const mpdClient = get(mpdClientAtom);
+	const currentMpdProfile = get(currentMpdProfileSyncAtom);
+	const recentlyAddedFilters = get(recentlyAddedFiltersSyncAtom);
+	const selectedFilterValuesMap = get(recentlyAddedSelectedFilterValuesAtom);
 
-  if (currentMpdProfile === undefined || recentlyAddedFilters === undefined) {
-    return undefined;
-  }
+	if (currentMpdProfile === undefined || recentlyAddedFilters === undefined) {
+		return undefined;
+	}
 
-  const songs = await fetchRecentlyAddedSongs(
-    mpdClient,
-    currentMpdProfile,
-    recentlyAddedFilters,
-    selectedFilterValuesMap,
-  );
+	const songs = await fetchRecentlyAddedSongs(
+		mpdClient,
+		currentMpdProfile,
+		recentlyAddedFilters,
+		selectedFilterValuesMap,
+	);
 
-  return songs;
+	return songs;
 });
 
 /**
@@ -50,26 +50,26 @@ const recentlyAddedSongsSyncAtom = atomWithSync(recentlyAddedSongsAtom);
  * @returns Filtered songs
  */
 const recentlyAddedVisibleSongsSyncAtom = atom((get) => {
-  const recentlyAddedSongs = get(recentlyAddedSongsSyncAtom);
-  const songTableState = get(songTableStateSyncAtom);
-  const globalFilterTokens = get(globalFilterTokensAtom);
-  const pathname = get(pathnameAtom);
+	const recentlyAddedSongs = get(recentlyAddedSongsSyncAtom);
+	const songTableState = get(songTableStateSyncAtom);
+	const globalFilterTokens = get(globalFilterTokensAtom);
+	const pathname = get(pathnameAtom);
 
-  if (
-    pathname !== ROUTE_HOME_RECENTLY_ADDED ||
-    recentlyAddedSongs === undefined ||
-    songTableState === undefined
-  ) {
-    return undefined;
-  }
+	if (
+		pathname !== ROUTE_HOME_RECENTLY_ADDED ||
+		recentlyAddedSongs === undefined ||
+		songTableState === undefined
+	) {
+		return undefined;
+	}
 
-  const filteredSongs = filterSongsByGlobalFilter(
-    recentlyAddedSongs,
-    globalFilterTokens,
-    songTableState.columns,
-  );
+	const filteredSongs = filterSongsByGlobalFilter(
+		recentlyAddedSongs,
+		globalFilterTokens,
+		songTableState.columns,
+	);
 
-  return filteredSongs;
+	return filteredSongs;
 });
 
 /**
@@ -78,7 +78,7 @@ const recentlyAddedVisibleSongsSyncAtom = atom((get) => {
  * @returns Filtered songs
  */
 export function useRecentlyAddedSongsState() {
-  return useAtomValue(recentlyAddedVisibleSongsSyncAtom);
+	return useAtomValue(recentlyAddedVisibleSongsSyncAtom);
 }
 
 /**
@@ -87,5 +87,5 @@ export function useRecentlyAddedSongsState() {
  * @returns Refresh function
  */
 export function useRefreshRecentlyAddedSongsState() {
-  return useSetAtom(recentlyAddedSongsAtom);
+	return useSetAtom(recentlyAddedSongsAtom);
 }

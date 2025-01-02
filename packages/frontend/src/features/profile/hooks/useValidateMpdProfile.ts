@@ -5,8 +5,8 @@ import { useCallback } from "react";
 
 import { useMpdClientState } from "../../mpd";
 import { useMpdProfileState } from "../states/mpdProfileState";
-import { ProfileInput } from "../types/profileTypes";
-import { ValidationResult } from "../types/validationTypes";
+import type { ProfileInput } from "../types/profileTypes";
+import type { ValidationResult } from "../types/validationTypes";
 import { createValidationResult } from "../utils/validationUtils";
 
 /**
@@ -15,58 +15,58 @@ import { createValidationResult } from "../utils/validationUtils";
  * @returns Profile validation function
  */
 export function useValidateMpdProfile() {
-  const mpdClient = useMpdClientState();
-  const mpdProfileState = useMpdProfileState();
+	const mpdClient = useMpdClientState();
+	const mpdProfileState = useMpdProfileState();
 
-  return useCallback(
-    async (input: ProfileInput): Promise<ValidationResult> => {
-      if (mpdClient === undefined) {
-        return createValidationResult(
-          false,
-          "MpdClient is not ready. Please make sure the background app is running.",
-        );
-      }
+	return useCallback(
+		async (input: ProfileInput): Promise<ValidationResult> => {
+			if (mpdClient === undefined) {
+				return createValidationResult(
+					false,
+					"MpdClient is not ready. Please make sure the background app is running.",
+				);
+			}
 
-      if (
-        mpdProfileState?.profiles
-          .map((profile) => profile.name)
-          .includes(input.name)
-      ) {
-        return createValidationResult(false, `${input.name} is already used.`);
-      }
+			if (
+				mpdProfileState?.profiles
+					.map((profile) => profile.name)
+					.includes(input.name)
+			) {
+				return createValidationResult(false, `${input.name} is already used.`);
+			}
 
-      try {
-        const res = await mpdClient.command(
-          new MpdRequest({
-            profile: new MpdProfile({
-              name: input.name,
-              host: input.host,
-              port: input.port,
-            }),
-            command: {
-              case: "ping",
-              value: {},
-            },
-          }),
-        );
+			try {
+				const res = await mpdClient.command(
+					new MpdRequest({
+						profile: new MpdProfile({
+							name: input.name,
+							host: input.host,
+							port: input.port,
+						}),
+						command: {
+							case: "ping",
+							value: {},
+						},
+					}),
+				);
 
-        if (res.command.case !== "ping") {
-          return createValidationResult(false, `Invalid MPD response: ${res}`);
-        }
+				if (res.command.case !== "ping") {
+					return createValidationResult(false, `Invalid MPD response: ${res}`);
+				}
 
-        const version = res.command.value.version;
-        if (compareVersions(version, "0.21") < 0) {
-          return createValidationResult(
-            false,
-            `MPD version is ${version}: Please use 0.21 or later.`,
-          );
-        }
+				const version = res.command.value.version;
+				if (compareVersions(version, "0.21") < 0) {
+					return createValidationResult(
+						false,
+						`MPD version is ${version}: Please use 0.21 or later.`,
+					);
+				}
 
-        return createValidationResult(true);
-      } catch (err) {
-        return createValidationResult(false, String(err));
-      }
-    },
-    [mpdClient, mpdProfileState?.profiles],
-  );
+				return createValidationResult(true);
+			} catch (err) {
+				return createValidationResult(false, String(err));
+			}
+		},
+		[mpdClient, mpdProfileState?.profiles],
+	);
 }

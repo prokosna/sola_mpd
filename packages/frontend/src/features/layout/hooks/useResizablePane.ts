@@ -44,46 +44,46 @@ import { useIsTouchDevice } from "../../user_device";
  * @returns Hook state and handlers
  */
 export function useResizablePane(
-  leftWidth: number | undefined,
-  onPanelWidthUpdated: (left: number) => Promise<void>,
+	leftWidth: number | undefined,
+	onPanelWidthUpdated: (left: number) => Promise<void>,
 ) {
-  const isTouchDevice = useIsTouchDevice();
+	const isTouchDevice = useIsTouchDevice();
 
-  const timeoutId = useRef<ReturnType<typeof setTimeout> | undefined>(
-    undefined,
-  );
+	const timeoutId = useRef<ReturnType<typeof setTimeout> | undefined>(
+		undefined,
+	);
 
-  const leftPaneWidthStyle = useMemo(
-    () => (leftWidth !== undefined ? `${Math.min(90, leftWidth)}%` : undefined),
-    [leftWidth],
-  );
+	const leftPaneWidthStyle = useMemo(
+		() => (leftWidth !== undefined ? `${Math.min(90, leftWidth)}%` : undefined),
+		[leftWidth],
+	);
 
-  useEffect(() => {
-    if (isTouchDevice) {
-      setSashSize(40);
-    }
-  }, [isTouchDevice]);
+	useEffect(() => {
+		if (isTouchDevice) {
+			setSashSize(40);
+		}
+	}, [isTouchDevice]);
 
-  const handlePanelResize = useCallback(
-    (left: number, right: number) => {
-      if (isNaN(left) || isNaN(right)) {
-        return;
-      }
-      if (timeoutId.current !== undefined) {
-        clearTimeout(timeoutId.current);
-        timeoutId.current = undefined;
-      }
-      const leftPercentage = (left / (left + right)) * 100;
-      timeoutId.current = setTimeout(() => {
-        onPanelWidthUpdated(leftPercentage);
-      }, 100);
-    },
-    [onPanelWidthUpdated],
-  );
+	const handlePanelResize = useCallback(
+		(left: number, right: number) => {
+			if (Number.isNaN(left) || Number.isNaN(right)) {
+				return;
+			}
+			if (timeoutId.current !== undefined) {
+				clearTimeout(timeoutId.current);
+				timeoutId.current = undefined;
+			}
+			const leftPercentage = (left / (left + right)) * 100;
+			timeoutId.current = setTimeout(() => {
+				onPanelWidthUpdated(leftPercentage);
+			}, 100);
+		},
+		[onPanelWidthUpdated],
+	);
 
-  return {
-    isReady: leftPaneWidthStyle !== undefined,
-    leftPaneWidthStyle,
-    handlePanelResize,
-  };
+	return {
+		isReady: leftPaneWidthStyle !== undefined,
+		leftPaneWidthStyle,
+		handlePanelResize,
+	};
 }

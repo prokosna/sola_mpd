@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 
 /**
  * Hook to detect touch device capability.
@@ -10,20 +10,20 @@ import { useState, useEffect } from "react";
  * @returns True if touch events detected
  */
 export function useIsTouchDevice(): boolean {
-  const [hasTouched, setHasTouched] = useState(false);
+	const [hasTouched, setHasTouched] = useState(false);
 
-  useEffect(() => {
-    const handleTouchStart = () => {
-      setHasTouched(true);
-      window.removeEventListener("touchstart", handleTouchStart);
-    };
+	useEffect(() => {
+		const handleTouchStart = () => {
+			setHasTouched(true);
+			window.removeEventListener("touchstart", handleTouchStart);
+		};
 
-    window.addEventListener("touchstart", handleTouchStart);
+		window.addEventListener("touchstart", handleTouchStart);
 
-    return () => {
-      window.removeEventListener("touchstart", handleTouchStart);
-    };
-  }, []);
+		return () => {
+			window.removeEventListener("touchstart", handleTouchStart);
+		};
+	}, []);
 
-  return hasTouched;
+	return hasTouched;
 }

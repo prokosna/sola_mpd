@@ -5,15 +5,15 @@ import { ROUTE_LANDING } from "../const/routes";
 import { CenterSpinner } from "../features/loading";
 
 export function RootPage() {
-  const navigate = useNavigate();
+	const navigate = useNavigate();
 
-  useEffect(() => {
-    navigate(ROUTE_LANDING);
-  }, [navigate]);
+	useEffect(() => {
+		navigate(ROUTE_LANDING);
+	}, [navigate]);
 
-  return (
-    <>
-      <CenterSpinner></CenterSpinner>
-    </>
-  );
+	return (
+		<>
+			<CenterSpinner />
+		</>
+	);
 }

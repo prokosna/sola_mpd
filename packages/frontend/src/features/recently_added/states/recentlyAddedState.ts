@@ -1,4 +1,4 @@
-import { RecentlyAddedState } from "@sola_mpd/domain/src/models/recently_added_pb.js";
+import type { RecentlyAddedState } from "@sola_mpd/domain/src/models/recently_added_pb.js";
 import { useAtomValue, useSetAtom } from "jotai";
 import { atomWithDefault, useResetAtom } from "jotai/utils";
 import { useCallback } from "react";
@@ -12,11 +12,11 @@ import { recentlyAddedStateRepositoryAtom } from "./recentlyAddedStateRepository
  * Recently added state management.
  */
 const recentlyAddedStateAtom = atomWithDefault<
-  Promise<RecentlyAddedState> | RecentlyAddedState
+	Promise<RecentlyAddedState> | RecentlyAddedState
 >(async (get) => {
-  const repository = get(recentlyAddedStateRepositoryAtom);
-  const recentlyAddedState = await repository.fetch();
-  return recentlyAddedState;
+	const repository = get(recentlyAddedStateRepositoryAtom);
+	const recentlyAddedState = await repository.fetch();
+	return recentlyAddedState;
 });
 
 /**
@@ -30,7 +30,7 @@ export const recentlyAddedStateSyncAtom = atomWithSync(recentlyAddedStateAtom);
  * @returns Current state
  */
 export function useRecentlyAddedState() {
-  return useAtomValue(recentlyAddedStateSyncAtom);
+	return useAtomValue(recentlyAddedStateSyncAtom);
 }
 
 /**
@@ -39,20 +39,20 @@ export function useRecentlyAddedState() {
  * @returns State updater
  */
 export function useUpdateRecentlyAddedState() {
-  const setRecentlyAddedState = useSetAtom(recentlyAddedStateAtom);
-  const repository = useAtomValue(recentlyAddedStateRepositoryAtom);
+	const setRecentlyAddedState = useSetAtom(recentlyAddedStateAtom);
+	const repository = useAtomValue(recentlyAddedStateRepositoryAtom);
 
-  return useCallback(
-    async (state: RecentlyAddedState, mode: UpdateMode) => {
-      if (mode & UpdateMode.LOCAL_STATE) {
-        setRecentlyAddedState(state);
-      }
-      if (mode & UpdateMode.PERSIST) {
-        await repository.save(state);
-      }
-    },
-    [setRecentlyAddedState, repository],
-  );
+	return useCallback(
+		async (state: RecentlyAddedState, mode: UpdateMode) => {
+			if (mode & UpdateMode.LOCAL_STATE) {
+				setRecentlyAddedState(state);
+			}
+			if (mode & UpdateMode.PERSIST) {
+				await repository.save(state);
+			}
+		},
+		[setRecentlyAddedState, repository],
+	);
 }
 
 /**
@@ -61,5 +61,5 @@ export function useUpdateRecentlyAddedState() {
  * @returns Refresh function
  */
 export function useRefreshRecentlyAddedState(): () => void {
-  return useResetAtom(recentlyAddedStateAtom);
+	return useResetAtom(recentlyAddedStateAtom);
 }

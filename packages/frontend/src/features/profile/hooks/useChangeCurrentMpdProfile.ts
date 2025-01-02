@@ -2,8 +2,8 @@ import { useCallback } from "react";
 
 import { UpdateMode } from "../../../types/stateTypes";
 import {
-  useMpdProfileState,
-  useUpdateCurrentMpdProfile,
+	useMpdProfileState,
+	useUpdateCurrentMpdProfile,
 } from "../states/mpdProfileState";
 
 /**
@@ -12,27 +12,27 @@ import {
  * @returns Profile update function
  */
 export function useChangeCurrentMpdProfile() {
-  const mpdProfileState = useMpdProfileState();
-  const updateCurrentMpdProfile = useUpdateCurrentMpdProfile();
+	const mpdProfileState = useMpdProfileState();
+	const updateCurrentMpdProfile = useUpdateCurrentMpdProfile();
 
-  return useCallback(
-    async (name: string) => {
-      if (mpdProfileState === undefined) {
-        return;
-      }
+	return useCallback(
+		async (name: string) => {
+			if (mpdProfileState === undefined) {
+				return;
+			}
 
-      const profile = mpdProfileState.profiles.find(
-        (profile) => profile.name === name,
-      );
-      if (profile === undefined) {
-        return;
-      }
+			const profile = mpdProfileState.profiles.find(
+				(profile) => profile.name === name,
+			);
+			if (profile === undefined) {
+				return;
+			}
 
-      return updateCurrentMpdProfile(
-        profile,
-        UpdateMode.LOCAL_STATE | UpdateMode.PERSIST,
-      );
-    },
-    [mpdProfileState, updateCurrentMpdProfile],
-  );
+			return updateCurrentMpdProfile(
+				profile,
+				UpdateMode.LOCAL_STATE | UpdateMode.PERSIST,
+			);
+		},
+		[mpdProfileState, updateCurrentMpdProfile],
+	);
 }

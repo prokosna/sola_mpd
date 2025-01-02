@@ -31,13 +31,13 @@ const globalFilterTextAtom = atom("");
  * Output: ["song", "title"]
  */
 export const globalFilterTokensAtom = atom((get) => {
-  const text = get(globalFilterTextAtom);
-  const chunks = text.split(" ");
-  const tokens = chunks
-    .map((v) => v.trim())
-    .filter((v) => v !== "")
-    .map((v) => v.toLowerCase());
-  return tokens;
+	const text = get(globalFilterTextAtom);
+	const chunks = text.split(" ");
+	const tokens = chunks
+		.map((v) => v.trim())
+		.filter((v) => v !== "")
+		.map((v) => v.toLowerCase());
+	return tokens;
 });
 
 /**
@@ -52,12 +52,12 @@ export const globalFilterTokensAtom = atom((get) => {
  * @returns Memoized text update function
  */
 export function useSetGlobalFilterTextState() {
-  const setGlobalFilterText = useSetAtom(globalFilterTextAtom);
+	const setGlobalFilterText = useSetAtom(globalFilterTextAtom);
 
-  return useCallback(
-    (text: string) => {
-      setGlobalFilterText(text);
-    },
-    [setGlobalFilterText],
-  );
+	return useCallback(
+		(text: string) => {
+			setGlobalFilterText(text);
+		},
+		[setGlobalFilterText],
+	);
 }

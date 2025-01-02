@@ -12,9 +12,9 @@ const isRecentlyAddedLoadingAtom = atom(true);
  * Loading state effect.
  */
 const setRecentlyAddedLoadingTrueEffectAtom = atomEffect((get, set) => {
-  // Set isRecentlyAddedLoadingAtom to true when recentlyAddedFiltersAtom is updated.
-  get(recentlyAddedFiltersSyncAtom);
-  set(isRecentlyAddedLoadingAtom, true);
+	// Set isRecentlyAddedLoadingAtom to true when recentlyAddedFiltersAtom is updated.
+	get(recentlyAddedFiltersSyncAtom);
+	set(isRecentlyAddedLoadingAtom, true);
 });
 
 /**
@@ -23,8 +23,8 @@ const setRecentlyAddedLoadingTrueEffectAtom = atomEffect((get, set) => {
  * @returns Loading state
  */
 export function useIsRecentlyAddedLoadingState() {
-  useAtom(setRecentlyAddedLoadingTrueEffectAtom);
-  return useAtomValue(isRecentlyAddedLoadingAtom);
+	useAtom(setRecentlyAddedLoadingTrueEffectAtom);
+	return useAtomValue(isRecentlyAddedLoadingAtom);
 }
 
 /**
@@ -33,5 +33,5 @@ export function useIsRecentlyAddedLoadingState() {
  * @returns Loading state setter
  */
 export function useSetIsRecentlyAddedLoadingState() {
-  return useSetAtom(isRecentlyAddedLoadingAtom);
+	return useSetAtom(isRecentlyAddedLoadingAtom);
 }

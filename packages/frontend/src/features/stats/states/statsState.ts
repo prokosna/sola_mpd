@@ -14,14 +14,14 @@ import { fetchStats } from "../utils/statsUtils";
  * dependencies change.
  */
 const statsAtom = atomWithRefresh(async (get) => {
-  const mpdClient = get(mpdClientAtom);
-  const profile = get(currentMpdProfileSyncAtom);
+	const mpdClient = get(mpdClientAtom);
+	const profile = get(currentMpdProfileSyncAtom);
 
-  if (profile === undefined) {
-    return undefined;
-  }
+	if (profile === undefined) {
+		return undefined;
+	}
 
-  return await fetchStats(mpdClient, profile);
+	return await fetchStats(mpdClient, profile);
 });
 
 /**
@@ -42,7 +42,7 @@ const statsSyncAtom = atomWithSync(statsAtom);
  * @returns Current statistics
  */
 export function useStatsState() {
-  return useAtomValue(statsSyncAtom);
+	return useAtomValue(statsSyncAtom);
 }
 
 /**
@@ -55,5 +55,5 @@ export function useStatsState() {
  * @returns Refresh function
  */
 export function useRefreshStatsState() {
-  return useSetAtom(statsAtom);
+	return useSetAtom(statsAtom);
 }

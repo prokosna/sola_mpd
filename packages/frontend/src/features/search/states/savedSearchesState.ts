@@ -1,4 +1,4 @@
-import { SavedSearches } from "@sola_mpd/domain/src/models/search_pb.js";
+import type { SavedSearches } from "@sola_mpd/domain/src/models/search_pb.js";
 import { useAtomValue, useSetAtom } from "jotai";
 import { atomWithDefault } from "jotai/utils";
 import { useCallback } from "react";
@@ -15,10 +15,10 @@ import { savedSearchesRepositoryAtom } from "./savedSearchesRepository";
  * Manages search configurations and history.
  */
 const savedSearchesAtom = atomWithDefault<
-  Promise<SavedSearches> | SavedSearches
+	Promise<SavedSearches> | SavedSearches
 >(async (get) => {
-  const repository = get(savedSearchesRepositoryAtom);
-  return await repository.fetch();
+	const repository = get(savedSearchesRepositoryAtom);
+	return await repository.fetch();
 });
 
 /**
@@ -36,7 +36,7 @@ export const savedSearchesSyncAtom = atomWithSync(savedSearchesAtom);
  * @returns Current saved searches state
  */
 export function useSavedSearchesState() {
-  return useAtomValue(savedSearchesSyncAtom);
+	return useAtomValue(savedSearchesSyncAtom);
 }
 
 /**
@@ -47,7 +47,7 @@ export function useSavedSearchesState() {
  * @returns Refresh function
  */
 export function useRefreshSavedSearchesState() {
-  return useSetAtom(savedSearchesAtom);
+	return useSetAtom(savedSearchesAtom);
 }
 
 /**
@@ -58,18 +58,18 @@ export function useRefreshSavedSearchesState() {
  * @returns Update function
  */
 export function useUpdateSavedSearchesState() {
-  const setSavedSearches = useSetAtom(savedSearchesAtom);
-  const repository = useAtomValue(savedSearchesRepositoryAtom);
+	const setSavedSearches = useSetAtom(savedSearchesAtom);
+	const repository = useAtomValue(savedSearchesRepositoryAtom);
 
-  return useCallback(
-    async (savedSearches: SavedSearches, mode: UpdateMode) => {
-      if (mode & UpdateMode.LOCAL_STATE) {
-        setSavedSearches(savedSearches);
-      }
-      if (mode & UpdateMode.PERSIST) {
-        await repository.save(savedSearches);
-      }
-    },
-    [repository, setSavedSearches],
-  );
+	return useCallback(
+		async (savedSearches: SavedSearches, mode: UpdateMode) => {
+			if (mode & UpdateMode.LOCAL_STATE) {
+				setSavedSearches(savedSearches);
+			}
+			if (mode & UpdateMode.PERSIST) {
+				await repository.save(savedSearches);
+			}
+		},
+		[repository, setSavedSearches],
+	);
 }

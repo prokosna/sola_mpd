@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 
 /**
  * Device type based on screen width.
@@ -19,25 +19,25 @@ type UserDeviceType = "large" | "middle" | "small";
  * @returns Current device type
  */
 export function useUserDeviceType(): UserDeviceType {
-  const getDeviceType = (width: number): UserDeviceType => {
-    if (width < 520) {
-      return "small";
-    } else if (width < 920) {
-      return "middle";
-    } else {
-      return "large";
-    }
-  };
+	const getDeviceType = (width: number): UserDeviceType => {
+		if (width < 520) {
+			return "small";
+		}
+		if (width < 920) {
+			return "middle";
+		}
+		return "large";
+	};
 
-  const [deviceType, setDeviceType] = useState(
-    getDeviceType(window.innerWidth),
-  );
+	const [deviceType, setDeviceType] = useState(
+		getDeviceType(window.innerWidth),
+	);
 
-  useEffect(() => {
-    const handleResize = () => setDeviceType(getDeviceType(window.innerWidth));
-    window.addEventListener("resize", handleResize);
-    return () => window.removeEventListener("resize", handleResize);
-  }, []);
+	useEffect(() => {
+		const handleResize = () => setDeviceType(getDeviceType(window.innerWidth));
+		window.addEventListener("resize", handleResize);
+		return () => window.removeEventListener("resize", handleResize);
+	}, []);
 
-  return deviceType;
+	return deviceType;
 }

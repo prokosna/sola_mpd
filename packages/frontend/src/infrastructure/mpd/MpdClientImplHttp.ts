@@ -1,15 +1,15 @@
 import {
-  API_MPD_COMMAND,
-  API_MPD_COMMAND_BULK,
+	API_MPD_COMMAND,
+	API_MPD_COMMAND_BULK,
 } from "@sola_mpd/domain/src/const/api.js";
 import {
-  MpdRequest,
-  MpdRequestBulk,
-  MpdResponse,
+	type MpdRequest,
+	MpdRequestBulk,
+	MpdResponse,
 } from "@sola_mpd/domain/src/models/mpd/mpd_command_pb.js";
 
-import { MpdClient } from "../../features/mpd";
-import { HttpClient } from "../http/HttpClient";
+import type { MpdClient } from "../../features/mpd";
+import type { HttpClient } from "../http/HttpClient";
 
 /**
  * MpdClientImplHttp is an implementation of MpdClient that uses HTTP as the underlying transport.
@@ -17,26 +17,26 @@ import { HttpClient } from "../http/HttpClient";
  * It uses the HttpClient to send requests to the server.
  */
 export class MpdClientImplHttp implements MpdClient {
-  constructor(private client: HttpClient) {}
+	constructor(private client: HttpClient) {}
 
-  command = async (req: MpdRequest): Promise<MpdResponse> => {
-    const res = await this.client.put<MpdResponse>(
-      API_MPD_COMMAND,
-      req.toBinary(),
-      MpdResponse.fromBinary,
-    );
+	command = async (req: MpdRequest): Promise<MpdResponse> => {
+		const res = await this.client.put<MpdResponse>(
+			API_MPD_COMMAND,
+			req.toBinary(),
+			MpdResponse.fromBinary,
+		);
 
-    if (res.command.case === "error") {
-      throw new Error(res.command.value.message);
-    }
+		if (res.command.case === "error") {
+			throw new Error(res.command.value.message);
+		}
 
-    return res;
-  };
+		return res;
+	};
 
-  commandBulk = async (reqs: MpdRequest[]): Promise<void> => {
-    return this.client.post(
-      API_MPD_COMMAND_BULK,
-      new MpdRequestBulk({ requests: reqs }).toBinary(),
-    );
-  };
+	commandBulk = async (reqs: MpdRequest[]): Promise<void> => {
+		return this.client.post(
+			API_MPD_COMMAND_BULK,
+			new MpdRequestBulk({ requests: reqs }).toBinary(),
+		);
+	};
 }

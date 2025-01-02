@@ -1,7 +1,7 @@
-import { Song } from "@sola_mpd/domain/src/models/song_pb.js";
+import type { Song } from "@sola_mpd/domain/src/models/song_pb.js";
 import { useMemo } from "react";
 
-import { SongTableKey, SongTableKeyType } from "../types/songTableTypes";
+import type { SongTableKey, SongTableKeyType } from "../types/songTableTypes";
 import { getSongTableKey } from "../utils/songTableTableUtils";
 
 /**
@@ -16,10 +16,10 @@ import { getSongTableKey } from "../utils/songTableTableUtils";
  * @returns Song lookup map
  */
 export function useSongsMap(
-  songs: Song[],
-  keyType: SongTableKeyType,
+	songs: Song[],
+	keyType: SongTableKeyType,
 ): Map<SongTableKey, Song> {
-  return useMemo(() => {
-    return new Map(songs.map((song) => [getSongTableKey(song, keyType), song]));
-  }, [keyType, songs]);
+	return useMemo(() => {
+		return new Map(songs.map((song) => [getSongTableKey(song, keyType), song]));
+	}, [keyType, songs]);
 }

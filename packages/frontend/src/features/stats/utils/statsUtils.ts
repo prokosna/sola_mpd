@@ -1,9 +1,12 @@
 import { MpdRequest } from "@sola_mpd/domain/src/models/mpd/mpd_command_pb.js";
-import { MpdProfile } from "@sola_mpd/domain/src/models/mpd/mpd_profile_pb.js";
-import { Song, Song_MetadataTag } from "@sola_mpd/domain/src/models/song_pb.js";
+import type { MpdProfile } from "@sola_mpd/domain/src/models/mpd/mpd_profile_pb.js";
+import type {
+	Song,
+	Song_MetadataTag,
+} from "@sola_mpd/domain/src/models/song_pb.js";
 import { getSongMetadataAsString } from "@sola_mpd/domain/src/utils/songUtils.js";
 
-import { MpdClient } from "../../mpd";
+import type { MpdClient } from "../../mpd";
 
 /**
  * Fetches statistics from the MPD server.
@@ -14,19 +17,19 @@ import { MpdClient } from "../../mpd";
  * @throws Error if the MPD response is invalid.
  */
 export async function fetchStats(mpdClient: MpdClient, mpdProfile: MpdProfile) {
-  const res = await mpdClient.command(
-    new MpdRequest({
-      profile: mpdProfile,
-      command: {
-        case: "stats",
-        value: {},
-      },
-    }),
-  );
-  if (res.command.case !== "stats") {
-    throw Error(`Invalid MPD response: ${res.toJsonString()}`);
-  }
-  return res.command.value.stats;
+	const res = await mpdClient.command(
+		new MpdRequest({
+			profile: mpdProfile,
+			command: {
+				case: "stats",
+				value: {},
+			},
+		}),
+	);
+	if (res.command.case !== "stats") {
+		throw Error(`Invalid MPD response: ${res.toJsonString()}`);
+	}
+	return res.command.value.stats;
 }
 
 /**
@@ -37,9 +40,9 @@ export async function fetchStats(mpdClient: MpdClient, mpdProfile: MpdProfile) {
  * @returns The number of distinct values for the specified metadata tag
  */
 export function getMetadataValueCountDistinct(
-  songs: Song[],
-  tag: Song_MetadataTag,
+	songs: Song[],
+	tag: Song_MetadataTag,
 ): number {
-  return [...new Set(songs.map((song) => getSongMetadataAsString(song, tag)))]
-    .length;
+	return [...new Set(songs.map((song) => getSongMetadataAsString(song, tag)))]
+		.length;
 }

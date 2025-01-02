@@ -18,34 +18,34 @@ import { CardStatsNumber } from "./CardStatsNumber";
  * @returns {JSX.Element} The rendered CardStats component
  */
 export function CardStats() {
-  const selectedSongs = useSelectedSongsState();
-  const showSelectedStats = selectedSongs.length >= 2;
-  const songStatsProps = useSongStatsProps(showSelectedStats, selectedSongs);
-  const artistStatsProps = useArtistStatsProps(
-    showSelectedStats,
-    selectedSongs,
-  );
-  const albumStatsProps = useAlbumStatsProps(showSelectedStats, selectedSongs);
-  const durationStatsProps = useDurationStatsProps(
-    showSelectedStats,
-    selectedSongs,
-  );
+	const selectedSongs = useSelectedSongsState();
+	const showSelectedStats = selectedSongs.length >= 2;
+	const songStatsProps = useSongStatsProps(showSelectedStats, selectedSongs);
+	const artistStatsProps = useArtistStatsProps(
+		showSelectedStats,
+		selectedSongs,
+	);
+	const albumStatsProps = useAlbumStatsProps(showSelectedStats, selectedSongs);
+	const durationStatsProps = useDurationStatsProps(
+		showSelectedStats,
+		selectedSongs,
+	);
 
-  return (
-    <>
-      <Box w="100%" h="full">
-        <CardStatsNumber {...songStatsProps} />
-        <Divider mb={2}></Divider>
-        <CardStatsNumber {...artistStatsProps} />
-        <Divider mb={2}></Divider>
-        <CardStatsNumber {...albumStatsProps} />
-        <Divider mb={2}></Divider>
-        <CardStatsNumber {...durationStatsProps} />
-        <Divider mb={2}></Divider>
-        <Box mb={0} pb={0}>
-          <CardStatsDatabaseButton />
-        </Box>
-      </Box>
-    </>
-  );
+	return (
+		<>
+			<Box w="100%" h="full">
+				<CardStatsNumber {...songStatsProps} />
+				<Divider mb={2} />
+				<CardStatsNumber {...artistStatsProps} />
+				<Divider mb={2} />
+				<CardStatsNumber {...albumStatsProps} />
+				<Divider mb={2} />
+				<CardStatsNumber {...durationStatsProps} />
+				<Divider mb={2} />
+				<Box mb={0} pb={0}>
+					<CardStatsDatabaseButton />
+				</Box>
+			</Box>
+		</>
+	);
 }

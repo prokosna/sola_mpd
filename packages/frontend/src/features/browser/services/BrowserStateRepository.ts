@@ -1,4 +1,4 @@
-import { BrowserState } from "@sola_mpd/domain/src/models/browser_pb.js";
+import type { BrowserState } from "@sola_mpd/domain/src/models/browser_pb.js";
 
 /**
  * Repository interface for managing browser state persistence.
@@ -10,6 +10,6 @@ import { BrowserState } from "@sola_mpd/domain/src/models/browser_pb.js";
  * @interface
  */
 export interface BrowserStateRepository {
-  fetch: () => Promise<BrowserState>;
-  save: (browserState: BrowserState) => Promise<void>;
+	fetch: () => Promise<BrowserState>;
+	save: (browserState: BrowserState) => Promise<void>;
 }

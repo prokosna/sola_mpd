@@ -1,15 +1,15 @@
-import { useToast, UseToastOptions } from "@chakra-ui/react";
+import { type UseToastOptions, useToast } from "@chakra-ui/react";
 
 /**
  * Parameters for displaying a notification.
  */
 export type NotificationParams = {
-  /** Title of the notification. */
-  title: string;
-  /** Optional description for the notification. */
-  description?: string;
-  /** Status of the notification. */
-  status: "info" | "warning" | "success" | "error";
+	/** Title of the notification. */
+	title: string;
+	/** Optional description for the notification. */
+	description?: string;
+	/** Status of the notification. */
+	status: "info" | "warning" | "success" | "error";
 };
 
 /**
@@ -28,18 +28,18 @@ export type NotificationParams = {
  * ```
  */
 export function useNotification(): (params: NotificationParams) => void {
-  const toast = useToast();
+	const toast = useToast();
 
-  return ({ title, description, status }: NotificationParams) => {
-    const options: UseToastOptions = {
-      title,
-      description,
-      status,
-      duration: 3000,
-      isClosable: true,
-      position: "bottom",
-    };
+	return ({ title, description, status }: NotificationParams) => {
+		const options: UseToastOptions = {
+			title,
+			description,
+			status,
+			duration: 3000,
+			isClosable: true,
+			position: "bottom",
+		};
 
-    toast(options);
-  };
+		toast(options);
+	};
 }

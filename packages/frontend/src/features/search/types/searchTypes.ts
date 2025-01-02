@@ -1,4 +1,4 @@
-import { FilterCondition } from "@sola_mpd/domain/src/models/filter_pb.js";
+import type { FilterCondition } from "@sola_mpd/domain/src/models/filter_pb.js";
 
 /**
  * Filter conditions for search.
@@ -6,8 +6,8 @@ import { FilterCondition } from "@sola_mpd/domain/src/models/filter_pb.js";
  * Separates MPD and non-MPD conditions.
  */
 export type SearchConditions = {
-  mpdConditions: FilterCondition[];
-  nonMpdConditions: FilterCondition[];
+	mpdConditions: FilterCondition[];
+	nonMpdConditions: FilterCondition[];
 };
 
 /**
@@ -18,7 +18,7 @@ export type SearchConditions = {
  * SAVED: All changes saved
  */
 export enum EditingSearchStatus {
-  NOT_SAVED,
-  COLUMNS_UPDATED,
-  SAVED,
+	NOT_SAVED = 0,
+	COLUMNS_UPDATED = 1,
+	SAVED = 2,
 }

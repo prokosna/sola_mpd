@@ -15,9 +15,9 @@ const isAllSongsLoadingAtom = atom(true);
  * or profile changes, triggering a new data fetch.
  */
 const setAllSongsLoadingTrueEffectAtom = atomEffect((get, set) => {
-  get(mpdClientAtom);
-  get(currentMpdProfileSyncAtom);
-  set(isAllSongsLoadingAtom, true);
+	get(mpdClientAtom);
+	get(currentMpdProfileSyncAtom);
+	set(isAllSongsLoadingAtom, true);
 });
 
 /**
@@ -27,8 +27,8 @@ const setAllSongsLoadingTrueEffectAtom = atomEffect((get, set) => {
  * @returns Current loading state
  */
 export function useIsAllSongsLoadingState(): boolean {
-  useAtom(setAllSongsLoadingTrueEffectAtom);
-  return useAtomValue(isAllSongsLoadingAtom);
+	useAtom(setAllSongsLoadingTrueEffectAtom);
+	return useAtomValue(isAllSongsLoadingAtom);
 }
 
 /**
@@ -37,5 +37,5 @@ export function useIsAllSongsLoadingState(): boolean {
  * @returns Setter function for loading state
  */
 export function useSetIsAllSongsLoadingState() {
-  return useSetAtom(isAllSongsLoadingAtom);
+	return useSetAtom(isAllSongsLoadingAtom);
 }

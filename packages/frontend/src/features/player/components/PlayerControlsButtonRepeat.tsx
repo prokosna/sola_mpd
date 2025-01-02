@@ -18,40 +18,40 @@ import { PlayerControlsButton } from "./PlayerControlsButton";
  * @returns Repeat mode toggle button
  */
 export function PlayerControlsButtonRepeat() {
-  const profile = useCurrentMpdProfileState();
-  const mpdClient = useMpdClientState();
-  const currentSong = useCurrentSongState();
-  const playerStatusIsRepeat = usePlayerStatusIsRepeatState();
+	const profile = useCurrentMpdProfileState();
+	const mpdClient = useMpdClientState();
+	const currentSong = useCurrentSongState();
+	const playerStatusIsRepeat = usePlayerStatusIsRepeatState();
 
-  const onButtonClicked = useCallback(async () => {
-    if (mpdClient === undefined) {
-      return;
-    }
+	const onButtonClicked = useCallback(async () => {
+		if (mpdClient === undefined) {
+			return;
+		}
 
-    mpdClient.command(
-      new MpdRequest({
-        profile,
-        command: {
-          case: "repeat",
-          value: {
-            enable: !playerStatusIsRepeat,
-          },
-        },
-      }),
-    );
-  }, [mpdClient, playerStatusIsRepeat, profile]);
+		mpdClient.command(
+			new MpdRequest({
+				profile,
+				command: {
+					case: "repeat",
+					value: {
+						enable: !playerStatusIsRepeat,
+					},
+				},
+			}),
+		);
+	}, [mpdClient, playerStatusIsRepeat, profile]);
 
-  const props = {
-    label: playerStatusIsRepeat ? "Repeat enabled" : "Repeat disabled",
-    isDisabled: currentSong === undefined,
-    onButtonClicked,
-    icon: <IoRepeatOutline size={"24"}></IoRepeatOutline>,
-    variant: playerStatusIsRepeat ? "solid" : "ghost",
-  };
+	const props = {
+		label: playerStatusIsRepeat ? "Repeat enabled" : "Repeat disabled",
+		isDisabled: currentSong === undefined,
+		onButtonClicked,
+		icon: <IoRepeatOutline size={"24"} />,
+		variant: playerStatusIsRepeat ? "solid" : "ghost",
+	};
 
-  return (
-    <>
-      <PlayerControlsButton {...props}></PlayerControlsButton>
-    </>
-  );
+	return (
+		<>
+			<PlayerControlsButton {...props} />
+		</>
+	);
 }

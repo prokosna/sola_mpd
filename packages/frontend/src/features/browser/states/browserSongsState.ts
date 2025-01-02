@@ -18,21 +18,21 @@ import { browserFiltersSyncAtom } from "./browserFiltersState";
  * Automatically refreshes when MPD client, profile, or filters change.
  */
 const browserSongsAtom = atomWithRefresh(async (get) => {
-  const mpdClient = get(mpdClientAtom);
-  const currentMpdProfile = get(currentMpdProfileSyncAtom);
-  const browserFilters = get(browserFiltersSyncAtom);
+	const mpdClient = get(mpdClientAtom);
+	const currentMpdProfile = get(currentMpdProfileSyncAtom);
+	const browserFilters = get(browserFiltersSyncAtom);
 
-  if (currentMpdProfile === undefined || browserFilters === undefined) {
-    return undefined;
-  }
+	if (currentMpdProfile === undefined || browserFilters === undefined) {
+		return undefined;
+	}
 
-  const songs = await fetchBrowserSongs(
-    mpdClient,
-    currentMpdProfile,
-    browserFilters,
-  );
+	const songs = await fetchBrowserSongs(
+		mpdClient,
+		currentMpdProfile,
+		browserFilters,
+	);
 
-  return songs;
+	return songs;
 });
 
 /**
@@ -45,26 +45,26 @@ const browserSongsSyncAtom = atomWithSync(browserSongsAtom);
  * Only returns songs when on the browser route.
  */
 const browserVisibleSongsSyncAtom = atom((get) => {
-  const browserSongs = get(browserSongsSyncAtom);
-  const songTableState = get(songTableStateSyncAtom);
-  const globalFilterTokens = get(globalFilterTokensAtom);
-  const pathname = get(pathnameAtom);
+	const browserSongs = get(browserSongsSyncAtom);
+	const songTableState = get(songTableStateSyncAtom);
+	const globalFilterTokens = get(globalFilterTokensAtom);
+	const pathname = get(pathnameAtom);
 
-  if (
-    pathname !== ROUTE_HOME_BROWSER ||
-    browserSongs === undefined ||
-    songTableState === undefined
-  ) {
-    return undefined;
-  }
+	if (
+		pathname !== ROUTE_HOME_BROWSER ||
+		browserSongs === undefined ||
+		songTableState === undefined
+	) {
+		return undefined;
+	}
 
-  const filteredSongs = filterSongsByGlobalFilter(
-    browserSongs,
-    globalFilterTokens,
-    songTableState.columns,
-  );
+	const filteredSongs = filterSongsByGlobalFilter(
+		browserSongs,
+		globalFilterTokens,
+		songTableState.columns,
+	);
 
-  return filteredSongs;
+	return filteredSongs;
 });
 
 /**
@@ -78,7 +78,7 @@ const browserVisibleSongsSyncAtom = atom((get) => {
  * @returns Filtered array of songs or undefined if not in browser view
  */
 export function useBrowserSongsState() {
-  return useAtomValue(browserVisibleSongsSyncAtom);
+	return useAtomValue(browserVisibleSongsSyncAtom);
 }
 
 /**
@@ -87,5 +87,5 @@ export function useBrowserSongsState() {
  * @returns Refresh function that triggers a new fetch
  */
 export function useRefreshBrowserSongsState() {
-  return useSetAtom(browserSongsAtom);
+	return useSetAtom(browserSongsAtom);
 }

@@ -3,14 +3,14 @@ import { useCallback } from "react";
 
 import { COMPONENT_ID_PLAYLIST_SIDE_PANE } from "../../../const/component";
 import { useNotification } from "../../../lib/chakra/hooks/useNotification";
-import { ContextMenuSection } from "../../context_menu";
+import type { ContextMenuSection } from "../../context_menu";
 import { useMpdClientState } from "../../mpd";
 import { useCurrentMpdProfileState } from "../../profile";
-import { SelectListContextMenuItemParams } from "../../select_list";
+import type { SelectListContextMenuItemParams } from "../../select_list";
 import {
-  usePlaylistsState,
-  useSelectedPlaylistState,
-  useSetSelectedPlaylistState,
+	usePlaylistsState,
+	useSelectedPlaylistState,
+	useSetSelectedPlaylistState,
 } from "../states/playlistState";
 
 /**
@@ -22,92 +22,93 @@ import {
  * @returns SelectList props or undefined
  */
 export function usePlaylistNavigationSelectListProps() {
-  const notify = useNotification();
+	const notify = useNotification();
 
-  const profile = useCurrentMpdProfileState();
-  const mpdClient = useMpdClientState();
-  const playlists = usePlaylistsState();
-  const selectedPlaylist = useSelectedPlaylistState();
-  const setSelectedPlaylist = useSetSelectedPlaylistState();
+	const profile = useCurrentMpdProfileState();
+	const mpdClient = useMpdClientState();
+	const playlists = usePlaylistsState();
+	const selectedPlaylist = useSelectedPlaylistState();
+	const setSelectedPlaylist = useSetSelectedPlaylistState();
 
-  const contextMenuSections: ContextMenuSection<SelectListContextMenuItemParams>[] =
-    [
-      {
-        items: [
-          {
-            name: "Delete",
-            onClick: async (params?: SelectListContextMenuItemParams) => {
-              if (
-                params === undefined ||
-                profile === undefined ||
-                mpdClient === undefined ||
-                playlists === undefined
-              ) {
-                return;
-              }
+	const contextMenuSections: ContextMenuSection<SelectListContextMenuItemParams>[] =
+		[
+			{
+				items: [
+					{
+						name: "Delete",
+						onClick: async (params?: SelectListContextMenuItemParams) => {
+							if (
+								params === undefined ||
+								profile === undefined ||
+								mpdClient === undefined ||
+								playlists === undefined
+							) {
+								return;
+							}
 
-              const index = playlists.findIndex(
-                (playlist) => playlist.name === params.clickedValue,
-              );
-              if (index < 0) {
-                return;
-              }
+							const index = playlists.findIndex(
+								(playlist) => playlist.name === params.clickedValue,
+							);
+							if (index < 0) {
+								return;
+							}
 
-              if (params.clickedValue === selectedPlaylist?.name) {
-                setSelectedPlaylist(undefined);
-              }
+							if (params.clickedValue === selectedPlaylist?.name) {
+								setSelectedPlaylist(undefined);
+							}
 
-              await mpdClient.command(
-                new MpdRequest({
-                  profile,
-                  command: {
-                    case: "rm",
-                    value: {
-                      name: params.clickedValue,
-                    },
-                  },
-                }),
-              );
-              notify({
-                status: "success",
-                title: "Playlist successfully deleted",
-                description: `Playlist "${params.clickedValue}" has been deleted.`,
-              });
-            },
-          },
-        ],
-      },
-    ];
+							await mpdClient.command(
+								new MpdRequest({
+									profile,
+									command: {
+										case: "rm",
+										value: {
+											name: params.clickedValue,
+										},
+									},
+								}),
+							);
+							notify({
+								status: "success",
+								title: "Playlist successfully deleted",
+								description: `Playlist "${params.clickedValue}" has been deleted.`,
+							});
+						},
+					},
+				],
+			},
+		];
 
-  const onItemsSelected = useCallback(
-    async (selectedValues: string[]) => {
-      if (selectedValues.length >= 2) {
-        throw new Error("Multiple playlists are selected.");
-      } else if (selectedValues.length === 1) {
-        const playlist = playlists?.find(
-          (playlist) => playlist.name === selectedValues[0],
-        );
-        setSelectedPlaylist(playlist);
-      } else {
-        setSelectedPlaylist(undefined);
-      }
-    },
-    [playlists, setSelectedPlaylist],
-  );
+	const onItemsSelected = useCallback(
+		async (selectedValues: string[]) => {
+			if (selectedValues.length >= 2) {
+				throw new Error("Multiple playlists are selected.");
+			}
+			if (selectedValues.length === 1) {
+				const playlist = playlists?.find(
+					(playlist) => playlist.name === selectedValues[0],
+				);
+				setSelectedPlaylist(playlist);
+			} else {
+				setSelectedPlaylist(undefined);
+			}
+		},
+		[playlists, setSelectedPlaylist],
+	);
 
-  if (playlists === undefined) {
-    return;
-  }
+	if (playlists === undefined) {
+		return;
+	}
 
-  return {
-    id: COMPONENT_ID_PLAYLIST_SIDE_PANE,
-    values: playlists.map((playlist) => playlist.name),
-    selectedValues: selectedPlaylist ? [selectedPlaylist.name] : [],
-    headerTitle: undefined,
-    contextMenuSections,
-    isLoading: false,
-    allowMultipleSelection: false,
-    onItemsSelected: onItemsSelected,
-    onLoadingCompleted: async () => {},
-  };
+	return {
+		id: COMPONENT_ID_PLAYLIST_SIDE_PANE,
+		values: playlists.map((playlist) => playlist.name),
+		selectedValues: selectedPlaylist ? [selectedPlaylist.name] : [],
+		headerTitle: undefined,
+		contextMenuSections,
+		isLoading: false,
+		allowMultipleSelection: false,
+		onItemsSelected: onItemsSelected,
+		onLoadingCompleted: async () => {},
+	};
 }

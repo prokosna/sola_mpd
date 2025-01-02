@@ -19,26 +19,26 @@ import { PlayerControlsButtonVolume } from "./PlayerControlsButtonVolume";
  * @returns Player controls component
  */
 export function PlayerControls() {
-  return (
-    <>
-      <PlayerControlsButtonPrevious></PlayerControlsButtonPrevious>
-      <PlayerControlsButtonStop></PlayerControlsButtonStop>
-      <PlayerControlsButtonResume></PlayerControlsButtonResume>
-      <PlayerControlsButtonNext></PlayerControlsButtonNext>
+	return (
+		<>
+			<PlayerControlsButtonPrevious />
+			<PlayerControlsButtonStop />
+			<PlayerControlsButtonResume />
+			<PlayerControlsButtonNext />
 
-      <Center h="30%">
-        <Divider orientation="vertical"></Divider>
-      </Center>
+			<Center h="30%">
+				<Divider orientation="vertical" />
+			</Center>
 
-      <PlayerControlsButtonRandom></PlayerControlsButtonRandom>
-      <PlayerControlsButtonRepeat></PlayerControlsButtonRepeat>
-      <PlayerControlsButtonConsume></PlayerControlsButtonConsume>
+			<PlayerControlsButtonRandom />
+			<PlayerControlsButtonRepeat />
+			<PlayerControlsButtonConsume />
 
-      <Center h="30%">
-        <Divider orientation="vertical"></Divider>
-      </Center>
+			<Center h="30%">
+				<Divider orientation="vertical" />
+			</Center>
 
-      <PlayerControlsButtonVolume></PlayerControlsButtonVolume>
-    </>
-  );
+			<PlayerControlsButtonVolume />
+		</>
+	);
 }

@@ -5,7 +5,7 @@ import { PluginState } from "@sola_mpd/domain/src/models/plugin/plugin_pb.js";
 import { RecentlyAddedState } from "@sola_mpd/domain/src/models/recently_added_pb.js";
 import { SavedSearches } from "@sola_mpd/domain/src/models/search_pb.js";
 import { SongTableState } from "@sola_mpd/domain/src/models/song_table_pb.js";
-import express, { Request, Response, Router } from "express";
+import express, { type Request, type Response, Router } from "express";
 
 import { wrap } from "../utils/wrap.js";
 
@@ -20,146 +20,146 @@ import { savedSearchRepository } from "./repositories/savedSearchRepository.js";
 const configsRouter = Router();
 
 configsRouter.use(
-  express.raw({
-    type: "*/*",
-    limit: "256mb",
-  }),
+	express.raw({
+		type: "*/*",
+		limit: "256mb",
+	}),
 );
 configsRouter.use((req, res, next) => {
-  res.setHeader("Content-Type", "application/octet-stream");
-  next();
+	res.setHeader("Content-Type", "application/octet-stream");
+	next();
 });
 
 configsRouter.get(
-  "/browser_state",
-  wrap(async (req: Request, res: Response) => {
-    const value = browserStateRepository.get();
-    const bytes = Buffer.from(value.toBinary());
-    res.send(bytes);
-  }),
+	"/browser_state",
+	wrap(async (req: Request, res: Response) => {
+		const value = browserStateRepository.get();
+		const bytes = Buffer.from(value.toBinary());
+		res.send(bytes);
+	}),
 );
 
 configsRouter.post(
-  "/browser_state",
-  wrap(async (req: Request, res: Response) => {
-    const body = req.body as Buffer;
-    const data = BrowserState.fromBinary(new Uint8Array(body));
-    browserStateRepository.update(data);
-    res.end();
-  }),
+	"/browser_state",
+	wrap(async (req: Request, res: Response) => {
+		const body = req.body as Buffer;
+		const data = BrowserState.fromBinary(new Uint8Array(body));
+		browserStateRepository.update(data);
+		res.end();
+	}),
 );
 
 configsRouter.get(
-  "/common_song_table_state",
-  wrap(async (req: Request, res: Response) => {
-    const value = commonSongTableStateRepository.get();
-    const bytes = Buffer.from(value.toBinary());
-    res.send(bytes);
-  }),
+	"/common_song_table_state",
+	wrap(async (req: Request, res: Response) => {
+		const value = commonSongTableStateRepository.get();
+		const bytes = Buffer.from(value.toBinary());
+		res.send(bytes);
+	}),
 );
 
 configsRouter.post(
-  "/common_song_table_state",
-  wrap(async (req: Request, res: Response) => {
-    const body = req.body as Buffer;
-    const data = SongTableState.fromBinary(new Uint8Array(body));
-    commonSongTableStateRepository.update(data);
-    res.end();
-  }),
+	"/common_song_table_state",
+	wrap(async (req: Request, res: Response) => {
+		const body = req.body as Buffer;
+		const data = SongTableState.fromBinary(new Uint8Array(body));
+		commonSongTableStateRepository.update(data);
+		res.end();
+	}),
 );
 configsRouter.get(
-  "/layout_state",
-  wrap(async (req: Request, res: Response) => {
-    const value = layoutStateRepository.get();
-    const bytes = Buffer.from(value.toBinary());
-    res.send(bytes);
-  }),
+	"/layout_state",
+	wrap(async (req: Request, res: Response) => {
+		const value = layoutStateRepository.get();
+		const bytes = Buffer.from(value.toBinary());
+		res.send(bytes);
+	}),
 );
 
 configsRouter.post(
-  "/layout_state",
-  wrap(async (req: Request, res: Response) => {
-    const body = req.body as Buffer;
-    const data = LayoutState.fromBinary(new Uint8Array(body));
-    layoutStateRepository.update(data);
-    res.end();
-  }),
-);
-
-configsRouter.get(
-  "/mpd_profile_state",
-  wrap(async (req: Request, res: Response) => {
-    const value = mpdProfileStateRepository.get();
-    const bytes = Buffer.from(value.toBinary());
-    res.send(bytes);
-  }),
-);
-
-configsRouter.post(
-  "/mpd_profile_state",
-  wrap(async (req: Request, res: Response) => {
-    const body = req.body as Buffer;
-    const data = MpdProfileState.fromBinary(new Uint8Array(body));
-    mpdProfileStateRepository.update(data);
-    res.end();
-  }),
+	"/layout_state",
+	wrap(async (req: Request, res: Response) => {
+		const body = req.body as Buffer;
+		const data = LayoutState.fromBinary(new Uint8Array(body));
+		layoutStateRepository.update(data);
+		res.end();
+	}),
 );
 
 configsRouter.get(
-  "/plugin_state",
-  wrap(async (req: Request, res: Response) => {
-    const value = pluginStateRepository.get();
-    const bytes = Buffer.from(value.toBinary());
-    res.send(bytes);
-  }),
+	"/mpd_profile_state",
+	wrap(async (req: Request, res: Response) => {
+		const value = mpdProfileStateRepository.get();
+		const bytes = Buffer.from(value.toBinary());
+		res.send(bytes);
+	}),
 );
 
 configsRouter.post(
-  "/plugin_state",
-  wrap(async (req: Request, res: Response) => {
-    const body = req.body as Buffer;
-    const data = PluginState.fromBinary(new Uint8Array(body));
-    pluginStateRepository.update(data);
-    res.end();
-  }),
+	"/mpd_profile_state",
+	wrap(async (req: Request, res: Response) => {
+		const body = req.body as Buffer;
+		const data = MpdProfileState.fromBinary(new Uint8Array(body));
+		mpdProfileStateRepository.update(data);
+		res.end();
+	}),
 );
 
 configsRouter.get(
-  "/saved_searches",
-  wrap(async (req: Request, res: Response) => {
-    const value = savedSearchRepository.get();
-    const bytes = Buffer.from(value.toBinary());
-    res.send(bytes);
-  }),
+	"/plugin_state",
+	wrap(async (req: Request, res: Response) => {
+		const value = pluginStateRepository.get();
+		const bytes = Buffer.from(value.toBinary());
+		res.send(bytes);
+	}),
 );
 
 configsRouter.post(
-  "/saved_searches",
-  wrap(async (req: Request, res: Response) => {
-    const body = req.body as Buffer;
-    const data = SavedSearches.fromBinary(new Uint8Array(body));
-    savedSearchRepository.update(data);
-    res.end();
-  }),
+	"/plugin_state",
+	wrap(async (req: Request, res: Response) => {
+		const body = req.body as Buffer;
+		const data = PluginState.fromBinary(new Uint8Array(body));
+		pluginStateRepository.update(data);
+		res.end();
+	}),
 );
 
 configsRouter.get(
-  "/recently_added_state",
-  wrap(async (req: Request, res: Response) => {
-    const value = recentlyAddedStateRepository.get();
-    const bytes = Buffer.from(value.toBinary());
-    res.send(bytes);
-  }),
+	"/saved_searches",
+	wrap(async (req: Request, res: Response) => {
+		const value = savedSearchRepository.get();
+		const bytes = Buffer.from(value.toBinary());
+		res.send(bytes);
+	}),
 );
 
 configsRouter.post(
-  "/recently_added_state",
-  wrap(async (req: Request, res: Response) => {
-    const body = req.body as Buffer;
-    const data = RecentlyAddedState.fromBinary(new Uint8Array(body));
-    recentlyAddedStateRepository.update(data);
-    res.end();
-  }),
+	"/saved_searches",
+	wrap(async (req: Request, res: Response) => {
+		const body = req.body as Buffer;
+		const data = SavedSearches.fromBinary(new Uint8Array(body));
+		savedSearchRepository.update(data);
+		res.end();
+	}),
+);
+
+configsRouter.get(
+	"/recently_added_state",
+	wrap(async (req: Request, res: Response) => {
+		const value = recentlyAddedStateRepository.get();
+		const bytes = Buffer.from(value.toBinary());
+		res.send(bytes);
+	}),
+);
+
+configsRouter.post(
+	"/recently_added_state",
+	wrap(async (req: Request, res: Response) => {
+		const body = req.body as Buffer;
+		const data = RecentlyAddedState.fromBinary(new Uint8Array(body));
+		recentlyAddedStateRepository.update(data);
+		res.end();
+	}),
 );
 
 export default configsRouter;

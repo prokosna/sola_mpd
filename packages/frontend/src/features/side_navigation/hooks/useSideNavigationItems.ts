@@ -1,7 +1,7 @@
 import { useMemo } from "react";
 
 import { usePathname } from "../../location";
-import { SideNavigationItemProps } from "../components/SideNavigationItem";
+import type { SideNavigationItemProps } from "../components/SideNavigationItem";
 
 /**
  * Update navigation items' selection state based on URL.
@@ -10,20 +10,20 @@ import { SideNavigationItemProps } from "../components/SideNavigationItem";
  * @returns Items with updated selection states
  */
 export function useSideNavigationItems(
-  baseItems: SideNavigationItemProps[],
+	baseItems: SideNavigationItemProps[],
 ): SideNavigationItemProps[] {
-  const pathname = usePathname();
+	const pathname = usePathname();
 
-  const navItems = useMemo(() => {
-    return baseItems.map((item) => {
-      if (item.link === pathname) {
-        item.isSelected = true;
-      } else {
-        item.isSelected = false;
-      }
-      return item;
-    });
-  }, [baseItems, pathname]);
+	const navItems = useMemo(() => {
+		return baseItems.map((item) => {
+			if (item.link === pathname) {
+				item.isSelected = true;
+			} else {
+				item.isSelected = false;
+			}
+			return item;
+		});
+	}, [baseItems, pathname]);
 
-  return navItems;
+	return navItems;
 }

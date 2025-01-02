@@ -16,16 +16,16 @@ import { fetchAllSongs } from "../utils/allSongsUtils";
  * Automatically refreshes when MPD client or profile changes.
  */
 const allSongsAtom = atomWithRefresh(async (get) => {
-  const mpdClient = get(mpdClientAtom);
-  const profile = get(currentMpdProfileSyncAtom);
+	const mpdClient = get(mpdClientAtom);
+	const profile = get(currentMpdProfileSyncAtom);
 
-  if (profile === undefined) {
-    return undefined;
-  }
+	if (profile === undefined) {
+		return undefined;
+	}
 
-  const songs = await fetchAllSongs(mpdClient, profile);
+	const songs = await fetchAllSongs(mpdClient, profile);
 
-  return songs;
+	return songs;
 });
 
 /**
@@ -38,26 +38,26 @@ export const allSongsSyncAtom = atomWithSync(allSongsAtom);
  * Only returns songs when on the All Songs route.
  */
 const allSongsVisibleSongsSyncAtom = atom((get) => {
-  const allSongs = get(allSongsSyncAtom);
-  const songTableState = get(songTableStateSyncAtom);
-  const globalFilterTokens = get(globalFilterTokensAtom);
-  const pathname = get(pathnameAtom);
+	const allSongs = get(allSongsSyncAtom);
+	const songTableState = get(songTableStateSyncAtom);
+	const globalFilterTokens = get(globalFilterTokensAtom);
+	const pathname = get(pathnameAtom);
 
-  if (
-    pathname !== ROUTE_HOME_ALL_SONGS ||
-    allSongs === undefined ||
-    songTableState === undefined
-  ) {
-    return undefined;
-  }
+	if (
+		pathname !== ROUTE_HOME_ALL_SONGS ||
+		allSongs === undefined ||
+		songTableState === undefined
+	) {
+		return undefined;
+	}
 
-  const filteredSongs = filterSongsByGlobalFilter(
-    allSongs,
-    globalFilterTokens,
-    songTableState.columns,
-  );
+	const filteredSongs = filterSongsByGlobalFilter(
+		allSongs,
+		globalFilterTokens,
+		songTableState.columns,
+	);
 
-  return filteredSongs;
+	return filteredSongs;
 });
 
 /**
@@ -66,7 +66,7 @@ const allSongsVisibleSongsSyncAtom = atom((get) => {
  * @returns Filtered array of Song objects, or undefined if not in All Songs view
  */
 export function useAllSongsState() {
-  return useAtomValue(allSongsVisibleSongsSyncAtom);
+	return useAtomValue(allSongsVisibleSongsSyncAtom);
 }
 
 /**
@@ -75,5 +75,5 @@ export function useAllSongsState() {
  * @returns Refresh function that updates the songs state
  */
 export function useRefreshAllSongsState() {
-  return useSetAtom(allSongsAtom);
+	return useSetAtom(allSongsAtom);
 }

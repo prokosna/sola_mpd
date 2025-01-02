@@ -20,20 +20,20 @@ import { selectedPlaylistAtom } from "./playlistState";
  * access control. Returns empty array if no playlist.
  */
 const playlistSongsAtom = atomWithRefresh(async (get) => {
-  const mpdClient = get(mpdClientAtom);
-  const profile = get(currentMpdProfileSyncAtom);
-  const selectedPlaylist = get(selectedPlaylistAtom);
+	const mpdClient = get(mpdClientAtom);
+	const profile = get(currentMpdProfileSyncAtom);
+	const selectedPlaylist = get(selectedPlaylistAtom);
 
-  if (profile === undefined) {
-    return undefined;
-  }
-  if (selectedPlaylist === undefined) {
-    return [];
-  }
+	if (profile === undefined) {
+		return undefined;
+	}
+	if (selectedPlaylist === undefined) {
+		return [];
+	}
 
-  const songs = await fetchPlaylistSongs(mpdClient, profile, selectedPlaylist);
+	const songs = await fetchPlaylistSongs(mpdClient, profile, selectedPlaylist);
 
-  return songs;
+	return songs;
 });
 
 /**
@@ -51,26 +51,26 @@ const playlistSongsSyncAtom = atomWithSync(playlistSongsAtom);
  * route-specific visibility.
  */
 const playlistVisibleSongsSyncAtom = atom(async (get) => {
-  const playlistSongs = get(playlistSongsSyncAtom);
-  const songTableState = get(songTableStateSyncAtom);
-  const globalFilterTokens = get(globalFilterTokensAtom);
-  const pathname = get(pathnameAtom);
+	const playlistSongs = get(playlistSongsSyncAtom);
+	const songTableState = get(songTableStateSyncAtom);
+	const globalFilterTokens = get(globalFilterTokensAtom);
+	const pathname = get(pathnameAtom);
 
-  if (
-    pathname !== ROUTE_HOME_PLAYLIST ||
-    playlistSongs === undefined ||
-    songTableState === undefined
-  ) {
-    return undefined;
-  }
+	if (
+		pathname !== ROUTE_HOME_PLAYLIST ||
+		playlistSongs === undefined ||
+		songTableState === undefined
+	) {
+		return undefined;
+	}
 
-  const filteredSongs = filterSongsByGlobalFilter(
-    playlistSongs,
-    globalFilterTokens,
-    songTableState.columns,
-  );
+	const filteredSongs = filterSongsByGlobalFilter(
+		playlistSongs,
+		globalFilterTokens,
+		songTableState.columns,
+	);
 
-  return filteredSongs;
+	return filteredSongs;
 });
 
 /**
@@ -82,7 +82,7 @@ const playlistVisibleSongsSyncAtom = atom(async (get) => {
  * @returns Filtered songs or undefined
  */
 export function usePlaylistSongsState() {
-  return useAtomValue(playlistVisibleSongsSyncAtom);
+	return useAtomValue(playlistVisibleSongsSyncAtom);
 }
 
 /**
@@ -94,5 +94,5 @@ export function usePlaylistSongsState() {
  * @returns Refresh function
  */
 export function useRefreshPlaylistSongsState() {
-  return useSetAtom(playlistSongsAtom);
+	return useSetAtom(playlistSongsAtom);
 }

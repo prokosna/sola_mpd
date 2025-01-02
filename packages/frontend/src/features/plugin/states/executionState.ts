@@ -1,28 +1,28 @@
-import { PluginExecuteResponse } from "@sola_mpd/domain/src/models/plugin/plugin_pb.js";
+import type { PluginExecuteResponse } from "@sola_mpd/domain/src/models/plugin/plugin_pb.js";
 import { atom, useAtomValue, useSetAtom } from "jotai";
 
-import { PluginExecutionProps } from "../types/plugin";
+import type { PluginExecutionProps } from "../types/plugin";
 
 /**
  * Plugin execution modal state.
  */
 const isPluginExecutionModalOpenAtom = atom<"start" | "progress" | "closed">(
-  "closed",
+	"closed",
 );
 
 /**
  * Plugin execution properties.
  */
 const pluginExecutionPropsAtom = atom<PluginExecutionProps>({
-  plugin: undefined,
-  songs: [],
+	plugin: undefined,
+	songs: [],
 });
 
 /**
  * Latest execution response.
  */
 const pluginExecutionLatestResponseAtom = atom<
-  PluginExecuteResponse | Error | undefined
+	PluginExecuteResponse | Error | undefined
 >(undefined);
 
 /**
@@ -37,12 +37,12 @@ const pluginExecutionWarningLogsAtom = atom<string[]>([]);
  * while preserving the existing log history.
  */
 const appendPluginExecutionWarningLogAtom = atom(
-  null,
-  (get, set, newLog: string) => {
-    const currentLogs = get(pluginExecutionWarningLogsAtom);
-    const updatedLogs = [...currentLogs, newLog];
-    set(pluginExecutionWarningLogsAtom, updatedLogs);
-  },
+	null,
+	(get, set, newLog: string) => {
+		const currentLogs = get(pluginExecutionWarningLogsAtom);
+		const updatedLogs = [...currentLogs, newLog];
+		set(pluginExecutionWarningLogsAtom, updatedLogs);
+	},
 );
 
 /**
@@ -51,7 +51,7 @@ const appendPluginExecutionWarningLogAtom = atom(
  * @returns Current properties
  */
 export function usePluginExecutionPropsState() {
-  return useAtomValue(pluginExecutionPropsAtom);
+	return useAtomValue(pluginExecutionPropsAtom);
 }
 
 /**
@@ -60,7 +60,7 @@ export function usePluginExecutionPropsState() {
  * @returns Properties setter
  */
 export function useSetPluginExecutionPropsState() {
-  return useSetAtom(pluginExecutionPropsAtom);
+	return useSetAtom(pluginExecutionPropsAtom);
 }
 
 /**
@@ -69,7 +69,7 @@ export function useSetPluginExecutionPropsState() {
  * @returns Modal state
  */
 export function useIsPluginExecutionModalOpenState() {
-  return useAtomValue(isPluginExecutionModalOpenAtom);
+	return useAtomValue(isPluginExecutionModalOpenAtom);
 }
 
 /**
@@ -78,7 +78,7 @@ export function useIsPluginExecutionModalOpenState() {
  * @returns Modal state setter
  */
 export function useSetIsPluginExecutionModalOpenState() {
-  return useSetAtom(isPluginExecutionModalOpenAtom);
+	return useSetAtom(isPluginExecutionModalOpenAtom);
 }
 
 /**
@@ -87,7 +87,7 @@ export function useSetIsPluginExecutionModalOpenState() {
  * @returns Latest response
  */
 export function usePluginExecutionLatestResponseState() {
-  return useAtomValue(pluginExecutionLatestResponseAtom);
+	return useAtomValue(pluginExecutionLatestResponseAtom);
 }
 
 /**
@@ -96,7 +96,7 @@ export function usePluginExecutionLatestResponseState() {
  * @returns Response setter
  */
 export function useSetPluginExecutionLatestResponseState() {
-  return useSetAtom(pluginExecutionLatestResponseAtom);
+	return useSetAtom(pluginExecutionLatestResponseAtom);
 }
 
 /**
@@ -105,13 +105,14 @@ export function useSetPluginExecutionLatestResponseState() {
  * @returns True if running
  */
 export function useIsPreviousPluginStillRunningState() {
-  const latestResponse = useAtomValue(pluginExecutionLatestResponseAtom);
-  if (latestResponse === undefined) {
-    return false;
-  } else if (latestResponse instanceof Error) {
-    return false;
-  }
-  return latestResponse.progressPercentage < 100;
+	const latestResponse = useAtomValue(pluginExecutionLatestResponseAtom);
+	if (latestResponse === undefined) {
+		return false;
+	}
+	if (latestResponse instanceof Error) {
+		return false;
+	}
+	return latestResponse.progressPercentage < 100;
 }
 
 /**
@@ -120,7 +121,7 @@ export function useIsPreviousPluginStillRunningState() {
  * @returns Warning messages
  */
 export function usePluginExecutionWarningLogsState() {
-  return useAtomValue(pluginExecutionWarningLogsAtom);
+	return useAtomValue(pluginExecutionWarningLogsAtom);
 }
 
 /**
@@ -129,7 +130,7 @@ export function usePluginExecutionWarningLogsState() {
  * @returns Logs setter
  */
 export function useSetPluginExecutionWarningLogsState() {
-  return useSetAtom(pluginExecutionWarningLogsAtom);
+	return useSetAtom(pluginExecutionWarningLogsAtom);
 }
 
 /**
@@ -138,5 +139,5 @@ export function useSetPluginExecutionWarningLogsState() {
  * @returns Log appender
  */
 export function useAppendPluginExecutionWarningLogState() {
-  return useSetAtom(appendPluginExecutionWarningLogAtom);
+	return useSetAtom(appendPluginExecutionWarningLogAtom);
 }

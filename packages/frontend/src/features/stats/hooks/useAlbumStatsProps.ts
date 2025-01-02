@@ -1,7 +1,10 @@
-import { Song, Song_MetadataTag } from "@sola_mpd/domain/src/models/song_pb.js";
+import {
+	type Song,
+	Song_MetadataTag,
+} from "@sola_mpd/domain/src/models/song_pb.js";
 import { useMemo } from "react";
 
-import { CardStatsNumberProps } from "../components/CardStatsNumber";
+import type { CardStatsNumberProps } from "../components/CardStatsNumber";
 import { useStatsState } from "../states/statsState";
 import { getMetadataValueCountDistinct } from "../utils/statsUtils";
 
@@ -13,27 +16,27 @@ import { getMetadataValueCountDistinct } from "../utils/statsUtils";
  * @returns CardStatsNumberProps object containing album statistics.
  */
 export function useAlbumStatsProps(
-  showSelectedStats: boolean,
-  selectedSongs: Song[],
+	showSelectedStats: boolean,
+	selectedSongs: Song[],
 ): CardStatsNumberProps {
-  const stats = useStatsState();
+	const stats = useStatsState();
 
-  const count = useMemo(() => {
-    if (stats === undefined) {
-      return undefined;
-    }
-    if (showSelectedStats) {
-      return getMetadataValueCountDistinct(
-        selectedSongs,
-        Song_MetadataTag.ALBUM,
-      );
-    }
-    return stats.albumsCount;
-  }, [showSelectedStats, selectedSongs, stats]);
+	const count = useMemo(() => {
+		if (stats === undefined) {
+			return undefined;
+		}
+		if (showSelectedStats) {
+			return getMetadataValueCountDistinct(
+				selectedSongs,
+				Song_MetadataTag.ALBUM,
+			);
+		}
+		return stats.albumsCount;
+	}, [showSelectedStats, selectedSongs, stats]);
 
-  return {
-    isSelected: showSelectedStats,
-    label: showSelectedStats ? "Albums of Selected Songs" : "Total Albums",
-    count,
-  };
+	return {
+		isSelected: showSelectedStats,
+		label: showSelectedStats ? "Albums of Selected Songs" : "Total Albums",
+		count,
+	};
 }
