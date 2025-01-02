@@ -10,6 +10,7 @@ import {
 } from "@sola_mpd/domain/src/models/song_pb.js";
 import type { SongTableColumn } from "@sola_mpd/domain/src/models/song_table_pb.js";
 
+import { v4 as uuidv4 } from "uuid";
 import type { SearchConditions } from "../types/searchTypes";
 
 /**
@@ -43,7 +44,7 @@ export function getDefaultQuery(): Query {
  */
 export function getDefaultCondition(): FilterCondition {
 	return new FilterCondition({
-		uuid: crypto.randomUUID(),
+		uuid: uuidv4(),
 		tag: Song_MetadataTag.TITLE,
 		operator: FilterCondition_Operator.EQUAL,
 		value: new Song_MetadataValue({

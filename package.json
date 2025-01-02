@@ -42,6 +42,7 @@
 	"dependencies": {
 		"@bufbuild/protobuf": "^1.10.0",
 		"@connectrpc/connect": "^1.6.1",
-		"dayjs": "^1.11.13"
+		"dayjs": "^1.11.13",
+		"uuid": "^11.0.3"
 	}
 }
