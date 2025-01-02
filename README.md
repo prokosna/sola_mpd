@@ -18,9 +18,10 @@ This client has the following features:
 - [x] Intuitive song table editing (powered by [AG Grid](https://www.ag-grid.com/))
 - [x] Multiple MPD servers
 - [x] Dark theme
-- [x] Simple full-text search
+- [x] All songs (Simple full-text search)
 - [x] Responsive layout for tablets
 - [x] Support touch devices
+- [x] Browse recently added artists, albums and composers
 
 On the other hand, the following features are out of scope for now:
 
@@ -153,7 +154,9 @@ This plugin is quite specific to my use case, but you can use this as a referenc
 
 ## For developers
 
-Sola MPD is written in TypeScript with React, Vite, Protocol Buffers and so on.
+### Setup a development environment
+
+Sola MPD is written in TypeScript with React, Vite, Protocol Buffers, Jotai, etc.th React, Vite, Protocol Buffers and so on.
 
 ```
 # 1. Install dependencies, set up a husky hook for format/lint
@@ -166,6 +169,5 @@ $ npm run proto
 $ npm run -w packages/domain build
 
 # 4. Run dev servers
-$ npm run -w packages/backend dev
-$ npm run -w packages/frontend dev
+$ npm run dev
 ```

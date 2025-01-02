@@ -4,42 +4,50 @@ import { IoPlaySkipForward } from "react-icons/io5";
 
 import { useMpdClientState } from "../../mpd";
 import { useCurrentMpdProfileState } from "../../profile";
-import { useCurrentSongState } from "../states/song";
+import { useCurrentSongState } from "../states/playerSongState";
 
 import { PlayerControlsButton } from "./PlayerControlsButton";
 
+/**
+ * Button for playing the next track.
+ *
+ * Sends the 'next' command to MPD when clicked. Disabled when
+ * no song is currently playing.
+ *
+ * @returns Next track button
+ */
 export function PlayerControlsButtonNext() {
-  const profile = useCurrentMpdProfileState();
-  const mpdClient = useMpdClientState();
-  const currentSong = useCurrentSongState();
+	const profile = useCurrentMpdProfileState();
+	const mpdClient = useMpdClientState();
+	const currentSong = useCurrentSongState();
 
-  const onClick = useCallback(async () => {
-    if (profile === undefined || mpdClient === undefined) {
-      return;
-    }
+	const onButtonClicked = useCallback(async () => {
+		if (profile === undefined || mpdClient === undefined) {
+			return;
+		}
 
-    mpdClient.command(
-      new MpdRequest({
-        profile,
-        command: {
-          case: "next",
-          value: {},
-        },
-      }),
-    );
-  }, [mpdClient, profile]);
+		mpdClient.command(
+			new MpdRequest({
+				profile,
+				command: {
+					case: "next",
+					value: {},
+				},
+			}),
+		);
+	}, [mpdClient, profile]);
 
-  const props = {
-    label: "Play next",
-    isDisabled: currentSong === undefined,
-    onClick,
-    icon: <IoPlaySkipForward size={"24"}></IoPlaySkipForward>,
-    variant: "ghost",
-  };
+	const props = {
+		label: "Play next",
+		isDisabled: currentSong === undefined,
+		onButtonClicked,
+		icon: <IoPlaySkipForward size={"24"} />,
+		variant: "ghost",
+	};
 
-  return (
-    <>
-      <PlayerControlsButton {...props}></PlayerControlsButton>
-    </>
-  );
+	return (
+		<>
+			<PlayerControlsButton {...props} />
+		</>
+	);
 }

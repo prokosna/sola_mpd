@@ -1,166 +1,158 @@
-import { useToast } from "@chakra-ui/react";
-import { MpdRequest } from "@sola_mpd/domain/src/models/mpd/mpd_command_pb.js";
 import { Plugin_PluginType } from "@sola_mpd/domain/src/models/plugin/plugin_pb.js";
-import { Song } from "@sola_mpd/domain/src/models/song_pb.js";
-import { MutableRefObject, useCallback } from "react";
+import type { Song } from "@sola_mpd/domain/src/models/song_pb.js";
+import type { SongTableColumn } from "@sola_mpd/domain/src/models/song_table_pb.js";
+import { type MutableRefObject, useCallback } from "react";
 
 import { COMPONENT_ID_FILE_EXPLORE_MAIN_PANE } from "../../../const/component";
-import { ContextMenuSection } from "../../context_menu";
+import { useNotification } from "../../../lib/chakra/hooks/useNotification";
+import { UpdateMode } from "../../../types/stateTypes";
+import type { ContextMenuSection } from "../../context_menu";
 import { useMpdClientState } from "../../mpd";
 import { usePluginContextMenuItems } from "../../plugin";
 import { useCurrentMpdProfileState } from "../../profile";
 import {
-  getSongTableContextMenuAdd,
-  getSongTableContextMenuAddToPlaylist,
-  getSongTableContextMenuEditColumns,
-  getSongTableContextMenuReplace,
-  SongTableProps,
-  useOnUpdateCommonColumns,
-  useCommonSongTableState,
-  useSetSelectedSongsState,
-  SongTableKeyType,
-  SongTableContextMenuItemParams,
+	type SongTableContextMenuItemParams,
+	SongTableKeyType,
+	type SongTableProps,
+	getSongTableContextMenuAdd,
+	getSongTableContextMenuAddToPlaylist,
+	getSongTableContextMenuEditColumns,
+	getSongTableContextMenuReplace,
+	useHandleSongDoubleClick,
+	useSetSelectedSongsState,
+	useSongTableState,
+	useUpdateSongTableState,
 } from "../../song_table";
-import { useFileExploreVisibleSongsState } from "../states/songs";
+import { useFileExploreSongsState } from "../states/fileExploreSongsState";
 import {
-  useIsFileExploreLoadingState,
-  useSetIsFileExploreLoadingState,
-} from "../states/ui";
+	useIsFileExploreLoadingState,
+	useSetIsFileExploreLoadingState,
+} from "../states/fileExploreUiState";
 
+/**
+ * Hook for managing file explorer song table functionality.
+ *
+ * Features:
+ * - Queue and playlist management
+ * - Plugin integration
+ * - Column customization
+ * - Selection and interaction handling
+ * - Loading state management
+ *
+ * @param songsToAddToPlaylistRef - Reference for playlist operations
+ * @param setIsOpenPlaylistSelectModal - Playlist modal control
+ * @param setIsOpenColumnEditModal - Column edit modal control
+ * @returns Song table properties or undefined if data not ready
+ */
 export function useFileExploreSongTableProps(
-  songsToAddToPlaylistRef: MutableRefObject<Song[]>,
-  setIsOpenPlaylistSelectModal: (open: boolean) => void,
-  setIsOpenColumnEditModal: (open: boolean) => void,
+	songsToAddToPlaylistRef: MutableRefObject<Song[]>,
+	setIsOpenPlaylistSelectModal: (open: boolean) => void,
+	setIsOpenColumnEditModal: (open: boolean) => void,
 ): SongTableProps | undefined {
-  const songTableKeyType = SongTableKeyType.PATH;
+	const songTableKeyType = SongTableKeyType.PATH;
 
-  const toast = useToast();
-  const profile = useCurrentMpdProfileState();
-  const songs = useFileExploreVisibleSongsState();
-  const commonSongTableState = useCommonSongTableState();
-  const mpdClient = useMpdClientState();
-  const isLoading = useIsFileExploreLoadingState();
-  const setIsLoading = useSetIsFileExploreLoadingState();
-  const setSelectedSongs = useSetSelectedSongsState();
-  const onUpdateColumns = useOnUpdateCommonColumns(commonSongTableState);
-  const pluginContextMenuItems = usePluginContextMenuItems(
-    Plugin_PluginType.ON_FILE_EXPLORE,
-    songTableKeyType,
-  );
+	const notify = useNotification();
 
-  const contextMenuSections: ContextMenuSection<SongTableContextMenuItemParams>[] =
-    [
-      {
-        items: [
-          getSongTableContextMenuAdd(
-            songTableKeyType,
-            toast,
-            profile,
-            mpdClient,
-          ),
-          getSongTableContextMenuReplace(
-            songTableKeyType,
-            toast,
-            profile,
-            mpdClient,
-          ),
-        ],
-      },
-      {
-        items: [
-          getSongTableContextMenuAddToPlaylist(
-            songTableKeyType,
-            songsToAddToPlaylistRef,
-            setIsOpenPlaylistSelectModal,
-          ),
-        ],
-      },
-      {
-        items: [getSongTableContextMenuEditColumns(setIsOpenColumnEditModal)],
-      },
-    ];
-  if (pluginContextMenuItems.length > 0) {
-    contextMenuSections.push({
-      items: pluginContextMenuItems,
-    });
-  }
+	const profile = useCurrentMpdProfileState();
+	const mpdClient = useMpdClientState();
+	const isLoading = useIsFileExploreLoadingState();
+	const songs = useFileExploreSongsState();
+	const songTableState = useSongTableState();
+	const setIsFileExploreLoading = useSetIsFileExploreLoadingState();
+	const updateSongTableState = useUpdateSongTableState();
+	const setSelectedSongs = useSetSelectedSongsState();
 
-  const onReorderSongs = useCallback(async (_orderedSongs: Song[]) => {
-    throw new Error("Reorder songs shouldn't be supported in FileExplore.");
-  }, []);
+	// Plugin context menu items
+	const pluginContextMenuItems = usePluginContextMenuItems(
+		Plugin_PluginType.ON_FILE_EXPLORE,
+		songTableKeyType,
+	);
 
-  const onSelectSongs = useCallback(
-    async (selectedSongs: Song[]) => {
-      setSelectedSongs(selectedSongs);
-    },
-    [setSelectedSongs],
-  );
+	const contextMenuSections: ContextMenuSection<SongTableContextMenuItemParams>[] =
+		[
+			{
+				items: [
+					getSongTableContextMenuAdd(
+						songTableKeyType,
+						notify,
+						profile,
+						mpdClient,
+					),
+					getSongTableContextMenuReplace(
+						songTableKeyType,
+						notify,
+						profile,
+						mpdClient,
+					),
+				],
+			},
+			{
+				items: [
+					getSongTableContextMenuAddToPlaylist(
+						songTableKeyType,
+						songsToAddToPlaylistRef,
+						setIsOpenPlaylistSelectModal,
+					),
+				],
+			},
+			{
+				items: [getSongTableContextMenuEditColumns(setIsOpenColumnEditModal)],
+			},
+		];
+	if (pluginContextMenuItems.length > 0) {
+		contextMenuSections.push({
+			items: pluginContextMenuItems,
+		});
+	}
 
-  const onDoubleClick = useCallback(
-    async (clickedSong: Song) => {
-      if (profile === undefined || mpdClient === undefined) {
-        return;
-      }
-      const addCommand = new MpdRequest({
-        profile,
-        command: {
-          case: "add",
-          value: { uri: clickedSong.path },
-        },
-      });
-      await mpdClient.command(addCommand);
-      const getCommand = new MpdRequest({
-        profile,
-        command: {
-          case: "playlistinfo",
-          value: {},
-        },
-      });
-      const res = await mpdClient.command(getCommand);
-      if (res.command.case !== "playlistinfo") {
-        throw Error(`Invalid MPD response: ${res.toJsonString()}`);
-      }
-      const playQueueSongs = res.command.value.songs;
-      await mpdClient.command(
-        new MpdRequest({
-          profile,
-          command: {
-            case: "play",
-            value: {
-              target: {
-                case: "pos",
-                value: String(playQueueSongs.length - 1),
-              },
-            },
-          },
-        }),
-      );
-    },
-    [mpdClient, profile],
-  );
+	// Handlers
+	const onSongsReordered = useCallback(async (_orderedSongs: Song[]) => {
+		throw new Error("Reorder songs shouldn't be supported in FileExplore.");
+	}, []);
 
-  const onCompleteLoading = useCallback(async () => {
-    setIsLoading(false);
-  }, [setIsLoading]);
+	const onColumnsUpdated = useCallback(
+		async (updatedColumns: SongTableColumn[]) => {
+			if (songTableState === undefined) {
+				return;
+			}
+			const newSongTableState = songTableState.clone();
+			newSongTableState.columns = updatedColumns;
+			updateSongTableState(newSongTableState, UpdateMode.PERSIST);
+		},
+		[songTableState, updateSongTableState],
+	);
 
-  if (songs === undefined || commonSongTableState === undefined) {
-    return undefined;
-  }
+	const onSongsSelected = useCallback(
+		async (selectedSongs: Song[]) => {
+			setSelectedSongs(selectedSongs);
+		},
+		[setSelectedSongs],
+	);
 
-  return {
-    id: COMPONENT_ID_FILE_EXPLORE_MAIN_PANE,
-    songTableKeyType,
-    songs,
-    columns: commonSongTableState.columns,
-    isSortingEnabled: false,
-    isReorderingEnabled: false,
-    isGlobalFilterEnabled: true,
-    contextMenuSections,
-    isLoading,
-    onReorderSongs,
-    onUpdateColumns,
-    onSelectSongs,
-    onDoubleClick,
-    onCompleteLoading,
-  };
+	const onSongDoubleClick = useHandleSongDoubleClick(mpdClient, profile);
+
+	const onLoadingCompleted = useCallback(async () => {
+		setIsFileExploreLoading(false);
+	}, [setIsFileExploreLoading]);
+
+	if (songs === undefined || songTableState === undefined) {
+		return undefined;
+	}
+
+	return {
+		id: COMPONENT_ID_FILE_EXPLORE_MAIN_PANE,
+		songTableKeyType,
+		songs,
+		columns: songTableState.columns,
+		isSortingEnabled: false,
+		isReorderingEnabled: false,
+		isGlobalFilterEnabled: true,
+		contextMenuSections,
+		isLoading,
+		onSongsReordered,
+		onColumnsUpdated,
+		onSongsSelected,
+		onSongDoubleClick,
+		onLoadingCompleted,
+	};
 }

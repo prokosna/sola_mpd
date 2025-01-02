@@ -4,8 +4,8 @@ import { PluginState } from "@sola_mpd/domain/src/models/plugin/plugin_pb.js";
 import { FileRepository } from "./FileRepository.js";
 
 export const pluginStateRepository = new FileRepository<PluginState>(
-  DB_FILE_PLUGIN_STATE,
-  new PluginState({
-    plugins: [],
-  }),
+	DB_FILE_PLUGIN_STATE,
+	new PluginState({
+		plugins: [],
+	}),
 );

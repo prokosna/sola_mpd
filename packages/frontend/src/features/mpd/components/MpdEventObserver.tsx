@@ -1,81 +1,76 @@
-import {
-  SIO_MPD_EVENT,
-  SIO_MPD_SUBSCRIBE,
-} from "@sola_mpd/domain/src/const/socketio.js";
-import {
-  MpdEvent,
-  MpdEvent_EventType,
-} from "@sola_mpd/domain/src/models/mpd/mpd_event_pb.js";
+import { MpdEvent_EventType } from "@sola_mpd/domain/src/models/mpd/mpd_event_pb.js";
 import { useEffect } from "react";
 
 import { useRefreshPlayQueueSongsState } from "../../play_queue";
 import { useRefreshPlayerVolumeState } from "../../player";
 import {
-  useRefreshPlaylistsState,
-  useRefreshPlaylistSongsState,
+	useRefreshPlaylistSongsState,
+	useRefreshPlaylistsState,
 } from "../../playlist";
 import { useCurrentMpdProfileState } from "../../profile";
-import { useSocketState, SocketIoClientUtils } from "../../socketio";
 import { useRefreshStatsState } from "../../stats";
+import { useMpdListenerState } from "../states/mpdListener";
 
+/**
+ * Manages MPD event handling and corresponding state updates.
+ *
+ * Subscribes to MPD events based on the current profile and updates
+ * application state accordingly. Handles events for database updates,
+ * playlist changes, queue modifications, volume changes, and connection
+ * status. Automatically manages event subscriptions lifecycle.
+ *
+ * Should be mounted near the root to ensure proper event handling
+ * across the application.
+ *
+ * @returns null - No UI rendered
+ */
 export function MpdEventObserver() {
-  const socket = useSocketState();
-  const profile = useCurrentMpdProfileState();
-  const refreshStats = useRefreshStatsState();
-  const refreshPlayQueueSongs = useRefreshPlayQueueSongsState();
-  const refreshPlaylists = useRefreshPlaylistsState();
-  const refreshPlaylistSongs = useRefreshPlaylistSongsState();
-  const refreshPlayerVolume = useRefreshPlayerVolumeState();
+	const mpdListener = useMpdListenerState();
+	const profile = useCurrentMpdProfileState();
+	const refreshStats = useRefreshStatsState();
+	const refreshPlayQueueSongs = useRefreshPlayQueueSongsState();
+	const refreshPlaylists = useRefreshPlaylistsState();
+	const refreshPlaylistSongs = useRefreshPlaylistSongsState();
+	const refreshPlayerVolume = useRefreshPlayerVolumeState();
 
-  useEffect(() => {
-    if (socket === undefined || profile === undefined) {
-      return;
-    }
+	useEffect(() => {
+		if (profile === undefined) {
+			return;
+		}
 
-    socket.on(SIO_MPD_EVENT, (msg: string) => {
-      const event = MpdEvent.fromJsonString(msg);
-      console.info(`MPD event: ${MpdEvent_EventType[event.eventType]}`);
+		mpdListener.on(MpdEvent_EventType.DATABASE, () => {
+			refreshStats();
+		});
+		mpdListener.on(MpdEvent_EventType.UPDATE, () => {
+			refreshStats();
+		});
+		mpdListener.on(MpdEvent_EventType.PLAYLIST, () => {
+			refreshPlaylists();
+			refreshPlaylistSongs();
+		});
+		mpdListener.on(MpdEvent_EventType.PLAY_QUEUE, () => {
+			refreshPlayQueueSongs();
+		});
+		mpdListener.on(MpdEvent_EventType.MIXER, () => {
+			refreshPlayerVolume();
+		});
+		mpdListener.on(MpdEvent_EventType.OPTIONS, () => {});
+		mpdListener.on(MpdEvent_EventType.PLAYER, () => {});
+		mpdListener.on(MpdEvent_EventType.DISCONNECTED, () => {});
+		mpdListener.subscribe(profile);
 
-      switch (event.eventType) {
-        case MpdEvent_EventType.DATABASE:
-          refreshStats();
-          break;
-        case MpdEvent_EventType.UPDATE:
-          refreshStats();
-          break;
-        case MpdEvent_EventType.PLAYLIST:
-          refreshPlaylists();
-          refreshPlaylistSongs();
-          break;
-        case MpdEvent_EventType.PLAY_QUEUE:
-          refreshPlayQueueSongs();
-          break;
-        case MpdEvent_EventType.MIXER:
-          refreshPlayerVolume();
-          break;
-        case MpdEvent_EventType.OPTIONS:
-          break;
-        case MpdEvent_EventType.PLAYER:
-          break;
-        case MpdEvent_EventType.DISCONNECTED:
-          break;
-      }
-    });
+		return () => {
+			mpdListener.unsubscribe(profile);
+		};
+	}, [
+		mpdListener,
+		profile,
+		refreshPlayQueueSongs,
+		refreshPlayerVolume,
+		refreshPlaylistSongs,
+		refreshPlaylists,
+		refreshStats,
+	]);
 
-    SocketIoClientUtils.emit(socket, SIO_MPD_SUBSCRIBE, profile.toBinary());
-
-    return () => {
-      socket.off(SIO_MPD_EVENT);
-    };
-  }, [
-    profile,
-    refreshPlayQueueSongs,
-    refreshPlayerVolume,
-    refreshPlaylistSongs,
-    refreshPlaylists,
-    refreshStats,
-    socket,
-  ]);
-
-  return undefined;
+	return null;
 }

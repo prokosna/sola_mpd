@@ -2,4 +2,4 @@
 export { LocationObserver } from "./components/LocationObserver";
 
 // States
-export { usePathname } from "./states/location";
+export { usePathname } from "./states/locationState";

@@ -18,6 +18,7 @@ message Plugin {
     ON_FILE_EXPLORE = 4;
     ON_BROWSER = 5;
     ON_FULL_TEXT_SEARCH = 6;
+    ON_RECENTLY_ADDED = 7;
   }
 }
 

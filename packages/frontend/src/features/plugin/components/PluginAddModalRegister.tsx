@@ -1,97 +1,112 @@
 import {
-  ModalHeader,
-  ModalCloseButton,
-  ModalBody,
-  Divider,
-  FormControl,
-  FormLabel,
-  Input,
-  ModalFooter,
-  ButtonGroup,
-  Button,
-  Text,
-  useToast,
+	Button,
+	ButtonGroup,
+	Divider,
+	FormControl,
+	FormLabel,
+	Input,
+	ModalBody,
+	ModalCloseButton,
+	ModalFooter,
+	ModalHeader,
+	Text,
 } from "@chakra-ui/react";
-import { Plugin } from "@sola_mpd/domain/src/models/plugin/plugin_pb.js";
+import type { Plugin } from "@sola_mpd/domain/src/models/plugin/plugin_pb.js";
 import { useCallback, useState } from "react";
 
-import { usePluginState, useSetPluginState } from "../states/persistent";
+import { useNotification } from "../../../lib/chakra/hooks/useNotification";
+import { UpdateMode } from "../../../types/stateTypes";
+import { usePluginState, useUpdatePluginState } from "../states/pluginState";
 
 export type PluginAddModalRegisterProps = {
-  pluginToAdd: Plugin;
-  onCloseModal: () => void;
+	pluginToAdd: Plugin;
+	handleModalClosed: () => void;
 };
 
+/**
+ * Plugin registration form.
+ *
+ * Shows info and handles registration.
+ *
+ * @param props.pluginToAdd Plugin to register
+ * @param props.handleModalClosed Close handler
+ * @returns Registration form
+ */
 export function PluginAddModalRegister(props: PluginAddModalRegisterProps) {
-  const { pluginToAdd, onCloseModal } = props;
+	const { pluginToAdd, handleModalClosed } = props;
 
-  const toast = useToast();
-  const [parameterValues, setParameterValues] = useState<Map<string, string>>(
-    new Map(),
-  );
-  const pluginState = usePluginState();
-  const setPluginState = useSetPluginState();
+	const notify = useNotification();
 
-  const onRegisterPlugin = useCallback(() => {
-    if (pluginState === undefined) {
-      return;
-    }
+	const pluginState = usePluginState();
+	const updatePluginState = useUpdatePluginState();
 
-    parameterValues.forEach((value, key) => {
-      pluginToAdd.pluginParameters[key] = value;
-    });
+	const [parameterValues, setParameterValues] = useState<Map<string, string>>(
+		new Map(),
+	);
 
-    const newPluginState = pluginState.clone();
-    newPluginState.plugins.push(pluginToAdd);
-    setPluginState(newPluginState);
+	const handlePluginRegistered = useCallback(() => {
+		if (pluginState === undefined) {
+			return;
+		}
 
-    toast({
-      status: "success",
-      title: "Plugin successfully added",
-      description: `New plugin "${pluginToAdd.info?.name}" has been added.`,
-    });
+		parameterValues.forEach((value, key) => {
+			pluginToAdd.pluginParameters[key] = value;
+		});
 
-    onCloseModal();
-  }, [
-    pluginState,
-    parameterValues,
-    pluginToAdd,
-    setPluginState,
-    toast,
-    onCloseModal,
-  ]);
+		const newPluginState = pluginState.clone();
+		newPluginState.plugins.push(pluginToAdd);
+		updatePluginState(
+			newPluginState,
+			UpdateMode.LOCAL_STATE | UpdateMode.PERSIST,
+		);
 
-  return (
-    <>
-      <ModalHeader>
-        {pluginToAdd.info?.name} {pluginToAdd.info?.version}
-      </ModalHeader>
-      <ModalCloseButton />
-      <ModalBody>
-        <Text>{pluginToAdd.info?.description}</Text>
-        <Divider my={4}></Divider>
-        {(pluginToAdd.info?.requiredPluginParameters || []).map((key) => (
-          <FormControl key={key}>
-            <FormLabel>{key}</FormLabel>
-            <Input
-              type="text"
-              value={parameterValues.get(key) || ""}
-              onChange={(e) => {
-                const newValues = new Map(parameterValues);
-                newValues.set(key, e.target.value);
-                setParameterValues(newValues);
-              }}
-            ></Input>
-          </FormControl>
-        ))}
-      </ModalBody>
-      <ModalFooter>
-        <ButtonGroup spacing="2">
-          <Button variant="solid" onClick={onRegisterPlugin}>
-            Add
-          </Button>
-        </ButtonGroup>
-      </ModalFooter>
-    </>
-  );
+		notify({
+			status: "success",
+			title: "Plugin successfully added",
+			description: `New plugin "${pluginToAdd.info?.name}" has been added.`,
+		});
+
+		handleModalClosed();
+	}, [
+		pluginState,
+		parameterValues,
+		pluginToAdd,
+		updatePluginState,
+		notify,
+		handleModalClosed,
+	]);
+
+	return (
+		<>
+			<ModalHeader>
+				{pluginToAdd.info?.name} {pluginToAdd.info?.version}
+			</ModalHeader>
+			<ModalCloseButton />
+			<ModalBody>
+				<Text>{pluginToAdd.info?.description}</Text>
+				<Divider my={4} />
+				{(pluginToAdd.info?.requiredPluginParameters || []).map((key) => (
+					<FormControl key={key}>
+						<FormLabel>{key}</FormLabel>
+						<Input
+							type="text"
+							value={parameterValues.get(key) || ""}
+							onChange={(e) => {
+								const newValues = new Map(parameterValues);
+								newValues.set(key, e.target.value);
+								setParameterValues(newValues);
+							}}
+						/>
+					</FormControl>
+				))}
+			</ModalBody>
+			<ModalFooter>
+				<ButtonGroup spacing="2">
+					<Button variant="solid" onClick={handlePluginRegistered}>
+						Add
+					</Button>
+				</ButtonGroup>
+			</ModalFooter>
+		</>
+	);
 }

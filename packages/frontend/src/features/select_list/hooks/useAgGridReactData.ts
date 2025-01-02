@@ -1,24 +1,39 @@
 import { useMemo } from "react";
 
-export function useAgGridReactData(values: string[], header?: string) {
-  const rowData = useMemo(() => {
-    return values.map((value) => ({ key: value, [header ?? "header"]: value }));
-  }, [header, values]);
+import type {
+	SelectListColumnDefinition,
+	SelectListRowData,
+} from "../types/selectListTypes";
 
-  const columnDefs = useMemo(() => {
-    return [
-      {
-        field: header ?? "header",
-        flex: 1,
-        resizable: false,
-        sortable: false,
-        cellDataType: false,
-      },
-    ];
-  }, [header]);
+/**
+ * Format data for AG Grid.
+ *
+ * @param values Values to display
+ * @param headerTitle Optional header
+ * @returns Row data and column definitions
+ */
+export function useAgGridReactData(values: string[], headerTitle?: string) {
+	const rowData: SelectListRowData[] = useMemo(() => {
+		return values.map((value) => ({
+			key: value,
+			[headerTitle ?? "header"]: value,
+		}));
+	}, [headerTitle, values]);
 
-  return {
-    rowData,
-    columnDefs,
-  };
+	const columnDefs: SelectListColumnDefinition[] = useMemo(() => {
+		return [
+			{
+				field: headerTitle ?? "header",
+				flex: 1,
+				resizable: false,
+				sortable: false,
+				cellDataType: false,
+			},
+		];
+	}, [headerTitle]);
+
+	return {
+		rowData,
+		columnDefs,
+	};
 }

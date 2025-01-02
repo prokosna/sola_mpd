@@ -1,73 +1,68 @@
 import { Box } from "@chakra-ui/react";
-import { Song } from "@sola_mpd/domain/src/models/song_pb.js";
-import { SongTableColumn } from "@sola_mpd/domain/src/models/song_table_pb.js";
-import { useCallback, useRef, useState } from "react";
+import type { SongTableColumn } from "@sola_mpd/domain/src/models/song_table_pb.js";
+import { useCallback, useState } from "react";
 
 import { CenterSpinner } from "../../loading";
+import { PlaylistSelectModal, usePlaylistSelectModal } from "../../playlist";
 import {
-  PlaylistSelectModal,
-  usePlaylistSelectModalProps,
-} from "../../playlist";
-import {
-  ColumnEditModal,
-  SongTable,
-  useColumnEditModalProps,
+	ColumnEditModal,
+	SongTable,
+	useColumnEditModalProps,
 } from "../../song_table";
-import { changeEditingSearchColumns } from "../helpers/search";
+import { useHandleSearchColumnsUpdated } from "../hooks/useHandleSearchColumnsUpdated";
 import { useSearchSongTableProps } from "../hooks/useSearchSongTableProps";
-import {
-  useEditingSearchState,
-  useSetEditingSearchState,
-} from "../states/edit";
-import { EditingSearchStatus } from "../types/search";
+import { useEditingSearchState } from "../states/searchEditState";
 
+/**
+ * Search content area component.
+ *
+ * Manages song table, column editing, and playlist selection.
+ *
+ * @returns Content component
+ */
 export function SearchContent() {
-  const songsToAddToPlaylistRef = useRef<Song[]>([]);
-  const [isOpenPlaylistSelectModal, setIsOpenPlaylistSelectModal] =
-    useState(false);
-  const [isOpenColumnEditModal, setIsOpenColumnEditModal] = useState(false);
-  const editingSearch = useEditingSearchState();
-  const setEditingSearch = useSetEditingSearchState();
+	const editingSearch = useEditingSearchState();
+	const handleSearchColumnsUpdated = useHandleSearchColumnsUpdated();
 
-  const songTableProps = useSearchSongTableProps(
-    songsToAddToPlaylistRef,
-    setIsOpenPlaylistSelectModal,
-    setIsOpenColumnEditModal,
-  );
+	const [isColumnEditModalOpen, setIsColumnEditModalOpen] = useState(false);
 
-  const playlistSelectModalProps = usePlaylistSelectModalProps(
-    isOpenPlaylistSelectModal,
-    songsToAddToPlaylistRef,
-    setIsOpenPlaylistSelectModal,
-  );
+	const {
+		songsToAddToPlaylistRef,
+		setIsPlaylistSelectModalOpen,
+		playlistSelectModalProps,
+	} = usePlaylistSelectModal();
 
-  const onClickColumnEditModalOk = useCallback(
-    (columns: SongTableColumn[]) => {
-      const newSearch = changeEditingSearchColumns(editingSearch, columns);
-      setEditingSearch(newSearch, EditingSearchStatus.COLUMNS_UPDATED);
-    },
-    [editingSearch, setEditingSearch],
-  );
+	const songTableProps = useSearchSongTableProps(
+		songsToAddToPlaylistRef,
+		setIsPlaylistSelectModalOpen,
+		setIsColumnEditModalOpen,
+	);
 
-  const columnEditModalProps = useColumnEditModalProps(
-    isOpenColumnEditModal,
-    setIsOpenColumnEditModal,
-    editingSearch.columns,
-    onClickColumnEditModalOk,
-    () => {},
-  );
+	const onColumnsUpdated = useCallback(
+		async (columns: SongTableColumn[]) => {
+			await handleSearchColumnsUpdated(editingSearch, columns);
+		},
+		[editingSearch, handleSearchColumnsUpdated],
+	);
+	const columnEditModalProps = useColumnEditModalProps(
+		isColumnEditModalOpen,
+		editingSearch.columns,
+		setIsColumnEditModalOpen,
+		onColumnsUpdated,
+		async () => {},
+	);
 
-  if (songTableProps === undefined || columnEditModalProps === undefined) {
-    return <CenterSpinner className="layout-border-top layout-border-left" />;
-  }
+	if (songTableProps === undefined || columnEditModalProps === undefined) {
+		return <CenterSpinner className="layout-border-top layout-border-left" />;
+	}
 
-  return (
-    <>
-      <Box w="100%" h="full">
-        <SongTable {...songTableProps} />
-        <PlaylistSelectModal {...playlistSelectModalProps} />
-        <ColumnEditModal {...columnEditModalProps} />
-      </Box>
-    </>
-  );
+	return (
+		<>
+			<Box w="100%" h="full">
+				<SongTable {...songTableProps} />
+				<PlaylistSelectModal {...playlistSelectModalProps} />
+				<ColumnEditModal {...columnEditModalProps} />
+			</Box>
+		</>
+	);
 }

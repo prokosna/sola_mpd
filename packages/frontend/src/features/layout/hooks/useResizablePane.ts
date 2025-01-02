@@ -3,52 +3,87 @@ import { useCallback, useEffect, useMemo, useRef } from "react";
 
 import { useIsTouchDevice } from "../../user_device";
 
+/**
+ * Advanced resizable pane management hook with persistence.
+ *
+ * Features:
+ * - Touch device optimization
+ * - Debounced persistence
+ * - Width constraints
+ * - Percentage-based sizing
+ * - Responsive layout
+ *
+ * Implementation:
+ * - Uses allotment for split panes
+ * - Ref-based timeout tracking
+ * - Memoized width calculations
+ * - Device-aware adjustments
+ *
+ * Performance:
+ * - Debounced state updates
+ * - Optimized resize handling
+ * - Minimal re-renders
+ * - Memory-safe cleanup
+ *
+ * Safety Features:
+ * - NaN value protection
+ * - Width constraints (max 90%)
+ * - Timeout cleanup
+ * - Undefined state handling
+ *
+ * @example
+ * ```tsx
+ * const { isReady, leftPaneWidthStyle, handlePanelResize } = useResizablePane(
+ *   50, // Initial left pane width (50%)
+ *   async (width) => await saveWidth(width)
+ * );
+ * ```
+ *
+ * @param leftWidth Initial left pane width (%)
+ * @param onPanelWidthUpdated Width change callback
+ * @returns Hook state and handlers
+ */
 export function useResizablePane(
-  leftWidth: number | undefined,
-  onChangeWidth: (left: number) => Promise<void>,
+	leftWidth: number | undefined,
+	onPanelWidthUpdated: (left: number) => Promise<void>,
 ) {
-  const isTouchDevice = useIsTouchDevice();
+	const isTouchDevice = useIsTouchDevice();
 
-  const timeoutId = useRef<ReturnType<typeof setTimeout> | undefined>(
-    undefined,
-  );
+	const timeoutId = useRef<ReturnType<typeof setTimeout> | undefined>(
+		undefined,
+	);
 
-  const leftPaneWidth = useMemo(
-    () => (leftWidth !== undefined ? `${leftWidth}px` : undefined),
-    [leftWidth],
-  );
+	const leftPaneWidthStyle = useMemo(
+		() => (leftWidth !== undefined ? `${Math.min(90, leftWidth)}%` : undefined),
+		[leftWidth],
+	);
 
-  const rightPaneWidth = useMemo(
-    () => (leftWidth !== undefined ? `calc(100% - ${leftWidth}px)` : undefined),
-    [leftWidth],
-  );
+	useEffect(() => {
+		if (isTouchDevice) {
+			setSashSize(40);
+		}
+	}, [isTouchDevice]);
 
-  useEffect(() => {
-    if (isTouchDevice) {
-      setSashSize(40);
-    }
-  }, [isTouchDevice]);
+	const handlePanelResize = useCallback(
+		(left: number, right: number) => {
+			if (Number.isNaN(left) || Number.isNaN(right)) {
+				return;
+			}
+			if (timeoutId.current !== undefined) {
+				clearTimeout(timeoutId.current);
+				timeoutId.current = undefined;
+			}
+			const leftPercentage = (left / (left + right)) * 100;
+			timeoutId.current = setTimeout(() => {
+				onPanelWidthUpdated(leftPercentage);
+			}, 100);
+		},
+		[onPanelWidthUpdated],
+	);
 
-  const onChange = useCallback(
-    (left: number, _right: number) => {
-      if (leftWidth === undefined) {
-        return;
-      }
-      if (timeoutId.current !== undefined) {
-        clearTimeout(timeoutId.current);
-        timeoutId.current = undefined;
-      }
-      timeoutId.current = setTimeout(() => {
-        onChangeWidth(left);
-      }, 100);
-    },
-    [leftWidth, onChangeWidth],
-  );
-
-  return {
-    isReady: leftPaneWidth !== undefined && rightPaneWidth !== undefined,
-    leftPaneWidth,
-    rightPaneWidth,
-    onChange,
-  };
+	return {
+		isReady: leftPaneWidthStyle !== undefined,
+		leftPaneWidthStyle,
+		handlePanelResize,
+	};
 }

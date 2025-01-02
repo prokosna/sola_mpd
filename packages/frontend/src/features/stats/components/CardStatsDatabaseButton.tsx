@@ -1,52 +1,62 @@
-import { Button, useToast } from "@chakra-ui/react";
+import { Button } from "@chakra-ui/react";
 import { MpdRequest } from "@sola_mpd/domain/src/models/mpd/mpd_command_pb.js";
 import { useCallback } from "react";
 
+import { useNotification } from "../../../lib/chakra/hooks/useNotification";
 import { useMpdClientState } from "../../mpd";
-import { usePlayerStatusState } from "../../player";
+import { usePlayerStatusIsDatabaseUpdatingState } from "../../player";
 import { useCurrentMpdProfileState } from "../../profile";
 
+/**
+ * CardStatsDatabaseButton component renders a button that triggers an update of the MPD database.
+ * It uses MPD client, current profile, and player status to manage the update process.
+ * The component also provides user feedback through notifications.
+ *
+ * @returns {JSX.Element} A button component for updating the MPD database
+ */
 export function CardStatsDatabaseButton() {
-  const toast = useToast();
+	const notify = useNotification();
 
-  const profile = useCurrentMpdProfileState();
-  const mpdClient = useMpdClientState();
-  const playerStatus = usePlayerStatusState();
+	const profile = useCurrentMpdProfileState();
+	const mpdClient = useMpdClientState();
+	const playerStatusIsDatabaseUpdating =
+		usePlayerStatusIsDatabaseUpdatingState();
 
-  const onClickDatabaseUpdateButton = useCallback(async () => {
-    if (profile === undefined || mpdClient === undefined) {
-      return;
-    }
-    await mpdClient.command(
-      new MpdRequest({
-        profile,
-        command: {
-          case: "update",
-          value: {},
-        },
-      }),
-    );
-    toast({
-      title: "Update MPD Database",
-      description: "Database is now updating...",
-    });
-  }, [mpdClient, profile, toast]);
+	const handleDatabaseUpdateButtonClick = useCallback(async () => {
+		if (profile === undefined || mpdClient === undefined) {
+			return;
+		}
+		await mpdClient.command(
+			new MpdRequest({
+				profile,
+				command: {
+					case: "update",
+					value: {},
+				},
+			}),
+		);
+		notify({
+			status: "info",
+			title: "Update MPD Database",
+			description: "Database is now updating...",
+		});
+	}, [mpdClient, profile, notify]);
 
-  return (
-    <>
-      <Button
-        isLoading={playerStatus?.isDatabaseUpdating}
-        loadingText="Updating Database..."
-        w="100%"
-        variant="outline"
-        onClick={() => {
-          if (!playerStatus?.isDatabaseUpdating) {
-            onClickDatabaseUpdateButton();
-          }
-        }}
-      >
-        Update Database
-      </Button>
-    </>
-  );
+	return (
+		<>
+			<Button
+				isLoading={playerStatusIsDatabaseUpdating}
+				loadingText="Updating Database..."
+				w="100%"
+				variant="outline"
+				onClick={() => {
+					if (!playerStatusIsDatabaseUpdating) {
+						handleDatabaseUpdateButtonClick();
+					}
+				}}
+			>
+				Update Database
+			</Button>
+		</>
+	);
 }

@@ -1,72 +1,76 @@
-import { useToast } from "@chakra-ui/react";
 import { MpdRequest } from "@sola_mpd/domain/src/models/mpd/mpd_command_pb.js";
-import { Playlist } from "@sola_mpd/domain/src/models/playlist_pb.js";
-import { Song } from "@sola_mpd/domain/src/models/song_pb.js";
-import { MutableRefObject, useCallback } from "react";
+import type { Playlist } from "@sola_mpd/domain/src/models/playlist_pb.js";
+import type { Song } from "@sola_mpd/domain/src/models/song_pb.js";
+import { useCallback, useRef, useState } from "react";
 
+import { useNotification } from "../../../lib/chakra/hooks/useNotification";
 import { useMpdClientState } from "../../mpd";
 import { useCurrentMpdProfileState } from "../../profile";
-import { PlaylistSelectModalProps } from "../components/PlaylistSelectModal";
 
-export function usePlaylistSelectModalProps(
-  isOpen: boolean,
-  songsToAddToPlaylistRef: MutableRefObject<Song[]>,
-  setIsOpenPlaylistSelectModal: (open: boolean) => void,
-): PlaylistSelectModalProps {
-  const toast = useToast();
+/**
+ * Hook for playlist selection modal.
+ *
+ * Manages modal state and song selection for adding
+ * songs to playlists.
+ *
+ * @returns Modal state and handlers
+ */
+export function usePlaylistSelectModal() {
+	const notify = useNotification();
 
-  const profile = useCurrentMpdProfileState();
-  const mpdClient = useMpdClientState();
+	const songsToAddToPlaylistRef = useRef<Song[]>([]);
+	const [isPlaylistSelectModalOpen, setIsPlaylistSelectModalOpen] =
+		useState(false);
 
-  const onOk = useCallback(
-    async (playlist: Playlist) => {
-      if (profile === undefined || mpdClient === undefined) {
-        return;
-      }
+	const profile = useCurrentMpdProfileState();
+	const mpdClient = useMpdClientState();
 
-      const commands = songsToAddToPlaylistRef.current.map(
-        (song) =>
-          new MpdRequest({
-            profile,
-            command: {
-              case: "playlistadd",
-              value: {
-                name: playlist.name,
-                uri: song.path,
-              },
-            },
-          }),
-      );
-      if (commands.length === 0) {
-        return;
-      }
+	const onOk = useCallback(
+		async (playlist: Playlist) => {
+			if (profile === undefined || mpdClient === undefined) {
+				return;
+			}
 
-      await mpdClient.commandBulk(commands);
-      setIsOpenPlaylistSelectModal(false);
-      toast({
-        status: "success",
-        title: "Songs successfully added",
-        description: `${songsToAddToPlaylistRef.current.length} songs have been added to ${playlist.name}.`,
-      });
-    },
-    [
-      mpdClient,
-      profile,
-      setIsOpenPlaylistSelectModal,
-      songsToAddToPlaylistRef,
-      toast,
-    ],
-  );
+			const commands = songsToAddToPlaylistRef.current.map(
+				(song) =>
+					new MpdRequest({
+						profile,
+						command: {
+							case: "playlistadd",
+							value: {
+								name: playlist.name,
+								uri: song.path,
+							},
+						},
+					}),
+			);
+			if (commands.length === 0) {
+				return;
+			}
 
-  const onCancel = useCallback(async () => {
-    songsToAddToPlaylistRef.current = [];
-    setIsOpenPlaylistSelectModal(false);
-  }, [setIsOpenPlaylistSelectModal, songsToAddToPlaylistRef]);
+			await mpdClient.commandBulk(commands);
+			setIsPlaylistSelectModalOpen(false);
+			notify({
+				status: "success",
+				title: "Songs successfully added",
+				description: `${songsToAddToPlaylistRef.current.length} songs have been added to ${playlist.name}.`,
+			});
+		},
+		[mpdClient, notify, profile],
+	);
 
-  return {
-    isOpen,
-    isOnly: undefined,
-    onOk,
-    onCancel,
-  };
+	const onCancel = useCallback(async () => {
+		songsToAddToPlaylistRef.current = [];
+		setIsPlaylistSelectModalOpen(false);
+	}, []);
+
+	return {
+		songsToAddToPlaylistRef,
+		setIsPlaylistSelectModalOpen,
+		playlistSelectModalProps: {
+			isOpen: isPlaylistSelectModalOpen,
+			onOk,
+			onCancel,
+		},
+	};
 }

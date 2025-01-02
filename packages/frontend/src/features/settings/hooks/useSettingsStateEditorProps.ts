@@ -1,41 +1,52 @@
-import { Message } from "@bufbuild/protobuf";
-import { useDisclosure, useToast } from "@chakra-ui/react";
+import type { Message } from "@bufbuild/protobuf";
+import { useDisclosure } from "@chakra-ui/react";
 import { useCallback } from "react";
 
-import { SettingsStatesEditorProps } from "../components/SettingsStatesEditor";
+import { useNotification } from "../../../lib/chakra/hooks/useNotification";
+import type { SettingsStatesEditorProps } from "../components/SettingsStatesEditor";
 
+/**
+ * Manage settings state editor.
+ *
+ * @template T State type extending Protobuf Message
+ * @param state Current state
+ * @param update Update callback
+ * @param fromJson JSON parser
+ * @returns [Modal opener, Editor props]
+ */
 export function useSettingsStateEditorProps<T extends Message>(
-  state: T | undefined,
-  update: (newState: T) => Promise<void>,
-  fromJson: (json: string) => T,
+	state: T | undefined,
+	update: (newState: T) => Promise<void>,
+	fromJson: (json: string) => T,
 ): [() => void, SettingsStatesEditorProps<T> | undefined] {
-  const toast = useToast();
-  const { isOpen, onOpen, onClose } = useDisclosure();
+	const notify = useNotification();
 
-  const onSave = useCallback(
-    async (newState: T) => {
-      update(newState);
-      toast({
-        status: "success",
-        title: "State successfully updated",
-        description: "The state has been updated.",
-      });
-    },
-    [toast, update],
-  );
+	const { isOpen, onOpen, onClose } = useDisclosure();
 
-  if (state === undefined) {
-    return [onOpen, undefined];
-  }
+	const onSave = useCallback(
+		async (newState: T) => {
+			update(newState);
+			notify({
+				status: "success",
+				title: "State successfully updated",
+				description: "The state has been updated.",
+			});
+		},
+		[notify, update],
+	);
 
-  return [
-    onOpen,
-    {
-      state,
-      onSave,
-      isOpen,
-      onClose,
-      fromJson,
-    },
-  ];
+	if (state === undefined) {
+		return [onOpen, undefined];
+	}
+
+	return [
+		onOpen,
+		{
+			state,
+			onSave,
+			isOpen,
+			onClose,
+			fromJson,
+		},
+	];
 }

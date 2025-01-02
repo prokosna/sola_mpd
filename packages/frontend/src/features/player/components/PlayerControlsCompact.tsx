@@ -9,27 +9,35 @@ import { PlayerControlsButtonResume } from "./PlayerControlsButtonResume";
 import { PlayerControlsButtonStop } from "./PlayerControlsButtonStop";
 import { PlayerControlsButtonVolume } from "./PlayerControlsButtonVolume";
 
+/**
+ * Compact version of player controls.
+ *
+ * Arranges playback, mode, and volume controls in a compact
+ * layout, separated by vertical dividers for visual organization.
+ *
+ * @returns Compact player controls component
+ */
 export function PlayerControlsCompact() {
-  return (
-    <>
-      <PlayerControlsButtonPrevious></PlayerControlsButtonPrevious>
-      <PlayerControlsButtonStop></PlayerControlsButtonStop>
-      <PlayerControlsButtonResume></PlayerControlsButtonResume>
-      <PlayerControlsButtonNext></PlayerControlsButtonNext>
+	return (
+		<>
+			<PlayerControlsButtonPrevious />
+			<PlayerControlsButtonStop />
+			<PlayerControlsButtonResume />
+			<PlayerControlsButtonNext />
 
-      <Center h="50%">
-        <Divider orientation="vertical"></Divider>
-      </Center>
+			<Center h="50%">
+				<Divider orientation="vertical" />
+			</Center>
 
-      <PlayerControlsButtonRandom></PlayerControlsButtonRandom>
-      <PlayerControlsButtonRepeat></PlayerControlsButtonRepeat>
-      <PlayerControlsButtonConsume></PlayerControlsButtonConsume>
+			<PlayerControlsButtonRandom />
+			<PlayerControlsButtonRepeat />
+			<PlayerControlsButtonConsume />
 
-      <Center h="50%">
-        <Divider orientation="vertical"></Divider>
-      </Center>
+			<Center h="50%">
+				<Divider orientation="vertical" />
+			</Center>
 
-      <PlayerControlsButtonVolume></PlayerControlsButtonVolume>
-    </>
-  );
+			<PlayerControlsButtonVolume />
+		</>
+	);
 }

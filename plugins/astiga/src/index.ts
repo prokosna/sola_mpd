@@ -1,4 +1,4 @@
-import http from "http";
+import http from "node:http";
 
 import { expressConnectMiddleware } from "@connectrpc/connect-express";
 import express from "express";
@@ -8,9 +8,9 @@ import { routes } from "./routers.js";
 const app = express();
 
 app.use(
-  expressConnectMiddleware({
-    routes,
-  }),
+	expressConnectMiddleware({
+		routes,
+	}),
 );
 
 const port = process.env.PORT || 3001;

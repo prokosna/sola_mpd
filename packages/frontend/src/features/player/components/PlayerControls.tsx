@@ -9,27 +9,36 @@ import { PlayerControlsButtonResume } from "./PlayerControlsButtonResume";
 import { PlayerControlsButtonStop } from "./PlayerControlsButtonStop";
 import { PlayerControlsButtonVolume } from "./PlayerControlsButtonVolume";
 
+/**
+ * Full-size player controls component.
+ *
+ * Displays playback controls (previous, stop, play/pause, next),
+ * playback modes (random, repeat, consume), and volume control,
+ * organized with visual dividers.
+ *
+ * @returns Player controls component
+ */
 export function PlayerControls() {
-  return (
-    <>
-      <PlayerControlsButtonPrevious></PlayerControlsButtonPrevious>
-      <PlayerControlsButtonStop></PlayerControlsButtonStop>
-      <PlayerControlsButtonResume></PlayerControlsButtonResume>
-      <PlayerControlsButtonNext></PlayerControlsButtonNext>
+	return (
+		<>
+			<PlayerControlsButtonPrevious />
+			<PlayerControlsButtonStop />
+			<PlayerControlsButtonResume />
+			<PlayerControlsButtonNext />
 
-      <Center h="30%">
-        <Divider orientation="vertical"></Divider>
-      </Center>
+			<Center h="30%">
+				<Divider orientation="vertical" />
+			</Center>
 
-      <PlayerControlsButtonRandom></PlayerControlsButtonRandom>
-      <PlayerControlsButtonRepeat></PlayerControlsButtonRepeat>
-      <PlayerControlsButtonConsume></PlayerControlsButtonConsume>
+			<PlayerControlsButtonRandom />
+			<PlayerControlsButtonRepeat />
+			<PlayerControlsButtonConsume />
 
-      <Center h="30%">
-        <Divider orientation="vertical"></Divider>
-      </Center>
+			<Center h="30%">
+				<Divider orientation="vertical" />
+			</Center>
 
-      <PlayerControlsButtonVolume></PlayerControlsButtonVolume>
-    </>
-  );
+			<PlayerControlsButtonVolume />
+		</>
+	);
 }

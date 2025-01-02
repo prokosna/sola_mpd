@@ -4,46 +4,54 @@ import { IoShuffleOutline } from "react-icons/io5";
 
 import { useMpdClientState } from "../../mpd";
 import { useCurrentMpdProfileState } from "../../profile";
-import { useCurrentSongState } from "../states/song";
-import { usePlayerStatusState } from "../states/status";
+import { useCurrentSongState } from "../states/playerSongState";
+import { usePlayerStatusIsRandomState } from "../states/playerStatusState";
 
 import { PlayerControlsButton } from "./PlayerControlsButton";
 
+/**
+ * Button for toggling random playback mode.
+ *
+ * Controls whether songs are played in random order. Updates
+ * button state based on current random mode status.
+ *
+ * @returns Random mode toggle button
+ */
 export function PlayerControlsButtonRandom() {
-  const profile = useCurrentMpdProfileState();
-  const mpdClient = useMpdClientState();
-  const currentSong = useCurrentSongState();
-  const playerStatus = usePlayerStatusState();
+	const profile = useCurrentMpdProfileState();
+	const mpdClient = useMpdClientState();
+	const currentSong = useCurrentSongState();
+	const playerStatusIsRandom = usePlayerStatusIsRandomState();
 
-  const onClick = useCallback(async () => {
-    if (profile === undefined || mpdClient === undefined) {
-      return;
-    }
+	const onButtonClicked = useCallback(async () => {
+		if (profile === undefined || mpdClient === undefined) {
+			return;
+		}
 
-    mpdClient.command(
-      new MpdRequest({
-        profile,
-        command: {
-          case: "random",
-          value: {
-            enable: !playerStatus?.isRandom,
-          },
-        },
-      }),
-    );
-  }, [mpdClient, playerStatus?.isRandom, profile]);
+		mpdClient.command(
+			new MpdRequest({
+				profile,
+				command: {
+					case: "random",
+					value: {
+						enable: !playerStatusIsRandom,
+					},
+				},
+			}),
+		);
+	}, [mpdClient, playerStatusIsRandom, profile]);
 
-  const props = {
-    label: playerStatus?.isRandom ? "Random enabled" : "Random disabled",
-    isDisabled: currentSong === undefined,
-    onClick,
-    icon: <IoShuffleOutline size={"24"}></IoShuffleOutline>,
-    variant: playerStatus?.isRandom ? "solid" : "ghost",
-  };
+	const props = {
+		label: playerStatusIsRandom ? "Random enabled" : "Random disabled",
+		isDisabled: currentSong === undefined,
+		onButtonClicked,
+		icon: <IoShuffleOutline size={"24"} />,
+		variant: playerStatusIsRandom ? "solid" : "ghost",
+	};
 
-  return (
-    <>
-      <PlayerControlsButton {...props}></PlayerControlsButton>
-    </>
-  );
+	return (
+		<>
+			<PlayerControlsButton {...props} />
+		</>
+	);
 }

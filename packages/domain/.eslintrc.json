@@ -1,9 +1,0 @@
-{
-  "extends": ["../../.eslintrc.json", "plugin:require-extensions/recommended"],
-  "parserOptions": {
-    "project": ["tsconfig.json"],
-    "tsconfigRootDir": "packages/domain",
-    "sourceType": "module"
-  },
-  "plugins": ["require-extensions"]
-}

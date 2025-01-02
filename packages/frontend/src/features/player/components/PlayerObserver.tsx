@@ -1,32 +1,41 @@
 import { useEffect, useRef } from "react";
 
-import { useRefreshCurrentSongState } from "../states/song";
-import { useRefreshPlayerStatusState } from "../states/status";
+import { useRefreshCurrentSongState } from "../states/playerSongState";
+import { useRefreshPlayerStatusState } from "../states/playerStatusState";
 
+/**
+ * Player state update manager.
+ *
+ * Polls MPD server every second to refresh current song and
+ * player status. Uses interval-based polling with cleanup
+ * on unmount to prevent memory leaks.
+ *
+ * @returns null - Non-rendering component
+ */
 export function PlayerObserver() {
-  const refreshCurrentSong = useRefreshCurrentSongState();
-  const refreshPlayerStatus = useRefreshPlayerStatusState();
+	const refreshCurrentSong = useRefreshCurrentSongState();
+	const refreshPlayerStatus = useRefreshPlayerStatusState();
 
-  const intervalIdRef = useRef<ReturnType<typeof setInterval> | undefined>(
-    undefined,
-  );
+	const intervalIdRef = useRef<ReturnType<typeof setInterval> | undefined>(
+		undefined,
+	);
 
-  useEffect(() => {
-    if (intervalIdRef.current === undefined) {
-      const id = setInterval(() => {
-        refreshCurrentSong();
-        refreshPlayerStatus();
-      }, 1000);
-      intervalIdRef.current = id;
-    }
+	useEffect(() => {
+		if (intervalIdRef.current === undefined) {
+			const id = setInterval(() => {
+				refreshCurrentSong();
+				refreshPlayerStatus();
+			}, 1000);
+			intervalIdRef.current = id;
+		}
 
-    return () => {
-      if (intervalIdRef.current !== undefined) {
-        clearInterval(intervalIdRef.current);
-        intervalIdRef.current = undefined;
-      }
-    };
-  }, [refreshCurrentSong, refreshPlayerStatus]);
+		return () => {
+			if (intervalIdRef.current !== undefined) {
+				clearInterval(intervalIdRef.current);
+				intervalIdRef.current = undefined;
+			}
+		};
+	}, [refreshCurrentSong, refreshPlayerStatus]);
 
-  return <></>;
+	return null;
 }

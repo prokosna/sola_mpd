@@ -1,32 +1,44 @@
 import { Box, Text } from "@chakra-ui/react";
-import { StringUtils } from "@sola_mpd/domain/src/utils/StringUtils.js";
+import { displayDuration } from "@sola_mpd/domain/src/utils/stringUtils.js";
 
-import { usePlayerStatusState } from "../states/status";
+import {
+	usePlayerStatusDurationState,
+	usePlayerStatusElapsedState,
+} from "../states/playerStatusState";
 
+/**
+ * Duration display component.
+ *
+ * Shows elapsed time and total duration of the current track.
+ * Positioned absolutely and right-aligned in its container.
+ *
+ * @returns Duration display component
+ */
 export function PlayerDuration() {
-  const playerStatus = usePlayerStatusState();
+	const playerStatusElapsed = usePlayerStatusElapsedState();
+	const playerStatusDuration = usePlayerStatusDurationState();
 
-  const elapsed =
-    playerStatus?.elapsed === undefined
-      ? ""
-      : StringUtils.displayDuration(playerStatus.elapsed);
-  const duration =
-    playerStatus?.duration === undefined
-      ? ""
-      : StringUtils.displayDuration(playerStatus.duration);
+	const elapsed =
+		playerStatusElapsed === undefined
+			? ""
+			: displayDuration(playerStatusElapsed);
+	const duration =
+		playerStatusDuration === undefined
+			? ""
+			: displayDuration(playerStatusDuration);
 
-  return (
-    <Box
-      position="absolute"
-      left="0"
-      right="0"
-      display="flex"
-      justifyContent="end"
-      p="2"
-    >
-      <Text fontSize={"sm"}>
-        {elapsed} / {duration}
-      </Text>
-    </Box>
-  );
+	return (
+		<Box
+			position="absolute"
+			left="0"
+			right="0"
+			display="flex"
+			justifyContent="end"
+			p="2"
+		>
+			<Text fontSize={"sm"}>
+				{elapsed} / {duration}
+			</Text>
+		</Box>
+	);
 }

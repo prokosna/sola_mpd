@@ -1,10 +1,10 @@
 /* Allotment design customization */
 .allotment-light {
-  --focus-border: #3182ce; /* blue.500 */
-  --separator-border: #cbd5e0; /* gray.300 */
+	--focus-border: #3182ce; /* blue.500 */
+	--separator-border: #cbd5e0; /* gray.300 */
 }
 
 .allotment-dark {
-  --focus-border: #3182ce;
-  --separator-border: #4a5568; /* gray.600 */
+	--focus-border: #3182ce;
+	--separator-border: #4a5568; /* gray.600 */
 }

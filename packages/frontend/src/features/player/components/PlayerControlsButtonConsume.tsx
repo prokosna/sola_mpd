@@ -4,46 +4,54 @@ import { IoRestaurantOutline } from "react-icons/io5";
 
 import { useMpdClientState } from "../../mpd";
 import { useCurrentMpdProfileState } from "../../profile";
-import { useCurrentSongState } from "../states/song";
-import { usePlayerStatusState } from "../states/status";
+import { useCurrentSongState } from "../states/playerSongState";
+import { usePlayerStatusIsConsumeState } from "../states/playerStatusState";
 
 import { PlayerControlsButton } from "./PlayerControlsButton";
 
+/**
+ * Button for toggling MPD's consume mode.
+ *
+ * Controls whether played songs are automatically removed from
+ * the playlist. Updates button state based on current consume
+ * mode status.
+ *
+ * @returns Consume mode toggle button
+ */
 export function PlayerControlsButtonConsume() {
-  const profile = useCurrentMpdProfileState();
-  const mpdClient = useMpdClientState();
-  const currentSong = useCurrentSongState();
-  const playerStatus = usePlayerStatusState();
+	const profile = useCurrentMpdProfileState();
+	const mpdClient = useMpdClientState();
+	const currentSong = useCurrentSongState();
+	const playerStatusIsConsume = usePlayerStatusIsConsumeState();
 
-  const onClick = useCallback(async () => {
-    if (profile === undefined || mpdClient === undefined) {
-      return;
-    }
+	const onButtonClicked = useCallback(async () => {
+		if (profile === undefined || mpdClient === undefined) {
+			return;
+		}
+		mpdClient.command(
+			new MpdRequest({
+				profile,
+				command: {
+					case: "consume",
+					value: {
+						enable: !playerStatusIsConsume,
+					},
+				},
+			}),
+		);
+	}, [mpdClient, playerStatusIsConsume, profile]);
 
-    mpdClient.command(
-      new MpdRequest({
-        profile,
-        command: {
-          case: "consume",
-          value: {
-            enable: !playerStatus?.isConsume,
-          },
-        },
-      }),
-    );
-  }, [mpdClient, playerStatus?.isConsume, profile]);
+	const props = {
+		label: playerStatusIsConsume ? "Consume enabled" : "Consume disabled",
+		isDisabled: currentSong === undefined,
+		onButtonClicked,
+		icon: <IoRestaurantOutline size={"24"} />,
+		variant: playerStatusIsConsume ? "solid" : "ghost",
+	};
 
-  const props = {
-    label: playerStatus?.isConsume ? "Consume enabled" : "Consume disabled",
-    isDisabled: currentSong === undefined,
-    onClick,
-    icon: <IoRestaurantOutline size={"24"}></IoRestaurantOutline>,
-    variant: playerStatus?.isConsume ? "solid" : "ghost",
-  };
-
-  return (
-    <>
-      <PlayerControlsButton {...props}></PlayerControlsButton>
-    </>
-  );
+	return (
+		<>
+			<PlayerControlsButton {...props} />
+		</>
+	);
 }

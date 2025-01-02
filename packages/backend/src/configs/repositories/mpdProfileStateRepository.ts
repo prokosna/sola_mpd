@@ -4,8 +4,8 @@ import { MpdProfileState } from "@sola_mpd/domain/src/models/mpd/mpd_profile_pb.
 import { FileRepository } from "./FileRepository.js";
 
 export const mpdProfileStateRepository = new FileRepository<MpdProfileState>(
-  DB_FILE_MPD_PROFILE_STATE,
-  new MpdProfileState({
-    profiles: [],
-  }),
+	DB_FILE_MPD_PROFILE_STATE,
+	new MpdProfileState({
+		profiles: [],
+	}),
 );
