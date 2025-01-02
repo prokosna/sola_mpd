@@ -5,10 +5,16 @@ import { useNavigate } from "react-router-dom";
 import { ROUTE_HOME_SETTINGS } from "../../../const/routes";
 
 /**
- * A button component that navigates to the settings page when clicked.
- * Uses react-router's useNavigate hook for navigation and Chakra UI for styling.
+ * Settings page navigation button.
  *
- * @returns A Button component with a settings icon.
+ * This component routes users to the settings interface and maintains consistent styling.
+ *
+ * @component
+ * @example
+ * ```tsx
+ * // In header or navigation area:
+ * <SettingsEntryButton />
+ * ```
  */
 export function SettingsEntryButton() {
   const navigate = useNavigate();

@@ -14,7 +14,7 @@ import { RecentlyAddedContent } from "./RecentlyAddedContent";
 import { RecentlyAddedNavigation } from "./RecentlyAddedNavigation";
 
 /**
- * The main component of the recently added feature.
+ * Recently added songs view.
  */
 export function RecentlyAdded() {
   const recentlyAddedLayout = useRecentlyAddedLayoutState();

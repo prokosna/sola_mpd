@@ -17,11 +17,13 @@ import { useIsCompactMode } from "../../user_device";
 import { usePlayerVolumeState } from "../states/playerVolumeState";
 
 /**
- * Renders a volume control button and slider for the player.
- * This component allows users to adjust the volume and mute/unmute the player.
- * It adapts its appearance based on the current volume level and compact mode setting.
+ * Volume control component with button and slider.
  *
- * @returns A volume control component with a button and slider
+ * Provides volume adjustment and mute/unmute functionality.
+ * Adapts layout based on compact mode setting and updates
+ * appearance based on current volume level.
+ *
+ * @returns Volume control component
  */
 export function PlayerControlsButtonVolume() {
   const profile = useCurrentMpdProfileState();

@@ -7,12 +7,12 @@ import {
 } from "../states/playerStatusState";
 
 /**
- * Renders a compact version of the player duration display.
- * This component shows the elapsed time and total duration of the current track
- * in a space-efficient layout, suitable for smaller screens or minimized views.
- * It uses the player status to fetch and display the time information.
+ * Compact duration display component.
  *
- * @returns A Box component containing the elapsed and total duration text.
+ * Shows elapsed and total duration in a space-efficient layout,
+ * with times aligned to opposite sides of the container.
+ *
+ * @returns Compact duration display component
  */
 export function PlayerDurationCompact() {
   const playerStatusElapsed = usePlayerStatusElapsedState();

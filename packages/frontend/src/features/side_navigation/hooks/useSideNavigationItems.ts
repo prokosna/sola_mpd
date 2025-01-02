@@ -4,13 +4,10 @@ import { usePathname } from "../../location";
 import { SideNavigationItemProps } from "../components/SideNavigationItem";
 
 /**
- * Custom hook to manage side navigation items.
+ * Update navigation items' selection state based on URL.
  *
- * This hook takes an array of base navigation items and enhances them by
- * setting the 'isSelected' property based on the current pathname.
- *
- * @param baseItems - An array of SideNavigationItemProps representing the base navigation items
- * @returns An array of enhanced SideNavigationItemProps with updated 'isSelected' states
+ * @param baseItems Navigation items
+ * @returns Items with updated selection states
  */
 export function useSideNavigationItems(
   baseItems: SideNavigationItemProps[],

@@ -17,17 +17,9 @@ export type ProfilesProfileProps = {
 };
 
 /**
- * ProfilesProfile component for rendering individual MPD profile entries.
+ * Single MPD profile row.
  *
- * This component displays a single MPD profile in a table row format,
- * including the profile's name, host, and port. It also provides
- * functionality to delete the profile.
- *
- * @param props - The properties for the ProfilesProfile component
- * @param props.index - The index of the profile in the list
- * @param props.profile - The MpdProfile object containing profile details
- * @param props.mpdProfileState - The current state of all MPD profiles
- * @returns JSX element representing a single profile row
+ * @param props.index Profile index
  */
 export function ProfilesProfile(props: ProfilesProfileProps) {
   const { index, profile, mpdProfileState } = props;

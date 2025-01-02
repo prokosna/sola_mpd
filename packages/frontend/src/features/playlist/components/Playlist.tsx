@@ -14,11 +14,12 @@ import { PlaylistContent } from "./PlaylistContent";
 import { PlaylistNavigation } from "./PlaylistNavigation";
 
 /**
- * Playlist component that renders the playlist view.
- * It manages the layout of the playlist navigation and content,
- * and handles resizing of the panes.
+ * Main playlist component with resizable split pane layout.
  *
- * @returns The rendered Playlist component
+ * Provides navigation sidebar and content area for playlist
+ * management. Persists layout state and pane widths.
+ *
+ * @returns Playlist view component
  */
 export function Playlist() {
   const playlistLayout = usePlaylistLayoutState();

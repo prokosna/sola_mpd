@@ -9,10 +9,12 @@ import { useCurrentSongState } from "../states/playerSongState";
 import { PlayerControlsButton } from "./PlayerControlsButton";
 
 /**
- * Renders a button to play the next track in the player controls.
- * This component handles the "Next" functionality in the music player.
+ * Button for playing the next track.
  *
- * @returns A PlayerControlsButton component for playing the next track
+ * Sends the 'next' command to MPD when clicked. Disabled when
+ * no song is currently playing.
+ *
+ * @returns Next track button
  */
 export function PlayerControlsButtonNext() {
   const profile = useCurrentMpdProfileState();

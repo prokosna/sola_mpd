@@ -8,9 +8,10 @@ import {
 } from "../types/selectListTypes";
 
 /**
- * Custom hook to create a context menu opener for a select list.
- * @param id - Unique identifier for the context menu.
- * @returns A callback function to open the context menu.
+ * Create context menu handler.
+ *
+ * @param id Menu ID
+ * @returns Context menu handler
  */
 export function useOpenContextMenu(id: string) {
   const contextMenu = useContextMenu({ id });

@@ -13,6 +13,12 @@ import { fetchPlaylistSongs } from "../utils/playlistUtils";
 
 import { selectedPlaylistAtom } from "./playlistState";
 
+/**
+ * Base atom for playlist songs state.
+ *
+ * Fetches songs from selected playlist with profile-based
+ * access control. Returns empty array if no playlist.
+ */
 const playlistSongsAtom = atomWithRefresh(async (get) => {
   const mpdClient = get(mpdClientAtom);
   const profile = get(currentMpdProfileSyncAtom);
@@ -30,8 +36,20 @@ const playlistSongsAtom = atomWithRefresh(async (get) => {
   return songs;
 });
 
+/**
+ * Synchronized atom for playlist songs state.
+ *
+ * Ensures consistent updates across all subscribers when
+ * the playlist songs change.
+ */
 const playlistSongsSyncAtom = atomWithSync(playlistSongsAtom);
 
+/**
+ * Derived atom for filtered playlist songs.
+ *
+ * Applies global filter to playlist songs and manages
+ * route-specific visibility.
+ */
 const playlistVisibleSongsSyncAtom = atom(async (get) => {
   const playlistSongs = get(playlistSongsSyncAtom);
   const songTableState = get(songTableStateSyncAtom);
@@ -56,18 +74,24 @@ const playlistVisibleSongsSyncAtom = atom(async (get) => {
 });
 
 /**
- * A hook that returns the current visible songs in the playlist.
- * This includes filtering based on the global filter and the current route.
- * @returns An array of Song objects representing the visible songs in the playlist.
+ * Hook for accessing filtered playlist songs.
+ *
+ * Provides read-only access to current playlist songs
+ * with global filter applied.
+ *
+ * @returns Filtered songs or undefined
  */
 export function usePlaylistSongsState() {
   return useAtomValue(playlistVisibleSongsSyncAtom);
 }
 
 /**
- * Returns a function to refresh the playlist songs state.
- * This hook can be used to trigger a re-fetch of the playlist songs.
- * @returns A function that, when called, will refresh the playlist songs state.
+ * Hook for refreshing playlist songs.
+ *
+ * Returns function to trigger fresh fetch from MPD
+ * server. Useful for manual refresh or error recovery.
+ *
+ * @returns Refresh function
  */
 export function useRefreshPlaylistSongsState() {
   return useSetAtom(playlistSongsAtom);

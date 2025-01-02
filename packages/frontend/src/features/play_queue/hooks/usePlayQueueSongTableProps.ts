@@ -31,15 +31,14 @@ import {
 } from "../states/playQueueUiState";
 
 /**
- * Custom hook for managing Play Queue Song Table properties.
+ * Provides configuration and handlers for the play queue song table.
  *
- * This hook handles the state and callbacks for the play queue song table,
- * including context menu actions, song selection, and table updates.
+ * Manages context menu actions for queue manipulation, playlist
+ * integration, and column customization. Handles song selection,
+ * loading states, and plugin-specific features through MPD client
+ * and table state coordination.
  *
- * @param songsToAddToPlaylistRef - Mutable reference to store songs for playlist addition.
- * @param setIsPlaylistSelectModalOpen - Function to set the visibility of the playlist select modal.
- * @param setIsColumnEditModalOpen - Function to set the visibility of the column edit modal.
- * @returns SongTableProps object or undefined if data is not ready.
+ * Requires MPD client and profile setup for proper operation.
  */
 export function usePlayQueueSongTableProps(
   songsToAddToPlaylistRef: MutableRefObject<Song[]>,

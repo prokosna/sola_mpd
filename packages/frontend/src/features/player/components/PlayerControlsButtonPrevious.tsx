@@ -9,10 +9,12 @@ import { useCurrentSongState } from "../states/playerSongState";
 import { PlayerControlsButton } from "./PlayerControlsButton";
 
 /**
- * Renders a button to play the previous track in the player controls.
- * This component handles the "Previous" functionality in the music player.
+ * Button for playing the previous track.
  *
- * @returns A PlayerControlsButton component for playing the previous track
+ * Sends the 'previous' command to MPD when clicked. Disabled
+ * when no song is currently playing.
+ *
+ * @returns Previous track button
  */
 export function PlayerControlsButtonPrevious() {
   const profile = useCurrentMpdProfileState();

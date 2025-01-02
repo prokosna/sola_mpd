@@ -7,18 +7,37 @@ import {
   useSetSelectedFileExploreFolderState,
 } from "../states/fileExploreFoldersState";
 
+/**
+ * Properties for the file explorer tree view.
+ *
+ * Features:
+ * - Hierarchical folder structure
+ * - Selection state tracking
+ *
+ * @property nodes - Tree nodes representing folder hierarchy
+ * @property selectedId - Currently selected folder path
+ */
 export type FileExploreTreeViewProps = {
   nodes: TreeNode[];
   selectedId?: string;
 };
 
 /**
- * Custom hook for managing File Explorer Tree View properties.
+ * Hook for generating and managing file explorer tree view structure.
  *
- * This hook handles the state and callbacks for the file explorer tree,
- * including folder selection and tree node generation.
+ * Features:
+ * - Hierarchical folder organization
+ * - Path-based node relationships
+ * - Selection state management
+ * - Automatic node mapping
  *
- * @returns The tree view props or undefined if folders are not loaded
+ * Implementation:
+ * - Converts flat folder list to tree structure
+ * - Maintains parent-child relationships
+ * - Handles folder selection events
+ * - Memoizes tree structure for performance
+ *
+ * @returns Root-level tree nodes or undefined if loading
  */
 export function useFileExploreTreeViewNodes() {
   const fileExploreFolders = useFileExploreFoldersState();

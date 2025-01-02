@@ -12,13 +12,17 @@ type BrowserNavigationFilterProps = {
 };
 
 /**
- * Renders a navigation filter component for the browser.
- * This component displays a selectable list of filter options based on the provided browser filter and available tags.
+ * Individual filter component for the browser navigation.
  *
- * @param {BrowserNavigationFilterProps} props - The component props
- * @param {BrowserFilter} props.browserFilter - The current browser filter
- * @param {Song_MetadataTag[]} props.availableTags - Array of available metadata tags
- * @returns {JSX.Element} The rendered BrowserNavigationFilter component
+ * Features:
+ * - Selectable list of filter options
+ * - Dynamic metadata tag filtering
+ * - Loading state handling
+ * - Full-width layout integration
+ *
+ * @component
+ * @param props.browserFilter - Current browser filter configuration
+ * @param props.availableTags - List of available metadata tags
  */
 export function BrowserNavigationFilter(props: BrowserNavigationFilterProps) {
   const { browserFilter, availableTags } = props;

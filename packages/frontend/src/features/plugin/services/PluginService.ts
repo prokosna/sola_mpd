@@ -7,20 +7,26 @@ import {
 import { Observable } from "rxjs";
 
 /**
- * Plugin service.
+ * Plugin operations service.
+ *
+ * Handles registration and execution.
  */
 export interface PluginService {
   /**
-   * Registers a plugin.
-   * @param req Plugin registration request.
-   * @returns Promise of plugin registration response.
+   * Register plugin with system.
+   *
+   * @param req Registration request
+   * @returns Registration response
+   * @throws On registration failure
    */
   register: (req: PluginRegisterRequest) => Promise<PluginRegisterResponse>;
 
   /**
-   * Executes a plugin.
-   * @param req Plugin execution request.
-   * @returns Observable of plugin execution response.
+   * Execute plugin on songs.
+   *
+   * @param req Execution request
+   * @returns Observable of execution progress
+   * @throws On execution failure
    */
   execute: (req: PluginExecuteRequest) => Observable<PluginExecuteResponse>;
 }

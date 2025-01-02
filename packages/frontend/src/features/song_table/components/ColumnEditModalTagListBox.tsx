@@ -11,14 +11,16 @@ export type ColumnEditModalTagListBoxProps = {
 };
 
 /**
- * A component that displays a list of song metadata tags for column editing.
+ * Scrollable list box for selecting song metadata tags.
  *
- * @param props - The properties for the ColumnEditModalTagListBox component
- * @param props.title - The title of the list box
- * @param props.selectedTag - The currently selected tag (optional)
- * @param props.tags - An array of Song_MetadataTag to display
- * @param props.handleTagSelected - A function to handle tag selection
- * @returns JSX element representing the ColumnEditModalTagListBox
+ * Displays available metadata tags with visual selection state
+ * and hover effects. Used within the column edit modal for
+ * configuring table columns.
+ *
+ * @param props.title List box title
+ * @param props.selectedTag Currently selected tag
+ * @param props.tags Available tags
+ * @param props.handleTagSelected Selection callback
  */
 export function ColumnEditModalTagListBox(
   props: ColumnEditModalTagListBoxProps,

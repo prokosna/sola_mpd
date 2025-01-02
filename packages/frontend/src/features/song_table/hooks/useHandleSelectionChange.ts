@@ -6,10 +6,15 @@ import { SongTableKey } from "../types/songTableTypes";
 import { getSongsInTableFromGrid } from "../utils/songTableTableUtils";
 
 /**
- * Uses a callback function on selection changed.
- * @param songsMap Song key -> Song mapping.
- * @param onSongsSelected Callback function to select songs.
- * @returns Callback function.
+ * Creates handler for song selection changes.
+ *
+ * Processes grid selection events, retrieving the currently
+ * selected songs in their displayed order. Maintains selection
+ * state synchronization with the grid.
+ *
+ * @param songsMap Song lookup map
+ * @param onSongsSelected Selection callback
+ * @returns Selection change handler
  */
 export function useHandleSelectionChange(
   songsMap: Map<SongTableKey, Song>,

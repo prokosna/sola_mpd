@@ -23,6 +23,20 @@ import {
   selectBrowserFilterValues,
 } from "../utils/browserFilterUtils";
 
+/**
+ * Custom hook for managing browser navigation filter select list properties.
+ *
+ * Features:
+ * - Dynamic filter value selection
+ * - Context menu integration for filter management
+ * - Filter tag switching
+ * - Multi-select support
+ * - State synchronization
+ *
+ * @param browserFilter - Current browser filter configuration
+ * @param availableTags - List of available metadata tags for switching
+ * @returns SelectList properties or undefined if data not ready
+ */
 export function useBrowserNavigationFilterSelectListProps(
   browserFilter: BrowserFilter,
   availableTags: Song_MetadataTag[],

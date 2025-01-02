@@ -9,6 +9,11 @@ import { UpdateMode } from "../../../types/stateTypes";
 import {} from "../utils/searchSongsUtils";
 import { savedSearchesRepositoryAtom } from "./savedSearchesRepository";
 
+/**
+ * Base atom for saved searches.
+ *
+ * Manages search configurations and history.
+ */
 const savedSearchesAtom = atomWithDefault<
   Promise<SavedSearches> | SavedSearches
 >(async (get) => {
@@ -16,28 +21,41 @@ const savedSearchesAtom = atomWithDefault<
   return await repository.fetch();
 });
 
+/**
+ * Synchronized atom for saved searches.
+ *
+ * Ensures consistent updates across subscribers.
+ */
 export const savedSearchesSyncAtom = atomWithSync(savedSearchesAtom);
 
 /**
- * Hook to access the current state of saved searches.
- * @returns The current array of saved searches.
+ * Hook for accessing saved searches state.
+ *
+ * Provides read-only access to search configurations.
+ *
+ * @returns Current saved searches state
  */
 export function useSavedSearchesState() {
   return useAtomValue(savedSearchesSyncAtom);
 }
 
 /**
- * Hook to refresh the saved searches state.
- * This triggers a re-fetch of the saved searches.
- * @returns A function that, when called, will refresh the saved searches state.
+ * Hook for refreshing saved searches.
+ *
+ * Triggers fresh fetch from storage.
+ *
+ * @returns Refresh function
  */
 export function useRefreshSavedSearchesState() {
   return useSetAtom(savedSearchesAtom);
 }
 
 /**
- * Hook to update the saved searches state.
- * @returns A function that updates the saved searches state locally and/or persists it.
+ * Hook for updating saved searches.
+ *
+ * Updates state locally and optionally persists.
+ *
+ * @returns Update function
  */
 export function useUpdateSavedSearchesState() {
   const setSavedSearches = useSetAtom(savedSearchesAtom);

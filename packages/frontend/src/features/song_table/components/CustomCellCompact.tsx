@@ -3,9 +3,13 @@ import { CustomCellRendererProps } from "ag-grid-react";
 import { SONGS_TAG_COMPACT } from "../types/songTableTypes";
 
 /**
- * Renders a custom compact cell for the song table.
- * @param params - The props passed to the custom cell renderer.
- * @returns A JSX element representing the compact cell.
+ * Custom AG Grid cell renderer for compact song display.
+ *
+ * Displays song information in a two-line format with ellipsis
+ * for overflow. Used in compact view mode to show primary and
+ * secondary song details.
+ *
+ * @param params AG Grid cell renderer props
  */
 export function CustomCellCompact(
   params: CustomCellRendererProps,

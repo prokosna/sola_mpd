@@ -10,8 +10,9 @@ import { ValidationResult } from "../types/validationTypes";
 import { createValidationResult } from "../utils/validationUtils";
 
 /**
- * Custom hook for validating MPD profile inputs.
- * @returns A function that validates the provided profile inputs.
+ * Hook for validating MPD profile inputs.
+ *
+ * @returns Profile validation function
  */
 export function useValidateMpdProfile() {
   const mpdClient = useMpdClientState();

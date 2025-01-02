@@ -15,14 +15,25 @@ import {
 import { useFileExploreSongTableProps } from "../hooks/useFileExploreSongTableProps";
 
 /**
- * FileExploreContent component for displaying the content of the file explorer.
+ * Content component for the file explorer's main display area.
  *
- * This component renders the main content area of the file explorer, including
- * the song table, playlist select modal, and column edit modal. It manages the
- * state for these components and handles interactions such as adding songs to
- * playlists and editing table columns.
+ * Features:
+ * - Customizable song table display
+ * - Column management with edit modal
+ * - Playlist integration
+ * - Loading state handling
+ * - State persistence
  *
- * @returns The rendered FileExploreContent component
+ * Modals:
+ * - Playlist selection for adding songs
+ * - Column customization for table layout
+ *
+ * State Management:
+ * - Table column configuration
+ * - Selected songs tracking
+ * - Modal visibility states
+ *
+ * @returns Rendered content component with table and modals
  */
 export function FileExploreContent() {
   const songTableState = useSongTableState();

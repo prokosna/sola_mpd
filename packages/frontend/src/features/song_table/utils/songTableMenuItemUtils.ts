@@ -14,15 +14,17 @@ import {
 import { getTargetSongsForContextMenu } from "./songTableTableUtils";
 
 /**
- * Creates a context menu item for adding songs to the current MPD queue.
- * This function generates a menu item that, when clicked, will add the selected songs
- * to the end of the current MPD queue.
+ * Creates menu item for adding songs to queue.
  *
- * @param songTableKeyType - The type of key used in the song table for identifying songs.
- * @param showNotification - Function for displaying notifications.
- * @param profile - Optional MPD profile configuration.
- * @param mpdClient - Optional MPD client instance for sending commands.
- * @returns A context menu item configuration for adding songs to the queue.
+ * Generates item that appends selected songs to current MPD
+ * queue. Handles song selection and MPD command dispatch.
+ * Shows notification on completion.
+ *
+ * @param songTableKeyType Song key type
+ * @param showNotification Notification handler
+ * @param profile MPD profile
+ * @param mpdClient MPD client
+ * @returns Context menu item
  */
 export function getSongTableContextMenuAdd(
   songTableKeyType: SongTableKeyType,
@@ -70,15 +72,17 @@ export function getSongTableContextMenuAdd(
 }
 
 /**
- * Creates a context menu item for replacing the current MPD queue with selected songs.
- * This function generates a menu item that, when clicked, will clear the current queue
- * and add the selected songs.
+ * Creates menu item for replacing queue.
  *
- * @param songTableKeyType - The type of key used in the song table for identifying songs.
- * @param showNotification - Function for displaying notifications.
- * @param profile - Optional MPD profile configuration.
- * @param mpdClient - Optional MPD client instance for sending commands.
- * @returns A context menu item configuration for replacing the queue.
+ * Generates item that clears current queue and adds selected
+ * songs. Handles song selection and MPD command sequence.
+ * Shows notification on completion.
+ *
+ * @param songTableKeyType Song key type
+ * @param showNotification Notification handler
+ * @param profile MPD profile
+ * @param mpdClient MPD client
+ * @returns Context menu item
  */
 export function getSongTableContextMenuReplace(
   songTableKeyType: SongTableKeyType,
@@ -137,14 +141,16 @@ export function getSongTableContextMenuReplace(
 }
 
 /**
- * Creates a context menu item for adding songs to a playlist.
- * This function generates a menu item that, when clicked, will store the selected songs
- * and open a playlist selection modal.
+ * Creates menu item for playlist addition.
  *
- * @param songTableKeyType - The type of key used in the song table for identifying songs.
- * @param songsToAddToPlaylistRef - Reference to store songs that will be added to a playlist.
- * @param setIsPlaylistSelectModalOpen - Function to control the visibility of the playlist selection modal.
- * @returns A context menu item configuration for adding songs to a playlist.
+ * Generates item that stores selected songs and opens
+ * playlist selection modal. Manages song reference state
+ * for later playlist addition.
+ *
+ * @param songTableKeyType Song key type
+ * @param songsToAddToPlaylistRef Song selection ref
+ * @param setIsPlaylistSelectModalOpen Modal state setter
+ * @returns Context menu item
  */
 export function getSongTableContextMenuAddToPlaylist(
   songTableKeyType: SongTableKeyType,
@@ -171,11 +177,13 @@ export function getSongTableContextMenuAddToPlaylist(
 }
 
 /**
- * Creates a context menu item for editing table columns.
- * This function generates a menu item that, when clicked, will open the column edit modal.
+ * Creates menu item for column configuration.
  *
- * @param setIsColumnEditModalOpen - Function to control the visibility of the column edit modal.
- * @returns A context menu item configuration for editing table columns.
+ * Generates item that opens column edit modal. Provides
+ * access to table column customization interface.
+ *
+ * @param setIsColumnEditModalOpen Modal state setter
+ * @returns Context menu item
  */
 export function getSongTableContextMenuEditColumns(
   setIsColumnEditModalOpen: (open: boolean) => void,

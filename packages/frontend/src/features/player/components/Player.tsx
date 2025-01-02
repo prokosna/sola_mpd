@@ -10,12 +10,14 @@ import { PlayerSeekBar } from "./PlayerSeekBar";
 import { PlayerSongInformation } from "./PlayerSongInformation";
 
 /**
- * Renders the main Player component.
- * This component displays either a compact or full-size player interface
- * based on the current mode. It includes controls for playback, song information,
- * and a seek bar.
+ * Main player component with playback controls and information.
  *
- * @returns The rendered Player component
+ * Provides a responsive layout that switches between full-size
+ * and compact modes. Full-size includes a seek bar, duration,
+ * and two-column layout, while compact mode shows essential
+ * controls in a single row.
+ *
+ * @returns Player with responsive layout
  */
 export function Player() {
   const isCompact = useIsCompactMode();

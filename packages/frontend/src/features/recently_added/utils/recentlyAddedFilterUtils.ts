@@ -17,7 +17,9 @@ import {
 } from "@sola_mpd/domain/src/utils/songUtils.js";
 
 /**
- * List up song metadata tags that are supported by recently added view.
+ * Get supported metadata tags.
+ *
+ * @returns Supported tags
  */
 export function listRecentlyAddedSongMetadataTags(): Song_MetadataTag[] {
   return [
@@ -29,9 +31,11 @@ export function listRecentlyAddedSongMetadataTags(): Song_MetadataTag[] {
 }
 
 /**
- * Convert RecentlyAddedFilter to FilterCondition.
- * @param filter recently added filter
- * @returns the converted filter condition. If the recently added filter has no selected values, return undefined.
+ * Convert filter to condition.
+ *
+ * @param filter Target filter
+ * @param selectedValuesMap Values map
+ * @returns Filter condition
  */
 export function convertRecentlyAddedFilterToCondition(
   filter: RecentlyAddedFilter,
@@ -69,11 +73,12 @@ export function convertRecentlyAddedFilterToCondition(
 }
 
 /**
- * Change a recently added filter to the other tag.
- * @param currentFilters recently added filters
- * @param target the filter to change
- * @param next the next tag
- * @returns the new recently added filters
+ * Change filter tag.
+ *
+ * @param currentFilters Current filters
+ * @param target Target filter
+ * @param next Next tag
+ * @returns Updated filters
  */
 export function changeRecentlyAddedFilterToTheOtherTag(
   currentFilters: RecentlyAddedFilter[],
@@ -91,6 +96,14 @@ export function changeRecentlyAddedFilterToTheOtherTag(
   return newFilters;
 }
 
+/**
+ * Add next filter.
+ *
+ * @param currentFilters Current filters
+ * @param target Target filter
+ * @param next Next tag
+ * @returns Updated filters
+ */
 export function addRecentlyAddedFilterNext(
   currentFilters: RecentlyAddedFilter[],
   target: RecentlyAddedFilter,
@@ -114,10 +127,11 @@ export function addRecentlyAddedFilterNext(
 }
 
 /**
- * Remove a recently added filter.
- * @param currentFilters recently added filters
- * @param target the filter to remove
- * @returns the new recently added filters
+ * Remove filter.
+ *
+ * @param currentFilters Current filters
+ * @param target Target filter
+ * @returns Updated filters
  */
 export function removeRecentlyAddedFilter(
   currentFilters: RecentlyAddedFilter[],
@@ -135,12 +149,10 @@ export function removeRecentlyAddedFilter(
 }
 
 /**
- * Fetch recently added filter values.
- * @param mpdClient MPD client
- * @param profile profile
- * @param recentlyAddedFilters recently added filters
- * @returns the map of filter values. The key is a filter tag and the value is an array of strings.
- * For example, if the filter tag is "artist", the value is an array of artists.
+ * Extract filter values.
+ *
+ * @param all_songs All songs
+ * @returns Values map
  */
 export function extractRecentlyAddedFilterValues(
   all_songs: Song[],

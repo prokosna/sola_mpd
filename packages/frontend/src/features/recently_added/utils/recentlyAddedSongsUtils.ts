@@ -13,12 +13,13 @@ import { MpdClient } from "../../mpd";
 import { convertRecentlyAddedFilterToCondition } from "./recentlyAddedFilterUtils";
 
 /**
- * Fetch songs from MPD based on the given recently added filters.
+ * Fetch songs based on filters.
  *
- * @param {MpdClient} mpdClient
- * @param {MpdProfile} profile
- * @param {RecentlyAddedFilter[]} recentlyAddedFilters
- * @return {Promise<Song[]>} A promise that resolves to an array of songs.
+ * @param mpdClient MPD client
+ * @param profile MPD profile
+ * @param recentlyAddedFilters Filters
+ * @param selectedValuesMap Values map
+ * @returns Songs
  */
 export async function fetchRecentlyAddedSongs(
   mpdClient: MpdClient,

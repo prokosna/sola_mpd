@@ -1,12 +1,15 @@
 import { Box, Progress } from "@chakra-ui/react";
 
 /**
- * Renders a top loading progress bar component.
+ * A progress bar that appears at the top of the viewport to indicate loading.
  *
- * This component displays an indeterminate progress bar fixed at the top of the viewport,
- * indicating an ongoing loading process.
+ * Features:
+ * - Fixed position at the top of the viewport
+ * - Indeterminate animation for ongoing processes
+ * - Full viewport width coverage
+ * - High z-index to stay above other content
  *
- * @returns A React component that renders the top loading progress bar.
+ * @component
  */
 export function TopLoadingProgressBar() {
   return (

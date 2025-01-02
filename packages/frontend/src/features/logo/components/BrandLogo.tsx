@@ -4,9 +4,16 @@ import { useGlobalKeyShortcuts } from "../../keyboard_shortcut";
 import { useUserDeviceType } from "../../user_device";
 
 /**
- * Renders the brand logo component.
- * The logo is only displayed on large devices.
- * @returns The BrandLogo component or null if not on a large device.
+ * Brand logo component for the application header.
+ *
+ * Features:
+ * - Responsive display (only shown on large devices)
+ * - Custom styling with brand colors
+ * - Bold typography with "Sola MPD" text
+ * - Global keyboard shortcut support
+ *
+ * @component
+ * @returns The BrandLogo component or null if on a non-large device
  */
 export function BrandLogo() {
   useGlobalKeyShortcuts();

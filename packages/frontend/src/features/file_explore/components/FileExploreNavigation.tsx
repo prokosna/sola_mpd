@@ -5,12 +5,21 @@ import { FullWidthSkeleton } from "../../loading";
 import { useFileExploreTreeViewNodes } from "../hooks/useFileExploreTreeViewNodes";
 
 /**
- * FileExploreNavigation component for rendering the navigation tree in the file explorer.
+ * Navigation component for the file explorer's folder tree.
  *
- * This component displays a hierarchical structure of folders using a custom tree view.
- * It handles folder selection and navigation through the file system.
+ * Features:
+ * - Hierarchical folder structure display
+ * - Interactive folder navigation
+ * - Loading state handling
+ * - Scrollable container
+ * - Theme-aware styling
  *
- * @returns {JSX.Element} The rendered FileExploreNavigation component
+ * Layout:
+ * - Tree view for folder hierarchy
+ * - Overflow handling for long lists
+ * - Loading skeleton during data fetch
+ *
+ * @returns Rendered navigation component with tree view
  */
 export function FileExploreNavigation() {
   const nodes = useFileExploreTreeViewNodes();

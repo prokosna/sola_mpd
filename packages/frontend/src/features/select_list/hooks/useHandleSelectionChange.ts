@@ -4,9 +4,10 @@ import { useCallback } from "react";
 import { SelectListRowValue } from "../types/selectListTypes";
 
 /**
- * Custom hook that returns a callback function for handling selection changes in a grid.
- * @param onItemsSelected A function that takes an array of selected values and returns a Promise.
- * @returns A callback function that can be used as an event handler for selection changes.
+ * Handle AG Grid selection changes.
+ *
+ * @param onItemsSelected Selection callback
+ * @returns Selection change handler
  */
 export function useHandleSelectionChange(
   onItemsSelected: (selectedValues: SelectListRowValue[]) => Promise<void>,

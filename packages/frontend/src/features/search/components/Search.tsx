@@ -14,9 +14,11 @@ import { SearchContent } from "./SearchContent";
 import { SearchNavigation } from "./SearchNavigation";
 
 /**
- * Search component that renders the search interface.
- * It manages the layout state and handles resizing of the search panes.
- * @returns JSX element representing the Search component
+ * Main search interface component.
+ *
+ * Manages layout and pane resizing.
+ *
+ * @returns Search component
  */
 export function Search() {
   const searchLayout = useSearchLayoutState();

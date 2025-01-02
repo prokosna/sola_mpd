@@ -30,15 +30,19 @@ import {
 } from "../states/fileExploreUiState";
 
 /**
- * Custom hook for managing File Explorer Song Table properties.
+ * Hook for managing file explorer song table functionality.
  *
- * This hook handles the state and callbacks for the file explorer song table,
- * including context menu actions, song selection, and table updates.
+ * Features:
+ * - Queue and playlist management
+ * - Plugin integration
+ * - Column customization
+ * - Selection and interaction handling
+ * - Loading state management
  *
- * @param songsToAddToPlaylistRef - Mutable reference to store songs for playlist addition.
- * @param setIsOpenPlaylistSelectModal - Function to set the visibility of the playlist select modal.
- * @param setIsOpenColumnEditModal - Function to set the visibility of the column edit modal.
- * @returns SongTableProps object or undefined if data is not ready.
+ * @param songsToAddToPlaylistRef - Reference for playlist operations
+ * @param setIsOpenPlaylistSelectModal - Playlist modal control
+ * @param setIsOpenColumnEditModal - Column edit modal control
+ * @returns Song table properties or undefined if data not ready
  */
 export function useFileExploreSongTableProps(
   songsToAddToPlaylistRef: MutableRefObject<Song[]>,

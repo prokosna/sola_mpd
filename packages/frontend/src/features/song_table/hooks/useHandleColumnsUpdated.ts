@@ -8,11 +8,16 @@ import {
 } from "../utils/songTableColumnUtils";
 
 /**
- * Uses a callback function on columns updated.
- * @param currentColumns Current columns.
- * @param isSortingEnabled True if sorting is enabled.
- * @param onColumnsUpdated Function to update columns.
- * @returns Callback function.
+ * Creates handler for AG Grid column updates.
+ *
+ * Converts AG Grid column state to SongTableColumns format,
+ * preserving sorting attributes when needed. Ensures column
+ * configuration stays synchronized.
+ *
+ * @param currentColumns Current column config
+ * @param isSortingEnabled Sorting enabled flag
+ * @param onColumnsUpdated Update callback
+ * @returns Column update handler
  */
 export function useHandleColumnsUpdated(
   currentColumns: SongTableColumn[],

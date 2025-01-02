@@ -15,7 +15,16 @@ import {
 import { useBrowserSongTableProps } from "../hooks/useBrowserSongTableProps";
 
 /**
- * The content of the browser feature.
+ * Content component for the browser feature displaying song lists.
+ *
+ * Features:
+ * - Song table with customizable columns
+ * - Playlist management integration
+ * - Column editing capabilities
+ * - State persistence for table configuration
+ * - Loading state handling
+ *
+ * @component
  */
 export function BrowserContent() {
   const songTableState = useSongTableState();

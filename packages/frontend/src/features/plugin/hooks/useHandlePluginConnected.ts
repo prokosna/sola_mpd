@@ -8,11 +8,11 @@ import { usePluginService } from "../states/pluginServiceState";
 import { validateIpAndPort } from "../utils/validationUtils";
 
 /**
- * A custom hook for connecting a plugin.
+ * Handle plugin connection.
  *
- * @param endpointRef - A reference to the input element containing the endpoint.
- * @param setPluginToAdd - A function to set the plugin to be added.
- * @returns An object containing the error message and the onConnect function.
+ * @param endpointRef Input element ref
+ * @param setPluginToAdd Plugin setter
+ * @returns Error and connect handler
  */
 export function useHandlePluginConnected(
   endpointRef: RefObject<HTMLInputElement>,

@@ -7,11 +7,12 @@ import {
 } from "../states/playerStatusState";
 
 /**
- * PlayerDuration component displays the elapsed time and total duration of the currently playing track.
- * It uses the player status to fetch and display the time information.
- * The component is positioned absolutely and aligned to the right of its container.
+ * Duration display component.
  *
- * @returns A Box component containing the elapsed and total duration text.
+ * Shows elapsed time and total duration of the current track.
+ * Positioned absolutely and right-aligned in its container.
+ *
+ * @returns Duration display component
  */
 export function PlayerDuration() {
   const playerStatusElapsed = usePlayerStatusElapsedState();

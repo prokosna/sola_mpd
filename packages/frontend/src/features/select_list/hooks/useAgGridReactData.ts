@@ -6,10 +6,11 @@ import {
 } from "../types/selectListTypes";
 
 /**
- * Custom hook to prepare data for AG Grid in a select list.
- * @param values An array of string values to be displayed in the grid.
- * @param headerTitle Optional header text for the column. If not provided, "header" is used as default.
- * @returns An object containing rowData and columnDefs for AG Grid.
+ * Format data for AG Grid.
+ *
+ * @param values Values to display
+ * @param headerTitle Optional header
+ * @returns Row data and column definitions
  */
 export function useAgGridReactData(values: string[], headerTitle?: string) {
   const rowData: SelectListRowData[] = useMemo(() => {

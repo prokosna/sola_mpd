@@ -29,11 +29,9 @@ import {
 } from "./SideNavigationItem";
 
 /**
- * Renders the side navigation component.
+ * Navigation sidebar with app sections.
  *
- * @param {Object} props - The component props.
- * @param {boolean} props.isCompact - Determines if the navigation should be displayed in compact mode.
- * @returns {JSX.Element} The SideNavigation component.
+ * @param props.isCompact Compact mode flag
  */
 export function SideNavigation({ isCompact }: { isCompact: boolean }) {
   const baseItems: SideNavigationItemProps[] = [

@@ -27,9 +27,10 @@ type MpdProfileFormProps = {
 };
 
 /**
- * A form component for creating and validating MPD profiles.
- * @param props - The properties for the MpdProfileForm component.
- * @param props.onProfileCreated - A callback function to be called after a profile is successfully created.
+ * Form for MPD profile creation and validation.
+ *
+ * @param props Component props
+ * @param props.onProfileCreated Success callback
  */
 export function MpdProfileForm(props: MpdProfileFormProps) {
   const notify = useNotification();

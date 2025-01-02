@@ -12,6 +12,20 @@ import { fetchFileExploreSongs } from "../utils/fileExploreSongsUtils";
 
 import { selectedFileExploreFolderAtom } from "./fileExploreFoldersState";
 
+/**
+ * Base atom for managing file explorer songs.
+ *
+ * Features:
+ * - MPD server integration
+ * - Profile-aware data fetching
+ * - Folder-based song filtering
+ * - Empty state handling
+ *
+ * Dependencies:
+ * - MPD client connection
+ * - Current MPD profile
+ * - Selected folder path
+ */
 const fileExploreSongsAtom = atom(async (get) => {
   const mpdClient = get(mpdClientAtom);
   const profile = get(currentMpdProfileSyncAtom);
@@ -33,8 +47,20 @@ const fileExploreSongsAtom = atom(async (get) => {
   return songs;
 });
 
+/**
+ * Synchronized atom for songs data with persistence support.
+ */
 const fileExploreSongsSyncAtom = atomWithSync(fileExploreSongsAtom);
 
+/**
+ * Derived atom for visible songs with filtering applied.
+ *
+ * Features:
+ * - Global filter integration
+ * - Route-aware filtering
+ * - Song table state sync
+ * - Empty state handling
+ */
 const fileExploreVisibleSongsSyncAtom = atom((get) => {
   const fileExploreSongs = get(fileExploreSongsSyncAtom);
   const songTableState = get(songTableStateSyncAtom);
@@ -62,12 +88,15 @@ const fileExploreVisibleSongsSyncAtom = atom((get) => {
 });
 
 /**
- * Hook to access the current visible songs state in the file explorer.
+ * Hook to access the filtered and sorted songs in file explorer.
  *
- * This hook retrieves the sorted and filtered list of songs based on the
- * current file explorer state, global filter, and song table configuration.
+ * Features:
+ * - Automatic updates on data changes
+ * - Global filter integration
+ * - Route-aware visibility
+ * - Sort state handling
  *
- * @returns An array of Song objects representing the visible songs in the file explorer.
+ * @returns Filtered array of songs or undefined if not ready
  */
 export function useFileExploreSongsState() {
   return useAtomValue(fileExploreVisibleSongsSyncAtom);

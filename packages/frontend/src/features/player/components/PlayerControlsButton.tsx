@@ -9,15 +9,14 @@ export type PlayerControlsButtonProps = {
 };
 
 /**
- * Renders a player control button with a tooltip.
+ * Base button component for player controls.
  *
- * @param props - The properties for the PlayerControlsButton component
- * @param props.label - The label text for the button and tooltip
- * @param props.isDisabled - Whether the button is disabled
- * @param props.onButtonClicked - The function to be called when the button is clicked
- * @param props.icon - The icon to be displayed on the button
- * @param props.variant - The visual variant of the button
- * @returns A PlayerControlsButton component
+ * Renders an icon button with tooltip, handling click events
+ * and visual states. Used as a foundation for specific player
+ * control buttons.
+ *
+ * @param props Button configuration and handlers
+ * @returns Player control button with tooltip
  */
 export function PlayerControlsButton(props: PlayerControlsButtonProps) {
   return (

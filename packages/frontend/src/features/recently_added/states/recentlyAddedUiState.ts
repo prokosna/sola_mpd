@@ -3,8 +3,14 @@ import { atomEffect } from "jotai-effect";
 
 import { recentlyAddedFiltersSyncAtom } from "./recentlyAddedFiltersState";
 
+/**
+ * Loading state.
+ */
 const isRecentlyAddedLoadingAtom = atom(true);
 
+/**
+ * Loading state effect.
+ */
 const setRecentlyAddedLoadingTrueEffectAtom = atomEffect((get, set) => {
   // Set isRecentlyAddedLoadingAtom to true when recentlyAddedFiltersAtom is updated.
   get(recentlyAddedFiltersSyncAtom);
@@ -12,8 +18,9 @@ const setRecentlyAddedLoadingTrueEffectAtom = atomEffect((get, set) => {
 });
 
 /**
- * Returns the state of whether the recently added view is loading.
- * @returns The state of whether the recently added view is loading.
+ * Get loading state.
+ *
+ * @returns Loading state
  */
 export function useIsRecentlyAddedLoadingState() {
   useAtom(setRecentlyAddedLoadingTrueEffectAtom);
@@ -21,8 +28,9 @@ export function useIsRecentlyAddedLoadingState() {
 }
 
 /**
- * Returns a function to set the recently added loading state.
- * @returns A function that takes a boolean parameter to update the loading state.
+ * Set loading state.
+ *
+ * @returns Loading state setter
  */
 export function useSetIsRecentlyAddedLoadingState() {
   return useSetAtom(isRecentlyAddedLoadingAtom);

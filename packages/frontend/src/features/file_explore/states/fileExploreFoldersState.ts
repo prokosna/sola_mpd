@@ -8,6 +8,10 @@ import { mpdClientAtom } from "../../mpd/states/mpdClient";
 import { currentMpdProfileSyncAtom } from "../../profile/states/mpdProfileState";
 import { fetchFileExploreFolders } from "../utils/fileExploreFoldersUtils";
 
+/**
+ * Base atom for managing file explorer folder data.
+ * Fetches folder structure from MPD server.
+ */
 const fileExploreFoldersAtom = atomWithRefresh(async (get) => {
   const mpdClient = get(mpdClientAtom);
   const profile = get(currentMpdProfileSyncAtom);
@@ -19,31 +23,42 @@ const fileExploreFoldersAtom = atomWithRefresh(async (get) => {
   return await fetchFileExploreFolders(mpdClient, profile);
 });
 
+/**
+ * Synchronized atom for folder data with persistence support.
+ */
 const fileExploreFoldersSyncAtom = atomWithSync(fileExploreFoldersAtom);
 
+/**
+ * Atom for tracking the currently selected folder.
+ * Defaults to undefined when no folder is selected.
+ */
 export const selectedFileExploreFolderAtom = atom<Folder | undefined>(
   undefined,
 );
 
 /**
- * Hook to access the current state of file explorer folders.
+ * Hook to access the file explorer folder structure.
  *
- * This hook retrieves the synchronized state of file explorer folders,
- * which is automatically updated when the underlying data changes.
+ * Features:
+ * - Automatic updates on data changes
+ * - MPD server integration
+ * - Profile-aware data fetching
  *
- * @returns An array of Folder objects representing the current state of file explorer folders.
+ * @returns Array of folders or empty array if no profile
  */
 export function useFileExploreFoldersState() {
   return useAtomValue(fileExploreFoldersSyncAtom);
 }
 
 /**
- * Hook to access the current selected file explorer folder state.
+ * Hook to access the currently selected folder.
  *
- * This hook retrieves the current selected folder in the file explorer,
- * which is automatically updated when the underlying data changes.
+ * Features:
+ * - Selection state tracking
+ * - Type-safe folder access
+ * - Automatic state updates
  *
- * @returns A Folder object representing the current selected folder in the file explorer, or undefined if no folder is selected.
+ * @returns Selected folder or undefined if none selected
  */
 export function useSelectedFileExploreFolderState() {
   return useAtomValue(selectedFileExploreFolderAtom);
@@ -72,12 +87,14 @@ export function useSetSelectedFileExploreFolderState() {
 }
 
 /**
- * Hook to refresh the file explorer folders.
+ * Hook to refresh folder data from the MPD server.
  *
- * This hook returns a function that can be used to trigger a refresh of the file explorer folders.
- * It utilizes the `fileExploreFoldersAtom` to manage the state and refresh mechanism.
+ * Features:
+ * - Manual refresh trigger
+ * - Profile-aware refresh
+ * - Error handling
  *
- * @returns A function that, when called, refreshes the file explorer folders state.
+ * @returns Refresh function to trigger new data fetch
  */
 export function useRefreshFileExploreFolders() {
   return useSetAtom(fileExploreFoldersAtom);

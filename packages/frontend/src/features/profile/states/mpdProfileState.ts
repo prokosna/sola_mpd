@@ -11,45 +11,72 @@ import { UpdateMode } from "../../../types/stateTypes";
 
 import { mpdProfileStateRepositoryAtom } from "./mpdProfileStateRepository";
 
+/**
+ * Base atom for MPD profile state.
+ *
+ * Manages multiple profiles and tracks active one.
+ */
 const mpdProfileStateAtom = atomWithDefault(async (get) => {
   const repository = get(mpdProfileStateRepositoryAtom);
   return repository.fetch();
 });
 
+/**
+ * Synchronized atom for profile state.
+ *
+ * Ensures consistent updates across subscribers.
+ */
 const mpdProfileStateSyncAtom = atomWithSync(mpdProfileStateAtom);
 
+/**
+ * Derived atom for current MPD profile.
+ *
+ * Extracts active profile from state.
+ */
 export const currentMpdProfileSyncAtom = atom((get) => {
   const profileState = get(mpdProfileStateSyncAtom);
   return profileState?.currentProfile;
 });
 
 /**
- * Hook to access the MPD profile state.
- * @returns The MPD profile state.
+ * Hook for accessing MPD profile state.
+ *
+ * Provides read-only access to complete profile state.
+ *
+ * @returns Current MPD profile state
  */
 export function useMpdProfileState() {
   return useAtomValue(mpdProfileStateSyncAtom);
 }
 
 /**
- * Hook to access the current MPD profile.
- * @returns The current MPD profile.
+ * Hook for accessing current MPD profile.
+ *
+ * Provides read-only access to active profile.
+ *
+ * @returns Active profile or undefined
  */
 export function useCurrentMpdProfileState() {
   return useAtomValue(currentMpdProfileSyncAtom);
 }
 
 /**
- * Hook to refresh the MPD profile state.
- * @returns A function to refresh the MPD profile state.
+ * Hook for refreshing profile state.
+ *
+ * Triggers fresh fetch from storage.
+ *
+ * @returns Refresh function
  */
 export function useRefreshMpdProfileState() {
   return useResetAtom(mpdProfileStateAtom);
 }
 
 /**
- * Hook to save the MPD profile state.
- * @returns A function to save the MPD profile state.
+ * Hook for updating profile state.
+ *
+ * Updates state locally and/or persistently.
+ *
+ * @returns Update function with persistence options
  */
 export function useUpdateMpdProfileState() {
   const repository = useAtomValue(mpdProfileStateRepositoryAtom);
@@ -70,9 +97,12 @@ export function useUpdateMpdProfileState() {
 }
 
 /**
- * Hook to save the current MPD profile.
- * @returns A function to save the current MPD profile.
- * @throws Error if the provided profile is not in the list of profiles.
+ * Hook for updating current profile.
+ *
+ * Changes active profile and persists change.
+ *
+ * @returns Profile update function
+ * @throws When profile not found
  */
 export function useUpdateCurrentMpdProfile() {
   const mpdProfileState = useAtomValue(mpdProfileStateAtom);

@@ -8,16 +8,11 @@ import {
 } from "../states/executionState";
 
 /**
- * PluginExecutionIndicator component
+ * Plugin execution progress indicator.
  *
- * This component displays the execution progress of a plugin.
- * It shows a circular progress indicator when a plugin is running,
- * and an error indicator if the execution fails.
+ * Shows circular progress or error state.
  *
- * The component uses various hooks to access the current plugin state,
- * execution response, and to control the visibility of the execution modal.
- *
- * @returns JSX.Element | null
+ * @returns Progress indicator or null
  */
 export function PluginExecutionIndicator() {
   const { plugin } = usePluginExecutionPropsState();

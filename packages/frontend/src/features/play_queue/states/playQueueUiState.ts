@@ -13,12 +13,12 @@ const setPlayQueueLoadingTrueEffectAtom = atomEffect((get, set) => {
 });
 
 /**
- * Hook to get the current loading state of the play queue.
+ * Hook for accessing play queue loading state.
  *
- * This hook triggers a side effect to set the loading state to true
- * when the MPD client or current profile changes, and returns the current loading state.
+ * Automatically sets loading to true when MPD client or profile
+ * changes. Returns current loading state.
  *
- * @returns The current loading state of the play queue.
+ * @returns Current loading state
  */
 export function useIsPlayQueueLoadingState(): boolean {
   useAtom(setPlayQueueLoadingTrueEffectAtom);
@@ -26,9 +26,9 @@ export function useIsPlayQueueLoadingState(): boolean {
 }
 
 /**
- * Hook to get a function that sets the loading state for the play queue.
+ * Hook for controlling play queue loading state.
  *
- * @returns A function to set the loading state.
+ * @returns Loading state setter function
  */
 export function useSetIsPlayQueueLoadingState() {
   return useSetAtom(isPlayQueueLoadingAtom);

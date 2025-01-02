@@ -11,10 +11,15 @@ import {
 import { getSongTableKey } from "../utils/songTableTableUtils";
 
 /**
- * Uses a callback to get a bold text CSS class if a given row is in playing.
- * @param keyType Song table key type.
- * @param songsMap Songs map.
- * @returns Bold text CSS class string or undefined.
+ * Creates a callback for highlighting currently playing song.
+ *
+ * Returns a function that applies bold text styling to the row
+ * containing the currently playing song. Uses song key matching
+ * for identification.
+ *
+ * @param keyType Song key type
+ * @param songsMap Song lookup map
+ * @returns Row class callback
  */
 export function useGetBoldClassForPlayingSong(
   keyType: SongTableKeyType,

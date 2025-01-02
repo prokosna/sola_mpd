@@ -30,11 +30,19 @@ import {
 } from "../states/browserUiState";
 
 /**
- * Returns song table props for the browser feature.
+ * Custom hook for managing browser song table functionality.
  *
- * @param songsToAddToPlaylistRef - the songs to add to playlist
- * @param setIsPlaylistSelectModalOpen - the function to open or close the playlist select modal
- * @param setIsColumnEditModalOpen - the function to open or close the column edit modal
+ * Features:
+ * - Queue and playlist management
+ * - Plugin integration
+ * - Column customization
+ * - Selection and interaction handling
+ * - Loading state management
+ *
+ * @param songsToAddToPlaylistRef - Reference for playlist operations
+ * @param setIsPlaylistSelectModalOpen - Playlist modal control
+ * @param setIsColumnEditModalOpen - Column edit modal control
+ * @returns Song table properties or undefined if data not ready
  */
 export function useBrowserSongTableProps(
   songsToAddToPlaylistRef: MutableRefObject<Song[]>,

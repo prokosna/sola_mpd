@@ -13,6 +13,16 @@ import {
 } from "@chakra-ui/react";
 import { useCallback, useEffect, useRef, useState } from "react";
 
+/**
+ * Props for state editor modal.
+ *
+ * @template T State type extending Protobuf Message
+ * @property state Current state
+ * @property onSave Save callback
+ * @property isOpen Modal visibility
+ * @property onClose Close callback
+ * @property fromJson JSON parser
+ */
 export type SettingsStatesEditorProps<T> = {
   state: T;
   onSave: (state: T) => Promise<void>;
@@ -22,11 +32,9 @@ export type SettingsStatesEditorProps<T> = {
 };
 
 /**
- * A generic component for editing settings states.
+ * JSON editor modal for application state.
  *
- * @template T - Type extending Message
- * @param props - The props for the SettingsStatesEditor component
- * @returns A modal dialog for editing the state in JSON format
+ * @template T State type extending Protobuf Message
  */
 export function SettingsStatesEditor<T extends Message>(
   props: SettingsStatesEditorProps<T>,

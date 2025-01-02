@@ -8,8 +8,9 @@ export const pluginServiceAtom = atomWithDefault<PluginService>(() => {
 });
 
 /**
- * Hook to access the PluginService.
- * @returns The PluginService instance.
+ * Get plugin service.
+ *
+ * @returns Service instance
  */
 export function usePluginService(): PluginService {
   return useAtomValue(pluginServiceAtom);

@@ -24,17 +24,13 @@ export type PlaylistSelectModalProps = {
 };
 
 /**
- * PlaylistSelectModal component
+ * Modal for playlist selection or creation.
  *
- * This component renders a modal for selecting or creating a playlist.
- * It allows users to choose between selecting an existing playlist or creating a new one.
- *
- * @param props - The props for the PlaylistSelectModal component
- * @param props.isOpen - Boolean indicating whether the modal is open
- * @param props.onOk - Callback function to be called when a playlist is selected or created
- * @param props.onCancel - Callback function to be called when the modal is cancelled
- *
- * @returns The rendered PlaylistSelectModal component
+ * @param props Modal control props
+ * @param props.isOpen Visibility state
+ * @param props.onOk Selection callback
+ * @param props.onCancel Cancel callback
+ * @returns Modal component
  */
 export function PlaylistSelectModal(props: PlaylistSelectModalProps) {
   const addPlaylist = useAddPlaylist();

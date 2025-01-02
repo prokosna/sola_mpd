@@ -14,9 +14,11 @@ import { useSearchSongTableProps } from "../hooks/useSearchSongTableProps";
 import { useEditingSearchState } from "../states/searchEditState";
 
 /**
- * SearchContent component renders the main content area of the search feature.
- * It manages the song table, column editing, and playlist selection functionalities.
- * @returns JSX element representing the SearchContent component
+ * Search content area component.
+ *
+ * Manages song table, column editing, and playlist selection.
+ *
+ * @returns Content component
  */
 export function SearchContent() {
   const editingSearch = useEditingSearchState();

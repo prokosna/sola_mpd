@@ -16,11 +16,11 @@ type ComparableSongMetadataValue = string | number;
 type ComparableConditionValue = string | number | RegExp;
 
 /**
- * Determines if a song's metadata value matches a given filtering condition.
- * @param songMetadataValue The value of the song's metadata to compare.
- * @param conditionValue The value to compare against.
- * @param operator The type of comparison to perform.
- * @returns True if the condition is met, false otherwise.
+ * Check if song metadata matches filter condition.
+ * @param songMetadataValue Song metadata value
+ * @param conditionValue Filter value
+ * @param operator Filter operator
+ * @returns True if condition is met
  */
 function matchesFilteringCondition(
   songMetadataValue: ComparableSongMetadataValue | undefined,
@@ -84,12 +84,9 @@ function matchesFilteringCondition(
 }
 
 /**
- * Converts a Song_MetadataValue to a comparable value.
- * This function normalizes the value for comparison operations,
- * handling different types of metadata (string, int, float, timestamp, format).
- *
- * @param value - The Song_MetadataValue to convert
- * @returns A comparable value (string or number) or undefined if conversion is not possible
+ * Convert Song_MetadataValue to comparable value.
+ * @param value Song metadata value
+ * @returns Comparable value or undefined
  */
 function convertSongMetadataValueToComparableValue(
   value: Song_MetadataValue,
@@ -121,13 +118,9 @@ function convertSongMetadataValueToComparableValue(
 }
 
 /**
- * Converts a FilterCondition to a comparable value.
- * This function normalizes the condition value for comparison operations,
- * handling different types of metadata (string, int, float, timestamp, format).
- * It also handles the REGEX operator by converting the condition value to a RegExp object.
- *
- * @param condition - The FilterCondition to convert
- * @returns A comparable value (string, number, or RegExp) or undefined if conversion is not possible
+ * Convert FilterCondition to comparable value.
+ * @param condition Filter condition
+ * @returns Comparable value or undefined
  */
 function convertFilterConditionToComparableValue(
   condition: FilterCondition,
@@ -166,12 +159,10 @@ function convertFilterConditionToComparableValue(
 }
 
 /**
- * Filters an array of songs based on a set of conditions.
- * All conditions are applied as AND operations.
- *
- * @param songs - An array of Song objects to be filtered.
- * @param conditions - An array of FilterCondition objects to apply.
- * @returns An array of Song objects that meet all the specified conditions.
+ * Filter songs using AND conditions.
+ * @param songs Songs to filter
+ * @param conditions Filter conditions
+ * @returns Filtered songs
  */
 export function filterSongsByAndConditions(
   songs: Song[],
@@ -199,10 +190,9 @@ export function filterSongsByAndConditions(
 }
 
 /**
- * Converts a FilterCondition_Operator to its corresponding display name.
- *
- * @param operator - The FilterCondition_Operator to convert
- * @returns A string representation of the operator for display purposes
+ * Get operator display name.
+ * @param operator Filter operator
+ * @returns Display name
  */
 export function convertOperatorToDisplayName(
   operator: FilterCondition_Operator,
@@ -232,11 +222,10 @@ export function convertOperatorToDisplayName(
 }
 
 /**
- * Converts a display name string to its corresponding FilterCondition_Operator.
- *
- * @param str - The display name string to convert
- * @returns The corresponding FilterCondition_Operator
- * @throws Error if the input string is not a supported operator
+ * Convert display name to operator.
+ * @param str Display name
+ * @returns Filter operator
+ * @throws If invalid operator name
  */
 export function convertDisplayNameToOperator(
   str: string,
@@ -268,9 +257,8 @@ export function convertDisplayNameToOperator(
 }
 
 /**
- * Lists all available FilterCondition_Operator values.
- *
- * @returns An array of FilterCondition_Operator values, excluding the UNKNOWN operator.
+ * List all filter operators.
+ * @returns Filter operators excluding UNKNOWN
  */
 export function listAllFilterConditionOperators(): FilterCondition_Operator[] {
   return Object.keys(FilterCondition_Operator)

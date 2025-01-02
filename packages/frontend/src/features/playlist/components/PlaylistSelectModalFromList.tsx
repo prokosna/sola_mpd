@@ -8,15 +8,11 @@ export type PlaylistSelectModalFromListProps = {
 };
 
 /**
- * PlaylistSelectModalFromList component
+ * Select input for existing playlists.
  *
- * This component renders a select input for choosing an existing playlist.
- * It manages the state of selected playlist and any potential error messages.
- *
- * @param props - The props for the PlaylistSelectModalFromList component
- * @param props.onSelect - Callback function to be called when a playlist is selected
- *
- * @returns The rendered PlaylistSelectModalFromList component
+ * @param props Component props
+ * @param props.onSelect Selection callback
+ * @returns Select input component
  */
 export function PlaylistSelectModalFromList(
   props: PlaylistSelectModalFromListProps,

@@ -5,6 +5,17 @@ import { useCallback } from "react";
 
 import { MpdClient } from "../../mpd";
 
+/**
+ * Creates handler for song double-click playback.
+ *
+ * Adds clicked song to play queue and starts playback. Manages
+ * MPD client communication and error handling for playlist
+ * operations.
+ *
+ * @param mpdClient MPD client instance
+ * @param mpdProfile Active MPD profile
+ * @returns Song double-click handler
+ */
 export function useHandleSongDoubleClick(
   mpdClient?: MpdClient,
   mpdProfile?: MpdProfile,

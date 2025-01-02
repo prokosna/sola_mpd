@@ -15,14 +15,11 @@ import {
 import { usePluginService } from "../states/pluginServiceState";
 
 /**
- * A custom hook for executing a plugin.
+ * Handle plugin execution.
  *
- * This hook provides a function to execute a plugin with given songs and parameters.
- * It handles the execution process, including setting up the request, managing the
- * execution state, and handling responses and errors.
+ * Executes plugin with songs and parameters.
  *
- * @returns A function that takes a Plugin, an array of Songs, and a Map of parameters
- *          to execute the plugin.
+ * @returns Plugin execution handler
  */
 export function useHandlePluginExecuted() {
   const pluginService = usePluginService();

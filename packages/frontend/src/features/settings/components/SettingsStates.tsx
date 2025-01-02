@@ -38,14 +38,10 @@ import { useSettingsStateEditorProps } from "../hooks/useSettingsStateEditorProp
 import { SettingsStatesEditor } from "./SettingsStatesEditor";
 
 /**
- * SettingsStates component renders a table of various application states
- * and provides buttons to edit each state directly.
+ * Application state management interface.
  *
- * This component uses several hooks to fetch and update different states
- * such as MpdProfileState, LayoutState, BrowserState, SongTableState,
- * and SavedSearches. It also utilizes the SettingsStatesEditor for each state.
- *
- * @returns A React component that displays a table of editable application states
+ * Provides a table for viewing and editing various application
+ * states like profiles, layout, browser, and search history.
  */
 export function SettingsStates() {
   const mpdProfileState = useMpdProfileState();

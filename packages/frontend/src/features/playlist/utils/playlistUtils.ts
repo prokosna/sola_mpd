@@ -6,15 +6,14 @@ import { Song } from "@sola_mpd/domain/src/models/song_pb.js";
 import { MpdClient } from "../../mpd";
 
 /**
- * Adds a new playlist to the MPD server.
+ * Add new playlist to MPD server.
  *
- * This function creates a new playlist with the given name and clears any existing
- * content if a playlist with the same name already exists.
+ * Creates or updates playlist with given name and
+ * clears any existing content.
  *
- * @param mpdClient - The MPD client instance used to communicate with the server.
- * @param profile - The MPD profile containing connection details.
- * @param playlist - The playlist object containing the name of the playlist to be added.
- * @returns A promise that resolves when the playlist has been successfully added.
+ * @param mpdClient Client for sending commands
+ * @param profile Server connection details
+ * @param playlist Playlist to create
  */
 export async function addPlaylist(
   mpdClient: MpdClient,
@@ -45,15 +44,14 @@ export async function addPlaylist(
 }
 
 /**
- * Fetches all playlists from the MPD server.
+ * Fetch all playlists from MPD server.
  *
- * This function retrieves a list of all playlists available on the MPD server
- * using the provided MPD client and profile.
+ * Gets list of playlists with names and timestamps
+ * via listplaylists command.
  *
- * @param mpdClient - The MPD client instance used to communicate with the server.
- * @param profile - The MPD profile containing connection details.
- * @returns A promise that resolves to an array of Playlist objects.
- * @throws Error if the MPD response is invalid.
+ * @param mpdClient Client for sending commands
+ * @param profile Server connection details
+ * @returns List of playlists
  */
 export async function fetchPlaylists(
   mpdClient: MpdClient,
@@ -75,16 +73,15 @@ export async function fetchPlaylists(
 }
 
 /**
- * Fetches songs from a specific playlist on the MPD server.
+ * Fetch songs from specific playlist.
  *
- * This function retrieves all songs from the specified playlist using
- * the provided MPD client and profile.
+ * Gets list of songs with metadata and positions
+ * via listplaylist command.
  *
- * @param mpdClient - The MPD client instance used to communicate with the server.
- * @param profile - The MPD profile containing connection details.
- * @param playlist - The playlist object containing the name of the playlist to fetch songs from.
- * @returns A promise that resolves to an array of Song objects.
- * @throws Error if the MPD response is invalid.
+ * @param mpdClient Client for sending commands
+ * @param profile Server connection details
+ * @param playlist Target playlist
+ * @returns List of songs
  */
 export async function fetchPlaylistSongs(
   mpdClient: MpdClient,

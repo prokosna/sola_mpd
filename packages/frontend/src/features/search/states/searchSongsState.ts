@@ -13,8 +13,18 @@ import { fetchSearchSongs } from "../utils/searchSongsUtils";
 
 import { editingSearchAtom } from "./searchEditState";
 
+/**
+ * Atom for target search config.
+ *
+ * Controls which search to execute.
+ */
 const targetSearchAtom = atom<Search | undefined>(undefined);
 
+/**
+ * Atom for search results.
+ *
+ * Fetches and stores matching songs.
+ */
 const searchSongsAtom = atomWithRefresh(async (get) => {
   const mpdClient = get(mpdClientAtom);
   const profile = get(currentMpdProfileSyncAtom);
@@ -32,8 +42,28 @@ const searchSongsAtom = atomWithRefresh(async (get) => {
   return songs;
 });
 
+/**
+ * Synchronized atom for search results.
+ *
+ * This atom wraps the base searchSongsAtom with synchronization
+ * capabilities, ensuring that all subscribers receive consistent
+ * updates when the results change.
+ */
 const searchSongsSyncAtom = atomWithSync(searchSongsAtom);
 
+/**
+ * Derived atom for visible search results.
+ *
+ * This atom filters the search results based on:
+ * - Current route/pathname
+ * - Global filter settings
+ * - Editing search columns
+ *
+ * Features:
+ * - Route-aware filtering
+ * - Global search integration
+ * - Column-based filtering
+ */
 const searchVisibleSongsSyncAtom = atom((get) => {
   const searchSongs = get(searchSongsSyncAtom);
   const editingSearch = get(editingSearchAtom);
@@ -54,35 +84,44 @@ const searchVisibleSongsSyncAtom = atom((get) => {
 });
 
 /**
- * Hook to access the current target search state.
- * @returns The current target search state.
+ * Hook for target search config.
+ *
+ * Provides read-only access to active search.
+ *
+ * @returns Current target search
  */
 export function useTargetSearchState() {
   return useAtomValue(targetSearchAtom);
 }
 
 /**
- * Hook to set the target search state.
- * @returns A function that updates the target search state.
+ * Hook for updating target search.
+ *
+ * Updates search config and triggers execution.
+ *
+ * @returns Update function
  */
 export function useSetTargetSearchState() {
   return useSetAtom(targetSearchAtom);
 }
 
 /**
- * Hook to access the current visible songs state for search.
- * This hook retrieves the filtered songs based on the global filter
- * and the current route (only for search).
- * @returns An array of filtered Song objects.
+ * Hook for visible search results.
+ *
+ * Provides filtered songs based on search and filters.
+ *
+ * @returns Filtered song list
  */
 export function useSearchSongsState() {
   return useAtomValue(searchVisibleSongsSyncAtom);
 }
 
 /**
- * Hook to refresh the search songs state.
- * This triggers a re-fetch of the search songs.
- * @returns A function that, when called, will refresh the search songs state.
+ * Hook for refreshing search results.
+ *
+ * Triggers fresh search execution.
+ *
+ * @returns Refresh function
  */
 export function useRefreshSearchSongsState() {
   return useSetAtom(searchSongsAtom);

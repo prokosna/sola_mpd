@@ -17,11 +17,19 @@ import { fetchBrowserFilterValues } from "../utils/browserFilterUtils";
 
 import { browserStateSyncAtom, useUpdateBrowserState } from "./browserState";
 
+/**
+ * Atom for accessing synchronized browser filters.
+ * Derived from the main browser state.
+ */
 export const browserFiltersSyncAtom = atom((get) => {
   const browserState = get(browserStateSyncAtom);
   return browserState?.filters;
 });
 
+/**
+ * Base atom for storing filter values map.
+ * Fetches values from MPD server based on current filters.
+ */
 const browserFilterValuesMapAtom = atom(async (get) => {
   const mpdClient = get(mpdClientAtom);
   const browserFilters = get(browserFiltersSyncAtom);
@@ -38,9 +46,15 @@ const browserFilterValuesMapAtom = atom(async (get) => {
   );
 });
 
+/**
+ * Synchronized atom for filter values map with persistence support.
+ */
 const browserFilterValuesMapSyncAtom = atomWithSync(browserFilterValuesMapAtom);
 
-// Browser filter values map filtered by global filter tokens.
+/**
+ * Derived atom that applies global filter to browser filter values.
+ * Only filters values when on the browser route.
+ */
 const filteredBrowserFilterValuesMapSyncAtom = atom((get) => {
   const browserFilters = get(browserFiltersSyncAtom);
   const valuesMap = get(browserFilterValuesMapSyncAtom);
@@ -73,33 +87,43 @@ const filteredBrowserFilterValuesMapSyncAtom = atom((get) => {
   return filteredMap;
 });
 
+/**
+ * Atom family for accessing filtered browser filter values for a specific metadata tag.
+ */
 const filteredBrowserFilterValuesSyncAtomFamily = atomFamily(
   (tag: Song_MetadataTag) =>
     atom((get) => get(filteredBrowserFilterValuesMapSyncAtom)?.get(tag)),
 );
 
 /**
- * Returns the browser filters state.
- * @returns The browser filters state.
+ * Hook to access the current browser filters state.
+ *
+ * @returns Array of browser filters or undefined if not available
  */
 export function useBrowserFiltersState() {
   return useAtomValue(browserFiltersSyncAtom);
 }
 
 /**
- * Returns the browser filter values for a given tag.
- * @param tag The song metadata tag.
- * @returns The browser filter values.
+ * Hook to access filter values for a specific metadata tag.
+ * Values are automatically filtered by global filter when active.
+ *
+ * @param tag - Target metadata tag to get values for
+ * @returns Array of filter values or undefined if not available
  */
 export function useBrowserFilterValuesState(tag: Song_MetadataTag) {
   return useAtomValue(filteredBrowserFilterValuesSyncAtomFamily(tag));
 }
 
 /**
- * Returns a function to update browser filters state.
+ * Hook to update browser filters state with debounced persistence.
  *
- * The state is automatically updated and persisted with 1 second debounce.
- * @returns Function to call to update a state.
+ * Features:
+ * - Automatic state updates
+ * - 1 second debounce for persistence
+ * - Error handling with notifications
+ *
+ * @returns Function to update browser filters
  */
 export function useUpdateBrowserFiltersState() {
   const browserState = useAtomValue(browserStateSyncAtom);

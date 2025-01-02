@@ -5,6 +5,12 @@ import { useNotification } from "../../../lib/chakra/hooks/useNotification";
 import { UpdateMode } from "../../../types/stateTypes";
 import { usePluginState, useUpdatePluginState } from "../states/pluginState";
 
+/**
+ * Handle plugin removal.
+ *
+ * @param plugin Plugin to remove
+ * @returns Remove handler
+ */
 export function useHandlePluginRemoved(plugin: Plugin) {
   const notify = useNotification();
 

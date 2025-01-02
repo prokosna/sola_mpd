@@ -4,13 +4,18 @@ import { useCallback } from "react";
 import { ColumnEditModalProps } from "../components/ColumnEditModal";
 
 /**
- * Uses props for ColumnEditModal.
- * @param isOpen True if the modal is open.
- * @param columns Current columns to edit.
- * @param setIsOpenColumnEditModal Function to set isOpen.
- * @param onColumnsUpdated Function to update columns.
- * @param onModalDisposed Function to dispose the modal.
- * @returns Props.
+ * Creates props for column edit modal component.
+ *
+ * Manages modal state and column updates, ensuring proper cleanup
+ * and state synchronization when changes are made or modal is
+ * closed.
+ *
+ * @param isOpen Modal visibility
+ * @param columns Current columns
+ * @param setIsOpenColumnEditModal Modal state setter
+ * @param onColumnsUpdated Column update handler
+ * @param onModalDisposed Modal cleanup handler
+ * @returns Modal component props
  */
 export function useColumnEditModalProps(
   isOpen: boolean,

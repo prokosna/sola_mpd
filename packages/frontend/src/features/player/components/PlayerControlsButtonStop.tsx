@@ -9,10 +9,12 @@ import { useCurrentSongState } from "../states/playerSongState";
 import { PlayerControlsButton } from "./PlayerControlsButton";
 
 /**
- * Renders a button to stop playback in the player controls.
- * This component handles the "Stop" functionality in the music player.
+ * Button for stopping playback.
  *
- * @returns A PlayerControlsButton component for stopping playback
+ * Sends the 'stop' command to MPD when clicked. Disabled
+ * when no song is currently playing.
+ *
+ * @returns Stop button
  */
 export function PlayerControlsButtonStop() {
   const profile = useCurrentMpdProfileState();

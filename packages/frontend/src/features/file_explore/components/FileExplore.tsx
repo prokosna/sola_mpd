@@ -14,13 +14,22 @@ import { FileExploreContent } from "./FileExploreContent";
 import { FileExploreNavigation } from "./FileExploreNavigation";
 
 /**
- * FileExplore component for displaying and interacting with the file explorer.
+ * Main component for the file explorer feature.
  *
- * This component renders a resizable split view with a navigation pane on the left
- * and a content pane on the right. It uses the Allotment component for resizable panels
- * and manages the layout state for persisting panel sizes.
+ * Features:
+ * - Resizable split view layout
+ * - Persistent panel size state
+ * - Navigation pane with file system tree
+ * - Content pane with file details
+ * - Theme-aware styling
+ * - Loading state handling
  *
- * @returns The rendered FileExplore component
+ * Layout:
+ * - Left: Navigation pane for browsing file system
+ * - Right: Content pane for displaying file details and actions
+ * - Draggable divider for resizing panes
+ *
+ * @returns Rendered file explorer component
  */
 export function FileExplore() {
   const fileExploreLayout = useFileExploreLayoutState();

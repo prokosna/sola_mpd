@@ -3,6 +3,15 @@ import { startTransition } from "react";
 import { IconType } from "react-icons";
 import { useNavigate } from "react-router-dom";
 
+/**
+ * Navigation item props.
+ *
+ * @property name Item text
+ * @property icon Item icon
+ * @property link Target path
+ * @property isSelected Selection state
+ * @property isCompact Compact mode flag
+ */
 export type SideNavigationItemProps = {
   name: string;
   icon: IconType;
@@ -12,15 +21,9 @@ export type SideNavigationItemProps = {
 };
 
 /**
- * Renders a navigation item for the side navigation.
+ * Navigation item with icon and optional text.
  *
- * @param props - The properties for the SideNavigationItem component.
- * @param props.name - The display name of the navigation item.
- * @param props.icon - The icon component to be displayed.
- * @param props.link - The URL or path the item should navigate to when clicked.
- * @param props.isSelected - Optional. Indicates if the item is currently selected.
- * @param props.isCompact - Determines if the navigation item should be displayed in compact mode.
- * @returns A React component representing a side navigation item.
+ * @param props See SideNavigationItemProps
  */
 export function SideNavigationItem(props: SideNavigationItemProps) {
   const navigate = useNavigate();

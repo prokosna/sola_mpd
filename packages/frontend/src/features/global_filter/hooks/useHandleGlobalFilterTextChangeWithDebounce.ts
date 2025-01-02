@@ -3,11 +3,27 @@ import { useCallback, useRef } from "react";
 import { useSetGlobalFilterTextState } from "../states/globalFilterState";
 
 /**
- * A custom hook that provides a debounced function for handling global filter text changes.
- * It delays the execution of the text change operation to reduce the frequency of updates,
- * which can be useful for performance optimization in scenarios like real-time filtering.
+ * Hook for managing debounced global filter text updates.
  *
- * @returns An object containing the debounced text change handler function.
+ * Features:
+ * - 500ms debounce delay
+ * - Automatic cleanup of pending updates
+ * - Memory-efficient timeout handling
+ * - Type-safe state updates
+ *
+ * Implementation:
+ * - Uses ref to track pending timeouts
+ * - Clears previous timeout on new input
+ * - Single shared callback for all updates
+ * - Memoized handler for performance
+ *
+ * Performance:
+ * - Prevents excessive state updates
+ * - Reduces unnecessary re-renders
+ * - Optimizes for large song lists
+ * - Improves typing responsiveness
+ *
+ * @returns Debounced text change handler
  */
 export function useHandleGlobalFilterTextChangeWithDebounce() {
   const setGlobalFilterText = useSetGlobalFilterTextState();

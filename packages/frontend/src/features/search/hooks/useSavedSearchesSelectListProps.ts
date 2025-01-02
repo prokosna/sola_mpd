@@ -16,13 +16,11 @@ import { useSetTargetSearchState } from "../states/searchSongsState";
 import { EditingSearchStatus } from "../types/searchTypes";
 
 /**
- * Custom hook to generate props for the SavedSearches SelectList component.
+ * Hook for saved searches SelectList props.
  *
- * This hook prepares the necessary props for rendering a SelectList of saved searches,
- * including handling selection, context menu actions, and data loading.
+ * Handles selection, context menu, and data loading.
  *
- * @returns The props for the SelectList component,
- * or undefined if the necessary data is not yet available.
+ * @returns SelectList props or undefined
  */
 export function useSavedSearchesSelectListProps() {
   const notify = useNotification();

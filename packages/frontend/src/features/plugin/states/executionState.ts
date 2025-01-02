@@ -3,21 +3,39 @@ import { atom, useAtomValue, useSetAtom } from "jotai";
 
 import { PluginExecutionProps } from "../types/plugin";
 
+/**
+ * Plugin execution modal state.
+ */
 const isPluginExecutionModalOpenAtom = atom<"start" | "progress" | "closed">(
   "closed",
 );
 
+/**
+ * Plugin execution properties.
+ */
 const pluginExecutionPropsAtom = atom<PluginExecutionProps>({
   plugin: undefined,
   songs: [],
 });
 
+/**
+ * Latest execution response.
+ */
 const pluginExecutionLatestResponseAtom = atom<
   PluginExecuteResponse | Error | undefined
 >(undefined);
 
+/**
+ * Execution warning logs.
+ */
 const pluginExecutionWarningLogsAtom = atom<string[]>([]);
 
+/**
+ * Atom for appending new warning logs.
+ *
+ * This atom provides a way to add new warning messages
+ * while preserving the existing log history.
+ */
 const appendPluginExecutionWarningLogAtom = atom(
   null,
   (get, set, newLog: string) => {
@@ -28,56 +46,63 @@ const appendPluginExecutionWarningLogAtom = atom(
 );
 
 /**
- * A hook that returns the current plugin execution props state.
- * @returns The current PluginExecutionProps state.
+ * Get execution properties.
+ *
+ * @returns Current properties
  */
 export function usePluginExecutionPropsState() {
   return useAtomValue(pluginExecutionPropsAtom);
 }
 
 /**
- * A hook that returns a function to set the plugin execution props state.
- * @returns A function that updates the PluginExecutionProps state.
+ * Set execution properties.
+ *
+ * @returns Properties setter
  */
 export function useSetPluginExecutionPropsState() {
   return useSetAtom(pluginExecutionPropsAtom);
 }
 
 /**
- * A hook that returns the current state of the plugin execution modal.
- * @returns The current state of the plugin execution modal: "start", "progress", or "closed".
+ * Get execution modal state.
+ *
+ * @returns Modal state
  */
 export function useIsPluginExecutionModalOpenState() {
   return useAtomValue(isPluginExecutionModalOpenAtom);
 }
 
 /**
- * A hook that returns a function to set the state of the plugin execution modal.
- * @returns A function that updates the plugin execution modal state to "start", "progress", or "closed".
+ * Set execution modal state.
+ *
+ * @returns Modal state setter
  */
 export function useSetIsPluginExecutionModalOpenState() {
   return useSetAtom(isPluginExecutionModalOpenAtom);
 }
 
 /**
- * A hook that returns the latest response state of the plugin execution.
- * @returns The current PluginExecuteResponse, Error, or undefined if no execution has occurred.
+ * Get latest execution response.
+ *
+ * @returns Latest response
  */
 export function usePluginExecutionLatestResponseState() {
   return useAtomValue(pluginExecutionLatestResponseAtom);
 }
 
 /**
- * A hook that returns a function to set the latest response state of the plugin execution.
- * @returns A function that updates the latest response state with a PluginExecuteResponse or Error.
+ * Set execution response.
+ *
+ * @returns Response setter
  */
 export function useSetPluginExecutionLatestResponseState() {
   return useSetAtom(pluginExecutionLatestResponseAtom);
 }
 
 /**
- * A hook that returns whether a previous plugin execution is still running.
- * @returns A boolean indicating if a previous plugin is still running.
+ * Check if plugin is running.
+ *
+ * @returns True if running
  */
 export function useIsPreviousPluginStillRunningState() {
   const latestResponse = useAtomValue(pluginExecutionLatestResponseAtom);
@@ -90,24 +115,27 @@ export function useIsPreviousPluginStillRunningState() {
 }
 
 /**
- * A hook that returns the current warning logs state of the plugin execution.
- * @returns An array of warning log messages.
+ * Get warning logs.
+ *
+ * @returns Warning messages
  */
 export function usePluginExecutionWarningLogsState() {
   return useAtomValue(pluginExecutionWarningLogsAtom);
 }
 
 /**
- * A hook that returns a function to set the warning logs state of the plugin execution.
- * @returns A function that updates the array of warning log messages.
+ * Set warning logs.
+ *
+ * @returns Logs setter
  */
 export function useSetPluginExecutionWarningLogsState() {
   return useSetAtom(pluginExecutionWarningLogsAtom);
 }
 
 /**
- * A hook that returns a function to append a new warning log to the plugin execution warning logs.
- * @returns A function that takes a string parameter and appends it to the existing warning logs.
+ * Append warning log.
+ *
+ * @returns Log appender
  */
 export function useAppendPluginExecutionWarningLogState() {
   return useSetAtom(appendPluginExecutionWarningLogAtom);

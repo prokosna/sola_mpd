@@ -20,11 +20,10 @@ export type PluginListInfoCardProps = {
 };
 
 /**
- * PluginListInfoCard component displays information about a single plugin.
+ * Single plugin info card.
  *
- * @param props - The props for the PluginListInfoCard component
- * @param props.plugin - The Plugin object to display information for
- * @returns JSX element representing the PluginListInfoCard
+ * @param props.plugin Plugin to display
+ * @returns Info card
  */
 export function PluginListInfoCard(props: PluginListInfoCardProps) {
   const { plugin } = props;

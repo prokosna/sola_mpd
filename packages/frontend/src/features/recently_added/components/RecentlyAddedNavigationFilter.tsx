@@ -12,13 +12,9 @@ type RecentlyAddedNavigationFilterProps = {
 };
 
 /**
- * Renders a navigation filter component for the recently added view.
- * This component displays a selectable list of filter options based on the provided recently added filter and available tags.
+ * Single filter in navigation.
  *
- * @param {RecentlyAddedNavigationFilterProps} props - The component props
- * @param {RecentlyAddedFilter} props.recentlyAddedFilter - The current recently added filter
- * @param {Song_MetadataTag[]} props.availableTags - Array of available metadata tags
- * @returns {JSX.Element} The rendered RecentlyAddedNavigationFilter component
+ * @param props Component props
  */
 export function RecentlyAddedNavigationFilter(
   props: RecentlyAddedNavigationFilterProps,

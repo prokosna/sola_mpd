@@ -19,12 +19,10 @@ type PluginListProps = {
 };
 
 /**
- * PluginList component displays a list of plugins and an add button.
- * It handles the rendering of plugin cards and the add plugin button.
+ * Plugin list with add button.
  *
- * @param props - The props for the PluginList component
- * @param props.onOpen - Function to call when the add plugin button is clicked
- * @returns JSX element representing the PluginList
+ * @param props.onOpen Add button click handler
+ * @returns Plugin list view
  */
 export function PluginList(props: PluginListProps) {
   const pluginState = usePluginState();

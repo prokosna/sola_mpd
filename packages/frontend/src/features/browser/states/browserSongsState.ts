@@ -13,6 +13,10 @@ import { fetchBrowserSongs } from "../utils/browserSongsUtils";
 
 import { browserFiltersSyncAtom } from "./browserFiltersState";
 
+/**
+ * Base atom for storing browser songs.
+ * Automatically refreshes when MPD client, profile, or filters change.
+ */
 const browserSongsAtom = atomWithRefresh(async (get) => {
   const mpdClient = get(mpdClientAtom);
   const currentMpdProfile = get(currentMpdProfileSyncAtom);
@@ -31,8 +35,15 @@ const browserSongsAtom = atomWithRefresh(async (get) => {
   return songs;
 });
 
+/**
+ * Synchronized atom for browser songs with persistence support.
+ */
 const browserSongsSyncAtom = atomWithSync(browserSongsAtom);
 
+/**
+ * Derived atom that filters songs based on global filter and current route.
+ * Only returns songs when on the browser route.
+ */
 const browserVisibleSongsSyncAtom = atom((get) => {
   const browserSongs = get(browserSongsSyncAtom);
   const songTableState = get(songTableStateSyncAtom);
@@ -57,18 +68,23 @@ const browserVisibleSongsSyncAtom = atom((get) => {
 });
 
 /**
- * Returns the visible songs of browser page.
- * If the current pathname is not browser, it returns no songs.
- * Otherwise, it filters the songs by global filter.
+ * Hook to access the filtered songs in the browser view.
+ *
+ * Features:
+ * - Route-aware filtering (only active in browser view)
+ * - Global filter integration
+ * - Automatic updates on filter changes
+ *
+ * @returns Filtered array of songs or undefined if not in browser view
  */
 export function useBrowserSongsState() {
   return useAtomValue(browserVisibleSongsSyncAtom);
 }
 
 /**
- * Returns a function to refresh the browser songs state.
- * This hook can be used to trigger a re-fetch of the browser songs.
- * @returns A function that, when called, will refresh the browser songs state.
+ * Hook to refresh browser songs data from the MPD server.
+ *
+ * @returns Refresh function that triggers a new fetch
  */
 export function useRefreshBrowserSongsState() {
   return useSetAtom(browserSongsAtom);

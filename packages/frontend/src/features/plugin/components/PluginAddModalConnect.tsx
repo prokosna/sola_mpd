@@ -20,12 +20,12 @@ export type PluginAddModalConnectProps = {
 };
 
 /**
- * PluginAddModalConnect component for connecting to a plugin.
- * It provides a form to input the plugin endpoint and handles the connection process.
+ * Plugin connection form.
  *
- * @param props - The props for the PluginAddModalConnect component
- * @param props.setPluginToAdd - Function to set the plugin to be added
- * @returns JSX element representing the PluginAddModalConnect form
+ * Handles endpoint input and connection.
+ *
+ * @param props.setPluginToAdd Plugin setter
+ * @returns Connection form
  */
 export function PluginAddModalConnect(props: PluginAddModalConnectProps) {
   const { setPluginToAdd } = props;

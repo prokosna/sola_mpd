@@ -8,6 +8,9 @@ import { UpdateMode } from "../../../types/stateTypes";
 
 import { recentlyAddedStateRepositoryAtom } from "./recentlyAddedStateRepository";
 
+/**
+ * Recently added state management.
+ */
 const recentlyAddedStateAtom = atomWithDefault<
   Promise<RecentlyAddedState> | RecentlyAddedState
 >(async (get) => {
@@ -16,21 +19,24 @@ const recentlyAddedStateAtom = atomWithDefault<
   return recentlyAddedState;
 });
 
+/**
+ * Synchronized recently added state.
+ */
 export const recentlyAddedStateSyncAtom = atomWithSync(recentlyAddedStateAtom);
 
 /**
- * Returns the current recently added state.
+ * Get recently added state.
  *
- * The state is automatically updated if the stored state changes.
- * @returns The current recently added state.
+ * @returns Current state
  */
 export function useRecentlyAddedState() {
   return useAtomValue(recentlyAddedStateSyncAtom);
 }
 
 /**
- * Returns a function to update recently added state.
- * @returns Function to call to update a state.
+ * Update recently added state.
+ *
+ * @returns State updater
  */
 export function useUpdateRecentlyAddedState() {
   const setRecentlyAddedState = useSetAtom(recentlyAddedStateAtom);
@@ -50,8 +56,9 @@ export function useUpdateRecentlyAddedState() {
 }
 
 /**
- * Refreshes the recently added state to its initial state.
- * @returns A function to refresh the recently added state.
+ * Refresh recently added state.
+ *
+ * @returns Refresh function
  */
 export function useRefreshRecentlyAddedState(): () => void {
   return useResetAtom(recentlyAddedStateAtom);

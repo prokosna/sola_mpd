@@ -12,6 +12,9 @@ import { UpdateMode } from "../../../types/stateTypes";
 import { pluginServiceAtom } from "./pluginServiceState";
 import { pluginStateRepositoryAtom } from "./pluginStateRepository";
 
+/**
+ * Plugin state management.
+ */
 const pluginStateAtom = atomWithDefault<Promise<PluginState> | PluginState>(
   async (get) => {
     const repository = get(pluginStateRepositoryAtom);
@@ -53,25 +56,27 @@ const pluginStateAtom = atomWithDefault<Promise<PluginState> | PluginState>(
 const pluginStateSyncAtom = atomWithSync(pluginStateAtom);
 
 /**
- * A hook that returns the current plugin state.
- * @returns The current PluginState.
+ * Get plugin state.
+ *
+ * @returns Current state
  */
 export function usePluginState() {
   return useAtomValue(pluginStateSyncAtom);
 }
 
 /**
- * A hook that returns a function to refresh the plugin state.
- * This can be used to trigger a re-fetch of the plugins and their latest information.
- * @returns A function that, when called, will refresh the plugin state.
+ * Refresh plugin state.
+ *
+ * @returns Refresh function
  */
 export function useRefreshPluginState() {
   return useResetAtom(pluginStateAtom);
 }
 
 /**
- * Returns a function to update the plugin state.
- * @returns A function that updates the plugin state locally and/or persists it.
+ * Update plugin state.
+ *
+ * @returns Update function
  */
 export function useUpdatePluginState() {
   const setPluginState = useSetAtom(pluginStateAtom);

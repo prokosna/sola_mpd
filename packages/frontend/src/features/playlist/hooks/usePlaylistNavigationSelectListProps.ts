@@ -14,11 +14,12 @@ import {
 } from "../states/playlistState";
 
 /**
- * Hook to provide props for the playlist navigation select list.
- * This hook handles the logic for selecting, deleting, and managing playlists.
+ * Hook for playlist navigation list props.
  *
- * @returns An object containing props for the SelectList component,
- * or undefined if the required states are not available.
+ * Provides selection and context menu functionality
+ * for playlist management.
+ *
+ * @returns SelectList props or undefined
  */
 export function usePlaylistNavigationSelectListProps() {
   const notify = useNotification();

@@ -5,9 +5,11 @@ import { SearchNavigationQueryEditor } from "./SearchNavigationQueryEditor";
 import { SearchNavigationSavedQueries } from "./SearchNavigationSavedQueries";
 
 /**
- * SearchNavigation component renders the navigation section of the search feature.
- * It includes the query editor and saved queries components.
- * @returns JSX element representing the SearchNavigation component
+ * Search navigation section.
+ *
+ * Contains query editor and saved queries.
+ *
+ * @returns Navigation component
  */
 export function SearchNavigation() {
   const { colorMode } = useColorMode();

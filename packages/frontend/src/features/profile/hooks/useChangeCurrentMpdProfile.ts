@@ -7,8 +7,9 @@ import {
 } from "../states/mpdProfileState";
 
 /**
- * Custom hook for changing the current MPD profile.
- * @returns A function that takes a profile name and updates the current MPD profile.
+ * Hook for switching active MPD profile.
+ *
+ * @returns Profile update function
  */
 export function useChangeCurrentMpdProfile() {
   const mpdProfileState = useMpdProfileState();

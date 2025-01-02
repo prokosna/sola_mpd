@@ -1,8 +1,9 @@
 /**
- * Calculates the elapsed time percentage of the current song.
+ * Calculate song progress percentage.
  *
- * @param mpdPlayerStatus - The current MPD player status.
- * @returns The elapsed time percentage as a number between 0 and 100, or -1 if unable to calculate.
+ * @param elapsed Current position in seconds
+ * @param duration Total length in seconds
+ * @returns Progress (0-100) or -1 if invalid
  */
 export function getElapsedTimePercentage(
   elapsed?: number,

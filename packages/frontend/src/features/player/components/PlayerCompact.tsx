@@ -7,12 +7,13 @@ import { PlayerSeekBar } from "./PlayerSeekBar";
 import { PlayerSongInformationCompact } from "./PlayerSongInformationCompact";
 
 /**
- * Renders a compact version of the player component.
- * This component includes a seek bar, duration display, song information,
- * and controls, all arranged in a compact layout suitable for smaller screens
- * or minimized views.
+ * Compact version of the player component.
  *
- * @returns JSX.Element The compact player component
+ * Arranges seek bar, duration, song info, and controls in a
+ * vertical layout optimized for smaller screens or minimized
+ * views.
+ *
+ * @returns Compact player component
  */
 export function PlayerCompact() {
   return (

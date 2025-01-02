@@ -4,11 +4,44 @@ import { useCallback, useEffect, useMemo, useRef } from "react";
 import { useIsTouchDevice } from "../../user_device";
 
 /**
- * A custom hook for managing resizable panes.
+ * Advanced resizable pane management hook with persistence.
  *
- * @param leftWidth - The initial width of the left pane.
- * @param onPanelWidthUpdated - A function to update the panel width asynchronously.
- * @returns An object containing the current state and handlers for the resizable pane.
+ * Features:
+ * - Touch device optimization
+ * - Debounced persistence
+ * - Width constraints
+ * - Percentage-based sizing
+ * - Responsive layout
+ *
+ * Implementation:
+ * - Uses allotment for split panes
+ * - Ref-based timeout tracking
+ * - Memoized width calculations
+ * - Device-aware adjustments
+ *
+ * Performance:
+ * - Debounced state updates
+ * - Optimized resize handling
+ * - Minimal re-renders
+ * - Memory-safe cleanup
+ *
+ * Safety Features:
+ * - NaN value protection
+ * - Width constraints (max 90%)
+ * - Timeout cleanup
+ * - Undefined state handling
+ *
+ * @example
+ * ```tsx
+ * const { isReady, leftPaneWidthStyle, handlePanelResize } = useResizablePane(
+ *   50, // Initial left pane width (50%)
+ *   async (width) => await saveWidth(width)
+ * );
+ * ```
+ *
+ * @param leftWidth Initial left pane width (%)
+ * @param onPanelWidthUpdated Width change callback
+ * @returns Hook state and handlers
  */
 export function useResizablePane(
   leftWidth: number | undefined,

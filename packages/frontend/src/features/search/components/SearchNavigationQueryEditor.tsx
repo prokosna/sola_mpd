@@ -35,9 +35,11 @@ import {
 import { SearchNavigationQueryEditorQuery } from "./SearchNavigationQueryEditorQuery";
 
 /**
- * SearchNavigationQueryEditor component renders the query editor for search navigation.
- * It allows users to create, edit, and execute search queries.
- * @returns JSX element representing the SearchNavigationQueryEditor component
+ * Query editor for search navigation.
+ *
+ * Handles query creation, editing, and execution.
+ *
+ * @returns Query editor component
  */
 export function SearchNavigationQueryEditor() {
   const editingSearch = useEditingSearchState();

@@ -6,10 +6,15 @@ import { SongTableKey } from "../types/songTableTypes";
 import { getSongsInTableFromGrid } from "../utils/songTableTableUtils";
 
 /**
- * Uses a callback function on row drag ended.
- * @param songsMap Song key -> Songs mapping.
- * @param onSongsReordered Callback function on songs reordered.
- * @returns Callback function.
+ * Creates handler for song row drag-and-drop events.
+ *
+ * Processes row reordering events, retrieving the updated song
+ * order from the grid. Ensures song list state stays synchronized
+ * with visual row order.
+ *
+ * @param songsMap Song lookup map
+ * @param onSongsReordered Reorder callback
+ * @returns Drag end event handler
  */
 export function useHandleRowDragEnded(
   songsMap: Map<SongTableKey, Song>,

@@ -8,6 +8,10 @@ import { UpdateMode } from "../../../types/stateTypes";
 
 import { browserStateRepositoryAtom } from "./browserStateRepository";
 
+/**
+ * Base atom for browser state with repository integration.
+ * Initializes with data from the repository.
+ */
 const browserStateAtom = atomWithDefault<Promise<BrowserState> | BrowserState>(
   async (get) => {
     const repository = get(browserStateRepositoryAtom);
@@ -16,21 +20,34 @@ const browserStateAtom = atomWithDefault<Promise<BrowserState> | BrowserState>(
   },
 );
 
+/**
+ * Synchronized atom for browser state with persistence support.
+ */
 export const browserStateSyncAtom = atomWithSync(browserStateAtom);
 
 /**
- * Returns the current browser state.
+ * Hook to access the current browser state.
  *
- * The state is automatically updated if the stored state changes.
- * @returns The current browser state.
+ * Features:
+ * - Automatic updates on storage changes
+ * - Repository integration
+ * - Type-safe state access
+ *
+ * @returns Current browser state or undefined
  */
 export function useBrowserState() {
   return useAtomValue(browserStateSyncAtom);
 }
 
 /**
- * Returns a function to update browser state.
- * @returns Function to call to update a state.
+ * Hook to update the browser state with flexible persistence options.
+ *
+ * Features:
+ * - Local state updates
+ * - Optional persistence to storage
+ * - Update mode control
+ *
+ * @returns Function to update browser state
  */
 export function useUpdateBrowserState() {
   const setBrowserState = useSetAtom(browserStateAtom);

@@ -24,13 +24,13 @@ export type PluginAddModalRegisterProps = {
 };
 
 /**
- * PluginAddModalRegister component for registering a new plugin.
- * It displays plugin information and handles the registration process.
+ * Plugin registration form.
  *
- * @param props - The props for the PluginAddModalRegister component
- * @param props.pluginToAdd - The Plugin object to be registered
- * @param props.handleModalClosed - Function to call when closing the modal
- * @returns JSX element representing the PluginAddModalRegister form
+ * Shows info and handles registration.
+ *
+ * @param props.pluginToAdd Plugin to register
+ * @param props.handleModalClosed Close handler
+ * @returns Registration form
  */
 export function PluginAddModalRegister(props: PluginAddModalRegisterProps) {
   const { pluginToAdd, handleModalClosed } = props;

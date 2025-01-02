@@ -11,11 +11,13 @@ import { usePlayerStatusPlaybackState } from "../states/playerStatusState";
 import { PlayerControlsButton } from "./PlayerControlsButton";
 
 /**
- * Renders a button to play or pause the current track in the player controls.
- * This component handles the "Play/Pause" functionality in the music player,
- * toggling between play and pause states based on the current playback status.
+ * Button for toggling play/pause state.
  *
- * @returns A PlayerControlsButton component for playing or pausing the current track
+ * Controls playback of the current track, switching between
+ * play and pause states. Updates icon and label based on
+ * current playback status.
+ *
+ * @returns Play/pause toggle button
  */
 export function PlayerControlsButtonResume() {
   const profile = useCurrentMpdProfileState();

@@ -1,8 +1,13 @@
 import { useUserDeviceType } from "./useUserDeviceType";
 
 /**
- * Hook to determine if the application should use compact mode.
- * @returns {boolean} True if compact mode should be used, false otherwise.
+ * Hook to determine compact mode requirement.
+ *
+ * Checks device type to decide if compact UI layout is
+ * needed. Returns true for middle and small devices to
+ * optimize space usage and improve readability.
+ *
+ * @returns True if compact mode needed
  */
 export function useIsCompactMode(): boolean {
   const userDeviceType = useUserDeviceType();

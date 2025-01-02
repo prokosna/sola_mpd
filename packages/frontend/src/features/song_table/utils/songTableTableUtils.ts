@@ -25,10 +25,15 @@ import {
 import { copySortingAttributesToNewColumns } from "./songTableColumnUtils";
 
 /**
- * Convert a given node to Song using its key and SongsMap.
- * @param songsMap SongKey -> Song mapping.
- * @param node Node of a table in question.
- * @returns Song represented by a given node.
+ * Converts grid node to Song object.
+ *
+ * Retrieves song from map using node's key. Throws error if
+ * key is missing or song not found in map.
+ *
+ * @param songsMap Song lookup map
+ * @param node Grid row node
+ * @returns Corresponding song
+ * @throws Error if key missing or song not found
  */
 export function convertNodeToSong(
   songsMap: Map<string, Song>,
@@ -48,10 +53,14 @@ export function convertNodeToSong(
 }
 
 /**
- * Gets SongTableKey of a given song.
- * @param song Song.
- * @param keyType SongTableKeyType.
- * @returns SongTableKey.
+ * Generates unique key for song identification.
+ *
+ * Creates key based on specified type (path, index+path,
+ * or ID) for consistent song lookup across table.
+ *
+ * @param song Target song
+ * @param keyType Key generation type
+ * @returns Unique song key
  */
 export function getSongTableKey(song: Song, keyType: SongTableKeyType): string {
   switch (keyType) {
@@ -75,6 +84,16 @@ export function getSongTableKey(song: Song, keyType: SongTableKeyType): string {
   }
 }
 
+/**
+ * Gets target songs for context menu operation.
+ *
+ * Returns either clicked song or all selected songs based
+ * on selection state. Ensures consistent song order.
+ *
+ * @param params Context menu parameters
+ * @param keyType Song key type
+ * @returns Target song list
+ */
 export function getTargetSongsForContextMenu(
   params: SongTableContextMenuItemParams,
   keyType: SongTableKeyType,
@@ -95,6 +114,15 @@ export function getTargetSongsForContextMenu(
   return targetSongs;
 }
 
+/**
+ * Converts metadata tag to display name.
+ *
+ * Transforms internal tag enum to user-friendly column
+ * header text. Handles special cases and formatting.
+ *
+ * @param tag Metadata tag
+ * @returns Display name
+ */
 export function convertSongMetadataTagToDisplayName(
   tag: Song_MetadataTag,
 ): string {
@@ -106,6 +134,15 @@ export function convertSongMetadataTagToDisplayName(
     .join(" ");
 }
 
+/**
+ * Converts display name to metadata tag.
+ *
+ * Reverses display name transformation to internal tag
+ * enum. Used for column configuration persistence.
+ *
+ * @param str Display name
+ * @returns Metadata tag
+ */
 export function convertSongMetadataTagFromDisplayName(
   str: string,
 ): Song_MetadataTag {
@@ -116,6 +153,17 @@ export function convertSongMetadataTagFromDisplayName(
   return Song_MetadataTag[tag as keyof typeof Song_MetadataTag];
 }
 
+/**
+ * Calculates song reordering operations.
+ *
+ * Determines minimum set of move operations to achieve
+ * desired song order. Used for playlist reordering.
+ *
+ * @param currentSongs Current order
+ * @param orderedSongs Desired order
+ * @param keyType Song key type
+ * @returns Move operations
+ */
 export function convertOrderingToOperations(
   currentSongs: Song[],
   orderedSongs: Song[],
@@ -139,6 +187,16 @@ export function convertOrderingToOperations(
   return ops;
 }
 
+/**
+ * Converts song metadata to grid cell value.
+ *
+ * Transforms metadata value to appropriate display format
+ * based on tag type. Handles dates, numbers, and text.
+ *
+ * @param tag Metadata tag
+ * @param value Raw metadata value
+ * @returns [Field name, Formatted value]
+ */
 export function convertSongMetadataForGridRowValue(
   tag: Song_MetadataTag,
   value: Song_MetadataValue,
@@ -160,6 +218,15 @@ export function convertSongMetadataForGridRowValue(
   return [convertSongMetadataTagToDisplayName(tag), v];
 }
 
+/**
+ * Creates compact view row data.
+ *
+ * Generates two-line display format combining multiple
+ * metadata fields for space-efficient presentation.
+ *
+ * @param song Source song
+ * @returns Compact row data
+ */
 export function convertSongForGridRowValueCompact(
   song: Song,
 ): SongTableRowCompact {
@@ -178,11 +245,16 @@ export function convertSongForGridRowValueCompact(
 }
 
 /**
- * Gets SongsInTable representing a clicked song, sorted songs and selected songs.
- * @param clickedSongKey Key field of a song which is clicked if exists.
- * @param gridApi GridAPI of a table in question.
- * @param songsMap SongTableKey -> Song mapping.
- * @returns SongsInTable.
+ * Retrieves current table song state.
+ *
+ * Gets clicked song, all songs in current sort order,
+ * and selected songs from grid state. Essential for
+ * table operations and context menu actions.
+ *
+ * @param clickedSongKey Clicked song key
+ * @param gridApi Grid instance
+ * @param songsMap Song lookup map
+ * @returns Table song state
  */
 export function getSongsInTableFromGrid(
   clickedSongKey: string | undefined,
@@ -222,10 +294,14 @@ export function getSongsInTableFromGrid(
 }
 
 /**
- * Sorts songs by given columns.
- * @param songs Songs.
- * @param columns Columns.
- * @returns Sorted songs.
+ * Sorts songs by column configuration.
+ *
+ * Applies multi-column sorting based on column sort order
+ * and direction. Handles all metadata value types.
+ *
+ * @param songs Song list
+ * @param columns Column config
+ * @returns Sorted songs
  */
 export function sortSongsByColumns(
   songs: Song[],
@@ -245,6 +321,17 @@ export function sortSongsByColumns(
   });
 }
 
+/**
+ * Creates updated table state.
+ *
+ * Generates new state from column changes while preserving
+ * other settings. Handles sorting enable/disable.
+ *
+ * @param columns New columns
+ * @param baseSongTableState Current state
+ * @param isSortingEnabled Sorting flag
+ * @returns Updated state
+ */
 export function createNewSongTableStateFromColumns(
   columns: SongTableColumn[],
   baseSongTableState: SongTableState,

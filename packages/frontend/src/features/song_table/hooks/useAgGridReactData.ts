@@ -19,15 +19,20 @@ import {
 } from "../utils/songTableTableUtils";
 
 /**
- * Uses ag-grid-react data for a table.
- * @param songs Songs to be rendered.
- * @param keyType Type of a key field of a table.
- * @param columns Current columns.
- * @param isSortingEnabled True if sorting is enabled.
- * @param isReorderingEnabled True if reordering is enabled.
- * @param isCompact True if the compact mode is enabled.
- * @param isTouchDevice True if a user uses a touch device.
- * @returns Data to be used for an ag-grid-react table.
+ * Prepares data for AG Grid song table display.
+ *
+ * Transforms song data into AG Grid compatible format, handling
+ * both compact and standard view modes. Manages sorting,
+ * reordering, and touch device adaptations.
+ *
+ * @param songs Song list
+ * @param keyType Row key type
+ * @param columns Column config
+ * @param isSortingEnabled Enable sorting
+ * @param isReorderingEnabled Enable reordering
+ * @param isCompact Compact mode flag
+ * @param isTouchDevice Touch device flag
+ * @returns Row data and column definitions
  */
 export function useAgGridReactData(
   songs: Song[],

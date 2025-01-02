@@ -2,14 +2,39 @@ import { MpdEvent_EventType } from "@sola_mpd/domain/src/models/mpd/mpd_event_pb
 import { MpdProfile } from "@sola_mpd/domain/src/models/mpd/mpd_profile_pb.js";
 
 /**
- * MpdListener is an interface for listening to events emitted by mpd. It provides methods to subscribe and unsubscribe to events
- * and to register callbacks for events.
+ * Interface for handling real-time MPD server events.
  *
- * It is used by MpdClient to listen to events emitted by mpd.
+ * Manages event subscriptions and callbacks for database updates,
+ * playlist changes, queue modifications, playback states, and
+ * connection status. Supports profile-based subscriptions with
+ * automatic reconnection handling.
+ *
+ * Implementations should handle event buffering during reconnection
+ * and provide clean event lifecycle management.
  */
 export interface MpdListener {
+  /**
+   * Subscribes to events for a specific MPD profile.
+   * @param profile The MPD profile to subscribe to
+   */
   subscribe: (profile: MpdProfile) => void;
+
+  /**
+   * Unsubscribes from events for a specific MPD profile.
+   * @param profile The MPD profile to unsubscribe from
+   */
   unsubscribe: (profile: MpdProfile) => void;
+
+  /**
+   * Registers a callback for a specific event type.
+   * @param event The MPD event type to listen for
+   * @param callback Function to call when the event occurs
+   */
   on: (event: MpdEvent_EventType, callback: () => void) => void;
+
+  /**
+   * Removes the callback for a specific event type.
+   * @param event The MPD event type to stop listening for
+   */
   off: (event: MpdEvent_EventType) => void;
 }

@@ -6,6 +6,11 @@ import { mpdClientAtom } from "../../mpd/states/mpdClient";
 import { currentMpdProfileSyncAtom } from "../../profile/states/mpdProfileState";
 import { fetchOutputDevices } from "../utils/outputDeviceUtils";
 
+/**
+ * Atom for MPD output devices.
+ *
+ * Fetches and manages device state.
+ */
 const outputDevicesAtom = atomWithRefresh(async (get) => {
   const mpdClient = get(mpdClientAtom);
   const profile = get(currentMpdProfileSyncAtom);
@@ -17,19 +22,30 @@ const outputDevicesAtom = atomWithRefresh(async (get) => {
   return await fetchOutputDevices(mpdClient, profile);
 });
 
+/**
+ * Synchronized atom for output devices.
+ *
+ * Ensures consistent updates across subscribers.
+ */
 const outputDevicesSyncAtom = atomWithSync(outputDevicesAtom);
 
 /**
- * Hook to access the current state of output devices.
- * @returns The current state of output devices or undefined if not available.
+ * Hook for output devices list.
+ *
+ * Provides read-only access to device states.
+ *
+ * @returns Current devices or undefined
  */
 export function useOutputDevicesState() {
   return useAtomValue(outputDevicesSyncAtom);
 }
 
 /**
- * Hook to access the current enabled output device.
- * @returns The current enabled output device or undefined if not available.
+ * Hook for enabled output device.
+ *
+ * Returns first enabled device in list.
+ *
+ * @returns Enabled device or undefined
  */
 export function useEnabledOutputDeviceState() {
   const outputDevices = useAtomValue(outputDevicesSyncAtom);
@@ -37,9 +53,11 @@ export function useEnabledOutputDeviceState() {
 }
 
 /**
- * Hook that returns a function to refresh the output devices state.
- * This function resets the output devices atom, triggering a re-fetch of the devices.
- * @returns A function that when called, refreshes the output devices state.
+ * Hook for refreshing device list.
+ *
+ * Triggers fresh device fetch.
+ *
+ * @returns Refresh function
  */
 export function useRefreshOutputDevicesState() {
   return useSetAtom(outputDevicesAtom);

@@ -31,15 +31,14 @@ import {
 import { useHandleSearchColumnsUpdated } from "./useHandleSearchColumnsUpdated";
 
 /**
- * Custom hook for managing Search Song Table properties.
+ * Hook for search song table props.
  *
- * This hook handles the state and callbacks for the search song table,
- * including context menu actions, song selection, and table updates.
+ * Manages state and callbacks for search table.
  *
- * @param songsToAddToPlaylistRef - Mutable reference to store songs for playlist addition.
- * @param setIsPlaylistSelectModalOpen - Function to set the visibility of the playlist select modal.
- * @param setIsColumnEditModalOpen - Function to set the visibility of the column edit modal.
- * @returns SongTableProps object or undefined if data is not ready.
+ * @param songsToAddToPlaylistRef Ref for playlist songs
+ * @param setIsPlaylistSelectModalOpen Playlist modal control
+ * @param setIsColumnEditModalOpen Column modal control
+ * @returns Table props or undefined
  */
 export function useSearchSongTableProps(
   songsToAddToPlaylistRef: MutableRefObject<Song[]>,

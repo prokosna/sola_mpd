@@ -4,11 +4,14 @@ import { MpdProfile } from "@sola_mpd/domain/src/models/mpd/mpd_profile_pb.js";
 import { MpdClient } from "../../mpd";
 
 /**
- * Fetches the current song from the MPD server.
- * @param mpdClient The MPD client instance.
- * @param profile The MPD profile.
- * @returns A Promise that resolves to the current song.
- * @throws Error if the MPD response is invalid.
+ * Fetch current song from MPD server.
+ *
+ * Gets song details including file path, metadata, and queue
+ * information via currentsong command.
+ *
+ * @param mpdClient Client for sending commands
+ * @param profile Server connection details
+ * @returns Current song or undefined
  */
 export async function fetchCurrentSong(
   mpdClient: MpdClient,
@@ -30,11 +33,14 @@ export async function fetchCurrentSong(
 }
 
 /**
- * Fetches the current player status from the MPD server.
- * @param mpdClient The MPD client instance.
- * @param profile The MPD profile.
- * @returns A Promise that resolves to the player status.
- * @throws Error if the MPD response is invalid.
+ * Fetch player status from MPD server.
+ *
+ * Gets playback state, modes (repeat, random, etc.), and
+ * timing information via status command.
+ *
+ * @param mpdClient Client for sending commands
+ * @param profile Server connection details
+ * @returns Player status
  */
 export async function fetchPlayerStatus(
   mpdClient: MpdClient,
@@ -56,11 +62,14 @@ export async function fetchPlayerStatus(
 }
 
 /**
- * Fetches the current player volume from the MPD server.
- * @param mpdClient The MPD client instance.
- * @param profile The MPD profile.
- * @returns A Promise that resolves to the player volume.
- * @throws Error if the MPD response is invalid.
+ * Fetch volume level from MPD server.
+ *
+ * Gets volume (0-100) via status command. Returns undefined
+ * if volume control is not available.
+ *
+ * @param mpdClient Client for sending commands
+ * @param profile Server connection details
+ * @returns Volume level or undefined
  */
 export async function fetchPlayerVolume(
   mpdClient: MpdClient,

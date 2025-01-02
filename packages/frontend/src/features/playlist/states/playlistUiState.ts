@@ -11,12 +11,11 @@ const setPlaylistLoadingTrueEffectAtom = atomEffect((get, set) => {
 });
 
 /**
- * Hook to get the current loading state of the playlist.
+ * Hook for playlist loading state.
  *
- * This hook triggers a side effect to set the loading state to true
- * when the selected playlist changes, and returns the current loading state.
+ * Auto-sets loading to true on playlist change.
  *
- * @returns The current loading state of the playlist.
+ * @returns Current loading state
  */
 export function useIsPlaylistLoadingState() {
   useAtom(setPlaylistLoadingTrueEffectAtom);
@@ -24,9 +23,9 @@ export function useIsPlaylistLoadingState() {
 }
 
 /**
- * Hook to get a function that sets the loading state of the playlist.
+ * Hook for updating loading state.
  *
- * @returns A function to set the loading state.
+ * @returns Loading state setter
  */
 export function useSetIsPlaylistLoadingState() {
   return useSetAtom(isPlaylistLoadingAtom);

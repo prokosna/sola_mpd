@@ -11,14 +11,13 @@ export type PluginAddModalProps = {
 };
 
 /**
- * PluginAddModal component for adding new plugins.
- * It manages the state of the plugin being added and renders either
- * the connection or registration view based on that state.
+ * Modal for adding new plugins.
  *
- * @param props - The props for the PluginAddModal component
- * @param props.isOpen - Boolean indicating if the modal is open
- * @param props.onClose - Function to call when closing the modal
- * @returns JSX element representing the PluginAddModal
+ * Shows connection or registration view.
+ *
+ * @param props.isOpen Modal visibility
+ * @param props.onClose Close handler
+ * @returns Modal component
  */
 export function PluginAddModal(props: PluginAddModalProps) {
   const { isOpen, onClose } = props;

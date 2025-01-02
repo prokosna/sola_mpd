@@ -26,16 +26,13 @@ type PluginExecutionModalStartProps = {
 };
 
 /**
- * PluginExecutionModalStart component
+ * Plugin execution start view.
  *
- * This component renders the initial view of the plugin execution modal.
- * It allows users to input parameters for the plugin execution and handles
- * the execution process.
+ * Handles parameter input and execution.
  *
- * @param props - The props for the PluginExecutionModalStart component
- * @param props.plugin - The plugin to be executed
- * @param props.songs - The list of songs to be processed by the plugin
- * @returns JSX element representing the start view of the plugin execution modal
+ * @param props.plugin Target plugin
+ * @param props.songs Songs to process
+ * @returns Start view
  */
 export function PluginExecutionModalStart(
   props: PluginExecutionModalStartProps,

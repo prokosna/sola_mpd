@@ -12,9 +12,17 @@ import { useRefreshStatsState } from "../../stats";
 import { useMpdListenerState } from "../states/mpdListener";
 
 /**
- * MpdEventObserver is a component that listens to MPD events and triggers
- * appropriate state updates. It subscribes to various event types and
- * refreshes the corresponding states when events occur.
+ * Manages MPD event handling and corresponding state updates.
+ *
+ * Subscribes to MPD events based on the current profile and updates
+ * application state accordingly. Handles events for database updates,
+ * playlist changes, queue modifications, volume changes, and connection
+ * status. Automatically manages event subscriptions lifecycle.
+ *
+ * Should be mounted near the root to ensure proper event handling
+ * across the application.
+ *
+ * @returns null - No UI rendered
  */
 export function MpdEventObserver() {
   const mpdListener = useMpdListenerState();

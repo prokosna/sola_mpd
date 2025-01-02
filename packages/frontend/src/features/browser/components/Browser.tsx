@@ -15,7 +15,15 @@ import { BrowserNavigation } from "./BrowserNavigation";
 import { BrowserNavigationBreadcrumbs } from "./BrowserNavigationBreadcrumbs";
 
 /**
- * The main component of the browser feature.
+ * Main browser component for navigating and managing music files.
+ *
+ * Features:
+ * - Resizable navigation pane with state persistence
+ * - Breadcrumb navigation for directory traversal
+ * - Content display with loading states
+ * - Responsive layout with color mode support
+ *
+ * @component
  */
 export function Browser() {
   const browserLayout = useBrowserLayoutState();

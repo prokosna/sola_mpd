@@ -13,9 +13,9 @@ import { SongTableColumn } from "@sola_mpd/domain/src/models/song_table_pb.js";
 import { SearchConditions } from "../types/searchTypes";
 
 /**
- * Creates and returns a default Search object.
- * The default search includes a new search name and a single default query.
- * @returns A new Search object with default values.
+ * Create default Search object.
+ *
+ * @returns New Search with default values
  */
 export function getDefaultSearch(): Search {
   return new Search({
@@ -26,9 +26,9 @@ export function getDefaultSearch(): Search {
 }
 
 /**
- * Creates and returns a default Query object.
- * The default query includes a single default condition.
- * @returns A new Query object with default values.
+ * Create default Query object.
+ *
+ * @returns New Query with default values
  */
 export function getDefaultQuery(): Query {
   return new Query({
@@ -37,10 +37,9 @@ export function getDefaultQuery(): Query {
 }
 
 /**
- * Creates and returns a default FilterCondition object.
- * The default condition is set to filter for the TITLE tag with an EQUAL operator
- * and an empty string value.
- * @returns A new FilterCondition object with default values.
+ * Create default FilterCondition object.
+ *
+ * @returns New FilterCondition with default values
  */
 export function getDefaultCondition(): FilterCondition {
   return new FilterCondition({
@@ -57,11 +56,9 @@ export function getDefaultCondition(): FilterCondition {
 }
 
 /**
- * Lists all song metadata tags that are supported for search functionality.
- * This function returns an array of Song_MetadataTag enum values representing
- * various attributes of a song that can be used in search operations.
+ * List supported song metadata tags.
  *
- * @returns An array of Song_MetadataTag enum values.
+ * @returns Array of metadata tags
  */
 export function listSearchSongMetadataTags(): Song_MetadataTag[] {
   return [
@@ -81,11 +78,10 @@ export function listSearchSongMetadataTags(): Song_MetadataTag[] {
 }
 
 /**
- * Merges multiple arrays of songs into a single array, removing duplicates.
- * Songs are considered duplicates if they have the same path.
+ * Merge song arrays, removing duplicates by path.
  *
- * @param songsList - An array of Song arrays to be merged
- * @returns A single array of unique Song objects
+ * @param songsList Arrays to merge
+ * @returns Merged unique songs
  */
 export function mergeSongsList(songsList: Song[][]): Song[] {
   const all: [string, Song][] = songsList
@@ -96,11 +92,12 @@ export function mergeSongsList(songsList: Song[][]): Song[] {
 }
 
 /**
- * Converts a Search object into an array of SearchConditions.
- * This function separates the search conditions into MPD-supported and non-MPD-supported conditions.
+ * Convert Search to SearchConditions.
  *
- * @param search - The Search object to convert
- * @returns An array of SearchConditions, each containing mpdConditions and nonMpdConditions
+ * Separates MPD and non-MPD conditions.
+ *
+ * @param search Search to convert
+ * @returns Array of conditions
  */
 export function convertSearchToConditions(search: Search): SearchConditions[] {
   return search.queries
@@ -136,10 +133,11 @@ export function convertSearchToConditions(search: Search): SearchConditions[] {
 }
 
 /**
- * Creates a new Search object with an updated name.
- * @param search - The original Search object
- * @param name - The new name for the search
- * @returns A new Search object with the updated name
+ * Update search name.
+ *
+ * @param search Original search
+ * @param name New name
+ * @returns Updated search
  */
 export function changeEditingSearchName(search: Search, name: string): Search {
   const newSearch = search.clone();
@@ -148,10 +146,11 @@ export function changeEditingSearchName(search: Search, name: string): Search {
 }
 
 /**
- * Creates a new Search object with updated columns.
- * @param search - The original Search object
- * @param columns - The new columns for the search
- * @returns A new Search object with the updated columns
+ * Update search columns.
+ *
+ * @param search Original search
+ * @param columns New columns
+ * @returns Updated search
  */
 export function changeEditingSearchColumns(
   search: Search,
@@ -163,11 +162,12 @@ export function changeEditingSearchColumns(
 }
 
 /**
- * Creates a new Search object with an updated Query at the specified index.
- * @param search - The original Search object
- * @param index - The index of the Query to be updated
- * @param query - The new Query object to replace the existing one
- * @returns A new Search object with the updated Query
+ * Update query in search.
+ *
+ * @param search Original search
+ * @param index Query index
+ * @param query New query
+ * @returns Updated search
  */
 export function changeEditingSearchQuery(
   search: Search,
@@ -185,10 +185,10 @@ export function changeEditingSearchQuery(
 }
 
 /**
- * Adds a new default query to the given Search object.
+ * Add default query to search.
  *
- * @param search - The original Search object
- * @returns A new Search object with an additional default query
+ * @param search Original search
+ * @returns Updated search
  */
 export function addEditingSearchQuery(search: Search): Search {
   const newSearch = search.clone();
@@ -197,11 +197,11 @@ export function addEditingSearchQuery(search: Search): Search {
 }
 
 /**
- * Removes a query from the given Search object at the specified index.
+ * Remove query from search.
  *
- * @param search - The original Search object
- * @param index - The index of the query to be removed
- * @returns A new Search object with the specified query removed
+ * @param search Original search
+ * @param index Query index
+ * @returns Updated search
  */
 export function removeEditingSearchQuery(
   search: Search,
@@ -218,12 +218,13 @@ export function removeEditingSearchQuery(
 }
 
 /**
- * Creates a new Query object with an updated FilterCondition at the specified index.
- * @param query - The original Query object
- * @param index - The index of the FilterCondition to be updated
- * @param condition - The new FilterCondition object to replace the existing one
- * @returns A new Query object with the updated FilterCondition
- * @throws Error if the index is out of range
+ * Update condition in query.
+ *
+ * @param query Original query
+ * @param index Condition index
+ * @param condition New condition
+ * @returns Updated query
+ * @throws If index invalid
  */
 export function changeEditingQueryCondition(
   query: Query,
@@ -241,10 +242,10 @@ export function changeEditingQueryCondition(
 }
 
 /**
- * Adds a new default condition to the given Query object.
+ * Add default condition to query.
  *
- * @param query - The original Query object
- * @returns A new Query object with an additional default condition
+ * @param query Original query
+ * @returns Updated query
  */
 export function addEditingQueryCondition(query: Query): Query {
   const newQuery = query.clone();
@@ -253,12 +254,12 @@ export function addEditingQueryCondition(query: Query): Query {
 }
 
 /**
- * Removes a condition from the given Query object at the specified index.
+ * Remove condition from query.
  *
- * @param query - The original Query object
- * @param index - The index of the condition to be removed
- * @returns A new Query object with the specified condition removed
- * @throws Error if the index is out of range
+ * @param query Original query
+ * @param index Condition index
+ * @returns Updated query
+ * @throws If index invalid
  */
 export function removeEditingQueryCondition(
   query: Query,
@@ -275,11 +276,11 @@ export function removeEditingQueryCondition(
 }
 
 /**
- * Checks if the given operator is valid for the specified metadata tag.
+ * Check if operator valid for tag.
  *
- * @param tag - The Song_MetadataTag to check
- * @param operator - The FilterCondition_Operator to validate
- * @returns True if the operator is valid for the given tag, false otherwise
+ * @param tag Metadata tag
+ * @param operator Filter operator
+ * @returns True if valid
  */
 export function isValidOperatorWithMetadataTag(
   tag: Song_MetadataTag,

@@ -5,13 +5,11 @@ import { SelectList } from "../../select_list";
 import { usePlaylistNavigationSelectListProps } from "../hooks/usePlaylistNavigationSelectListProps";
 
 /**
- * PlaylistNavigation component
+ * Navigation sidebar for playlists.
  *
- * This component renders the navigation for playlists.
- * It uses the SelectList component to display the list of playlists
- * and handles the loading state with a FullWidthSkeleton.
+ * Displays selectable list of playlists with loading state.
  *
- * @returns The rendered PlaylistNavigation component
+ * @returns Navigation component
  */
 export function PlaylistNavigation() {
   const selectListProps = usePlaylistNavigationSelectListProps();

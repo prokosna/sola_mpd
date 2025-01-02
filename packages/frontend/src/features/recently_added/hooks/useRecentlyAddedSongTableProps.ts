@@ -30,11 +30,12 @@ import {
 } from "../states/recentlyAddedUiState";
 
 /**
- * Returns song table props for the recentlyAdded feature.
+ * Get props for recently added song table.
  *
- * @param songsToAddToPlaylistRef - the songs to add to playlist
- * @param setIsPlaylistSelectModalOpen - the function to open or close the playlist select modal
- * @param setIsColumnEditModalOpen - the function to open or close the column edit modal
+ * @param songsToAddToPlaylistRef Songs ref
+ * @param setIsPlaylistSelectModalOpen Modal open setter
+ * @param setIsColumnEditModalOpen Column edit setter
+ * @returns Table props
  */
 export function useRecentlyAddedSongTableProps(
   songsToAddToPlaylistRef: MutableRefObject<Song[]>,

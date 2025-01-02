@@ -15,12 +15,16 @@ import {
 import { useAllSongsSongTableProps } from "../hooks/useAllSongsSongTableProps";
 
 /**
- * AllSongs component for displaying and managing all songs.
+ * AllSongs component for displaying and managing the complete song library.
  *
- * This component renders a song table with all available songs,
- * and provides functionality for playlist selection and column editing.
+ * Features:
+ * - Customizable song table with sortable columns
+ * - Playlist management integration
+ * - Column editing capabilities
+ * - State persistence
+ * - Loading state handling
  *
- * @returns JSX.Element The rendered AllSongs component
+ * @component
  */
 export function AllSongs() {
   const songTableState = useSongTableState();

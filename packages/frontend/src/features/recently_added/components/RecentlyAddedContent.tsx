@@ -15,7 +15,7 @@ import {
 import { useRecentlyAddedSongTableProps } from "../hooks/useRecentlyAddedSongTableProps";
 
 /**
- * The content of the browser feature.
+ * Recently added songs table.
  */
 export function RecentlyAddedContent() {
   const songTableState = useSongTableState();

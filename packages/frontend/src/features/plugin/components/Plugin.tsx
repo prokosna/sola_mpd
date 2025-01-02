@@ -4,10 +4,11 @@ import { PluginAddModal } from "./PluginAddModal";
 import { PluginList } from "./PluginList";
 
 /**
- * Plugin component that manages the display of plugins and the modal for adding new plugins.
- * It uses Chakra UI's useDisclosure hook to control the visibility of the add plugin modal.
+ * Main plugin management component.
  *
- * @returns JSX.Element The rendered Plugin component
+ * Shows plugin list and add modal.
+ *
+ * @returns Plugin component
  */
 export function Plugin() {
   const { isOpen, onOpen, onClose } = useDisclosure();

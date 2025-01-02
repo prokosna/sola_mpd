@@ -30,15 +30,18 @@ import {
 } from "../states/allSongsUiState";
 
 /**
- * Custom hook for managing All Songs Table properties.
+ * Custom hook for managing All Songs Table properties and interactions.
  *
- * This hook handles the state and callbacks for the all songs table,
- * including context menu actions, song selection, and table updates.
+ * Features:
+ * - Context menu integration (queue and playlist management)
+ * - Column customization
+ * - Song selection handling
+ * - Loading state management
  *
- * @param songsToAddToPlaylistRef - Mutable reference to store songs for playlist addition.
- * @param setIsPlaylistSelectModalOpen - Function to set the visibility of the playlist select modal.
- * @param setIsColumnEditModalOpen - Function to set the visibility of the column edit modal.
- * @returns SongTableProps object or undefined if data is not ready.
+ * @param songsToAddToPlaylistRef - Reference for playlist addition
+ * @param setIsPlaylistSelectModalOpen - Playlist modal control
+ * @param setIsColumnEditModalOpen - Column edit modal control
+ * @returns Table properties or undefined if data not ready
  */
 export function useAllSongsSongTableProps(
   songsToAddToPlaylistRef: MutableRefObject<Song[]>,

@@ -4,11 +4,7 @@ import { Profiles } from "./Profiles";
 import { SettingsStates } from "./SettingsStates";
 
 /**
- * Settings component that renders a tabbed interface for Profiles and Settings.
- * This component uses Chakra UI's Tab components to organize and display
- * different sections of the application settings.
- *
- * @returns A tabbed interface containing Profiles and Settings panels
+ * Settings interface with profiles and preferences tabs.
  */
 export function Settings() {
   return (

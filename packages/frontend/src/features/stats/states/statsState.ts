@@ -6,6 +6,13 @@ import { mpdClientAtom } from "../../mpd/states/mpdClient";
 import { currentMpdProfileSyncAtom } from "../../profile/states/mpdProfileState";
 import { fetchStats } from "../utils/statsUtils";
 
+/**
+ * Global state atom for MPD statistics.
+ *
+ * Fetches and caches MPD server statistics including song,
+ * artist, and album counts. Automatically refreshes when
+ * dependencies change.
+ */
 const statsAtom = atomWithRefresh(async (get) => {
   const mpdClient = get(mpdClientAtom);
   const profile = get(currentMpdProfileSyncAtom);
@@ -17,19 +24,35 @@ const statsAtom = atomWithRefresh(async (get) => {
   return await fetchStats(mpdClient, profile);
 });
 
+/**
+ * Synchronized atom for MPD statistics.
+ *
+ * Wraps base atom with synchronization capabilities to
+ * ensure consistent state across components.
+ */
 const statsSyncAtom = atomWithSync(statsAtom);
 
 /**
- * Hook to access the current stats state.
- * @returns The current stats state.
+ * Hook to access MPD statistics.
+ *
+ * Retrieves current statistics from MPD server including
+ * total songs, artists, albums, and playtime. Returns
+ * undefined while loading.
+ *
+ * @returns Current statistics
  */
 export function useStatsState() {
   return useAtomValue(statsSyncAtom);
 }
 
 /**
- * Hook to refresh the stats state.
- * @returns A function to refresh the stats state.
+ * Hook to trigger statistics refresh.
+ *
+ * Forces a refresh of MPD server statistics, updating
+ * all dependent components. Useful after database
+ * updates.
+ *
+ * @returns Refresh function
  */
 export function useRefreshStatsState() {
   return useSetAtom(statsAtom);

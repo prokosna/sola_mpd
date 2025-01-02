@@ -26,9 +26,17 @@ export type SelectListProps = {
 };
 
 /**
- * Renders a selectable list component with customizable properties.
- * @param props - The properties for the SelectList component.
- * @returns A JSX element representing the SelectList.
+ * AG Grid-based list component with selection and context menu.
+ *
+ * @param props.id List ID
+ * @param props.values List values
+ * @param props.selectedValues Selected values
+ * @param props.headerTitle Header title
+ * @param props.contextMenuSections Menu sections
+ * @param props.isLoading Loading state
+ * @param props.allowMultipleSelection Multi-select flag
+ * @param props.onItemsSelected Selection callback
+ * @param props.onLoadingCompleted Loading callback
  */
 export function SelectList(props: SelectListProps) {
   const ref = useRef(null);

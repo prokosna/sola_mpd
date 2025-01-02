@@ -41,15 +41,14 @@ export type SearchNavigationQueryEditorQueryConditionProps = {
 };
 
 /**
- * SearchNavigationQueryEditorQueryCondition component renders a single condition editor within a query.
- * It allows users to edit, add, and remove filter conditions for a search query.
+ * Single condition editor in query.
  *
- * @param props - The component props
- * @param props.query - The current Query object being edited
- * @param props.isFirstQuery - Boolean indicating if this is the first query in the search
- * @param props.index - The index of the current condition within the query
- * @param props.onQueryUpdated - Callback function to handle updates to the query
- * @returns JSX element representing a single condition editor
+ * @param props Component props
+ * @param props.query Query being edited
+ * @param props.isFirstQuery If first query in search
+ * @param props.index Condition index in query
+ * @param props.onQueryUpdated Update callback
+ * @returns Condition editor component
  */
 export function SearchNavigationQueryEditorQueryCondition(
   props: SearchNavigationQueryEditorQueryConditionProps,

@@ -6,13 +6,13 @@ import { useNotification } from "../../../lib/chakra/hooks/useNotification";
 import { SettingsStatesEditorProps } from "../components/SettingsStatesEditor";
 
 /**
- * Custom hook for managing settings state editor properties.
+ * Manage settings state editor.
  *
- * @template T - Type extending Message
- * @param state - The current state
- * @param update - Function to update the state
- * @param fromJson - Function to convert JSON string to state object
- * @returns A tuple containing a function to open the editor and the editor props
+ * @template T State type extending Protobuf Message
+ * @param state Current state
+ * @param update Update callback
+ * @param fromJson JSON parser
+ * @returns [Modal opener, Editor props]
  */
 export function useSettingsStateEditorProps<T extends Message>(
   state: T | undefined,

@@ -17,14 +17,12 @@ import { usePlaylistSongTableProps } from "../hooks/usePlaylistSongTableProps";
 import { PlaylistSelectModal } from "./PlaylistSelectModal";
 
 /**
- * PlaylistContent component for displaying the content of the playlist.
+ * Content area of the playlist view.
  *
- * This component renders the main content area of the playlist, including
- * the song table, playlist select modal, and column edit modal. It manages
- * the state for these components and handles interactions such as updating
- * columns and adding songs to playlists.
+ * Displays song table with column customization and
+ * playlist selection capabilities.
  *
- * @returns The rendered PlaylistContent component
+ * @returns Content component
  */
 export function PlaylistContent() {
   const songTableState = useSongTableState();

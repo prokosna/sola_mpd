@@ -11,6 +11,10 @@ import { currentMpdProfileSyncAtom } from "../../profile/states/mpdProfileState"
 import { songTableStateSyncAtom } from "../../song_table/states/songTableState";
 import { fetchAllSongs } from "../utils/allSongsUtils";
 
+/**
+ * Base atom for storing all songs fetched from MPD server.
+ * Automatically refreshes when MPD client or profile changes.
+ */
 const allSongsAtom = atomWithRefresh(async (get) => {
   const mpdClient = get(mpdClientAtom);
   const profile = get(currentMpdProfileSyncAtom);
@@ -24,8 +28,15 @@ const allSongsAtom = atomWithRefresh(async (get) => {
   return songs;
 });
 
+/**
+ * Synchronized atom for all songs with persistence support.
+ */
 export const allSongsSyncAtom = atomWithSync(allSongsAtom);
 
+/**
+ * Derived atom that filters songs based on global filter and current route.
+ * Only returns songs when on the All Songs route.
+ */
 const allSongsVisibleSongsSyncAtom = atom((get) => {
   const allSongs = get(allSongsSyncAtom);
   const songTableState = get(songTableStateSyncAtom);
@@ -50,19 +61,18 @@ const allSongsVisibleSongsSyncAtom = atom((get) => {
 });
 
 /**
- * Hook to access the visible songs state for all songs.
- * This hook retrieves the filtered songs based on the global filter
- * and the current route (only for full text search).
- * @returns An array of filtered Song objects.
+ * Hook to access the filtered songs in the All Songs view.
+ *
+ * @returns Filtered array of Song objects, or undefined if not in All Songs view
  */
 export function useAllSongsState() {
   return useAtomValue(allSongsVisibleSongsSyncAtom);
 }
 
 /**
- * Returns a function to refresh the all songs state.
- * This hook can be used to trigger a re-fetch of all songs.
- * @returns A function that, when called, will refresh the all songs state.
+ * Hook to refresh the All Songs data from the MPD server.
+ *
+ * @returns Refresh function that updates the songs state
  */
 export function useRefreshAllSongsState() {
   return useSetAtom(allSongsAtom);

@@ -2,10 +2,18 @@ import { Button, Icon, useColorMode } from "@chakra-ui/react";
 import { IoMoon, IoSunny } from "react-icons/io5";
 
 /**
- * A button component that toggles between light and dark color modes.
- * Uses Chakra UI's useColorMode hook to manage the color mode state.
+ * Light/dark mode toggle button.
  *
- * @returns A Button component with an icon that changes based on the current color mode.
+ * This component provides an intuitive interface for users to
+ * switch between color modes, featuring dynamic icon switching
+ * and smooth theme transitions.
+ *
+ * @component
+ * @example
+ * ```tsx
+ * // In header or settings panel:
+ * <ColorModeSwitchButton />
+ * ```
  */
 export function ColorModeSwitchButton() {
   const { colorMode, toggleColorMode } = useColorMode();

@@ -11,30 +11,48 @@ import {
   useUpdateSavedSearchesState,
 } from "./savedSearchesState";
 
+/**
+ * Atom for search being edited.
+ *
+ * Initialized with default search config.
+ */
 export const editingSearchAtom = atom(getDefaultSearch());
 
+/**
+ * Atom for search edit status.
+ *
+ * Tracks modification state (NOT_SAVED, COLUMNS_UPDATED, SAVED).
+ */
 const editingSearchStatusAtom = atom(EditingSearchStatus.NOT_SAVED);
 
 /**
- * Hook to access the current state of the editing search.
- * @returns The current editing search state.
+ * Hook for current editing search.
+ *
+ * Provides read-only access to search config.
+ *
+ * @returns Current search being edited
  */
 export function useEditingSearchState() {
   return useAtomValue(editingSearchAtom);
 }
 
 /**
- * Hook to access the current status of the editing search.
- * @returns The current editing search status.
+ * Hook for editing search status.
+ *
+ * Tracks if changes are saved.
+ *
+ * @returns Current edit status
  */
 export function useEditingSearchStatusState() {
   return useAtomValue(editingSearchStatusAtom);
 }
 
 /**
- * Hook to set the editing search state and its status.
- * @returns A function that takes a Search object and an optional EditingSearchStatus,
- * and updates both the editing search and its status.
+ * Hook for updating editing search.
+ *
+ * Updates both search config and status.
+ *
+ * @returns Update function
  */
 export function useSetEditingSearchState() {
   const setEditingSearch = useSetAtom(editingSearchAtom);
@@ -50,11 +68,11 @@ export function useSetEditingSearchState() {
 }
 
 /**
- * Hook to save the current editing search.
- * This function updates the saved searches with the current editing search,
- * either by updating an existing search or adding a new one.
- * After saving, it updates both the local state and persists the changes.
- * @returns A callback function that saves the current editing search when invoked.
+ * Hook for saving editing search.
+ *
+ * Updates or adds search to saved searches.
+ *
+ * @returns Save function
  */
 export function useSaveEditingSearch() {
   const editingSearch = useAtomValue(editingSearchAtom);

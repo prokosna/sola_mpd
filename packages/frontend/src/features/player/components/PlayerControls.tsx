@@ -10,12 +10,13 @@ import { PlayerControlsButtonStop } from "./PlayerControlsButtonStop";
 import { PlayerControlsButtonVolume } from "./PlayerControlsButtonVolume";
 
 /**
- * Renders the player controls component.
- * This component includes buttons for previous track, stop, play/pause, next track,
- * random playback, repeat, consume mode, and volume control.
- * The buttons are separated by vertical dividers for better visual organization.
+ * Full-size player controls component.
  *
- * @returns The rendered PlayerControls component
+ * Displays playback controls (previous, stop, play/pause, next),
+ * playback modes (random, repeat, consume), and volume control,
+ * organized with visual dividers.
+ *
+ * @returns Player controls component
  */
 export function PlayerControls() {
   return (

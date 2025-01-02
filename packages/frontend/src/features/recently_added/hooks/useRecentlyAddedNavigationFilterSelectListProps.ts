@@ -23,6 +23,13 @@ import {
   removeRecentlyAddedFilter,
 } from "../utils/recentlyAddedFilterUtils";
 
+/**
+ * Get props for filter select list.
+ *
+ * @param recentlyAddedFilter Current filter
+ * @param availableTags Available tags
+ * @returns Select list props
+ */
 export function useRecentlyAddedNavigationFilterSelectListProps(
   recentlyAddedFilter: RecentlyAddedFilter,
   availableTags: Song_MetadataTag[],

@@ -5,9 +5,13 @@ import { Column } from "ag-grid-community";
 import { convertSongMetadataTagFromDisplayName } from "./songTableTableUtils";
 
 /**
- * Converts ag-grid columns to SongTableColumns.
- * @param agGridColumns ag-grid columns.
- * @returns SongTableColumns.
+ * Converts AG Grid columns to SongTableColumn format.
+ *
+ * Extracts column configuration from AG Grid's internal format,
+ * preserving sort order, direction, and width settings.
+ *
+ * @param agGridColumns AG Grid column list
+ * @returns SongTableColumn list
  */
 export function convertAgGridColumnsToSongTableColumns(
   agGridColumns: Column[],
@@ -36,10 +40,14 @@ export function convertAgGridColumnsToSongTableColumns(
 }
 
 /**
- * Copies sorting attributes from baseColumns to newColumns
- * @param newColumns New columns
- * @param baseColumns Base columns.
- * @returns New columns.
+ * Preserves sorting configuration during column updates.
+ *
+ * Copies sort order and direction from base columns to new
+ * columns while maintaining other updated properties.
+ *
+ * @param newColumns Updated column list
+ * @param baseColumns Reference column list
+ * @returns Merged column list
  */
 export function copySortingAttributesToNewColumns(
   newColumns: SongTableColumn[],
@@ -59,9 +67,14 @@ export function copySortingAttributesToNewColumns(
 }
 
 /**
- * Normalizes given columns' sortOrder so that it starts from 0.
- * @param columns Columns to be normalized.
- * @returns Normalized columns
+ * Normalizes column sort order sequence.
+ *
+ * Ensures sort order values start from 0 and increment
+ * sequentially, maintaining relative order of sorted
+ * columns.
+ *
+ * @param columns Column list to normalize
+ * @returns Normalized column list
  */
 export function normalizeSongTableColumns(
   columns: SongTableColumn[],
@@ -80,9 +93,13 @@ export function normalizeSongTableColumns(
 }
 
 /**
- * Get average width in flex of given columns.
- * @param columns Columns.
- * @returns Average width in flex as an integer value.
+ * Calculates average column width.
+ *
+ * Computes the mean flex width value across all columns,
+ * rounded to nearest integer for consistent sizing.
+ *
+ * @param columns Column list
+ * @returns Average flex width
  */
 export function getAverageWidthFlex(columns: SongTableColumn[]): number {
   const sum = columns
@@ -92,11 +109,16 @@ export function getAverageWidthFlex(columns: SongTableColumn[]): number {
 }
 
 /**
- * Ensures that all given tags exist in a given columns. Add a new tag with widthFlexInt if not exist.
- * @param columns Columns.
- * @param tags Tags.
- * @param widthFlexInt Integer value represents width in flex.
- * @returns Updated columns.
+ * Ensures required tags exist in column list.
+ *
+ * Adds missing tag columns with specified width, preserving
+ * existing columns. Used to maintain required metadata
+ * visibility.
+ *
+ * @param columns Current column list
+ * @param tags Required tag list
+ * @param widthFlexInt Default column width
+ * @returns Updated column list
  */
 export function ensureTagsContainedInColumns(
   columns: SongTableColumn[],

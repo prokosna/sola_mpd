@@ -8,6 +8,12 @@ import { UpdateMode } from "../../../types/stateTypes";
 
 import { songTableStateRepositoryAtom } from "./songTableStateRepository";
 
+/**
+ * Global state atom for song table configuration.
+ *
+ * Initializes with persisted state from repository, managing
+ * column settings, sorting, and view preferences across tables.
+ */
 const songTableStateAtom = atomWithDefault<
   Promise<SongTableState> | SongTableState
 >(async (get) => {
@@ -16,21 +22,35 @@ const songTableStateAtom = atomWithDefault<
   return songTableState;
 });
 
+/**
+ * Synchronized atom for song table state.
+ *
+ * Wraps base atom with synchronization capabilities to ensure
+ * consistent state across components and persist changes.
+ */
 export const songTableStateSyncAtom = atomWithSync(songTableStateAtom);
 
 /**
- * Uses the SongTableState which is commonly used across tables. Promise will be returned only at the beginning.
- * @returns SongTableState.
+ * Hook to access song table configuration.
+ *
+ * Retrieves current table state including column settings,
+ * sorting preferences, and view mode. Returns Promise only
+ * during initial load.
+ *
+ * @returns Current table state
  */
 export function useSongTableState() {
   return useAtomValue(songTableStateSyncAtom);
 }
 
 /**
- * Returns a function to update song table state.
+ * Hook to update song table configuration.
  *
- * The state is automatically updated and persisted with 1 second debounce.
- * @returns Function to call to update a state.
+ * Updates table state locally and/or persists to storage based
+ * on update mode. Changes are debounced by 1 second to prevent
+ * excessive storage operations.
+ *
+ * @returns Table state update function
  */
 export function useUpdateSongTableState() {
   const repository = useAtomValue(songTableStateRepositoryAtom);

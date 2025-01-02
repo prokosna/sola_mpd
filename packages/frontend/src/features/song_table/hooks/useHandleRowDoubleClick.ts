@@ -6,10 +6,15 @@ import { SongTableKey } from "../types/songTableTypes";
 import { getSongsInTableFromGrid } from "../utils/songTableTableUtils";
 
 /**
- * Uses a callback function on row double clicked.
- * @param songsMap Song key -> Song mapping.
- * @param onDoubleClick Callback function on double click.
- * @returns Callback function.
+ * Creates handler for song row double-click events.
+ *
+ * Processes double-click events on table rows, retrieving the
+ * clicked song and current song list order. Maintains grid
+ * state synchronization during interactions.
+ *
+ * @param songsMap Song lookup map
+ * @param onDoubleClick Double-click callback
+ * @returns Double-click event handler
  */
 export function useHandleRowDoubleClick(
   songsMap: Map<SongTableKey, Song>,

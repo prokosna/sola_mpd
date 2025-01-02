@@ -7,13 +7,11 @@ import { EditingSearchStatus } from "../types/searchTypes";
 import { changeEditingSearchColumns } from "../utils/searchUtils";
 
 /**
- * Hook that returns a function to handle updating search columns.
+ * Hook for handling search column updates.
  *
- * This hook creates a callback function that updates the editing search
- * with new columns and sets the editing status to COLUMNS_UPDATED.
+ * Updates editing search with new columns.
  *
- * @returns A function that takes the current editing search and new columns,
- * and updates the search state accordingly.
+ * @returns Column update handler
  */
 export function useHandleSearchColumnsUpdated() {
   const setEditingSearch = useSetEditingSearchState();

@@ -7,11 +7,16 @@ import { SongTableKey } from "../types/songTableTypes";
 import { convertNodeToSong } from "../utils/songTableTableUtils";
 
 /**
- * Enables Select All keyboard shortcut on a given ref component.
- * @param ref Ref to a component to enable the shortcut.
- * @param gridRef GridRef to a song table contained by the component.
- * @param songsMap Songs map.
- * @param selectSongs Function to select songs.
+ * Sets up Ctrl+A keyboard shortcut for song selection.
+ *
+ * Binds the shortcut to a component, allowing users to select
+ * all visible songs in the grid. Handles grid state and song
+ * list synchronization.
+ *
+ * @param ref Target component ref
+ * @param gridRef AG Grid instance ref
+ * @param songsMap Song lookup map
+ * @param selectSongs Selection callback
  */
 export function useKeyboardShortcutSelectAll(
   ref: MutableRefObject<null>,

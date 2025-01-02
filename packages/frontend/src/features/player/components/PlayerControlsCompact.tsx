@@ -10,11 +10,12 @@ import { PlayerControlsButtonStop } from "./PlayerControlsButtonStop";
 import { PlayerControlsButtonVolume } from "./PlayerControlsButtonVolume";
 
 /**
- * Renders a compact version of the player controls.
- * This component includes buttons for previous track, stop, play/pause, and next track,
- * as well as additional controls separated by a vertical divider.
+ * Compact version of player controls.
  *
- * @returns The rendered PlayerControlsCompact component
+ * Arranges playback, mode, and volume controls in a compact
+ * layout, separated by vertical dividers for visual organization.
+ *
+ * @returns Compact player controls component
  */
 export function PlayerControlsCompact() {
   return (

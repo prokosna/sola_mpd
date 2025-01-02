@@ -9,9 +9,10 @@ import {
 import { ProfileInput } from "../types/profileTypes";
 
 /**
- * Custom hook for adding a new MPD profile.
- * @returns A function that takes a ProfileInput and adds it to the MPD profile state.
- * @throws Error if the MpdProfileState is not ready.
+ * Hook for adding new MPD profiles.
+ *
+ * @returns Profile creation function
+ * @throws When state is not ready
  */
 export function useAddMpdProfile() {
   const mpdProfileState = useMpdProfileState();

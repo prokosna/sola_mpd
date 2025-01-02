@@ -4,12 +4,14 @@ import { MpdProfile } from "@sola_mpd/domain/src/models/mpd/mpd_profile_pb.js";
 import { MpdClient } from "../../mpd";
 
 /**
- * Fetches the output devices from the MPD server.
+ * Fetch MPD output devices.
  *
- * @param mpdClient - The MPD client instance used to send commands.
- * @param profile - The MPD profile containing connection details.
- * @returns A Promise that resolves to an array of output devices.
- * @throws Error if the MPD response is invalid.
+ * Gets device list with ID, name, plugin, and state.
+ *
+ * @param mpdClient MPD client instance
+ * @param profile MPD profile
+ * @returns Output devices array
+ * @throws On invalid response
  */
 export async function fetchOutputDevices(
   mpdClient: MpdClient,

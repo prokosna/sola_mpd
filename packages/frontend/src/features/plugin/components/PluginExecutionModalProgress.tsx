@@ -25,15 +25,12 @@ type PluginExecutionModalProgressProps = {
 };
 
 /**
- * PluginExecutionModalProgress component
+ * Plugin execution progress view.
  *
- * This component displays the progress of a plugin execution in a modal.
- * It shows the current status, progress bar, and any warning logs.
+ * Shows status, progress, and warnings.
  *
- * @param props - The props for the component
- * @param props.plugin - The plugin being executed
- *
- * @returns JSX element representing the progress modal content
+ * @param props.plugin Plugin being executed
+ * @returns Progress view
  */
 export function PluginExecutionModalProgress(
   props: PluginExecutionModalProgressProps,

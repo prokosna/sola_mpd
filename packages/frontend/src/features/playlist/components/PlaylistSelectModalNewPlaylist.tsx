@@ -8,15 +8,11 @@ export type PlaylistSelectModalNewPlaylistProps = {
 };
 
 /**
- * PlaylistSelectModalNewPlaylist component
+ * Input field for new playlist creation.
  *
- * This component renders an input field for creating a new playlist.
- * It manages the state of the input and validates the playlist name.
- *
- * @param props - The props for the PlaylistSelectModalNewPlaylist component
- * @param props.onInput - Callback function to be called when input changes, passing the name and validity
- *
- * @returns The rendered PlaylistSelectModalNewPlaylist component
+ * @param props Component props
+ * @param props.onInput Input callback with name and validity
+ * @returns Input field component
  */
 export function PlaylistSelectModalNewPlaylist(
   props: PlaylistSelectModalNewPlaylistProps,

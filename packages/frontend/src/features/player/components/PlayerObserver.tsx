@@ -4,9 +4,13 @@ import { useRefreshCurrentSongState } from "../states/playerSongState";
 import { useRefreshPlayerStatusState } from "../states/playerStatusState";
 
 /**
- * PlayerObserver component that periodically refreshes the current song and player status.
- * It sets up an interval to update these states every second.
- * @returns Returns null as this component doesn't render anything visible.
+ * Player state update manager.
+ *
+ * Polls MPD server every second to refresh current song and
+ * player status. Uses interval-based polling with cleanup
+ * on unmount to prevent memory leaks.
+ *
+ * @returns null - Non-rendering component
  */
 export function PlayerObserver() {
   const refreshCurrentSong = useRefreshCurrentSongState();

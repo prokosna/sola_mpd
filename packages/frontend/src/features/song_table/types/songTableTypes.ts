@@ -4,10 +4,12 @@ import { SuppressKeyboardEventParams } from "ag-grid-community";
 import { CustomCellRendererProps } from "ag-grid-react";
 
 /**
- * Which value is used for the row key in a song table.
- * PATH: song path field.
- * INDEX_PATH: song index field + song path field.
- * ID: song ID field.
+ * Key type for song table row identification.
+ *
+ * Determines which song property is used as the unique key:
+ * - PATH: Song file path
+ * - INDEX_PATH: Combined song index and path
+ * - ID: Song unique identifier
  */
 export enum SongTableKeyType {
   PATH = "PATH",
@@ -16,17 +18,25 @@ export enum SongTableKeyType {
 }
 
 /**
- * Type of a key field of a table. An actual value depending on the key type.
+ * Song table row key type.
+ *
+ * String representation of the key based on SongTableKeyType.
  */
 export type SongTableKey = string;
 
 /**
- * Column tag for compact mode.
+ * Tag identifier for compact view mode column.
+ *
+ * Used to identify the special column that displays song
+ * information in a compact two-line format.
  */
 export const SONGS_TAG_COMPACT = "songs";
 
 /**
- * Row value type for compact mode.
+ * Compact view mode row data structure.
+ *
+ * Represents song information in a two-line format for
+ * space-efficient display in compact view mode.
  */
 export type SongTableRowCompact = {
   firstLine: string;
@@ -34,7 +44,10 @@ export type SongTableRowCompact = {
 };
 
 /**
- * Row value type.
+ * Song table cell value type.
+ *
+ * Union of possible value types that can be displayed
+ * in song table cells, including compact view format.
  */
 export type SongTableRowValue =
   | string
@@ -44,19 +57,28 @@ export type SongTableRowValue =
   | undefined;
 
 /**
- * Row key-value pair.
+ * Song table cell key-value pair.
+ *
+ * Tuple representing a table cell's field name and
+ * its corresponding value.
  */
 export type SongTableRowKeyValue = [string, SongTableRowValue];
 
 /**
- * Row data type.
+ * Song table row data structure.
+ *
+ * Complete data structure for a song table row, including
+ * key and all cell values mapped by field names.
  */
 export type SongTableRowData = {
   [tag: string]: SongTableRowValue;
 };
 
 /**
- * Column definition type.
+ * AG Grid column configuration.
+ *
+ * Extended column definition for song table, including
+ * drag-and-drop, sorting, and custom rendering options.
  */
 export type SongTableColumnDefinition = {
   field: string;
@@ -75,7 +97,10 @@ export type SongTableColumnDefinition = {
 };
 
 /**
- * Utility type to get songs in a table with its index (position)
+ * Song list with selection state.
+ *
+ * Contains clicked song and current song list order,
+ * including selected songs, for table operations.
  */
 export type SongsInTable = {
   clickedSong: Song | undefined;
@@ -84,7 +109,10 @@ export type SongsInTable = {
 };
 
 /**
- * Parameters for a context menu item.
+ * Context menu item configuration.
+ *
+ * Parameters passed to context menu items, providing
+ * access to table state and selected songs.
  */
 export type SongTableContextMenuItemParams = {
   columns: SongTableColumn[];

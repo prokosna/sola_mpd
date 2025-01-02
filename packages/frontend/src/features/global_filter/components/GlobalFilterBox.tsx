@@ -13,10 +13,25 @@ import { IoSearchOutline } from "react-icons/io5";
 import { useHandleGlobalFilterTextChangeWithDebounce } from "../hooks/useHandleGlobalFilterTextChangeWithDebounce";
 
 /**
- * GlobalFilterBox component provides a search input for global filtering.
- * It uses a debounced text change handler to optimize performance.
+ * Search input component for global song filtering.
  *
- * @returns A React component that renders an input box for global filtering.
+ * Features:
+ * - Debounced text input handling
+ * - Clear button functionality
+ * - Search icon indication
+ * - Responsive width constraints
+ * - Theme-aware styling
+ *
+ * Layout:
+ * - Left: Search icon
+ * - Center: Text input field
+ * - Right: Clear button
+ *
+ * Performance:
+ * - Debounced input handling to prevent excessive updates
+ * - Ref-based input value management
+ *
+ * @returns Rendered search input component
  */
 export function GlobalFilterBox() {
   const handleGlobalFilterTextChange =

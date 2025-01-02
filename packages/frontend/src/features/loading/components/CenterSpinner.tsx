@@ -1,10 +1,16 @@
 import { Center, Spinner } from "@chakra-ui/react";
 
 /**
- * A component that displays a centered spinner.
- * @param {Object} props - The component props.
- * @param {string} [props.className] - Optional CSS class name for additional styling.
- * @returns {JSX.Element} A centered spinner component.
+ * A component that displays a large, centered loading spinner.
+ *
+ * Features:
+ * - Fixed size (24px) spinner with thick lines (6px)
+ * - Uses brand color for consistency
+ * - Centered both horizontally and vertically
+ * - Takes up full width and height of container
+ *
+ * @component
+ * @param props.className Optional CSS class for styling the container
  */
 export function CenterSpinner({ className }: { className?: string }) {
   return (

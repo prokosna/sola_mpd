@@ -4,11 +4,24 @@ import { MpdProfile } from "@sola_mpd/domain/src/models/mpd/mpd_profile_pb.js";
 import { MpdClient } from "../../mpd";
 
 /**
- * Fetches the current play queue songs from the MPD server.
- * @param mpdClient The MPD client instance used to communicate with the server.
- * @param mpdProfile The MPD profile containing connection details.
- * @returns A Promise that resolves to an array of Song objects representing the play queue.
- * @throws Error if the MPD response is invalid.
+ * Fetches the current play queue contents from the MPD server.
+ *
+ * This function:
+ * 1. Creates a playlistinfo command request
+ * 2. Sends the request to the MPD server
+ * 3. Validates the response type
+ * 4. Extracts the song list from the response
+ *
+ * Each song in the returned array includes:
+ * - Unique ID in the queue
+ * - Position in the queue
+ * - File path
+ * - Metadata (title, artist, album, etc.)
+ *
+ * @param mpdClient MPD client instance for sending commands
+ * @param mpdProfile MPD profile with server connection details
+ * @returns Promise resolving to array of queue songs
+ * @throws Error if the MPD response is not of type 'playlistinfo'
  */
 export async function fetchPlayQueueSongs(
   mpdClient: MpdClient,

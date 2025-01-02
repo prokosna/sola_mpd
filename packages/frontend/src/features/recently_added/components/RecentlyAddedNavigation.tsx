@@ -8,10 +8,7 @@ import { listRecentlyAddedSongMetadataTags } from "../utils/recentlyAddedFilterU
 import { RecentlyAddedNavigationFilter } from "./RecentlyAddedNavigationFilter";
 
 /**
- * Renders the navigation component for the recently added feature.
- * This component displays a list of filters for browsing music content.
- * It uses the recently added filters state to dynamically render filter components
- * and handles the case when filters are not yet loaded.
+ * Navigation filters for recently added songs.
  */
 export function RecentlyAddedNavigation() {
   const recentlyAddedFilters = useRecentlyAddedFiltersState();

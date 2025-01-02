@@ -10,10 +10,12 @@ import { usePlayerStatusIsRepeatState } from "../states/playerStatusState";
 import { PlayerControlsButton } from "./PlayerControlsButton";
 
 /**
- * Renders a button to toggle the repeat mode in the player controls.
- * This component handles the "Repeat" functionality in the music player.
+ * Button for toggling repeat mode.
  *
- * @returns A PlayerControlsButton component for toggling repeat mode
+ * Controls whether the playlist repeats after reaching the end.
+ * Updates button state based on current repeat mode status.
+ *
+ * @returns Repeat mode toggle button
  */
 export function PlayerControlsButtonRepeat() {
   const profile = useCurrentMpdProfileState();

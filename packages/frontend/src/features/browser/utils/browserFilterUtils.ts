@@ -16,7 +16,9 @@ import { convertSongMetadataValueToString } from "@sola_mpd/domain/src/utils/son
 import { MpdClient } from "../../mpd";
 
 /**
- * List up song metadata tags that are supported by browser.
+ * Lists all metadata tags supported by the browser feature.
+ *
+ * @returns Array of supported metadata tags (e.g., ALBUM, ARTIST, GENRE)
  */
 export function listBrowserSongMetadataTags(): Song_MetadataTag[] {
   return [
@@ -29,9 +31,13 @@ export function listBrowserSongMetadataTags(): Song_MetadataTag[] {
 }
 
 /**
- * Convert BrowserFilter to FilterCondition.
- * @param browserFilter browser filter
- * @returns the converted filter condition. If the browser filter has no selected values, return undefined.
+ * Converts a BrowserFilter to a FilterCondition for MPD queries.
+ *
+ * For single value filters, creates an EQUAL condition.
+ * For multiple values, creates a REGEX condition with values joined by '|'.
+ *
+ * @param browserFilter The browser filter to convert
+ * @returns FilterCondition for the query, or undefined if no values are selected
  */
 export function convertBrowserFilterToCondition(
   browserFilter: BrowserFilter,
@@ -106,11 +112,12 @@ function normalizeBrowserFilters(filters: BrowserFilter[]): BrowserFilter[] {
 }
 
 /**
- * Change a browser filter to the other tag.
- * @param currentFilters browser filters
- * @param target the filter to change
- * @param next the next tag
- * @returns the new browser filters
+ * Changes a browser filter's tag while preserving its order and selected values.
+ *
+ * @param currentFilters Current set of browser filters
+ * @param target Filter to modify
+ * @param next New tag to apply to the filter
+ * @returns Updated array of browser filters
  */
 export function changeBrowserFilterToTheOtherTag(
   currentFilters: BrowserFilter[],
@@ -160,10 +167,12 @@ export function addBrowserFilterNext(
 }
 
 /**
- * Remove a browser filter.
- * @param currentFilters browser filters
- * @param target the filter to remove
- * @returns the new browser filters
+ * Removes a browser filter from the collection.
+ * Updates the order and selected order of remaining filters.
+ *
+ * @param currentFilters Current set of browser filters
+ * @param target Filter to remove
+ * @returns Updated array of browser filters with the target removed
  */
 export function removeBrowserFilter(
   currentFilters: BrowserFilter[],
@@ -181,11 +190,13 @@ export function removeBrowserFilter(
 }
 
 /**
- * Select values for a browser filter.
- * @param currentFilters browser filters
- * @param target the filter to select values for
- * @param selectedValues the selected values
- * @returns the new browser filters
+ * Updates the selected values of a browser filter.
+ * Maintains proper ordering of filters based on selection state.
+ *
+ * @param currentFilters Current set of browser filters
+ * @param target Filter to update
+ * @param selectedValues New values to set for the filter
+ * @returns Updated array of browser filters
  */
 export function selectBrowserFilterValues(
   currentFilters: BrowserFilter[],
@@ -214,10 +225,11 @@ export function selectBrowserFilterValues(
 }
 
 /**
- * Reset all browser filters.
- * Each filter's selected values are cleared.
- * @param currentFilters browser filters to reset
- * @returns the new browser filters
+ * Resets all browser filters to their initial state.
+ * Clears all selected values while maintaining filter order.
+ *
+ * @param currentFilters Filters to reset
+ * @returns Updated array of browser filters with all selections cleared
  */
 export function resetAllBrowserFilters(
   currentFilters: BrowserFilter[],
@@ -230,12 +242,15 @@ export function resetAllBrowserFilters(
 }
 
 /**
- * Fetch browser filter values.
- * @param mpdClient MPD client
- * @param profile profile
- * @param browserFilters browser filters
- * @returns the map of filter values. The key is a filter tag and the value is an array of strings.
- * For example, if the filter tag is "artist", the value is an array of artists.
+ * Fetches available values for each browser filter from MPD.
+ *
+ * For each filter, queries MPD for unique values of that tag,
+ * taking into account the selections in other filters.
+ *
+ * @param mpdClient Client for MPD communication
+ * @param profile Current MPD profile
+ * @param browserFilters Current browser filters
+ * @returns Map of tag to array of available values for that tag
  */
 export async function fetchBrowserFilterValues(
   mpdClient: MpdClient,

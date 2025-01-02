@@ -24,11 +24,17 @@ import {
   useUpdateRecentlyAddedState,
 } from "./recentlyAddedState";
 
+/**
+ * Filter configurations.
+ */
 export const recentlyAddedFiltersSyncAtom = atom((get) => {
   const recentlyAddedState = get(recentlyAddedStateSyncAtom);
   return recentlyAddedState?.filters;
 });
 
+/**
+ * Selected filter values.
+ */
 export const recentlyAddedSelectedFilterValuesAtom = atomWithDefault<
   Map<Song_MetadataTag, Song_MetadataValue[]>
 >((_get) => {
@@ -39,6 +45,9 @@ export const recentlyAddedSelectedFilterValuesAtom = atomWithDefault<
   return map;
 });
 
+/**
+ * Derived atom for filter values map.
+ */
 const recentlyAddedFilterValuesMapSyncAtom = atom((get) => {
   const allSongs = get(allSongsSyncAtom);
 
@@ -49,7 +58,9 @@ const recentlyAddedFilterValuesMapSyncAtom = atom((get) => {
   return extractRecentlyAddedFilterValues(allSongs);
 });
 
-// Recently added filter values map filtered by global filter tokens.
+/**
+ * Filtered values map.
+ */
 const filteredRecentlyAddedFilterValuesMapSyncAtom = atom((get) => {
   const recentlyAddedFilters = get(recentlyAddedFiltersSyncAtom);
   const valuesMap = get(recentlyAddedFilterValuesMapSyncAtom);
@@ -87,17 +98,19 @@ const filteredRecentlyAddedFilterValuesMapSyncAtom = atom((get) => {
 });
 
 /**
- * Returns the recently added filters state.
- * @returns The recently added filters state.
+ * Get filter configurations.
+ *
+ * @returns Current filters
  */
 export function useRecentlyAddedFiltersState() {
   return useAtomValue(recentlyAddedFiltersSyncAtom);
 }
 
 /**
- * Returns the recently added filter values for a given tag.
- * @param tag The song metadata tag.
- * @returns The recently added filter values.
+ * Get filter values for tag.
+ *
+ * @param tag Target tag
+ * @returns Tag values
  */
 export function useRecentlyAddedFilterValuesState(tag: Song_MetadataTag) {
   const valuesMap = useAtomValue(filteredRecentlyAddedFilterValuesMapSyncAtom);
@@ -105,9 +118,10 @@ export function useRecentlyAddedFilterValuesState(tag: Song_MetadataTag) {
 }
 
 /**
- * Returns the recently added selected filter values for a given tag.
- * @param tag The song metadata tag.
- * @returns The recently added selected filter values.
+ * Get selected values for tag.
+ *
+ * @param tag Target tag
+ * @returns Selected values
  */
 export function useRecentlyAddedSelectedFilterValuesState(
   tag: Song_MetadataTag,
@@ -117,8 +131,9 @@ export function useRecentlyAddedSelectedFilterValuesState(
 }
 
 /**
- * Returns a function to update recently added selected filter values state.
- * @returns Function to call to update a state.
+ * Set selected values for tag.
+ *
+ * @returns Values setter
  */
 export function useSetRecentlyAddedSelectedFilterValuesState() {
   const selectedValuesMap = useAtomValue(recentlyAddedSelectedFilterValuesAtom);
@@ -145,10 +160,9 @@ export function useSetRecentlyAddedSelectedFilterValuesState() {
 }
 
 /**
- * Returns a function to update recently added filters state.
+ * Update filter configurations.
  *
- * The state is automatically updated and persisted with 1 second debounce.
- * @returns Function to call to update a state.
+ * @returns Filter updater
  */
 export function useUpdateRecentlyAddedFiltersState() {
   const recentlyAddedState = useAtomValue(recentlyAddedStateSyncAtom);

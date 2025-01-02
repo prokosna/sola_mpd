@@ -21,13 +21,10 @@ import { MpdProfileForm, useMpdProfileState } from "../../profile";
 import { ProfilesProfile } from "./ProfilesProfile";
 
 /**
- * Profiles component for managing MPD profiles.
+ * MPD profiles management interface.
  *
- * This component displays a list of existing MPD profiles and provides
- * functionality to add new profiles. It uses the MpdProfileState and
- * renders a table of profiles with options to edit or delete them.
- *
- * @returns JSX element representing the Profiles component
+ * Displays a table of MPD connection profiles with options
+ * to add, edit, and delete profiles.
  */
 export function Profiles() {
   const mpdProfileState = useMpdProfileState();

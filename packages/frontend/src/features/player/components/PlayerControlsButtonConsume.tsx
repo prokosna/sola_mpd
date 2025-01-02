@@ -10,10 +10,13 @@ import { usePlayerStatusIsConsumeState } from "../states/playerStatusState";
 import { PlayerControlsButton } from "./PlayerControlsButton";
 
 /**
- * Renders a button to toggle the consume mode in the player controls.
- * When consume mode is enabled, each song played is removed from the playlist.
+ * Button for toggling MPD's consume mode.
  *
- * @returns A PlayerControlsButton component for toggling consume mode
+ * Controls whether played songs are automatically removed from
+ * the playlist. Updates button state based on current consume
+ * mode status.
+ *
+ * @returns Consume mode toggle button
  */
 export function PlayerControlsButtonConsume() {
   const profile = useCurrentMpdProfileState();

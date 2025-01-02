@@ -8,6 +8,16 @@ import { filterSongsByAndConditions } from "../../song_filter";
 
 import { convertSearchToConditions, mergeSongsList } from "./searchUtils";
 
+/**
+ * Fetch songs matching search criteria.
+ *
+ * Handles both MPD and non-MPD conditions.
+ *
+ * @param mpdClient MPD client instance
+ * @param profile Current MPD profile
+ * @param search Search configuration
+ * @returns Matching songs
+ */
 export async function fetchSearchSongs(
   mpdClient: MpdClient,
   profile: MpdProfile,

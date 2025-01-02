@@ -8,13 +8,12 @@ import { useMpdClientState } from "../../mpd";
 import { useCurrentMpdProfileState } from "../../profile";
 
 /**
- * Custom hook for managing playlist select modal functionality.
+ * Hook for playlist selection modal.
  *
- * This hook provides state and callbacks for handling the playlist select modal,
- * including opening/closing the modal and managing the selection of songs to be
- * added to a playlist.
+ * Manages modal state and song selection for adding
+ * songs to playlists.
  *
- * @returns An object containing the modal's open state and callbacks for handling modal actions.
+ * @returns Modal state and handlers
  */
 export function usePlaylistSelectModal() {
   const notify = useNotification();

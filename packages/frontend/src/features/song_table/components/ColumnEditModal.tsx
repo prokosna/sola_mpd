@@ -34,14 +34,16 @@ export type ColumnEditModalProps = {
 };
 
 /**
- * A modal component for editing song table columns.
+ * Modal interface for customizing song table columns.
  *
- * @param props - The properties for the ColumnEditModal component
- * @param props.columns - The current columns configuration
- * @param props.isOpen - Boolean indicating if the modal is open
- * @param props.handleColumnsUpdated - Function to handle column updates
- * @param props.handleModalDisposed - Function to handle modal disposal
- * @returns JSX element representing the ColumnEditModal
+ * Provides drag-and-drop functionality for reordering columns and
+ * managing which metadata tags are displayed. Maintains column
+ * widths and sorting configurations during updates.
+ *
+ * @param props.columns Current columns configuration
+ * @param props.isOpen Modal visibility state
+ * @param props.handleColumnsUpdated Column update callback
+ * @param props.handleModalDisposed Modal close callback
  */
 export function ColumnEditModal(props: ColumnEditModalProps): JSX.Element {
   // Available tags in use

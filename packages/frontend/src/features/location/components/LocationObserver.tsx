@@ -11,8 +11,16 @@ import { useSetSelectedSongsState } from "../../song_table";
 import { useSetPathname } from "../states/locationState";
 
 /**
- * A component that observes location changes and performs necessary actions.
- * It updates the pathname, resets selected songs, and refreshes specific states based on the current route.
+ * Manages global side effects triggered by route changes.
+ *
+ * Coordinates state updates when navigation occurs, including pathname
+ * updates, song selection resets, and data refreshes for specific routes
+ * like playlists and play queue.
+ *
+ * Should be mounted near the root of the application to ensure proper
+ * route change handling across all components.
+ *
+ * @returns null - No UI rendered
  */
 export function LocationObserver() {
   const location = useLocation();
@@ -43,5 +51,5 @@ export function LocationObserver() {
     setSelectedSongs,
   ]);
 
-  return undefined;
+  return null;
 }

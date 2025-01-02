@@ -15,11 +15,16 @@ import {
 import { usePlayQueueSongTableProps } from "../hooks/usePlayQueueSongTableProps";
 
 /**
- * PlayQueue component for rendering the play queue view.
- * This component displays the current play queue, allowing users to view,
- * manage, and interact with the list of songs queued for playback.
+ * Displays and manages the MPD play queue.
  *
- * @returns JSX.Element The rendered PlayQueue component
+ * Renders a customizable song table with support for selection,
+ * context menu actions, column editing, and playlist integration.
+ * Includes loading states and modals for user interactions.
+ *
+ * Supports drag-and-drop reordering and multi-song operations
+ * through an interactive table interface.
+ *
+ * @returns Play queue component with table and modals
  */
 export function PlayQueue() {
   const songTableState = useSongTableState();

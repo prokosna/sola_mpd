@@ -19,13 +19,18 @@ import {
 } from "../utils/songTableTableUtils";
 
 /**
- * Uses a callback function to open a context menu.
- * @param id String value to represent a page where opening a context menu.
- * @param keyType Type of a key represents a key field in a table.
- * @param songsMap Song key -> Song map.
- * @param columns Current columns.
- * @param isSortingEnabled True if sorting is enabled.
- * @returns Callback function to open a context menu.
+ * Creates handler for song table context menu.
+ *
+ * Opens a context menu with song-specific actions, managing grid
+ * state and column configurations. Provides access to selected
+ * songs and current table state.
+ *
+ * @param id Context menu identifier
+ * @param keyType Row key type
+ * @param songsMap Song lookup map
+ * @param columns Column config
+ * @param isSortingEnabled Enable sorting
+ * @returns Context menu handler
  */
 export function useOpenContextMenu(
   id: string,

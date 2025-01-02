@@ -10,13 +10,11 @@ import { PluginExecutionModalProgress } from "./PluginExecutionModalProgress";
 import { PluginExecutionModalStart } from "./PluginExecutionModalStart";
 
 /**
- * PluginExecutionModal component
+ * Plugin execution modal.
  *
- * This component renders a modal for plugin execution. It handles different
- * states of the execution process, showing either the start or progress view.
- * The modal's visibility is controlled by the plugin execution state.
+ * Shows start or progress view.
  *
- * @returns The rendered modal or null if no plugin is selected
+ * @returns Modal or null
  */
 export function PluginExecutionModal() {
   const { plugin, songs } = usePluginExecutionPropsState();

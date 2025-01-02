@@ -18,13 +18,12 @@ export type SearchNavigationQueryEditorQueryProps = {
 };
 
 /**
- * SearchNavigationQueryEditorQuery component renders a single query editor within the search navigation.
- * It allows users to edit, add, and remove query conditions.
+ * Single query editor in search navigation.
  *
- * @param props - The component props
- * @param props.editingSearch - The current Search object being edited
- * @param props.index - The index of the current Query within the Search object
- * @returns JSX element representing a single query editor
+ * @param props Component props
+ * @param props.editingSearch Current search being edited
+ * @param props.index Query index in search
+ * @returns Query editor component
  */
 export function SearchNavigationQueryEditorQuery(
   props: SearchNavigationQueryEditorQueryProps,

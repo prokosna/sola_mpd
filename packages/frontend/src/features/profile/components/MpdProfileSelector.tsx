@@ -6,9 +6,11 @@ import { useChangeCurrentMpdProfile } from "../hooks/useChangeCurrentMpdProfile"
 import { useMpdProfileState } from "../states/mpdProfileState";
 
 /**
- * Component for selecting an MPD profile.
- * Displays a dropdown menu of available MPD profiles and allows the user to switch between them.
- * @returns JSX.Element
+ * Dropdown for MPD profile selection.
+ *
+ * Shows available profiles with current output device.
+ *
+ * @returns Selection component
  */
 export function MpdProfileSelector() {
   const notify = useNotification();

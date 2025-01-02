@@ -1,10 +1,22 @@
 import { useState, useEffect } from "react";
 
+/**
+ * Device type based on screen width.
+ *
+ * - large: >= 920px
+ * - middle: 520px - 919px
+ * - small: < 520px
+ */
 type UserDeviceType = "large" | "middle" | "small";
 
 /**
- * A custom hook that returns the current user device type based on window width.
- * @returns {UserDeviceType} The current device type: "large", "middle", or "small".
+ * Hook to detect device type from screen size.
+ *
+ * Monitors window width and categorizes device into
+ * large, middle, or small. Updates automatically on
+ * window resize. Used for responsive layout decisions.
+ *
+ * @returns Current device type
  */
 export function useUserDeviceType(): UserDeviceType {
   const getDeviceType = (width: number): UserDeviceType => {

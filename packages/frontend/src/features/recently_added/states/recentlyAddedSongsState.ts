@@ -16,6 +16,9 @@ import {
   recentlyAddedSelectedFilterValuesAtom,
 } from "./recentlyAddedFiltersState";
 
+/**
+ * Recently added songs management.
+ */
 const recentlyAddedSongsAtom = atomWithRefresh(async (get) => {
   const mpdClient = get(mpdClientAtom);
   const currentMpdProfile = get(currentMpdProfileSyncAtom);
@@ -36,8 +39,16 @@ const recentlyAddedSongsAtom = atomWithRefresh(async (get) => {
   return songs;
 });
 
+/**
+ * Synchronized recently added songs.
+ */
 const recentlyAddedSongsSyncAtom = atomWithSync(recentlyAddedSongsAtom);
 
+/**
+ * Get visible recently added songs.
+ *
+ * @returns Filtered songs
+ */
 const recentlyAddedVisibleSongsSyncAtom = atom((get) => {
   const recentlyAddedSongs = get(recentlyAddedSongsSyncAtom);
   const songTableState = get(songTableStateSyncAtom);
@@ -62,18 +73,18 @@ const recentlyAddedVisibleSongsSyncAtom = atom((get) => {
 });
 
 /**
- * Returns the visible songs of recently added page.
- * If the current pathname is not recently added, it returns no songs.
- * Otherwise, it filters the songs by global filter.
+ * Get visible recently added songs.
+ *
+ * @returns Filtered songs
  */
 export function useRecentlyAddedSongsState() {
   return useAtomValue(recentlyAddedVisibleSongsSyncAtom);
 }
 
 /**
- * Returns a function to refresh the recently added songs state.
- * This hook can be used to trigger a re-fetch of the recently added songs.
- * @returns A function that, when called, will refresh the recently added songs state.
+ * Refresh recently added songs.
+ *
+ * @returns Refresh function
  */
 export function useRefreshRecentlyAddedSongsState() {
   return useSetAtom(recentlyAddedSongsAtom);

@@ -25,11 +25,16 @@ import {
 } from "../utils/browserFilterUtils";
 
 /**
- * Renders a breadcrumb navigation component for the browser.
- * This component displays the currently selected filters as breadcrumbs,
- * allowing users to visualize and interact with the active filtering state.
+ * Breadcrumb navigation component for visualizing and managing browser filters.
  *
- * @returns {JSX.Element} The BrowserNavigationBreadcrumbs component.
+ * Features:
+ * - Interactive breadcrumb trail of active filters
+ * - Filter removal via individual close buttons
+ * - Global reset functionality
+ * - Ordered display based on selection sequence
+ * - Tooltip support for long filter values
+ *
+ * @component
  */
 export function BrowserNavigationBreadcrumbs() {
   const browserFilters = useBrowserFiltersState();

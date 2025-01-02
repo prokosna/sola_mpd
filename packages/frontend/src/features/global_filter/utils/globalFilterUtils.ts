@@ -4,11 +4,23 @@ import { convertSongMetadataValueToString } from "@sola_mpd/domain/src/utils/son
 import { normalize } from "@sola_mpd/domain/src/utils/stringUtils.js";
 
 /**
- * Generates a string representation of a song based on specified columns.
+ * Creates a normalized string representation of a song's metadata.
  *
- * @param song - The Song object to generate representation for.
- * @param targetColumns - An array of SongTableColumn objects specifying which metadata to include.
- * @returns A normalized string representation of the song's metadata.
+ * Features:
+ * - Selective metadata inclusion
+ * - Normalized string output
+ * - Space-separated format
+ * - Accent-insensitive text
+ *
+ * Processing:
+ * 1. Extracts metadata values
+ * 2. Converts to string format
+ * 3. Normalizes each value
+ * 4. Joins with spaces
+ *
+ * @param song Song to process
+ * @param targetColumns Metadata fields to include
+ * @returns Normalized metadata string
  */
 function getSongRepresentation(
   song: Song,
@@ -25,12 +37,28 @@ function getSongRepresentation(
 }
 
 /**
- * Checks if a song's metadata includes all specified filter tokens.
+ * Tests if a song matches all filter tokens.
  *
- * @param song - The Song object to check.
- * @param filterTokens - An array of lowercase strings to search for in the song's metadata.
- * @param targetColumns - An array of SongTableColumn objects specifying which metadata to include in the search.
- * @returns A boolean indicating whether all filter tokens are found in the song's metadata.
+ * Features:
+ * - Case-insensitive matching
+ * - Accent-insensitive comparison
+ * - Metadata field selection
+ * - AND-based token matching
+ *
+ * Algorithm:
+ * 1. Generate song representation
+ * 2. Test each token presence
+ * 3. Require all tokens to match
+ *
+ * Performance:
+ * - Early exit on first non-match
+ * - Single representation generation
+ * - Optimized string operations
+ *
+ * @param song Target song
+ * @param filterTokens Search terms
+ * @param targetColumns Fields to search
+ * @returns true if all tokens match
  */
 export function includesToken(
   song: Song,
@@ -42,12 +70,23 @@ export function includesToken(
 }
 
 /**
- * Filters an array of songs based on global filter tokens and target columns.
+ * Filters songs based on global search criteria.
  *
- * @param songs - An array of Song objects to be filtered.
- * @param filterTokens - An array of lowercase strings representing the global filter tokens.
- * @param targetColumns - An array of SongTableColumn objects specifying which metadata to include in the filtering process.
- * @returns An array of Song objects that match the filter criteria.
+ * Features:
+ * - Multi-token filtering
+ * - Metadata field selection
+ * - Case-insensitive search
+ * - Accent-insensitive search
+ *
+ * Performance:
+ * - Optimized for large song lists
+ * - Early filtering
+ * - Minimal memory allocation
+ *
+ * @param songs Songs to filter
+ * @param filterTokens Search terms
+ * @param targetColumns Fields to search
+ * @returns Filtered song array
  */
 export function filterSongsByGlobalFilter(
   songs: Song[],
@@ -63,12 +102,24 @@ export function filterSongsByGlobalFilter(
 }
 
 /**
- * Filters an array of strings based on global filter tokens and a list of strings to always include.
+ * Filters strings with priority inclusion.
  *
- * @param strings - An array of strings to be filtered.
- * @param shouldInclude - An array of strings that should always be included in the result.
- * @param filterTokens - An array of lowercase strings representing the global filter tokens.
- * @returns An array of strings that match the filter criteria or are in the shouldInclude list.
+ * Features:
+ * - Priority string inclusion
+ * - Case-insensitive filtering
+ * - Accent-insensitive matching
+ * - Multi-token support
+ *
+ * Algorithm:
+ * 1. Include priority strings
+ * 2. Filter remaining strings
+ * 3. Combine results
+ * 4. Remove duplicates
+ *
+ * @param strings Strings to filter
+ * @param shouldInclude Priority strings
+ * @param filterTokens Search terms
+ * @returns Filtered string array
  */
 export function filterStringsByGlobalFilter(
   strings: string[],

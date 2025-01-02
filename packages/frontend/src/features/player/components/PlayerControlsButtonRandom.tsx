@@ -10,10 +10,12 @@ import { usePlayerStatusIsRandomState } from "../states/playerStatusState";
 import { PlayerControlsButton } from "./PlayerControlsButton";
 
 /**
- * Renders a button to toggle the random playback mode in the player controls.
- * This component handles the "Random" functionality in the music player.
+ * Button for toggling random playback mode.
  *
- * @returns A PlayerControlsButton component for toggling random playback mode
+ * Controls whether songs are played in random order. Updates
+ * button state based on current random mode status.
+ *
+ * @returns Random mode toggle button
  */
 export function PlayerControlsButtonRandom() {
   const profile = useCurrentMpdProfileState();

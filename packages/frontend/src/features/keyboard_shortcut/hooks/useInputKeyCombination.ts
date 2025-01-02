@@ -1,11 +1,45 @@
 import { MutableRefObject, useEffect, useRef } from "react";
 
 /**
- * A custom hook that listens for a specific key combination and triggers a callback.
+ * Advanced keyboard shortcut management hook.
  *
- * @param ref - A MutableRefObject to the HTML element to attach the event listener to. If undefined, listens globally.
- * @param keys - An array of strings representing the keys that need to be pressed simultaneously.
- * @param onPressed - The function to be called when the key combination is pressed.
+ * Features:
+ * - Global or scoped shortcuts
+ * - Multi-key combinations
+ * - Default action prevention
+ * - Input element safety
+ * - Memory leak prevention
+ *
+ * Implementation:
+ * - Uses KeyboardEvent API
+ * - Ref-based key state tracking
+ * - Event cleanup on unmount
+ * - Focus-aware activation
+ *
+ * Safety Features:
+ * - Input element detection
+ * - Contenteditable handling
+ * - Clean event teardown
+ * - Stale closure prevention
+ *
+ * Performance:
+ * - Optimized key tracking
+ * - Minimal re-renders
+ * - Efficient event handling
+ * - Memory-safe cleanup
+ *
+ * @example
+ * ```tsx
+ * // Global shortcut
+ * useInputKeyCombination(undefined, ["Control", "s"], handleSave);
+ *
+ * // Scoped shortcut
+ * useInputKeyCombination(elementRef, ["Enter"], handleSubmit);
+ * ```
+ *
+ * @param ref Element scope reference
+ * @param keys Required key combination
+ * @param onPressed Action callback
  */
 export function useInputKeyCombination(
   ref: MutableRefObject<HTMLElement | null> | undefined,

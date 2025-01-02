@@ -15,6 +15,28 @@ import { UpdateMode } from "../../../types/stateTypes";
 
 import { layoutStateRepositoryAtom } from "./layoutStateRepositry";
 
+/**
+ * Root atom for managing application layout state.
+ *
+ * Features:
+ * - Async state initialization
+ * - Repository integration
+ * - State synchronization
+ * - Type-safe operations
+ *
+ * State Structure:
+ * - File explorer layout
+ * - Playlist layout
+ * - Search layout
+ * - Browser layout
+ * - Recently added layout
+ *
+ * Implementation:
+ * - Uses atomWithDefault for lazy loading
+ * - Handles Promise resolution
+ * - Supports state persistence
+ * - Manages derived states
+ */
 const layoutStateAtom = atomWithDefault<Promise<LayoutState> | LayoutState>(
   async (get) => {
     const repository = get(layoutStateRepositoryAtom);
@@ -22,8 +44,16 @@ const layoutStateAtom = atomWithDefault<Promise<LayoutState> | LayoutState>(
     return layoutState;
   },
 );
+
+/**
+ * Synchronized atom with persistence support.
+ */
 const layoutStateSyncAtom = atomWithSync(layoutStateAtom);
 
+/**
+ * Derived atom for file explorer layout.
+ * Selectively updates on file explorer changes.
+ */
 const fileExploreLayoutStateSyncAtom = selectAtom<
   LayoutState | undefined,
   FileExploreLayout | undefined
@@ -70,70 +100,116 @@ const recentlyAddedLayoutStateSyncAtom = selectAtom<
 );
 
 /**
- * Returns the current layout state.
+ * Hook for accessing root layout state.
  *
- * The state is automatically updated if the stored state changes.
- * @returns The current layout state.
+ * Features:
+ * - Automatic state updates
+ * - Type-safe state access
+ * - Repository integration
+ * - Error handling
+ *
+ * @returns Current layout state
  */
 export function useLayoutState() {
   return useAtomValue(layoutStateSyncAtom);
 }
 
 /**
- * Returns the current file explore layout state.
+ * Hook for file explorer layout state.
  *
- * The state is automatically updated if the stored state changes.
- * @returns The current file explore layout state.
+ * Features:
+ * - Selective state updates
+ * - Type-safe file explorer state
+ * - Automatic synchronization
+ * - Memory efficient
+ *
+ * @returns File explorer layout state
  */
 export function useFileExploreLayoutState() {
   return useAtomValue(fileExploreLayoutStateSyncAtom);
 }
 
 /**
- * Returns the current playlist layout state.
+ * Hook for playlist layout state.
  *
- * The state is automatically updated if the stored state changes.
- * @returns The current playlist layout state.
+ * Features:
+ * - Playlist-specific updates
+ * - Type-safe playlist state
+ * - Automatic synchronization
+ * - Performance optimized
+ *
+ * @returns Playlist layout state
  */
 export function usePlaylistLayoutState() {
   return useAtomValue(playlistLayoutStateSyncAtom);
 }
 
 /**
- * Returns the current search layout state.
+ * Hook for search layout state.
  *
- * The state is automatically updated if the stored state changes.
- * @returns The current search layout state.
+ * Features:
+ * - Search-specific updates
+ * - Type-safe search state
+ * - Automatic synchronization
+ * - Efficient re-renders
+ *
+ * @returns Search layout state
  */
 export function useSearchLayoutState() {
   return useAtomValue(searchLayoutStateSyncAtom);
 }
 
 /**
- * Returns the current browser layout state.
+ * Hook for browser layout state.
  *
- * The state is automatically updated if the stored state changes.
- * @returns The current browser layout state.
+ * Features:
+ * - Browser-specific updates
+ * - Type-safe browser state
+ * - Automatic synchronization
+ * - Memory efficient
+ *
+ * @returns Browser layout state
  */
 export function useBrowserLayoutState() {
   return useAtomValue(browserLayoutStateSyncAtom);
 }
 
 /**
- * Returns the current recently added layout state.
+ * Hook for recently added layout state.
  *
- * The state is automatically updated if the stored state changes.
- * @returns The current recently added layout state.
+ * Features:
+ * - Recently added view updates
+ * - Type-safe state access
+ * - Automatic synchronization
+ * - Performance optimized
+ *
+ * @returns Recently added layout state
  */
 export function useRecentlyAddedLayoutState() {
   return useAtomValue(recentlyAddedLayoutStateSyncAtom);
 }
 
 /**
- * Returns a function to update layout state.
+ * Hook for updating layout state.
  *
- * The state is automatically updated and persisted with 1 second debounce.
- * @returns Function to call to update a state.
+ * Features:
+ * - Multiple update modes
+ * - Debounced persistence
+ * - State validation
+ * - Error handling
+ *
+ * Update Modes:
+ * - LOCAL_STATE: Memory only
+ * - PERSIST: Storage write
+ * - Combined: Both operations
+ *
+ * Implementation:
+ * - Clones state for updates
+ * - Validates state integrity
+ * - Optimizes persistence
+ * - Handles edge cases
+ *
+ * @returns Layout state updater
  */
 export function useUpdateLayoutState() {
   const layoutState = useAtomValue(layoutStateAtom);
@@ -177,10 +253,27 @@ export function useUpdateLayoutState() {
 }
 
 /**
- * Returns a function to call to refresh a state.
+ * Hook for refreshing layout state.
  *
- * The state is automatically persisted.
- * @returns A function to refresh the layout state.
+ * Features:
+ * - Force state refresh
+ * - Repository sync
+ * - Error recovery
+ * - State reset
+ *
+ * Use Cases:
+ * - External state changes
+ * - Storage synchronization
+ * - State corruption
+ * - Manual refresh
+ *
+ * Implementation:
+ * - Fresh repository fetch
+ * - Full state update
+ * - Notification system
+ * - Error handling
+ *
+ * @returns State refresh function
  */
 export function useRefreshLayoutState(): () => void {
   return useResetAtom(layoutStateAtom);

@@ -5,14 +5,12 @@ import { useMemo } from "react";
 import { useCurrentSongState } from "../states/playerSongState";
 
 /**
- * A custom hook that provides information about the currently playing song.
+ * Hook for formatting current song's metadata.
  *
- * @returns An object containing three lines of information about the current song:
- *   - firstLine: Usually the song title
- *   - secondLine: Usually the artist name
- *   - thirdLine: Usually the album name
- *
- * If no song is currently playing, appropriate default values are returned.
+ * @returns Object with formatted song information:
+ * - firstLine: Title
+ * - secondLine: Album
+ * - thirdLine: Artist info with composer and date
  */
 export function useCurrentSongInformationLines() {
   const song = useCurrentSongState();

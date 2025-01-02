@@ -8,12 +8,12 @@ import { useMemo } from "react";
 import { useCurrentSongState } from "../states/playerSongState";
 
 /**
- * A custom hook that returns the current song's audio format information.
+ * Hook for retrieving current song's audio format info.
  *
- * @returns An object containing:
- *   - isHiRes: boolean indicating if the audio is high resolution
- *   - isDsd: boolean indicating if the audio is DSD (Direct Stream Digital)
- *   - formatString: string representation of the audio format
+ * @returns Object containing:
+ * - isHiRes: If audio is high resolution
+ * - isDsd: If audio is DSD format
+ * - formatString: Human-readable format description
  */
 export function useCurrentSongFormat() {
   const song = useCurrentSongState();

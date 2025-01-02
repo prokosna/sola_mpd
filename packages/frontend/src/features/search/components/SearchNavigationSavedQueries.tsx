@@ -5,9 +5,11 @@ import { SelectList } from "../../select_list";
 import { useSavedSearchesSelectListProps } from "../hooks/useSavedSearchesSelectListProps";
 
 /**
- * SearchNavigationSavedQueries component displays a list of saved searches.
- * It uses the SelectList component to render the saved searches and handles loading states.
- * @returns JSX element representing the SearchNavigationSavedQueries component
+ * List of saved searches.
+ *
+ * Uses SelectList for display and loading states.
+ *
+ * @returns Saved queries component
  */
 export function SearchNavigationSavedQueries() {
   const selectListProps = useSavedSearchesSelectListProps();

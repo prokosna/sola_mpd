@@ -11,11 +11,13 @@ import {
 import { getElapsedTimePercentage } from "../utils/playerDisplayUtils";
 
 /**
- * PlayerSeekBar component renders a slider for seeking through the current track.
- * It displays the progress of the currently playing song and allows users to
- * change the playback position by interacting with the slider.
+ * Seek bar for track navigation.
  *
- * @returns A Slider component representing the seek bar of the player
+ * Displays playback progress and allows position changes via
+ * slider interaction. Throttles seek commands to prevent
+ * overwhelming the MPD server.
+ *
+ * @returns Seek bar slider component
  */
 export function PlayerSeekBar() {
   const profile = useCurrentMpdProfileState();

@@ -9,12 +9,16 @@ import { MpdClient } from "../../mpd";
 import { convertBrowserFilterToCondition } from "./browserFilterUtils";
 
 /**
- * Fetch songs from MPD based on the given browser filters.
+ * Fetches songs from MPD that match the current browser filter conditions.
  *
- * @param {MpdClient} mpdClient
- * @param {MpdProfile} profile
- * @param {BrowserFilter[]} browserFilters
- * @return {Promise<Song[]>} A promise that resolves to an array of songs.
+ * Converts browser filters to MPD filter conditions and executes a search.
+ * If no filters are selected, returns an empty array to avoid fetching all songs.
+ *
+ * @param mpdClient Client for MPD communication
+ * @param profile Current MPD profile
+ * @param browserFilters Active browser filters
+ * @returns Promise resolving to matching songs, or empty array if no filters active
+ * @throws Error if MPD response is invalid
  */
 export async function fetchBrowserSongs(
   mpdClient: MpdClient,
