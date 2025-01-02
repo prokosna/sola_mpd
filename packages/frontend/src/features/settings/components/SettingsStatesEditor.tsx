@@ -99,7 +99,8 @@ export function SettingsStatesEditor<T extends Message>(
 						<Button
 							mr={3}
 							onClick={() => {
-								onSave(newStateRef.current!);
+								if (newStateRef.current === undefined) return;
+								onSave(newStateRef.current);
 								onClose();
 							}}
 							isDisabled={newStateRef.current === undefined}

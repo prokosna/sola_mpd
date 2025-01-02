@@ -32,10 +32,10 @@ export function ColumnEditModalTagListBox(
 			<Text>{title}</Text>
 			<Box className="layout-border-all" w="180px" h="200px" overflow={"auto"}>
 				<List>
-					{tags.map((tag, index) => {
+					{tags.map((tag) => {
 						const isSelected = tag === selectedTag;
 						return (
-							<ListItem key={index}>
+							<ListItem key={tag}>
 								<Button
 									ml={2}
 									w="90%"

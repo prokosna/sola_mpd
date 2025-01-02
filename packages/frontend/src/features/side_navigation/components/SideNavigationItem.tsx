@@ -46,6 +46,7 @@ export function SideNavigationItem(props: SideNavigationItemProps) {
 				align="center"
 				p="4"
 				borderRadius="lg"
+				// biome-ignore lint/a11y/useSemanticElements: Using Chakra UI.
 				role="group"
 				cursor="pointer"
 				bg={props.isSelected ? "brand.600" : undefined}

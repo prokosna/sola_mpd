@@ -47,7 +47,10 @@ class MpdClient {
 
 	private async connect(profile: MpdProfile): Promise<MPD.Client> {
 		if (this.clients.has(profile)) {
-			const client = this.clients.get(profile)!;
+			const client = this.clients.get(profile);
+			if (client === undefined) {
+				throw new Error("This shouldn't happen.");
+			}
 			return client;
 		}
 		const config = {
@@ -123,10 +126,13 @@ class MpdClient {
 	async executeBulk(reqs: MpdRequest[]): Promise<void> {
 		const commandGroup: DeepMap<MpdProfile, MpdRequest[]> = new DeepMap();
 		for (const req of reqs) {
-			if (!commandGroup.has(req.profile!)) {
-				commandGroup.set(req.profile!, []);
+			if (req.profile === undefined) {
+				continue;
 			}
-			commandGroup.get(req.profile!)?.push(req);
+			if (!commandGroup.has(req.profile)) {
+				commandGroup.set(req.profile, []);
+			}
+			commandGroup.get(req.profile)?.push(req);
 		}
 
 		for (const [profile, reqs] of commandGroup) {
@@ -433,7 +439,7 @@ class MpdClient {
 	}
 
 	private getVersion(client: MPD.Client): string {
-		// eslint-disable-next-line @typescript-eslint/no-explicit-any
+		// biome-ignore lint/suspicious/noExplicitAny: <explanation>
 		return ((client as any).PROTOCOL_VERSION as string).trim();
 	}
 
@@ -441,7 +447,7 @@ class MpdClient {
 		client: MPD.Client,
 		command: MPD.Command,
 	): Promise<string> {
-		// eslint-disable-next-line @typescript-eslint/no-explicit-any
+		// biome-ignore lint/suspicious/noExplicitAny: <explanation>
 		return client.sendCommand(command as any);
 	}
 
@@ -654,13 +660,12 @@ class MpdClient {
 			return undefined;
 		}
 
-		// eslint-disable-next-line @typescript-eslint/no-explicit-any
-		const mpdSongWithLowerCaseKeys: { [key: string]: any } = {};
-		Object.entries(v).forEach(([key, value]) => {
+		const mpdSongWithLowerCaseKeys: { [key: string]: unknown } = {};
+		for (const [key, value] of Object.entries(v)) {
 			mpdSongWithLowerCaseKeys[
 				key.toLowerCase().replaceAll("-", "").replaceAll("_", "")
 			] = String(value);
-		});
+		}
 
 		const mpdSong = mpdSongWithLowerCaseKeys as Record<
 			keyof MpdSongRaw,

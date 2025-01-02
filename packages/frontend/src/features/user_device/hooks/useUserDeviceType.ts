@@ -37,7 +37,7 @@ export function useUserDeviceType(): UserDeviceType {
 		const handleResize = () => setDeviceType(getDeviceType(window.innerWidth));
 		window.addEventListener("resize", handleResize);
 		return () => window.removeEventListener("resize", handleResize);
-	}, []);
+	});
 
 	return deviceType;
 }

@@ -157,8 +157,8 @@ export function SearchNavigationQueryEditorQueryCondition(
 					>
 						{listSearchSongMetadataTags()
 							.map((tag) => convertSongMetadataTagToDisplayName(tag))
-							.map((tag, i) => (
-								<option key={i} value={tag}>
+							.map((tag) => (
+								<option key={tag} value={tag}>
 									{tag}
 								</option>
 							))}
@@ -175,8 +175,8 @@ export function SearchNavigationQueryEditorQueryCondition(
 								isValidOperatorWithMetadataTag(condition.tag, operator),
 							)
 							.map((operator) => convertOperatorToDisplayName(operator))
-							.map((operator, i) => (
-								<option key={i} value={operator}>
+							.map((operator) => (
+								<option key={operator} value={operator}>
 									{operator}
 								</option>
 							))}
@@ -188,6 +188,7 @@ export function SearchNavigationQueryEditorQueryCondition(
 						type={
 							condition.tag === Song_MetadataTag.UPDATED_AT ? "date" : "text"
 						}
+						// biome-ignore lint/style/noNonNullAssertion: <explanation>
 						value={convertSongMetadataValueToString(condition.value!)}
 						onChange={(e) => handleValueChange(e.target.value)}
 					/>

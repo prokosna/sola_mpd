@@ -42,7 +42,7 @@ export function SearchNavigationQueryEditorQuery(
 
 	const handleQueryUpdated = useCallback(
 		(newQuery: Query) => {
-			let newSearch;
+			let newSearch: Search;
 			if (newQuery.conditions.length === 0) {
 				newSearch = removeEditingSearchQuery(editingSearch, index);
 			} else {
@@ -55,9 +55,9 @@ export function SearchNavigationQueryEditorQuery(
 
 	return (
 		<>
-			{query.conditions.map((_condition, i) => (
+			{query.conditions.map((condition, i) => (
 				<SearchNavigationQueryEditorQueryCondition
-					key={`condition_${i}`}
+					key={condition.uuid}
 					{...{
 						query,
 						isFirstQuery: index === 0,

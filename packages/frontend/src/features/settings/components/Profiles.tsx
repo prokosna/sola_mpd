@@ -52,7 +52,7 @@ export function Profiles() {
 						<Tbody>
 							{mpdProfileState.profiles.map((profile, index) => (
 								<ProfilesProfile
-									key={index}
+									key={profile.name}
 									{...{ index, profile, mpdProfileState }}
 								/>
 							))}

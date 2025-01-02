@@ -274,7 +274,7 @@ export function getSongsInTableFromGrid(
 			: undefined;
 	const sortedSongs: Song[] = [];
 	const selectedSortedSongs: Song[] = [];
-	nodes.forEach((node) => {
+	for (const node of nodes) {
 		const song = convertNodeToSong(songsMap, node);
 		if (song !== undefined) {
 			sortedSongs.push(song);
@@ -282,7 +282,7 @@ export function getSongsInTableFromGrid(
 				selectedSortedSongs.push(song);
 			}
 		}
-	});
+	}
 
 	return {
 		clickedSong,
@@ -307,6 +307,7 @@ export function sortSongsByColumns(
 ): Song[] {
 	const conditions = columns
 		.filter((column) => (column.sortOrder ?? -1) >= 0)
+		// biome-ignore lint/style/noNonNullAssertion: <explanation>
 		.sort((a, b) => a.sortOrder! - b.sortOrder!);
 	return songs.sort((a, b) => {
 		for (const condition of conditions) {

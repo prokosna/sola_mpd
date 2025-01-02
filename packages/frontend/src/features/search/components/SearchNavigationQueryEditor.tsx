@@ -145,7 +145,10 @@ export function SearchNavigationQueryEditor() {
 				<Spacer m={2} />
 				{editingSearch.queries.map((_query, index) => (
 					<SearchNavigationQueryEditorQuery
-						key={`query_${index}`}
+						key={`query_${
+							// biome-ignore lint/suspicious/noArrayIndexKey: Order is fixed.
+							index
+						}`}
 						{...{ editingSearch, index }}
 					/>
 				))}
