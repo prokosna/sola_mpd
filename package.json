@@ -22,7 +22,9 @@
 		"test": "npm run test -ws --if-present"
 	},
 	"lint-staged": {
-		"*.{js,jsx,ts,tsx,json,md,css,yaml}": ["npx @biomejs/biome check --write"],
+		"*.{js,jsx,ts,tsx,json,md,css,yaml}": [
+			"npx @biomejs/biome check --write --no-errors-on-unmatched"
+		],
 		"*.proto": ["npx clang-format --style '{ BasedOnStyle: Google }' -i"]
 	},
 	"workspaces": ["packages/domain", "packages/frontend", "packages/backend"],
