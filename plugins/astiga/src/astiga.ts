@@ -15,6 +15,8 @@ import {
 } from "./types.js";
 import { sleep } from "./utils.js";
 
+const ASTIGA_URL = "https://play.asti.ga/rest/";
+
 // https://manual.manticoresearch.com/Searching/Full_text_matching/Escaping
 const specialCharacters: string[] = [
 	"\\",
@@ -49,13 +51,13 @@ const fetchRetry = async (
 
 export class AstigaClient {
 	private cache: LRUCache<string, AstigaSong[]>;
+	private url: string;
 
 	constructor(
-		private url: string,
 		private user: string,
 		private password: string,
 	) {
-		this.url = this.url.replace(/\/+$/, "");
+		this.url = ASTIGA_URL.replace(/\/+$/, "");
 		this.cache = new LRUCache({ max: 500 });
 	}
 

@@ -12,13 +12,12 @@ import { AstigaClient } from "./astiga.js";
 import { sleep } from "./utils.js";
 
 export async function* syncWithAstiga(
-	url: string,
 	user: string,
 	password: string,
 	playlistName: string,
 	songs: Song[],
 ): AsyncGenerator<PluginExecuteResponse, void, unknown> {
-	const client = new AstigaClient(url, user, password);
+	const client = new AstigaClient(user, password);
 
 	yield new PluginExecuteResponse({
 		message: "Calculating difference between playlists...",

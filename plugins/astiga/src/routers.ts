@@ -29,8 +29,9 @@ export function routes(router: ConnectRouter) {
 						Plugin_PluginType.ON_PLAY_QUEUE,
 						Plugin_PluginType.ON_SAVED_SEARCH,
 						Plugin_PluginType.ON_FULL_TEXT_SEARCH,
+						Plugin_PluginType.ON_RECENTLY_ADDED,
 					],
-					requiredPluginParameters: ["URL", "User", "Password"],
+					requiredPluginParameters: ["User", "Password"],
 					requiredRequestParameters: ["Playlist Name"],
 				}),
 			});
@@ -40,13 +41,11 @@ export function routes(router: ConnectRouter) {
 			req: PluginExecuteRequest,
 		): AsyncGenerator<PluginExecuteResponse, void, unknown> {
 			try {
-				const url = req.pluginParameters.URL;
 				const user = req.pluginParameters.User;
 				const password = req.pluginParameters.Password;
 				const playlistName = req.requestParameters["Playlist Name"];
 				const songs = req.songs;
 				for await (const resp of syncWithAstiga(
-					url,
 					user,
 					password,
 					playlistName,
