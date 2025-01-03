@@ -81,7 +81,7 @@ $ git clone git@github.com:prokosna/sola_mpd
 $ cd sola_mpd
 ```
 
-4. Build a docker image (It takes several minutes. Please have a :coffee:)
+4. Build a docker image
 
 ```
 $ docker/build.sh
@@ -90,8 +90,10 @@ $ docker/build.sh
 5. And run (The default port is 3000, but you can change it by `--port` argument.)
 
 ```
-$ docker/start.sh [--port 3000]
+$ docker/start.sh [--port 3000] [--host]
 ```
+
+`--host` flag will deploy the container in the host network mode. **This flag is recommended to avoid any network issues.**
 
 6. Access to http://[Your Server IP]:3000 from your browser
 
@@ -108,7 +110,7 @@ $ cd sola_mpd
 $ git pull origin main
 $ docker/remove.sh
 $ docker/build.sh
-$ docker/start.sh
+$ docker/start.sh [--port 3000] [--host]
 ```
 
 ## Usage tips (operations & shortcut keys)
@@ -156,18 +158,15 @@ This plugin is quite specific to my use case, but you can use this as a referenc
 
 ### Setup a development environment
 
-Sola MPD is written in TypeScript with React, Vite, Protocol Buffers, Jotai, etc.th React, Vite, Protocol Buffers and so on.
+Sola MPD is written in TypeScript with React, Vite, Protocol Buffers, Jotai, etc.
 
 ```
 # 1. Install dependencies, set up a husky hook for format/lint
 $ npm i
 
-# 2. Compile protobuf messages as all objects are defined in the Protobuf format
-$ npm run proto
-
-# 3. Build the domain package
+# 2. Build the domain package first
 $ npm run -w packages/domain build
 
-# 4. Run dev servers
+# 3. Run dev servers
 $ npm run dev
 ```
