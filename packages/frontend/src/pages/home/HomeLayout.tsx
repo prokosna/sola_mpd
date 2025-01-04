@@ -29,13 +29,17 @@ import {
 	SettingsEntryButton,
 } from "../../features/settings";
 import { SideNavigation } from "../../features/side_navigation";
-import { useUserDeviceType } from "../../features/user_device";
+import {
+	useIsCompactMode,
+	useUserDeviceType,
+} from "../../features/user_device";
 
 export function HomeLayout() {
 	const location = useLocation();
 	const navigate = useNavigate();
+	const isCompactMode = useIsCompactMode();
 	const { getButtonProps, isOpen } = useDisclosure({
-		defaultIsOpen: true,
+		defaultIsOpen: !isCompactMode,
 	});
 	const userDeviceType = useUserDeviceType();
 
