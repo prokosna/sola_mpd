@@ -54,9 +54,9 @@ export function convertBrowserFilterToCondition(
 		});
 	}
 
-	const regexValue = browserFilter.selectedValues
+	const regexValue = `^(${browserFilter.selectedValues
 		.map((value) => escapeRegexString(convertSongMetadataValueToString(value)))
-		.join("|");
+		.join("|")})$`;
 	return new FilterCondition({
 		tag: browserFilter.tag,
 		value: new Song_MetadataValue({

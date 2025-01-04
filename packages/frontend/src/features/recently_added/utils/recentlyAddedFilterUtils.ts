@@ -57,9 +57,9 @@ export function convertRecentlyAddedFilterToCondition(
 		});
 	}
 
-	const regexValue = selectedValues
+	const regexValue = `^(${selectedValues
 		.map((value) => escapeRegexString(convertSongMetadataValueToString(value)))
-		.join("|");
+		.join("|")})$`;
 	return new FilterCondition({
 		tag: filter.tag,
 		value: new Song_MetadataValue({
