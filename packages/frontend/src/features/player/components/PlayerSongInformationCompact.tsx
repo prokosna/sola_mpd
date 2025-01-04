@@ -1,4 +1,4 @@
-import { Text, VStack } from "@chakra-ui/react";
+import { HStack, Text, VStack } from "@chakra-ui/react";
 
 import { useCurrentSongInformationLines } from "../hooks/useCurrentSongInformationLines";
 
@@ -17,11 +17,13 @@ export function PlayerSongInformationCompact() {
 
 	return (
 		<>
-			<VStack spacing={1} minW="100%">
-				<Text noOfLines={1}>
-					{`${firstLine} / ${secondLine}`}
+			<VStack spacing={1} minW="100%" paddingX={12}>
+				<HStack spacing={2} width="100%">
+					<Text noOfLines={1} flex="1">
+						{`${firstLine} / ${secondLine}`}
+					</Text>
 					<PlayerSongInformationTag />
-				</Text>
+				</HStack>
 				<Text noOfLines={1}>{`${thirdLine}`}</Text>
 			</VStack>
 		</>
