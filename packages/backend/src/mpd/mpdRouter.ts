@@ -16,7 +16,7 @@ mpdRouter.use(
 		limit: "1024mb",
 	}),
 );
-mpdRouter.use((req, res, next) => {
+mpdRouter.use((_req, res, next) => {
 	res.setHeader("Content-Type", "application/octet-stream");
 	next();
 });
@@ -36,7 +36,7 @@ async function executeCommandBulk(req: Request): Promise<void> {
 
 mpdRouter.use(
 	"/command",
-	wrap(async (req: Request, res: Response, next) => {
+	wrap(async (req: Request, res: Response, _next) => {
 		const data = await executeCommand(req);
 		res.send(data);
 	}),
@@ -44,7 +44,7 @@ mpdRouter.use(
 
 mpdRouter.use(
 	"/command_bulk",
-	wrap(async (req: Request, res: Response, next) => {
+	wrap(async (req: Request, res: Response, _next) => {
 		await executeCommandBulk(req);
 		res.end();
 	}),
