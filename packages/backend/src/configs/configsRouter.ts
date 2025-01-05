@@ -25,14 +25,14 @@ configsRouter.use(
 		limit: "256mb",
 	}),
 );
-configsRouter.use((req, res, next) => {
+configsRouter.use((_req, res, next) => {
 	res.setHeader("Content-Type", "application/octet-stream");
 	next();
 });
 
 configsRouter.get(
 	"/browser_state",
-	wrap(async (req: Request, res: Response) => {
+	wrap(async (_req: Request, res: Response) => {
 		const value = browserStateRepository.get();
 		const bytes = Buffer.from(value.toBinary());
 		res.send(bytes);
@@ -51,7 +51,7 @@ configsRouter.post(
 
 configsRouter.get(
 	"/common_song_table_state",
-	wrap(async (req: Request, res: Response) => {
+	wrap(async (_req: Request, res: Response) => {
 		const value = commonSongTableStateRepository.get();
 		const bytes = Buffer.from(value.toBinary());
 		res.send(bytes);
@@ -69,7 +69,7 @@ configsRouter.post(
 );
 configsRouter.get(
 	"/layout_state",
-	wrap(async (req: Request, res: Response) => {
+	wrap(async (_req: Request, res: Response) => {
 		const value = layoutStateRepository.get();
 		const bytes = Buffer.from(value.toBinary());
 		res.send(bytes);
@@ -88,7 +88,7 @@ configsRouter.post(
 
 configsRouter.get(
 	"/mpd_profile_state",
-	wrap(async (req: Request, res: Response) => {
+	wrap(async (_req: Request, res: Response) => {
 		const value = mpdProfileStateRepository.get();
 		const bytes = Buffer.from(value.toBinary());
 		res.send(bytes);
@@ -107,7 +107,7 @@ configsRouter.post(
 
 configsRouter.get(
 	"/plugin_state",
-	wrap(async (req: Request, res: Response) => {
+	wrap(async (_req: Request, res: Response) => {
 		const value = pluginStateRepository.get();
 		const bytes = Buffer.from(value.toBinary());
 		res.send(bytes);
@@ -126,7 +126,7 @@ configsRouter.post(
 
 configsRouter.get(
 	"/saved_searches",
-	wrap(async (req: Request, res: Response) => {
+	wrap(async (_req: Request, res: Response) => {
 		const value = savedSearchRepository.get();
 		const bytes = Buffer.from(value.toBinary());
 		res.send(bytes);
@@ -145,7 +145,7 @@ configsRouter.post(
 
 configsRouter.get(
 	"/recently_added_state",
-	wrap(async (req: Request, res: Response) => {
+	wrap(async (_req: Request, res: Response) => {
 		const value = recentlyAddedStateRepository.get();
 		const bytes = Buffer.from(value.toBinary());
 		res.send(bytes);

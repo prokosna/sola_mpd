@@ -38,7 +38,7 @@ describe("FileRepository", () => {
 		vi.spyOn(fs, "readFileSync").mockReturnValue(fileContent);
 		vi.spyOn(MockMessage, "fromJson").mockReturnValue(new MockMessage());
 
-		const repo = new FileRepository<MockMessage>(
+		const _repo = new FileRepository<MockMessage>(
 			"path/to/file",
 			new MockMessage(),
 		);

@@ -18,7 +18,7 @@ const server = http.createServer(app);
 // APIs
 app.use("/api/configs", configsRouter);
 app.use("/api/mpd", mpdRouter);
-const errorHandler: ErrorRequestHandler = (err, req, res, next) => {
+const errorHandler: ErrorRequestHandler = (err, _req, res, _next) => {
 	console.error(err);
 	res.status(500);
 	res.type("text/plain");
@@ -35,7 +35,7 @@ SocketIoManager.initialize(io);
 
 // Serve SPA
 app.use(express.static(path.join(__dirname, "public")));
-app.get("*", (req, res) => {
+app.get("*", (_req, res) => {
 	res.sendFile(path.join(__dirname, "public/index.html"));
 });
 

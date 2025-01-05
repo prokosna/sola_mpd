@@ -13,7 +13,7 @@ import { syncWithAstiga } from "./service.js";
 
 export function routes(router: ConnectRouter) {
 	router.service(PluginService, {
-		register(req: PluginRegisterRequest): PluginRegisterResponse {
+		register(_req: PluginRegisterRequest): PluginRegisterResponse {
 			return new PluginRegisterResponse({
 				info: new PluginInfo({
 					name: "Astiga",
