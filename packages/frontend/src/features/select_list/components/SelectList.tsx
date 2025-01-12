@@ -1,8 +1,9 @@
-import { CircularProgress, useColorMode } from "@chakra-ui/react";
+import { CircularProgress } from "@chakra-ui/react";
 import type { GetRowIdParams } from "ag-grid-community";
 import { AgGridReact } from "ag-grid-react";
 import { useCallback, useEffect, useRef } from "react";
 
+import { useAgGridTheme } from "../../../lib/agGrid/hooks/useAgGridTheme";
 import { ContextMenu, type ContextMenuSection } from "../../context_menu";
 import { useAgGridReactData } from "../hooks/useAgGridReactData";
 import { useHandleRowDataUpdated } from "../hooks/useHandleRowDataUpdated";
@@ -63,7 +64,7 @@ export function SelectList(props: SelectListProps) {
 	);
 
 	// Color mode
-	const { colorMode } = useColorMode();
+	const theme = useAgGridTheme();
 
 	// Sync with selectedValues which can be updated outside of this component
 	const api = gridRef.current?.api;
@@ -86,9 +87,6 @@ export function SelectList(props: SelectListProps) {
 		<>
 			<div
 				ref={ref}
-				className={
-					colorMode === "light" ? "ag-theme-alpine" : "ag-theme-alpine-dark"
-				}
 				style={{ height: "100%", width: "100%", position: "relative" }}
 			>
 				<AgGridReact
@@ -97,10 +95,11 @@ export function SelectList(props: SelectListProps) {
 					})}
 					{...(props.headerTitle === undefined && {
 						containerStyle: {
-							"--ag-borders": "none",
+							"--ag-wrapper-border": "none", // Remove border to avoid duplication with layout border
 						},
 					})}
 					ref={gridRef}
+					theme={theme}
 					rowData={rowData}
 					columnDefs={columnDefs}
 					onCellContextMenu={openContextMenu}
@@ -118,9 +117,6 @@ export function SelectList(props: SelectListProps) {
 					rowDragMultiRow={false}
 					suppressCellFocus={true}
 					preventDefaultOnContextMenu={true}
-					rowClass={
-						colorMode === "light" ? "ag-theme-alpine" : "ag-theme-alpine-dark"
-					}
 					getRowId={getRowId}
 				/>
 				{props.isLoading && (

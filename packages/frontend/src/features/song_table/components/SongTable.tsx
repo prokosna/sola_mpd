@@ -1,10 +1,11 @@
-import { CircularProgress, useColorMode } from "@chakra-ui/react";
+import { CircularProgress } from "@chakra-ui/react";
 import type { Song } from "@sola_mpd/domain/src/models/song_pb.js";
 import type { SongTableColumn } from "@sola_mpd/domain/src/models/song_table_pb.js";
 import type { GetRowIdParams } from "ag-grid-community";
 import { AgGridReact } from "ag-grid-react";
 import { useCallback, useRef } from "react";
 
+import { useAgGridTheme } from "../../../lib/agGrid/hooks/useAgGridTheme";
 import { ContextMenu, type ContextMenuSection } from "../../context_menu";
 import { useIsCompactMode, useIsTouchDevice } from "../../user_device";
 import { useAgGridReactData } from "../hooks/useAgGridReactData";
@@ -23,10 +24,6 @@ import type {
 	SongTableKeyType,
 	SongTableRowData,
 } from "../types/songTableTypes";
-
-import "ag-grid-community/styles/ag-grid.min.css";
-import "ag-grid-community/styles/ag-theme-alpine.min.css";
-import "../styles/agGrid.css";
 
 export type SongTableProps = {
 	id: string;
@@ -102,6 +99,7 @@ export function SongTable(props: SongTableProps): JSX.Element {
 
 	// Use bold for the playing song.
 	const getBoldClassForPlayingSong = useGetBoldClassForPlayingSong(
+		gridRef,
 		props.songTableKeyType,
 		songsMap,
 	);
@@ -134,19 +132,17 @@ export function SongTable(props: SongTableProps): JSX.Element {
 	);
 
 	// Color mode
-	const { colorMode } = useColorMode();
+	const theme = useAgGridTheme();
 
 	return (
 		<>
 			<div
 				ref={ref}
-				className={
-					colorMode === "light" ? "ag-theme-alpine" : "ag-theme-alpine-dark"
-				}
 				style={{ height: "100%", width: "100%", position: "relative" }}
 			>
 				<AgGridReact
 					ref={gridRef}
+					theme={theme}
 					rowData={rowData}
 					columnDefs={columnDefs}
 					onSortChanged={!isCompact ? handleColumnsUpdated : undefined}
@@ -164,13 +160,11 @@ export function SongTable(props: SongTableProps): JSX.Element {
 						checkboxes: isTouchDevice,
 						headerCheckbox: isTouchDevice,
 						enableClickSelection: true,
+						enableSelectionWithoutKeys: false,
 					}}
 					rowDragManaged={true}
 					rowDragMultiRow={true}
 					preventDefaultOnContextMenu={true}
-					rowClass={
-						colorMode === "light" ? "ag-theme-alpine" : "ag-theme-alpine-dark"
-					}
 					getRowClass={getBoldClassForPlayingSong}
 					getRowId={getRowId}
 					rowHeight={isCompact ? 60 : 30}

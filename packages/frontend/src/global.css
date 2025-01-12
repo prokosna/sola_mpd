@@ -8,3 +8,8 @@
 	--focus-border: #3182ce;
 	--separator-border: #4a5568; /* gray.600 */
 }
+
+/* Ag Grid inrow font weight customization */
+.ag-font-weight-bold {
+	font-weight: bold;
+}
