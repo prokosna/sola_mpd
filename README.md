@@ -72,11 +72,11 @@ If you are using the latest version of Docker, the `compose` command is already 
     If you have any issues, please confirm if you installed Docker correctly.
 
 1. Clone this repository on your server
- 
+
     ```
     $ git clone git@github.com:prokosna/sola_mpd
     ```
- 
+
 1. Move to the folder
 
     ```
