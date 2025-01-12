@@ -37,7 +37,7 @@ export function useKeyboardShortcutSelectAll(
 			selectedSongs.push(song);
 		});
 
-		api.selectAllFiltered();
+		api.selectAll("filtered");
 		selectSongs(selectedSongs);
 	});
 }
