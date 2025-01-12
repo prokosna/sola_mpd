@@ -98,6 +98,7 @@ If you are using the latest version of Docker, the `compose` command is already 
 1. Access to http://[Your Server IP]:3000 from your browser
 
 1. In the setup dialog, please enter the endpoint of your mpd server which can be accessed from the Sola MPD server. 
+
     **If you are using bridge mode and MPD is running on the same server, you need to use "host.docker.internal" instead of "localhost".**
 
 ## How to update
