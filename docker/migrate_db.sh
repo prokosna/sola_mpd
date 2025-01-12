@@ -32,8 +32,7 @@ fi
 print_step "Checking New Volume"
 if ! docker volume ls -q | grep -q "^sola_mpd_db$"; then
     print_info "sola_mpd_db volume not found. Creating it with docker compose..."
-    docker compose up -d
-    docker compose stop
+    docker compose create
 fi
 
 print_step "Starting Data Migration"
