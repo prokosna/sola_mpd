@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router";
 
 import { ROUTE_LANDING } from "../const/routes";
 import { CenterSpinner } from "../features/loading";

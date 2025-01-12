@@ -13,7 +13,7 @@ import {
 } from "ag-grid-community";
 import { Provider } from "jotai";
 import { Suspense } from "react";
-import { Outlet } from "react-router-dom";
+import { Outlet } from "react-router";
 import { TopLoadingProgressBar } from "../features/loading";
 import { LocationObserver } from "../features/location";
 import { useJotaiStore } from "../useJotaiStore";

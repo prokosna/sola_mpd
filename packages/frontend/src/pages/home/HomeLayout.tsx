@@ -11,7 +11,7 @@ import {
 } from "@chakra-ui/react";
 import { Suspense, useEffect } from "react";
 import { IoMenu } from "react-icons/io5";
-import { Outlet, useLocation, useNavigate } from "react-router-dom";
+import { Outlet, useLocation, useNavigate } from "react-router";
 
 import { ROUTE_HOME, ROUTE_HOME_PLAY_QUEUE } from "../../const/routes";
 import { GlobalFilterBox } from "../../features/global_filter";

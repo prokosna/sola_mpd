@@ -1,6 +1,6 @@
 import { Box, Center } from "@chakra-ui/react";
 import { useCallback, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router";
 
 import { ROUTE_HOME_PLAY_QUEUE } from "../../const/routes";
 import {
