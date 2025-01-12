@@ -101,6 +101,16 @@ If you are using the latest version of Docker, the `compose` command is already 
 
     **If you are using bridge mode and MPD is running on the same server, you need to use "host.docker.internal" instead of "localhost".**
 
+## Migrating from Previous Version
+
+If you are migrating from a previous version that used the `sola_db` volume, you can migrate your data using the following command:
+
+```bash
+docker compose --profile migration up db-migrate
+```
+
+This will copy all data from your existing `sola_db` volume to the new database volume.
+
 ## How to update
 
 The main branch should be always the latest working branch.

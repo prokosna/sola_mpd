@@ -1,14 +1,14 @@
 name: sola_mpd
 
 services:
-  sola_mpd:
+  app:
     build:
       context: .
       dockerfile: docker/Dockerfile
     image: sola_mpd_prebuilt:latest
     container_name: sola_mpd
     volumes:
-      - sola_db:/app/packages/backend/db
+      - db:/app/packages/backend/db
     environment:
       - USER=${USER}
     ### Network Configuration Options ###
@@ -53,6 +53,22 @@ services:
   #   # Alternatively, use "no" for manual restart
   #   # restart: no
 
+  # Data migration service for existing users
+  db-migrate:
+    image: alpine
+    volumes:
+      - existing_db:/source_db
+      - db:/target_db
+    command: sh -c "cp -r /source_db/* /target_db/"
+    profiles:
+      - migration
+
 volumes:
-  sola_db:
+  db:
+  existing_db:
+    external: true
     name: sola_db
+    driver_opts:
+      o: "bind"
+    profiles:
+      - migration
