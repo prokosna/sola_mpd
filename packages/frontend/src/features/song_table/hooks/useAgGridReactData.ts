@@ -1,6 +1,9 @@
 import type { Song } from "@sola_mpd/domain/src/models/song_pb.js";
 import type { SongTableColumn } from "@sola_mpd/domain/src/models/song_table_pb.js";
-import type { SuppressKeyboardEventParams } from "ag-grid-community";
+import type {
+	SelectionColumnDef,
+	SuppressKeyboardEventParams,
+} from "ag-grid-community";
 import { useMemo } from "react";
 
 import { CustomCellCompact } from "../components/CustomCellCompact";
@@ -41,8 +44,11 @@ export function useAgGridReactData(
 	isSortingEnabled: boolean,
 	isReorderingEnabled: boolean,
 	isCompact: boolean,
-	isTouchDevice: boolean,
-): { rowData: SongTableRowData[]; columnDefs: SongTableColumnDefinition[] } {
+): {
+	rowData: SongTableRowData[];
+	columnDefs: SongTableColumnDefinition[];
+	selectionColumnDef: SelectionColumnDef;
+} {
 	// Convert Song to AdGrid item format (Column -> Value).
 	const rowData = useMemo(() => {
 		if (isCompact) {
@@ -79,8 +85,6 @@ export function useAgGridReactData(
 					flex: 1,
 					resizable: false,
 					sortable: false,
-					checkboxSelection: isTouchDevice,
-					headerCheckboxSelection: isTouchDevice,
 					suppressKeyboardEvent: (
 						params: SuppressKeyboardEventParams,
 					): boolean => {
@@ -113,22 +117,35 @@ export function useAgGridReactData(
 					? undefined
 					: column.sortOrder,
 			cellDataType: false,
-			checkboxSelection: !!(isTouchDevice && index === 0),
-			headerCheckboxSelection: !!(isTouchDevice && index === 0),
 			suppressKeyboardEvent: (params: SuppressKeyboardEventParams): boolean => {
 				return params.event.key === " ";
 			},
 		}));
-	}, [
-		columns,
-		isCompact,
-		isReorderingEnabled,
-		isSortingEnabled,
-		isTouchDevice,
-	]);
+	}, [columns, isCompact, isReorderingEnabled, isSortingEnabled]);
+
+	// Selection column definision
+	const selectionColumnDef: SelectionColumnDef = useMemo(() => {
+		return {
+			sortable: false,
+			resizable: false,
+			suppressHeaderMenuButton: true,
+			headerCheckboxSelection: true,
+			checkboxSelection: true,
+			width: 38,
+			maxWidth: 38,
+			cellStyle: {
+				display: "flex",
+				alignItems: "center",
+				justifyContent: "center",
+				padding: 0,
+				margin: 0,
+			},
+		};
+	}, []);
 
 	return {
 		rowData,
 		columnDefs,
+		selectionColumnDef,
 	};
 }

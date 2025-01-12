@@ -1,8 +1,9 @@
-import { CircularProgress, useColorMode } from "@chakra-ui/react";
+import { CircularProgress } from "@chakra-ui/react";
 import type { GetRowIdParams } from "ag-grid-community";
 import { AgGridReact } from "ag-grid-react";
 import { useCallback, useEffect, useRef } from "react";
 
+import { useAgGridTheme } from "../../../lib/agGrid/hooks/useAgGridTheme";
 import { ContextMenu, type ContextMenuSection } from "../../context_menu";
 import { useAgGridReactData } from "../hooks/useAgGridReactData";
 import { useHandleRowDataUpdated } from "../hooks/useHandleRowDataUpdated";
@@ -63,7 +64,7 @@ export function SelectList(props: SelectListProps) {
 	);
 
 	// Color mode
-	const { colorMode } = useColorMode();
+	const theme = useAgGridTheme();
 
 	// Sync with selectedValues which can be updated outside of this component
 	const api = gridRef.current?.api;
@@ -86,9 +87,6 @@ export function SelectList(props: SelectListProps) {
 		<>
 			<div
 				ref={ref}
-				className={
-					colorMode === "light" ? "ag-theme-alpine" : "ag-theme-alpine-dark"
-				}
 				style={{ height: "100%", width: "100%", position: "relative" }}
 			>
 				<AgGridReact
@@ -97,27 +95,28 @@ export function SelectList(props: SelectListProps) {
 					})}
 					{...(props.headerTitle === undefined && {
 						containerStyle: {
-							"--ag-borders": "none",
+							"--ag-wrapper-border": "none", // Remove border to avoid duplication with layout border
 						},
 					})}
 					ref={gridRef}
+					theme={theme}
 					rowData={rowData}
 					columnDefs={columnDefs}
 					onCellContextMenu={openContextMenu}
 					onSelectionChanged={handleSelectionChange}
 					onRowDataUpdated={handleRowDataUpdated}
 					animateRows={false}
-					rowSelection={props.allowMultipleSelection ? "multiple" : "single"}
-					rowMultiSelectWithClick={props.allowMultipleSelection}
-					suppressRowDeselection={!props.allowMultipleSelection}
+					rowSelection={{
+						mode: props.allowMultipleSelection ? "multiRow" : "singleRow",
+						checkboxes: false,
+						headerCheckbox: false,
+						enableSelectionWithoutKeys: props.allowMultipleSelection,
+						enableClickSelection: true,
+					}}
 					rowDragManaged={false}
 					rowDragMultiRow={false}
 					suppressCellFocus={true}
-					suppressMultiRangeSelection={true}
 					preventDefaultOnContextMenu={true}
-					rowClass={
-						colorMode === "light" ? "ag-theme-alpine" : "ag-theme-alpine-dark"
-					}
 					getRowId={getRowId}
 				/>
 				{props.isLoading && (

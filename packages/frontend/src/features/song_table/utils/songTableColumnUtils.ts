@@ -16,27 +16,33 @@ import { convertSongMetadataTagFromDisplayName } from "./songTableTableUtils";
 export function convertAgGridColumnsToSongTableColumns(
 	agGridColumns: Column[],
 ): SongTableColumn[] {
-	return agGridColumns.map((col) => {
-		const sortOrder = col.getSortIndex();
-		const isSortDesc = (() => {
-			switch (col.getSort()) {
-				case "asc":
-					return false;
-				case "desc":
-					return true;
-				default:
-					return false;
+	return agGridColumns
+		.map((col) => {
+			const sortOrder = col.getSortIndex();
+			const isSortDesc = (() => {
+				switch (col.getSort()) {
+					case "asc":
+						return false;
+					case "desc":
+						return true;
+					default:
+						return false;
+				}
+			})();
+			const flex = Math.floor(col.getActualWidth());
+			const tag = convertSongMetadataTagFromDisplayName(col.getColId());
+			if (tag === undefined) {
+				return undefined;
 			}
-		})();
-		const flex = Math.floor(col.getActualWidth());
-		const column = new SongTableColumn({
-			tag: convertSongMetadataTagFromDisplayName(col.getColId()),
-			sortOrder: sortOrder != null ? sortOrder : undefined,
-			isSortDesc,
-			widthFlex: flex,
-		});
-		return column;
-	});
+			const column = new SongTableColumn({
+				tag,
+				sortOrder: sortOrder != null ? sortOrder : undefined,
+				isSortDesc,
+				widthFlex: flex,
+			});
+			return column;
+		})
+		.filter((column) => column !== undefined);
 }
 
 /**
