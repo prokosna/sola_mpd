@@ -107,13 +107,16 @@ export function SelectList(props: SelectListProps) {
 					onSelectionChanged={handleSelectionChange}
 					onRowDataUpdated={handleRowDataUpdated}
 					animateRows={false}
-					rowSelection={props.allowMultipleSelection ? "multiple" : "single"}
-					rowMultiSelectWithClick={props.allowMultipleSelection}
-					suppressRowDeselection={!props.allowMultipleSelection}
+					rowSelection={{
+						mode: props.allowMultipleSelection ? "multiRow" : "singleRow",
+						checkboxes: false,
+						headerCheckbox: false,
+						enableSelectionWithoutKeys: props.allowMultipleSelection,
+						enableClickSelection: true,
+					}}
 					rowDragManaged={false}
 					rowDragMultiRow={false}
 					suppressCellFocus={true}
-					suppressMultiRangeSelection={true}
 					preventDefaultOnContextMenu={true}
 					rowClass={
 						colorMode === "light" ? "ag-theme-alpine" : "ag-theme-alpine-dark"

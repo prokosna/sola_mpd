@@ -66,6 +66,9 @@ export function SearchNavigationQueryEditorQueryCondition(
 	const handleTagChange = useCallback(
 		(value: string) => {
 			const tag = convertSongMetadataTagFromDisplayName(value);
+			if (tag === undefined) {
+				return;
+			}
 			const newCondition = condition.clone();
 			newCondition.tag = tag;
 			if (

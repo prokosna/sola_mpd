@@ -98,7 +98,6 @@ export function SongTable(props: SongTableProps): JSX.Element {
 		props.isSortingEnabled,
 		props.isReorderingEnabled,
 		isCompact,
-		isTouchDevice,
 	);
 
 	// Use bold for the playing song.
@@ -160,7 +159,12 @@ export function SongTable(props: SongTableProps): JSX.Element {
 					onRowDataUpdated={handleRowDataUpdated}
 					animateRows={true}
 					colResizeDefault={"shift"}
-					rowSelection={"multiple"}
+					rowSelection={{
+						mode: "multiRow",
+						checkboxes: isTouchDevice,
+						headerCheckbox: isTouchDevice,
+						enableClickSelection: true,
+					}}
 					rowDragManaged={true}
 					rowDragMultiRow={true}
 					preventDefaultOnContextMenu={true}

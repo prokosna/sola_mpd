@@ -143,7 +143,7 @@ export function convertSongMetadataTagToDisplayName(
  */
 export function convertSongMetadataTagFromDisplayName(
 	str: string,
-): Song_MetadataTag {
+): Song_MetadataTag | undefined {
 	const tag = str
 		.split(" ")
 		.map((v) => v.toUpperCase())

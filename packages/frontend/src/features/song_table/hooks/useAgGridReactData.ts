@@ -41,7 +41,6 @@ export function useAgGridReactData(
 	isSortingEnabled: boolean,
 	isReorderingEnabled: boolean,
 	isCompact: boolean,
-	isTouchDevice: boolean,
 ): { rowData: SongTableRowData[]; columnDefs: SongTableColumnDefinition[] } {
 	// Convert Song to AdGrid item format (Column -> Value).
 	const rowData = useMemo(() => {
@@ -79,8 +78,6 @@ export function useAgGridReactData(
 					flex: 1,
 					resizable: false,
 					sortable: false,
-					checkboxSelection: isTouchDevice,
-					headerCheckboxSelection: isTouchDevice,
 					suppressKeyboardEvent: (
 						params: SuppressKeyboardEventParams,
 					): boolean => {
@@ -113,19 +110,11 @@ export function useAgGridReactData(
 					? undefined
 					: column.sortOrder,
 			cellDataType: false,
-			checkboxSelection: !!(isTouchDevice && index === 0),
-			headerCheckboxSelection: !!(isTouchDevice && index === 0),
 			suppressKeyboardEvent: (params: SuppressKeyboardEventParams): boolean => {
 				return params.event.key === " ";
 			},
 		}));
-	}, [
-		columns,
-		isCompact,
-		isReorderingEnabled,
-		isSortingEnabled,
-		isTouchDevice,
-	]);
+	}, [columns, isCompact, isReorderingEnabled, isSortingEnabled]);
 
 	return {
 		rowData,

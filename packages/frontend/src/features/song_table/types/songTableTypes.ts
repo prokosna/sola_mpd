@@ -90,8 +90,6 @@ export type SongTableColumnDefinition = {
 	sort?: "asc" | "desc" | null;
 	sortIndex?: number;
 	cellDataType?: boolean;
-	checkboxSelection: boolean;
-	headerCheckboxSelection: boolean;
 	suppressKeyboardEvent: (params: SuppressKeyboardEventParams) => boolean;
 	cellRenderer?: (props: CustomCellRendererProps) => JSX.Element;
 };
