@@ -37,4 +37,4 @@ jobs:
       - name: Run unit tests
         run: npm test
       - name: Test building docker container
-        run: docker/build.sh
+        run: docker compose create
