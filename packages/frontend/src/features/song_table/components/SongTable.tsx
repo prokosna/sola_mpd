@@ -9,7 +9,6 @@ import { useAgGridTheme } from "../../../lib/agGrid/hooks/useAgGridTheme";
 import { ContextMenu, type ContextMenuSection } from "../../context_menu";
 import { useIsCompactMode, useIsTouchDevice } from "../../user_device";
 import { useAgGridReactData } from "../hooks/useAgGridReactData";
-import { useGetBoldClassForPlayingSong } from "../hooks/useGetBoldClassForPlayingSong";
 import { useHandleColumnsUpdated } from "../hooks/useHandleColumnsUpdated";
 import { useHandleRowDataUpdated } from "../hooks/useHandleRowDataUpdated";
 import { useHandleRowDoubleClick } from "../hooks/useHandleRowDoubleClick";
@@ -17,6 +16,7 @@ import { useHandleRowDragEnded } from "../hooks/useHandleRowDragEnded";
 import { useHandleSelectionChange } from "../hooks/useHandleSelectionChange";
 import { useKeyboardShortcutSelectAll } from "../hooks/useKeyboardShortcutSelectAll";
 import { useOpenContextMenu } from "../hooks/useOpenContextMenu";
+import { useRowClassRules } from "../hooks/useRowClassRules";
 import { useSongsMap } from "../hooks/useSongsMap";
 import { useSongsWithIndex } from "../hooks/useSongsWithIndex";
 import type {
@@ -98,11 +98,7 @@ export function SongTable(props: SongTableProps): JSX.Element {
 	);
 
 	// Use bold for the playing song.
-	const getBoldClassForPlayingSong = useGetBoldClassForPlayingSong(
-		gridRef,
-		props.songTableKeyType,
-		songsMap,
-	);
+	const rowClassRules = useRowClassRules(props.songTableKeyType, songsMap);
 
 	// Get Row ID callback function
 	const getRowId = useCallback((params: GetRowIdParams<SongTableRowData>) => {
@@ -165,7 +161,7 @@ export function SongTable(props: SongTableProps): JSX.Element {
 					rowDragManaged={true}
 					rowDragMultiRow={true}
 					preventDefaultOnContextMenu={true}
-					getRowClass={getBoldClassForPlayingSong}
+					rowClassRules={rowClassRules}
 					getRowId={getRowId}
 					rowHeight={isCompact ? 60 : 30}
 					alwaysMultiSort={!!isTouchDevice}
