@@ -1,0 +1,57 @@
+name: sola_mpd
+
+services:
+  sola_mpd:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile
+    image: sola_mpd_prebuilt:latest
+    container_name: sola_mpd
+    volumes:
+      - sola_db:/app/packages/backend/db
+    environment:
+      - USER=${USER}
+    ### Network Configuration Options ###
+    # Option 1: Host network mode (Recommended for better compatibility)
+    network_mode: host
+
+    # Option 2: Bridge network mode
+    # If using bridge mode, comment out network_mode: host above and uncomment the following:
+    # network_mode: bridge
+    # ports:
+    #   - 3000:3000
+    #   # Or use a custom port:
+    #   # - 8080:3000
+    # extra_hosts:
+    #   - host.docker.internal:host-gateway
+    
+    restart: always
+    # Alternatively, use "no" for manual restart
+    # restart: no
+
+  astiga:
+    build:
+      context: .
+      dockerfile: plugins/astiga/docker/Dockerfile
+    image: sola_mpd_astiga:latest
+    container_name: sola_mpd_astiga
+    environment:
+      - USER=${USER}
+    ### Network Configuration Options ###
+    # Option 1: Host network mode (Recommended for better compatibility)
+    network_mode: host
+
+    # Option 2: Bridge network mode
+    # If using bridge mode, comment out network_mode: host above and uncomment the following:
+    # network_mode: bridge
+    # ports:
+    #   - 3001:3001
+    #   # Or use a custom port:
+    #   # - 8081:3001
+    
+    restart: always
+    # Alternatively, use "no" for manual restart
+    # restart: no
+
+volumes:
+  sola_db:
