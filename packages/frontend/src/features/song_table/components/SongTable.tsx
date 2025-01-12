@@ -10,6 +10,7 @@ import { ContextMenu, type ContextMenuSection } from "../../context_menu";
 import { useIsCompactMode, useIsTouchDevice } from "../../user_device";
 import { useAgGridReactData } from "../hooks/useAgGridReactData";
 import { useHandleColumnsUpdated } from "../hooks/useHandleColumnsUpdated";
+import { useHandleRowClick } from "../hooks/useHandleRowClick";
 import { useHandleRowDataUpdated } from "../hooks/useHandleRowDataUpdated";
 import { useHandleRowDoubleClick } from "../hooks/useHandleRowDoubleClick";
 import { useHandleRowDragEnded } from "../hooks/useHandleRowDragEnded";
@@ -106,6 +107,7 @@ export function SongTable(props: SongTableProps): JSX.Element {
 	}, []);
 
 	// Handlers
+	const handleRowClick = useHandleRowClick();
 	const handleColumnsUpdated = useHandleColumnsUpdated(
 		props.columns,
 		props.isSortingEnabled,
@@ -149,6 +151,7 @@ export function SongTable(props: SongTableProps): JSX.Element {
 					onCellContextMenu={openContextMenu}
 					onSelectionChanged={handleSelectionChange}
 					onRowDataUpdated={handleRowDataUpdated}
+					onRowClicked={handleRowClick}
 					animateRows={true}
 					colResizeDefault={"shift"}
 					rowSelection={{
