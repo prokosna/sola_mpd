@@ -59,45 +59,41 @@ Sola MPD is a web based client and needs to be deployed on your server in the lo
 
 It can be the same server as the MPD server or on a different server, as long as it can communicate with the MPD server.
 
-Sola MPD only requires [Docker](https://docs.docker.com/engine/install/) installed on the server.
+Sola MPD only requires [Docker](https://docs.docker.com/engine/install/) and Docker Compose to be installed on the server.
+
+If you are using the latest version of Docker, the `compose` command is already included. Otherwise, you need to [install it separately](https://docs.docker.com/compose/install/linux/).
 
 1. Ensure a docker process is running on the server
-
 ```
 $ docker ps
 ```
 
 If you have any issues, please confirm if you installed Docker correctly.
 
-2. Clone this repository on your server
-
+1. Clone this repository on your server
 ```
 $ git clone git@github.com:prokosna/sola_mpd
 ```
 
-3. Move to the folder
-
+1. Move to the folder
 ```
 $ cd sola_mpd
 ```
 
-4. Build a docker image
-
+1. [Optional] Edit the docker-compose.yaml file if you want to change the port or other configurations
 ```
-$ docker/build.sh
-```
-
-5. And run (The default port is 3000, but you can change it by `--port` argument.)
-
-```
-$ docker/start.sh [--port 3000] [--host]
+$ vi docker-compose.yaml
 ```
 
-`--host` flag will deploy the container in the host network mode. **This flag is recommended to avoid any network issues.**
+1. Run the container
+```
+$ docker compose up --build -d
+```
 
-6. Access to http://[Your Server IP]:3000 from your browser
+1. Access to http://[Your Server IP]:3000 from your browser
 
-7. In the setup dialog, please enter the endpoint of your mpd server which can be accessed from the Sola MPD server. **If your mpd server is running on the same server, you need to use "host.docker.internal" instead of "localhost".**
+1. In the setup dialog, please enter the endpoint of your mpd server which can be accessed from the Sola MPD server. 
+**If you are using bridge mode and MPD is running on the same server, you need to use "host.docker.internal" instead of "localhost".**
 
 ## How to update
 
@@ -107,10 +103,9 @@ You just need to stop the running container, pull the latest main branch and run
 
 ```
 $ cd sola_mpd
+$ docker compose down
 $ git pull origin main
-$ docker/remove.sh
-$ docker/build.sh
-$ docker/start.sh [--port 3000] [--host]
+$ docker compose up --build -d
 ```
 
 ## Usage tips (operations & shortcut keys)
@@ -134,23 +129,16 @@ For example, I have a use case to synchronize MPD songs with a [Astiga](https://
 
 To use the Astiga plugin:
 
-1. Move to the plugin folder
+1. Uncomment the Astiga plugin in `docker-compose.yaml`
 
+1. Run the plugin container with Sola MPD
 ```
-$ cd sola_mpd/plugins/astiga
-```
-
-2. Run the plugin
-
-```
-$ docker/build.sh
-$ docker/start.sh [--port 3001] [--host]
+$ docker compose up --build -d
 ```
 
-Note: If you have any network errors, please try `--host` which uses Docker host network mode.
+1. On the Plugin page in Sola MPD, enter the plugin endpoint (in this case `[Your Server IP]:3001`) and configure the plugin following a dialog.
 
-3. On the Plugin page in Sola MPD, enter the plugin endpoint (in this case `[Your Server IP]:3001`) and configure the plugin following a dialog.
-4. When the plugin is available, the right-click context menu has `Sync with Astiga` and you can create a playlist with selected songs on Sola MPD as long as the exact same songs are available on Astiga as well.
+1. When the plugin is available, you will see `Sync with Astiga` in the right-click context menu and you can create a playlist with selected songs on Sola MPD as long as the exact same songs are available on Astiga as well.
 
 This plugin is quite specific to my use case, but you can use this as a reference to develop a custom plugin for your use case.
 
