@@ -71,7 +71,7 @@ If you are using the latest version of Docker, the `compose` command is already 
 
     If you have any issues, please confirm if you installed Docker correctly.
 
-1. Clone this repository
+1. Clone this repository on your server
 
     ```bash
     git clone https://github.com/prokosna/sola_mpd.git
@@ -99,7 +99,7 @@ If you are using the latest version of Docker, the `compose` command is already 
     docker compose up -d
     ```
 
-1. Access to http://[Your Server IP]:3000 from your browser
+1. Access to http://[Your Server IP]:3000 (or the port you configured) from your browser
 
 1. In the setup dialog, please enter the endpoint of your mpd server which can be accessed from the Sola MPD server. 
 
@@ -168,3 +168,4 @@ $ npm run -w packages/domain build
 
 # 3. Run dev servers
 $ npm run dev
+```
