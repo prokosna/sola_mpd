@@ -53,22 +53,5 @@ services:
   #   # Alternatively, use "no" for manual restart
   #   # restart: no
 
-  # Data migration service for existing users
-  db-migrate:
-    image: alpine
-    volumes:
-      - existing_db:/source_db
-      - db:/target_db
-    command: sh -c "cp -r /source_db/* /target_db/"
-    profiles:
-      - migration
-
 volumes:
   db:
-  existing_db:
-    external: true
-    name: sola_db
-    driver_opts:
-      o: "bind"
-    profiles:
-      - migration

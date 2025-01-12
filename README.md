@@ -65,22 +65,17 @@ If you are using the latest version of Docker, the `compose` command is already 
 
 1. Ensure a docker process is running on the server
 
-    ```
-    $ docker ps
+    ```bash
+    docker ps
     ```
 
     If you have any issues, please confirm if you installed Docker correctly.
 
-1. Clone this repository on your server
+1. Clone this repository
 
-    ```
-    $ git clone git@github.com:prokosna/sola_mpd
-    ```
-
-1. Move to the folder
-
-    ```
-    $ cd sola_mpd
+    ```bash
+    git clone https://github.com/prokosna/sola_mpd.git
+    cd sola_mpd
     ```
 
 1. [Optional] Edit the docker-compose.yaml file if you want to change the port or other configurations
@@ -89,10 +84,19 @@ If you are using the latest version of Docker, the `compose` command is already 
     $ vi docker-compose.yaml
     ```
 
-1. Run the container
+1. **For users migrating from `docker/start.sh`:**
+   If you were using the previous version with `docker/start.sh`, run the migration script before starting the new version:
 
-    ```
-    $ docker compose up --build -d
+   ```bash
+   ./docker/migrate_db.sh
+   ```
+
+   This will copy your existing database from the old `sola_db` volume to the new one.
+
+1. Start the application
+
+    ```bash
+    docker compose up -d
     ```
 
 1. Access to http://[Your Server IP]:3000 from your browser
@@ -100,16 +104,6 @@ If you are using the latest version of Docker, the `compose` command is already 
 1. In the setup dialog, please enter the endpoint of your mpd server which can be accessed from the Sola MPD server. 
 
     **If you are using bridge mode and MPD is running on the same server, you need to use "host.docker.internal" instead of "localhost".**
-
-## Migrating from Previous Version
-
-If you are migrating from a previous version that used the `sola_db` volume, you can migrate your data using the following command:
-
-```bash
-docker compose --profile migration up db-migrate
-```
-
-This will copy all data from your existing `sola_db` volume to the new database volume.
 
 ## How to update
 
@@ -174,4 +168,3 @@ $ npm run -w packages/domain build
 
 # 3. Run dev servers
 $ npm run dev
-```
