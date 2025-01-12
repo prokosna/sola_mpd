@@ -64,35 +64,41 @@ Sola MPD only requires [Docker](https://docs.docker.com/engine/install/) and Doc
 If you are using the latest version of Docker, the `compose` command is already included. Otherwise, you need to [install it separately](https://docs.docker.com/compose/install/linux/).
 
 1. Ensure a docker process is running on the server
-```
-$ docker ps
-```
 
-If you have any issues, please confirm if you installed Docker correctly.
+    ```
+    $ docker ps
+    ```
+
+    If you have any issues, please confirm if you installed Docker correctly.
 
 1. Clone this repository on your server
-```
-$ git clone git@github.com:prokosna/sola_mpd
-```
-
+ 
+    ```
+    $ git clone git@github.com:prokosna/sola_mpd
+    ```
+ 
 1. Move to the folder
-```
-$ cd sola_mpd
-```
+
+    ```
+    $ cd sola_mpd
+    ```
 
 1. [Optional] Edit the docker-compose.yaml file if you want to change the port or other configurations
-```
-$ vi docker-compose.yaml
-```
+
+    ```
+    $ vi docker-compose.yaml
+    ```
 
 1. Run the container
-```
-$ docker compose up --build -d
-```
+
+    ```
+    $ docker compose up --build -d
+    ```
 
 1. Access to http://[Your Server IP]:3000 from your browser
 
 1. In the setup dialog, please enter the endpoint of your mpd server which can be accessed from the Sola MPD server. 
+
 **If you are using bridge mode and MPD is running on the same server, you need to use "host.docker.internal" instead of "localhost".**
 
 ## How to update
@@ -132,9 +138,10 @@ To use the Astiga plugin:
 1. Uncomment the Astiga plugin in `docker-compose.yaml`
 
 1. Run the plugin container with Sola MPD
-```
-$ docker compose up --build -d
-```
+
+    ```
+    $ docker compose up --build -d
+    ```
 
 1. On the Plugin page in Sola MPD, enter the plugin endpoint (in this case `[Your Server IP]:3001`) and configure the plugin following a dialog.
 
