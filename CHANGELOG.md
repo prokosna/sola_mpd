@@ -5,14 +5,19 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [3.0.7] - 2025-01
+## [3.0.8] - 2025-01-13
+
+### Changed
+- Upgraded react-router to v7 
+
+## [3.0.7] - 2025-01-13
 
 ### Changed
 - Migrated deployment process to Docker Compose
 - Updated README.md with Docker Compose deployment instructions
 - Added migration script (migrate_db.sh) for users upgrading from previous versions
 
-## [3.0.6] - 2025-01
+## [3.0.6] - 2025-01-13
 
 ### Changed
 - Upgraded Ag-Grid to v33

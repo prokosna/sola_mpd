@@ -1,7 +1,6 @@
 import { Flex, Icon, Link, Text } from "@chakra-ui/react";
-import { startTransition } from "react";
 import type { IconType } from "react-icons";
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router";
 
 /**
  * Navigation item props.
@@ -29,9 +28,7 @@ export function SideNavigationItem(props: SideNavigationItemProps) {
 	const navigate = useNavigate();
 
 	const handleNavigation = (to: string) => {
-		startTransition(() => {
-			navigate(to);
-		});
+		navigate(to);
 	};
 
 	return (
