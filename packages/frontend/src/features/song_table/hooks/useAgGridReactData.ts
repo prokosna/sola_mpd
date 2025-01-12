@@ -1,6 +1,9 @@
 import type { Song } from "@sola_mpd/domain/src/models/song_pb.js";
 import type { SongTableColumn } from "@sola_mpd/domain/src/models/song_table_pb.js";
-import type { SuppressKeyboardEventParams } from "ag-grid-community";
+import type {
+	SelectionColumnDef,
+	SuppressKeyboardEventParams,
+} from "ag-grid-community";
 import { useMemo } from "react";
 
 import { CustomCellCompact } from "../components/CustomCellCompact";
@@ -41,7 +44,11 @@ export function useAgGridReactData(
 	isSortingEnabled: boolean,
 	isReorderingEnabled: boolean,
 	isCompact: boolean,
-): { rowData: SongTableRowData[]; columnDefs: SongTableColumnDefinition[] } {
+): {
+	rowData: SongTableRowData[];
+	columnDefs: SongTableColumnDefinition[];
+	selectionColumnDef: SelectionColumnDef;
+} {
 	// Convert Song to AdGrid item format (Column -> Value).
 	const rowData = useMemo(() => {
 		if (isCompact) {
@@ -116,8 +123,29 @@ export function useAgGridReactData(
 		}));
 	}, [columns, isCompact, isReorderingEnabled, isSortingEnabled]);
 
+	// Selection column definision
+	const selectionColumnDef: SelectionColumnDef = useMemo(() => {
+		return {
+			sortable: false,
+			resizable: false,
+			suppressHeaderMenuButton: true,
+			headerCheckboxSelection: true,
+			checkboxSelection: true,
+			width: 38,
+			maxWidth: 38,
+			cellStyle: {
+				display: "flex",
+				alignItems: "center",
+				justifyContent: "center",
+				padding: 0,
+				margin: 0,
+			},
+		};
+	}, []);
+
 	return {
 		rowData,
 		columnDefs,
+		selectionColumnDef,
 	};
 }

@@ -89,7 +89,7 @@ export function SongTable(props: SongTableProps): JSX.Element {
 	useKeyboardShortcutSelectAll(ref, gridRef, songsMap, props.onSongsSelected);
 
 	// AgGridReact format
-	const { rowData, columnDefs } = useAgGridReactData(
+	const { rowData, columnDefs, selectionColumnDef } = useAgGridReactData(
 		songsWithIndex,
 		props.songTableKeyType,
 		props.columns,
@@ -168,6 +168,7 @@ export function SongTable(props: SongTableProps): JSX.Element {
 					getRowId={getRowId}
 					rowHeight={isCompact ? 60 : 30}
 					alwaysMultiSort={!!isTouchDevice}
+					selectionColumnDef={selectionColumnDef}
 				/>
 				{props.isLoading && (
 					<CircularProgress

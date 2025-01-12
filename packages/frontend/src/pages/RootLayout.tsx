@@ -1,4 +1,5 @@
 import {
+	CellStyleModule,
 	ClientSideRowModelApiModule,
 	ClientSideRowModelModule,
 	ColumnApiModule,
@@ -28,6 +29,7 @@ export function RootLayout() {
 		RowDragModule,
 		TooltipModule,
 		RowSelectionModule,
+		CellStyleModule,
 		ClientSideRowModelModule,
 		ClientSideRowModelApiModule,
 		ColumnApiModule,
