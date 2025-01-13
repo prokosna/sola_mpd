@@ -6,6 +6,7 @@ import type {
 } from "ag-grid-community";
 import { useMemo } from "react";
 
+import { useLocaleCollatorState } from "../../settings";
 import { CustomCellCompact } from "../components/CustomCellCompact";
 import {
 	SONGS_TAG_COMPACT,
@@ -49,11 +50,15 @@ export function useAgGridReactData(
 	columnDefs: SongTableColumnDefinition[];
 	selectionColumnDef: SelectionColumnDef;
 } {
+	const localeCollator = useLocaleCollatorState();
+
 	// Convert Song to AdGrid item format (Column -> Value).
 	const rowData = useMemo(() => {
 		if (isCompact) {
 			return (
-				isSortingEnabled ? sortSongsByColumns(songs, columns) : songs
+				isSortingEnabled
+					? sortSongsByColumns(songs, columns, localeCollator)
+					: songs
 			).map((song) => {
 				const row: SongTableRowData = {};
 				row.key = getSongTableKey(song, keyType);
@@ -73,7 +78,7 @@ export function useAgGridReactData(
 			}
 			return row;
 		});
-	}, [isCompact, isSortingEnabled, songs, columns, keyType]);
+	}, [isCompact, isSortingEnabled, songs, columns, keyType, localeCollator]);
 
 	// Convert columns to AgGrid column definitions
 	const columnDefs = useMemo(() => {

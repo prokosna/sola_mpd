@@ -1,5 +1,6 @@
 import { Box, Tab, TabList, TabPanel, TabPanels, Tabs } from "@chakra-ui/react";
 
+import { Locale } from "./Locale";
 import { Profiles } from "./Profiles";
 import { SettingsStates } from "./SettingsStates";
 
@@ -13,11 +14,15 @@ export function Settings() {
 				<Tabs>
 					<TabList>
 						<Tab>Profiles</Tab>
+						<Tab>Locale</Tab>
 						<Tab>Settings</Tab>
 					</TabList>
 					<TabPanels>
 						<TabPanel>
 							<Profiles />
+						</TabPanel>
+						<TabPanel>
+							<Locale />
 						</TabPanel>
 						<TabPanel>
 							<SettingsStates />

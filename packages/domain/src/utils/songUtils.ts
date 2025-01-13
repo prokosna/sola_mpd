@@ -181,12 +181,14 @@ export function listAllSongMetadataTags(): Song_MetadataTag[] {
  * @param songA - First song to compare
  * @param songB - Second song to compare
  * @param tag - Metadata tag to use for comparison
+ * @param collator - Intl.Collator object for locale-aware string comparison
  * @returns -1 if songA < songB, 0 if equal, 1 if songA > songB
  */
 export function compareSongsByMetadataValue(
 	songA: Song,
 	songB: Song,
 	tag: Song_MetadataTag,
+	collator: Intl.Collator,
 ): number {
 	const valueA = songA.metadata[tag];
 	const valueB = songB.metadata[tag];
@@ -200,20 +202,20 @@ export function compareSongsByMetadataValue(
 		valueA.value.case === "stringValue" &&
 		valueB.value.case === "stringValue"
 	) {
-		return valueA.value.value.value.localeCompare(valueB.value.value.value);
+		return collator.compare(valueA.value.value.value, valueB.value.value.value);
 	}
 	if (valueA.value.case === "intValue" && valueB.value.case === "intValue") {
 		return compareNumbers(valueA.value.value.value, valueB.value.value.value);
 	}
 	if (valueA.value.case === "timestamp" && valueB.value.case === "timestamp") {
-		return dayjs(valueA.value.value.toDate())
-			.format("YYYY-MM-DD")
-			.localeCompare(dayjs(valueB.value.value.toDate()).format("YYYY-MM-DD"));
+		const dateA = dayjs(valueA.value.value.toDate()).format("YYYY-MM-DD");
+		const dateB = dayjs(valueB.value.value.toDate()).format("YYYY-MM-DD");
+		return collator.compare(dateA, dateB);
 	}
 	if (valueA.value.case === "format" && valueB.value.case === "format") {
-		return convertAudioFormatToString(valueA.value.value).localeCompare(
-			convertAudioFormatToString(valueB.value.value),
-		);
+		const formatA = convertAudioFormatToString(valueA.value.value);
+		const formatB = convertAudioFormatToString(valueB.value.value);
+		return collator.compare(formatA, formatB);
 	}
 	return 0;
 }

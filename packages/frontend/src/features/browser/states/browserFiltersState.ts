@@ -15,6 +15,7 @@ import { mpdClientAtom } from "../../mpd/states/mpdClient";
 import { currentMpdProfileSyncAtom } from "../../profile/states/mpdProfileState";
 import { fetchBrowserFilterValues } from "../utils/browserFilterUtils";
 
+import { localeCollatorAtom } from "../../settings/states/settingsLocale";
 import { browserStateSyncAtom, useUpdateBrowserState } from "./browserState";
 
 /**
@@ -34,6 +35,7 @@ const browserFilterValuesMapAtom = atom(async (get) => {
 	const mpdClient = get(mpdClientAtom);
 	const browserFilters = get(browserFiltersSyncAtom);
 	const currentMpdProfile = get(currentMpdProfileSyncAtom);
+	const collator = get(localeCollatorAtom);
 
 	if (currentMpdProfile === undefined || browserFilters === undefined) {
 		return new Map<Song_MetadataTag, string[]>();
@@ -43,6 +45,7 @@ const browserFilterValuesMapAtom = atom(async (get) => {
 		mpdClient,
 		currentMpdProfile,
 		browserFilters,
+		collator,
 	);
 });
 
