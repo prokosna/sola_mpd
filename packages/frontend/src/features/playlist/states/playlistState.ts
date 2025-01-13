@@ -5,6 +5,7 @@ import { atomWithRefresh } from "jotai/utils";
 import { atomWithSync } from "../../../lib/jotai/atomWithSync";
 import { mpdClientAtom } from "../../mpd/states/mpdClient";
 import { currentMpdProfileSyncAtom } from "../../profile/states/mpdProfileState";
+import { localeCollatorAtom } from "../../settings/states/settingsLocale";
 import { fetchPlaylists } from "../utils/playlistUtils";
 
 /**
@@ -16,13 +17,14 @@ import { fetchPlaylists } from "../utils/playlistUtils";
 const playlistsAtom = atomWithRefresh(async (get) => {
 	const mpdClient = get(mpdClientAtom);
 	const profile = get(currentMpdProfileSyncAtom);
+	const collator = get(localeCollatorAtom);
 
 	if (profile === undefined) {
 		return [];
 	}
 
 	const playlists = await fetchPlaylists(mpdClient, profile);
-	return playlists.sort((a, b) => a.name.localeCompare(b.name));
+	return playlists.sort((a, b) => collator.compare(a.name, b.name));
 });
 
 /**

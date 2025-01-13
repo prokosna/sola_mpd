@@ -250,12 +250,14 @@ export function resetAllBrowserFilters(
  * @param mpdClient Client for MPD communication
  * @param profile Current MPD profile
  * @param browserFilters Current browser filters
+ * @param collator Intl.Collator
  * @returns Map of tag to array of available values for that tag
  */
 export async function fetchBrowserFilterValues(
 	mpdClient: MpdClient,
 	profile: MpdProfile,
 	browserFilters: BrowserFilter[],
+	collator: Intl.Collator,
 ): Promise<Map<Song_MetadataTag, string[]>> {
 	const selectedSortedFilters = Array.from(
 		browserFilters.filter(
@@ -298,7 +300,9 @@ export async function fetchBrowserFilterValues(
 				if (res.command.case !== "list") {
 					throw Error(`Invalid MPD response: ${res.toJsonString()}`);
 				}
-				return [browserFilter.tag, res.command.value.values];
+				const values = res.command.value.values;
+				const sortedValues = values.sort((a, b) => collator.compare(a, b));
+				return [browserFilter.tag, sortedValues];
 			}),
 		);
 
