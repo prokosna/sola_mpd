@@ -1,4 +1,4 @@
-import { RecentlyAdded } from "../../features/recently_added";
+import { RecentlyAdded } from "../../features/browsing";
 
 export function RecentlyAddedPage() {
 	return (

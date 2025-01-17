@@ -1,4 +1,4 @@
-import { Browser } from "../../features/browser";
+import { Browser } from "../../features/browsing";
 
 export function BrowserPage() {
 	return (

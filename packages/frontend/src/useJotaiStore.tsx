@@ -1,13 +1,13 @@
 import { createStore } from "jotai";
 
-import { browserStateRepositoryAtom } from "./features/browser/states/browserStateRepository";
+import { browserStateRepositoryAtom } from "./features/browsing/browser/states/browserStateRepository";
+import { recentlyAddedStateRepositoryAtom } from "./features/browsing/recently_added/states/recentlyAddedStateRepository";
 import { layoutStateRepositoryAtom } from "./features/layout/states/layoutStateRepositry";
 import { mpdClientAtom } from "./features/mpd/states/mpdClient";
 import { mpdListenerAtom } from "./features/mpd/states/mpdListener";
 import { pluginServiceAtom } from "./features/plugin/states/pluginServiceState";
 import { pluginStateRepositoryAtom } from "./features/plugin/states/pluginStateRepository";
 import { mpdProfileStateRepositoryAtom } from "./features/profile/states/mpdProfileStateRepository";
-import { recentlyAddedStateRepositoryAtom } from "./features/recently_added/states/recentlyAddedStateRepository";
 import { savedSearchesRepositoryAtom } from "./features/search/states/savedSearchesRepository";
 import { songTableStateRepositoryAtom } from "./features/song_table/states/songTableStateRepository";
 import { BrowserStateRepositoryImplHttp } from "./infrastructure/browser/BrowserStateRepositoryImplHttp";

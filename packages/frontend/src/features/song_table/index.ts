@@ -1,5 +1,8 @@
 // Components
-export { ColumnEditModal } from "./components/ColumnEditModal";
+export {
+	ColumnEditModal,
+	type ColumnEditModalProps,
+} from "./components/ColumnEditModal";
 export { SongTable, type SongTableProps } from "./components/SongTable";
 
 // Hooks
