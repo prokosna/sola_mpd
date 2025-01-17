@@ -19,15 +19,18 @@ import { SongTableState } from "@sola_mpd/domain/src/models/song_table_pb.js";
 import { IoCreate } from "react-icons/io5";
 
 import { UpdateMode } from "../../../types/stateTypes";
-import { useBrowserState, useUpdateBrowserState } from "../../browser";
+import {
+	useRecentlyAddedState,
+	useUpdateRecentlyAddedState,
+} from "../../browsing";
+import {
+	useBrowserState,
+	useUpdateBrowserState,
+} from "../../browsing/browser/states/browserState";
 import { useLayoutState, useUpdateLayoutState } from "../../layout";
 import { CenterSpinner } from "../../loading";
 import { usePluginState, useUpdatePluginState } from "../../plugin";
 import { useMpdProfileState, useUpdateMpdProfileState } from "../../profile";
-import {
-	useRecentlyAddedState,
-	useUpdateRecentlyAddedState,
-} from "../../recently_added";
 import {
 	useSavedSearchesState,
 	useUpdateSavedSearchesState,

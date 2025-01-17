@@ -1,7 +1,7 @@
 import { API_CONFIGS_RECENTLY_ADDED_STATE } from "@sola_mpd/domain/src/const/api.js";
 import { RecentlyAddedState } from "@sola_mpd/domain/src/models/recently_added_pb.js";
 
-import type { RecentlyAddedStateRepository } from "../../features/recently_added";
+import type { RecentlyAddedStateRepository } from "../../features/browsing";
 import type { HttpClient } from "../http/HttpClient";
 
 /**

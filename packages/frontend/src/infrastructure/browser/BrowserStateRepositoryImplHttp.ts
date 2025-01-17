@@ -1,7 +1,7 @@
 import { API_CONFIGS_BROWSER_STATE } from "@sola_mpd/domain/src/const/api.js";
 import { BrowserState } from "@sola_mpd/domain/src/models/browser_pb.js";
 
-import type { BrowserStateRepository } from "../../features/browser";
+import type { BrowserStateRepository } from "../../features/browsing";
 import type { HttpClient } from "../http/HttpClient";
 
 /**

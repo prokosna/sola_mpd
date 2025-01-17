@@ -1,6 +1,9 @@
 // Components
 export { Playlist } from "./components/Playlist";
-export { PlaylistSelectModal } from "./components/PlaylistSelectModal";
+export {
+	type PlaylistSelectModalProps,
+	PlaylistSelectModal,
+} from "./components/PlaylistSelectModal";
 
 // Hooks
 export { usePlaylistSelectModal } from "./hooks/usePlaylistSelectModalProps";
