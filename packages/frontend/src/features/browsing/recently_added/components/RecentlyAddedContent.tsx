@@ -12,7 +12,9 @@ import { BrowserContentView } from "../../common/components/BrowserContentView";
 import { useRecentlyAddedSongTableProps } from "../hooks/useRecentlyAddedSongTableProps";
 
 /**
- * Recently added songs table.
+ * Renders the content for recently added items.
+ * This component handles the display of recently added songs in a table format,
+ * including functionality for playlist selection and column editing.
  */
 export function RecentlyAddedContent() {
 	const songTableState = useSongTableState();

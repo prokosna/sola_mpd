@@ -10,7 +10,9 @@ import { RecentlyAddedNavigation } from "./RecentlyAddedNavigation";
 import { RecentlyAddedNavigationBreadcrumbs } from "./RecentlyAddedNavigationBreadcrumbs";
 
 /**
- * Recently added songs view.
+ * Component for displaying recently added items.
+ * Renders a browser view with navigation, breadcrumbs, and content for recently added items.
+ * Uses layout state and update function for managing the component's layout.
  */
 export function RecentlyAdded() {
 	const recentlyAddedLayout = useRecentlyAddedLayoutState();

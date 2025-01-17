@@ -56,6 +56,13 @@ export function extractRecentlyAddedFilterValues(
 	return filterValuesMap;
 }
 
+/**
+ * Sorts the recently added filter values based on the order of all sorted filter values.
+ *
+ * @param filterValues Map of metadata tags to their recently added filter values
+ * @param allSortedFilterValues Map of metadata tags to all sorted filter values
+ * @returns A new map with sorted filter values for recently added items
+ */
 export function sortRecentlyAddedFilterValues(
 	filterValues: Map<Song_MetadataTag, string[]>,
 	allSortedFilterValues: Map<Song_MetadataTag, string[]>,

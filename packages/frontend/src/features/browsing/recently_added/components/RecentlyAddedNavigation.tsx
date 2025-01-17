@@ -6,7 +6,9 @@ import {
 } from "../states/recentlyAddedFiltersState";
 
 /**
- * Navigation filters for recently added songs.
+ * Component for rendering the navigation for recently added items.
+ * It uses browser filters, filter values, and update function to display
+ * and manage the navigation view for recently added content.
  */
 export function RecentlyAddedNavigation() {
 	const browserFilters = useRecentlyAddedBrowserFiltersState();

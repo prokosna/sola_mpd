@@ -35,6 +35,11 @@ const recentlyAddedFiltersSyncAtom = atom((get) => {
 	return recentlyAddedState?.filters;
 });
 
+/**
+ * Synchronizes recently added browser filters.
+ * Derived from recently added filters, converting them to browser filters.
+ * @returns An atom with default value of browser filters
+ */
 export const recentlyAddedBrowserFiltersSyncAtom = atomWithDefault((get) => {
 	const recentlyAddedFilters = get(recentlyAddedFiltersSyncAtom);
 	const browserFilters = recentlyAddedFilters?.map((filter, index) => {
@@ -49,7 +54,12 @@ export const recentlyAddedBrowserFiltersSyncAtom = atomWithDefault((get) => {
 });
 
 /**
- * Derived atom for filter values map.
+ * Atom for storing a sorted map of filter values derived from all songs.
+ *
+ * This atom fetches all songs and extracts filter values from them.
+ * The resulting map contains metadata tags as keys and sorted arrays of unique values as values.
+ *
+ * @returns A map of sorted filter values or undefined if all songs are not available
  */
 const allSongsSortedFilterValuesMapSyncAtom = atom((get) => {
 	const allSongs = get(allSongsSyncAtom);
@@ -61,6 +71,14 @@ const allSongsSortedFilterValuesMapSyncAtom = atom((get) => {
 	return extractRecentlyAddedFilterValues(allSongs);
 });
 
+/**
+ * Atom for fetching recently added browser filter values.
+ *
+ * This atom asynchronously retrieves filter values based on the current MPD client,
+ * browser filters, MPD profile, and locale collator.
+ *
+ * @returns A map of filter values or undefined if required data is missing
+ */
 const recentlyAddedBrowserFilterValuesMapAtom = atom(async (get) => {
 	const mpdClient = get(mpdClientAtom);
 	const browserFilters = get(recentlyAddedBrowserFiltersSyncAtom);
@@ -79,6 +97,15 @@ const recentlyAddedBrowserFilterValuesMapAtom = atom(async (get) => {
 	);
 });
 
+/**
+ * Atom for sorting and combining recently added browser filter values.
+ *
+ * This atom asynchronously retrieves and combines sorted filter values from all songs
+ * with the current browser filter values. It ensures that the resulting map contains
+ * sorted and filtered values for each metadata tag.
+ *
+ * @returns A map of sorted and filtered browser filter values
+ */
 const recentlyAddedSortedBrowserFilterValuesMapAtom = atom(async (get) => {
 	const sortedAllFilterValuesMap = get(allSongsSortedFilterValuesMapSyncAtom);
 	const browserFilterValuesMap = await get(
@@ -147,6 +174,12 @@ export function useRecentlyAddedBrowserFiltersState() {
 	return useAtomValue(recentlyAddedBrowserFiltersSyncAtom);
 }
 
+/**
+ * Hook to access the current recently added browser filter values map state.
+ * This map is filtered based on global filter and current route.
+ *
+ * @returns Map of metadata tags to their filtered values
+ */
 export function useRecentlyAddedBrowserFilterValuesMapState() {
 	return useAtomValue(filteredRecentlyAddedBrowserFilterValuesMapSyncAtom);
 }
