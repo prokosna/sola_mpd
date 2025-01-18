@@ -2,4 +2,8 @@
 export { LocationObserver } from "./components/LocationObserver";
 
 // States
-export { usePathname } from "./states/locationState";
+export {
+	usePathname,
+	useIncrementTransitionCounter,
+	useTransitionCounter,
+} from "./states/locationState";

@@ -8,7 +8,7 @@ import {
 import { useRefreshPlayQueueSongsState } from "../../play_queue";
 import { useRefreshPlaylistsState } from "../../playlist";
 import { useSetSelectedSongsState } from "../../song_table";
-import { useSetPathname } from "../states/locationState";
+import { useSetPathname, useTransitionCounter } from "../states/locationState";
 
 /**
  * Manages global side effects triggered by route changes.
@@ -24,6 +24,7 @@ import { useSetPathname } from "../states/locationState";
  */
 export function LocationObserver() {
 	const location = useLocation();
+	const transitionCounter = useTransitionCounter();
 
 	const setPathname = useSetPathname();
 	const setSelectedSongs = useSetSelectedSongsState();
@@ -32,10 +33,12 @@ export function LocationObserver() {
 
 	useEffect(() => {
 		setPathname(location.pathname);
-
 		// When user moves to a different page, selected songs should be reset.
 		setSelectedSongs([]);
+	}, [location.pathname, setPathname, setSelectedSongs]);
 
+	// biome-ignore lint/correctness/useExhaustiveDependencies: Transition counter is used to detect page transitions even without actual page transitions.
+	useEffect(() => {
 		if (location.pathname === ROUTE_HOME_PLAYLIST) {
 			refreshPlaylistsState();
 		}
@@ -45,10 +48,9 @@ export function LocationObserver() {
 		}
 	}, [
 		location.pathname,
+		transitionCounter,
 		refreshPlayQueueSongsState,
 		refreshPlaylistsState,
-		setPathname,
-		setSelectedSongs,
 	]);
 
 	return null;
