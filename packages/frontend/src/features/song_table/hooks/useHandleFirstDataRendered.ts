@@ -46,7 +46,7 @@ export function useHandleFirstDataRendered(
 				return;
 			}
 
-			api.ensureIndexVisible(currentSongRowIndex, "middle");
+			api.ensureIndexVisible(currentSongRowIndex, "top");
 		},
 		[currentSong, keyType, scrollToPlayingSong],
 	);
