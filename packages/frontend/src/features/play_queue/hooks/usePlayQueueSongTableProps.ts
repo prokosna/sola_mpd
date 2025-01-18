@@ -257,6 +257,7 @@ export function usePlayQueueSongTableProps(
 		isGlobalFilterEnabled: true,
 		contextMenuSections,
 		isLoading,
+		scrollToPlayingSong: true,
 		onSongsReordered,
 		onColumnsUpdated,
 		onSongsSelected,

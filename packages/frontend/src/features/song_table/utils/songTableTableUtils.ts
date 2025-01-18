@@ -349,3 +349,26 @@ export function createNewSongTableStateFromColumns(
 	}
 	return newState;
 }
+
+/**
+ * Retrieves the table index of a song based on its key.
+ *
+ * Iterates through the grid nodes after filtering and sorting to find
+ * the matching song key and returns its row index.
+ *
+ * @param songKey - The unique key of the song to find
+ * @param gridApi - The AG Grid API instance
+ * @returns The table index of the song, or undefined if not found
+ */
+export function getTableIndexOfSong(
+	songKey: string,
+	gridApi: GridApi,
+): number | undefined {
+	let index = undefined;
+	gridApi.forEachNodeAfterFilterAndSort((node) => {
+		if (node.data?.key === songKey && node.rowIndex !== undefined) {
+			index = node.rowIndex;
+		}
+	});
+	return index;
+}
