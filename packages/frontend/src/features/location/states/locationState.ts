@@ -9,6 +9,14 @@ import { atom, useAtomValue, useSetAtom } from "jotai";
  */
 export const pathnameAtom = atom("");
 
+const transitionCounterAtom = atom(0);
+const transitionCounterReadWriteAtom = atom(
+	(get) => get(transitionCounterAtom),
+	(get, set) => {
+		set(transitionCounterAtom, get(transitionCounterAtom) + 1);
+	},
+);
+
 /**
  * Provides read-only access to the current pathname.
  *
@@ -33,4 +41,29 @@ export function usePathname() {
  */
 export function useSetPathname() {
 	return useSetAtom(pathnameAtom);
+}
+
+/**
+ * Hook to access the current transition counter value.
+ *
+ * This is used to detect page transition clicks even without actual page transitions
+ * (like clicking on a link to the current page).
+ *
+ * @returns The current transition counter value
+ */
+export function useTransitionCounter() {
+	return useAtomValue(transitionCounterReadWriteAtom);
+}
+
+/**
+ * Hook to provide a function that increments the transition counter.
+ *
+ * This is useful for triggering effects or re-renders when a transition
+ * occurs, even if the actual route doesn't change. It's particularly
+ * helpful for handling cases where a user clicks a link to the current page.
+ *
+ * @returns A function that, when called, increments the transition counter
+ */
+export function useIncrementTransitionCounter() {
+	return useSetAtom(transitionCounterReadWriteAtom);
 }

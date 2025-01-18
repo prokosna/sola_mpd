@@ -1,6 +1,7 @@
 import { Flex, Icon, Link, Text } from "@chakra-ui/react";
 import type { IconType } from "react-icons";
 import { useNavigate } from "react-router";
+import { useIncrementTransitionCounter } from "../../location";
 
 /**
  * Navigation item props.
@@ -26,8 +27,10 @@ export type SideNavigationItemProps = {
  */
 export function SideNavigationItem(props: SideNavigationItemProps) {
 	const navigate = useNavigate();
+	const incrementTransitionCounter = useIncrementTransitionCounter();
 
 	const handleNavigation = (to: string) => {
+		incrementTransitionCounter();
 		navigate(to);
 	};
 

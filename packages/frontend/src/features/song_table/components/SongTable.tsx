@@ -10,6 +10,7 @@ import { ContextMenu, type ContextMenuSection } from "../../context_menu";
 import { useIsCompactMode, useIsTouchDevice } from "../../user_device";
 import { useAgGridReactData } from "../hooks/useAgGridReactData";
 import { useHandleColumnsUpdated } from "../hooks/useHandleColumnsUpdated";
+import { useHandleFirstDataRendered } from "../hooks/useHandleFirstDataRendered";
 import { useHandleRowClick } from "../hooks/useHandleRowClick";
 import { useHandleRowDataUpdated } from "../hooks/useHandleRowDataUpdated";
 import { useHandleRowDoubleClick } from "../hooks/useHandleRowDoubleClick";
@@ -36,6 +37,7 @@ export type SongTableProps = {
 	isGlobalFilterEnabled: boolean;
 	contextMenuSections: ContextMenuSection<SongTableContextMenuItemParams>[];
 	isLoading: boolean;
+	scrollToPlayingSong?: boolean;
 	onSongsReordered: (orderedSongs: Song[]) => Promise<void>;
 	onColumnsUpdated: (updatedColumns: SongTableColumn[]) => Promise<void>;
 	onSongsSelected: (selectedSongs: Song[]) => Promise<void>;
@@ -59,6 +61,7 @@ export type SongTableProps = {
  * @param props.isGlobalFilterEnabled Enable global filter
  * @param props.contextMenuSections Context menu configuration
  * @param props.isLoading Loading state
+ * @param props.scrollToPlayingSong Scroll to playing song
  * @param props.onSongsReordered Reorder callback
  * @param props.onColumnsUpdated Column update callback
  * @param props.onSongsSelected Selection callback
@@ -128,6 +131,10 @@ export function SongTable(props: SongTableProps): JSX.Element {
 	const handleRowDataUpdated = useHandleRowDataUpdated(
 		props.onLoadingCompleted,
 	);
+	const handleFirstDataRendered = useHandleFirstDataRendered(
+		props.songTableKeyType,
+		props.scrollToPlayingSong ?? false,
+	);
 
 	// Color mode
 	const theme = useAgGridTheme();
@@ -169,6 +176,7 @@ export function SongTable(props: SongTableProps): JSX.Element {
 					rowHeight={isCompact ? 60 : 30}
 					alwaysMultiSort={!!isTouchDevice}
 					selectionColumnDef={selectionColumnDef}
+					onFirstDataRendered={handleFirstDataRendered}
 				/>
 				{props.isLoading && (
 					<CircularProgress

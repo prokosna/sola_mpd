@@ -8,6 +8,7 @@ import {
 	RowDragModule,
 	RowSelectionModule,
 	RowStyleModule,
+	ScrollApiModule,
 	TooltipModule,
 	ValidationModule,
 } from "ag-grid-community";
@@ -35,6 +36,7 @@ export function RootLayout() {
 		ColumnApiModule,
 		RowApiModule,
 		RowStyleModule,
+		ScrollApiModule,
 		ValidationModule,
 	]);
 
