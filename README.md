@@ -2,11 +2,13 @@
 
 Sola MPD is a web-based MPD client focused on usability with flexible browsing and advanced search.
 
+The primary goal of this client is to help users efficiently find specific songs within large music libraries and freely organize them into a queue and playlists. If you're looking for a table-oriented UI for better music management, this client might be a good fit. However, if you're seeking a player with fancy visual design, this may not be what you're looking for.
+
 This client has the following features:
 
 - [x] Playback control (Play, Resume, Next, and so on)
 - [x] Play queue
-- [x] Flesible metadata browser (inspired by [GMPC](http://gmpclient.org/))
+- [x] Flexible metadata browser (inspired by [GMPC](http://gmpclient.org/))
 - [x] MPD Playlist management
 - [x] Advanced search
   - `=`, `!=`, `has`, `regular expression`, etc
@@ -20,16 +22,18 @@ This client has the following features:
 - [x] Dark theme
 - [x] All songs (Simple full-text search)
 - [x] Responsive layout for tablets
-- [x] Support touch devices
+- [x] Supports touch devices
 - [x] Browse recently added artists, albums and composers
 
 On the other hand, the following features are out of scope for now:
 
 - [ ] Cover art
 
-Feel free to file an issue if you are interested in some of missing capabilities.
+Feel free to file an issue if you are interested in any of missing capabilities.
 
 **Sola MPD only supports MPD version 0.21 or later.**
+
+Some features may use MPD's API in a suboptimal way (e.g., loading all songs at once). While the client has been tested and works well in my environment (with a library of approximately 85,000 songs), it might consume excessive memory with significantly larger libraries.
 
 ## Screenshot gifs
 
