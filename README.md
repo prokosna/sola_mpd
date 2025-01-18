@@ -33,6 +33,8 @@ Feel free to file an issue if you are interested in any of missing capabilities.
 
 **Sola MPD only supports MPD version 0.21 or later.**
 
+Some features may use MPD's API in a suboptimal way (e.g., loading all songs at once). While the client has been tested and works well in my environment (with a library of approximately 85,000 songs), it might consume excessive memory with significantly larger libraries.
+
 ## Screenshot gifs
 
 ### Intuitive control
