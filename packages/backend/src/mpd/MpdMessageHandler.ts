@@ -42,10 +42,12 @@ export class MpdMessageHandler {
 				this.idHandlersMap.set(id, []);
 			}
 
+			const handlers = this.idHandlersMap.get(id);
 			if (
-				this.idHandlersMap
-					.get(id)
-					?.findIndex((handler) => handler.profile.name === profile.name) >= 0
+				handlers !== undefined &&
+				handlers.findIndex(
+					(handler) => handler.profile.name === profile.name,
+				) >= 0
 			) {
 				return;
 			}
@@ -82,18 +84,22 @@ export class MpdMessageHandler {
 
 		try {
 			const profile = MpdProfile.fromBinary(msg);
-			const handlerIndex = this.idHandlersMap
-				.get(id)
-				?.findIndex((handler) => handler.profile.name === profile.name);
+			const handlers = this.idHandlersMap.get(id);
+			if (handlers === undefined) {
+				return;
+			}
+			const handlerIndex = handlers.findIndex(
+				(handler) => handler.profile.name === profile.name,
+			);
 			if (handlerIndex < 0) {
 				return;
 			}
 
-			const handler = this.idHandlersMap.get(id)?.[handlerIndex];
+			const handler = handlers[handlerIndex];
 			const room = `${handler.profile.host}:${handler.profile.port}`;
 			socket.leave(room);
 			await mpdClient.unsubscribe(handler.profile, handler.handle);
-			this.idHandlersMap.get(id)?.splice(handlerIndex, 1);
+			handlers.splice(handlerIndex, 1);
 			console.info(`${id}.${profile.name} has been unsubscribed.`);
 		} catch (err) {
 			console.error(err);
