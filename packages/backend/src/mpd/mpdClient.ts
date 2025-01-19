@@ -6,7 +6,7 @@ import {
 } from "@bufbuild/protobuf";
 import { Folder } from "@sola_mpd/domain/src/models/file_explore_pb.js";
 import {
-	type MpdRequest,
+	MpdRequest,
 	MpdResponse,
 } from "@sola_mpd/domain/src/models/mpd/mpd_command_pb.js";
 import {
@@ -44,6 +44,7 @@ class MpdClient {
 	private listParser = mpd.parseList;
 	private objectParser = mpd.parseObject;
 	private listParserBy = mpd.parseList.by;
+	private allSongsCache: Map<MpdProfile, Song[]> = new Map();
 
 	private async connect(profile: MpdProfile): Promise<MPD.Client> {
 		if (this.clients.has(profile)) {
@@ -66,6 +67,29 @@ class MpdClient {
 		return client;
 	}
 
+	private async refreshAllSongsCache(
+		client: MPD.Client,
+		profile: MpdProfile,
+	): Promise<void> {
+		const cmd = this.convertCommand(
+			new MpdRequest({
+				profile,
+				command: {
+					case: "listAllSongs",
+					value: {},
+				},
+			}),
+		);
+		const ret = await this.sendCommand(client, cmd).then(
+			this.listParserBy("file"),
+		);
+		const songs = ret
+			.map((v) => MpdClient.parseSong(v))
+			.filter((v) => v !== undefined) as Song[];
+		this.allSongsCache.set(profile, songs);
+		console.info(`Refreshed all songs cache for ${profile.name}`);
+	}
+
 	async subscribe(
 		profile: MpdProfile,
 		callback: (event: MpdEvent) => void,
@@ -80,6 +104,7 @@ class MpdClient {
 			switch (name) {
 				case "database":
 					callback(new MpdEvent({ eventType: MpdEvent_EventType.DATABASE }));
+					this.refreshAllSongsCache(client, profile);
 					break;
 				case "update":
 					callback(new MpdEvent({ eventType: MpdEvent_EventType.UPDATE }));
@@ -105,6 +130,7 @@ class MpdClient {
 		};
 		client.on("system", handle);
 		client.on("close", handle);
+		this.refreshAllSongsCache(client, profile);
 		return handle;
 	}
 
@@ -391,12 +417,11 @@ class MpdClient {
 
 			// Utility
 			case "listAllSongs": {
-				const ret = await this.sendCommand(client, cmd).then(
-					this.listParserBy("file"),
-				);
-				const songs = ret
-					.map((v) => MpdClient.parseSong(v))
-					.filter((v) => v !== undefined) as Song[];
+				let songs = this.allSongsCache.get(profile);
+				if (songs === undefined) {
+					console.warn(`No all songs cache found for ${profile.name}`);
+					songs = [];
+				}
 				return new MpdResponse({
 					command: {
 						case: "listAllSongs",
