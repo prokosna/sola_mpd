@@ -39,4 +39,11 @@ describe("DeepMap", () => {
 			expect(v).toBe("value");
 		}
 	});
+
+	it("should delete a key based on deep equality", () => {
+		const map = new DeepMap();
+		const key = { a: 1 };
+		map.set(key, "value");
+		expect(map.delete({ a: 1 })).toBe(true);
+	});
 });

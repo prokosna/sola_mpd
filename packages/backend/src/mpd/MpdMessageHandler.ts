@@ -42,7 +42,7 @@ export class MpdMessageHandler {
 	): Promise<void> {
 		try {
 			const profile = MpdProfile.fromBinary(msg);
-			if (!this.idEventHandlerMap.has([id, profile])) {
+			if (this.idEventHandlerMap.has([id, profile])) {
 				return;
 			}
 
@@ -75,15 +75,15 @@ export class MpdMessageHandler {
 		}
 
 		try {
-			const handler = await this.idEventHandlerMap.get([id, profile]);
-			if (handler === undefined) {
+			const handlerPromise = this.idEventHandlerMap.get([id, profile]);
+			this.idEventHandlerMap.delete([id, profile]);
+			if (handlerPromise === undefined) {
 				return;
 			}
 
 			const room = `${profile.host}:${profile.port}`;
 			socket.leave(room);
-			await mpdClient.unsubscribe(profile, handler);
-			this.idEventHandlerMap.delete([id, profile]);
+			await mpdClient.unsubscribe(profile, await handlerPromise);
 
 			console.info(`${id}.${profile.name} has been unsubscribed.`);
 		} catch (err) {
@@ -106,14 +106,14 @@ export class MpdMessageHandler {
 	}
 
 	async disconnect(id: string, socket: Socket): Promise<void> {
-		for (const [key, handler] of this.idEventHandlerMap) {
+		for (const [key, handlerPromise] of this.idEventHandlerMap) {
 			const [keyId, keyProfile] = key;
 			if (keyId !== id) {
 				continue;
 			}
 			const room = `${keyProfile.host}:${keyProfile.port}`;
 			socket.leave(room); // leave() is idempotent.
-			await mpdClient.unsubscribe(keyProfile, await handler);
+			await mpdClient.unsubscribe(keyProfile, await handlerPromise);
 			this.idEventHandlerMap.delete(key);
 		}
 	}

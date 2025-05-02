@@ -75,9 +75,15 @@ export class DeepMap<K, V> implements Iterable<[K, V]> {
 	 * Deletes a key-value pair from the map.
 	 *
 	 * @param key - The key to delete
+	 * @returns true if the key was deleted, false otherwise
 	 */
-	delete(key: K) {
-		this.map.delete(key);
+	delete(key: K): boolean {
+		for (const k of this.map.keys()) {
+			if (equal(k, key)) {
+				return this.map.delete(k);
+			}
+		}
+		return false;
 	}
 
 	/**
