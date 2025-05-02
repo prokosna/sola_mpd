@@ -40,7 +40,9 @@ import mpd, { type MPD } from "mpd2";
 mpd.autoparseValues(false);
 
 class MpdClient {
-	private clients: DeepMap<MpdProfile, MPD.Client> = new DeepMap(new Map());
+	private clients: DeepMap<MpdProfile, Promise<MPD.Client>> = new DeepMap(
+		new Map(),
+	);
 	private listParser = mpd.parseList;
 	private objectParser = mpd.parseObject;
 	private listParserBy = mpd.parseList.by;
@@ -53,17 +55,21 @@ class MpdClient {
 			}
 			return client;
 		}
+
+		// Create new client
 		const config = {
 			host: profile.host,
 			port: profile.port,
 		};
-		const client = await mpd.connect(config);
-		client.once("close", () => {
-			this.clients.delete(profile);
-			console.info("Removed closed client");
+		const clientPromise = mpd.connect(config).then((client) => {
+			client.once("close", () => {
+				this.clients.delete(profile);
+				console.info("Removed closed client");
+			});
+			return client;
 		});
-		this.clients.set(profile, client);
-		return client;
+		this.clients.set(profile, clientPromise);
+		return clientPromise;
 	}
 
 	async subscribe(
