@@ -26,12 +26,9 @@ import {
 } from "./mpdParsers.js";
 
 class MpdClient {
-	private clients: DeepMap<MpdProfile, Promise<MPD.Client>> = new DeepMap(
+	private clients: DeepMap<MpdProfile, Promise<mpd.MpdClient>> = new DeepMap(
 		new Map(),
 	);
-	private listParser = mpd.parseList;
-	private objectParser = mpd.parseObject;
-	private listParserBy = mpd.parseList.by;
 
 	private async connect(profile: MpdProfile): Promise<mpd.MpdClient> {
 		if (this.clients.has(profile)) {
@@ -47,7 +44,7 @@ class MpdClient {
 			host: profile.host,
 			port: profile.port,
 		};
-		const clientPromise = mpd.connect(config).then((client) => {
+		const clientPromise = mpd.MpdClient.connect(config).then((client) => {
 			client.once("close", () => {
 				this.clients.delete(profile);
 				console.info("Removed closed client");
