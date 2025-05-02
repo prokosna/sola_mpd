@@ -111,10 +111,10 @@ export class MpdMessageHandler {
 			if (keyId !== id) {
 				continue;
 			}
+			this.idEventHandlerMap.delete(key);
 			const room = `${keyProfile.host}:${keyProfile.port}`;
 			socket.leave(room); // leave() is idempotent.
-			await mpdClient.unsubscribe(keyProfile, await handlerPromise);
-			this.idEventHandlerMap.delete(key);
+			mpdClient.unsubscribe(keyProfile, await handlerPromise);
 		}
 	}
 }
