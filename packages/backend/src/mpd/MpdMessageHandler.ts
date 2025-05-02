@@ -54,6 +54,7 @@ export class MpdMessageHandler {
 				this.io.to(room).emit(SIO_MPD_EVENT, event.toBinary());
 			});
 			this.idEventHandlerMap.set([id, profile], handlePromise);
+			await handlePromise;
 
 			console.info(`New client registered: ${id} for ${room}`);
 		} catch (err) {
