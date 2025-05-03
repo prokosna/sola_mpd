@@ -29,6 +29,7 @@ class MpdClient {
 	private clients: DeepMap<MpdProfile, Promise<mpd.MpdClient>> = new DeepMap(
 		new Map(),
 	);
+	private allSongsCache: DeepMap<MpdProfile, Song[]> = new DeepMap(new Map());
 
 	private async connect(profile: MpdProfile): Promise<mpd.MpdClient> {
 		if (this.clients.has(profile)) {
@@ -69,6 +70,7 @@ class MpdClient {
 			switch (name) {
 				case "database":
 					callback(new MpdEvent({ eventType: MpdEvent_EventType.DATABASE }));
+					this.allSongsCache.delete(profile);
 					break;
 				case "update":
 					callback(new MpdEvent({ eventType: MpdEvent_EventType.UPDATE }));
@@ -456,12 +458,15 @@ class MpdClient {
 
 			// Utility
 			case "listAllSongs": {
-				const songs = await this.streamCommandToStream(client, cmd, [
-					"directory",
-					"file",
-				])
-					.then((stream) => stream.pipeThrough(this.transformToSong()))
-					.then(mpd.MpdParsers.aggregateToList);
+				let songs = this.allSongsCache.get(profile);
+				if (songs === undefined) {
+					songs = await this.streamCommandToStream(client, cmd, [
+						"directory",
+						"file",
+					])
+						.then((stream) => stream.pipeThrough(this.transformToSong()))
+						.then(mpd.MpdParsers.aggregateToList);
+				}
 				return new MpdResponse({
 					command: {
 						case: "listAllSongs",
