@@ -5,6 +5,21 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [3.1.5] - 2025-05-03
+
+### Fixed
+- Better MPD event listener singleton handling
+
+## [3.1.4] - 2025-05-02
+
+### Fixed
+- Better MPD client singleton handling
+
+## [3.1.3] - 2025-03-30
+
+### Fixed
+- Explicitly added build-base and python3 for node-gyp to fix https://github.com/prokosna/sola_mpd/issues/228
+
 ## [3.1.2] - 2025-01-19
 
 ### Changed
