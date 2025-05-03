@@ -72,7 +72,7 @@ export function SongTable(props: SongTableProps): JSX.Element {
 	const isCompact = useIsCompactMode();
 	const isTouchDevice = useIsTouchDevice();
 
-	const ref = useRef(null);
+	const ref = useRef<HTMLDivElement>(null);
 	const gridRef = useRef<AgGridReact>(null);
 
 	// Songs

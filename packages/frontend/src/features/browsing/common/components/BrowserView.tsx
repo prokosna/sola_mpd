@@ -28,8 +28,8 @@ type BrowserViewProps = {
 		mode: UpdateMode,
 	) => Promise<void>;
 	browserNavigationBreadcrumbs: ReactElement;
-	browserNavigation: ReactElement;
-	browserContent: ReactElement;
+	browserNavigation: JSX.Element;
+	browserContent: JSX.Element;
 };
 
 /**

@@ -28,7 +28,7 @@ import { useSetGlobalFilterTextState } from "../states/globalFilterState";
 export function useHandleGlobalFilterTextChangeWithDebounce() {
 	const setGlobalFilterText = useSetGlobalFilterTextState();
 
-	const lastInvocation = useRef<ReturnType<typeof setTimeout>>();
+	const lastInvocation = useRef<ReturnType<typeof setTimeout>>(undefined);
 
 	const handleTextChange = useCallback(
 		(text: string) => {

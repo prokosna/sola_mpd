@@ -1,6 +1,6 @@
 import type { Song } from "@sola_mpd/domain/src/models/song_pb.js";
 import type { AgGridReact } from "ag-grid-react";
-import type { MutableRefObject, RefObject } from "react";
+import type { RefObject } from "react";
 
 import { useInputKeyCombination } from "../../keyboard_shortcut";
 import type { SongTableKey } from "../types/songTableTypes";
@@ -19,8 +19,8 @@ import { convertNodeToSong } from "../utils/songTableTableUtils";
  * @param selectSongs Selection callback
  */
 export function useKeyboardShortcutSelectAll(
-	ref: MutableRefObject<null>,
-	gridRef: RefObject<AgGridReact>,
+	ref: RefObject<HTMLDivElement | null>,
+	gridRef: RefObject<AgGridReact | null>,
 	songsMap: Map<SongTableKey, Song>,
 	selectSongs: (songs: Song[]) => void,
 ): void {
