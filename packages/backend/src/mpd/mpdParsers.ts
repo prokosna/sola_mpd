@@ -258,11 +258,11 @@ export function parseMpdStats(
 	mpdStats.playtime = playtime;
 
 	const totalPlaytime =
-		raw.db_playtime && !Number.isNaN(+raw.db_playtime) ? +raw.db_playtime : 0;
+		raw.dbplaytime && !Number.isNaN(+raw.dbplaytime) ? +raw.dbplaytime : 0;
 	mpdStats.totalPlaytime = totalPlaytime;
 
 	const lastUpdated =
-		raw.db_update && !Number.isNaN(+raw.db_update) ? +raw.db_update : 0;
+		raw.dbupdate && !Number.isNaN(+raw.dbupdate) ? +raw.dbupdate : 0;
 	mpdStats.lastUpdated = Timestamp.fromDate(new Date(lastUpdated * 1000));
 
 	return mpdStats;
@@ -433,7 +433,7 @@ export function parseMpdPlayerStatus(
 	mpdStatus.audioFormat = parseAudioFormat(format);
 
 	const isUpdating =
-		raw.updating_db && !Number.isNaN(+raw.updating_db) ? +raw.updating_db : -1;
+		raw.updatingdb && !Number.isNaN(+raw.updatingdb) ? +raw.updatingdb : -1;
 	mpdStatus.isDatabaseUpdating = isUpdating >= 0;
 
 	return mpdStatus;
