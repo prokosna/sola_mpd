@@ -466,6 +466,7 @@ class MpdClient {
 					])
 						.then((stream) => stream.pipeThrough(this.transformToSong()))
 						.then(mpd.MpdParsers.aggregateToList);
+					this.allSongsCache.set(profile, songs ?? []);
 				}
 				return new MpdResponse({
 					command: {
