@@ -1,10 +1,4 @@
-import {
-	FloatValue,
-	Int32Value,
-	StringValue,
-	Timestamp,
-} from "@bufbuild/protobuf";
-import { Folder } from "@sola_mpd/domain/src/models/file_explore_pb.js";
+import { type ReadableStream, TransformStream } from "node:stream/web";
 import {
 	type MpdRequest,
 	MpdResponse,
@@ -13,41 +7,31 @@ import {
 	MpdEvent,
 	MpdEvent_EventType,
 } from "@sola_mpd/domain/src/models/mpd/mpd_event_pb.js";
-import { MpdOutputDevice } from "@sola_mpd/domain/src/models/mpd/mpd_output_pb.js";
-import {
-	MpdPlayerStatus,
-	MpdPlayerStatus_PlaybackState,
-	MpdPlayerVolume,
-} from "@sola_mpd/domain/src/models/mpd/mpd_player_pb.js";
 import type { MpdProfile } from "@sola_mpd/domain/src/models/mpd/mpd_profile_pb.js";
-import { MpdStats } from "@sola_mpd/domain/src/models/mpd/mpd_stats_pb.js";
-import { Playlist } from "@sola_mpd/domain/src/models/playlist_pb.js";
-import {
-	AudioFormat,
-	AudioFormat_Encoding,
-	Song,
-	Song_MetadataTag,
-	Song_MetadataValue,
-} from "@sola_mpd/domain/src/models/song_pb.js";
+import type { Song } from "@sola_mpd/domain/src/models/song_pb.js";
 import { DeepMap } from "@sola_mpd/domain/src/utils/DeepMap.js";
 import {
 	convertConditionsToString,
 	convertSongMetadataTagToMpdTag,
 } from "@sola_mpd/domain/src/utils/mpdUtils.js";
-import dayjs from "dayjs";
-import mpd, { type MPD } from "mpd2";
-
-mpd.autoparseValues(false);
+import * as mpd from "mpd3";
+import {
+	parseFolder,
+	parseMpdOutputDevice,
+	parseMpdPlayerStatus,
+	parseMpdPlayerVolume,
+	parseMpdStats,
+	parsePlaylist,
+	parseSong,
+} from "./mpdParsers.js";
 
 class MpdClient {
-	private clients: DeepMap<MpdProfile, Promise<MPD.Client>> = new DeepMap(
+	private clients: DeepMap<MpdProfile, Promise<mpd.MpdClient>> = new DeepMap(
 		new Map(),
 	);
-	private listParser = mpd.parseList;
-	private objectParser = mpd.parseObject;
-	private listParserBy = mpd.parseList.by;
+	private allSongsCache: DeepMap<MpdProfile, Song[]> = new DeepMap(new Map());
 
-	private async connect(profile: MpdProfile): Promise<MPD.Client> {
+	private async connect(profile: MpdProfile): Promise<mpd.MpdClient> {
 		if (this.clients.has(profile)) {
 			const client = this.clients.get(profile);
 			if (client === undefined) {
@@ -61,7 +45,7 @@ class MpdClient {
 			host: profile.host,
 			port: profile.port,
 		};
-		const clientPromise = mpd.connect(config).then((client) => {
+		const clientPromise = mpd.MpdClient.connect(config).then((client) => {
 			client.once("close", () => {
 				this.clients.delete(profile);
 				console.info("Removed closed client");
@@ -86,6 +70,7 @@ class MpdClient {
 			switch (name) {
 				case "database":
 					callback(new MpdEvent({ eventType: MpdEvent_EventType.DATABASE }));
+					this.allSongsCache.delete(profile);
 					break;
 				case "update":
 					callback(new MpdEvent({ eventType: MpdEvent_EventType.UPDATE }));
@@ -148,6 +133,55 @@ class MpdClient {
 		}
 	}
 
+	private getVersion(client: mpd.MpdClient): string {
+		return client.PROTOCOL_VERSION.trim();
+	}
+
+	private async sendCommand(
+		client: mpd.MpdClient,
+		command: mpd.Command,
+	): Promise<string> {
+		return client.sendCommand(command);
+	}
+
+	private async streamCommandToObject(
+		client: mpd.MpdClient,
+		command: mpd.Command,
+	): Promise<Record<string, unknown> | undefined> {
+		return client
+			.streamCommand(command)
+			.then((stream) =>
+				stream.pipeThrough(
+					mpd.MpdParsers.transformToObject({ normalizeKeys: false }),
+				),
+			)
+			.then(mpd.MpdParsers.takeFirstObject);
+	}
+
+	private async streamCommandToStream(
+		client: mpd.MpdClient,
+		command: mpd.Command,
+		delimiterKeys: string[] = [],
+	): Promise<ReadableStream<Record<string, unknown>>> {
+		return client.streamCommand(command).then((stream) =>
+			stream.pipeThrough(
+				mpd.MpdParsers.transformToList({
+					delimiterKeys,
+					normalizeKeys: false,
+				}),
+			),
+		);
+	}
+
+	private transformToSong(): TransformStream<Record<string, unknown>, Song> {
+		return new TransformStream({
+			transform(v, controller) {
+				const song = parseSong(v);
+				if (song !== undefined) controller.enqueue(song);
+			},
+		});
+	}
+
 	async execute(req: MpdRequest): Promise<MpdResponse> {
 		const profile = req.profile;
 		if (profile === undefined) {
@@ -206,8 +240,8 @@ class MpdClient {
 				await this.sendCommand(client, cmd);
 				return new MpdResponse({ command: { case: "setvol", value: {} } });
 			case "getvol": {
-				const ret = await this.sendCommand(client, cmd).then(this.objectParser);
-				const vol = MpdClient.parseMpdPlayerVolume(ret);
+				const ret = await this.streamCommandToObject(client, cmd);
+				const vol = parseMpdPlayerVolume(ret);
 				if (vol !== undefined) {
 					return new MpdResponse({
 						command: {
@@ -224,8 +258,8 @@ class MpdClient {
 
 			// Status
 			case "currentsong": {
-				const ret = await this.sendCommand(client, cmd).then(this.objectParser);
-				const song = MpdClient.parseSong(ret);
+				const ret = await this.streamCommandToObject(client, cmd);
+				const song = parseSong(ret);
 				return new MpdResponse({
 					command: {
 						case: "currentsong",
@@ -234,8 +268,8 @@ class MpdClient {
 				});
 			}
 			case "status": {
-				const ret = await this.sendCommand(client, cmd).then(this.objectParser);
-				const status = MpdClient.parseMpdPlayerStatus(ret);
+				const ret = await this.streamCommandToObject(client, cmd);
+				const status = parseMpdPlayerStatus(ret);
 				return new MpdResponse({
 					command: {
 						case: "status",
@@ -245,8 +279,8 @@ class MpdClient {
 			}
 			case "stats": {
 				const version = this.getVersion(client);
-				const ret = await this.sendCommand(client, cmd).then(this.objectParser);
-				const stats = MpdClient.parseMpdStats(version, ret);
+				const ret = await this.streamCommandToObject(client, cmd);
+				const stats = parseMpdStats(version, ret);
 				return new MpdResponse({
 					command: {
 						case: "stats",
@@ -269,10 +303,9 @@ class MpdClient {
 				await this.sendCommand(client, cmd);
 				return new MpdResponse({ command: { case: "move", value: {} } });
 			case "playlistinfo": {
-				const ret = await this.sendCommand(client, cmd).then(this.listParser);
-				const songs = ret
-					.map((v) => MpdClient.parseSong(v))
-					.filter((v) => v !== undefined) as Song[];
+				const songs = await this.streamCommandToStream(client, cmd, ["file"])
+					.then((stream) => stream.pipeThrough(this.transformToSong()))
+					.then(mpd.MpdParsers.aggregateToList);
 				return new MpdResponse({
 					command: {
 						case: "playlistinfo",
@@ -288,10 +321,9 @@ class MpdClient {
 
 			// StoredPlaylist
 			case "listplaylistinfo": {
-				const ret = await this.sendCommand(client, cmd).then(this.listParser);
-				const songs = ret
-					.map((v) => MpdClient.parseSong(v))
-					.filter((v) => v !== undefined) as Song[];
+				const songs = await this.streamCommandToStream(client, cmd, ["file"])
+					.then((stream) => stream.pipeThrough(this.transformToSong()))
+					.then(mpd.MpdParsers.aggregateToList);
 				return new MpdResponse({
 					command: {
 						case: "listplaylistinfo",
@@ -302,10 +334,20 @@ class MpdClient {
 				});
 			}
 			case "listplaylists": {
-				const ret = await this.sendCommand(client, cmd).then(this.listParser);
-				const playlists = ret
-					.map((v) => MpdClient.parsePlaylist(v))
-					.filter((v) => v !== undefined) as Playlist[];
+				const playlists = await this.streamCommandToStream(client, cmd, [
+					"playlist",
+				])
+					.then((stream) =>
+						stream.pipeThrough(
+							new TransformStream({
+								transform(v, controller) {
+									const playlist = parsePlaylist(v);
+									if (playlist !== undefined) controller.enqueue(playlist);
+								},
+							}),
+						),
+					)
+					.then(mpd.MpdParsers.aggregateToList);
 				return new MpdResponse({
 					command: {
 						case: "listplaylists",
@@ -353,11 +395,21 @@ class MpdClient {
 
 			// Database
 			case "list": {
-				const ret = await this.sendCommand(client, cmd).then(this.listParser);
-				const values = ret
-					.flatMap((v) => Object.values(v))
-					.map((v) => String(v))
-					.filter((v) => !!v) as string[];
+				const values = await this.streamCommandToStream(client, cmd)
+					.then((stream) =>
+						stream.pipeThrough(
+							new TransformStream({
+								transform(v, controller) {
+									const values = Object.values(v);
+									for (const value of values) {
+										const str = String(value);
+										if (str) controller.enqueue(str);
+									}
+								},
+							}),
+						),
+					)
+					.then(mpd.MpdParsers.aggregateToList);
 				return new MpdResponse({
 					command: {
 						case: "list",
@@ -366,10 +418,9 @@ class MpdClient {
 				});
 			}
 			case "search": {
-				const ret = await this.sendCommand(client, cmd).then(this.listParser);
-				const songs = ret
-					.map((v) => MpdClient.parseSong(v))
-					.filter((v) => v !== undefined) as Song[];
+				const songs = await this.streamCommandToStream(client, cmd, ["file"])
+					.then((stream) => stream.pipeThrough(this.transformToSong()))
+					.then(mpd.MpdParsers.aggregateToList);
 				return new MpdResponse({
 					command: {
 						case: "search",
@@ -385,8 +436,18 @@ class MpdClient {
 
 			// Audio
 			case "outputs": {
-				const ret = await this.sendCommand(client, cmd).then(this.listParser);
-				const devices = MpdClient.parseMpdOutputDevices(ret);
+				const devices = await this.streamCommandToStream(client, cmd)
+					.then((stream) =>
+						stream.pipeThrough(
+							new TransformStream({
+								transform(v, controller) {
+									const device = parseMpdOutputDevice(v);
+									if (device !== undefined) controller.enqueue(device);
+								},
+							}),
+						),
+					)
+					.then(mpd.MpdParsers.aggregateToList);
 				return new MpdResponse({
 					command: {
 						case: "outputs",
@@ -397,12 +458,16 @@ class MpdClient {
 
 			// Utility
 			case "listAllSongs": {
-				const ret = await this.sendCommand(client, cmd).then(
-					this.listParserBy("file"),
-				);
-				const songs = ret
-					.map((v) => MpdClient.parseSong(v))
-					.filter((v) => v !== undefined) as Song[];
+				let songs = this.allSongsCache.get(profile);
+				if (songs === undefined) {
+					songs = await this.streamCommandToStream(client, cmd, [
+						"directory",
+						"file",
+					])
+						.then((stream) => stream.pipeThrough(this.transformToSong()))
+						.then(mpd.MpdParsers.aggregateToList);
+					this.allSongsCache.set(profile, songs ?? []);
+				}
 				return new MpdResponse({
 					command: {
 						case: "listAllSongs",
@@ -411,12 +476,20 @@ class MpdClient {
 				});
 			}
 			case "listAllFolders": {
-				const ret = await this.sendCommand(client, cmd).then(
-					this.listParserBy("directory"),
-				);
-				const folders = ret
-					.map((v) => MpdClient.parseFolder(v))
-					.filter((v) => v !== undefined) as Folder[];
+				const folders = await this.streamCommandToStream(client, cmd, [
+					"directory",
+				])
+					.then((stream) =>
+						stream.pipeThrough(
+							new TransformStream({
+								transform(v, controller) {
+									const folder = parseFolder(v);
+									if (folder !== undefined) controller.enqueue(folder);
+								},
+							}),
+						),
+					)
+					.then(mpd.MpdParsers.aggregateToList);
 				return new MpdResponse({
 					command: {
 						case: "listAllFolders",
@@ -425,12 +498,13 @@ class MpdClient {
 				});
 			}
 			case "listSongsInFolder": {
-				const ret = await this.sendCommand(client, cmd).then(
-					this.listParserBy("file"),
-				);
-				const songs = ret
-					.map((v) => MpdClient.parseSong(v))
-					.filter((v) => v !== undefined) as Song[];
+				const songs = await this.streamCommandToStream(client, cmd, [
+					"directory",
+					"file",
+					"playlist",
+				])
+					.then((stream) => stream.pipeThrough(this.transformToSong()))
+					.then(mpd.MpdParsers.aggregateToList);
 				return new MpdResponse({
 					command: {
 						case: "listSongsInFolder",
@@ -444,101 +518,88 @@ class MpdClient {
 		}
 	}
 
-	private getVersion(client: MPD.Client): string {
-		// biome-ignore lint/suspicious/noExplicitAny: <explanation>
-		return ((client as any).PROTOCOL_VERSION as string).trim();
-	}
-
-	private async sendCommand(
-		client: MPD.Client,
-		command: MPD.Command,
-	): Promise<string> {
-		// biome-ignore lint/suspicious/noExplicitAny: <explanation>
-		return client.sendCommand(command as any);
-	}
-
-	private convertCommand(req: MpdRequest): MPD.Command {
+	private convertCommand(req: MpdRequest): mpd.Command {
 		switch (req.command?.case) {
 			// Connection
 			case "ping":
-				return mpd.cmd("ping");
+				return mpd.Command.cmd("ping");
 
 			// Control
 			case "next":
-				return mpd.cmd("next");
+				return mpd.Command.cmd("next");
 			case "pause":
 				if (req.command.value.pause) {
-					return mpd.cmd("pause", "1");
+					return mpd.Command.cmd("pause", "1");
 				}
-				return mpd.cmd("pause", "0");
+				return mpd.Command.cmd("pause", "0");
 			case "play":
 				switch (req.command.value.target.case) {
 					case "id":
-						return mpd.cmd("playid", req.command.value.target.value);
+						return mpd.Command.cmd("playid", req.command.value.target.value);
 					case "pos":
-						return mpd.cmd("play", req.command.value.target.value);
+						return mpd.Command.cmd("play", req.command.value.target.value);
 					default:
 						throw new Error(`Unsupported command: ${req.toJsonString()}`);
 				}
 			case "previous":
-				return mpd.cmd("previous");
+				return mpd.Command.cmd("previous");
 			case "seek": {
 				const time = req.command.value.time;
 				switch (req.command.value.target.case) {
 					case "id":
-						return mpd.cmd(
+						return mpd.Command.cmd(
 							"seekid",
 							req.command.value.target.value,
 							String(time),
 						);
 					case "pos":
-						return mpd.cmd(
+						return mpd.Command.cmd(
 							"seek",
 							req.command.value.target.value,
 							String(time),
 						);
 					case "current":
-						return mpd.cmd("seekcur", String(time));
+						return mpd.Command.cmd("seekcur", String(time));
 					default:
 						throw new Error(`Unsupported command: ${req.toJsonString()}`);
 				}
 			}
 			case "stop":
-				return mpd.cmd("stop");
+				return mpd.Command.cmd("stop");
 
 			// Playback
 			case "consume":
-				return mpd.cmd("consume", req.command.value.enable ? "1" : "0");
+				return mpd.Command.cmd("consume", req.command.value.enable ? "1" : "0");
 			case "random":
-				return mpd.cmd("random", req.command.value.enable ? "1" : "0");
+				return mpd.Command.cmd("random", req.command.value.enable ? "1" : "0");
 			case "repeat":
-				return mpd.cmd("repeat", req.command.value.enable ? "1" : "0");
+				return mpd.Command.cmd("repeat", req.command.value.enable ? "1" : "0");
 			case "setvol":
-				return mpd.cmd("setvol", String(req.command.value.vol));
+				return mpd.Command.cmd("setvol", String(req.command.value.vol));
 			case "getvol":
-				return mpd.cmd("getvol");
+				return mpd.Command.cmd("getvol");
 			case "single":
-				return mpd.cmd("single", req.command.value.enable ? "1" : "0");
+				return mpd.Command.cmd("single", req.command.value.enable ? "1" : "0");
 
 			// Status
 			case "currentsong":
-				return mpd.cmd("currentsong");
+				return mpd.Command.cmd("currentsong");
 			case "status":
-				return mpd.cmd("status");
+				return mpd.Command.cmd("status");
 			case "stats":
-				return mpd.cmd("stats");
+				return mpd.Command.cmd("stats");
 
 			// Queue
 			case "add":
-				return mpd.cmd("add", req.command.value.uri);
+				return mpd.Command.cmd("add", req.command.value.uri);
 			case "clear":
-				return mpd.cmd("clear");
+				return mpd.Command.cmd("clear");
 			case "delete":
 				switch (req.command.value.target.case) {
 					case "id":
-						return mpd.cmd("deleteid", req.command.value.target.value);
+						return mpd.Command.cmd("deleteid", req.command.value.target.value);
 					case "pos":
-						return mpd.cmd("delete", req.command.value.target.value);
+						return mpd.Command.cmd("delete", req.command.value.target.value);
 					default:
 						throw new Error(`Unsupported command: ${req.toJsonString()}`);
 				}
@@ -547,57 +608,57 @@ class MpdClient {
 				switch (req.command.value.from.case) {
 					case "fromId": {
 						const fromId = req.command.value.from.value;
-						return mpd.cmd("moveid", fromId, to);
+						return mpd.Command.cmd("moveid", fromId, to);
 					}
 					case "fromPos": {
 						const fromPos = req.command.value.from.value;
-						return mpd.cmd("move", fromPos, to);
+						return mpd.Command.cmd("move", fromPos, to);
 					}
 					default:
 						throw new Error(`Unsupported command: ${req.toJsonString()}`);
 				}
 			}
 			case "playlistinfo":
-				return mpd.cmd("playlistinfo");
+				return mpd.Command.cmd("playlistinfo");
 			case "shuffle":
-				return mpd.cmd("shuffle");
+				return mpd.Command.cmd("shuffle");
 
 			// StoredPlaylist
 			case "listplaylistinfo":
-				return mpd.cmd("listplaylistinfo", req.command.value.name);
+				return mpd.Command.cmd("listplaylistinfo", req.command.value.name);
 			case "listplaylists":
-				return mpd.cmd("listplaylists");
+				return mpd.Command.cmd("listplaylists");
 			case "playlistadd":
-				return mpd.cmd(
+				return mpd.Command.cmd(
 					"playlistadd",
 					req.command.value.name,
 					req.command.value.uri,
 				);
 			case "playlistclear":
-				return mpd.cmd("playlistclear", req.command.value.name);
+				return mpd.Command.cmd("playlistclear", req.command.value.name);
 			case "playlistdelete":
-				return mpd.cmd(
+				return mpd.Command.cmd(
 					"playlistdelete",
 					req.command.value.name,
 					req.command.value.pos,
 				);
 			case "playlistmove":
-				return mpd.cmd(
+				return mpd.Command.cmd(
 					"playlistmove",
 					req.command.value.name,
 					req.command.value.from,
 					req.command.value.to,
 				);
 			case "rename":
-				return mpd.cmd(
+				return mpd.Command.cmd(
 					"rename",
 					req.command.value.name,
 					req.command.value.newName,
 				);
 			case "rm":
-				return mpd.cmd("rm", req.command.value.name);
+				return mpd.Command.cmd("rm", req.command.value.name);
 			case "save":
-				return mpd.cmd("save", req.command.value.name);
+				return mpd.Command.cmd("save", req.command.value.name);
 
 			// Database
 			case "list": {
@@ -605,738 +666,38 @@ class MpdClient {
 				const conditions = req.command.value.conditions;
 				const expression = convertConditionsToString(conditions);
 				return expression === ""
-					? mpd.cmd("list", tag)
-					: mpd.cmd("list", tag, expression);
+					? mpd.Command.cmd("list", tag)
+					: mpd.Command.cmd("list", tag, expression);
 			}
 			case "search": {
 				const conditions = req.command.value.conditions;
 				const expression = convertConditionsToString(conditions);
-				return mpd.cmd("search", expression);
+				return mpd.Command.cmd("search", expression);
 			}
 			case "update":
-				return mpd.cmd("update");
+				return mpd.Command.cmd("update");
 
 			// Audio
 			case "outputs":
-				return mpd.cmd("outputs");
+				return mpd.Command.cmd("outputs");
 
 			// Utility
 			case "listAllSongs":
-				return mpd.cmd("listallinfo");
+				return mpd.Command.cmd("listallinfo");
 			case "listAllFolders":
-				return mpd.cmd("listall");
+				return mpd.Command.cmd("listall");
 			case "listSongsInFolder": {
 				const folder = req.command.value.folder;
 				if (folder === undefined) {
 					throw Error("Folder is undefined for listSongsInFolder");
 				}
-				return mpd.cmd("lsinfo", folder.path);
+				return mpd.Command.cmd("lsinfo", folder.path);
 			}
 
 			default: {
 				throw new Error(`Unsupported command: ${req.toJsonString()}`);
 			}
 		}
-	}
-
-	private static parseSong(v: unknown): Song | undefined {
-		type MpdSongRaw = {
-			file: string;
-			title: string;
-			artist: string;
-			albumartist: string;
-			album: string;
-			genre: string;
-			composer: string;
-			track: string;
-			disc: string;
-			date: string;
-			duration: string;
-			format: string;
-			lastmodified: string;
-			id: string;
-			pos: string;
-			comment: string;
-			label: string;
-		};
-
-		const song = new Song();
-
-		if (typeof v !== "object" || !v) {
-			return undefined;
-		}
-
-		const mpdSongWithLowerCaseKeys: { [key: string]: unknown } = {};
-		for (const [key, value] of Object.entries(v)) {
-			mpdSongWithLowerCaseKeys[
-				key.toLowerCase().replaceAll("-", "").replaceAll("_", "")
-			] = String(value);
-		}
-
-		const mpdSong = mpdSongWithLowerCaseKeys as Record<
-			keyof MpdSongRaw,
-			unknown
-		>;
-
-		if (mpdSong.file && typeof mpdSong.file === "string") {
-			song.path = mpdSong.file;
-		} else {
-			return undefined;
-		}
-
-		const title =
-			mpdSong.title && typeof mpdSong.title === "string" ? mpdSong.title : "";
-		song.metadata[Song_MetadataTag.TITLE] = new Song_MetadataValue({
-			value: {
-				case: "stringValue",
-				value: new StringValue({ value: title }),
-			},
-		});
-
-		const artist =
-			mpdSong.artist && typeof mpdSong.artist === "string"
-				? mpdSong.artist
-				: "";
-		song.metadata[Song_MetadataTag.ARTIST] = new Song_MetadataValue({
-			value: {
-				case: "stringValue",
-				value: new StringValue({ value: artist }),
-			},
-		});
-
-		const albumArtist =
-			mpdSong.albumartist && typeof mpdSong.albumartist === "string"
-				? mpdSong.albumartist
-				: "";
-		song.metadata[Song_MetadataTag.ALBUM_ARTIST] = new Song_MetadataValue({
-			value: {
-				case: "stringValue",
-				value: new StringValue({ value: albumArtist }),
-			},
-		});
-
-		const album =
-			mpdSong.album && typeof mpdSong.album === "string" ? mpdSong.album : "";
-		song.metadata[Song_MetadataTag.ALBUM] = new Song_MetadataValue({
-			value: {
-				case: "stringValue",
-				value: new StringValue({ value: album }),
-			},
-		});
-
-		const genre =
-			mpdSong.genre && typeof mpdSong.genre === "string" ? mpdSong.genre : "";
-		song.metadata[Song_MetadataTag.GENRE] = new Song_MetadataValue({
-			value: {
-				case: "stringValue",
-				value: new StringValue({ value: genre }),
-			},
-		});
-
-		const composer =
-			mpdSong.composer && typeof mpdSong.composer === "string"
-				? mpdSong.composer
-				: "";
-		song.metadata[Song_MetadataTag.COMPOSER] = new Song_MetadataValue({
-			value: {
-				case: "stringValue",
-				value: new StringValue({ value: composer }),
-			},
-		});
-
-		const track =
-			mpdSong.track &&
-			typeof mpdSong.track === "string" &&
-			!Number.isNaN(+mpdSong.track)
-				? +mpdSong.track
-				: undefined;
-		song.metadata[Song_MetadataTag.TRACK] = new Song_MetadataValue({
-			value: {
-				case: "intValue",
-				value: new Int32Value({ value: track }),
-			},
-		});
-
-		const disc =
-			mpdSong.disc &&
-			typeof mpdSong.disc === "string" &&
-			!Number.isNaN(+mpdSong.disc)
-				? +mpdSong.disc
-				: undefined;
-		song.metadata[Song_MetadataTag.DISC] = new Song_MetadataValue({
-			value: {
-				case: "intValue",
-				value: new Int32Value({ value: disc }),
-			},
-		});
-
-		const date =
-			mpdSong.date && typeof mpdSong.date === "string" ? mpdSong.date : "";
-		song.metadata[Song_MetadataTag.DATE] = new Song_MetadataValue({
-			value: {
-				case: "stringValue",
-				value: new StringValue({ value: date }),
-			},
-		});
-
-		const duration =
-			mpdSong.duration &&
-			typeof mpdSong.duration === "string" &&
-			!Number.isNaN(+mpdSong.duration)
-				? +mpdSong.duration
-				: undefined;
-		song.metadata[Song_MetadataTag.DURATION] = new Song_MetadataValue({
-			value: {
-				case: "floatValue",
-				value: new FloatValue({ value: duration }),
-			},
-		});
-
-		const format =
-			mpdSong.format && typeof mpdSong.format === "string"
-				? MpdClient.parseAudioFormat(mpdSong.format)
-				: undefined;
-		song.metadata[Song_MetadataTag.FORMAT] = new Song_MetadataValue({
-			value: {
-				case: "format",
-				value: format !== undefined ? format : new AudioFormat(),
-			},
-		});
-
-		const lastModified =
-			mpdSong.lastmodified && typeof mpdSong.lastmodified === "string"
-				? mpdSong.lastmodified
-				: undefined;
-		try {
-			const updatedAt = dayjs(lastModified);
-			song.metadata[Song_MetadataTag.UPDATED_AT] = new Song_MetadataValue({
-				value: {
-					case: "timestamp",
-					value: Timestamp.fromDate(updatedAt.toDate()),
-				},
-			});
-		} catch (_) {
-			song.metadata[Song_MetadataTag.UPDATED_AT] = new Song_MetadataValue({
-				value: {
-					case: "timestamp",
-					value: new Timestamp(undefined),
-				},
-			});
-		}
-
-		const id =
-			mpdSong.id && typeof mpdSong.id === "string" && !Number.isNaN(+mpdSong.id)
-				? +mpdSong.id
-				: undefined;
-		song.metadata[Song_MetadataTag.ID] = new Song_MetadataValue({
-			value: {
-				case: "intValue",
-				value: new Int32Value({ value: id }),
-			},
-		});
-
-		const position =
-			mpdSong.pos &&
-			typeof mpdSong.pos === "string" &&
-			!Number.isNaN(+mpdSong.pos)
-				? +mpdSong.pos
-				: undefined;
-		song.metadata[Song_MetadataTag.POSITION] = new Song_MetadataValue({
-			value: {
-				case: "intValue",
-				value: new Int32Value({ value: position }),
-			},
-		});
-
-		const comment =
-			mpdSong.comment && typeof mpdSong.comment === "string"
-				? mpdSong.comment
-				: "";
-		song.metadata[Song_MetadataTag.COMMENT] = new Song_MetadataValue({
-			value: {
-				case: "stringValue",
-				value: new StringValue({ value: comment }),
-			},
-		});
-
-		const label =
-			mpdSong.label && typeof mpdSong.label === "string" ? mpdSong.label : "";
-		song.metadata[Song_MetadataTag.LABEL] = new Song_MetadataValue({
-			value: {
-				case: "stringValue",
-				value: new StringValue({ value: label }),
-			},
-		});
-
-		return song;
-	}
-
-	private static parseAudioFormat(v: string): AudioFormat | undefined {
-		const elems = v.split(":");
-		if (elems.length === 0) {
-			return undefined;
-		}
-		const format = new AudioFormat();
-		if (elems[0].includes("dsd")) {
-			format.encoding = AudioFormat_Encoding.DSD;
-			const sr = elems[0].replace("dsd", "");
-			if (!Number.isNaN(+sr)) {
-				format.samplingRate = +sr;
-			}
-			if (elems.length > 1) {
-				if (!Number.isNaN(+elems[1])) {
-					format.channels = +elems[1];
-				}
-			}
-		} else {
-			format.encoding = AudioFormat_Encoding.PCM;
-			if (!Number.isNaN(+elems[0])) {
-				format.samplingRate = +elems[0];
-			}
-			if (elems.length > 1 && !Number.isNaN(+elems[1])) {
-				format.bits = +elems[1];
-			}
-			if (elems.length > 2 && !Number.isNaN(+elems[2])) {
-				format.channels = +elems[2];
-			}
-		}
-
-		return format;
-	}
-
-	private static parseMpdStats(
-		version: string,
-		stats: unknown,
-	): MpdStats | undefined {
-		type MpdStatsRaw = {
-			uptime: string;
-			playtime: string;
-			artists: string;
-			albums: string;
-			songs: string;
-			db_playtime: string;
-			db_update: string;
-		};
-
-		const mpdStats = new MpdStats();
-
-		if (typeof stats !== "object" || !stats) {
-			return undefined;
-		}
-
-		const statsRawWithLowerCaseKeys: { [key: string]: unknown } = {};
-		for (const [key, value] of Object.entries(stats)) {
-			statsRawWithLowerCaseKeys[key.toLowerCase().replace("-", "")] =
-				String(value);
-		}
-		const statsRaw = statsRawWithLowerCaseKeys as Record<
-			keyof MpdStatsRaw,
-			unknown
-		>;
-
-		mpdStats.version = version;
-
-		const artistsCount =
-			statsRaw.artists &&
-			typeof statsRaw.artists === "string" &&
-			!Number.isNaN(+statsRaw.artists)
-				? +statsRaw.artists
-				: 0;
-		mpdStats.artistsCount = artistsCount;
-
-		const albumsCount =
-			statsRaw.albums &&
-			typeof statsRaw.albums === "string" &&
-			!Number.isNaN(+statsRaw.albums)
-				? +statsRaw.albums
-				: 0;
-		mpdStats.albumsCount = albumsCount;
-
-		const songsCount =
-			statsRaw.songs &&
-			typeof statsRaw.songs === "string" &&
-			!Number.isNaN(+statsRaw.songs)
-				? +statsRaw.songs
-				: 0;
-		mpdStats.songsCount = songsCount;
-
-		const uptime =
-			statsRaw.uptime &&
-			typeof statsRaw.uptime === "string" &&
-			!Number.isNaN(+statsRaw.uptime)
-				? +statsRaw.uptime
-				: 0;
-		mpdStats.uptime = uptime;
-
-		const playtime =
-			statsRaw.playtime &&
-			typeof statsRaw.playtime === "string" &&
-			!Number.isNaN(+statsRaw.playtime)
-				? +statsRaw.playtime
-				: 0;
-		mpdStats.playtime = playtime;
-
-		const totalPlaytime =
-			statsRaw.db_playtime &&
-			typeof statsRaw.db_playtime === "string" &&
-			!Number.isNaN(+statsRaw.db_playtime)
-				? +statsRaw.db_playtime
-				: 0;
-		mpdStats.totalPlaytime = totalPlaytime;
-
-		const lastUpdated =
-			statsRaw.db_update &&
-			typeof statsRaw.db_update === "string" &&
-			!Number.isNaN(+statsRaw.db_update)
-				? +statsRaw.db_update
-				: 0;
-		mpdStats.lastUpdated = Timestamp.fromDate(new Date(lastUpdated * 1000));
-
-		return mpdStats;
-	}
-
-	private static parseMpdOutputDevices(
-		outputs: unknown[],
-	): MpdOutputDevice[] | undefined {
-		type MpdOutputRaw = {
-			outputid: string;
-			outputname: string;
-			plugin: string;
-			outputenabled: string;
-		};
-
-		const mpdOutputDevices = [];
-
-		for (const output of outputs) {
-			const mpdOutput = new MpdOutputDevice();
-
-			if (typeof output !== "object" || !output) {
-				return undefined;
-			}
-
-			const outputRawWithLowerCaseKeys: { [key: string]: unknown } = {};
-			for (const [key, value] of Object.entries(output)) {
-				outputRawWithLowerCaseKeys[key.toLowerCase().replace("-", "")] =
-					String(value);
-			}
-			const outputRaw = outputRawWithLowerCaseKeys as Record<
-				keyof MpdOutputRaw,
-				unknown
-			>;
-
-			const outputId =
-				outputRaw.outputid &&
-				typeof outputRaw.outputid === "string" &&
-				!Number.isNaN(+outputRaw.outputid)
-					? +outputRaw.outputid
-					: -1;
-			mpdOutput.id = outputId;
-
-			const outputName =
-				outputRaw.outputname && typeof outputRaw.outputname === "string"
-					? outputRaw.outputname
-					: "";
-			mpdOutput.name = outputName;
-
-			const plugin =
-				outputRaw.plugin && typeof outputRaw.plugin === "string"
-					? outputRaw.plugin
-					: "";
-			mpdOutput.plugin = plugin;
-
-			const isEnabled =
-				outputRaw.outputenabled &&
-				typeof outputRaw.outputenabled === "string" &&
-				!Number.isNaN(+outputRaw.outputenabled)
-					? +outputRaw.outputenabled
-					: 0;
-			mpdOutput.isEnabled = isEnabled === 1;
-
-			mpdOutputDevices.push(mpdOutput);
-		}
-
-		return mpdOutputDevices;
-	}
-
-	private static parsePlaylist(v: unknown): Playlist | undefined {
-		type MpdPlaylistRaw = {
-			playlist: string;
-			lastmodified: string;
-		};
-
-		const playlist = new Playlist();
-
-		if (typeof v !== "object" || !v) {
-			return undefined;
-		}
-
-		// eslint-disable-next-line @typescript-eslint/no-explicit-any
-		const playlistRawWithLowerCaseKeys: { [key: string]: unknown } = {};
-		for (const [key, value] of Object.entries(v)) {
-			playlistRawWithLowerCaseKeys[key.toLowerCase().replace("-", "")] =
-				String(value);
-		}
-		const playlistRaw = playlistRawWithLowerCaseKeys as Record<
-			keyof MpdPlaylistRaw,
-			unknown
-		>;
-
-		const name =
-			playlistRaw.playlist && typeof playlistRaw.playlist === "string"
-				? playlistRaw.playlist
-				: "";
-		if (name === "") {
-			return undefined;
-		}
-		playlist.name = name;
-
-		const lastModified =
-			playlistRaw.lastmodified && typeof playlistRaw.lastmodified === "string"
-				? playlistRaw.lastmodified
-				: undefined;
-		try {
-			const updatedAt = dayjs(lastModified);
-			playlist.updatedAt = Timestamp.fromDate(updatedAt.toDate());
-		} catch (e) {
-			console.error(`Failed to parse last-modified: ${e}`);
-		}
-
-		return playlist;
-	}
-
-	private static parseFolder(v: unknown): Folder | undefined {
-		type MpdFolderRaw = {
-			directory: string;
-		};
-		const folder = new Folder();
-
-		if (typeof v !== "object" || !v) {
-			return undefined;
-		}
-
-		const folderRawWithLowerCaseKeys: { [key: string]: unknown } = {};
-		for (const [key, value] of Object.entries(v)) {
-			folderRawWithLowerCaseKeys[key.toLowerCase().replace("-", "")] =
-				String(value);
-		}
-		const folderRaw = folderRawWithLowerCaseKeys as Record<
-			keyof MpdFolderRaw,
-			unknown
-		>;
-
-		const path =
-			folderRaw.directory && typeof folderRaw.directory === "string"
-				? folderRaw.directory
-				: "";
-		if (path === "") {
-			return undefined;
-		}
-		folder.path = path;
-		return folder;
-	}
-
-	private static parseMpdPlayerVolume(v: unknown): MpdPlayerVolume | undefined {
-		type MpdVolumeRaw = {
-			volume: string | undefined;
-		};
-
-		const mpdVolume = new MpdPlayerVolume();
-
-		if (v === undefined) {
-			mpdVolume.volume = -1;
-		} else {
-			if (typeof v !== "object" || !v) {
-				return undefined;
-			}
-
-			const volumeRawWithLowerCaseKeys: { [key: string]: unknown } = {};
-			for (const [key, value] of Object.entries(v)) {
-				volumeRawWithLowerCaseKeys[key.toLowerCase().replace("-", "")] =
-					String(value);
-			}
-			const volumeRaw = volumeRawWithLowerCaseKeys as Record<
-				keyof MpdVolumeRaw,
-				unknown
-			>;
-
-			const vol =
-				volumeRaw.volume &&
-				typeof volumeRaw.volume === "string" &&
-				!Number.isNaN(+volumeRaw.volume)
-					? +volumeRaw.volume
-					: -1;
-			mpdVolume.volume = vol;
-		}
-
-		return mpdVolume;
-	}
-
-	private static parseMpdPlayerStatus(v: unknown): MpdPlayerStatus | undefined {
-		type MpdPlayerRaw = {
-			repeat: string;
-			random: string;
-			single: string;
-			consume: string;
-			partition: string;
-			playlist: string;
-			playlistlength: string;
-			state: string;
-			song: string;
-			songid: string;
-			elapsed: string;
-			bitrate: string;
-			duration: string;
-			audio: string;
-			nextsong: string;
-			nextsongid: string;
-			updating_db: string;
-		};
-
-		const mpdStatus = new MpdPlayerStatus();
-
-		if (typeof v !== "object" || !v) {
-			return undefined;
-		}
-
-		const statusRawWithLowerCaseKeys: { [key: string]: unknown } = {};
-		for (const [key, value] of Object.entries(v)) {
-			statusRawWithLowerCaseKeys[key.toLowerCase().replace("-", "")] =
-				String(value);
-		}
-		const statusRaw = statusRawWithLowerCaseKeys as Record<
-			keyof MpdPlayerRaw,
-			unknown
-		>;
-
-		const isRepeat =
-			statusRaw.repeat &&
-			typeof statusRaw.repeat === "string" &&
-			!Number.isNaN(+statusRaw.repeat)
-				? +statusRaw.repeat
-				: 0;
-		mpdStatus.isRepeat = isRepeat === 1;
-
-		const isRandom =
-			statusRaw.random &&
-			typeof statusRaw.random === "string" &&
-			!Number.isNaN(+statusRaw.random)
-				? +statusRaw.random
-				: 0;
-		mpdStatus.isRandom = isRandom === 1;
-
-		const isSingle =
-			statusRaw.single &&
-			typeof statusRaw.single === "string" &&
-			!Number.isNaN(+statusRaw.single)
-				? +statusRaw.single
-				: 0;
-		mpdStatus.isSingle = isSingle === 1;
-
-		const isConsume =
-			statusRaw.consume &&
-			typeof statusRaw.consume === "string" &&
-			!Number.isNaN(+statusRaw.consume)
-				? +statusRaw.consume
-				: 0;
-		mpdStatus.isConsume = isConsume === 1;
-
-		const playQueueLength =
-			statusRaw.playlistlength &&
-			typeof statusRaw.playlistlength === "string" &&
-			!Number.isNaN(+statusRaw.playlistlength)
-				? +statusRaw.playlistlength
-				: -1;
-		mpdStatus.playQueueLength = playQueueLength;
-
-		const state =
-			statusRaw.state && typeof statusRaw.state === "string"
-				? statusRaw.state
-				: "";
-		switch (state) {
-			case "play":
-				mpdStatus.playbackState = MpdPlayerStatus_PlaybackState.PLAY;
-				break;
-			case "pause":
-				mpdStatus.playbackState = MpdPlayerStatus_PlaybackState.PAUSE;
-				break;
-			case "stop":
-				mpdStatus.playbackState = MpdPlayerStatus_PlaybackState.STOP;
-				break;
-			default:
-				mpdStatus.playbackState = MpdPlayerStatus_PlaybackState.UNKNOWN;
-		}
-
-		const song =
-			statusRaw.song &&
-			typeof statusRaw.song === "string" &&
-			!Number.isNaN(+statusRaw.song)
-				? +statusRaw.song
-				: -1;
-		mpdStatus.song = song;
-
-		const songId =
-			statusRaw.songid &&
-			typeof statusRaw.songid === "string" &&
-			!Number.isNaN(+statusRaw.songid)
-				? +statusRaw.songid
-				: -1;
-		mpdStatus.songId = songId;
-
-		const nextSong =
-			statusRaw.nextsong &&
-			typeof statusRaw.nextsong === "string" &&
-			!Number.isNaN(+statusRaw.nextsong)
-				? +statusRaw.nextsong
-				: -1;
-		mpdStatus.nextSong = nextSong;
-
-		const nextSongId =
-			statusRaw.nextsongid &&
-			typeof statusRaw.nextsongid === "string" &&
-			!Number.isNaN(+statusRaw.nextsongid)
-				? +statusRaw.nextsongid
-				: -1;
-		mpdStatus.nextSongId = nextSongId;
-
-		const elapsed =
-			statusRaw.elapsed &&
-			typeof statusRaw.elapsed === "string" &&
-			!Number.isNaN(+statusRaw.elapsed)
-				? +statusRaw.elapsed
-				: 0;
-		mpdStatus.elapsed = elapsed;
-
-		const duration =
-			statusRaw.duration &&
-			typeof statusRaw.duration === "string" &&
-			!Number.isNaN(+statusRaw.duration)
-				? +statusRaw.duration
-				: 0;
-		mpdStatus.duration = duration;
-
-		const bitrate =
-			statusRaw.bitrate &&
-			typeof statusRaw.bitrate === "string" &&
-			!Number.isNaN(+statusRaw.bitrate)
-				? +statusRaw.bitrate
-				: 0;
-		mpdStatus.bitrate = bitrate;
-
-		const format =
-			statusRaw.audio && typeof statusRaw.audio === "string"
-				? statusRaw.audio
-				: "";
-		mpdStatus.audioFormat = MpdClient.parseAudioFormat(format);
-
-		const isUpdating =
-			statusRaw.updating_db &&
-			typeof statusRaw.updating_db === "string" &&
-			!Number.isNaN(+statusRaw.updating_db)
-				? +statusRaw.updating_db
-				: -1;
-		mpdStatus.isDatabaseUpdating = isUpdating >= 0;
-
-		return mpdStatus;
 	}
 }
 

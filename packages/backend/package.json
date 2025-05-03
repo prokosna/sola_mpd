@@ -18,7 +18,7 @@
 		"bufferutil": "^4.0.9",
 		"cors": "^2.8.5",
 		"express": "^4.21.2",
-		"mpd2": "^1.0.5",
+		"mpd3": "github:prokosna/mpd.js#0.0.9",
 		"socket.io": "^4.8.1",
 		"utf-8-validate": "^6.0.5"
 	},
