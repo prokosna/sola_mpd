@@ -100,7 +100,7 @@ export function MpdProfileForm(props: MpdProfileFormProps) {
 					<FormLabel>Host</FormLabel>
 					<Input
 						type="text"
-						placeholder="host.docker.internal"
+						placeholder="localhost"
 						{...register("host", {
 							required: true,
 							onChange: () => {
