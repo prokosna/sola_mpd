@@ -14,7 +14,7 @@ import {
 	convertConditionsToString,
 	convertSongMetadataTagToMpdTag,
 } from "@sola_mpd/domain/src/utils/mpdUtils.js";
-import * as mpd from "mpd3";
+import { Client, Command, Parsers } from "mpd3";
 import {
 	parseFolder,
 	parseMpdOutputDevice,
@@ -26,12 +26,12 @@ import {
 } from "./mpdParsers.js";
 
 class MpdClient {
-	private clients: DeepMap<MpdProfile, Promise<mpd.MpdClient>> = new DeepMap(
+	private clients: DeepMap<MpdProfile, Promise<Client>> = new DeepMap(
 		new Map(),
 	);
 	private allSongsCache: DeepMap<MpdProfile, Song[]> = new DeepMap(new Map());
 
-	private async connect(profile: MpdProfile): Promise<mpd.MpdClient> {
+	private async connect(profile: MpdProfile): Promise<Client> {
 		if (this.clients.has(profile)) {
 			const client = this.clients.get(profile);
 			if (client === undefined) {
@@ -45,7 +45,7 @@ class MpdClient {
 			host: profile.host,
 			port: profile.port,
 		};
-		const clientPromise = mpd.MpdClient.connect(config).then((client) => {
+		const clientPromise = Client.connect(config).then((client) => {
 			client.once("close", () => {
 				this.clients.delete(profile);
 				console.info("Removed closed client");
@@ -133,39 +133,34 @@ class MpdClient {
 		}
 	}
 
-	private getVersion(client: mpd.MpdClient): string {
+	private getVersion(client: Client): string {
 		return client.PROTOCOL_VERSION.trim();
 	}
 
-	private async sendCommand(
-		client: mpd.MpdClient,
-		command: mpd.Command,
-	): Promise<string> {
+	private async sendCommand(client: Client, command: Command): Promise<string> {
 		return client.sendCommand(command);
 	}
 
 	private async streamCommandToObject(
-		client: mpd.MpdClient,
-		command: mpd.Command,
+		client: Client,
+		command: Command,
 	): Promise<Record<string, unknown> | undefined> {
 		return client
 			.streamCommand(command)
 			.then((stream) =>
-				stream.pipeThrough(
-					mpd.MpdParsers.transformToObject({ normalizeKeys: false }),
-				),
+				stream.pipeThrough(Parsers.transformToObject({ normalizeKeys: false })),
 			)
-			.then(mpd.MpdParsers.takeFirstObject);
+			.then(Parsers.takeFirstObject);
 	}
 
 	private async streamCommandToStream(
-		client: mpd.MpdClient,
-		command: mpd.Command,
+		client: Client,
+		command: Command,
 		delimiterKeys: string[] = [],
 	): Promise<ReadableStream<Record<string, unknown>>> {
 		return client.streamCommand(command).then((stream) =>
 			stream.pipeThrough(
-				mpd.MpdParsers.transformToList({
+				Parsers.transformToList({
 					delimiterKeys,
 					normalizeKeys: false,
 				}),
@@ -305,7 +300,7 @@ class MpdClient {
 			case "playlistinfo": {
 				const songs = await this.streamCommandToStream(client, cmd, ["file"])
 					.then((stream) => stream.pipeThrough(this.transformToSong()))
-					.then(mpd.MpdParsers.aggregateToList);
+					.then(Parsers.aggregateToList);
 				return new MpdResponse({
 					command: {
 						case: "playlistinfo",
@@ -323,7 +318,7 @@ class MpdClient {
 			case "listplaylistinfo": {
 				const songs = await this.streamCommandToStream(client, cmd, ["file"])
 					.then((stream) => stream.pipeThrough(this.transformToSong()))
-					.then(mpd.MpdParsers.aggregateToList);
+					.then(Parsers.aggregateToList);
 				return new MpdResponse({
 					command: {
 						case: "listplaylistinfo",
@@ -347,7 +342,7 @@ class MpdClient {
 							}),
 						),
 					)
-					.then(mpd.MpdParsers.aggregateToList);
+					.then(Parsers.aggregateToList);
 				return new MpdResponse({
 					command: {
 						case: "listplaylists",
@@ -409,7 +404,7 @@ class MpdClient {
 							}),
 						),
 					)
-					.then(mpd.MpdParsers.aggregateToList);
+					.then(Parsers.aggregateToList);
 				return new MpdResponse({
 					command: {
 						case: "list",
@@ -420,7 +415,7 @@ class MpdClient {
 			case "search": {
 				const songs = await this.streamCommandToStream(client, cmd, ["file"])
 					.then((stream) => stream.pipeThrough(this.transformToSong()))
-					.then(mpd.MpdParsers.aggregateToList);
+					.then(Parsers.aggregateToList);
 				return new MpdResponse({
 					command: {
 						case: "search",
@@ -447,7 +442,7 @@ class MpdClient {
 							}),
 						),
 					)
-					.then(mpd.MpdParsers.aggregateToList);
+					.then(Parsers.aggregateToList);
 				return new MpdResponse({
 					command: {
 						case: "outputs",
@@ -465,7 +460,7 @@ class MpdClient {
 						"file",
 					])
 						.then((stream) => stream.pipeThrough(this.transformToSong()))
-						.then(mpd.MpdParsers.aggregateToList);
+						.then(Parsers.aggregateToList);
 					this.allSongsCache.set(profile, songs ?? []);
 				}
 				return new MpdResponse({
@@ -489,7 +484,7 @@ class MpdClient {
 							}),
 						),
 					)
-					.then(mpd.MpdParsers.aggregateToList);
+					.then(Parsers.aggregateToList);
 				return new MpdResponse({
 					command: {
 						case: "listAllFolders",
@@ -504,7 +499,7 @@ class MpdClient {
 					"playlist",
 				])
 					.then((stream) => stream.pipeThrough(this.transformToSong()))
-					.then(mpd.MpdParsers.aggregateToList);
+					.then(Parsers.aggregateToList);
 				return new MpdResponse({
 					command: {
 						case: "listSongsInFolder",
@@ -518,88 +513,88 @@ class MpdClient {
 		}
 	}
 
-	private convertCommand(req: MpdRequest): mpd.Command {
+	private convertCommand(req: MpdRequest): Command {
 		switch (req.command?.case) {
 			// Connection
 			case "ping":
-				return mpd.Command.cmd("ping");
+				return Command.cmd("ping");
 
 			// Control
 			case "next":
-				return mpd.Command.cmd("next");
+				return Command.cmd("next");
 			case "pause":
 				if (req.command.value.pause) {
-					return mpd.Command.cmd("pause", "1");
+					return Command.cmd("pause", "1");
 				}
-				return mpd.Command.cmd("pause", "0");
+				return Command.cmd("pause", "0");
 			case "play":
 				switch (req.command.value.target.case) {
 					case "id":
-						return mpd.Command.cmd("playid", req.command.value.target.value);
+						return Command.cmd("playid", req.command.value.target.value);
 					case "pos":
-						return mpd.Command.cmd("play", req.command.value.target.value);
+						return Command.cmd("play", req.command.value.target.value);
 					default:
 						throw new Error(`Unsupported command: ${req.toJsonString()}`);
 				}
 			case "previous":
-				return mpd.Command.cmd("previous");
+				return Command.cmd("previous");
 			case "seek": {
 				const time = req.command.value.time;
 				switch (req.command.value.target.case) {
 					case "id":
-						return mpd.Command.cmd(
+						return Command.cmd(
 							"seekid",
 							req.command.value.target.value,
 							String(time),
 						);
 					case "pos":
-						return mpd.Command.cmd(
+						return Command.cmd(
 							"seek",
 							req.command.value.target.value,
 							String(time),
 						);
 					case "current":
-						return mpd.Command.cmd("seekcur", String(time));
+						return Command.cmd("seekcur", String(time));
 					default:
 						throw new Error(`Unsupported command: ${req.toJsonString()}`);
 				}
 			}
 			case "stop":
-				return mpd.Command.cmd("stop");
+				return Command.cmd("stop");
 
 			// Playback
 			case "consume":
-				return mpd.Command.cmd("consume", req.command.value.enable ? "1" : "0");
+				return Command.cmd("consume", req.command.value.enable ? "1" : "0");
 			case "random":
-				return mpd.Command.cmd("random", req.command.value.enable ? "1" : "0");
+				return Command.cmd("random", req.command.value.enable ? "1" : "0");
 			case "repeat":
-				return mpd.Command.cmd("repeat", req.command.value.enable ? "1" : "0");
+				return Command.cmd("repeat", req.command.value.enable ? "1" : "0");
 			case "setvol":
-				return mpd.Command.cmd("setvol", String(req.command.value.vol));
+				return Command.cmd("setvol", String(req.command.value.vol));
 			case "getvol":
-				return mpd.Command.cmd("getvol");
+				return Command.cmd("getvol");
 			case "single":
-				return mpd.Command.cmd("single", req.command.value.enable ? "1" : "0");
+				return Command.cmd("single", req.command.value.enable ? "1" : "0");
 
 			// Status
 			case "currentsong":
-				return mpd.Command.cmd("currentsong");
+				return Command.cmd("currentsong");
 			case "status":
-				return mpd.Command.cmd("status");
+				return Command.cmd("status");
 			case "stats":
-				return mpd.Command.cmd("stats");
+				return Command.cmd("stats");
 
 			// Queue
 			case "add":
-				return mpd.Command.cmd("add", req.command.value.uri);
+				return Command.cmd("add", req.command.value.uri);
 			case "clear":
-				return mpd.Command.cmd("clear");
+				return Command.cmd("clear");
 			case "delete":
 				switch (req.command.value.target.case) {
 					case "id":
-						return mpd.Command.cmd("deleteid", req.command.value.target.value);
+						return Command.cmd("deleteid", req.command.value.target.value);
 					case "pos":
-						return mpd.Command.cmd("delete", req.command.value.target.value);
+						return Command.cmd("delete", req.command.value.target.value);
 					default:
 						throw new Error(`Unsupported command: ${req.toJsonString()}`);
 				}
@@ -608,57 +603,57 @@ class MpdClient {
 				switch (req.command.value.from.case) {
 					case "fromId": {
 						const fromId = req.command.value.from.value;
-						return mpd.Command.cmd("moveid", fromId, to);
+						return Command.cmd("moveid", fromId, to);
 					}
 					case "fromPos": {
 						const fromPos = req.command.value.from.value;
-						return mpd.Command.cmd("move", fromPos, to);
+						return Command.cmd("move", fromPos, to);
 					}
 					default:
 						throw new Error(`Unsupported command: ${req.toJsonString()}`);
 				}
 			}
 			case "playlistinfo":
-				return mpd.Command.cmd("playlistinfo");
+				return Command.cmd("playlistinfo");
 			case "shuffle":
-				return mpd.Command.cmd("shuffle");
+				return Command.cmd("shuffle");
 
 			// StoredPlaylist
 			case "listplaylistinfo":
-				return mpd.Command.cmd("listplaylistinfo", req.command.value.name);
+				return Command.cmd("listplaylistinfo", req.command.value.name);
 			case "listplaylists":
-				return mpd.Command.cmd("listplaylists");
+				return Command.cmd("listplaylists");
 			case "playlistadd":
-				return mpd.Command.cmd(
+				return Command.cmd(
 					"playlistadd",
 					req.command.value.name,
 					req.command.value.uri,
 				);
 			case "playlistclear":
-				return mpd.Command.cmd("playlistclear", req.command.value.name);
+				return Command.cmd("playlistclear", req.command.value.name);
 			case "playlistdelete":
-				return mpd.Command.cmd(
+				return Command.cmd(
 					"playlistdelete",
 					req.command.value.name,
 					req.command.value.pos,
 				);
 			case "playlistmove":
-				return mpd.Command.cmd(
+				return Command.cmd(
 					"playlistmove",
 					req.command.value.name,
 					req.command.value.from,
 					req.command.value.to,
 				);
 			case "rename":
-				return mpd.Command.cmd(
+				return Command.cmd(
 					"rename",
 					req.command.value.name,
 					req.command.value.newName,
 				);
 			case "rm":
-				return mpd.Command.cmd("rm", req.command.value.name);
+				return Command.cmd("rm", req.command.value.name);
 			case "save":
-				return mpd.Command.cmd("save", req.command.value.name);
+				return Command.cmd("save", req.command.value.name);
 
 			// Database
 			case "list": {
@@ -666,32 +661,32 @@ class MpdClient {
 				const conditions = req.command.value.conditions;
 				const expression = convertConditionsToString(conditions);
 				return expression === ""
-					? mpd.Command.cmd("list", tag)
-					: mpd.Command.cmd("list", tag, expression);
+					? Command.cmd("list", tag)
+					: Command.cmd("list", tag, expression);
 			}
 			case "search": {
 				const conditions = req.command.value.conditions;
 				const expression = convertConditionsToString(conditions);
-				return mpd.Command.cmd("search", expression);
+				return Command.cmd("search", expression);
 			}
 			case "update":
-				return mpd.Command.cmd("update");
+				return Command.cmd("update");
 
 			// Audio
 			case "outputs":
-				return mpd.Command.cmd("outputs");
+				return Command.cmd("outputs");
 
 			// Utility
 			case "listAllSongs":
-				return mpd.Command.cmd("listallinfo");
+				return Command.cmd("listallinfo");
 			case "listAllFolders":
-				return mpd.Command.cmd("listall");
+				return Command.cmd("listall");
 			case "listSongsInFolder": {
 				const folder = req.command.value.folder;
 				if (folder === undefined) {
 					throw Error("Folder is undefined for listSongsInFolder");
 				}
-				return mpd.Command.cmd("lsinfo", folder.path);
+				return Command.cmd("lsinfo", folder.path);
 			}
 
 			default: {
