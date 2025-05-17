@@ -24,25 +24,7 @@ if (
 	);
 }
 
-export const system = createSystem(defaultConfig, {
-	theme: {
-		tokens: {
-			colors: {
-				brand: defaultConfig.theme.tokens.colors.blue,
-				error: defaultConfig.theme.tokens.colors.red,
-				gray: defaultConfig.theme.tokens.colors.gray,
-			},
-		},
-		semanticTokens: {
-			colors: {
-				"ag-grid.hover": { value: agGridColors.hover },
-				"ag-grid.selected": { value: agGridColors.selected },
-			},
-		},
-	},
-});
-
-export const globalStyles = defineGlobalStyles({
+const globalStyles = defineGlobalStyles({
 	".logo-color": {
 		color: "brand.600",
 		_dark: {
@@ -114,4 +96,23 @@ export const globalStyles = defineGlobalStyles({
 			backgroundColor: "gray.700",
 		},
 	},
+});
+
+export const system = createSystem(defaultConfig, {
+	theme: {
+		tokens: {
+			colors: {
+				brand: defaultConfig.theme.tokens.colors.blue,
+				error: defaultConfig.theme.tokens.colors.red,
+				gray: defaultConfig.theme.tokens.colors.gray,
+			},
+		},
+		semanticTokens: {
+			colors: {
+				"ag-grid.hover": { value: agGridColors.hover },
+				"ag-grid.selected": { value: agGridColors.selected },
+			},
+		},
+	},
+	globalCss: globalStyles,
 });
