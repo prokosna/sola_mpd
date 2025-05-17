@@ -1,4 +1,4 @@
-import { Box, VStack, useColorMode } from "@chakra-ui/react";
+import { Box, VStack } from "@chakra-ui/react";
 import { Allotment } from "allotment";
 import { type ReactElement, useCallback } from "react";
 
@@ -14,6 +14,7 @@ import type {
 	RecentlyAddedLayout,
 	SearchLayout,
 } from "@sola_mpd/domain/src/models/layout_pb.js";
+import { useColorMode } from "../../../../components/ui/color-mode";
 
 type BrowserViewProps = {
 	layout?: BrowserLayout | RecentlyAddedLayout;
@@ -70,7 +71,7 @@ export function BrowserView(props: BrowserViewProps) {
 
 	return (
 		<>
-			<VStack h="full" spacing={0}>
+			<VStack h="full" gap={0}>
 				<Box className="browser-breadcrumbs-bg" w="100%">
 					{props.browserNavigationBreadcrumbs}
 				</Box>

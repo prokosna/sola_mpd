@@ -1,8 +1,9 @@
-import { VStack, useColorMode } from "@chakra-ui/react";
+import { VStack } from "@chakra-ui/react";
 import { Allotment } from "allotment";
 
 import type { BrowserFilter } from "@sola_mpd/domain/src/models/browser_pb.js";
 import type { Song_MetadataTag } from "@sola_mpd/domain/src/models/song_pb.js";
+import { useColorMode } from "../../../../components/ui/color-mode";
 import type { UpdateMode } from "../../../../types/stateTypes";
 import { FullWidthSkeleton } from "../../../loading";
 import { listBrowserSongMetadataTags } from "../utils/browserFilterUtils";
@@ -44,7 +45,7 @@ export function BrowserNavigationView(props: BrowserNavigationViewProps) {
 
 	return (
 		<>
-			<VStack h="full" spacing={0}>
+			<VStack h="full" gap={0}>
 				<Allotment
 					className={
 						colorMode === "light" ? "allotment-light" : "allotment-dark"

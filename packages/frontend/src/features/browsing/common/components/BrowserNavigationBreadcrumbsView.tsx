@@ -1,19 +1,10 @@
-import {
-	Breadcrumb,
-	BreadcrumbItem,
-	Center,
-	Flex,
-	IconButton,
-	Tag,
-	TagCloseButton,
-	TagLabel,
-	Tooltip,
-} from "@chakra-ui/react";
+import { Breadcrumb, Center, Flex, IconButton, Tag } from "@chakra-ui/react";
 import type { BrowserFilter } from "@sola_mpd/domain/src/models/browser_pb.js";
 import { convertSongMetadataValueToString } from "@sola_mpd/domain/src/utils/songUtils.js";
-import { useCallback, useMemo } from "react";
+import React, { useCallback, useMemo } from "react";
 import { IoChevronForward, IoClose } from "react-icons/io5";
 
+import { Tooltip } from "../../../../components/ui/tooltip";
 import { UpdateMode } from "../../../../types/stateTypes";
 import {
 	resetAllBrowserFilters,
@@ -108,45 +99,55 @@ export function BrowserNavigationBreadcrumbsView(
 						aria-label="Reset filters"
 						size="xs"
 						onClick={handleResetClick}
-						icon={<IoClose />}
-					/>
+					>
+						<IoClose />
+					</IconButton>
 				</Center>
 				<Center px={5} py={1} w={"calc(100% - 27px)"} overflow={"auto"}>
-					<Breadcrumb spacing="8px" separator={<IoChevronForward />}>
-						{selectedBrowserFilters.map((browserFilter) => (
-							<BreadcrumbItem key={`breadcrumb_item_${browserFilter.tag}`}>
-								{browserFilter.selectedValues.map((value) => (
-									<Tooltip
-										key={convertSongMetadataValueToString(value)}
-										hasArrow
-										label={convertSongMetadataValueToString(value)}
-									>
-										<Tag
-											key={convertSongMetadataValueToString(value)}
-											className="browser-breadcrumbs-tag"
-											size={"sm"}
-											borderRadius="full"
-											variant="outline"
-											maxWidth="200px"
-											minWidth="50px"
-										>
-											<TagLabel className="browser-breadcrumbs-tag-label">
-												{convertSongMetadataValueToString(value)}
-											</TagLabel>
-											<TagCloseButton
-												onClick={() =>
-													handleCloseClick(
-														browserFilter,
-														convertSongMetadataValueToString(value),
-													)
-												}
-											/>
-										</Tag>
-									</Tooltip>
-								))}
-							</BreadcrumbItem>
-						))}
-					</Breadcrumb>
+					<Breadcrumb.Root gap="8px">
+						<Breadcrumb.List>
+							{selectedBrowserFilters.map((browserFilter, index) => (
+								<React.Fragment key={`breadcrumb_item_${browserFilter.tag}`}>
+									<Breadcrumb.Item>
+										{browserFilter.selectedValues.map((value) => (
+											<Tooltip
+												key={convertSongMetadataValueToString(value)}
+												showArrow
+												content={convertSongMetadataValueToString(value)}
+											>
+												<Tag.Root
+													key={convertSongMetadataValueToString(value)}
+													className="browser-breadcrumbs-tag"
+													size={"sm"}
+													borderRadius="full"
+													variant="outline"
+													maxWidth="200px"
+													minWidth="50px"
+												>
+													<Tag.Label className="browser-breadcrumbs-tag-label">
+														{convertSongMetadataValueToString(value)}
+													</Tag.Label>
+													<Tag.CloseTrigger
+														onClick={() =>
+															handleCloseClick(
+																browserFilter,
+																convertSongMetadataValueToString(value),
+															)
+														}
+													/>
+												</Tag.Root>
+											</Tooltip>
+										))}
+									</Breadcrumb.Item>
+									{index < selectedBrowserFilters.length - 1 && (
+										<Breadcrumb.Separator>
+											<IoChevronForward />
+										</Breadcrumb.Separator>
+									)}
+								</React.Fragment>
+							))}
+						</Breadcrumb.List>
+					</Breadcrumb.Root>
 				</Center>
 			</Flex>
 		</>
