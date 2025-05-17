@@ -38,8 +38,8 @@ export function HomeLayout() {
 	const location = useLocation();
 	const navigate = useNavigate();
 	const isCompactMode = useIsCompactMode();
-	const { getButtonProps, isOpen } = useDisclosure({
-		defaultIsOpen: !isCompactMode,
+	const { setOpen, open } = useDisclosure({
+		defaultOpen: !isCompactMode,
 	});
 	const userDeviceType = useUserDeviceType();
 
@@ -60,12 +60,12 @@ export function HomeLayout() {
 				gap="0px"
 			>
 				<GridItem area={"header"}>
-					<HStack spacing={"0px"}>
+					<HStack gap={"0px"}>
 						<Box minW={userDeviceType === "large" ? "250px" : "88px"} h="80px">
 							<HStack h="100%" justify={"space-between"} align={"center"}>
 								<BrandLogo />
 								<Button
-									{...getButtonProps()}
+									onClick={() => setOpen(!open)}
 									p={0}
 									ml={userDeviceType === "large" ? 0 : 2}
 									mr={2}
@@ -98,9 +98,9 @@ export function HomeLayout() {
 							className="layout-border-top layout-border-bottom"
 							overflowX={"clip"}
 							overflowY={"auto"}
-							minW={isOpen ? "250px" : "20px"}
+							minW={open ? "250px" : "20px"}
 						>
-							<SideNavigation {...{ isCompact: !isOpen }} />
+							<SideNavigation {...{ isCompact: !open }} />
 						</Box>
 						<Box flexGrow={"1"} overflowY={"auto"}>
 							<Suspense
