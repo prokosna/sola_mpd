@@ -1,13 +1,4 @@
-import {
-	Accordion,
-	AccordionButton,
-	AccordionIcon,
-	AccordionItem,
-	AccordionPanel,
-	Box,
-	List,
-	ListItem,
-} from "@chakra-ui/react";
+import { Accordion, Box, List, ListItem } from "@chakra-ui/react";
 import * as React from "react";
 
 import type { TreeNode } from "../types/treeViewTypes";
@@ -18,23 +9,22 @@ export type TreeViewProps = {
 
 export function TreeView(props: TreeViewProps) {
 	return (
-		<Accordion allowMultiple>
+		<Accordion.Root multiple>
 			{props.nodes.map((item) => (
 				<React.Fragment key={item.id}>
 					{item.children.length > 0 ? (
-						<AccordionItem>
-							<AccordionButton>
-								<AccordionIcon />
-								<Box flex="1" textAlign="left" isTruncated>
+						<Accordion.Item value={item.id}>
+							<Accordion.ItemTrigger>
+								<Box flex="1" textAlign="left" truncate>
 									{item.label}
 								</Box>
-							</AccordionButton>
-							<AccordionPanel pb={3}>
+							</Accordion.ItemTrigger>
+							<Accordion.ItemContent pb={3}>
 								<TreeView nodes={item.children} />
-							</AccordionPanel>
-						</AccordionItem>
+							</Accordion.ItemContent>
+						</Accordion.Item>
 					) : (
-						<List>
+						<List.Root>
 							<ListItem
 								px={4}
 								py={1}
@@ -50,12 +40,12 @@ export function TreeView(props: TreeViewProps) {
 								bg={item.isSelected ? "ag-grid.selected" : undefined}
 								transition="all 0.3s"
 							>
-								<Box isTruncated>{item.label}</Box>
+								<Box truncate>{item.label}</Box>
 							</ListItem>
-						</List>
+						</List.Root>
 					)}
 				</React.Fragment>
 			))}
-		</Accordion>
+		</Accordion.Root>
 	);
 }
