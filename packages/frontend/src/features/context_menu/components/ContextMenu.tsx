@@ -1,4 +1,3 @@
-import { useColorMode } from "@chakra-ui/react";
 import {
 	Item,
 	type ItemParams,
@@ -7,6 +6,7 @@ import {
 	Submenu,
 } from "react-contexify";
 
+import { useColorMode } from "../../../components/ui/color-mode";
 import type { ContextMenuProps } from "../types/contextMenuTypes";
 
 /**
