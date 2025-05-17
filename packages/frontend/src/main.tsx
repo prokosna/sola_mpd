@@ -2,14 +2,14 @@ import * as React from "react";
 import * as ReactDOM from "react-dom/client";
 import { RouterProvider } from "react-router/dom";
 
-import { Providers } from "./providers.tsx";
+import { Provider } from "./provider.tsx";
 import router from "./router.tsx";
 
 // biome-ignore lint/style/noNonNullAssertion: <explanation>
 ReactDOM.createRoot(document.getElementById("root")!).render(
 	<React.StrictMode>
-		<Providers>
+		<Provider>
 			<RouterProvider router={router} />
-		</Providers>
+		</Provider>
 	</React.StrictMode>,
 );
