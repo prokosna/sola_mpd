@@ -1,4 +1,4 @@
-import { Box, useColorMode } from "@chakra-ui/react";
+import { Box } from "@chakra-ui/react";
 import { Allotment } from "allotment";
 import { useCallback } from "react";
 
@@ -10,6 +10,7 @@ import {
 } from "../../layout";
 import { CenterSpinner } from "../../loading";
 
+import { useColorMode } from "../../../components/ui/color-mode";
 import { FileExploreContent } from "./FileExploreContent";
 import { FileExploreNavigation } from "./FileExploreNavigation";
 
