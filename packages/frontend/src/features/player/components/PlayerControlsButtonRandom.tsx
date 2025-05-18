@@ -7,7 +7,10 @@ import { useCurrentMpdProfileState } from "../../profile";
 import { useCurrentSongState } from "../states/playerSongState";
 import { usePlayerStatusIsRandomState } from "../states/playerStatusState";
 
-import { PlayerControlsButton } from "./PlayerControlsButton";
+import {
+	PlayerControlsButton,
+	type PlayerControlsButtonProps,
+} from "./PlayerControlsButton";
 
 /**
  * Button for toggling random playback mode.
@@ -41,7 +44,7 @@ export function PlayerControlsButtonRandom() {
 		);
 	}, [mpdClient, playerStatusIsRandom, profile]);
 
-	const props = {
+	const props: PlayerControlsButtonProps = {
 		label: playerStatusIsRandom ? "Random enabled" : "Random disabled",
 		isDisabled: currentSong === undefined,
 		onButtonClicked,

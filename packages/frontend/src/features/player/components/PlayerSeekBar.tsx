@@ -1,4 +1,4 @@
-import { Slider, SliderFilledTrack, SliderTrack } from "@chakra-ui/react";
+import { Slider, type SliderValueChangeDetails } from "@chakra-ui/react";
 import { MpdRequest } from "@sola_mpd/domain/src/models/mpd/mpd_command_pb.js";
 import { useCallback, useRef } from "react";
 
@@ -32,12 +32,18 @@ export function PlayerSeekBar() {
 
 	const lastSeekClicked = useRef(new Date());
 	const handleSeekBarClick = useCallback(
-		async (value: number) => {
+		async (details: SliderValueChangeDetails) => {
+			const newValue = details.value[0];
+
 			if (profile === undefined || mpdClient === undefined) {
 				return;
 			}
 
-			if (value < 0 || value > 100) {
+			if (newValue < 0 || newValue > 100) {
+				return;
+			}
+
+			if (newValue === elapsedTimePercentage) {
 				return;
 			}
 
@@ -54,7 +60,7 @@ export function PlayerSeekBar() {
 			}
 			lastSeekClicked.current = now;
 
-			const seekTo = (value / 100) * playerStatusDuration;
+			const seekTo = (newValue / 100) * playerStatusDuration;
 			mpdClient.command(
 				new MpdRequest({
 					profile,
@@ -71,25 +77,25 @@ export function PlayerSeekBar() {
 				}),
 			);
 		},
-		[mpdClient, playerStatusDuration, profile],
+		[elapsedTimePercentage, mpdClient, playerStatusDuration, profile],
 	);
 
 	return (
-		<Slider
+		<Slider.Root
 			m={0}
 			p={0}
 			w="100%"
 			min={0}
 			max={100}
-			value={elapsedTimePercentage}
+			value={[elapsedTimePercentage]}
 			colorScheme="brand"
-			onChange={(v) => {
+			onValueChange={(v) => {
 				handleSeekBarClick(v);
 			}}
 		>
-			<SliderTrack h="10px">
-				<SliderFilledTrack h="15px" />
-			</SliderTrack>
-		</Slider>
+			<Slider.Track h="10px">
+				<Slider.Range h="15px" />
+			</Slider.Track>
+		</Slider.Root>
 	);
 }

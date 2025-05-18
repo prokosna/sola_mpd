@@ -1,4 +1,4 @@
-import { Center, Divider } from "@chakra-ui/react";
+import { Center, Separator } from "@chakra-ui/react";
 
 import { PlayerControlsButtonConsume } from "./PlayerControlsButtonConsume";
 import { PlayerControlsButtonNext } from "./PlayerControlsButtonNext";
@@ -26,7 +26,7 @@ export function PlayerControlsCompact() {
 			<PlayerControlsButtonNext />
 
 			<Center h="50%">
-				<Divider orientation="vertical" />
+				<Separator orientation="vertical" />
 			</Center>
 
 			<PlayerControlsButtonRandom />
@@ -34,7 +34,7 @@ export function PlayerControlsCompact() {
 			<PlayerControlsButtonConsume />
 
 			<Center h="50%">
-				<Divider orientation="vertical" />
+				<Separator orientation="vertical" />
 			</Center>
 
 			<PlayerControlsButtonVolume />

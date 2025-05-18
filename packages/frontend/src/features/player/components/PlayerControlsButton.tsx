@@ -1,11 +1,12 @@
-import { IconButton, Tooltip } from "@chakra-ui/react";
+import { IconButton } from "@chakra-ui/react";
+import { Tooltip } from "../../../components/ui/tooltip";
 
 export type PlayerControlsButtonProps = {
 	label: string;
 	isDisabled: boolean;
 	onButtonClicked: () => Promise<void>;
 	icon: React.ReactElement;
-	variant: string;
+	variant: "solid" | "ghost";
 };
 
 /**
@@ -21,17 +22,18 @@ export type PlayerControlsButtonProps = {
 export function PlayerControlsButton(props: PlayerControlsButtonProps) {
 	return (
 		<>
-			<Tooltip label={props.label} placement="top">
+			<Tooltip content={props.label} positioning={{ placement: "top" }}>
 				<IconButton
-					isDisabled={props.isDisabled}
+					disabled={props.isDisabled}
 					onClick={props.onButtonClicked}
 					variant={props.variant}
 					colorScheme="brand"
 					aria-label={props.label}
 					size={"md"}
-					icon={props.icon}
 					m={1}
-				/>
+				>
+					{props.icon}
+				</IconButton>
 			</Tooltip>
 		</>
 	);

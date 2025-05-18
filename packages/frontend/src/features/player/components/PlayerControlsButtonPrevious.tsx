@@ -6,7 +6,10 @@ import { useMpdClientState } from "../../mpd";
 import { useCurrentMpdProfileState } from "../../profile";
 import { useCurrentSongState } from "../states/playerSongState";
 
-import { PlayerControlsButton } from "./PlayerControlsButton";
+import {
+	PlayerControlsButton,
+	type PlayerControlsButtonProps,
+} from "./PlayerControlsButton";
 
 /**
  * Button for playing the previous track.
@@ -37,7 +40,7 @@ export function PlayerControlsButtonPrevious() {
 		);
 	}, [mpdClient, profile]);
 
-	const props = {
+	const props: PlayerControlsButtonProps = {
 		label: "Play previous",
 		isDisabled: currentSong === undefined,
 		onButtonClicked,

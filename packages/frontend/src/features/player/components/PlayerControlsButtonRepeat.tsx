@@ -7,7 +7,10 @@ import { useCurrentMpdProfileState } from "../../profile";
 import { useCurrentSongState } from "../states/playerSongState";
 import { usePlayerStatusIsRepeatState } from "../states/playerStatusState";
 
-import { PlayerControlsButton } from "./PlayerControlsButton";
+import {
+	PlayerControlsButton,
+	type PlayerControlsButtonProps,
+} from "./PlayerControlsButton";
 
 /**
  * Button for toggling repeat mode.
@@ -41,7 +44,7 @@ export function PlayerControlsButtonRepeat() {
 		);
 	}, [mpdClient, playerStatusIsRepeat, profile]);
 
-	const props = {
+	const props: PlayerControlsButtonProps = {
 		label: playerStatusIsRepeat ? "Repeat enabled" : "Repeat disabled",
 		isDisabled: currentSong === undefined,
 		onButtonClicked,

@@ -2,15 +2,13 @@ import {
 	Center,
 	IconButton,
 	Slider,
-	SliderFilledTrack,
-	SliderThumb,
-	SliderTrack,
-	Tooltip,
+	type SliderValueChangeDetails,
 } from "@chakra-ui/react";
 import { MpdRequest } from "@sola_mpd/domain/src/models/mpd/mpd_command_pb.js";
 import { useCallback } from "react";
 import { IoVolumeMute } from "react-icons/io5";
 
+import { Tooltip } from "../../../components/ui/tooltip";
 import { useMpdClientState } from "../../mpd";
 import { useCurrentMpdProfileState } from "../../profile";
 import { useIsCompactMode } from "../../user_device";
@@ -34,12 +32,17 @@ export function PlayerControlsButtonVolume() {
 	const volume = playerVolume?.volume !== undefined ? playerVolume.volume : -1;
 
 	const onVolumeChanged = useCallback(
-		async (volume: number) => {
+		async (details: SliderValueChangeDetails) => {
+			const newVolume = details.value[0];
 			if (profile === undefined || mpdClient === undefined) {
 				return;
 			}
 
-			if (volume < 0 || volume > 100) {
+			if (newVolume < 0 || newVolume > 100) {
+				return;
+			}
+
+			if (newVolume === volume) {
 				return;
 			}
 
@@ -49,48 +52,49 @@ export function PlayerControlsButtonVolume() {
 					command: {
 						case: "setvol",
 						value: {
-							vol: volume,
+							vol: newVolume,
 						},
 					},
 				}),
 			);
 		},
-		[mpdClient, profile],
+		[mpdClient, profile, volume],
 	);
 
 	return (
 		<>
 			<Tooltip
-				label={volume < 0 ? "Volume disabled" : volume}
-				placement={isCompact ? "top" : "left-start"}
+				content={volume < 0 ? "Volume disabled" : volume}
+				positioning={{ placement: isCompact ? "top" : "left-start" }}
 			>
 				{volume < 0 ? (
 					<IconButton
-						isDisabled={true}
+						disabled={true}
 						variant={"ghost"}
 						colorScheme="brand"
 						aria-label="Volume disabled"
 						size={"md"}
-						icon={<IoVolumeMute size={"24"} />}
 						m={1}
-					/>
+					>
+						<IoVolumeMute size={"24"} />
+					</IconButton>
 				) : (
 					<Center h="100%">
-						<Slider
+						<Slider.Root
 							ml={3}
-							aria-label="Volume"
-							defaultValue={30}
+							aria-label={["Volume"]}
+							defaultValue={[volume]}
 							min={0}
 							max={100}
 							orientation="vertical"
 							h="60%"
-							onChangeEnd={(v) => onVolumeChanged(v)}
+							onValueChangeEnd={(v) => onVolumeChanged(v)}
 						>
-							<SliderTrack>
-								<SliderFilledTrack />
-							</SliderTrack>
-							<SliderThumb />
-						</Slider>
+							<Slider.Track>
+								<Slider.Range />
+							</Slider.Track>
+							<Slider.Thumbs />
+						</Slider.Root>
 					</Center>
 				)}
 			</Tooltip>

@@ -8,7 +8,10 @@ import { useCurrentMpdProfileState } from "../../profile";
 import { useCurrentSongState } from "../states/playerSongState";
 import { usePlayerStatusPlaybackState } from "../states/playerStatusState";
 
-import { PlayerControlsButton } from "./PlayerControlsButton";
+import {
+	PlayerControlsButton,
+	type PlayerControlsButtonProps,
+} from "./PlayerControlsButton";
 
 /**
  * Button for toggling play/pause state.
@@ -44,7 +47,7 @@ export function PlayerControlsButtonResume() {
 		);
 	}, [mpdClient, playerStatusPlaybackState, profile]);
 
-	const props = {
+	const props: PlayerControlsButtonProps = {
 		label:
 			playerStatusPlaybackState === MpdPlayerStatus_PlaybackState.PLAY
 				? "Pause"

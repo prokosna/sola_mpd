@@ -1,5 +1,6 @@
-import { Tag, TagLabel, Tooltip } from "@chakra-ui/react";
+import { Tag } from "@chakra-ui/react";
 
+import { Tooltip } from "../../../components/ui/tooltip";
 import { useCurrentSongFormat } from "../hooks/useCurrentSongFormat";
 
 /**
@@ -18,27 +19,39 @@ export function PlayerSongInformationTag() {
 	}
 	if (isDsd) {
 		return (
-			<Tooltip label={formatString} placement="top-end">
-				<Tag px={1} ml={2} size={"sm"} variant="outline" colorScheme="teal">
-					<TagLabel>DSD</TagLabel>
-				</Tag>
+			<Tooltip content={formatString} positioning={{ placement: "top-end" }}>
+				<Tag.Root
+					px={1}
+					ml={2}
+					size={"sm"}
+					variant="outline"
+					colorScheme="teal"
+				>
+					<Tag.Label>DSD</Tag.Label>
+				</Tag.Root>
 			</Tooltip>
 		);
 	}
 	if (isHiRes) {
 		return (
-			<Tooltip label={formatString} placement="top-end">
-				<Tag px={1} ml={2} size={"sm"} variant="outline" colorScheme="teal">
-					<TagLabel>Hi-Res</TagLabel>
-				</Tag>
+			<Tooltip content={formatString} positioning={{ placement: "top-end" }}>
+				<Tag.Root
+					px={1}
+					ml={2}
+					size={"sm"}
+					variant="outline"
+					colorScheme="teal"
+				>
+					<Tag.Label>Hi-Res</Tag.Label>
+				</Tag.Root>
 			</Tooltip>
 		);
 	}
 	return (
-		<Tooltip label={formatString} placement="top-end">
-			<Tag px={1} ml={2} size={"sm"} variant="outline" colorScheme="teal">
-				<TagLabel>PCM</TagLabel>
-			</Tag>
+		<Tooltip content={formatString} positioning={{ placement: "top-end" }}>
+			<Tag.Root px={1} ml={2} size={"sm"} variant="outline" colorScheme="teal">
+				<Tag.Label>PCM</Tag.Label>
+			</Tag.Root>
 		</Tooltip>
 	);
 }

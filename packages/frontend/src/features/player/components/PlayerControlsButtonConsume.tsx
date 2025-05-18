@@ -7,7 +7,10 @@ import { useCurrentMpdProfileState } from "../../profile";
 import { useCurrentSongState } from "../states/playerSongState";
 import { usePlayerStatusIsConsumeState } from "../states/playerStatusState";
 
-import { PlayerControlsButton } from "./PlayerControlsButton";
+import {
+	PlayerControlsButton,
+	type PlayerControlsButtonProps,
+} from "./PlayerControlsButton";
 
 /**
  * Button for toggling MPD's consume mode.
@@ -41,7 +44,7 @@ export function PlayerControlsButtonConsume() {
 		);
 	}, [mpdClient, playerStatusIsConsume, profile]);
 
-	const props = {
+	const props: PlayerControlsButtonProps = {
 		label: playerStatusIsConsume ? "Consume enabled" : "Consume disabled",
 		isDisabled: currentSong === undefined,
 		onButtonClicked,
