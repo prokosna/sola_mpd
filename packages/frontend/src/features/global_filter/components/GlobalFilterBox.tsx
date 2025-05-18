@@ -1,12 +1,4 @@
-import {
-	Box,
-	CloseButton,
-	Icon,
-	Input,
-	InputGroup,
-	InputLeftElement,
-	InputRightElement,
-} from "@chakra-ui/react";
+import { Box, CloseButton, Icon, Input, InputGroup } from "@chakra-ui/react";
 import { useRef } from "react";
 import { IoSearchOutline } from "react-icons/io5";
 
@@ -41,14 +33,25 @@ export function GlobalFilterBox() {
 	return (
 		<>
 			<Box w="35%" minW="100px" maxW="500px">
-				<InputGroup>
-					<InputLeftElement
-						pointerEvents="none"
-						color="gray.500"
-						fontSize="1.2em"
-					>
-						<Icon as={IoSearchOutline} />
-					</InputLeftElement>
+				<InputGroup
+					startElement={
+						<Box pointerEvents="none" color="gray.500" fontSize="1.2em">
+							<Icon as={IoSearchOutline} />
+						</Box>
+					}
+					endElement={
+						<Box color="gray.500" fontSize="1.2em">
+							<CloseButton
+								onClick={() => {
+									if (inputRef.current != null) {
+										inputRef.current.value = "";
+									}
+									handleGlobalFilterTextChange("");
+								}}
+							/>
+						</Box>
+					}
+				>
 					<Input
 						ref={inputRef}
 						placeholder="Filter songs..."
@@ -56,16 +59,6 @@ export function GlobalFilterBox() {
 							handleGlobalFilterTextChange(e.target.value);
 						}}
 					/>
-					<InputRightElement color="gray.500" fontSize="1.2em">
-						<CloseButton
-							onClick={() => {
-								if (inputRef.current != null) {
-									inputRef.current.value = "";
-								}
-								handleGlobalFilterTextChange("");
-							}}
-						/>
-					</InputRightElement>
 				</InputGroup>
 			</Box>
 		</>
