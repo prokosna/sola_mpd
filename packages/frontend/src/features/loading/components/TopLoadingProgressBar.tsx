@@ -15,7 +15,11 @@ export function TopLoadingProgressBar() {
 	return (
 		<>
 			<Box width="100%" position="fixed" top="0" zIndex="1">
-				<Progress isIndeterminate />
+				<Progress.Root value={null}>
+					<Progress.Track>
+						<Progress.Range />
+					</Progress.Track>
+				</Progress.Root>
 			</Box>
 		</>
 	);
