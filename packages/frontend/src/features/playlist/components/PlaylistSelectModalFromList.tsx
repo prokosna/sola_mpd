@@ -1,4 +1,4 @@
-import { FormControl, FormErrorMessage, Select } from "@chakra-ui/react";
+import { createListCollection, Field, Portal, Select } from "@chakra-ui/react";
 import { useCallback, useState } from "react";
 
 import { usePlaylistsState } from "../states/playlistState";
@@ -21,7 +21,12 @@ export function PlaylistSelectModalFromList(
 	const [errorMessage, setErrorMessage] = useState("");
 
 	const handleSelect = useCallback(
-		(name: string) => {
+		(names: string[]) => {
+			if (names.length === 0) {
+				setErrorMessage("Please select a playlist.");
+				return;
+			}
+			const name = names[0];
 			const playlist = (playlists || []).find(
 				(playlist) => playlist.name === name,
 			);
@@ -37,23 +42,42 @@ export function PlaylistSelectModalFromList(
 		[playlists, props],
 	);
 
+	const playlistsCollection = createListCollection({
+		items: (playlists || []).map((playlist) => playlist.name),
+	});
+
 	return (
 		<>
-			<FormControl isInvalid={errorMessage !== ""}>
-				<Select
-					placeholder="Select a playlist"
-					onChange={(e) => handleSelect(e.target.value)}
+			<Field.Root invalid={errorMessage !== ""}>
+				<Select.Root
+					collection={playlistsCollection}
+					onValueChange={(e) => handleSelect(e.value)}
 				>
-					{(playlists || []).map((playlist) => (
-						<option key={playlist.name} value={playlist.name}>
-							{playlist.name}
-						</option>
-					))}
-				</Select>
+					<Select.HiddenSelect />
+					<Select.Control>
+						<Select.Trigger>
+							<Select.ValueText placeholder="Select a playlist" />
+						</Select.Trigger>
+						<Select.IndicatorGroup>
+							<Select.Indicator />
+						</Select.IndicatorGroup>
+					</Select.Control>
+					<Portal>
+						<Select.Positioner>
+							<Select.Content>
+								{playlistsCollection.items.map((name) => (
+									<Select.Item key={name} item={name}>
+										{name}
+									</Select.Item>
+								))}
+							</Select.Content>
+						</Select.Positioner>
+					</Portal>
+				</Select.Root>
 				{errorMessage !== "" ? (
-					<FormErrorMessage>{errorMessage}</FormErrorMessage>
+					<Field.ErrorText>{errorMessage}</Field.ErrorText>
 				) : null}
-			</FormControl>
+			</Field.Root>
 		</>
 	);
 }

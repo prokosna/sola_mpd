@@ -1,4 +1,4 @@
-import { Box, useColorMode } from "@chakra-ui/react";
+import { Box } from "@chakra-ui/react";
 import { Allotment } from "allotment";
 import { useCallback } from "react";
 
@@ -12,6 +12,7 @@ import { CenterSpinner } from "../../loading";
 
 import { PlaylistContent } from "./PlaylistContent";
 import { PlaylistNavigation } from "./PlaylistNavigation";
+import { useColorMode } from "../../../components/ui/color-mode";
 
 /**
  * Main playlist component with resizable split pane layout.

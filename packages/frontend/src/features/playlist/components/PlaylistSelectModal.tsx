@@ -1,13 +1,10 @@
 import {
 	Button,
 	Checkbox,
-	FormControl,
-	Modal,
-	ModalBody,
-	ModalContent,
-	ModalFooter,
-	ModalHeader,
-	ModalOverlay,
+	type CheckboxCheckedChangeDetails,
+	Dialog,
+	type DialogOpenChangeDetails,
+	Field,
 } from "@chakra-ui/react";
 import { Playlist } from "@sola_mpd/domain/src/models/playlist_pb.js";
 import { useCallback, useState } from "react";
@@ -73,51 +70,65 @@ export function PlaylistSelectModal(props: PlaylistSelectModalProps) {
 		props.onCancel();
 	}, [props]);
 
+	const handleDialogClose = useCallback(
+		(details: DialogOpenChangeDetails) => {
+			if (details.open) {
+				return;
+			}
+			handleClose();
+		},
+		[handleClose],
+	);
+
 	return (
 		<>
-			<Modal
-				isCentered
-				closeOnOverlayClick={false}
-				isOpen={props.isOpen}
-				onClose={handleClose}
+			<Dialog.Root
+				placement="center"
+				modal={true}
+				open={props.isOpen}
+				onOpenChange={handleDialogClose}
 			>
-				<ModalOverlay />
-				<ModalContent>
-					<ModalHeader>Select a playlist</ModalHeader>
-					<ModalBody pb={6}>
+				<Dialog.Content>
+					<Dialog.Header>Select a playlist</Dialog.Header>
+					<Dialog.Body pb={6}>
 						{isCreateNew ? (
 							<PlaylistSelectModalNewPlaylist onInput={handleInput} />
 						) : (
 							<PlaylistSelectModalFromList onSelect={handleSelect} />
 						)}
-						<FormControl>
-							<Checkbox
+						<Field.Root>
+							<Checkbox.Root
 								colorScheme="brand"
 								checked={isCreateNew}
-								onChange={(e) => {
-									setIsCreateNew(e.target.checked);
+								onCheckedChange={(details: CheckboxCheckedChangeDetails) => {
+									if (details.checked === "indeterminate") {
+										return;
+									}
+									setIsCreateNew(details.checked);
 									setIsPlaylistNameOk(false);
 								}}
 							>
-								Create a new playlist
-							</Checkbox>
-						</FormControl>
-					</ModalBody>
-					<ModalFooter>
+								<Checkbox.HiddenInput />
+								<Checkbox.Control />
+								<Checkbox.Label>Create a new playlist</Checkbox.Label>
+							</Checkbox.Root>
+						</Field.Root>
+					</Dialog.Body>
+					<Dialog.Footer>
 						<Button
 							colorScheme="brand"
 							mr={3}
 							onClick={handleSubmit}
-							isDisabled={playlistName === "" || !isPlaylistNameOk}
+							disabled={playlistName === "" || !isPlaylistNameOk}
 						>
 							Add
 						</Button>
 						<Button onClick={handleClose} colorScheme="gray">
 							Cancel
 						</Button>
-					</ModalFooter>
-				</ModalContent>
-			</Modal>
+					</Dialog.Footer>
+				</Dialog.Content>
+			</Dialog.Root>
 		</>
 	);
 }

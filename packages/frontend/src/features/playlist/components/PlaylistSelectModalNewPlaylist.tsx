@@ -1,4 +1,4 @@
-import { FormControl, FormErrorMessage, Input } from "@chakra-ui/react";
+import { Field, Input } from "@chakra-ui/react";
 import { useCallback, useState } from "react";
 
 import { usePlaylistsState } from "../states/playlistState";
@@ -6,6 +6,8 @@ import { usePlaylistsState } from "../states/playlistState";
 export type PlaylistSelectModalNewPlaylistProps = {
 	onInput: (playlistName: string, isOk: boolean) => void;
 };
+
+
 
 /**
  * Input field for new playlist creation.
@@ -21,7 +23,8 @@ export function PlaylistSelectModalNewPlaylist(
 	const [errorMessage, setErrorMessage] = useState("");
 
 	const onInput = useCallback(
-		(name: string) => {
+		(names: string[]) => {
+			const name = names.length >= 1 ? names[0] : "";
 			if (name === "") {
 				setErrorMessage("The playlist name can't be empty.");
 				props.onInput(name, false);
@@ -43,12 +46,12 @@ export function PlaylistSelectModalNewPlaylist(
 
 	return (
 		<>
-			<FormControl isInvalid={errorMessage !== ""}>
-				<Input onChange={(e) => onInput(e.target.value)} />
+			<Field.Root invalid={errorMessage !== ""}>
+				<Input onValueChanged={(e) => onInput(e.target.value)} />
 				{errorMessage !== "" ? (
-					<FormErrorMessage>{errorMessage}</FormErrorMessage>
+					<Field.ErrorText>{errorMessage}</Field.ErrorText>
 				) : null}
-			</FormControl>
+			</Field.Root>
 		</>
 	);
 }
