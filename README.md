@@ -139,11 +139,11 @@ $ docker compose up --build -d
 
 Sola MPD has a plugin system to integrate with other services.
 
-For example, I have a use case to synchronize MPD songs with a [Astiga](https://asti.ga/) playlist and have developed the Astiga plugin.
+For example, I have a use case to synchronize MPD songs with a playlist in an application compatible with [Subsonic API](https://www.subsonic.org/pages/api.jsp) and have developed the Subsonic plugin.
 
-To use the Astiga plugin:
+To use the Subsonic plugin:
 
-1. Uncomment the Astiga plugin in `docker-compose.yaml`
+1. Uncomment the Subsonic plugin in `docker-compose.yaml`
 
 1. Run the plugin container with Sola MPD
 
@@ -153,7 +153,7 @@ To use the Astiga plugin:
 
 1. On the Plugin page in Sola MPD, enter the plugin endpoint (in this case `[Your Server IP]:3001`) and configure the plugin following a dialog.
 
-1. When the plugin is available, you will see `Sync with Astiga` in the right-click context menu and you can create a playlist with selected songs on Sola MPD as long as the exact same songs are available on Astiga as well.
+1. When the plugin is available, you will see `Sync with Subsonic` in the right-click context menu and you can create a playlist with selected songs on Sola MPD as long as the exact same songs are available on Subsonic as well.
 
 This plugin is quite specific to my use case, but you can use this as a reference to develop a custom plugin for your use case.
 

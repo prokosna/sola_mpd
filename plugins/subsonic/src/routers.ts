@@ -9,19 +9,19 @@ import {
 } from "@sola_mpd/domain/src/models/plugin/plugin_pb.js";
 import { PluginService } from "@sola_mpd/domain/src/models/plugin/plugin_service_connect.js";
 
-import { syncWithAstiga } from "./service.js";
+import { syncWithSubsonic } from "./service.js";
 
 export function routes(router: ConnectRouter) {
 	router.service(PluginService, {
 		register(_req: PluginRegisterRequest): PluginRegisterResponse {
 			return new PluginRegisterResponse({
 				info: new PluginInfo({
-					name: "Astiga",
+					name: "Subsonic",
 					version: process.env.npm_package_version,
-					description: "Plugin to synchronize songs with an Astiga playlist.",
-					contextMenuTitle: "Sync with Astiga",
+					description: "Plugin to synchronize songs with an Subsonic playlist.",
+					contextMenuTitle: "Sync with Subsonic",
 					contextMenuDescription:
-						"Start synchronization with the Astiga playlist.",
+						"Start synchronization with the Subsonic playlist.",
 					supportedTypes: [
 						Plugin_PluginType.ON_BROWSER,
 						Plugin_PluginType.ON_FILE_EXPLORE,
@@ -45,7 +45,7 @@ export function routes(router: ConnectRouter) {
 				const password = req.pluginParameters.Password;
 				const playlistName = req.requestParameters["Playlist Name"];
 				const songs = req.songs;
-				for await (const resp of syncWithAstiga(
+				for await (const resp of syncWithSubsonic(
 					user,
 					password,
 					playlistName,

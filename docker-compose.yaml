@@ -29,12 +29,12 @@ services:
     # Alternatively, use "no" for manual restart
     # restart: no
 
-  # astiga:
+  # subsonic:
   #   build:
   #     context: .
-  #     dockerfile: plugins/astiga/docker/Dockerfile
-  #   image: sola_mpd_astiga:latest
-  #   container_name: sola_mpd_astiga
+  #     dockerfile: plugins/subsonic/docker/Dockerfile
+  #   image: sola_mpd_subsonic:latest
+  #   container_name: sola_mpd_subsonic
   #   environment:
   #     - USER=${USER}
   #   ### Network Configuration Options ###

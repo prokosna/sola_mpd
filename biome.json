@@ -9,7 +9,7 @@
 		"ignoreUnknown": false,
 		"ignore": [
 			"packages/domain/src/models/**/*",
-			"plugins/astiga/src/models/**/*"
+			"plugins/subsonic/src/models/**/*"
 		]
 	},
 	"formatter": {
