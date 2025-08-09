@@ -1,3 +1,4 @@
+import { createHash, randomBytes } from "node:crypto";
 import {
 	type Song,
 	Song_MetadataTag,
@@ -14,27 +15,6 @@ import {
 	type SubsonicSong,
 } from "./types.js";
 import { sleep } from "./utils.js";
-
-const ASTIGA_URL = "https://play.asti.ga/rest/";
-
-// https://manual.manticoresearch.com/Searching/Full_text_matching/Escaping
-const specialCharacters: string[] = [
-	"\\",
-	"!",
-	'"',
-	"$",
-	"'",
-	"(",
-	")",
-	"-",
-	"/",
-	"<",
-	"@",
-	"^",
-	"|",
-	"~",
-	"*",
-];
 
 const fetchRetry = async (
 	url: string,
@@ -54,10 +34,11 @@ export class SubsonicClient {
 	private url: string;
 
 	constructor(
+		url: string,
 		private user: string,
 		private password: string,
 	) {
-		this.url = ASTIGA_URL.replace(/\/+$/, "");
+		this.url = url.replace(/\/+$/, "");
 		this.cache = new LRUCache({ max: 500 });
 	}
 
@@ -65,17 +46,7 @@ export class SubsonicClient {
 		const title = getSongMetadataAsString(song, Song_MetadataTag.TITLE);
 		const artist = getSongMetadataAsString(song, Song_MetadataTag.ARTIST);
 		const album = getSongMetadataAsString(song, Song_MetadataTag.ALBUM);
-		const queries = [
-			this.makeQuery(undefined, album, undefined),
-			this.makeQuery(undefined, undefined, artist),
-			this.makeQuery(undefined, album, artist),
-			this.makeQuery(title, undefined, undefined),
-			this.makeQuery(
-				this.replaceSpecialCharactersWithSpaces(title),
-				undefined,
-				undefined,
-			),
-		];
+		const queries = [album, artist, title];
 		for (const query of queries) {
 			let songs: SubsonicSong[] = [];
 			if (this.cache.has(query)) {
@@ -136,7 +107,7 @@ export class SubsonicClient {
 			method: "GET",
 		});
 		const data = SubsonicGetPlaylistsResponseSchema.parse(await resp.json());
-		const playlists = data["subsonic-response"].playlists.playlist;
+		const playlists = data["subsonic-response"].playlists.playlist ?? [];
 		const targetPlaylists = playlists.filter(
 			(playlist) => playlist.name === name,
 		);
@@ -175,7 +146,7 @@ export class SubsonicClient {
 			method: "GET",
 		});
 		const data = SubsonicGetPlaylistResponseSchema.parse(await resp.json());
-		return data["subsonic-response"].playlist.entry;
+		return data["subsonic-response"].playlist.entry ?? [];
 	}
 
 	private equal(a: Song, b: SubsonicSong): boolean {
@@ -197,7 +168,7 @@ export class SubsonicClient {
 			method: "GET",
 		});
 		const data = SubsonicSearch3ResponseSchema.parse(await resp.json());
-		return data["subsonic-response"].searchResult3.song;
+		return data["subsonic-response"].searchResult3.song ?? [];
 	}
 
 	private async createPlaylist(name: string): Promise<SubsonicPlaylist> {
@@ -211,9 +182,15 @@ export class SubsonicClient {
 	}
 
 	private createRequest(options: Map<string, string>): URLSearchParams {
+		const salt = randomBytes(6).toString("hex");
+		const token = createHash("md5")
+			.update(this.password + salt)
+			.digest("hex");
+
 		const preset = new Map<string, string>([
 			["u", this.user],
-			["p", `enc:${Buffer.from(this.password, "utf-8").toString("hex")}`],
+			["t", token],
+			["s", salt],
 			["v", "1.16.0"],
 			["c", "sola_mpd"],
 			["f", "json"],
@@ -228,42 +205,5 @@ export class SubsonicClient {
 			searchParams.set(key, param);
 		}
 		return searchParams;
-	}
-
-	private escape(src: string): string {
-		let dest: string = src;
-		for (const ch of specialCharacters) {
-			dest = dest.split(ch).join(`\\${ch}`);
-		}
-		return dest;
-	}
-
-	private replaceSpecialCharactersWithSpaces(src: string): string {
-		const pattern = new RegExp(`[${specialCharacters.join("")}]`, "g");
-		return src.replace(pattern, " ");
-	}
-
-	private makeQuery(
-		title: string | undefined,
-		album: string | undefined,
-		artist: string | undefined,
-	): string {
-		let query = "";
-		if (title !== undefined && title !== "") {
-			query += `@title "${this.escape(title)}"`;
-		}
-		if (album !== undefined && album !== "") {
-			if (query !== "") {
-				query += " ";
-			}
-			query += `@album "${this.escape(album)}"`;
-		}
-		if (artist !== undefined && artist !== "") {
-			if (query !== "") {
-				query += " ";
-			}
-			query += `@artist "${this.escape(artist)}"`;
-		}
-		return query;
 	}
 }
