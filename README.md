@@ -24,6 +24,7 @@ This client has the following features:
 - [x] Responsive layout for tablets
 - [x] Supports touch devices
 - [x] Browse recently added artists, albums and composers
+- [x] Playlist sync with Subsonic API compatible service (via plugin)
 
 On the other hand, the following features are out of scope for now:
 
