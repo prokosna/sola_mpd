@@ -21,7 +21,7 @@ export const SubsonicPlaylistSchema = z.object({
 export const SubsonicGetPlaylistsResponseSchema = z.object({
 	"subsonic-response": z.object({
 		playlists: z.object({
-			playlist: z.array(SubsonicPlaylistSchema),
+			playlist: z.array(SubsonicPlaylistSchema).optional(),
 		}),
 	}),
 });
@@ -31,7 +31,7 @@ export type SubsonicPlaylist = z.infer<typeof SubsonicPlaylistSchema>;
 export const SubsonicGetPlaylistResponseSchema = z.object({
 	"subsonic-response": z.object({
 		playlist: z.object({
-			entry: z.array(SubsonicSongSchema),
+			entry: z.array(SubsonicSongSchema).optional(),
 		}),
 	}),
 });
@@ -39,7 +39,7 @@ export const SubsonicGetPlaylistResponseSchema = z.object({
 export const SubsonicSearch3ResponseSchema = z.object({
 	"subsonic-response": z.object({
 		searchResult3: z.object({
-			song: z.array(SubsonicSongSchema),
+			song: z.array(SubsonicSongSchema).optional(),
 		}),
 	}),
 });
