@@ -8,16 +8,17 @@ import {
 } from "@sola_mpd/domain/src/models/song_pb.js";
 import { getSongMetadataAsString } from "@sola_mpd/domain/src/utils/songUtils.js";
 
-import { AstigaClient } from "./astiga.js";
+import { SubsonicClient } from "./subsonic.js";
 import { sleep } from "./utils.js";
 
-export async function* syncWithAstiga(
+export async function* syncWithSubsonic(
+	url: string,
 	user: string,
 	password: string,
 	playlistName: string,
 	songs: Song[],
 ): AsyncGenerator<PluginExecuteResponse, void, unknown> {
-	const client = new AstigaClient(user, password);
+	const client = new SubsonicClient(url, user, password);
 
 	yield new PluginExecuteResponse({
 		message: "Calculating difference between playlists...",
@@ -53,16 +54,16 @@ export async function* syncWithAstiga(
 			status: PluginExecuteResponse_Status.OK,
 		});
 
-		const astigaSong = await client.find(song);
-		if (astigaSong === undefined) {
+		const subsonicSong = await client.find(song);
+		if (subsonicSong === undefined) {
 			yield new PluginExecuteResponse({
-				message: `Failed to find "${title}" in Astiga`,
+				message: `Failed to find "${title}" in Subsonic`,
 				progressPercentage: Math.floor(((index + 1) / total) * 100),
 				status: PluginExecuteResponse_Status.WARN,
 			});
 			continue;
 		}
-		await client.add(astigaSong, playlist);
+		await client.add(subsonicSong, playlist);
 		await sleep(100);
 	}
 }
