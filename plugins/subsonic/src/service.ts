@@ -12,12 +12,13 @@ import { SubsonicClient } from "./subsonic.js";
 import { sleep } from "./utils.js";
 
 export async function* syncWithSubsonic(
+	url: string,
 	user: string,
 	password: string,
 	playlistName: string,
 	songs: Song[],
 ): AsyncGenerator<PluginExecuteResponse, void, unknown> {
-	const client = new SubsonicClient(user, password);
+	const client = new SubsonicClient(url, user, password);
 
 	yield new PluginExecuteResponse({
 		message: "Calculating difference between playlists...",

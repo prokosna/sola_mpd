@@ -18,7 +18,7 @@ export function routes(router: ConnectRouter) {
 				info: new PluginInfo({
 					name: "Subsonic",
 					version: process.env.npm_package_version,
-					description: "Plugin to synchronize songs with an Subsonic playlist.",
+					description: "Plugin to synchronize songs with a Subsonic playlist.",
 					contextMenuTitle: "Sync with Subsonic",
 					contextMenuDescription:
 						"Start synchronization with the Subsonic playlist.",
@@ -31,7 +31,7 @@ export function routes(router: ConnectRouter) {
 						Plugin_PluginType.ON_FULL_TEXT_SEARCH,
 						Plugin_PluginType.ON_RECENTLY_ADDED,
 					],
-					requiredPluginParameters: ["User", "Password"],
+					requiredPluginParameters: ["Url", "User", "Password"],
 					requiredRequestParameters: ["Playlist Name"],
 				}),
 			});
@@ -41,11 +41,13 @@ export function routes(router: ConnectRouter) {
 			req: PluginExecuteRequest,
 		): AsyncGenerator<PluginExecuteResponse, void, unknown> {
 			try {
+				const url = req.pluginParameters.Url;
 				const user = req.pluginParameters.User;
 				const password = req.pluginParameters.Password;
 				const playlistName = req.requestParameters["Playlist Name"];
 				const songs = req.songs;
 				for await (const resp of syncWithSubsonic(
+					url,
 					user,
 					password,
 					playlistName,
