@@ -5,7 +5,7 @@ import { Outlet, useLocation, useNavigate } from "react-router";
 
 import { IconMenu2 } from "@tabler/icons-react";
 import { ROUTE_HOME, ROUTE_HOME_PLAY_QUEUE } from "../../const/routes";
-import { GlobalFilterBox } from "../../features/global_filter";
+import { MantineGlobalFilterBox } from "../../features/global_filter/components/MantineGlobalFilterBox";
 import { CenterSpinner } from "../../features/loading";
 import { MantineBrandLogo } from "../../features/logo/components/MantineBrandLogo";
 import { MpdEventObserver } from "../../features/mpd";
@@ -70,7 +70,7 @@ export function MantineHomeLayout() {
 							justify="space-between"
 							wrap="nowrap"
 						>
-							<GlobalFilterBox />
+							<MantineGlobalFilterBox />
 							<Group justify="flex-end" wrap="nowrap" gap="md">
 								<PluginExecutionIndicator />
 								<MpdProfileSelector />
