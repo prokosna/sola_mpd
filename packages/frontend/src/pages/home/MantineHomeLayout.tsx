@@ -48,7 +48,6 @@ export function MantineHomeLayout() {
 					collapsed: { mobile: false, desktop: false },
 				}}
 				footer={{ height: 100 }}
-				padding={0}
 			>
 				<AppShell.Header>
 					<Group h="100%" gap={0} wrap="nowrap">
@@ -56,7 +55,7 @@ export function MantineHomeLayout() {
 							style={{ flexGrow: 1 }}
 							maw={userDeviceType === "large" ? 250 : 88}
 							miw={userDeviceType === "large" ? 250 : 88}
-							justify="space-between"
+							justify="center"
 							wrap="nowrap"
 						>
 							<BrandLogo />
@@ -72,11 +71,9 @@ export function MantineHomeLayout() {
 							wrap="nowrap"
 						>
 							<GlobalFilterBox />
-							<Group justify="flex-end" wrap="nowrap">
+							<Group justify="flex-end" wrap="nowrap" gap="md">
 								<PluginExecutionIndicator />
-								<Space />
 								<MpdProfileSelector />
-								<Space />
 								<ColorModeSwitchButton />
 								<SettingsEntryButton />
 								<Space />
