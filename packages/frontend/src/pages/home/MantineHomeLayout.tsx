@@ -7,7 +7,7 @@ import { IconMenu2 } from "@tabler/icons-react";
 import { ROUTE_HOME, ROUTE_HOME_PLAY_QUEUE } from "../../const/routes";
 import { GlobalFilterBox } from "../../features/global_filter";
 import { CenterSpinner } from "../../features/loading";
-import { BrandLogo } from "../../features/logo";
+import { MantineBrandLogo } from "../../features/logo/components/MantineBrandLogo";
 import { MpdEventObserver } from "../../features/mpd";
 import { Player } from "../../features/player";
 import {
@@ -58,7 +58,7 @@ export function MantineHomeLayout() {
 							justify="center"
 							wrap="nowrap"
 						>
-							<BrandLogo />
+							<MantineBrandLogo />
 							<Space />
 							<ActionIcon variant="transparent" onClick={toggle}>
 								<IconMenu2 />
