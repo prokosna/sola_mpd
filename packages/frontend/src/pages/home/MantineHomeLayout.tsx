@@ -1,0 +1,108 @@
+import { ActionIcon, AppShell, Group, ScrollArea, Space } from "@mantine/core";
+import { useDisclosure } from "@mantine/hooks";
+import { Suspense, useEffect } from "react";
+import { Outlet, useLocation, useNavigate } from "react-router";
+
+import { IconMenu2 } from "@tabler/icons-react";
+import { ROUTE_HOME, ROUTE_HOME_PLAY_QUEUE } from "../../const/routes";
+import { GlobalFilterBox } from "../../features/global_filter";
+import { CenterSpinner } from "../../features/loading";
+import { BrandLogo } from "../../features/logo";
+import { MpdEventObserver } from "../../features/mpd";
+import { Player } from "../../features/player";
+import {
+	PluginExecutionIndicator,
+	PluginExecutionModal,
+} from "../../features/plugin";
+import { MpdProfileSelector } from "../../features/profile";
+import {
+	ColorModeSwitchButton,
+	SettingsEntryButton,
+} from "../../features/settings";
+import { SideNavigation } from "../../features/side_navigation";
+import {
+	useIsCompactMode,
+	useUserDeviceType,
+} from "../../features/user_device";
+
+export function MantineHomeLayout() {
+	const location = useLocation();
+	const navigate = useNavigate();
+	const isCompactMode = useIsCompactMode();
+	const [isOpen, { toggle }] = useDisclosure(!isCompactMode);
+	const userDeviceType = useUserDeviceType();
+
+	useEffect(() => {
+		if (location.pathname === ROUTE_HOME) {
+			navigate(ROUTE_HOME_PLAY_QUEUE);
+		}
+	}, [location, navigate]);
+
+	return (
+		<>
+			<AppShell
+				header={{ height: 80 }}
+				navbar={{
+					width: isOpen ? 250 : 88,
+					breakpoint: 0,
+					collapsed: { mobile: false, desktop: false },
+				}}
+				footer={{ height: 100 }}
+				padding={0}
+			>
+				<AppShell.Header>
+					<Group h="100%" gap={0} wrap="nowrap">
+						<Group
+							style={{ flexGrow: 1 }}
+							maw={userDeviceType === "large" ? 250 : 88}
+							miw={userDeviceType === "large" ? 250 : 88}
+							justify="space-between"
+							wrap="nowrap"
+						>
+							<BrandLogo />
+							<Space />
+							<ActionIcon variant="transparent" onClick={toggle}>
+								<IconMenu2 />
+							</ActionIcon>
+							<Space />
+						</Group>
+						<Group
+							style={{ flexGrow: 1 }}
+							justify="space-between"
+							wrap="nowrap"
+						>
+							<GlobalFilterBox />
+							<Group justify="flex-end" wrap="nowrap">
+								<PluginExecutionIndicator />
+								<Space />
+								<MpdProfileSelector />
+								<Space />
+								<ColorModeSwitchButton />
+								<SettingsEntryButton />
+								<Space />
+							</Group>
+						</Group>
+					</Group>
+				</AppShell.Header>
+
+				<AppShell.Navbar p={0}>
+					<ScrollArea>
+						<SideNavigation isCompact={!isOpen} />
+					</ScrollArea>
+				</AppShell.Navbar>
+
+				<AppShell.Main p={0}>
+					<Suspense fallback={<CenterSpinner />}>
+						<Outlet />
+					</Suspense>
+				</AppShell.Main>
+
+				<AppShell.Footer p={0}>
+					<Player />
+				</AppShell.Footer>
+			</AppShell>
+			<MpdEventObserver />
+			<PluginExecutionModal />
+		</>
+	);
+}
