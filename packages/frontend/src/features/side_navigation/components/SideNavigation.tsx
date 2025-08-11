@@ -20,9 +20,9 @@ import {
 	ROUTE_HOME_RECENTLY_ADDED,
 	ROUTE_HOME_SEARCH,
 } from "../../../const/routes";
-import { CardStats } from "../../stats";
 import { useSideNavigationItems } from "../hooks/useSideNavigationItems";
 
+import { MantineCardStats } from "../../stats/components/MantineCardStats";
 import {
 	SideNavigationItem,
 	type SideNavigationItemProps,
@@ -99,7 +99,7 @@ export function SideNavigation({ isCompact }: { isCompact: boolean }) {
 					<>
 						<Divider />
 						<Box w="100%" h="full" pb={0} px={6} pt={2}>
-							<CardStats />
+							<MantineCardStats />
 						</Box>
 						<Divider />
 					</>

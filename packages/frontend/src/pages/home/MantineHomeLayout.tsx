@@ -15,8 +15,8 @@ import {
 	PluginExecutionModal,
 } from "../../features/plugin";
 import { MantineMpdProfileSelector } from "../../features/profile/components/MantineMpdProfileSelector";
-import { SettingsEntryButton } from "../../features/settings";
 import { MantineColorModeSwitchButton } from "../../features/settings/components/MantineColorModeSwitchButton";
+import { MantineSettingsEntryButton } from "../../features/settings/components/MantineSettingsEntryButton";
 import { SideNavigation } from "../../features/side_navigation";
 import {
 	useIsCompactMode,
@@ -73,7 +73,7 @@ export function MantineHomeLayout() {
 								<PluginExecutionIndicator />
 								<MantineMpdProfileSelector />
 								<MantineColorModeSwitchButton />
-								<SettingsEntryButton />
+								<MantineSettingsEntryButton />
 								<Space />
 							</Group>
 						</Group>
