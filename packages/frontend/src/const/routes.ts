@@ -1,4 +1,5 @@
 export const ROUTE_LANDING = "/landing";
+export const ROUTE_MANTINE_HOME = "/mantine";
 export const ROUTE_HOME = "/home";
 export const ROUTE_HOME_PLAY_QUEUE = "/home/play_queue";
 export const ROUTE_HOME_BROWSER = "/home/browser";

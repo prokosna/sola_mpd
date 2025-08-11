@@ -12,6 +12,7 @@ import {
 	ROUTE_HOME_SEARCH,
 	ROUTE_HOME_SETTINGS,
 	ROUTE_LANDING,
+	ROUTE_MANTINE_HOME,
 } from "./const/routes";
 import { ErrorPage } from "./pages/ErrorPage";
 import { RootLayout } from "./pages/RootLayout";
@@ -20,6 +21,7 @@ import { AllSongsPage } from "./pages/home/AllSongsPage";
 import { BrowserPage } from "./pages/home/BrowserPage";
 import { FileExplorePage } from "./pages/home/FileExplorePage";
 import { HomeLayout } from "./pages/home/HomeLayout";
+import { MantineHomeLayout } from "./pages/home/MantineHomeLayout";
 import { PlayQueuePage } from "./pages/home/PlayQueuePage";
 import { PlaylistPage } from "./pages/home/PlaylistPage";
 import { PluginsPage } from "./pages/home/PluginsPage";
@@ -83,6 +85,16 @@ const router = createBrowserRouter([
 			{
 				path: ROUTE_LANDING,
 				element: <LandingPage />,
+			},
+			{
+				path: ROUTE_MANTINE_HOME,
+				element: <MantineHomeLayout />,
+				children: [
+					{
+						path: ROUTE_HOME_BROWSER.split("/").filter(Boolean).pop(),
+						element: <BrowserPage />,
+					},
+				],
 			},
 		],
 	},
