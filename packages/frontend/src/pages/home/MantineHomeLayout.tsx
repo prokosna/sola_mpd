@@ -14,7 +14,7 @@ import {
 	PluginExecutionIndicator,
 	PluginExecutionModal,
 } from "../../features/plugin";
-import { MpdProfileSelector } from "../../features/profile";
+import { MantineMpdProfileSelector } from "../../features/profile/components/MantineMpdProfileSelector";
 import {
 	ColorModeSwitchButton,
 	SettingsEntryButton,
@@ -73,7 +73,7 @@ export function MantineHomeLayout() {
 							<MantineGlobalFilterBox />
 							<Group justify="flex-end" wrap="nowrap" gap="md">
 								<PluginExecutionIndicator />
-								<MpdProfileSelector />
+								<MantineMpdProfileSelector />
 								<ColorModeSwitchButton />
 								<SettingsEntryButton />
 								<Space />

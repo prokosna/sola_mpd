@@ -35,6 +35,7 @@ export function MantineGlobalFilterBox() {
 			<Group w="35%" miw="100px" maw="500px">
 				<TextInput
 					ref={inputRef}
+					size="md"
 					placeholder="Filter songs..."
 					leftSection={
 						<ActionIcon variant="transparent" color="gray.5">
@@ -60,30 +61,6 @@ export function MantineGlobalFilterBox() {
 						</ActionIcon>
 					}
 				/>
-				{/* <InputLeftElement
-						pointerEvents="none"
-						color="gray.500"
-						fontSize="1.2em"
-					>
-						<Icon as={IoSearchOutline} />
-					</InputLeftElement>
-					<Input
-						ref={inputRef}
-						placeholder="Filter songs..."
-						onChange={(e) => {
-							handleGlobalFilterTextChange(e.target.value);
-						}}
-					/>
-					<InputRightElement color="gray.500" fontSize="1.2em">
-						<CloseButton
-							onClick={() => {
-								if (inputRef.current != null) {
-									inputRef.current.value = "";
-								}
-								handleGlobalFilterTextChange("");
-							}}
-						/>
-					</InputRightElement> */}
 			</Group>
 		</>
 	);
