@@ -1,4 +1,11 @@
-import { ActionIcon, AppShell, Group, ScrollArea, Space } from "@mantine/core";
+import {
+	ActionIcon,
+	AppShell,
+	Box,
+	Group,
+	ScrollArea,
+	Space,
+} from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import { Suspense, useEffect } from "react";
 import { Outlet, useLocation, useNavigate } from "react-router";
@@ -80,19 +87,21 @@ export function MantineHomeLayout() {
 					</Group>
 				</AppShell.Header>
 
-				<AppShell.Navbar p={0}>
+				<AppShell.Navbar>
 					<ScrollArea>
 						<MantineSideNavigation isCompact={!isOpen} />
 					</ScrollArea>
 				</AppShell.Navbar>
 
-				<AppShell.Main p={0}>
+				<AppShell.Main display="flex">
 					<Suspense fallback={<CenterSpinner />}>
-						<Outlet />
+						<Box flex={1}>
+							<Outlet />
+						</Box>
 					</Suspense>
 				</AppShell.Main>
 
-				<AppShell.Footer p={0}>
+				<AppShell.Footer>
 					<Player />
 				</AppShell.Footer>
 			</AppShell>

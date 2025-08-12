@@ -15,14 +15,7 @@
 }
 
 /* Converted from Chakra global styles */
-:root[data-mantine-color-scheme="light"] .logo-color {
-	color: var(--mantine-color-blue-6);
-}
-:root[data-mantine-color-scheme="dark"] .logo-color {
-	color: var(--mantine-color-blue-2);
-}
-
-:root[data-mantine-color-scheme="light"] .browser-breadcrumbs-bg {
+/* :root[data-mantine-color-scheme="light"] .browser-breadcrumbs-bg {
 	background-color: var(--mantine-color-blue-0);
 }
 :root[data-mantine-color-scheme="dark"] .browser-breadcrumbs-bg {
@@ -86,4 +79,4 @@
 }
 :root[data-mantine-color-scheme="dark"] .layout-general-header-bg {
 	background-color: var(--mantine-color-gray-9);
-}
+} */

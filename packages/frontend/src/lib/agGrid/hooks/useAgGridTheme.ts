@@ -1,13 +1,48 @@
-import { useColorMode } from "@chakra-ui/react";
-import type { Theme } from "ag-grid-community";
+import {
+	type Theme,
+	colorSchemeDarkBlue,
+	colorSchemeLightWarm,
+	themeAlpine,
+} from "ag-grid-community";
 import { useMemo } from "react";
 
-import { agGridDarkTheme, agGridLightTheme } from "../agGridThemes";
+import { rgba, useMantineColorScheme, useMantineTheme } from "@mantine/core";
 
 export function useAgGridTheme(): Theme {
-	const { colorMode } = useColorMode();
+	const schema = useMantineColorScheme();
+	const theme = useMantineTheme();
+
+	const agGridLightTheme = themeAlpine
+		.withPart(colorSchemeLightWarm)
+		.withParams({
+			spacing: 4,
+			headerRowBorder: true,
+			wrapperBorder: false,
+			columnBorder: false,
+			wrapperBorderRadius: 0,
+			borderColor: theme.colors.gray[3],
+			headerBackgroundColor: theme.colors.gray[2],
+			backgroundColor: theme.colors.gray[1],
+			oddRowBackgroundColor: theme.colors.gray[0],
+			accentColor: theme.colors.brand[2],
+			rowHoverColor: rgba(theme.colors.brand[2], 0.2),
+		});
+
+	const agGridDarkTheme = themeAlpine.withPart(colorSchemeDarkBlue).withParams({
+		spacing: 4,
+		headerRowBorder: true,
+		wrapperBorder: false,
+		columnBorder: false,
+		wrapperBorderRadius: 0,
+		borderColor: theme.colors.dark[5],
+		headerBackgroundColor: theme.colors.dark[6],
+		backgroundColor: theme.colors.dark[7],
+		oddRowBackgroundColor: theme.colors.dark[8],
+		accentColor: theme.colors.brand[9],
+		rowHoverColor: rgba(theme.colors.brand[9], 0.1),
+	});
 
 	return useMemo(() => {
-		return colorMode === "light" ? agGridLightTheme : agGridDarkTheme;
-	}, [colorMode]);
+		return schema.colorScheme === "light" ? agGridLightTheme : agGridDarkTheme;
+	}, [schema, agGridDarkTheme, agGridLightTheme]);
 }

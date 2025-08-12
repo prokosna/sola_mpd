@@ -22,6 +22,7 @@ import { BrowserPage } from "./pages/home/BrowserPage";
 import { FileExplorePage } from "./pages/home/FileExplorePage";
 import { HomeLayout } from "./pages/home/HomeLayout";
 import { MantineHomeLayout } from "./pages/home/MantineHomeLayout";
+import { MantinePlayQueuePage } from "./pages/home/MantinePlayQueuePage";
 import { PlayQueuePage } from "./pages/home/PlayQueuePage";
 import { PlaylistPage } from "./pages/home/PlaylistPage";
 import { PluginsPage } from "./pages/home/PluginsPage";
@@ -92,7 +93,7 @@ const router = createBrowserRouter([
 				children: [
 					{
 						path: ROUTE_HOME_PLAY_QUEUE.split("/").filter(Boolean).pop(),
-						element: <PlayQueuePage />,
+						element: <MantinePlayQueuePage />,
 					},
 					{
 						path: ROUTE_HOME_BROWSER.split("/").filter(Boolean).pop(),
