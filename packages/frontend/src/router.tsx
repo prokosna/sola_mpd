@@ -91,8 +91,40 @@ const router = createBrowserRouter([
 				element: <MantineHomeLayout />,
 				children: [
 					{
+						path: ROUTE_HOME_PLAY_QUEUE.split("/").filter(Boolean).pop(),
+						element: <PlayQueuePage />,
+					},
+					{
 						path: ROUTE_HOME_BROWSER.split("/").filter(Boolean).pop(),
 						element: <BrowserPage />,
+					},
+					{
+						path: ROUTE_HOME_PLAYLIST.split("/").filter(Boolean).pop(),
+						element: <PlaylistPage />,
+					},
+					{
+						path: ROUTE_HOME_RECENTLY_ADDED.split("/").filter(Boolean).pop(),
+						element: <RecentlyAddedPage />,
+					},
+					{
+						path: ROUTE_HOME_SEARCH.split("/").filter(Boolean).pop(),
+						element: <SearchPage />,
+					},
+					{
+						path: ROUTE_HOME_FILE_EXPLORE.split("/").filter(Boolean).pop(),
+						element: <FileExplorePage />,
+					},
+					{
+						path: ROUTE_HOME_PLUGIN.split("/").filter(Boolean).pop(),
+						element: <PluginsPage />,
+					},
+					{
+						path: ROUTE_HOME_SETTINGS.split("/").filter(Boolean).pop(),
+						element: <SettingsPage />,
+					},
+					{
+						path: ROUTE_HOME_ALL_SONGS.split("/").filter(Boolean).pop(),
+						element: <AllSongsPage />,
 					},
 				],
 			},
