@@ -39,7 +39,7 @@ export function MantineHomeLayout() {
 	return (
 		<>
 			<AppShell
-				header={{ height: 80 }}
+				header={{ height: 60 }}
 				navbar={{
 					width: isOpen ? 200 : 69,
 					breakpoint: 0,
