@@ -16,8 +16,7 @@ export function useSideNavigationItems(
 
 	const navItems = useMemo(() => {
 		return baseItems.map((item) => {
-			if (item.link === pathname.replace("mantine", "home")) {
-				// TODO: reomve later
+			if (item.link === pathname) {
 				item.isSelected = true;
 			} else {
 				item.isSelected = false;
