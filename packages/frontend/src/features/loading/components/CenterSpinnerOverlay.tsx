@@ -5,7 +5,7 @@ export interface CenterSpinnerOverlayProps {
 	children: ReactNode;
 	visible: boolean;
 	color?: string;
-	size?: number;
+	size?: "xs" | "sm" | "md" | "lg" | "xl";
 	type?: "bars" | "dots";
 }
 
@@ -28,7 +28,7 @@ export function CenterSpinnerOverlay(props: CenterSpinnerOverlayProps) {
 	const params = Object.assign(
 		{
 			color: "brand",
-			size: 72,
+			size: "xl",
 			type: undefined,
 			visible: true,
 		},

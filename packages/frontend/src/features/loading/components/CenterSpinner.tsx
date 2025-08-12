@@ -2,7 +2,7 @@ import { Center, Loader } from "@mantine/core";
 
 export interface CenterSpinnerProps {
 	color?: string;
-	size?: number;
+	size?: "xs" | "sm" | "md" | "lg" | "xl";
 	type?: "bars" | "dots";
 }
 
@@ -24,7 +24,7 @@ export function CenterSpinner(props: CenterSpinnerProps) {
 	const params = Object.assign(
 		{
 			color: "brand",
-			size: 72,
+			size: "xl",
 			type: undefined,
 		},
 		props,
