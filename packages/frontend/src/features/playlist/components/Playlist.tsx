@@ -50,7 +50,7 @@ export function Playlist() {
 
 	return (
 		<>
-			<Box w="100%" h="full">
+			<Box w="100%" h="100%">
 				<Allotment
 					className={
 						colorMode === "light" ? "allotment-light" : "allotment-dark"

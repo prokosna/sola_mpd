@@ -18,7 +18,7 @@ import { PlayerSongInformationCompact } from "./PlayerSongInformationCompact";
 export function PlayerCompact() {
 	return (
 		<>
-			<Flex direction={"column"} w="100vw" h="full" position="relative">
+			<Flex direction={"column"} w="100vw" h="100%" position="relative">
 				<PlayerSeekBar />
 				<PlayerDurationCompact />
 				<Grid
@@ -26,12 +26,12 @@ export function PlayerCompact() {
 					templateAreas={`"info"
                           "control"`}
 					gridTemplateRows={"1fr 1fr"}
-					h="full"
+					h="100%"
 					gap="0"
 				>
 					<GridItem area={"info"}>
 						<Flex
-							h="full"
+							h="100%"
 							pt="2"
 							pl="2"
 							pr="2"

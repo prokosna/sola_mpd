@@ -1,4 +1,4 @@
-import { Box } from "@chakra-ui/react";
+import { Group } from "@mantine/core";
 import { CenterSpinner } from "../../../loading";
 import {
 	PlaylistSelectModal,
@@ -30,16 +30,16 @@ export function BrowserContentView(props: BrowserContentViewProps) {
 		props;
 
 	if (songTableProps === undefined || columnEditModalProps === undefined) {
-		return <CenterSpinner className="layout-border-top layout-border-left" />;
+		return <CenterSpinner />;
 	}
 
 	return (
 		<>
-			<Box w="100%" h="full">
+			<Group w="100%" h="100%">
 				<SongTable {...songTableProps} />
 				<PlaylistSelectModal {...playlistSelectModalProps} />
 				<ColumnEditModal {...columnEditModalProps} />
-			</Box>
+			</Group>
 		</>
 	);
 }

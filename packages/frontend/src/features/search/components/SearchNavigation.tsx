@@ -16,7 +16,7 @@ export function SearchNavigation() {
 
 	return (
 		<>
-			<VStack h="full" spacing={0}>
+			<VStack h="100%" spacing={0}>
 				<Allotment
 					className={
 						colorMode === "light" ? "allotment-light" : "allotment-dark"

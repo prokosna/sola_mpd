@@ -70,11 +70,11 @@ export function BrowserView(props: BrowserViewProps) {
 
 	return (
 		<>
-			<VStack h="full" spacing={0}>
+			<VStack h="100%" spacing={0}>
 				<Box className="browser-breadcrumbs-bg" w="100%">
 					{props.browserNavigationBreadcrumbs}
 				</Box>
-				<Box w="100%" h="full">
+				<Box w="100%" h="100%">
 					<Allotment
 						className={
 							colorMode === "light" ? "allotment-light" : "allotment-dark"

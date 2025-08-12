@@ -31,7 +31,7 @@ export function CardStats() {
 
 	return (
 		<>
-			<Stack w="100%" h="full" gap={4}>
+			<Stack w="100%" h="100%" gap={4}>
 				<CardStatsNumber {...songStatsProps} />
 				<Divider />
 				<CardStatsNumber {...artistStatsProps} />

@@ -18,7 +18,7 @@ export function Plugin() {
 			<Box
 				className="layout-border-top layout-border-left"
 				w="100%"
-				h="full"
+				h="100%"
 				p="30px"
 			>
 				<PluginList {...{ onOpen }} />

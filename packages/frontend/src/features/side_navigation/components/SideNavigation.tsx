@@ -88,7 +88,7 @@ export function SideNavigation({ isCompact }: { isCompact: boolean }) {
 
 	return (
 		<>
-			<Stack h="full">
+			<Stack h="100%">
 				<Stack w="100%" px={10} pt={8} gap={0}>
 					{sideNavigationItems.map((item) => (
 						<SideNavigationItem key={item.name} {...item} />
@@ -97,7 +97,7 @@ export function SideNavigation({ isCompact }: { isCompact: boolean }) {
 				{isCompact ? null : (
 					<>
 						<Divider />
-						<Group w="100%" h="full" px={24}>
+						<Group w="100%" h="100%" px={24}>
 							<CardStats />
 						</Group>
 						<Divider />

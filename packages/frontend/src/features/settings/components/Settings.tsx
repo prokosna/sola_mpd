@@ -10,7 +10,7 @@ import { SettingsStates } from "./SettingsStates";
 export function Settings() {
 	return (
 		<>
-			<Box className="layout-border-top layout-border-left" w="100%" h="full">
+			<Box className="layout-border-top layout-border-left" w="100%" h="100%">
 				<Tabs>
 					<TabList>
 						<Tab>Profiles</Tab>

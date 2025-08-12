@@ -28,23 +28,23 @@ export function Player() {
 
 	return (
 		<>
-			<Flex direction={"column"} w="100vw" h="full" position="relative">
+			<Flex direction={"column"} w="100vw" h="100%" position="relative">
 				<PlayerSeekBar />
 				<PlayerDuration />
 				<Grid
 					className="player-surface-grid"
 					templateAreas={`"info control"`}
 					gridTemplateColumns={"minmax(0, 1fr) 366px"}
-					h="full"
+					h="100%"
 					gap="0"
 				>
 					<GridItem area={"info"}>
-						<Flex h="full" pl="3" pt="2" align={"center"} justify={"start"}>
+						<Flex h="100%" pl="3" pt="2" align={"center"} justify={"start"}>
 							<PlayerSongInformation />
 						</Flex>
 					</GridItem>
 					<GridItem area={"control"}>
-						<Flex h="full" pr="5" align={"center"} justify={"end"}>
+						<Flex h="100%" pr="5" align={"center"} justify={"end"}>
 							<PlayerControls />
 						</Flex>
 					</GridItem>

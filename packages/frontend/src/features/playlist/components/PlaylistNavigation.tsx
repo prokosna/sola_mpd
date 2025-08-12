@@ -22,7 +22,7 @@ export function PlaylistNavigation() {
 
 	return (
 		<>
-			<Box className="layout-border-left" w="100%" h="full">
+			<Box className="layout-border-left" w="100%" h="100%">
 				<SelectList {...selectListProps} />
 			</Box>
 		</>

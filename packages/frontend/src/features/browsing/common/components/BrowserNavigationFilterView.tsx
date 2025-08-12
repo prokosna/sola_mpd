@@ -1,7 +1,7 @@
-import { Box } from "@chakra-ui/react";
 import type { BrowserFilter } from "@sola_mpd/domain/src/models/browser_pb.js";
 import type { Song_MetadataTag } from "@sola_mpd/domain/src/models/song_pb.js";
 
+import { Group } from "@mantine/core";
 import type { UpdateMode } from "../../../../types/stateTypes";
 import { FullWidthSkeleton } from "../../../loading";
 import { SelectList } from "../../../select_list";
@@ -41,9 +41,9 @@ export function BrowserNavigationFilterView(
 
 	return (
 		<>
-			<Box w="100%" h="full">
+			<Group w="100%" h="100%">
 				<SelectList {...selectListProps} />
-			</Box>
+			</Group>
 		</>
 	);
 }

@@ -58,7 +58,7 @@ export function SearchContent() {
 
 	return (
 		<>
-			<Box w="100%" h="full">
+			<Box w="100%" h="100%">
 				<SongTable {...songTableProps} />
 				<PlaylistSelectModal {...playlistSelectModalProps} />
 				<ColumnEditModal {...columnEditModalProps} />
