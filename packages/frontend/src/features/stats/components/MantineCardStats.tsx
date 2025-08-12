@@ -1,4 +1,4 @@
-import { Divider, Group, Stack } from "@mantine/core";
+import { Divider, Stack } from "@mantine/core";
 import { useSelectedSongsState } from "../../song_table";
 import { useAlbumStatsProps } from "../hooks/useAlbumStatsProps";
 import { useArtistStatsProps } from "../hooks/useArtistStatsProps";
@@ -31,18 +31,16 @@ export function MantineCardStats() {
 
 	return (
 		<>
-			<Stack w="100%" h="full" gap={1}>
+			<Stack w="100%" h="full" gap={4}>
 				<MantineCardStatsNumber {...songStatsProps} />
-				<Divider my={2} />
+				<Divider />
 				<MantineCardStatsNumber {...artistStatsProps} />
-				<Divider my={2} />
+				<Divider />
 				<MantineCardStatsNumber {...albumStatsProps} />
-				<Divider my={2} />
+				<Divider />
 				<MantineCardStatsNumber {...durationStatsProps} />
-				<Divider my={2} />
-				<Group my={2}>
-					<MantineCardStatsDatabaseButton />
-				</Group>
+				<Divider pb={6} />
+				<MantineCardStatsDatabaseButton />
 			</Stack>
 		</>
 	);

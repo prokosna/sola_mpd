@@ -17,7 +17,7 @@ import {
 import { MantineMpdProfileSelector } from "../../features/profile/components/MantineMpdProfileSelector";
 import { MantineColorModeSwitchButton } from "../../features/settings/components/MantineColorModeSwitchButton";
 import { MantineSettingsEntryButton } from "../../features/settings/components/MantineSettingsEntryButton";
-import { SideNavigation } from "../../features/side_navigation";
+import { MantineSideNavigation } from "../../features/side_navigation/components/MantineSideNavigation";
 import {
 	useIsCompactMode,
 	useUserDeviceType,
@@ -41,7 +41,7 @@ export function MantineHomeLayout() {
 			<AppShell
 				header={{ height: 80 }}
 				navbar={{
-					width: isOpen ? 250 : 88,
+					width: isOpen ? 200 : 69,
 					breakpoint: 0,
 					collapsed: { mobile: false, desktop: false },
 				}}
@@ -50,11 +50,11 @@ export function MantineHomeLayout() {
 				<AppShell.Header>
 					<Group h="100%" gap={0} wrap="nowrap">
 						<Group
-							style={{ flexGrow: 1 }}
-							maw={userDeviceType === "large" ? 250 : 88}
-							miw={userDeviceType === "large" ? 250 : 88}
-							justify="center"
+							maw={userDeviceType === "large" ? 200 : 69}
+							miw={userDeviceType === "large" ? 200 : 69}
+							justify="space-between"
 							wrap="nowrap"
+							gap={0}
 						>
 							<MantineBrandLogo />
 							<Space />
@@ -82,7 +82,7 @@ export function MantineHomeLayout() {
 
 				<AppShell.Navbar p={0}>
 					<ScrollArea>
-						<SideNavigation isCompact={!isOpen} />
+						<MantineSideNavigation isCompact={!isOpen} />
 					</ScrollArea>
 				</AppShell.Navbar>
 

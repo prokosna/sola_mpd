@@ -1,7 +1,7 @@
 import { useMemo } from "react";
 
 import { usePathname } from "../../location";
-import type { SideNavigationItemProps } from "../components/SideNavigationItem";
+import type { SideNavigationItemProps } from "../components/MantineSideNavigationItem";
 
 /**
  * Update navigation items' selection state based on URL.
@@ -16,7 +16,8 @@ export function useSideNavigationItems(
 
 	const navItems = useMemo(() => {
 		return baseItems.map((item) => {
-			if (item.link === pathname) {
+			if (item.link === pathname.replace("mantine", "home")) {
+				// TODO: reomve later
 				item.isSelected = true;
 			} else {
 				item.isSelected = false;

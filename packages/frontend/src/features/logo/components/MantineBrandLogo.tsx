@@ -1,4 +1,4 @@
-import { Group, Space, Text } from "@mantine/core";
+import { Text } from "@mantine/core";
 import { useGlobalKeyShortcuts } from "../../keyboard_shortcut";
 import { useUserDeviceType } from "../../user_device";
 
@@ -24,12 +24,9 @@ export function MantineBrandLogo() {
 
 	return (
 		<>
-			<Group>
-				<Space />
-				<Text size="30" fw={700} c="brand">
-					Sola MPD
-				</Text>
-			</Group>
+			<Text pl={24} size="28" fw={700} c="brand">
+				Sola MPD
+			</Text>
 		</>
 	);
 }
