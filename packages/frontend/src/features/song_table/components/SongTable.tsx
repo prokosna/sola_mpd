@@ -1,4 +1,3 @@
-import { CircularProgress } from "@chakra-ui/react";
 import type { Song } from "@sola_mpd/domain/src/models/song_pb.js";
 import type { SongTableColumn } from "@sola_mpd/domain/src/models/song_table_pb.js";
 import type { GetRowIdParams } from "ag-grid-community";
@@ -7,6 +6,7 @@ import { useCallback, useRef } from "react";
 
 import { useAgGridTheme } from "../../../lib/agGrid/hooks/useAgGridTheme";
 import { ContextMenu, type ContextMenuSection } from "../../context_menu";
+import { CenterSpinnerOverlay } from "../../loading/components/CenterSpinnerOverlay";
 import { useIsCompactMode, useIsTouchDevice } from "../../user_device";
 import { useAgGridReactData } from "../hooks/useAgGridReactData";
 import { useHandleColumnsUpdated } from "../hooks/useHandleColumnsUpdated";
@@ -141,54 +141,43 @@ export function SongTable(props: SongTableProps): JSX.Element {
 
 	return (
 		<>
-			<div
-				ref={ref}
-				style={{ height: "100%", width: "100%", position: "relative" }}
-			>
-				<AgGridReact
-					ref={gridRef}
-					theme={theme}
-					rowData={rowData}
-					columnDefs={columnDefs}
-					onSortChanged={!isCompact ? handleColumnsUpdated : undefined}
-					onColumnMoved={!isCompact ? handleColumnsUpdated : undefined}
-					onRowDragEnd={handleRowDragEnded}
-					onRowDoubleClicked={handleRowDoubleClick}
-					onColumnResized={!isCompact ? handleColumnsUpdated : undefined}
-					onCellContextMenu={openContextMenu}
-					onSelectionChanged={handleSelectionChange}
-					onRowDataUpdated={handleRowDataUpdated}
-					onRowClicked={handleRowClick}
-					animateRows={true}
-					colResizeDefault={"shift"}
-					rowSelection={{
-						mode: "multiRow",
-						checkboxes: isTouchDevice,
-						headerCheckbox: isTouchDevice,
-						enableClickSelection: true,
-						enableSelectionWithoutKeys: false,
-					}}
-					rowDragManaged={true}
-					rowDragMultiRow={true}
-					preventDefaultOnContextMenu={true}
-					rowClassRules={rowClassRules}
-					getRowId={getRowId}
-					rowHeight={isCompact ? 60 : 30}
-					alwaysMultiSort={!!isTouchDevice}
-					selectionColumnDef={selectionColumnDef}
-					onFirstDataRendered={handleFirstDataRendered}
-				/>
-				{props.isLoading && (
-					<CircularProgress
-						top={"50%"}
-						left={"50%"}
-						transform={"translate(-50%, -50%) scale(1.5)"}
-						position={"absolute"}
-						isIndeterminate
-						color="brand.500"
+			<CenterSpinnerOverlay visible={props.isLoading}>
+				<div ref={ref} style={{ height: "100%", width: "100%" }}>
+					<AgGridReact
+						ref={gridRef}
+						theme={theme}
+						rowData={rowData}
+						columnDefs={columnDefs}
+						onSortChanged={!isCompact ? handleColumnsUpdated : undefined}
+						onColumnMoved={!isCompact ? handleColumnsUpdated : undefined}
+						onRowDragEnd={handleRowDragEnded}
+						onRowDoubleClicked={handleRowDoubleClick}
+						onColumnResized={!isCompact ? handleColumnsUpdated : undefined}
+						onCellContextMenu={openContextMenu}
+						onSelectionChanged={handleSelectionChange}
+						onRowDataUpdated={handleRowDataUpdated}
+						onRowClicked={handleRowClick}
+						animateRows={true}
+						colResizeDefault={"shift"}
+						rowSelection={{
+							mode: "multiRow",
+							checkboxes: isTouchDevice,
+							headerCheckbox: isTouchDevice,
+							enableClickSelection: true,
+							enableSelectionWithoutKeys: false,
+						}}
+						rowDragManaged={true}
+						rowDragMultiRow={true}
+						preventDefaultOnContextMenu={true}
+						rowClassRules={rowClassRules}
+						getRowId={getRowId}
+						rowHeight={isCompact ? 60 : 30}
+						alwaysMultiSort={!!isTouchDevice}
+						selectionColumnDef={selectionColumnDef}
+						onFirstDataRendered={handleFirstDataRendered}
 					/>
-				)}
-			</div>
+				</div>
+			</CenterSpinnerOverlay>
 			<ContextMenu id={props.id} sections={props.contextMenuSections} />
 		</>
 	);

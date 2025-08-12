@@ -1,7 +1,7 @@
 import { useMemo } from "react";
 
 import { usePathname } from "../../location";
-import type { SideNavigationItemProps } from "../components/MantineSideNavigationItem";
+import type { SideNavigationItemProps } from "../components/SideNavigationItem";
 
 /**
  * Update navigation items' selection state based on URL.

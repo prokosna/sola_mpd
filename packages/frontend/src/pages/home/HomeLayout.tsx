@@ -1,18 +1,16 @@
 import {
+	ActionIcon,
+	AppShell,
 	Box,
-	Button,
-	Flex,
-	Grid,
-	GridItem,
-	HStack,
-	Icon,
-	Spacer,
-	useDisclosure,
-} from "@chakra-ui/react";
+	Group,
+	ScrollArea,
+	Space,
+} from "@mantine/core";
+import { useDisclosure } from "@mantine/hooks";
 import { Suspense, useEffect } from "react";
-import { IoMenu } from "react-icons/io5";
 import { Outlet, useLocation, useNavigate } from "react-router";
 
+import { IconMenu2 } from "@tabler/icons-react";
 import { ROUTE_HOME, ROUTE_HOME_PLAY_QUEUE } from "../../const/routes";
 import { GlobalFilterBox } from "../../features/global_filter";
 import { CenterSpinner } from "../../features/loading";
@@ -38,9 +36,7 @@ export function HomeLayout() {
 	const location = useLocation();
 	const navigate = useNavigate();
 	const isCompactMode = useIsCompactMode();
-	const { getButtonProps, isOpen } = useDisclosure({
-		defaultIsOpen: !isCompactMode,
-	});
+	const [isOpen, { toggle }] = useDisclosure(!isCompactMode);
 	const userDeviceType = useUserDeviceType();
 
 	useEffect(() => {
@@ -51,72 +47,66 @@ export function HomeLayout() {
 
 	return (
 		<>
-			<Grid
-				templateAreas={`"header"
-      "main"
-      "footer"`}
-				gridTemplateRows={"80px 1fr 100px"}
-				maxH="100dvh"
-				gap="0px"
+			<AppShell
+				header={{ height: 60 }}
+				navbar={{
+					width: isOpen ? 200 : 69,
+					breakpoint: 0,
+					collapsed: { mobile: false, desktop: false },
+				}}
+				footer={{ height: 100 }}
 			>
-				<GridItem area={"header"}>
-					<HStack spacing={"0px"}>
-						<Box minW={userDeviceType === "large" ? "250px" : "88px"} h="80px">
-							<HStack h="100%" justify={"space-between"} align={"center"}>
-								<BrandLogo />
-								<Button
-									{...getButtonProps()}
-									p={0}
-									ml={userDeviceType === "large" ? 0 : 2}
-									mr={2}
-									variant={"ghost"}
-									flexGrow={1}
-								>
-									<Icon as={IoMenu} fontSize={24} />
-								</Button>
-							</HStack>
-						</Box>
-						<Box flexGrow={"1"}>
-							<HStack h="100%" justify={"space-between"} align={"center"}>
-								<GlobalFilterBox />
-								<HStack h="100%" justify={"end"} align={"center"}>
-									<PluginExecutionIndicator />
-									<Spacer />
-									<MpdProfileSelector />
-									<Spacer />
-									<ColorModeSwitchButton />
-									<SettingsEntryButton />
-									<Spacer />
-								</HStack>
-							</HStack>
-						</Box>
-					</HStack>
-				</GridItem>
-				<GridItem area={"main"}>
-					<Flex h="calc(100dvh - 180px)" w="100vw">
-						<Box
-							className="layout-border-top layout-border-bottom"
-							overflowX={"clip"}
-							overflowY={"auto"}
-							minW={isOpen ? "250px" : "20px"}
+				<AppShell.Header>
+					<Group h="100%" gap={0} wrap="nowrap">
+						<Group
+							maw={userDeviceType === "large" ? 200 : 69}
+							miw={userDeviceType === "large" ? 200 : 69}
+							justify="space-between"
+							wrap="nowrap"
+							gap={0}
 						>
-							<SideNavigation {...{ isCompact: !isOpen }} />
+							<BrandLogo />
+							<Space />
+							<ActionIcon size="md" variant="transparent" onClick={toggle}>
+								<IconMenu2 />
+							</ActionIcon>
+							<Space />
+						</Group>
+						<Group
+							style={{ flexGrow: 1 }}
+							justify="space-between"
+							wrap="nowrap"
+						>
+							<GlobalFilterBox />
+							<Group justify="flex-end" wrap="nowrap" gap="md">
+								<PluginExecutionIndicator />
+								<MpdProfileSelector />
+								<ColorModeSwitchButton />
+								<SettingsEntryButton />
+								<Space />
+							</Group>
+						</Group>
+					</Group>
+				</AppShell.Header>
+
+				<AppShell.Navbar>
+					<ScrollArea>
+						<SideNavigation isCompact={!isOpen} />
+					</ScrollArea>
+				</AppShell.Navbar>
+
+				<AppShell.Main display="flex">
+					<Suspense fallback={<CenterSpinner />}>
+						<Box flex={1}>
+							<Outlet />
 						</Box>
-						<Box flexGrow={"1"} overflowY={"auto"}>
-							<Suspense
-								fallback={
-									<CenterSpinner className="layout-border-top layout-border-left" />
-								}
-							>
-								<Outlet />
-							</Suspense>
-						</Box>
-					</Flex>
-				</GridItem>
-				<GridItem area={"footer"}>
+					</Suspense>
+				</AppShell.Main>
+
+				<AppShell.Footer>
 					<Player />
-				</GridItem>
-			</Grid>
+				</AppShell.Footer>
+			</AppShell>
 			<MpdEventObserver />
 			<PluginExecutionModal />
 		</>

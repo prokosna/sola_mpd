@@ -1,11 +1,9 @@
-import { Box, Divider } from "@chakra-ui/react";
-
+import { Divider, Stack } from "@mantine/core";
 import { useSelectedSongsState } from "../../song_table";
 import { useAlbumStatsProps } from "../hooks/useAlbumStatsProps";
 import { useArtistStatsProps } from "../hooks/useArtistStatsProps";
 import { useDurationStatsProps } from "../hooks/useDurationStatsProps";
 import { useSongStatsProps } from "../hooks/useSongStatsProps";
-
 import { CardStatsDatabaseButton } from "./CardStatsDatabaseButton";
 import { CardStatsNumber } from "./CardStatsNumber";
 
@@ -33,19 +31,17 @@ export function CardStats() {
 
 	return (
 		<>
-			<Box w="100%" h="full">
+			<Stack w="100%" h="full" gap={4}>
 				<CardStatsNumber {...songStatsProps} />
-				<Divider mb={2} />
+				<Divider />
 				<CardStatsNumber {...artistStatsProps} />
-				<Divider mb={2} />
+				<Divider />
 				<CardStatsNumber {...albumStatsProps} />
-				<Divider mb={2} />
+				<Divider />
 				<CardStatsNumber {...durationStatsProps} />
-				<Divider mb={2} />
-				<Box mb={0} pb={0}>
-					<CardStatsDatabaseButton />
-				</Box>
-			</Box>
+				<Divider pb={6} />
+				<CardStatsDatabaseButton />
+			</Stack>
 		</>
 	);
 }

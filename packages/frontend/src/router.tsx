@@ -12,7 +12,6 @@ import {
 	ROUTE_HOME_SEARCH,
 	ROUTE_HOME_SETTINGS,
 	ROUTE_LANDING,
-	ROUTE_MANTINE_HOME,
 } from "./const/routes";
 import { ErrorPage } from "./pages/ErrorPage";
 import { RootLayout } from "./pages/RootLayout";
@@ -21,8 +20,6 @@ import { AllSongsPage } from "./pages/home/AllSongsPage";
 import { BrowserPage } from "./pages/home/BrowserPage";
 import { FileExplorePage } from "./pages/home/FileExplorePage";
 import { HomeLayout } from "./pages/home/HomeLayout";
-import { MantineHomeLayout } from "./pages/home/MantineHomeLayout";
-import { MantinePlayQueuePage } from "./pages/home/MantinePlayQueuePage";
 import { PlayQueuePage } from "./pages/home/PlayQueuePage";
 import { PlaylistPage } from "./pages/home/PlaylistPage";
 import { PluginsPage } from "./pages/home/PluginsPage";
@@ -86,48 +83,6 @@ const router = createBrowserRouter([
 			{
 				path: ROUTE_LANDING,
 				element: <LandingPage />,
-			},
-			{
-				path: ROUTE_MANTINE_HOME,
-				element: <MantineHomeLayout />,
-				children: [
-					{
-						path: ROUTE_HOME_PLAY_QUEUE.split("/").filter(Boolean).pop(),
-						element: <MantinePlayQueuePage />,
-					},
-					{
-						path: ROUTE_HOME_BROWSER.split("/").filter(Boolean).pop(),
-						element: <BrowserPage />,
-					},
-					{
-						path: ROUTE_HOME_PLAYLIST.split("/").filter(Boolean).pop(),
-						element: <PlaylistPage />,
-					},
-					{
-						path: ROUTE_HOME_RECENTLY_ADDED.split("/").filter(Boolean).pop(),
-						element: <RecentlyAddedPage />,
-					},
-					{
-						path: ROUTE_HOME_SEARCH.split("/").filter(Boolean).pop(),
-						element: <SearchPage />,
-					},
-					{
-						path: ROUTE_HOME_FILE_EXPLORE.split("/").filter(Boolean).pop(),
-						element: <FileExplorePage />,
-					},
-					{
-						path: ROUTE_HOME_PLUGIN.split("/").filter(Boolean).pop(),
-						element: <PluginsPage />,
-					},
-					{
-						path: ROUTE_HOME_SETTINGS.split("/").filter(Boolean).pop(),
-						element: <SettingsPage />,
-					},
-					{
-						path: ROUTE_HOME_ALL_SONGS.split("/").filter(Boolean).pop(),
-						element: <AllSongsPage />,
-					},
-				],
 			},
 		],
 	},

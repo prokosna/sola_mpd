@@ -1,7 +1,7 @@
-import { Button, Icon } from "@chakra-ui/react";
-import { IoSettings } from "react-icons/io5";
 import { useNavigate } from "react-router";
 
+import { ActionIcon } from "@mantine/core";
+import { IconSettings } from "@tabler/icons-react";
 import { ROUTE_HOME_SETTINGS } from "../../../const/routes";
 
 /**
@@ -21,16 +21,15 @@ export function SettingsEntryButton() {
 
 	return (
 		<>
-			<Button
-				m={0}
-				p={0}
-				variant={"ghost"}
+			<ActionIcon
+				size="md"
+				variant="transparent"
 				onClick={() => {
 					navigate(ROUTE_HOME_SETTINGS);
 				}}
 			>
-				<Icon as={IoSettings} fontSize={24} />
-			</Button>
+				<IconSettings />
+			</ActionIcon>
 		</>
 	);
 }

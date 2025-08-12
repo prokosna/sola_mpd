@@ -1,4 +1,4 @@
-import { Stat, StatHelpText, StatLabel, StatNumber } from "@chakra-ui/react";
+import { Card, Text } from "@mantine/core";
 
 export type CardStatsNumberProps = {
 	isSelected: boolean;
@@ -19,13 +19,19 @@ export type CardStatsNumberProps = {
 export function CardStatsNumber(props: CardStatsNumberProps) {
 	return (
 		<>
-			<Stat>
-				<StatLabel color={props.isSelected ? "brand.400" : undefined}>
+			<Card p={0} shadow="red" style={{ backgroundColor: "transparent" }}>
+				<Text
+					fz="xs"
+					tt="uppercase"
+					fw={700}
+					c={props.isSelected ? "brand" : "dimmed"}
+				>
 					{props.label}
-				</StatLabel>
-				<StatNumber>{props.count ?? "Loading"}</StatNumber>
-				<StatHelpText />
-			</Stat>
+				</Text>
+				<Text fz="lg" fw={500}>
+					{props.count ?? "Loading..."}
+				</Text>
+			</Card>
 		</>
 	);
 }

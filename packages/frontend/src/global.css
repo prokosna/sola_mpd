@@ -1,11 +1,11 @@
 /* Allotment design customization */
 :root[data-mantine-color-scheme="light"] .allotment-light {
-	--focus-border: var(--mantine-color-blue-5);
+	--focus-border: var(--mantine-color-brand-5);
 	--separator-border: var(--mantine-color-gray-3);
 }
 
 :root[data-mantine-color-scheme="dark"] .allotment-dark {
-	--focus-border: var(--mantine-color-blue-5);
+	--focus-border: var(--mantine-color-brand-5);
 	--separator-border: var(--mantine-color-gray-6);
 }
 

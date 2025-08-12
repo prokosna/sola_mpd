@@ -1,5 +1,4 @@
-import { Box, Text } from "@chakra-ui/react";
-
+import { Text } from "@mantine/core";
 import { useGlobalKeyShortcuts } from "../../keyboard_shortcut";
 import { useUserDeviceType } from "../../user_device";
 
@@ -25,11 +24,9 @@ export function BrandLogo() {
 
 	return (
 		<>
-			<Box pl={6} m={0}>
-				<Text className="logo-color" fontWeight={"bold"} fontSize={"3xl"}>
-					Sola MPD
-				</Text>
-			</Box>
+			<Text pl={24} size="28" fw={700} c="brand">
+				Sola MPD
+			</Text>
 		</>
 	);
 }

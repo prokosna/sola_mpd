@@ -6,23 +6,11 @@ import {
 } from "@chakra-ui/react";
 import { mode } from "@chakra-ui/theme-tools";
 
-// const agGridColors = {
-// 	activeColor: "#2196f3",
-// 	hover: "rgba(33, 150, 243, 0.1)",
-// 	selected: "rgba(33, 150, 243, 0.3)",
-// };
-
 export const customTheme = extendTheme(
 	{
 		config: {
 			initialColorMode: "dark",
 		},
-		// semanticTokens: {
-		// 	colors: {
-		// 		"ag-grid.hover": agGridColors.hover,
-		// 		"ag-grid.selected": agGridColors.selected,
-		// 	},
-		// },
 		components: {},
 		colors: {
 			brand: baseTheme.colors.blue,

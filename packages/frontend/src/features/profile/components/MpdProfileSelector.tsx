@@ -1,6 +1,5 @@
-import { Box, Select } from "@chakra-ui/react";
-
-import { useNotification } from "../../../lib/chakra/hooks/useNotification";
+import { Group, Select } from "@mantine/core";
+import { useNotificationMantine } from "../../../lib/chakra/hooks/useNotificationMantine";
 import { useEnabledOutputDevice } from "../../output_devices";
 import { useChangeCurrentMpdProfile } from "../hooks/useChangeCurrentMpdProfile";
 import { useMpdProfileState } from "../states/mpdProfileState";
@@ -13,7 +12,7 @@ import { useMpdProfileState } from "../states/mpdProfileState";
  * @returns Selection component
  */
 export function MpdProfileSelector() {
-	const notify = useNotification();
+	const notify = useNotificationMantine();
 
 	const mpdProfileState = useMpdProfileState();
 	const enabledOutputDevice = useEnabledOutputDevice();
@@ -21,37 +20,39 @@ export function MpdProfileSelector() {
 
 	return (
 		<>
-			<Box px={0} minW="100px" maxW="300px">
+			<Group px={0} miw="100px" maw="300px">
 				{mpdProfileState?.currentProfile === undefined ||
 				enabledOutputDevice === undefined ? (
-					<Select placeholder="Loading profiles..." />
+					<Select size="md" placeholder="Loading profiles..." />
 				) : (
 					<Select
+						size="md"
 						value={mpdProfileState.currentProfile.name}
-						onChange={async (e) => {
-							await changeCurrentMpdProfile(e.target.value);
-							notify({
-								status: "info",
-								title: "MPD profile changed",
-								description: `MPD profile is changed to ${e.target.value}`,
-							});
-						}}
-					>
-						{mpdProfileState.profiles.map((profile) => {
+						data={mpdProfileState.profiles.map((profile) => {
 							const isSelected =
 								profile.name === mpdProfileState.currentProfile?.name;
 							const text =
 								profile.name +
 								(isSelected ? ` - ${enabledOutputDevice?.name}` : "");
-							return (
-								<option key={profile.name} value={profile.name}>
-									{text}
-								</option>
-							);
+							return {
+								value: profile.name,
+								label: text,
+							};
 						})}
-					</Select>
+						onChange={async (value) => {
+							if (value == null) {
+								return;
+							}
+							await changeCurrentMpdProfile(value);
+							notify({
+								status: "info",
+								title: "MPD profile changed",
+								description: `MPD profile is changed to ${value}`,
+							});
+						}}
+					/>
 				)}
-			</Box>
+			</Group>
 		</>
 	);
 }

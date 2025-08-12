@@ -1,5 +1,5 @@
-import { Flex, Icon, Link, Text } from "@chakra-ui/react";
-import type { IconType } from "react-icons";
+import { NavLink } from "@mantine/core";
+import type { ReactNode } from "react";
 import { useNavigate } from "react-router";
 import { useIncrementTransitionCounter } from "../../location";
 
@@ -14,7 +14,7 @@ import { useIncrementTransitionCounter } from "../../location";
  */
 export type SideNavigationItemProps = {
 	name: string;
-	icon: IconType;
+	icon: ReactNode;
 	link: string;
 	isSelected?: boolean;
 	isCompact: boolean;
@@ -35,31 +35,15 @@ export function SideNavigationItem(props: SideNavigationItemProps) {
 	};
 
 	return (
-		<Link
+		<NavLink
 			onClick={(e) => {
 				e.preventDefault();
 				handleNavigation(props.link);
 			}}
-			style={{ textDecoration: "none" }}
-		>
-			<Flex
-				align="center"
-				p="4"
-				borderRadius="lg"
-				// biome-ignore lint/a11y/useSemanticElements: Using Chakra UI.
-				role="group"
-				cursor="pointer"
-				bg={props.isSelected ? "brand.600" : undefined}
-				color={props.isSelected ? "white" : undefined}
-				_hover={{
-					boxShadow: "0 0 0 1px var(--chakra-colors-brand-600)",
-				}}
-			>
-				<Icon as={props.icon} mr={props.isCompact ? 0 : 4} fontSize="24" />
-				{props.isCompact ? null : (
-					<Text fontWeight={"medium"}>{props.name}</Text>
-				)}
-			</Flex>
-		</Link>
+			label={props.isCompact ? null : props.name}
+			leftSection={props.icon}
+			variant="fill"
+			active={props.isSelected}
+		/>
 	);
 }

@@ -4,7 +4,6 @@ export {
 	type ColumnEditModalProps,
 } from "./components/ColumnEditModal";
 export { SongTable, type SongTableProps } from "./components/SongTable";
-export { MantineSongTable } from "./components/MantineSongTable";
 
 // Hooks
 export { useColumnEditModalProps } from "./hooks/useColumnEditModalProps";
