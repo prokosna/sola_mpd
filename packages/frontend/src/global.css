@@ -9,6 +9,10 @@
 	--separator-border: var(--mantine-color-dark-4);
 }
 
+.sash {
+	z-index: 1000 !important;
+}
+
 /* Ag Grid inrow font weight customization */
 .ag-font-weight-bold {
 	font-weight: bold;
