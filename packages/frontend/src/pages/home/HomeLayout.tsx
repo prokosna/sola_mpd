@@ -50,7 +50,7 @@ export function HomeLayout() {
 			<AppShell
 				header={{ height: 60 }}
 				navbar={{
-					width: isOpen ? 200 : 69,
+					width: isOpen ? 220 : 69,
 					breakpoint: 0,
 					collapsed: { mobile: false, desktop: false },
 				}}
@@ -59,8 +59,8 @@ export function HomeLayout() {
 				<AppShell.Header>
 					<Group h="100%" gap={0} wrap="nowrap">
 						<Group
-							maw={userDeviceType === "large" ? 200 : 69}
-							miw={userDeviceType === "large" ? 200 : 69}
+							maw={userDeviceType === "large" ? 220 : 69}
+							miw={userDeviceType === "large" ? 220 : 69}
 							justify="space-between"
 							wrap="nowrap"
 							gap={0}
@@ -103,7 +103,7 @@ export function HomeLayout() {
 					</Suspense>
 				</AppShell.Main>
 
-				<AppShell.Footer>
+				<AppShell.Footer bg={"brand.9"}>
 					<Player />
 				</AppShell.Footer>
 			</AppShell>

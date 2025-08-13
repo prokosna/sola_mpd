@@ -1,4 +1,4 @@
-import { Box, SkeletonText } from "@chakra-ui/react";
+import { Skeleton, Stack } from "@mantine/core";
 
 /**
  * A skeleton loading placeholder that spans the full width of its container.
@@ -11,14 +11,18 @@ import { Box, SkeletonText } from "@chakra-ui/react";
  * - Takes up full width and height of container
  *
  * @component
- * @param props.className Optional CSS class for styling the container
  */
-export function FullWidthSkeleton({ className }: { className?: string }) {
+export const FullWidthSkeleton = (props: { lineCount?: number }) => {
+	const { lineCount = 6 } = props;
+
 	return (
-		<>
-			<Box w="100%" h="100%" p="6" className={className}>
-				<SkeletonText mt="4" noOfLines={6} spacing="4" skeletonHeight="2" />
-			</Box>
-		</>
+		<Stack w="100%" h="100%" p={16}>
+			{Array.from({ length: lineCount }, (_, i) => {
+				const key = `skeleton-${i}`;
+				const isLast = i === lineCount - 1;
+
+				return <Skeleton key={key} h={6} w={isLast ? "60%" : "90%"} />;
+			})}
+		</Stack>
 	);
-}
+};

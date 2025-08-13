@@ -20,6 +20,7 @@
 		"@mantine/hooks": "^8.2.4",
 		"@mantine/modals": "^8.2.4",
 		"@mantine/notifications": "^8.2.4",
+		"@mantine/nprogress": "^8.2.4",
 		"@sola_mpd/domain": "^0.0.0",
 		"@tabler/icons-react": "^3.34.1",
 		"ag-grid-community": "^33.0.3",

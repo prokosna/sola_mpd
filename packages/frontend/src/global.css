@@ -5,14 +5,18 @@
 }
 
 :root[data-mantine-color-scheme="dark"] .allotment-dark {
-	--focus-border: var(--mantine-color-brand-5);
-	--separator-border: var(--mantine-color-gray-6);
+	--focus-border: var(--mantine-color-brand-6);
+	--separator-border: var(--mantine-color-dark-4);
 }
 
 /* Ag Grid inrow font weight customization */
 .ag-font-weight-bold {
 	font-weight: bold;
 }
+
+body {
+	background-color: transparent !important;
+} /* TODO: Remove this later */
 
 /* Converted from Chakra global styles */
 /* :root[data-mantine-color-scheme="light"] .browser-breadcrumbs-bg {

@@ -32,7 +32,6 @@ export function Player() {
 				<PlayerSeekBar />
 				<PlayerDuration />
 				<Grid
-					className="player-surface-grid"
 					templateAreas={`"info control"`}
 					gridTemplateColumns={"minmax(0, 1fr) 366px"}
 					h="100%"

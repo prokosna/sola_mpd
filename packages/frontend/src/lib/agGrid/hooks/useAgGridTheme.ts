@@ -24,8 +24,8 @@ export function useAgGridTheme(): Theme {
 			headerBackgroundColor: theme.colors.gray[2],
 			backgroundColor: theme.colors.gray[1],
 			oddRowBackgroundColor: theme.colors.gray[0],
-			accentColor: theme.colors.brand[2],
-			rowHoverColor: rgba(theme.colors.brand[2], 0.2),
+			accentColor: rgba(theme.colors.brand[6], 0.5),
+			rowHoverColor: rgba(theme.colors.brand[6], 0.15),
 		});
 
 	const agGridDarkTheme = themeAlpine.withPart(colorSchemeDarkBlue).withParams({
@@ -38,8 +38,8 @@ export function useAgGridTheme(): Theme {
 		headerBackgroundColor: theme.colors.dark[6],
 		backgroundColor: theme.colors.dark[7],
 		oddRowBackgroundColor: theme.colors.dark[8],
-		accentColor: theme.colors.brand[9],
-		rowHoverColor: rgba(theme.colors.brand[9], 0.1),
+		accentColor: rgba(theme.colors.brand[6], 0.5),
+		rowHoverColor: rgba(theme.colors.brand[6], 0.15),
 	});
 
 	return useMemo(() => {
