@@ -161,7 +161,7 @@ export function SettingsStates() {
 		recentlyAddedState === undefined ||
 		recentlyAddedStateProps === undefined
 	) {
-		return <CenterSpinner className="layout-border-top layout-border-left" />;
+		return <CenterSpinner />;
 	}
 
 	return (

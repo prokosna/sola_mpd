@@ -1,5 +1,5 @@
 import { Group, Select } from "@mantine/core";
-import { useNotificationMantine } from "../../../lib/chakra/hooks/useNotificationMantine";
+import { useNotification } from "../../../lib/mantine/hooks/useNotification";
 import { useEnabledOutputDevice } from "../../output_devices";
 import { useChangeCurrentMpdProfile } from "../hooks/useChangeCurrentMpdProfile";
 import { useMpdProfileState } from "../states/mpdProfileState";
@@ -12,7 +12,7 @@ import { useMpdProfileState } from "../states/mpdProfileState";
  * @returns Selection component
  */
 export function MpdProfileSelector() {
-	const notify = useNotificationMantine();
+	const notify = useNotification();
 
 	const mpdProfileState = useMpdProfileState();
 	const enabledOutputDevice = useEnabledOutputDevice();

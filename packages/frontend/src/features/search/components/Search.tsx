@@ -44,7 +44,7 @@ export function Search() {
 	);
 
 	if (!isReady) {
-		return <CenterSpinner className="layout-border-top layout-border-left" />;
+		return <CenterSpinner />;
 	}
 
 	return (

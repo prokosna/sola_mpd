@@ -14,7 +14,7 @@ import {
 import type { Plugin } from "@sola_mpd/domain/src/models/plugin/plugin_pb.js";
 import { useCallback, useState } from "react";
 
-import { useNotification } from "../../../lib/chakra/hooks/useNotification";
+import { useNotification } from "../../../lib/mantine/hooks/useNotification";
 import { UpdateMode } from "../../../types/stateTypes";
 import { usePluginState, useUpdatePluginState } from "../states/pluginState";
 

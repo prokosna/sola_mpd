@@ -29,7 +29,7 @@ export function PluginList(props: PluginListProps) {
 	const { unavailableColor, addPluginColor } = usePluginDisplayColors();
 
 	if (pluginState === undefined) {
-		return <CenterSpinner className="layout-border-top layout-border-left" />;
+		return <CenterSpinner />;
 	}
 
 	return (

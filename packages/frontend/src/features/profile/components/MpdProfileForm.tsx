@@ -17,7 +17,7 @@ import {
 import { useCallback, useState } from "react";
 import { useForm } from "react-hook-form";
 
-import { useNotification } from "../../../lib/chakra/hooks/useNotification";
+import { useNotification } from "../../../lib/mantine/hooks/useNotification";
 import { useAddMpdProfile } from "../hooks/useAddMpdProfile";
 import { useValidateMpdProfile } from "../hooks/useValidateMpdProfile";
 import type { ProfileInput } from "../types/profileTypes";

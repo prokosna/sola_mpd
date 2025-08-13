@@ -19,7 +19,7 @@ export type CardStatsNumberProps = {
 export function CardStatsNumber(props: CardStatsNumberProps) {
 	return (
 		<>
-			<Card p={0} shadow="red" style={{ backgroundColor: "transparent" }}>
+			<Card p={0} style={{ backgroundColor: "transparent" }}>
 				<Text
 					fz="xs"
 					tt="uppercase"

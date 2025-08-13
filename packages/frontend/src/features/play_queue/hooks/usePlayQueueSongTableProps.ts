@@ -9,7 +9,7 @@ import { getSongMetadataAsString } from "@sola_mpd/domain/src/utils/songUtils.js
 import { type MutableRefObject, useCallback } from "react";
 
 import { COMPONENT_ID_PLAY_QUEUE } from "../../../const/component";
-import { useNotification } from "../../../lib/chakra/hooks/useNotification";
+import { useNotification } from "../../../lib/mantine/hooks/useNotification";
 import { UpdateMode } from "../../../types/stateTypes";
 import type { ContextMenuSection } from "../../context_menu";
 import { useMpdClientState } from "../../mpd";

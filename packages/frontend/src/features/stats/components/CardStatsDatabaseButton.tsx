@@ -2,7 +2,7 @@ import { MpdRequest } from "@sola_mpd/domain/src/models/mpd/mpd_command_pb.js";
 import { useCallback } from "react";
 
 import { Button } from "@mantine/core";
-import { useNotification } from "../../../lib/chakra/hooks/useNotification";
+import { useNotification } from "../../../lib/mantine/hooks/useNotification";
 import { useMpdClientState } from "../../mpd";
 import { usePlayerStatusIsDatabaseUpdatingState } from "../../player";
 import { useCurrentMpdProfileState } from "../../profile";

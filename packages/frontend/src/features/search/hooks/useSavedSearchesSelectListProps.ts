@@ -1,7 +1,7 @@
 import { useCallback } from "react";
 
 import { COMPONENT_ID_SEARCH_SIDE_PANE } from "../../../const/component";
-import { useNotification } from "../../../lib/chakra/hooks/useNotification";
+import { useNotification } from "../../../lib/mantine/hooks/useNotification";
 import { UpdateMode } from "../../../types/stateTypes";
 import type { ContextMenuSection } from "../../context_menu";
 import { useMpdClientState } from "../../mpd";

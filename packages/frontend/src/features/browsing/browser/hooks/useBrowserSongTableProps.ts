@@ -4,7 +4,7 @@ import type { SongTableColumn } from "@sola_mpd/domain/src/models/song_table_pb.
 import { type MutableRefObject, useCallback } from "react";
 
 import { COMPONENT_ID_BROWSER } from "../../../../const/component";
-import { useNotification } from "../../../../lib/chakra/hooks/useNotification";
+import { useNotification } from "../../../../lib/mantine/hooks/useNotification";
 import { UpdateMode } from "../../../../types/stateTypes";
 import type { ContextMenuSection } from "../../../context_menu";
 import { useMpdClientState } from "../../../mpd";

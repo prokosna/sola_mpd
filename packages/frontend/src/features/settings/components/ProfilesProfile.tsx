@@ -6,7 +6,7 @@ import type {
 import { useCallback } from "react";
 import { IoTrash } from "react-icons/io5";
 
-import { useNotification } from "../../../lib/chakra/hooks/useNotification";
+import { useNotification } from "../../../lib/mantine/hooks/useNotification";
 import { UpdateMode } from "../../../types/stateTypes";
 import { useUpdateMpdProfileState } from "../../profile";
 

@@ -1,11 +1,11 @@
 import { useMemo } from "react";
 
-import type { TreeNode } from "../../../lib/chakra/types/treeViewTypes";
 import {
 	useFileExploreFoldersState,
 	useSelectedFileExploreFolderState,
 	useSetSelectedFileExploreFolderState,
 } from "../states/fileExploreFoldersState";
+import type { TreeNode } from "../types/treeViewTypes";
 
 /**
  * Properties for the file explorer tree view.

@@ -15,9 +15,7 @@ export function SearchNavigationSavedQueries() {
 	const selectListProps = useSavedSearchesSelectListProps();
 
 	if (selectListProps === undefined) {
-		return (
-			<FullWidthSkeleton className="layout-border-top layout-border-left" />
-		);
+		return <FullWidthSkeleton />;
 	}
 
 	return (

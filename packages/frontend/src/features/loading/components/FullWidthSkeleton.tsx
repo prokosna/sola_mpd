@@ -21,7 +21,7 @@ export const FullWidthSkeleton = (props: { lineCount?: number }) => {
 				const key = `skeleton-${i}`;
 				const isLast = i === lineCount - 1;
 
-				return <Skeleton key={key} h={6} w={isLast ? "60%" : "90%"} />;
+				return <Skeleton key={key} h={6} w={isLast ? "70%" : "100%"} />;
 			})}
 		</Stack>
 	);

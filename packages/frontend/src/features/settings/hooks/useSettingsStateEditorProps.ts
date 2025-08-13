@@ -2,7 +2,7 @@ import type { Message } from "@bufbuild/protobuf";
 import { useDisclosure } from "@chakra-ui/react";
 import { useCallback } from "react";
 
-import { useNotification } from "../../../lib/chakra/hooks/useNotification";
+import { useNotification } from "../../../lib/mantine/hooks/useNotification";
 import type { SettingsStatesEditorProps } from "../components/SettingsStatesEditor";
 
 /**

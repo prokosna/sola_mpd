@@ -1,8 +1,8 @@
-import { Box } from "@chakra-ui/react";
-
-import { TreeView } from "../../../lib/chakra/components/TreeView";
+import { ScrollArea } from "@mantine/core";
+import { NavLink } from "@mantine/core";
 import { FullWidthSkeleton } from "../../loading";
 import { useFileExploreTreeViewNodes } from "../hooks/useFileExploreTreeViewNodes";
+import type { TreeNode } from "../types/treeViewTypes";
 
 /**
  * Navigation component for the file explorer's folder tree.
@@ -21,26 +21,47 @@ import { useFileExploreTreeViewNodes } from "../hooks/useFileExploreTreeViewNode
  *
  * @returns Rendered navigation component with tree view
  */
+function DirectoryNavLink({ node }: { node: TreeNode }) {
+	const hasChildren = node.children?.length > 0;
+	return (
+		<NavLink
+			key={node.id}
+			label={node.label}
+			active={node.isSelected}
+			onClick={
+				hasChildren
+					? undefined
+					: () => {
+							if (node.onClick !== undefined) {
+								node.onClick(node.id);
+							}
+						}
+			}
+			noWrap
+		>
+			{hasChildren
+				? node.children?.map((child) => (
+						<DirectoryNavLink key={child.id} node={child} />
+					))
+				: undefined}
+		</NavLink>
+	);
+}
+
 export function FileExploreNavigation() {
 	const nodes = useFileExploreTreeViewNodes();
 
 	if (nodes === undefined) {
-		return (
-			<FullWidthSkeleton className="layout-border-top layout-border-left" />
-		);
+		return <FullWidthSkeleton />;
 	}
 
 	return (
 		<>
-			<Box
-				className="layout-border-top layout-border-left"
-				w="100%"
-				h="100%"
-				overflowX="clip"
-				overflowY="auto"
-			>
-				<TreeView {...{ nodes }} />
-			</Box>
+			<ScrollArea h="100%" style={{ background: "transparent" }}>
+				{nodes.map((node) => (
+					<DirectoryNavLink key={node.id} node={node} />
+				))}
+			</ScrollArea>
 		</>
 	);
 }

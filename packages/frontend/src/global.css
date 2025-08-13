@@ -14,10 +14,6 @@
 	font-weight: bold;
 }
 
-body {
-	background-color: transparent !important;
-} /* TODO: Remove this later */
-
 /* Converted from Chakra global styles */
 /* :root[data-mantine-color-scheme="light"] .browser-breadcrumbs-bg {
 	background-color: var(--mantine-color-blue-0);

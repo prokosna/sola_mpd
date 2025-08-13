@@ -65,7 +65,7 @@ export function PlaylistContent() {
 	);
 
 	if (songTableProps === undefined || columnEditModalProps === undefined) {
-		return <CenterSpinner className="layout-border-top layout-border-left" />;
+		return <CenterSpinner />;
 	}
 
 	return (

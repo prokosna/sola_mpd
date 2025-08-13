@@ -1,6 +1,6 @@
 import type { Plugin_PluginType } from "@sola_mpd/domain/src/models/plugin/plugin_pb.js";
 
-import { useNotification } from "../../../lib/chakra/hooks/useNotification";
+import { useNotification } from "../../../lib/mantine/hooks/useNotification";
 import type { ContextMenuItem } from "../../context_menu";
 import {
 	type SongTableContextMenuItemParams,

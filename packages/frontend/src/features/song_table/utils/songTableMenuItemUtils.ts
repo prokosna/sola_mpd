@@ -3,7 +3,7 @@ import type { MpdProfile } from "@sola_mpd/domain/src/models/mpd/mpd_profile_pb.
 import type { Song } from "@sola_mpd/domain/src/models/song_pb.js";
 import type { MutableRefObject } from "react";
 
-import type { NotificationParams } from "../../../lib/chakra/hooks/useNotification";
+import type { NotificationParams } from "../../../lib/mantine/hooks/useNotification";
 import type { ContextMenuItem } from "../../context_menu";
 import type { MpdClient } from "../../mpd";
 import type {

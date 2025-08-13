@@ -1,4 +1,3 @@
-import { Box, useColorMode } from "@chakra-ui/react";
 import { Allotment } from "allotment";
 import { useCallback } from "react";
 
@@ -10,6 +9,7 @@ import {
 } from "../../layout";
 import { CenterSpinner } from "../../loading";
 
+import { Box, useMantineColorScheme } from "@mantine/core";
 import { FileExploreContent } from "./FileExploreContent";
 import { FileExploreNavigation } from "./FileExploreNavigation";
 
@@ -35,7 +35,7 @@ export function FileExplore() {
 	const fileExploreLayout = useFileExploreLayoutState();
 	const updateLayout = useUpdateLayoutState();
 
-	const { colorMode } = useColorMode();
+	const scheme = useMantineColorScheme();
 
 	const handlePanelWidthChanged = useCallback(
 		async (left: number | undefined) => {
@@ -55,7 +55,7 @@ export function FileExplore() {
 	);
 
 	if (!isReady) {
-		return <CenterSpinner className="layout-border-top layout-border-left" />;
+		return <CenterSpinner />;
 	}
 
 	return (
@@ -63,7 +63,9 @@ export function FileExplore() {
 			<Box w="100%" h="100%">
 				<Allotment
 					className={
-						colorMode === "light" ? "allotment-light" : "allotment-dark"
+						scheme.colorScheme === "light"
+							? "allotment-light"
+							: "allotment-dark"
 					}
 					onChange={(sizes) => {
 						handlePanelResize(sizes[0], sizes[1]);

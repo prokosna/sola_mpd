@@ -1,4 +1,3 @@
-import { useColorMode } from "@chakra-ui/react";
 import {
 	Item,
 	type ItemParams,
@@ -7,6 +6,7 @@ import {
 	Submenu,
 } from "react-contexify";
 
+import { useMantineColorScheme } from "@mantine/core";
 import type { ContextMenuProps } from "../types/contextMenuTypes";
 
 /**
@@ -29,7 +29,7 @@ import type { ContextMenuProps } from "../types/contextMenuTypes";
  * @returns Rendered context menu component
  */
 export function ContextMenu<T>(props: ContextMenuProps<T>) {
-	const { colorMode } = useColorMode();
+	const scheme = useMantineColorScheme();
 
 	function handleClick(params: ItemParams<T, unknown>) {
 		for (const section of props.sections) {
@@ -76,7 +76,7 @@ export function ContextMenu<T>(props: ContextMenuProps<T>) {
 
 	return (
 		<>
-			<Menu id={props.id} animation={"scale"} theme={colorMode}>
+			<Menu id={props.id} animation={"scale"} theme={scheme.colorScheme}>
 				{items}
 			</Menu>
 		</>
