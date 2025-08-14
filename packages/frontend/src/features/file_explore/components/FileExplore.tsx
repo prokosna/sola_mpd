@@ -9,7 +9,7 @@ import {
 } from "../../layout";
 import { CenterSpinner } from "../../loading";
 
-import { Box, useMantineColorScheme } from "@mantine/core";
+import { Box, useComputedColorScheme } from "@mantine/core";
 import { FileExploreContent } from "./FileExploreContent";
 import { FileExploreNavigation } from "./FileExploreNavigation";
 
@@ -35,7 +35,7 @@ export function FileExplore() {
 	const fileExploreLayout = useFileExploreLayoutState();
 	const updateLayout = useUpdateLayoutState();
 
-	const scheme = useMantineColorScheme();
+	const scheme = useComputedColorScheme();
 
 	const handlePanelWidthChanged = useCallback(
 		async (left: number | undefined) => {
@@ -62,11 +62,7 @@ export function FileExplore() {
 		<>
 			<Box w="100%" h="100%">
 				<Allotment
-					className={
-						scheme.colorScheme === "light"
-							? "allotment-light"
-							: "allotment-dark"
-					}
+					className={scheme === "light" ? "allotment-light" : "allotment-dark"}
 					onChange={(sizes) => {
 						handlePanelResize(sizes[0], sizes[1]);
 					}}

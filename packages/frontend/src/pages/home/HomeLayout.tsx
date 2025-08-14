@@ -5,7 +5,7 @@ import {
 	Group,
 	ScrollArea,
 	Space,
-	useMantineColorScheme,
+	useComputedColorScheme,
 } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import { Suspense, useEffect } from "react";
@@ -39,7 +39,7 @@ export function HomeLayout() {
 	const isCompactMode = useIsCompactMode();
 	const [isOpen, { toggle }] = useDisclosure(!isCompactMode);
 	const userDeviceType = useUserDeviceType();
-	const scheme = useMantineColorScheme();
+	const scheme = useComputedColorScheme();
 
 	useEffect(() => {
 		if (location.pathname === ROUTE_HOME) {
@@ -99,7 +99,7 @@ export function HomeLayout() {
 
 				<AppShell.Main
 					display="flex"
-					bg={scheme.colorScheme === "dark" ? "dark.7" : "white"}
+					bg={scheme === "dark" ? "dark.7" : "white"}
 				>
 					<Suspense fallback={<CenterSpinner />}>
 						<Box flex={1}>
@@ -108,9 +108,7 @@ export function HomeLayout() {
 					</Suspense>
 				</AppShell.Main>
 
-				<AppShell.Footer
-					bg={scheme.colorScheme === "dark" ? "brand.9" : "brand.1"}
-				>
+				<AppShell.Footer bg={scheme === "dark" ? "dark.9" : "brand.1"}>
 					<Player />
 				</AppShell.Footer>
 			</AppShell>

@@ -6,10 +6,10 @@ import {
 } from "ag-grid-community";
 import { useMemo } from "react";
 
-import { rgba, useMantineColorScheme, useMantineTheme } from "@mantine/core";
+import { rgba, useComputedColorScheme, useMantineTheme } from "@mantine/core";
 
 export function useAgGridTheme(): Theme {
-	const schema = useMantineColorScheme();
+	const schema = useComputedColorScheme();
 	const theme = useMantineTheme();
 
 	const agGridLightTheme = themeAlpine
@@ -43,6 +43,6 @@ export function useAgGridTheme(): Theme {
 	});
 
 	return useMemo(() => {
-		return schema.colorScheme === "light" ? agGridLightTheme : agGridDarkTheme;
+		return schema === "light" ? agGridLightTheme : agGridDarkTheme;
 	}, [schema, agGridDarkTheme, agGridLightTheme]);
 }

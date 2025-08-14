@@ -1,5 +1,4 @@
-import { Tag, TagLabel, Tooltip } from "@chakra-ui/react";
-
+import { Badge, Tooltip } from "@mantine/core";
 import { useCurrentSongFormat } from "../hooks/useCurrentSongFormat";
 
 /**
@@ -18,27 +17,27 @@ export function PlayerSongInformationTag() {
 	}
 	if (isDsd) {
 		return (
-			<Tooltip label={formatString} placement="top-end">
-				<Tag px={1} ml={2} size={"sm"} variant="outline" colorScheme="teal">
-					<TagLabel>DSD</TagLabel>
-				</Tag>
+			<Tooltip label={formatString}>
+				<Badge pt={-2} size="sm" variant="outline">
+					DSD
+				</Badge>
 			</Tooltip>
 		);
 	}
 	if (isHiRes) {
 		return (
-			<Tooltip label={formatString} placement="top-end">
-				<Tag px={1} ml={2} size={"sm"} variant="outline" colorScheme="teal">
-					<TagLabel>Hi-Res</TagLabel>
-				</Tag>
+			<Tooltip label={formatString}>
+				<Badge size="sm" variant="outline">
+					Hi-Res
+				</Badge>
 			</Tooltip>
 		);
 	}
 	return (
-		<Tooltip label={formatString} placement="top-end">
-			<Tag px={1} ml={2} size={"sm"} variant="outline" colorScheme="teal">
-				<TagLabel>PCM</TagLabel>
-			</Tag>
+		<Tooltip label={formatString}>
+			<Badge size="sm" variant="outline">
+				PCM
+			</Badge>
 		</Tooltip>
 	);
 }

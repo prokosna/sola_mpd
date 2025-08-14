@@ -1,5 +1,9 @@
 import { useColorMode } from "@chakra-ui/react";
-import { ActionIcon, useMantineColorScheme } from "@mantine/core";
+import {
+	ActionIcon,
+	useComputedColorScheme,
+	useMantineColorScheme,
+} from "@mantine/core";
 import { IconMoon, IconSun } from "@tabler/icons-react";
 
 /**
@@ -18,7 +22,8 @@ import { IconMoon, IconSun } from "@tabler/icons-react";
  */
 export function ColorModeSwitchButton() {
 	const { setColorMode } = useColorMode(); // TODO: To be removed
-	const { colorScheme, setColorScheme } = useMantineColorScheme();
+	const { setColorScheme } = useMantineColorScheme();
+	const scheme = useComputedColorScheme();
 
 	return (
 		<>
@@ -26,11 +31,11 @@ export function ColorModeSwitchButton() {
 				size="md"
 				variant="transparent"
 				onClick={() => {
-					setColorScheme(colorScheme === "dark" ? "light" : "dark");
-					setColorMode(colorScheme === "dark" ? "light" : "dark");
+					setColorScheme(scheme === "dark" ? "light" : "dark");
+					setColorMode(scheme === "dark" ? "light" : "dark");
 				}}
 			>
-				{colorScheme === "dark" ? <IconSun /> : <IconMoon />}
+				{scheme === "dark" ? <IconSun /> : <IconMoon />}
 			</ActionIcon>
 		</>
 	);

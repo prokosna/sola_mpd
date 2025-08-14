@@ -1,5 +1,4 @@
-import { Center, Divider } from "@chakra-ui/react";
-
+import { Divider } from "@mantine/core";
 import { PlayerControlsButtonConsume } from "./PlayerControlsButtonConsume";
 import { PlayerControlsButtonNext } from "./PlayerControlsButtonNext";
 import { PlayerControlsButtonPrevious } from "./PlayerControlsButtonPrevious";
@@ -25,17 +24,13 @@ export function PlayerControlsCompact() {
 			<PlayerControlsButtonResume />
 			<PlayerControlsButtonNext />
 
-			<Center h="50%">
-				<Divider orientation="vertical" />
-			</Center>
+			<Divider orientation="vertical" mx={8} />
 
 			<PlayerControlsButtonRandom />
 			<PlayerControlsButtonRepeat />
 			<PlayerControlsButtonConsume />
 
-			<Center h="50%">
-				<Divider orientation="vertical" />
-			</Center>
+			<Divider orientation="vertical" mx={8} />
 
 			<PlayerControlsButtonVolume />
 		</>

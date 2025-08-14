@@ -104,7 +104,7 @@ export function usePlaylistNavigationSelectListProps() {
 		id: COMPONENT_ID_PLAYLIST_SIDE_PANE,
 		values: playlists.map((playlist) => playlist.name),
 		selectedValues: selectedPlaylist ? [selectedPlaylist.name] : [],
-		headerTitle: undefined,
+		headerTitle: "Playlists",
 		contextMenuSections,
 		isLoading: false,
 		allowMultipleSelection: false,

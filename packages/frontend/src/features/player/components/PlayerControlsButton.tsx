@@ -1,4 +1,4 @@
-import { IconButton, Tooltip } from "@chakra-ui/react";
+import { ActionIcon, Tooltip } from "@mantine/core";
 
 export type PlayerControlsButtonProps = {
 	label: string;
@@ -21,17 +21,15 @@ export type PlayerControlsButtonProps = {
 export function PlayerControlsButton(props: PlayerControlsButtonProps) {
 	return (
 		<>
-			<Tooltip label={props.label} placement="top">
-				<IconButton
-					isDisabled={props.isDisabled}
+			<Tooltip label={props.label} position="top" withArrow>
+				<ActionIcon
+					disabled={props.isDisabled}
 					onClick={props.onButtonClicked}
 					variant={props.variant}
-					colorScheme="brand"
-					aria-label={props.label}
-					size={"md"}
-					icon={props.icon}
-					m={1}
-				/>
+					m={2}
+				>
+					{props.icon}
+				</ActionIcon>
 			</Tooltip>
 		</>
 	);

@@ -5,7 +5,7 @@ import { UpdateMode } from "../../../../types/stateTypes";
 import { useResizablePane } from "../../../layout";
 import { CenterSpinner } from "../../../loading";
 
-import { Divider, Group, Stack, useMantineColorScheme } from "@mantine/core";
+import { Divider, Group, Stack, useComputedColorScheme } from "@mantine/core";
 import type {
 	BrowserLayout,
 	FileExploreLayout,
@@ -45,7 +45,7 @@ export function BrowserView(props: BrowserViewProps) {
 	const layout = props.layout;
 	const updateLayout = props.updateLayout;
 
-	const scheme = useMantineColorScheme();
+	const scheme = useComputedColorScheme();
 
 	const handlePanelWidthChanged = useCallback(
 		async (left: number | undefined) => {
@@ -81,9 +81,7 @@ export function BrowserView(props: BrowserViewProps) {
 				<Group w="100%" h="100%">
 					<Allotment
 						className={
-							scheme.colorScheme === "light"
-								? "allotment-light"
-								: "allotment-dark"
+							scheme === "light" ? "allotment-light" : "allotment-dark"
 						}
 						onChange={(sizes) => {
 							handlePanelResize(sizes[0], sizes[1]);

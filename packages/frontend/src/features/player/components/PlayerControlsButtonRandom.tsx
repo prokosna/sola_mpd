@@ -1,12 +1,11 @@
 import { MpdRequest } from "@sola_mpd/domain/src/models/mpd/mpd_command_pb.js";
 import { useCallback } from "react";
-import { IoShuffleOutline } from "react-icons/io5";
 
 import { useMpdClientState } from "../../mpd";
 import { useCurrentMpdProfileState } from "../../profile";
-import { useCurrentSongState } from "../states/playerSongState";
 import { usePlayerStatusIsRandomState } from "../states/playerStatusState";
 
+import { IconArrowsRight, IconArrowsShuffle } from "@tabler/icons-react";
 import { PlayerControlsButton } from "./PlayerControlsButton";
 
 /**
@@ -20,7 +19,6 @@ import { PlayerControlsButton } from "./PlayerControlsButton";
 export function PlayerControlsButtonRandom() {
 	const profile = useCurrentMpdProfileState();
 	const mpdClient = useMpdClientState();
-	const currentSong = useCurrentSongState();
 	const playerStatusIsRandom = usePlayerStatusIsRandomState();
 
 	const onButtonClicked = useCallback(async () => {
@@ -43,10 +41,14 @@ export function PlayerControlsButtonRandom() {
 
 	const props = {
 		label: playerStatusIsRandom ? "Random enabled" : "Random disabled",
-		isDisabled: currentSong === undefined,
+		isDisabled: false,
 		onButtonClicked,
-		icon: <IoShuffleOutline size={"24"} />,
-		variant: playerStatusIsRandom ? "solid" : "ghost",
+		icon: playerStatusIsRandom ? (
+			<IconArrowsShuffle size="24" />
+		) : (
+			<IconArrowsRight size="24" />
+		),
+		variant: "transparent",
 	};
 
 	return (

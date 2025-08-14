@@ -1,6 +1,6 @@
-import { Box, Text } from "@chakra-ui/react";
 import { displayDuration } from "@sola_mpd/domain/src/utils/stringUtils.js";
 
+import { Group, Text } from "@mantine/core";
 import {
 	usePlayerStatusDurationState,
 	usePlayerStatusElapsedState,
@@ -28,16 +28,9 @@ export function PlayerDurationCompact() {
 			: displayDuration(playerStatusDuration);
 
 	return (
-		<Box
-			position="absolute"
-			left="0"
-			right="0"
-			display="flex"
-			justifyContent="space-between"
-			p="2"
-		>
-			<Text fontSize={"sm"}>{elapsed}</Text>
-			<Text fontSize={"sm"}>{duration}</Text>
-		</Box>
+		<Group pos="absolute" w="100%" justify="space-between" p={6}>
+			<Text size="md">{elapsed}</Text>
+			<Text size="md">{duration}</Text>
+		</Group>
 	);
 }

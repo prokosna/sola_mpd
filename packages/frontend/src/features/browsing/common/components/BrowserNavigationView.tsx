@@ -1,6 +1,6 @@
 import { Allotment } from "allotment";
 
-import { Stack, useMantineColorScheme } from "@mantine/core";
+import { Stack, useComputedColorScheme } from "@mantine/core";
 import type { BrowserFilter } from "@sola_mpd/domain/src/models/browser_pb.js";
 import type { Song_MetadataTag } from "@sola_mpd/domain/src/models/song_pb.js";
 import type { UpdateMode } from "../../../../types/stateTypes";
@@ -29,7 +29,7 @@ type BrowserNavigationViewProps = {
 export function BrowserNavigationView(props: BrowserNavigationViewProps) {
 	const { browserFilters, browserFilterValues, updateBrowserFilters } = props;
 
-	const scheme = useMantineColorScheme();
+	const scheme = useComputedColorScheme();
 
 	if (browserFilters === undefined) {
 		return <FullWidthSkeleton />;
@@ -44,11 +44,7 @@ export function BrowserNavigationView(props: BrowserNavigationViewProps) {
 		<>
 			<Stack h="100%" gap={0}>
 				<Allotment
-					className={
-						scheme.colorScheme === "light"
-							? "allotment-light"
-							: "allotment-dark"
-					}
+					className={scheme === "light" ? "allotment-light" : "allotment-dark"}
 					vertical={true}
 				>
 					{browserFilters

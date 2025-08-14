@@ -1,13 +1,13 @@
 import { MpdRequest } from "@sola_mpd/domain/src/models/mpd/mpd_command_pb.js";
 import { MpdPlayerStatus_PlaybackState } from "@sola_mpd/domain/src/models/mpd/mpd_player_pb.js";
 import { useCallback } from "react";
-import { IoPause, IoPlay } from "react-icons/io5";
 
 import { useMpdClientState } from "../../mpd";
 import { useCurrentMpdProfileState } from "../../profile";
 import { useCurrentSongState } from "../states/playerSongState";
 import { usePlayerStatusPlaybackState } from "../states/playerStatusState";
 
+import { IconPlayerPause, IconPlayerPlay } from "@tabler/icons-react";
 import { PlayerControlsButton } from "./PlayerControlsButton";
 
 /**
@@ -53,11 +53,11 @@ export function PlayerControlsButtonResume() {
 		onButtonClicked,
 		icon:
 			playerStatusPlaybackState === MpdPlayerStatus_PlaybackState.PLAY ? (
-				<IoPause size={"24"} />
+				<IconPlayerPause size={"24"} />
 			) : (
-				<IoPlay size={"24"} />
+				<IconPlayerPlay size={"24"} />
 			),
-		variant: "ghost",
+		variant: "transparent",
 	};
 
 	return (
