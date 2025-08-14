@@ -1,29 +1,24 @@
+import { useCallback, useState } from "react";
+
 import {
 	Button,
-	ButtonGroup,
-	Card,
-	CardBody,
-	CardFooter,
-	CardHeader,
-	Center,
 	Divider,
-	FormControl,
-	FormErrorMessage,
-	FormLabel,
-	Heading,
-	Input,
+	Group,
+	NumberInput,
 	Text,
-} from "@chakra-ui/react";
-import { useCallback, useState } from "react";
-import { useForm } from "react-hook-form";
-
+	TextInput,
+	Title,
+} from "@mantine/core";
+import { isInRange, isNotEmpty, useForm } from "@mantine/form";
 import { useNotification } from "../../../lib/mantine/hooks/useNotification";
 import { useAddMpdProfile } from "../hooks/useAddMpdProfile";
 import { useValidateMpdProfile } from "../hooks/useValidateMpdProfile";
+import { useMpdProfileState } from "../states/mpdProfileState";
 import type { ProfileInput } from "../types/profileTypes";
 
 type MpdProfileFormProps = {
 	onProfileCreated: () => Promise<void>;
+	onCancelled: () => Promise<void>;
 };
 
 /**
@@ -34,24 +29,47 @@ type MpdProfileFormProps = {
  */
 export function MpdProfileForm(props: MpdProfileFormProps) {
 	const notify = useNotification();
+	const validateMpdProfile = useValidateMpdProfile();
+	const addMpdProfile = useAddMpdProfile();
+	const mpdProfiles = useMpdProfileState()?.profiles;
 
 	const [isValidated, setIsValidated] = useState(false);
 	const [validationErrorMessage, setValidationErrorMessage] = useState<
 		string | undefined
 	>(undefined);
 
-	const {
-		register,
-		handleSubmit,
-		formState: { errors },
-	} = useForm<ProfileInput>();
+	const form = useForm({
+		mode: "uncontrolled",
+		initialValues: {
+			name: "",
+			host: "",
+			port: undefined,
+		},
+		validate: {
+			name: (value) => {
+				if (value === "") {
+					return "Name is required";
+				}
+				if (mpdProfiles?.find((profile) => profile.name === value)) {
+					return "Name already exists";
+				}
+			},
+			host: isNotEmpty("Host is required"),
+			port: isInRange(
+				{ min: 1, max: 65535 },
+				"Port must be between 1 and 65535",
+			),
+		},
+	});
 
-	const validateMpdProfile = useValidateMpdProfile();
-	const addMpdProfile = useAddMpdProfile();
-
-	const handleTestClick = useCallback(
-		async (data: ProfileInput) => {
-			const result = await validateMpdProfile(data);
+	const handleTest = useCallback(
+		async (values: typeof form.values) => {
+			const profileInput: ProfileInput = {
+				name: values.name,
+				host: values.host,
+				port: values.port ?? 6600,
+			};
+			const result = await validateMpdProfile(profileInput);
 			if (result.isValid) {
 				setValidationErrorMessage(undefined);
 				setIsValidated(true);
@@ -63,96 +81,81 @@ export function MpdProfileForm(props: MpdProfileFormProps) {
 		[validateMpdProfile],
 	);
 
-	const handleSaveClick = useCallback(
-		async (input: ProfileInput) => {
-			await addMpdProfile(input);
+	const handleSubmit = useCallback(
+		async (values: typeof form.values) => {
+			const profileInput: ProfileInput = {
+				name: values.name,
+				host: values.host,
+				port: values.port ?? 6600,
+			};
+			await addMpdProfile(profileInput);
 			notify({
 				status: "success",
 				title: "MPD profile successfully created",
-				description: `${input.name} profile have been created.`,
+				description: `${values.name} profile have been created.`,
 			});
 			await props.onProfileCreated();
+			setIsValidated(false);
+			setValidationErrorMessage(undefined);
+			form.reset();
 		},
-		[addMpdProfile, props, notify],
+		[addMpdProfile, props, notify, form],
 	);
 
+	const handleClose = useCallback(() => {
+		setIsValidated(false);
+		setValidationErrorMessage(undefined);
+		form.reset();
+		props.onCancelled();
+	}, [form, props]);
+
 	return (
-		<Card w="100%" h="100%">
-			<CardHeader>
-				<Heading>MPD Server Information</Heading>
-			</CardHeader>
-			<CardBody>
-				<FormControl isInvalid={!!errors.name}>
-					<FormLabel>Name</FormLabel>
-					<Input
-						type="text"
-						placeholder="Default"
-						{...register("name", {
-							required: true,
-							onChange: () => {
-								setIsValidated(false);
-							},
-						})}
-					/>
-					<FormErrorMessage>{errors.name?.message}</FormErrorMessage>
-				</FormControl>
-				<FormControl isInvalid={!!errors.host}>
-					<FormLabel>Host</FormLabel>
-					<Input
-						type="text"
-						placeholder="localhost"
-						{...register("host", {
-							required: true,
-							onChange: () => {
-								setIsValidated(false);
-							},
-						})}
-					/>
-					<FormErrorMessage>{errors.host?.message}</FormErrorMessage>
-				</FormControl>
-				<FormControl isInvalid={!!errors.port}>
-					<FormLabel>Port</FormLabel>
-					<Input
-						type="text"
-						placeholder="6600"
-						{...register("port", {
-							required: true,
-							onChange: () => {
-								setIsValidated(false);
-							},
-							valueAsNumber: true,
-						})}
-					/>
-					<FormErrorMessage>{errors.port?.message}</FormErrorMessage>
-				</FormControl>
-			</CardBody>
+		<form onSubmit={form.onSubmit(handleSubmit)}>
+			<Title>MPD Server Information</Title>
+			<TextInput
+				withAsterisk
+				label="Name"
+				placeholder="Default"
+				key={form.key("name")}
+				{...form.getInputProps("name")}
+			/>
+			<TextInput
+				withAsterisk
+				label="Host"
+				placeholder="localhost"
+				key={form.key("host")}
+				{...form.getInputProps("host")}
+			/>
+			<NumberInput
+				withAsterisk
+				label="Port"
+				placeholder="6600"
+				key={form.key("port")}
+				{...form.getInputProps("port")}
+			/>
 			<Divider />
-			<CardFooter>
-				<ButtonGroup spacing="2">
-					<Button variant="outline" onClick={handleSubmit(handleTestClick)}>
+			<Group justify="space-between">
+				<Group>
+					{isValidated ? <Text>Successfully connected!</Text> : undefined}
+					{validationErrorMessage !== undefined ? (
+						<Text c="red">{validationErrorMessage}</Text>
+					) : undefined}
+				</Group>
+				<Group justify="flex-end">
+					<Button
+						variant="outline"
+						onClick={() => handleTest(form.getValues())}
+					>
 						Test
 					</Button>
-					<Button
-						variant="solid"
-						isDisabled={!isValidated}
-						onClick={handleSubmit(handleSaveClick)}
-					>
+					<Button type="submit" disabled={!isValidated}>
 						Save
 					</Button>
-					<Center>
-						{isValidated ? (
-							<Text color="brand.500" as="b">
-								Successfully connected!
-							</Text>
-						) : undefined}
-						{validationErrorMessage !== undefined ? (
-							<Text color="error.500" as="b">
-								{validationErrorMessage}
-							</Text>
-						) : undefined}
-					</Center>
-				</ButtonGroup>
-			</CardFooter>
-		</Card>
+					<Button variant="default" onClick={handleClose}>
+						Cancel
+					</Button>
+				</Group>
+			</Group>
+		</form>
 	);
 }

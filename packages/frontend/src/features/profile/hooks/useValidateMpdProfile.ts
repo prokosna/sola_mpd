@@ -35,6 +35,10 @@ export function useValidateMpdProfile() {
 				return createValidationResult(false, `${input.name} is already used.`);
 			}
 
+			if (input.host === "") {
+				return createValidationResult(false, "Host is required.");
+			}
+
 			try {
 				const res = await mpdClient.command(
 					new MpdRequest({

@@ -42,17 +42,17 @@ export function PlaylistSelectModal(props: PlaylistSelectModalProps) {
 			playlistName: (value, values) => {
 				if (values.isNewPlaylist) {
 					if (value === "") {
-						return "Playlist name can't be empty";
+						return "Playlist name can't be empty.";
 					}
 					if (playlists?.find((playlist) => playlist.name === value)) {
-						return "Playlist name already exists";
+						return "Playlist name already exists.";
 					}
 				} else {
 					if (!value) {
-						return "Please select a playlist";
+						return "Please select a playlist.";
 					}
 					if (!playlists?.find((playlist) => playlist.name === value)) {
-						return "Selected playlist doesn't exist";
+						return "Selected playlist doesn't exist.";
 					}
 				}
 			},
