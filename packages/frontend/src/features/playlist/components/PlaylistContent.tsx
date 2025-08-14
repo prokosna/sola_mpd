@@ -1,4 +1,3 @@
-import { Box } from "@chakra-ui/react";
 import type { SongTableColumn } from "@sola_mpd/domain/src/models/song_table_pb.js";
 import { useCallback, useState } from "react";
 
@@ -14,6 +13,7 @@ import {
 import { usePlaylistSelectModal } from "../hooks/usePlaylistSelectModalProps";
 import { usePlaylistSongTableProps } from "../hooks/usePlaylistSongTableProps";
 
+import { Box } from "@mantine/core";
 import { PlaylistSelectModal } from "./PlaylistSelectModal";
 
 /**
