@@ -87,6 +87,6 @@ export function PlayerSeekBar() {
 			onChangeEnd={(v) => {
 				handleSeekBarClick(v);
 			}}
-		></Slider>
+		/>
 	);
 }
