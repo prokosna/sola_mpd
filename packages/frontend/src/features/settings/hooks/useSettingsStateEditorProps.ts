@@ -1,7 +1,7 @@
 import type { Message } from "@bufbuild/protobuf";
-import { useDisclosure } from "@chakra-ui/react";
 import { useCallback } from "react";
 
+import { useDisclosure } from "@mantine/hooks";
 import { useNotification } from "../../../lib/mantine/hooks/useNotification";
 import type { SettingsStatesEditorProps } from "../components/SettingsStatesEditor";
 
@@ -21,7 +21,7 @@ export function useSettingsStateEditorProps<T extends Message>(
 ): [() => void, SettingsStatesEditorProps<T> | undefined] {
 	const notify = useNotification();
 
-	const { isOpen, onOpen, onClose } = useDisclosure();
+	const [opened, { open, close }] = useDisclosure(false);
 
 	const onSave = useCallback(
 		async (newState: T) => {
@@ -36,16 +36,16 @@ export function useSettingsStateEditorProps<T extends Message>(
 	);
 
 	if (state === undefined) {
-		return [onOpen, undefined];
+		return [open, undefined];
 	}
 
 	return [
-		onOpen,
+		open,
 		{
 			state,
 			onSave,
-			isOpen,
-			onClose,
+			isOpen: opened,
+			onClose: close,
 			fromJson,
 		},
 	];
