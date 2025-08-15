@@ -1,21 +1,7 @@
-import {
-	Button,
-	Center,
-	HStack,
-	IconButton,
-	Modal,
-	ModalBody,
-	ModalContent,
-	ModalFooter,
-	ModalHeader,
-	ModalOverlay,
-	VStack,
-} from "@chakra-ui/react";
 import type { Song_MetadataTag } from "@sola_mpd/domain/src/models/song_pb.js";
 import type { SongTableColumn } from "@sola_mpd/domain/src/models/song_table_pb.js";
 import { listAllSongMetadataTags } from "@sola_mpd/domain/src/utils/songUtils.js";
 import { useCallback, useEffect, useState } from "react";
-import { IoChevronBack, IoChevronForward } from "react-icons/io5";
 
 import {
 	copySortingAttributesToNewColumns,
@@ -24,6 +10,15 @@ import {
 	normalizeSongTableColumns,
 } from "../utils/songTableColumnUtils";
 
+import {
+	ActionIcon,
+	Button,
+	Divider,
+	Group,
+	Modal,
+	Stack,
+} from "@mantine/core";
+import { IconArrowLeft, IconArrowRight } from "@tabler/icons-react";
 import { ColumnEditModalTagListBox } from "./ColumnEditModalTagListBox";
 
 export type ColumnEditModalProps = {
@@ -117,62 +112,52 @@ export function ColumnEditModal(props: ColumnEditModalProps): JSX.Element {
 	return (
 		<>
 			<Modal
-				isCentered
-				closeOnOverlayClick={false}
-				isOpen={props.isOpen}
+				opened={props.isOpen}
+				centered
 				onClose={() => {
 					if (props.handleModalDisposed !== undefined) {
 						props.handleModalDisposed();
 					}
 				}}
+				title="Edit Columns"
 			>
-				<ModalOverlay />
-				<ModalContent>
-					<ModalHeader>Edit columns</ModalHeader>
-					<ModalBody pb={6}>
-						<Center>
-							<HStack>
-								<VStack>
-									<ColumnEditModalTagListBox
-										title="Active Tags"
-										selectedTag={selectedActiveTag}
-										tags={activeTagsState}
-										handleTagSelected={handleActiveTagSelected}
-									/>
-								</VStack>
-								<VStack>
-									<IconButton
-										aria-label={"Move a selected item to inactive"}
-										icon={<IoChevronForward />}
-										onClick={handleItemMovedToInactive}
-									/>
-									<IconButton
-										aria-label={"Move a selected item to active"}
-										icon={<IoChevronBack />}
-										onClick={handleItemMovedToActive}
-									/>
-								</VStack>
-								<VStack>
-									<ColumnEditModalTagListBox
-										title="Inactive Tags"
-										selectedTag={selectedInactiveTag}
-										tags={inactiveTags}
-										handleTagSelected={handleInactiveTagSelected}
-									/>
-								</VStack>
-							</HStack>
-						</Center>
-					</ModalBody>
-
-					<ModalFooter>
-						<Button colorScheme="brand" mr={3} onClick={handleSubmit}>
-							OK
-						</Button>
-						<Button onClick={props.handleModalDisposed} colorScheme="gray">
-							Cancel
-						</Button>
-					</ModalFooter>
-				</ModalContent>
+				<Stack>
+					<Group wrap="nowrap" justify="space-between">
+						<Stack>
+							<ColumnEditModalTagListBox
+								title="Active Tags"
+								selectedTag={selectedActiveTag}
+								tags={activeTagsState}
+								handleTagSelected={handleActiveTagSelected}
+							/>
+						</Stack>
+						<Stack>
+							<ActionIcon variant="outline" onClick={handleItemMovedToInactive}>
+								<IconArrowRight />
+							</ActionIcon>
+							<ActionIcon variant="outline" onClick={handleItemMovedToActive}>
+								<IconArrowLeft />
+							</ActionIcon>
+						</Stack>
+						<Stack>
+							<ColumnEditModalTagListBox
+								title="Inactive Tags"
+								selectedTag={selectedInactiveTag}
+								tags={inactiveTags}
+								handleTagSelected={handleInactiveTagSelected}
+							/>
+						</Stack>
+					</Group>
+				</Stack>
+				<Divider my={8} />
+				<Group justify="flex-end">
+					<Button mr={3} onClick={handleSubmit}>
+						OK
+					</Button>
+					<Button color="gray" onClick={props.handleModalDisposed}>
+						Cancel
+					</Button>
+				</Group>
 			</Modal>
 		</>
 	);

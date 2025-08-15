@@ -22,7 +22,12 @@ export function Profiles() {
 
 	return (
 		<>
-			<Modal opened={opened} onClose={close} title="MPD Server Information">
+			<Modal
+				centered
+				opened={opened}
+				onClose={close}
+				title="MPD Server Information"
+			>
 				<MpdProfileForm
 					onProfileCreated={async () => {
 						close();
