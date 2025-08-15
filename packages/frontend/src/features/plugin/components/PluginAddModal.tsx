@@ -1,7 +1,7 @@
-import { Modal, ModalContent, ModalOverlay } from "@chakra-ui/react";
 import type { Plugin } from "@sola_mpd/domain/src/models/plugin/plugin_pb.js";
 import { useCallback, useState } from "react";
 
+import { Modal } from "@mantine/core";
 import { PluginAddModalConnect } from "./PluginAddModalConnect";
 import { PluginAddModalRegister } from "./PluginAddModalRegister";
 
@@ -30,15 +30,18 @@ export function PluginAddModal(props: PluginAddModalProps) {
 
 	return (
 		<>
-			<Modal isOpen={isOpen} onClose={handleModalClosed} size={"xl"} isCentered>
-				<ModalOverlay />
-				<ModalContent>
-					{pluginToAdd === undefined ? (
-						<PluginAddModalConnect {...{ setPluginToAdd }} />
-					) : (
-						<PluginAddModalRegister {...{ pluginToAdd, handleModalClosed }} />
-					)}
-				</ModalContent>
+			<Modal
+				opened={isOpen}
+				onClose={handleModalClosed}
+				size={"lg"}
+				centered
+				title="Register Plugin"
+			>
+				{pluginToAdd === undefined ? (
+					<PluginAddModalConnect {...{ setPluginToAdd }} />
+				) : (
+					<PluginAddModalRegister {...{ pluginToAdd, handleModalClosed }} />
+				)}
 			</Modal>
 		</>
 	);

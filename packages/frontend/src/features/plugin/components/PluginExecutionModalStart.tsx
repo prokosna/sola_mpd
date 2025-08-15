@@ -1,19 +1,16 @@
-import {
-	Button,
-	ButtonGroup,
-	Divider,
-	FormControl,
-	FormLabel,
-	Input,
-	ModalBody,
-	ModalFooter,
-	ModalHeader,
-	Text,
-} from "@chakra-ui/react";
 import type { Plugin } from "@sola_mpd/domain/src/models/plugin/plugin_pb.js";
 import type { Song } from "@sola_mpd/domain/src/models/song_pb.js";
 import { useCallback, useState } from "react";
 
+import {
+	Button,
+	Divider,
+	Group,
+	Stack,
+	Text,
+	TextInput,
+	Title,
+} from "@mantine/core";
 import { useHandlePluginExecuted } from "../hooks/useHandlePluginExecuted";
 import {
 	useIsPreviousPluginStillRunningState,
@@ -64,21 +61,21 @@ export function PluginExecutionModalStart(
 
 	return (
 		<>
-			<ModalHeader>{plugin.info.contextMenuTitle}</ModalHeader>
-			<ModalBody>
-				<Text>{plugin.info.contextMenuDescription}</Text>
-				{isPreviousPluginStillRunning ? (
-					<Text fontSize="md" color={"red"} py={2}>
-						{"Previous plugin execution is still running."}
-					</Text>
-				) : (
-					<>
-						<Divider my={3} />
-						{plugin.info.requiredRequestParameters.map((key) => (
-							<FormControl key={key}>
-								<FormLabel>{key}</FormLabel>
-								<Input
-									type="text"
+			<form>
+				<Stack gap={2}>
+					<Title size="h2">{plugin.info.contextMenuTitle}</Title>
+
+					{isPreviousPluginStillRunning ? (
+						<Text c={"red"}>
+							{"Previous plugin execution is still running."}
+						</Text>
+					) : (
+						<>
+							<Divider my={3} />
+							{plugin.info.requiredRequestParameters.map((key) => (
+								<TextInput
+									key={key}
+									label={key}
 									value={parameterValues.get(key) || ""}
 									onChange={(e) => {
 										const newValues = new Map(parameterValues);
@@ -86,25 +83,23 @@ export function PluginExecutionModalStart(
 										setParameterValues(newValues);
 									}}
 								/>
-							</FormControl>
-						))}
-					</>
-				)}
-			</ModalBody>
-			<ModalFooter>
-				<ButtonGroup spacing="2">
-					<Button onClick={onExecuted} isLoading={isPreviousPluginStillRunning}>
-						Execute
-					</Button>
-					<Button
-						colorScheme="gray"
-						variant="outline"
-						onClick={() => setIsPluginExecutionModalOpen("closed")}
-					>
-						Cancel
-					</Button>
-				</ButtonGroup>
-			</ModalFooter>
+							))}
+						</>
+					)}
+
+					<Group justify="flex-end">
+						<Button onClick={onExecuted} loading={isPreviousPluginStillRunning}>
+							Execute
+						</Button>
+						<Button
+							color="gray"
+							onClick={() => setIsPluginExecutionModalOpen("closed")}
+						>
+							Cancel
+						</Button>
+					</Group>
+				</Stack>
+			</form>
 		</>
 	);
 }

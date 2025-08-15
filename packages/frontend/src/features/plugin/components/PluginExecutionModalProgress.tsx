@@ -1,19 +1,18 @@
 import {
-	Button,
-	ButtonGroup,
-	Divider,
-	ModalBody,
-	ModalFooter,
-	ModalHeader,
-	Progress,
-	Text,
-	Textarea,
-} from "@chakra-ui/react";
-import {
 	type Plugin,
 	PluginExecuteResponse,
 } from "@sola_mpd/domain/src/models/plugin/plugin_pb.js";
 
+import {
+	Button,
+	Divider,
+	Group,
+	Progress,
+	Stack,
+	Text,
+	Textarea,
+	Title,
+} from "@mantine/core";
 import {
 	usePluginExecutionLatestResponseState,
 	usePluginExecutionWarningLogsState,
@@ -52,39 +51,52 @@ export function PluginExecutionModalProgress(
 
 	return (
 		<>
-			<ModalHeader>{plugin.info.contextMenuTitle}</ModalHeader>
-			<ModalBody>
+			<Stack gap={2}>
+				<Title size="h2">{plugin.info.contextMenuTitle}</Title>
 				{error === undefined ? (
-					<Text noOfLines={1}>
+					<Text
+						style={{
+							whiteSpace: "nowrap",
+							overflow: "hidden",
+							textOverflow: "ellipsis",
+						}}
+					>
 						{response?.message || "No plugin execution."}
 					</Text>
 				) : (
-					<Text noOfLines={1} color="red">
+					<Text
+						c="red"
+						style={{
+							whiteSpace: "nowrap",
+							overflow: "hidden",
+							textOverflow: "ellipsis",
+						}}
+					>
 						{error.message}
 					</Text>
 				)}
 				<Progress
-					hasStripe={response?.progressPercentage !== 100}
+					striped={response?.progressPercentage !== 100}
 					value={response?.progressPercentage || 0}
 				/>
 				<Divider my={3} />
-				<Text size="sm">Warning logs</Text>
+				<Text>Warning logs</Text>
 				<Textarea
-					overflow={"auto"}
 					value={warningLogs.join("\n")}
 					readOnly={true}
+					autosize
+					minRows={4}
+					maxRows={4}
 				/>
-			</ModalBody>
-			<ModalFooter>
-				<ButtonGroup spacing="2">
+				<Group justify="flex-end">
 					<Button
 						variant="outline"
 						onClick={() => setIsPluginExecutionModalOpen("closed")}
 					>
 						Dismiss
 					</Button>
-				</ButtonGroup>
-			</ModalFooter>
+				</Group>
+			</Stack>
 		</>
 	);
 }

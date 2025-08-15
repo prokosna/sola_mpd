@@ -30,7 +30,7 @@ export function ColumnEditModalTagListBox(
 	return (
 		<>
 			<Text>{title}</Text>
-			<Card w="170" h="200">
+			<Card w="170" h="200" withBorder>
 				<ScrollArea w="100%" h="100%">
 					{tags.map((tag) => {
 						const isSelected = tag === selectedTag;
@@ -40,6 +40,7 @@ export function ColumnEditModalTagListBox(
 								label={convertSongMetadataTagToDisplayName(tag)}
 								active={isSelected}
 								onClick={() => handleTagSelected(tag)}
+								p={2}
 							/>
 						);
 					})}

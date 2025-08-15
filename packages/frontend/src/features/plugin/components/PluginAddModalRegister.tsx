@@ -1,19 +1,15 @@
-import {
-	Button,
-	ButtonGroup,
-	Divider,
-	FormControl,
-	FormLabel,
-	Input,
-	ModalBody,
-	ModalCloseButton,
-	ModalFooter,
-	ModalHeader,
-	Text,
-} from "@chakra-ui/react";
 import type { Plugin } from "@sola_mpd/domain/src/models/plugin/plugin_pb.js";
 import { useCallback, useState } from "react";
 
+import {
+	Button,
+	Divider,
+	Group,
+	Stack,
+	Text,
+	TextInput,
+	Title,
+} from "@mantine/core";
 import { useNotification } from "../../../lib/mantine/hooks/useNotification";
 import { UpdateMode } from "../../../types/stateTypes";
 import { usePluginState, useUpdatePluginState } from "../states/pluginState";
@@ -78,18 +74,17 @@ export function PluginAddModalRegister(props: PluginAddModalRegisterProps) {
 
 	return (
 		<>
-			<ModalHeader>
-				{pluginToAdd.info?.name} {pluginToAdd.info?.version}
-			</ModalHeader>
-			<ModalCloseButton />
-			<ModalBody>
-				<Text>{pluginToAdd.info?.description}</Text>
-				<Divider my={4} />
-				{(pluginToAdd.info?.requiredPluginParameters || []).map((key) => (
-					<FormControl key={key}>
-						<FormLabel>{key}</FormLabel>
-						<Input
-							type="text"
+			<form>
+				<Stack gap={2}>
+					<Title size="h2">
+						{pluginToAdd.info?.name} {pluginToAdd.info?.version}
+					</Title>
+					<Text>{pluginToAdd.info?.description}</Text>
+					<Divider my={4} />
+					{(pluginToAdd.info?.requiredPluginParameters || []).map((key) => (
+						<TextInput
+							key={key}
+							label={key}
 							value={parameterValues.get(key) || ""}
 							onChange={(e) => {
 								const newValues = new Map(parameterValues);
@@ -97,16 +92,12 @@ export function PluginAddModalRegister(props: PluginAddModalRegisterProps) {
 								setParameterValues(newValues);
 							}}
 						/>
-					</FormControl>
-				))}
-			</ModalBody>
-			<ModalFooter>
-				<ButtonGroup spacing="2">
-					<Button variant="solid" onClick={handlePluginRegistered}>
-						Add
-					</Button>
-				</ButtonGroup>
-			</ModalFooter>
+					))}
+					<Group justify="flex-end">
+						<Button onClick={handlePluginRegistered}>Add</Button>
+					</Group>
+				</Stack>
+			</form>
 		</>
 	);
 }
