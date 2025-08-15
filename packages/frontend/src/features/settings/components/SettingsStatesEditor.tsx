@@ -1,16 +1,5 @@
 import type { Message } from "@bufbuild/protobuf";
-import {
-	Button,
-	Modal,
-	ModalBody,
-	ModalCloseButton,
-	ModalContent,
-	ModalFooter,
-	ModalHeader,
-	ModalOverlay,
-	Text,
-	Textarea,
-} from "@chakra-ui/react";
+import { Button, Group, Modal, Stack, Text, Textarea } from "@mantine/core";
 import { useCallback, useEffect, useRef, useState } from "react";
 
 /**
@@ -74,41 +63,39 @@ export function SettingsStatesEditor<T extends Message>(
 		[fromJson],
 	);
 
+	const close = () => {
+		setErrorMessage("");
+		onClose();
+	};
+
 	return (
 		<>
-			<Modal isOpen={isOpen} onClose={onClose} size={"xl"} isCentered>
-				<ModalOverlay />
-				<ModalContent>
-					<ModalHeader>Direct Edit</ModalHeader>
-					<ModalCloseButton />
-					<ModalBody>
-						<Text fontSize="md" color={"red"} py={2}>
-							{"Don't edit unless you understand what you are doing."}
-						</Text>
-						<Textarea
-							h="300px"
-							value={stateJsonText}
-							onChange={(e) => handleInput(e.target.value)}
-							size="sm"
-						/>
-						<Text fontSize="md" color={"red"} py={2}>
-							{errorMessage}
-						</Text>
-					</ModalBody>
-					<ModalFooter>
+			<Modal opened={isOpen} onClose={close} title="Edit JSON file">
+				<Stack>
+					<Text c="red">
+						{"Don't edit unless you understand what you are doing."}
+					</Text>
+					<Textarea
+						autosize
+						value={stateJsonText}
+						onChange={(e) => handleInput(e.target.value)}
+					/>
+					{errorMessage !== "" && <Text c="red">{errorMessage}</Text>}
+					<Group justify="flex-end">
 						<Button
-							mr={3}
+							disabled={
+								newStateRef.current === undefined || errorMessage !== ""
+							}
 							onClick={() => {
 								if (newStateRef.current === undefined) return;
 								onSave(newStateRef.current);
-								onClose();
+								close();
 							}}
-							isDisabled={newStateRef.current === undefined}
 						>
 							Save
 						</Button>
-					</ModalFooter>
-				</ModalContent>
+					</Group>
+				</Stack>
 			</Modal>
 		</>
 	);

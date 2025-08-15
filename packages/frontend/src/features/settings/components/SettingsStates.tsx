@@ -1,14 +1,3 @@
-import {
-	IconButton,
-	Table,
-	TableContainer,
-	Tbody,
-	Td,
-	Th,
-	Thead,
-	Tr,
-	VStack,
-} from "@chakra-ui/react";
 import { BrowserState } from "@sola_mpd/domain/src/models/browser_pb.js";
 import { LayoutState } from "@sola_mpd/domain/src/models/layout_pb.js";
 import { MpdProfileState } from "@sola_mpd/domain/src/models/mpd/mpd_profile_pb.js";
@@ -16,7 +5,6 @@ import { PluginState } from "@sola_mpd/domain/src/models/plugin/plugin_pb.js";
 import { RecentlyAddedState } from "@sola_mpd/domain/src/models/recently_added_pb.js";
 import { SavedSearches } from "@sola_mpd/domain/src/models/search_pb.js";
 import { SongTableState } from "@sola_mpd/domain/src/models/song_table_pb.js";
-import { IoCreate } from "react-icons/io5";
 
 import { UpdateMode } from "../../../types/stateTypes";
 import {
@@ -38,6 +26,7 @@ import {
 import { useSongTableState, useUpdateSongTableState } from "../../song_table";
 import { useSettingsStateEditorProps } from "../hooks/useSettingsStateEditorProps";
 
+import { Button, Stack, Table, Text, Title } from "@mantine/core";
 import { SettingsStatesEditor } from "./SettingsStatesEditor";
 
 /**
@@ -164,106 +153,44 @@ export function SettingsStates() {
 		return <CenterSpinner />;
 	}
 
+	const rows = [
+		{ name: "Profile", onEdit: onOpenProfileState },
+		{ name: "Layout", onEdit: onOpenLayoutState },
+		{ name: "Song Table", onEdit: onOpenSongTableState },
+		{ name: "Browser", onEdit: onOpenBrowserState },
+		{ name: "Recently Added", onEdit: onOpenRecentlyAddedState },
+		{ name: "Saved Searches", onEdit: onOpenSavedSearches },
+		{ name: "Plugins", onEdit: onOpenPluginState },
+	];
+
 	return (
 		<>
-			<VStack spacing={"12px"} align={"start"}>
-				<TableContainer>
-					<Table variant="simple">
-						<Thead>
-							<Tr>
-								<Th>STATE</Th>
-								<Th>ACTION</Th>
-							</Tr>
-						</Thead>
-						<Tbody>
-							<Tr>
-								<Td>Profile</Td>
-								<Td>
-									<IconButton
-										variant="outline"
-										aria-label="Edit"
-										size="xs"
-										icon={<IoCreate />}
-										onClick={onOpenProfileState}
-									/>
-								</Td>
-							</Tr>
-							<Tr>
-								<Td>Layout</Td>
-								<Td>
-									<IconButton
-										variant="outline"
-										aria-label="Edit"
-										size="xs"
-										icon={<IoCreate />}
-										onClick={onOpenLayoutState}
-									/>
-								</Td>
-							</Tr>
-							<Tr>
-								<Td>Song Table</Td>
-								<Td>
-									<IconButton
-										variant="outline"
-										aria-label="Edit"
-										size="xs"
-										icon={<IoCreate />}
-										onClick={onOpenSongTableState}
-									/>
-								</Td>
-							</Tr>
-							<Tr>
-								<Td>Browser</Td>
-								<Td>
-									<IconButton
-										variant="outline"
-										aria-label="Edit"
-										size="xs"
-										icon={<IoCreate />}
-										onClick={onOpenBrowserState}
-									/>
-								</Td>
-							</Tr>
-							<Tr>
-								<Td>Recently Added</Td>
-								<Td>
-									<IconButton
-										variant="outline"
-										aria-label="Edit"
-										size="xs"
-										icon={<IoCreate />}
-										onClick={onOpenRecentlyAddedState}
-									/>
-								</Td>
-							</Tr>
-							<Tr>
-								<Td>Saved Searches</Td>
-								<Td>
-									<IconButton
-										variant="outline"
-										aria-label="Edit"
-										size="xs"
-										icon={<IoCreate />}
-										onClick={onOpenSavedSearches}
-									/>
-								</Td>
-							</Tr>
-							<Tr>
-								<Td>Plugins</Td>
-								<Td>
-									<IconButton
-										variant="outline"
-										aria-label="Edit"
-										size="xs"
-										icon={<IoCreate />}
-										onClick={onOpenPluginState}
-									/>
-								</Td>
-							</Tr>
-						</Tbody>
-					</Table>
-				</TableContainer>
-			</VStack>
+			<Stack gap={16}>
+				<Title order={1} size="lg">
+					Edit raw setting JSON files
+				</Title>
+				<Text c="red">Do not edit unless you know what you are doing.</Text>
+				<Table maw="50%">
+					<Table.Thead>
+						<Table.Tr>
+							<Table.Th>STATE</Table.Th>
+							<Table.Th>ACTION</Table.Th>
+						</Table.Tr>
+					</Table.Thead>
+					<Table.Tbody>
+						{rows.map((row) => (
+							<Table.Tr key={row.name}>
+								<Table.Td>{row.name}</Table.Td>
+								<Table.Td>
+									<Button variant="outline" size="xs" onClick={row.onEdit}>
+										Edit
+									</Button>
+								</Table.Td>
+							</Table.Tr>
+						))}
+					</Table.Tbody>
+				</Table>
+			</Stack>
 			<SettingsStatesEditor<MpdProfileState> {...profileStateProps} />
 			<SettingsStatesEditor<LayoutState> {...layoutStateProps} />
 			<SettingsStatesEditor<SongTableState> {...songTableStateProps} />
