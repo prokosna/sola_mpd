@@ -17,7 +17,9 @@ import {
 	useComputedColorScheme,
 	useMantineTheme,
 } from "@mantine/core";
+import { DateInput } from "@mantine/dates";
 import type { UseFormReturnType } from "@mantine/form";
+import { Song_MetadataTag } from "@sola_mpd/domain/src/models/song_pb.js";
 import { IconPlus, IconTrash } from "@tabler/icons-react";
 import { UpdateMode } from "../../../types/stateTypes";
 import { FullWidthSkeleton } from "../../loading";
@@ -269,15 +271,31 @@ export function SearchNavigationQueryEditor({
 											/>
 										</Grid.Col>
 										<Grid.Col span={5}>
-											<TextInput
-												size="xs"
-												key={form.key(
-													`queries.${queryIndex}.conditions.${conditionIndex}.value`,
-												)}
-												{...form.getInputProps(
-													`queries.${queryIndex}.conditions.${conditionIndex}.value`,
-												)}
-											/>
+											{condition.tag ===
+											convertSongMetadataTagToDisplayName(
+												Song_MetadataTag.UPDATED_AT,
+											) ? (
+												<DateInput
+													size="xs"
+													valueFormat="YYYY-MM-DD"
+													key={form.key(
+														`queries.${queryIndex}.conditions.${conditionIndex}.value`,
+													)}
+													{...form.getInputProps(
+														`queries.${queryIndex}.conditions.${conditionIndex}.value`,
+													)}
+												/>
+											) : (
+												<TextInput
+													size="xs"
+													key={form.key(
+														`queries.${queryIndex}.conditions.${conditionIndex}.value`,
+													)}
+													{...form.getInputProps(
+														`queries.${queryIndex}.conditions.${conditionIndex}.value`,
+													)}
+												/>
+											)}
 										</Grid.Col>
 										<Grid.Col span={1}>
 											<Center>

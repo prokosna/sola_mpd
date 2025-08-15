@@ -16,6 +16,7 @@
 		"@emotion/react": "^11.14.0",
 		"@emotion/styled": "^11.14.0",
 		"@mantine/core": "^8.2.4",
+		"@mantine/dates": "^8.2.4",
 		"@mantine/form": "^8.2.4",
 		"@mantine/hooks": "^8.2.4",
 		"@mantine/modals": "^8.2.4",
