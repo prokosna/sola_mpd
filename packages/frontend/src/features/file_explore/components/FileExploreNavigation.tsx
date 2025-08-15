@@ -1,4 +1,12 @@
-import { ScrollArea } from "@mantine/core";
+import {
+	Divider,
+	Group,
+	ScrollArea,
+	Stack,
+	Text,
+	useComputedColorScheme,
+	useMantineTheme,
+} from "@mantine/core";
 import { NavLink } from "@mantine/core";
 import { FullWidthSkeleton } from "../../loading";
 import { useFileExploreTreeViewNodes } from "../hooks/useFileExploreTreeViewNodes";
@@ -49,6 +57,8 @@ function DirectoryNavLink({ node }: { node: TreeNode }) {
 }
 
 export function FileExploreNavigation() {
+	const scheme = useComputedColorScheme();
+	const theme = useMantineTheme();
 	const nodes = useFileExploreTreeViewNodes();
 
 	if (nodes === undefined) {
@@ -57,11 +67,26 @@ export function FileExploreNavigation() {
 
 	return (
 		<>
-			<ScrollArea h="100%" style={{ background: "transparent" }}>
-				{nodes.map((node) => (
-					<DirectoryNavLink key={node.id} node={node} />
-				))}
-			</ScrollArea>
+			<Stack h="100%" gap={0}>
+				<Group
+					w="100%"
+					mih="32px"
+					mah="32px"
+					bg={scheme === "light" ? theme.colors.gray[2] : theme.colors.dark[6]}
+					px={8}
+					m={0}
+				>
+					<Text fw={700} size="sm">
+						Directories
+					</Text>
+				</Group>
+				<Divider p={0} m={0} />
+				<ScrollArea h="100%" style={{ background: "transparent" }}>
+					{nodes.map((node) => (
+						<DirectoryNavLink key={node.id} node={node} />
+					))}
+				</ScrollArea>
+			</Stack>
 		</>
 	);
 }

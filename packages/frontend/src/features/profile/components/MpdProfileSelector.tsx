@@ -20,12 +20,13 @@ export function MpdProfileSelector() {
 
 	return (
 		<>
-			<Group px={0} miw="100px" maw="300px">
+			<Group px={0} miw={100} w={300}>
 				{mpdProfileState?.currentProfile === undefined ||
 				enabledOutputDevice === undefined ? (
-					<Select size="md" placeholder="Loading profiles..." />
+					<Select w="100%" size="md" placeholder="Loading profiles..." />
 				) : (
 					<Select
+						w="100%"
 						size="md"
 						value={mpdProfileState.currentProfile.name}
 						data={mpdProfileState.profiles.map((profile) => {

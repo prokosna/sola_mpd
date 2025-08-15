@@ -2,7 +2,14 @@ import type { BrowserFilter } from "@sola_mpd/domain/src/models/browser_pb.js";
 import { convertSongMetadataValueToString } from "@sola_mpd/domain/src/utils/songUtils.js";
 import { useCallback, useMemo } from "react";
 
-import { ActionIcon, Badge, Breadcrumbs, Group, Tooltip } from "@mantine/core";
+import {
+	ActionIcon,
+	Badge,
+	Breadcrumbs,
+	Group,
+	Tooltip,
+	useComputedColorScheme,
+} from "@mantine/core";
 import { IconX } from "@tabler/icons-react";
 import { UpdateMode } from "../../../../types/stateTypes";
 import {
@@ -33,6 +40,7 @@ export function BrowserNavigationBreadcrumbsView(
 ) {
 	const browserFilters = props.browserFilters;
 	const updateBrowserFilters = props.updateBrowserFilters;
+	const scheme = useComputedColorScheme();
 
 	const selectedBrowserFilters = useMemo(
 		() =>
@@ -90,7 +98,12 @@ export function BrowserNavigationBreadcrumbsView(
 
 	return (
 		<>
-			<Group w="100%" h="100%" justify="space-between">
+			<Group
+				w="100%"
+				h="100%"
+				justify="space-between"
+				bg={scheme === "dark" ? "dark.9" : "brand.1"}
+			>
 				<Group>
 					<ActionIcon
 						variant="transparent"

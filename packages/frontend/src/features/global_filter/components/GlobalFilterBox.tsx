@@ -32,8 +32,9 @@ export function GlobalFilterBox() {
 
 	return (
 		<>
-			<Group w="35%" miw="100px" maw="500px">
+			<Group miw={100} w={500}>
 				<TextInput
+					w="100%"
 					ref={inputRef}
 					size="md"
 					placeholder="Filter songs..."

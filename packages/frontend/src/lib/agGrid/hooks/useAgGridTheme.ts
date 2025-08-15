@@ -22,7 +22,7 @@ export function useAgGridTheme(): Theme {
 			wrapperBorderRadius: 0,
 			borderColor: theme.colors.gray[3],
 			headerBackgroundColor: theme.colors.gray[2],
-			backgroundColor: theme.colors.gray[1],
+			backgroundColor: theme.white,
 			oddRowBackgroundColor: theme.colors.gray[0],
 			accentColor: rgba(theme.colors.brand[6], 0.5),
 			rowHoverColor: rgba(theme.colors.brand[6], 0.15),
