@@ -10,8 +10,7 @@ import { pathnameAtom } from "../../location/states/locationState";
 import { mpdClientAtom } from "../../mpd/states/mpdClient";
 import { currentMpdProfileSyncAtom } from "../../profile/states/mpdProfileState";
 import { fetchSearchSongs } from "../utils/searchSongsUtils";
-
-import { editingSearchAtom } from "./searchEditState";
+import { searchSongTableColumnsAtom } from "./searchEditState";
 
 /**
  * Atom for target search config.
@@ -66,7 +65,7 @@ const searchSongsSyncAtom = atomWithSync(searchSongsAtom);
  */
 const searchVisibleSongsSyncAtom = atom((get) => {
 	const searchSongs = get(searchSongsSyncAtom);
-	const editingSearch = get(editingSearchAtom);
+	const searchSongTableColumns = get(searchSongTableColumnsAtom);
 	const globalFilterTokens = get(globalFilterTokensAtom);
 	const pathname = get(pathnameAtom);
 
@@ -77,7 +76,7 @@ const searchVisibleSongsSyncAtom = atom((get) => {
 	const filteredSongs = filterSongsByGlobalFilter(
 		searchSongs,
 		globalFilterTokens,
-		editingSearch.columns,
+		searchSongTableColumns,
 	);
 
 	return filteredSongs;

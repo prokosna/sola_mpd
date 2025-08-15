@@ -1,4 +1,5 @@
 import type { FilterCondition } from "@sola_mpd/domain/src/models/filter_pb.js";
+import type { SongTableColumn } from "@sola_mpd/domain/src/models/song_table_pb.js";
 
 /**
  * Filter conditions for search.
@@ -22,3 +23,24 @@ export enum EditingSearchStatus {
 	COLUMNS_UPDATED = 1,
 	SAVED = 2,
 }
+
+/**
+ * Form values for a single condition.
+ */
+export type ConditionFormValues = {
+	uuid: string;
+	tag: string;
+	operator: string;
+	value: string;
+};
+
+/**
+ * Form values for search.
+ */
+export type SearchFormValues = {
+	name: string;
+	queries: {
+		conditions: ConditionFormValues[];
+	}[];
+	columns: SongTableColumn[];
+};

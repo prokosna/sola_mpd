@@ -19,6 +19,7 @@ import type { ProfileInput } from "../types/profileTypes";
 type MpdProfileFormProps = {
 	onProfileCreated: () => Promise<void>;
 	onCancelled: () => Promise<void>;
+	disableCancelButton?: boolean;
 };
 
 /**
@@ -151,9 +152,11 @@ export function MpdProfileForm(props: MpdProfileFormProps) {
 					<Button type="submit" disabled={!isValidated}>
 						Save
 					</Button>
-					<Button variant="default" onClick={handleClose}>
-						Cancel
-					</Button>
+					{props.disableCancelButton ? null : (
+						<Button variant="default" onClick={handleClose}>
+							Cancel
+						</Button>
+					)}
 				</Group>
 			</Group>
 		</form>

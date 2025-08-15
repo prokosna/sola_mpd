@@ -68,6 +68,9 @@ export function Profiles() {
 							onProfileCreated={async () => {
 								onClose();
 							}}
+							onCancelled={async () => {
+								onClose();
+							}}
 						/>
 					</ModalBody>
 				</ModalContent>

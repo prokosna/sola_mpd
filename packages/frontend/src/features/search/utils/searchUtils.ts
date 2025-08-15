@@ -10,8 +10,24 @@ import {
 } from "@sola_mpd/domain/src/models/song_pb.js";
 import type { SongTableColumn } from "@sola_mpd/domain/src/models/song_table_pb.js";
 
+import {
+	convertSongMetadataValueToString,
+	convertStringToSongMetadataValue,
+} from "@sola_mpd/domain/src/utils/songUtils.js";
 import { v4 as uuidv4 } from "uuid";
-import type { SearchConditions } from "../types/searchTypes";
+import {
+	convertDisplayNameToOperator,
+	convertOperatorToDisplayName,
+} from "../../song_filter";
+import {
+	convertSongMetadataTagFromDisplayName,
+	convertSongMetadataTagToDisplayName,
+} from "../../song_table";
+import type {
+	ConditionFormValues,
+	SearchConditions,
+	SearchFormValues,
+} from "../types/searchTypes";
 
 /**
  * Create default Search object.
@@ -302,4 +318,61 @@ export function isValidOperatorWithMetadataTag(
 		return false;
 	}
 	return true;
+}
+
+/**
+ * Convert FilterCondition to ConditionFormValues.
+ *
+ * @param condition FilterCondition to convert
+ * @returns ConditionFormValues
+ */
+export function convertConditionToFormValues(
+	condition: FilterCondition,
+): ConditionFormValues {
+	return {
+		uuid: condition.uuid,
+		tag: convertSongMetadataTagToDisplayName(condition.tag),
+		operator: convertOperatorToDisplayName(condition.operator),
+		value:
+			condition.value === undefined
+				? ""
+				: convertSongMetadataValueToString(condition.value),
+	};
+}
+
+/**
+ * Convert Search to SearchFormValues.
+ *
+ * @param search Search to convert
+ * @returns Form values
+ */
+export function convertSearchToFormValues(search: Search): SearchFormValues {
+	return {
+		name: search.name,
+		queries: search.queries.map((query) => ({
+			conditions: query.conditions.map(convertConditionToFormValues),
+		})),
+		columns: search.columns,
+	};
+}
+
+/**
+ * Convert SearchFormValues to Search.
+ *
+ * @param values Form values to convert
+ * @returns Search
+ */
+export function convertFormValuesToSearch(values: SearchFormValues): Search {
+	return new Search({
+		name: values.name,
+		queries: values.queries.map((query) => ({
+			conditions: query.conditions.map((condition) => ({
+				uuid: condition.uuid,
+				tag: convertSongMetadataTagFromDisplayName(condition.tag),
+				operator: convertDisplayNameToOperator(condition.operator),
+				value: convertStringToSongMetadataValue(condition.value),
+			})),
+		})),
+		columns: values.columns,
+	});
 }

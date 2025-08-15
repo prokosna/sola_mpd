@@ -71,10 +71,7 @@ export function BrowserView(props: BrowserViewProps) {
 	return (
 		<>
 			<Stack h="100%" gap={0}>
-				<Group
-					w="100%"
-					bg={scheme.colorScheme === "light" ? "white" : "dark.7"}
-				>
+				<Group w="100%" bg={scheme === "light" ? "white" : "dark.7"}>
 					{props.browserNavigationBreadcrumbs}
 				</Group>
 				<Divider />

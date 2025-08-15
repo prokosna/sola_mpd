@@ -1,7 +1,6 @@
-import { Box } from "@chakra-ui/react";
-import type { SongTableColumn } from "@sola_mpd/domain/src/models/song_table_pb.js";
-import { useCallback, useState } from "react";
+import { useState } from "react";
 
+import { Box } from "@mantine/core";
 import { CenterSpinner } from "../../loading";
 import { PlaylistSelectModal, usePlaylistSelectModal } from "../../playlist";
 import {
@@ -11,7 +10,7 @@ import {
 } from "../../song_table";
 import { useHandleSearchColumnsUpdated } from "../hooks/useHandleSearchColumnsUpdated";
 import { useSearchSongTableProps } from "../hooks/useSearchSongTableProps";
-import { useEditingSearchState } from "../states/searchEditState";
+import { useSearchSongTableColumnsState } from "../states/searchEditState";
 
 /**
  * Search content area component.
@@ -21,7 +20,7 @@ import { useEditingSearchState } from "../states/searchEditState";
  * @returns Content component
  */
 export function SearchContent() {
-	const editingSearch = useEditingSearchState();
+	const columns = useSearchSongTableColumnsState();
 	const handleSearchColumnsUpdated = useHandleSearchColumnsUpdated();
 
 	const [isColumnEditModalOpen, setIsColumnEditModalOpen] = useState(false);
@@ -38,17 +37,11 @@ export function SearchContent() {
 		setIsColumnEditModalOpen,
 	);
 
-	const onColumnsUpdated = useCallback(
-		async (columns: SongTableColumn[]) => {
-			await handleSearchColumnsUpdated(editingSearch, columns);
-		},
-		[editingSearch, handleSearchColumnsUpdated],
-	);
 	const columnEditModalProps = useColumnEditModalProps(
 		isColumnEditModalOpen,
-		editingSearch.columns,
+		columns,
 		setIsColumnEditModalOpen,
-		onColumnsUpdated,
+		handleSearchColumnsUpdated,
 		async () => {},
 	);
 

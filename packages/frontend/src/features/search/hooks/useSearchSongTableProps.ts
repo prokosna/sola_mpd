@@ -21,7 +21,7 @@ import {
 	useSetSelectedSongsState,
 	useSongTableState,
 } from "../../song_table";
-import { useEditingSearchState } from "../states/searchEditState";
+import { useSearchSongTableColumnsState } from "../states/searchEditState";
 import { useSearchSongsState } from "../states/searchSongsState";
 import {
 	useIsSearchLoadingState,
@@ -53,7 +53,7 @@ export function useSearchSongTableProps(
 	const mpdClient = useMpdClientState();
 	const isLoading = useIsSearchLoadingState();
 	const songs = useSearchSongsState();
-	const editingSearch = useEditingSearchState();
+	const searchSongTableColumns = useSearchSongTableColumnsState();
 	const songTableState = useSongTableState();
 	const setIsSearchLoading = useSetIsSearchLoadingState();
 	const setSelectedSongs = useSetSelectedSongsState();
@@ -109,9 +109,9 @@ export function useSearchSongTableProps(
 
 	const onColumnsUpdated = useCallback(
 		async (updatedColumns: SongTableColumn[]) => {
-			handleSearchColumnsUpdated(editingSearch, updatedColumns);
+			handleSearchColumnsUpdated(updatedColumns);
 		},
-		[editingSearch, handleSearchColumnsUpdated],
+		[handleSearchColumnsUpdated],
 	);
 
 	const onSongsSelected = useCallback(
@@ -136,8 +136,8 @@ export function useSearchSongTableProps(
 		songTableKeyType,
 		songs,
 		columns:
-			editingSearch.columns.length !== 0
-				? editingSearch.columns
+			searchSongTableColumns.length !== 0
+				? searchSongTableColumns
 				: songTableState.columns,
 		isSortingEnabled: true,
 		isReorderingEnabled: false,

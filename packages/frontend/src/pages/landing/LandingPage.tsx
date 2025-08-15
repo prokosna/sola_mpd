@@ -23,6 +23,8 @@ export function LandingPage() {
 		onProfileCreated: useCallback(async () => {
 			navigate(ROUTE_HOME_PLAY_QUEUE);
 		}, [navigate]),
+		onCancelled: async () => {},
+		disableCancelButton: true,
 	};
 
 	return (
