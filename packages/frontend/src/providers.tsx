@@ -1,12 +1,14 @@
 import { ChakraProvider } from "@chakra-ui/react";
 import { MantineProvider } from "@mantine/core";
 
+import { Notifications } from "@mantine/notifications";
 import { mantineTheme } from "./mantine.theme";
 import { customTheme } from "./theme";
 
 export function Providers({ children }: { children: React.ReactNode }) {
 	return (
 		<MantineProvider theme={mantineTheme} defaultColorScheme="dark">
+			<Notifications />
 			<ChakraProvider theme={customTheme}>{children}</ChakraProvider>
 		</MantineProvider>
 	);
