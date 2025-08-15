@@ -1,4 +1,3 @@
-import { useColorMode } from "@chakra-ui/react";
 import {
 	ActionIcon,
 	useComputedColorScheme,
@@ -21,7 +20,6 @@ import { IconMoon, IconSun } from "@tabler/icons-react";
  * ```
  */
 export function ColorModeSwitchButton() {
-	const { setColorMode } = useColorMode(); // TODO: To be removed
 	const { setColorScheme } = useMantineColorScheme();
 	const scheme = useComputedColorScheme();
 
@@ -32,7 +30,6 @@ export function ColorModeSwitchButton() {
 				variant="transparent"
 				onClick={() => {
 					setColorScheme(scheme === "dark" ? "light" : "dark");
-					setColorMode(scheme === "dark" ? "light" : "dark");
 				}}
 			>
 				{scheme === "dark" ? <IconSun /> : <IconMoon />}
