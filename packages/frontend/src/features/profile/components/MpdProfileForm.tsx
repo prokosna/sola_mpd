@@ -7,7 +7,6 @@ import {
 	NumberInput,
 	Text,
 	TextInput,
-	Title,
 } from "@mantine/core";
 import { isInRange, isNotEmpty, useForm } from "@mantine/form";
 import { useNotification } from "../../../lib/mantine/hooks/useNotification";
@@ -112,8 +111,8 @@ export function MpdProfileForm(props: MpdProfileFormProps) {
 
 	return (
 		<form onSubmit={form.onSubmit(handleSubmit)}>
-			<Title>MPD Server Information</Title>
 			<TextInput
+				w="400"
 				withAsterisk
 				label="Name"
 				placeholder="Default"
@@ -121,6 +120,7 @@ export function MpdProfileForm(props: MpdProfileFormProps) {
 				{...form.getInputProps("name")}
 			/>
 			<TextInput
+				w="400"
 				withAsterisk
 				label="Host"
 				placeholder="localhost"
@@ -128,13 +128,14 @@ export function MpdProfileForm(props: MpdProfileFormProps) {
 				{...form.getInputProps("host")}
 			/>
 			<NumberInput
+				w="400"
 				withAsterisk
 				label="Port"
 				placeholder="6600"
 				key={form.key("port")}
 				{...form.getInputProps("port")}
 			/>
-			<Divider mx={8} />
+			<Divider my={8} />
 			<Group justify="space-between">
 				<Group>
 					{isValidated ? <Text>Successfully connected!</Text> : undefined}

@@ -1,7 +1,7 @@
-import { Box, Center } from "@chakra-ui/react";
 import { useCallback, useEffect } from "react";
 import { useNavigate } from "react-router";
 
+import { Card, Center, Title, useComputedColorScheme } from "@mantine/core";
 import { ROUTE_HOME_PLAY_QUEUE } from "../../const/routes";
 import {
 	MpdProfileForm,
@@ -10,8 +10,8 @@ import {
 
 export function LandingPage() {
 	const navigate = useNavigate();
-
 	const profile = useCurrentMpdProfileState();
+	const scheme = useComputedColorScheme();
 
 	useEffect(() => {
 		if (profile !== undefined) {
@@ -29,13 +29,12 @@ export function LandingPage() {
 
 	return (
 		<>
-			<Box w="100%" h="100dvh" bgImage="url('/bg.png')">
-				<Center w="100%" h="100%" position="relative">
-					<Center zIndex="1" position="absolute" w="500px">
-						<MpdProfileForm {...mpdProfileFormProps} />
-					</Center>
-				</Center>
-			</Box>
+			<Center w="100%" h="100vh" bg={scheme === "light" ? "white" : "dark.7"}>
+				<Card>
+					<Title size="lg">MPD Server Information</Title>
+					<MpdProfileForm {...mpdProfileFormProps} />
+				</Card>
+			</Center>
 		</>
 	);
 }
