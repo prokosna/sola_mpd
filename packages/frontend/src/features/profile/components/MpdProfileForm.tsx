@@ -134,7 +134,7 @@ export function MpdProfileForm(props: MpdProfileFormProps) {
 				key={form.key("port")}
 				{...form.getInputProps("port")}
 			/>
-			<Divider />
+			<Divider mx={8} />
 			<Group justify="space-between">
 				<Group>
 					{isValidated ? <Text>Successfully connected!</Text> : undefined}
