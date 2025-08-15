@@ -28,14 +28,9 @@ export function PluginList(props: PluginListProps) {
 				{pluginState.plugins.map((plugin) => (
 					<PluginListInfoCard key={plugin.info?.name} {...{ plugin }} />
 				))}
-				<Card w={300} h={350} bg="gray" withBorder>
+				<Card w={300} h={350} withBorder>
 					<Center w="100%" h="100%">
-						<ActionIcon
-							size={48}
-							c="gray"
-							variant="transparent"
-							onClick={props.onOpen}
-						>
+						<ActionIcon size={48} variant="transparent" onClick={props.onOpen}>
 							<IconPlus size={48} />
 						</ActionIcon>
 					</Center>

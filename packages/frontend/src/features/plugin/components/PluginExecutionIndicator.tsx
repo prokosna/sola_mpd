@@ -26,7 +26,7 @@ export function PluginExecutionIndicator() {
 	return (
 		<>
 			<Box
-				component="button"
+				style={{ cursor: "pointer" }}
 				onClick={() => setIsPluginExecutionModalOpen("progress")}
 			>
 				{latestResponse instanceof PluginExecuteResponse ? (
