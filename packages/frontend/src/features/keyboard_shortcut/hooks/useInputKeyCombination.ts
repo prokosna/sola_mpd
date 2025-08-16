@@ -1,4 +1,4 @@
-import { type MutableRefObject, useEffect, useRef } from "react";
+import { type RefObject, useEffect, useRef } from "react";
 
 /**
  * Advanced keyboard shortcut management hook.
@@ -42,7 +42,7 @@ import { type MutableRefObject, useEffect, useRef } from "react";
  * @param onPressed Action callback
  */
 export function useInputKeyCombination(
-	ref: MutableRefObject<HTMLElement | null> | undefined,
+	ref: RefObject<HTMLElement | null> | undefined,
 	keys: string[],
 	onPressed: () => void,
 ): void {
@@ -70,7 +70,7 @@ export function useInputKeyCombination(
 			keysPressed.current.delete(keyboardEvent.key);
 		};
 
-		const target = ref?.current || window;
+		const target = ref?.current ?? window;
 		target.addEventListener("keydown", onKeyDown);
 		target.addEventListener("keyup", onKeyUp);
 

@@ -15,7 +15,7 @@ import { validateIpAndPort } from "../utils/validationUtils";
  * @returns Error and connect handler
  */
 export function useHandlePluginConnected(
-	endpointRef: RefObject<HTMLInputElement>,
+	endpointRef: RefObject<HTMLInputElement | null>,
 	setPluginToAdd: (plugin: Plugin | undefined) => void,
 ) {
 	const pluginService = usePluginService();
