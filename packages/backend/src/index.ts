@@ -4,10 +4,9 @@ import { fileURLToPath } from "node:url";
 
 import express, { type ErrorRequestHandler } from "express";
 import { Server as SocketIOServer } from "socket.io";
-
-import { SocketIoManager } from "./SocketIoManager.js";
 import configsRouter from "./configs/configsRouter.js";
 import mpdRouter from "./mpd/mpdRouter.js";
+import { SocketIoManager } from "./SocketIoManager.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -35,7 +34,7 @@ SocketIoManager.initialize(io);
 
 // Serve SPA
 app.use(express.static(path.join(__dirname, "public")));
-app.get("*", (_req, res) => {
+app.get("*splat", (_req, res) => {
 	res.sendFile(path.join(__dirname, "public/index.html"));
 });
 
