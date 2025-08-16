@@ -2,7 +2,6 @@
 .handle {
 	background-color: var(--separator-border);
 	transition: background-color 0.2s ease-in-out;
-	z-index: 1000;
 	flex-shrink: 0;
 }
 
