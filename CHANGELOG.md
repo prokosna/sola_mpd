@@ -9,8 +9,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [4.0.0] - 2025-08-16
 
 ### Changed
-- Replace Chakra UI v2 with Mantine UI
-- Design update according to Mantine UI
+- Replace Chakra UI v2 with Mantine
+- Design update according to Mantine
 
 ## [3.2.5] - 2025-08-07
 
