@@ -1,5 +1,4 @@
 import { useMemo } from "react";
-import { useBrowserLayoutState, useUpdateLayoutState } from "../../../layout";
 import { BrowserView } from "../../common/components/BrowserView";
 import { BrowserContent } from "./BrowserContent";
 import { BrowserNavigation } from "./BrowserNavigation";
@@ -14,9 +13,6 @@ import { BrowserNavigationBreadcrumbs } from "./BrowserNavigationBreadcrumbs";
  * @returns The rendered Browser component
  */
 export function Browser() {
-	const browserLayout = useBrowserLayoutState();
-	const updateLayout = useUpdateLayoutState();
-
 	const browserNavigationBreadcrumbs = useMemo(() => {
 		return <BrowserNavigationBreadcrumbs />;
 	}, []);
@@ -30,8 +26,6 @@ export function Browser() {
 	return (
 		<BrowserView
 			{...{
-				layout: browserLayout,
-				updateLayout,
 				browserNavigationBreadcrumbs,
 				browserNavigation,
 				browserContent,
