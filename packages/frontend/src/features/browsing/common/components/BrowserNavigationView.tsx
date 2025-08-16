@@ -1,10 +1,8 @@
 import type { BrowserFilter } from "@sola_mpd/domain/src/models/browser_pb.js";
 import type { Song_MetadataTag } from "@sola_mpd/domain/src/models/song_pb.js";
 import clsx from "clsx";
-import { Panel, PanelGroup, PanelResizeHandle } from "react-resizable-panels";
-
-import { Stack } from "@mantine/core";
 import * as React from "react";
+import { Panel, PanelGroup, PanelResizeHandle } from "react-resizable-panels";
 import styles from "../../../../ResizeHandle.module.css";
 import type { UpdateMode } from "../../../../types/stateTypes";
 import { FullWidthSkeleton } from "../../../loading";
@@ -42,31 +40,29 @@ export function BrowserNavigationView(props: BrowserNavigationViewProps) {
 	);
 
 	return (
-		<Stack h="100%" gap={0}>
-			<PanelGroup direction="vertical" autoSaveId="browser-navigation-view">
-				{browserFilters
-					.sort((a, b) => a.order - b.order)
-					.map((browserFilter, index, array) => (
-						<React.Fragment key={browserFilter.tag}>
-							<Panel minSize={20}>
-								<BrowserNavigationFilterView
-									{...{
-										browserFilter,
-										values: browserFilterValues?.get(browserFilter.tag),
-										browserFilters,
-										availableTags,
-										updateBrowserFilters,
-									}}
-								/>
-							</Panel>
-							{index < array.length - 1 && (
-								<PanelResizeHandle
-									className={clsx(styles.handle, styles.horizontal)}
-								/>
-							)}
-						</React.Fragment>
-					))}
-			</PanelGroup>
-		</Stack>
+		<PanelGroup direction="vertical" autoSaveId="browser-navigation-view">
+			{browserFilters
+				.sort((a, b) => a.order - b.order)
+				.map((browserFilter, index, array) => (
+					<React.Fragment key={browserFilter.tag}>
+						<Panel minSize={20}>
+							<BrowserNavigationFilterView
+								{...{
+									browserFilter,
+									values: browserFilterValues?.get(browserFilter.tag),
+									browserFilters,
+									availableTags,
+									updateBrowserFilters,
+								}}
+							/>
+						</Panel>
+						{index < array.length - 1 && (
+							<PanelResizeHandle
+								className={clsx(styles.handle, styles.horizontal)}
+							/>
+						)}
+					</React.Fragment>
+				))}
+		</PanelGroup>
 	);
 }
