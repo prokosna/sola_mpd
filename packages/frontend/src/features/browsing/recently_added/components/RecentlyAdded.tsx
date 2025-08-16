@@ -1,8 +1,4 @@
 import { useMemo } from "react";
-import {
-	useRecentlyAddedLayoutState,
-	useUpdateLayoutState,
-} from "../../../layout";
 
 import { BrowserView } from "../../common/components/BrowserView";
 import { RecentlyAddedContent } from "./RecentlyAddedContent";
@@ -15,9 +11,6 @@ import { RecentlyAddedNavigationBreadcrumbs } from "./RecentlyAddedNavigationBre
  * Uses layout state and update function for managing the component's layout.
  */
 export function RecentlyAdded() {
-	const recentlyAddedLayout = useRecentlyAddedLayoutState();
-	const updateLayout = useUpdateLayoutState();
-
 	const browserNavigationBreadcrumbs = useMemo(() => {
 		return <RecentlyAddedNavigationBreadcrumbs />;
 	}, []);
@@ -31,8 +24,6 @@ export function RecentlyAdded() {
 	return (
 		<BrowserView
 			{...{
-				layout: recentlyAddedLayout,
-				updateLayout,
 				browserNavigationBreadcrumbs,
 				browserNavigation,
 				browserContent,

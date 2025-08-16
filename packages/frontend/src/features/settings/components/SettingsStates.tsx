@@ -1,5 +1,4 @@
 import { BrowserState } from "@sola_mpd/domain/src/models/browser_pb.js";
-import { LayoutState } from "@sola_mpd/domain/src/models/layout_pb.js";
 import { MpdProfileState } from "@sola_mpd/domain/src/models/mpd/mpd_profile_pb.js";
 import { PluginState } from "@sola_mpd/domain/src/models/plugin/plugin_pb.js";
 import { RecentlyAddedState } from "@sola_mpd/domain/src/models/recently_added_pb.js";
@@ -15,7 +14,6 @@ import {
 	useBrowserState,
 	useUpdateBrowserState,
 } from "../../browsing/browser/states/browserState";
-import { useLayoutState, useUpdateLayoutState } from "../../layout";
 import { CenterSpinner } from "../../loading";
 import { usePluginState, useUpdatePluginState } from "../../plugin";
 import { useMpdProfileState, useUpdateMpdProfileState } from "../../profile";
@@ -48,20 +46,6 @@ export function SettingsStates() {
 				);
 			},
 			MpdProfileState.fromJson,
-		);
-
-	const layoutState = useLayoutState();
-	const updateLayoutState = useUpdateLayoutState();
-	const [onOpenLayoutState, layoutStateProps] =
-		useSettingsStateEditorProps<LayoutState>(
-			layoutState,
-			async (newState: LayoutState) => {
-				updateLayoutState(
-					newState,
-					UpdateMode.LOCAL_STATE | UpdateMode.PERSIST,
-				);
-			},
-			LayoutState.fromJson,
 		);
 
 	const songTableState = useSongTableState();
@@ -137,8 +121,6 @@ export function SettingsStates() {
 	if (
 		mpdProfileState === undefined ||
 		profileStateProps === undefined ||
-		layoutState === undefined ||
-		layoutStateProps === undefined ||
 		songTableState === undefined ||
 		songTableStateProps === undefined ||
 		browserState === undefined ||
@@ -155,7 +137,6 @@ export function SettingsStates() {
 
 	const rows = [
 		{ name: "Profile", onEdit: onOpenProfileState },
-		{ name: "Layout", onEdit: onOpenLayoutState },
 		{ name: "Song Table", onEdit: onOpenSongTableState },
 		{ name: "Browser", onEdit: onOpenBrowserState },
 		{ name: "Recently Added", onEdit: onOpenRecentlyAddedState },
@@ -192,7 +173,6 @@ export function SettingsStates() {
 				</Table>
 			</Stack>
 			<SettingsStatesEditor<MpdProfileState> {...profileStateProps} />
-			<SettingsStatesEditor<LayoutState> {...layoutStateProps} />
 			<SettingsStatesEditor<SongTableState> {...songTableStateProps} />
 			<SettingsStatesEditor<BrowserState> {...browserStateProps} />
 			<SettingsStatesEditor<RecentlyAddedState> {...recentlyAddedStateProps} />

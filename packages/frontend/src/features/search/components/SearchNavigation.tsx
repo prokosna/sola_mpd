@@ -1,8 +1,9 @@
-import { Allotment } from "allotment";
-
-import { Stack, useComputedColorScheme } from "@mantine/core";
 import { isNotEmpty, useForm } from "@mantine/form";
+import clsx from "clsx";
 import equal from "fast-deep-equal";
+import { Panel, PanelGroup, PanelResizeHandle } from "react-resizable-panels";
+
+import styles from "../../../ResizeHandle.module.css";
 import { useSavedSearchesState } from "../states/savedSearchesState";
 import {
 	useEditingSearchStatusState,
@@ -27,7 +28,6 @@ import { SearchNavigationSavedQueries } from "./SearchNavigationSavedQueries";
  * @returns Navigation component
  */
 export function SearchNavigation() {
-	const scheme = useComputedColorScheme();
 	const savedSearches = useSavedSearchesState();
 	const editingSearchStatus = useEditingSearchStatusState();
 	const setEditingSearchStatus = useSetEditingSearchState();
@@ -55,23 +55,17 @@ export function SearchNavigation() {
 	});
 
 	return (
-		<>
-			<Stack h="100%" gap={0}>
-				<Allotment
-					className={scheme === "light" ? "allotment-light" : "allotment-dark"}
-					vertical={true}
-				>
-					<Allotment.Pane minSize={20}>
-						<SearchNavigationQueryEditor
-							form={form}
-							editingSearchStatus={editingSearchStatus}
-						/>
-					</Allotment.Pane>
-					<Allotment.Pane minSize={20}>
-						<SearchNavigationSavedQueries form={form} />
-					</Allotment.Pane>
-				</Allotment>
-			</Stack>
-		</>
+		<PanelGroup direction="vertical" autoSaveId="search-navigation">
+			<Panel minSize={20}>
+				<SearchNavigationQueryEditor
+					form={form}
+					editingSearchStatus={editingSearchStatus}
+				/>
+			</Panel>
+			<PanelResizeHandle className={clsx(styles.handle, styles.horizontal)} />
+			<Panel minSize={20}>
+				<SearchNavigationSavedQueries form={form} />
+			</Panel>
+		</PanelGroup>
 	);
 }

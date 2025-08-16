@@ -1,5 +1,4 @@
 import { BrowserState } from "@sola_mpd/domain/src/models/browser_pb.js";
-import { LayoutState } from "@sola_mpd/domain/src/models/layout_pb.js";
 import { MpdProfileState } from "@sola_mpd/domain/src/models/mpd/mpd_profile_pb.js";
 import { PluginState } from "@sola_mpd/domain/src/models/plugin/plugin_pb.js";
 import { RecentlyAddedState } from "@sola_mpd/domain/src/models/recently_added_pb.js";
@@ -11,7 +10,6 @@ import { wrap } from "../utils/wrap.js";
 
 import { browserStateRepository } from "./repositories/browserStateRepository.js";
 import { commonSongTableStateRepository } from "./repositories/commonSongTableStateRepository.js";
-import { layoutStateRepository } from "./repositories/layoutStateRepository.js";
 import { mpdProfileStateRepository } from "./repositories/mpdProfileStateRepository.js";
 import { pluginStateRepository } from "./repositories/pluginStateRepository.js";
 import { recentlyAddedStateRepository } from "./repositories/recentlyAddedStateRepository.js";
@@ -64,24 +62,6 @@ configsRouter.post(
 		const body = req.body as Buffer;
 		const data = SongTableState.fromBinary(new Uint8Array(body));
 		commonSongTableStateRepository.update(data);
-		res.end();
-	}),
-);
-configsRouter.get(
-	"/layout_state",
-	wrap(async (_req: Request, res: Response) => {
-		const value = layoutStateRepository.get();
-		const bytes = Buffer.from(value.toBinary());
-		res.send(bytes);
-	}),
-);
-
-configsRouter.post(
-	"/layout_state",
-	wrap(async (req: Request, res: Response) => {
-		const body = req.body as Buffer;
-		const data = LayoutState.fromBinary(new Uint8Array(body));
-		layoutStateRepository.update(data);
 		res.end();
 	}),
 );

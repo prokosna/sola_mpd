@@ -1,15 +1,7 @@
-import { Allotment } from "allotment";
-import { useCallback } from "react";
-
-import { UpdateMode } from "../../../types/stateTypes";
-import {
-	usePlaylistLayoutState,
-	useResizablePane,
-	useUpdateLayoutState,
-} from "../../layout";
-import { CenterSpinner } from "../../loading";
-
-import { Box, useComputedColorScheme } from "@mantine/core";
+import { Box } from "@mantine/core";
+import clsx from "clsx";
+import { Panel, PanelGroup, PanelResizeHandle } from "react-resizable-panels";
+import styles from "../../../ResizeHandle.module.css";
 import { PlaylistContent } from "./PlaylistContent";
 import { PlaylistNavigation } from "./PlaylistNavigation";
 
@@ -22,49 +14,17 @@ import { PlaylistNavigation } from "./PlaylistNavigation";
  * @returns Playlist view component
  */
 export function Playlist() {
-	const playlistLayout = usePlaylistLayoutState();
-	const updateLayout = useUpdateLayoutState();
-
-	const scheme = useComputedColorScheme();
-
-	const handlePanelWidthChanged = useCallback(
-		async (left: number | undefined) => {
-			if (left === undefined || playlistLayout === undefined) {
-				return;
-			}
-			const newLayout = playlistLayout.clone();
-			newLayout.sidePaneWidth = left;
-			updateLayout(newLayout, UpdateMode.PERSIST);
-		},
-		[playlistLayout, updateLayout],
-	);
-
-	const { isReady, leftPaneWidthStyle, handlePanelResize } = useResizablePane(
-		playlistLayout?.sidePaneWidth,
-		handlePanelWidthChanged,
-	);
-
-	if (!isReady) {
-		return <CenterSpinner />;
-	}
-
 	return (
-		<>
-			<Box w="100%" h="100%">
-				<Allotment
-					className={scheme === "light" ? "allotment-light" : "allotment-dark"}
-					onChange={(sizes) => {
-						handlePanelResize(sizes[0], sizes[1]);
-					}}
-				>
-					<Allotment.Pane preferredSize={leftPaneWidthStyle}>
-						<PlaylistNavigation />
-					</Allotment.Pane>
-					<Allotment.Pane>
-						<PlaylistContent />
-					</Allotment.Pane>
-				</Allotment>
-			</Box>
-		</>
+		<Box w="100%" h="100%">
+			<PanelGroup direction="horizontal" autoSaveId="playlist">
+				<Panel defaultSize={30} minSize={10}>
+					<PlaylistNavigation />
+				</Panel>
+				<PanelResizeHandle className={clsx(styles.handle, styles.vertical)} />
+				<Panel minSize={30}>
+					<PlaylistContent />
+				</Panel>
+			</PanelGroup>
+		</Box>
 	);
 }

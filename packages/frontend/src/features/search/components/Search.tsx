@@ -1,15 +1,7 @@
-import { Allotment } from "allotment";
-import { useCallback } from "react";
-
-import { UpdateMode } from "../../../types/stateTypes";
-import {
-	useResizablePane,
-	useSearchLayoutState,
-	useUpdateLayoutState,
-} from "../../layout";
-import { CenterSpinner } from "../../loading";
-
-import { Box, useComputedColorScheme } from "@mantine/core";
+import { Box } from "@mantine/core";
+import clsx from "clsx";
+import { Panel, PanelGroup, PanelResizeHandle } from "react-resizable-panels";
+import styles from "../../../ResizeHandle.module.css";
 import { SearchContent } from "./SearchContent";
 import { SearchNavigation } from "./SearchNavigation";
 
@@ -21,49 +13,17 @@ import { SearchNavigation } from "./SearchNavigation";
  * @returns Search component
  */
 export function Search() {
-	const searchLayout = useSearchLayoutState();
-	const updateLayout = useUpdateLayoutState();
-
-	const scheme = useComputedColorScheme();
-
-	const handlePanelWidthChanged = useCallback(
-		async (left: number | undefined) => {
-			if (left === undefined || searchLayout === undefined) {
-				return;
-			}
-			const newLayout = searchLayout.clone();
-			newLayout.sidePaneWidth = left;
-			updateLayout(newLayout, UpdateMode.PERSIST);
-		},
-		[searchLayout, updateLayout],
-	);
-
-	const { isReady, leftPaneWidthStyle, handlePanelResize } = useResizablePane(
-		searchLayout?.sidePaneWidth,
-		handlePanelWidthChanged,
-	);
-
-	if (!isReady) {
-		return <CenterSpinner />;
-	}
-
 	return (
-		<>
-			<Box w="100%" h="100%">
-				<Allotment
-					className={scheme === "light" ? "allotment-light" : "allotment-dark"}
-					onChange={(sizes) => {
-						handlePanelResize(sizes[0], sizes[1]);
-					}}
-				>
-					<Allotment.Pane preferredSize={leftPaneWidthStyle}>
-						<SearchNavigation />
-					</Allotment.Pane>
-					<Allotment.Pane>
-						<SearchContent />
-					</Allotment.Pane>
-				</Allotment>
-			</Box>
-		</>
+		<Box w="100%" h="100%">
+			<PanelGroup direction="horizontal" autoSaveId="search">
+				<Panel defaultSize={30} minSize={10}>
+					<SearchNavigation />
+				</Panel>
+				<PanelResizeHandle className={clsx(styles.handle, styles.vertical)} />
+				<Panel minSize={30}>
+					<SearchContent />
+				</Panel>
+			</PanelGroup>
+		</Box>
 	);
 }

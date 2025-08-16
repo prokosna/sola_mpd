@@ -1,0 +1,22 @@
+/* ResizeHandle.module.css */
+.handle {
+	background-color: var(--separator-border);
+	transition: background-color 0.2s ease-in-out;
+	z-index: 1000;
+	flex-shrink: 0;
+}
+
+.handle[data-resize-handle-state="drag"],
+.handle[data-resize-handle-state="hover"] {
+	background-color: var(--focus-border);
+}
+
+.vertical {
+	width: 1px;
+	cursor: col-resize;
+}
+
+.horizontal {
+	height: 1px;
+	cursor: row-resize;
+}

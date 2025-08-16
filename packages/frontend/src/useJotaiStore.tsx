@@ -2,7 +2,6 @@ import { createStore } from "jotai";
 
 import { browserStateRepositoryAtom } from "./features/browsing/browser/states/browserStateRepository";
 import { recentlyAddedStateRepositoryAtom } from "./features/browsing/recently_added/states/recentlyAddedStateRepository";
-import { layoutStateRepositoryAtom } from "./features/layout/states/layoutStateRepositry";
 import { mpdClientAtom } from "./features/mpd/states/mpdClient";
 import { mpdListenerAtom } from "./features/mpd/states/mpdListener";
 import { pluginServiceAtom } from "./features/plugin/states/pluginServiceState";
@@ -12,7 +11,6 @@ import { savedSearchesRepositoryAtom } from "./features/search/states/savedSearc
 import { songTableStateRepositoryAtom } from "./features/song_table/states/songTableStateRepository";
 import { BrowserStateRepositoryImplHttp } from "./infrastructure/browser/BrowserStateRepositoryImplHttp";
 import { HttpClientImplFetch } from "./infrastructure/http/HttpClientImplFetch";
-import { LayoutStateRepositoryImplHttp } from "./infrastructure/layout/LayoutStateRepositoryImplHttp";
 import { MpdClientSocketIo } from "./infrastructure/mpd/MpdClientImplSocketIo";
 import { MpdListenerImplSocketIo } from "./infrastructure/mpd/MpdListenerImplSocketIo";
 import { MpdProfileStateRepositoryImplHttp } from "./infrastructure/mpd/MpdProfileStateRepositoryImplHttp";
@@ -58,10 +56,6 @@ export function useJotaiStore() {
 		store.set(
 			savedSearchesRepositoryAtom,
 			new SavedSearchesRepositoryImplHttp(httpClient),
-		);
-		store.set(
-			layoutStateRepositoryAtom,
-			new LayoutStateRepositoryImplHttp(httpClient),
 		);
 		store.set(
 			recentlyAddedStateRepositoryAtom,

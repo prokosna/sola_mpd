@@ -1,32 +1,10 @@
-import { Allotment } from "allotment";
-import { type ReactElement, useCallback } from "react";
-
-import { UpdateMode } from "../../../../types/stateTypes";
-import { useResizablePane } from "../../../layout";
-import { CenterSpinner } from "../../../loading";
-
 import { Divider, Group, Stack, useComputedColorScheme } from "@mantine/core";
-import type {
-	BrowserLayout,
-	FileExploreLayout,
-	LayoutState,
-	PlaylistLayout,
-	RecentlyAddedLayout,
-	SearchLayout,
-} from "@sola_mpd/domain/src/models/layout_pb.js";
+import clsx from "clsx";
+import type { ReactElement } from "react";
+import { Panel, PanelGroup, PanelResizeHandle } from "react-resizable-panels";
+import styles from "../../../../ResizeHandle.module.css";
 
 type BrowserViewProps = {
-	layout?: BrowserLayout | RecentlyAddedLayout;
-	updateLayout: (
-		layout:
-			| FileExploreLayout
-			| SearchLayout
-			| BrowserLayout
-			| PlaylistLayout
-			| RecentlyAddedLayout
-			| LayoutState,
-		mode: UpdateMode,
-	) => Promise<void>;
 	browserNavigationBreadcrumbs: ReactElement;
 	browserNavigation: ReactElement;
 	browserContent: ReactElement;
@@ -42,31 +20,7 @@ type BrowserViewProps = {
  * @returns A React component representing the browser view
  */
 export function BrowserView(props: BrowserViewProps) {
-	const layout = props.layout;
-	const updateLayout = props.updateLayout;
-
 	const scheme = useComputedColorScheme();
-
-	const handlePanelWidthChanged = useCallback(
-		async (left: number | undefined) => {
-			if (left === undefined || layout === undefined) {
-				return;
-			}
-			const newLayout = layout.clone();
-			newLayout.sidePaneWidth = left;
-			updateLayout(newLayout, UpdateMode.PERSIST);
-		},
-		[layout, updateLayout],
-	);
-
-	const { isReady, leftPaneWidthStyle, handlePanelResize } = useResizablePane(
-		layout?.sidePaneWidth,
-		handlePanelWidthChanged,
-	);
-
-	if (!isReady) {
-		return <CenterSpinner />;
-	}
 
 	return (
 		<>
@@ -76,19 +30,15 @@ export function BrowserView(props: BrowserViewProps) {
 				</Group>
 				<Divider />
 				<Group w="100%" h="100%">
-					<Allotment
-						className={
-							scheme === "light" ? "allotment-light" : "allotment-dark"
-						}
-						onChange={(sizes) => {
-							handlePanelResize(sizes[0], sizes[1]);
-						}}
-					>
-						<Allotment.Pane preferredSize={leftPaneWidthStyle}>
+					<PanelGroup direction="horizontal" autoSaveId="browser-view">
+						<Panel defaultSize={30} minSize={10}>
 							{props.browserNavigation}
-						</Allotment.Pane>
-						<Allotment.Pane>{props.browserContent}</Allotment.Pane>
-					</Allotment>
+						</Panel>
+						<PanelResizeHandle
+							className={clsx(styles.handle, styles.vertical)}
+						/>
+						<Panel minSize={30}>{props.browserContent}</Panel>
+					</PanelGroup>
 				</Group>
 			</Stack>
 		</>
