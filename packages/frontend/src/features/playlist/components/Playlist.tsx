@@ -1,7 +1,7 @@
 import { Box } from "@mantine/core";
 import clsx from "clsx";
 import { Panel, PanelGroup, PanelResizeHandle } from "react-resizable-panels";
-import styles from "../../layout/components/ResizeHandle.module.css";
+import styles from "../../../ResizeHandle.module.css";
 import { PlaylistContent } from "./PlaylistContent";
 import { PlaylistNavigation } from "./PlaylistNavigation";
 

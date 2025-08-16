@@ -5,8 +5,8 @@ import { Panel, PanelGroup, PanelResizeHandle } from "react-resizable-panels";
 
 import { Stack } from "@mantine/core";
 import * as React from "react";
+import styles from "../../../../ResizeHandle.module.css";
 import type { UpdateMode } from "../../../../types/stateTypes";
-import styles from "../../../layout/components/ResizeHandle.module.css";
 import { FullWidthSkeleton } from "../../../loading";
 import { listBrowserSongMetadataTags } from "../utils/browserFilterUtils";
 import { BrowserNavigationFilterView } from "./BrowserNavigationFilterView";

@@ -3,7 +3,7 @@ import clsx from "clsx";
 import equal from "fast-deep-equal";
 import { Panel, PanelGroup, PanelResizeHandle } from "react-resizable-panels";
 
-import styles from "../../layout/components/ResizeHandle.module.css";
+import styles from "../../../ResizeHandle.module.css";
 import { useSavedSearchesState } from "../states/savedSearchesState";
 import {
 	useEditingSearchStatusState,
