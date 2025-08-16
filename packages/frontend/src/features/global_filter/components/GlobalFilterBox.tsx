@@ -32,7 +32,7 @@ export function GlobalFilterBox() {
 
 	return (
 		<>
-			<Group miw={100} w={500}>
+			<Group w="100%" miw={100} maw={500}>
 				<TextInput
 					w="100%"
 					ref={inputRef}
