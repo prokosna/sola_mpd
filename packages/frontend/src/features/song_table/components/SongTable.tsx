@@ -2,7 +2,7 @@ import type { Song } from "@sola_mpd/domain/src/models/song_pb.js";
 import type { SongTableColumn } from "@sola_mpd/domain/src/models/song_table_pb.js";
 import type { GetRowIdParams } from "ag-grid-community";
 import { AgGridReact } from "ag-grid-react";
-import { useCallback, useRef } from "react";
+import { type JSX, useCallback, useRef } from "react";
 
 import { useAgGridTheme } from "../../../lib/agGrid/hooks/useAgGridTheme";
 import { ContextMenu, type ContextMenuSection } from "../../context_menu";
@@ -72,7 +72,7 @@ export function SongTable(props: SongTableProps): JSX.Element {
 	const isCompact = useIsCompactMode();
 	const isTouchDevice = useIsTouchDevice();
 
-	const ref = useRef(null);
+	const ref = useRef<HTMLDivElement>(null);
 	const gridRef = useRef<AgGridReact>(null);
 
 	// Songs

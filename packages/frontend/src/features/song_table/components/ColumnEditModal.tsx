@@ -10,7 +10,7 @@ import type { Song_MetadataTag } from "@sola_mpd/domain/src/models/song_pb.js";
 import type { SongTableColumn } from "@sola_mpd/domain/src/models/song_table_pb.js";
 import { listAllSongMetadataTags } from "@sola_mpd/domain/src/utils/songUtils.js";
 import { IconArrowLeft, IconArrowRight } from "@tabler/icons-react";
-import { useCallback, useEffect, useState } from "react";
+import { type JSX, useCallback, useEffect, useState } from "react";
 import {
 	copySortingAttributesToNewColumns,
 	ensureTagsContainedInColumns,

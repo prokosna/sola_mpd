@@ -50,7 +50,7 @@ const playlistSongsSyncAtom = atomWithSync(playlistSongsAtom);
  * Applies global filter to playlist songs and manages
  * route-specific visibility.
  */
-const playlistVisibleSongsSyncAtom = atom(async (get) => {
+const playlistVisibleSongsSyncAtom = atom((get) => {
 	const playlistSongs = get(playlistSongsSyncAtom);
 	const songTableState = get(songTableStateSyncAtom);
 	const globalFilterTokens = get(globalFilterTokensAtom);

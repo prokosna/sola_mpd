@@ -1,5 +1,5 @@
 import type { CustomCellRendererProps } from "ag-grid-react";
-
+import type { JSX } from "react";
 import { SONGS_TAG_COMPACT } from "../types/songTableTypes";
 
 /**

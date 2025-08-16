@@ -1,13 +1,13 @@
 import { Divider, Group, Stack, useComputedColorScheme } from "@mantine/core";
 import clsx from "clsx";
-import type { ReactElement } from "react";
+import type { JSX, ReactElement } from "react";
 import { Panel, PanelGroup, PanelResizeHandle } from "react-resizable-panels";
 import styles from "../../../../ResizeHandle.module.css";
 
 type BrowserViewProps = {
 	browserNavigationBreadcrumbs: ReactElement;
-	browserNavigation: ReactElement;
-	browserContent: ReactElement;
+	browserNavigation: JSX.Element;
+	browserContent: JSX.Element;
 };
 
 /**

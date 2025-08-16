@@ -1,11 +1,11 @@
 import { fireEvent, renderHook } from "@testing-library/react";
-import type { MutableRefObject } from "react";
+import type { RefObject } from "react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 import { useInputKeyCombination } from "./useInputKeyCombination";
 
 describe("useInputKeyCombination", () => {
-	let ref: MutableRefObject<HTMLElement | null>;
+	let ref: RefObject<HTMLElement | null>;
 	const callback = vi.fn();
 
 	beforeEach(() => {
