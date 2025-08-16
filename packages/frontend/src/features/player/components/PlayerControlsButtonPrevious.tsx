@@ -1,11 +1,11 @@
 import { MpdRequest } from "@sola_mpd/domain/src/models/mpd/mpd_command_pb.js";
 import { useCallback } from "react";
-import { IoPlaySkipBack } from "react-icons/io5";
 
 import { useMpdClientState } from "../../mpd";
 import { useCurrentMpdProfileState } from "../../profile";
 import { useCurrentSongState } from "../states/playerSongState";
 
+import { IconPlayerSkipBack } from "@tabler/icons-react";
 import { PlayerControlsButton } from "./PlayerControlsButton";
 
 /**
@@ -41,8 +41,8 @@ export function PlayerControlsButtonPrevious() {
 		label: "Play previous",
 		isDisabled: currentSong === undefined,
 		onButtonClicked,
-		icon: <IoPlaySkipBack size={"24"} />,
-		variant: "ghost",
+		icon: <IconPlayerSkipBack size={"24"} />,
+		variant: "transparent",
 	};
 
 	return (

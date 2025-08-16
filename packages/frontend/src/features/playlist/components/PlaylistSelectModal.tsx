@@ -1,21 +1,17 @@
+import { Playlist } from "@sola_mpd/domain/src/models/playlist_pb.js";
+import { useCallback } from "react";
+
 import {
 	Button,
 	Checkbox,
-	FormControl,
+	Group,
 	Modal,
-	ModalBody,
-	ModalContent,
-	ModalFooter,
-	ModalHeader,
-	ModalOverlay,
-} from "@chakra-ui/react";
-import { Playlist } from "@sola_mpd/domain/src/models/playlist_pb.js";
-import { useCallback, useState } from "react";
-
+	Select,
+	TextInput,
+} from "@mantine/core";
+import { useForm } from "@mantine/form";
 import { useAddPlaylist } from "../hooks/useAddPlaylist";
-
-import { PlaylistSelectModalFromList } from "./PlaylistSelectModalFromList";
-import { PlaylistSelectModalNewPlaylist } from "./PlaylistSelectModalNewPlaylist";
+import { usePlaylistsState } from "../states/playlistState";
 
 export type PlaylistSelectModalProps = {
 	isOpen: boolean;
@@ -33,90 +29,94 @@ export type PlaylistSelectModalProps = {
  * @returns Modal component
  */
 export function PlaylistSelectModal(props: PlaylistSelectModalProps) {
+	const playlists = usePlaylistsState();
 	const addPlaylist = useAddPlaylist();
 
-	const [isCreateNew, setIsCreateNew] = useState(false);
-	const [playlistName, setPlaylistName] = useState("");
-	const [isPlaylistNameOk, setIsPlaylistNameOk] = useState(false);
+	const form = useForm({
+		mode: "uncontrolled",
+		initialValues: {
+			playlistName: "",
+			isNewPlaylist: false,
+		},
+		validate: {
+			playlistName: (value, values) => {
+				if (values.isNewPlaylist) {
+					if (value === "") {
+						return "Playlist name can't be empty.";
+					}
+					if (playlists?.find((playlist) => playlist.name === value)) {
+						return "Playlist name already exists.";
+					}
+				} else {
+					if (!value) {
+						return "Please select a playlist.";
+					}
+					if (!playlists?.find((playlist) => playlist.name === value)) {
+						return "Selected playlist doesn't exist.";
+					}
+				}
+			},
+		},
+	});
 
-	const handleSelect = useCallback((name: string) => {
-		setPlaylistName(name);
-		setIsPlaylistNameOk(true);
-	}, []);
-
-	const handleInput = useCallback((name: string, isOk: boolean) => {
-		setPlaylistName(name);
-		setIsPlaylistNameOk(isOk);
-	}, []);
-
-	const handleSubmit = useCallback(async () => {
-		const playlist = new Playlist({
-			name: playlistName,
-		});
-		if (isCreateNew) {
-			if (isPlaylistNameOk) {
+	const handleSubmit = useCallback(
+		async (values: typeof form.values) => {
+			const playlist = new Playlist({
+				name: values.playlistName,
+			});
+			if (values.isNewPlaylist) {
 				await addPlaylist(playlist);
-			} else {
-				return;
 			}
-		}
-		props.onOk(playlist);
-		setPlaylistName("");
-		setIsCreateNew(false);
-		setIsPlaylistNameOk(false);
-	}, [addPlaylist, isCreateNew, isPlaylistNameOk, playlistName, props]);
+			props.onOk(playlist);
+			form.reset();
+		},
+		[addPlaylist, props, form],
+	);
 
 	const handleClose = useCallback(() => {
-		setPlaylistName("");
-		setIsCreateNew(false);
-		setIsPlaylistNameOk(false);
 		props.onCancel();
-	}, [props]);
+		form.reset();
+	}, [props, form]);
 
 	return (
 		<>
 			<Modal
-				isCentered
-				closeOnOverlayClick={false}
-				isOpen={props.isOpen}
+				centered
+				opened={props.isOpen}
 				onClose={handleClose}
+				title="Select a playlist"
 			>
-				<ModalOverlay />
-				<ModalContent>
-					<ModalHeader>Select a playlist</ModalHeader>
-					<ModalBody pb={6}>
-						{isCreateNew ? (
-							<PlaylistSelectModalNewPlaylist onInput={handleInput} />
-						) : (
-							<PlaylistSelectModalFromList onSelect={handleSelect} />
-						)}
-						<FormControl>
-							<Checkbox
-								colorScheme="brand"
-								checked={isCreateNew}
-								onChange={(e) => {
-									setIsCreateNew(e.target.checked);
-									setIsPlaylistNameOk(false);
-								}}
-							>
-								Create a new playlist
-							</Checkbox>
-						</FormControl>
-					</ModalBody>
-					<ModalFooter>
-						<Button
-							colorScheme="brand"
-							mr={3}
-							onClick={handleSubmit}
-							isDisabled={playlistName === "" || !isPlaylistNameOk}
-						>
-							Add
-						</Button>
-						<Button onClick={handleClose} colorScheme="gray">
+				<form onSubmit={form.onSubmit(handleSubmit)}>
+					{form.getValues().isNewPlaylist ? (
+						<TextInput
+							withAsterisk
+							label="Playlist name"
+							placeholder="New playlist name"
+							key={form.key("playlistName")}
+							{...form.getInputProps("playlistName")}
+						/>
+					) : (
+						<Select
+							placeholder="Select a playlist"
+							data={playlists?.map((playlist) => playlist.name) || []}
+							key={form.key("playlistName")}
+							{...form.getInputProps("playlistName")}
+						/>
+					)}
+
+					<Checkbox
+						label="Create a new playlist"
+						key={form.key("isNewPlaylist")}
+						{...form.getInputProps("isNewPlaylist", { type: "checkbox" })}
+					/>
+
+					<Group justify="flex-end">
+						<Button type="submit">Add</Button>
+						<Button onClick={handleClose} variant="default">
 							Cancel
 						</Button>
-					</ModalFooter>
-				</ModalContent>
+					</Group>
+				</form>
 			</Modal>
 		</>
 	);

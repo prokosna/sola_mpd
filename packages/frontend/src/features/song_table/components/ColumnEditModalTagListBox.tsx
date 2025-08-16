@@ -1,6 +1,6 @@
-import { Box, Button, List, ListItem, Text } from "@chakra-ui/react";
 import type { Song_MetadataTag } from "@sola_mpd/domain/src/models/song_pb.js";
 
+import { Card, NavLink, ScrollArea, Text } from "@mantine/core";
 import { convertSongMetadataTagToDisplayName } from "../utils/songTableTableUtils";
 
 export type ColumnEditModalTagListBoxProps = {
@@ -30,28 +30,22 @@ export function ColumnEditModalTagListBox(
 	return (
 		<>
 			<Text>{title}</Text>
-			<Box className="layout-border-all" w="180px" h="200px" overflow={"auto"}>
-				<List>
+			<Card w="170" h="200" withBorder>
+				<ScrollArea w="100%" h="100%">
 					{tags.map((tag) => {
 						const isSelected = tag === selectedTag;
 						return (
-							<ListItem key={tag}>
-								<Button
-									ml={2}
-									w="90%"
-									variant={isSelected ? "solid" : "ghost"}
-									_hover={{
-										variant: "outline",
-									}}
-									onClick={() => handleTagSelected(tag)}
-								>
-									{convertSongMetadataTagToDisplayName(tag)}
-								</Button>
-							</ListItem>
+							<NavLink
+								key={tag}
+								label={convertSongMetadataTagToDisplayName(tag)}
+								active={isSelected}
+								onClick={() => handleTagSelected(tag)}
+								p={2}
+							/>
 						);
 					})}
-				</List>
-			</Box>
+				</ScrollArea>
+			</Card>
 		</>
 	);
 }

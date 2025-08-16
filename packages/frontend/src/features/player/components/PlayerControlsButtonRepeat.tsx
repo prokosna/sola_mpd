@@ -1,12 +1,11 @@
 import { MpdRequest } from "@sola_mpd/domain/src/models/mpd/mpd_command_pb.js";
 import { useCallback } from "react";
-import { IoRepeatOutline } from "react-icons/io5";
 
 import { useMpdClientState } from "../../mpd";
 import { useCurrentMpdProfileState } from "../../profile";
-import { useCurrentSongState } from "../states/playerSongState";
 import { usePlayerStatusIsRepeatState } from "../states/playerStatusState";
 
+import { IconRepeat, IconRepeatOff } from "@tabler/icons-react";
 import { PlayerControlsButton } from "./PlayerControlsButton";
 
 /**
@@ -20,7 +19,6 @@ import { PlayerControlsButton } from "./PlayerControlsButton";
 export function PlayerControlsButtonRepeat() {
 	const profile = useCurrentMpdProfileState();
 	const mpdClient = useMpdClientState();
-	const currentSong = useCurrentSongState();
 	const playerStatusIsRepeat = usePlayerStatusIsRepeatState();
 
 	const onButtonClicked = useCallback(async () => {
@@ -43,10 +41,14 @@ export function PlayerControlsButtonRepeat() {
 
 	const props = {
 		label: playerStatusIsRepeat ? "Repeat enabled" : "Repeat disabled",
-		isDisabled: currentSong === undefined,
+		isDisabled: false,
 		onButtonClicked,
-		icon: <IoRepeatOutline size={"24"} />,
-		variant: playerStatusIsRepeat ? "solid" : "ghost",
+		icon: playerStatusIsRepeat ? (
+			<IconRepeat size={"24"} />
+		) : (
+			<IconRepeatOff size={"24"} />
+		),
+		variant: "transparent",
 	};
 
 	return (

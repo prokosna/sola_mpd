@@ -1,4 +1,3 @@
-import { Box } from "@chakra-ui/react";
 import type { SongTableColumn } from "@sola_mpd/domain/src/models/song_table_pb.js";
 import { useCallback, useState } from "react";
 
@@ -14,6 +13,7 @@ import {
 import { usePlaylistSelectModal } from "../hooks/usePlaylistSelectModalProps";
 import { usePlaylistSongTableProps } from "../hooks/usePlaylistSongTableProps";
 
+import { Box } from "@mantine/core";
 import { PlaylistSelectModal } from "./PlaylistSelectModal";
 
 /**
@@ -65,12 +65,12 @@ export function PlaylistContent() {
 	);
 
 	if (songTableProps === undefined || columnEditModalProps === undefined) {
-		return <CenterSpinner className="layout-border-top layout-border-left" />;
+		return <CenterSpinner />;
 	}
 
 	return (
 		<>
-			<Box w="100%" h="full">
+			<Box w="100%" h="100%">
 				<SongTable {...songTableProps} />
 				<PlaylistSelectModal {...playlistSelectModalProps} />
 				<ColumnEditModal {...columnEditModalProps} />

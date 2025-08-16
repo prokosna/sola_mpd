@@ -1,17 +1,8 @@
-import {
-	AbsoluteCenter,
-	Card,
-	CardBody,
-	IconButton,
-	Wrap,
-	WrapItem,
-} from "@chakra-ui/react";
-import { IoAdd } from "react-icons/io5";
-
 import { CenterSpinner } from "../../loading";
-import { usePluginDisplayColors } from "../hooks/usePluginDisplayColors";
 import { usePluginState } from "../states/pluginState";
 
+import { ActionIcon, Card, Center, Flex } from "@mantine/core";
+import { IconPlus } from "@tabler/icons-react";
 import { PluginListInfoCard } from "./PluginListInfoCard";
 
 type PluginListProps = {
@@ -26,44 +17,25 @@ type PluginListProps = {
  */
 export function PluginList(props: PluginListProps) {
 	const pluginState = usePluginState();
-	const { unavailableColor, addPluginColor } = usePluginDisplayColors();
 
 	if (pluginState === undefined) {
-		return <CenterSpinner className="layout-border-top layout-border-left" />;
+		return <CenterSpinner />;
 	}
 
 	return (
 		<>
-			<Wrap spacing="30px">
-				{pluginState.plugins.map((plugin, index) => (
-					<WrapItem key={`${plugin.info?.name}_${index}`}>
-						<PluginListInfoCard {...{ plugin }} />
-					</WrapItem>
+			<Flex gap={20} wrap="wrap">
+				{pluginState.plugins.map((plugin) => (
+					<PluginListInfoCard key={plugin.info?.name} {...{ plugin }} />
 				))}
-				<WrapItem>
-					<Card
-						w="300px"
-						h="350px"
-						backgroundColor={unavailableColor}
-						variant="elevated"
-						borderRadius={"36px"}
-					>
-						<CardBody>
-							<AbsoluteCenter axis="both">
-								<IconButton
-									color={addPluginColor}
-									aria-label="add plugin"
-									variant="ghost"
-									fontSize={"96px"}
-									size="8xl"
-									icon={<IoAdd />}
-									onClick={props.onOpen}
-								/>
-							</AbsoluteCenter>
-						</CardBody>
-					</Card>
-				</WrapItem>
-			</Wrap>
+				<Card w={300} h={350} withBorder>
+					<Center w="100%" h="100%">
+						<ActionIcon size={48} variant="transparent" onClick={props.onOpen}>
+							<IconPlus size={48} />
+						</ActionIcon>
+					</Center>
+				</Card>
+			</Flex>
 		</>
 	);
 }

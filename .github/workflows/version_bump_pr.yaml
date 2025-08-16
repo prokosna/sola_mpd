@@ -27,7 +27,38 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
 
-      - name: Increment version
+      - name: Check if version was manually updated
+        run: |
+          # Get current version from package.json
+          current_version=$(node -p "require('./package.json').version")
+          echo "current_version=$current_version" >> $GITHUB_ENV
+          
+          # Get previous version from git history
+          git fetch origin main --depth=2
+          previous_version=$(git show HEAD~1:package.json | node -p "JSON.parse(require('fs').readFileSync('/dev/stdin', 'utf8')).version" 2>/dev/null || echo "0.0.0")
+          echo "previous_version=$previous_version" >> $GITHUB_ENV
+          
+          # Parse versions
+          current_major=$(echo $current_version | cut -d. -f1)
+          current_minor=$(echo $current_version | cut -d. -f2)
+          current_patch=$(echo $current_version | cut -d. -f3)
+          
+          previous_major=$(echo $previous_version | cut -d. -f1)
+          previous_minor=$(echo $previous_version | cut -d. -f2)
+          previous_patch=$(echo $previous_version | cut -d. -f3)
+          
+          # Check if major or minor version was updated
+          if [ "$current_major" != "$previous_major" ] || [ "$current_minor" != "$previous_minor" ]; then
+            echo "major_minor_updated=true" >> $GITHUB_ENV
+            echo "new_version=v$current_version" >> $GITHUB_ENV
+            echo "Manual major/minor version update detected: $previous_version -> $current_version"
+          else
+            echo "major_minor_updated=false" >> $GITHUB_ENV
+            echo "No major/minor version update detected"
+          fi
+
+      - name: Increment patch version
+        if: env.major_minor_updated == 'false'
         run: |
           new_version=$(npm version patch)
           echo "new_version=$new_version" >> $GITHUB_ENV
@@ -38,7 +69,8 @@ jobs:
         run: |
           git push origin --delete version-bump || true
 
-      - name: Create Pull Request
+      - name: Create Pull Request for patch version bump
+        if: env.major_minor_updated == 'false'
         uses: peter-evans/create-pull-request@v6
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
@@ -46,4 +78,20 @@ jobs:
           branch: version-bump
           title: "chore: bump version to ${{ env.new_version }}"
           body: "This PR bumps the version to ${{ env.new_version }}."
+          labels: version-bump
+
+      - name: Create empty commit for manual version update
+        if: env.major_minor_updated == 'true'
+        run: |
+          git commit --allow-empty -m "chore: prepare tag for version ${{ env.new_version }}"
+
+      - name: Create Pull Request for manual version update
+        if: env.major_minor_updated == 'true'
+        uses: peter-evans/create-pull-request@v6
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          commit-message: "chore: prepare tag for version ${{ env.new_version }}"
+          branch: version-bump
+          title: "chore: prepare tag for version ${{ env.new_version }}"
+          body: "This PR prepares tagging for manually updated version ${{ env.new_version }}."
           labels: version-bump

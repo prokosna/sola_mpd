@@ -1,10 +1,10 @@
-import { CircularProgress } from "@chakra-ui/react";
 import type { GetRowIdParams } from "ag-grid-community";
 import { AgGridReact } from "ag-grid-react";
 import { useCallback, useEffect, useRef } from "react";
 
 import { useAgGridTheme } from "../../../lib/agGrid/hooks/useAgGridTheme";
 import { ContextMenu, type ContextMenuSection } from "../../context_menu";
+import { CenterSpinnerOverlay } from "../../loading/components/CenterSpinnerOverlay";
 import { useAgGridReactData } from "../hooks/useAgGridReactData";
 import { useHandleRowDataUpdated } from "../hooks/useHandleRowDataUpdated";
 import { useHandleSelectionChange } from "../hooks/useHandleSelectionChange";
@@ -85,51 +85,40 @@ export function SelectList(props: SelectListProps) {
 
 	return (
 		<>
-			<div
-				ref={ref}
-				style={{ height: "100%", width: "100%", position: "relative" }}
-			>
-				<AgGridReact
-					{...(props.headerTitle === undefined && {
-						headerHeight: 0,
-					})}
-					{...(props.headerTitle === undefined && {
-						containerStyle: {
-							"--ag-wrapper-border": "none", // Remove border to avoid duplication with layout border
-						},
-					})}
-					ref={gridRef}
-					theme={theme}
-					rowData={rowData}
-					columnDefs={columnDefs}
-					onCellContextMenu={openContextMenu}
-					onSelectionChanged={handleSelectionChange}
-					onRowDataUpdated={handleRowDataUpdated}
-					animateRows={false}
-					rowSelection={{
-						mode: props.allowMultipleSelection ? "multiRow" : "singleRow",
-						checkboxes: false,
-						headerCheckbox: false,
-						enableSelectionWithoutKeys: props.allowMultipleSelection,
-						enableClickSelection: true,
-					}}
-					rowDragManaged={false}
-					rowDragMultiRow={false}
-					suppressCellFocus={true}
-					preventDefaultOnContextMenu={true}
-					getRowId={getRowId}
-				/>
-				{props.isLoading && (
-					<CircularProgress
-						top={"50%"}
-						left={"50%"}
-						transform={"translate(-50%, -50%) scale(1)"}
-						position={"absolute"}
-						isIndeterminate
-						color="brand.500"
+			<CenterSpinnerOverlay visible={props.isLoading}>
+				<div ref={ref} style={{ height: "100%", width: "100%" }}>
+					<AgGridReact
+						{...(props.headerTitle === undefined && {
+							headerHeight: 0,
+						})}
+						{...(props.headerTitle === undefined && {
+							containerStyle: {
+								"--ag-wrapper-border": "none", // Remove border to avoid duplication with layout border
+							},
+						})}
+						ref={gridRef}
+						theme={theme}
+						rowData={rowData}
+						columnDefs={columnDefs}
+						onCellContextMenu={openContextMenu}
+						onSelectionChanged={handleSelectionChange}
+						onRowDataUpdated={handleRowDataUpdated}
+						animateRows={false}
+						rowSelection={{
+							mode: props.allowMultipleSelection ? "multiRow" : "singleRow",
+							checkboxes: false,
+							headerCheckbox: false,
+							enableSelectionWithoutKeys: props.allowMultipleSelection,
+							enableClickSelection: true,
+						}}
+						rowDragManaged={false}
+						rowDragMultiRow={false}
+						suppressCellFocus={true}
+						preventDefaultOnContextMenu={true}
+						getRowId={getRowId}
 					/>
-				)}
-			</div>
+				</div>
+			</CenterSpinnerOverlay>
 			<ContextMenu id={props.id} sections={props.contextMenuSections} />
 		</>
 	);

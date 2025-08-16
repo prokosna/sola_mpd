@@ -1,5 +1,4 @@
-import { Modal, ModalContent, ModalOverlay } from "@chakra-ui/react";
-
+import { Modal } from "@mantine/core";
 import {
 	useIsPluginExecutionModalOpenState,
 	usePluginExecutionPropsState,
@@ -28,19 +27,17 @@ export function PluginExecutionModal() {
 	return (
 		<>
 			<Modal
-				isOpen={isPluginExecutionModalOpen !== "closed"}
+				opened={isPluginExecutionModalOpen !== "closed"}
 				onClose={() => setIsPluginExecutionModalOpen("closed")}
 				size={"xl"}
-				isCentered
+				centered
+				title="Execute Plugin"
 			>
-				<ModalOverlay />
-				<ModalContent>
-					{isPluginExecutionModalOpen === "start" ? (
-						<PluginExecutionModalStart {...{ plugin, songs }} />
-					) : (
-						<PluginExecutionModalProgress {...{ plugin }} />
-					)}
-				</ModalContent>
+				{isPluginExecutionModalOpen === "start" ? (
+					<PluginExecutionModalStart {...{ plugin, songs }} />
+				) : (
+					<PluginExecutionModalProgress {...{ plugin }} />
+				)}
 			</Modal>
 		</>
 	);

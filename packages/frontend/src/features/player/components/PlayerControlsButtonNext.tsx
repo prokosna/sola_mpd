@@ -1,11 +1,11 @@
 import { MpdRequest } from "@sola_mpd/domain/src/models/mpd/mpd_command_pb.js";
 import { useCallback } from "react";
-import { IoPlaySkipForward } from "react-icons/io5";
 
 import { useMpdClientState } from "../../mpd";
 import { useCurrentMpdProfileState } from "../../profile";
 import { useCurrentSongState } from "../states/playerSongState";
 
+import { IconPlayerSkipForward } from "@tabler/icons-react";
 import { PlayerControlsButton } from "./PlayerControlsButton";
 
 /**
@@ -41,8 +41,8 @@ export function PlayerControlsButtonNext() {
 		label: "Play next",
 		isDisabled: currentSong === undefined,
 		onButtonClicked,
-		icon: <IoPlaySkipForward size={"24"} />,
-		variant: "ghost",
+		icon: <IconPlayerSkipForward size={"24"} />,
+		variant: "transparent",
 	};
 
 	return (

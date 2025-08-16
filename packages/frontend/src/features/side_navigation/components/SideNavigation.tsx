@@ -1,15 +1,3 @@
-import { Box, Divider, VStack } from "@chakra-ui/react";
-import {
-	IoBrowsers,
-	IoCode,
-	IoLibrary,
-	IoList,
-	IoMusicalNote,
-	IoSearch,
-	IoServer,
-	IoSparkles,
-} from "react-icons/io5";
-
 import {
 	ROUTE_HOME_ALL_SONGS,
 	ROUTE_HOME_BROWSER,
@@ -20,9 +8,20 @@ import {
 	ROUTE_HOME_RECENTLY_ADDED,
 	ROUTE_HOME_SEARCH,
 } from "../../../const/routes";
-import { CardStats } from "../../stats";
 import { useSideNavigationItems } from "../hooks/useSideNavigationItems";
 
+import { Divider, Group, Stack } from "@mantine/core";
+import {
+	IconArrowsExchange,
+	IconBrowser,
+	IconComet,
+	IconDatabase,
+	IconFileMusic,
+	IconMusic,
+	IconPlaylist,
+	IconSearch,
+} from "@tabler/icons-react";
+import { CardStats } from "../../stats";
 import {
 	SideNavigationItem,
 	type SideNavigationItemProps,
@@ -37,49 +36,49 @@ export function SideNavigation({ isCompact }: { isCompact: boolean }) {
 	const baseItems: SideNavigationItemProps[] = [
 		{
 			name: "Play Queue",
-			icon: IoMusicalNote,
+			icon: <IconMusic />,
 			link: ROUTE_HOME_PLAY_QUEUE,
 			isCompact,
 		},
 		{
 			name: "Browser",
-			icon: IoBrowsers,
+			icon: <IconBrowser />,
 			link: ROUTE_HOME_BROWSER,
 			isCompact,
 		},
 		{
 			name: "Playlist",
-			icon: IoList,
+			icon: <IconPlaylist />,
 			link: ROUTE_HOME_PLAYLIST,
 			isCompact,
 		},
 		{
 			name: "Recently Added",
-			icon: IoSparkles,
+			icon: <IconComet />,
 			link: ROUTE_HOME_RECENTLY_ADDED,
 			isCompact,
 		},
 		{
 			name: "Search",
-			icon: IoSearch,
+			icon: <IconSearch />,
 			link: ROUTE_HOME_SEARCH,
 			isCompact,
 		},
 		{
 			name: "File Explore",
-			icon: IoServer,
+			icon: <IconFileMusic />,
 			link: ROUTE_HOME_FILE_EXPLORE,
 			isCompact,
 		},
 		{
 			name: "All Songs",
-			icon: IoLibrary,
+			icon: <IconDatabase />,
 			link: ROUTE_HOME_ALL_SONGS,
 			isCompact,
 		},
 		{
 			name: "Plugins",
-			icon: IoCode,
+			icon: <IconArrowsExchange />,
 			link: ROUTE_HOME_PLUGIN,
 			isCompact,
 		},
@@ -89,22 +88,22 @@ export function SideNavigation({ isCompact }: { isCompact: boolean }) {
 
 	return (
 		<>
-			<VStack h="full">
-				<Box w="100%" p={4}>
+			<Stack h="100%">
+				<Stack w="100%" px={10} pt={8} gap={0}>
 					{sideNavigationItems.map((item) => (
 						<SideNavigationItem key={item.name} {...item} />
 					))}
-				</Box>
+				</Stack>
 				{isCompact ? null : (
 					<>
 						<Divider />
-						<Box w="100%" h="full" pb={0} px={6} pt={2}>
+						<Group w="100%" h="100%" px={24}>
 							<CardStats />
-						</Box>
+						</Group>
 						<Divider />
 					</>
 				)}
-			</VStack>
+			</Stack>
 		</>
 	);
 }

@@ -1,22 +1,7 @@
-import type { Search } from "@sola_mpd/domain/src/models/search_pb.js";
+import type { SongTableColumn } from "@sola_mpd/domain/src/models/song_table_pb.js";
 import { atom, useAtomValue, useSetAtom } from "jotai";
 import { useCallback } from "react";
-
-import { UpdateMode } from "../../../types/stateTypes";
 import { EditingSearchStatus } from "../types/searchTypes";
-import { getDefaultSearch } from "../utils/searchUtils";
-
-import {
-	savedSearchesSyncAtom,
-	useUpdateSavedSearchesState,
-} from "./savedSearchesState";
-
-/**
- * Atom for search being edited.
- *
- * Initialized with default search config.
- */
-export const editingSearchAtom = atom(getDefaultSearch());
 
 /**
  * Atom for search edit status.
@@ -26,15 +11,9 @@ export const editingSearchAtom = atom(getDefaultSearch());
 const editingSearchStatusAtom = atom(EditingSearchStatus.NOT_SAVED);
 
 /**
- * Hook for current editing search.
- *
- * Provides read-only access to search config.
- *
- * @returns Current search being edited
+ * Atom for search song table columns.
  */
-export function useEditingSearchState() {
-	return useAtomValue(editingSearchAtom);
-}
+export const searchSongTableColumnsAtom = atom<SongTableColumn[]>([]);
 
 /**
  * Hook for editing search status.
@@ -55,52 +34,34 @@ export function useEditingSearchStatusState() {
  * @returns Update function
  */
 export function useSetEditingSearchState() {
-	const setEditingSearch = useSetAtom(editingSearchAtom);
 	const setEditingSearchStatus = useSetAtom(editingSearchStatusAtom);
 
 	return useCallback(
-		(search: Search, status: EditingSearchStatus) => {
+		(status: EditingSearchStatus) => {
 			setEditingSearchStatus(status);
-			setEditingSearch(search);
 		},
-		[setEditingSearch, setEditingSearchStatus],
+		[setEditingSearchStatus],
 	);
 }
 
 /**
- * Hook for saving editing search.
- *
- * Updates or adds search to saved searches.
- *
- * @returns Save function
+ * Hook for current search song table columns.
  */
-export function useSaveEditingSearch() {
-	const editingSearch = useAtomValue(editingSearchAtom);
-	const savedSearches = useAtomValue(savedSearchesSyncAtom);
-	const updateSavedSearches = useUpdateSavedSearchesState();
-	const setEditingSearchStatus = useSetAtom(editingSearchStatusAtom);
+export function useSearchSongTableColumnsState() {
+	return useAtomValue(searchSongTableColumnsAtom);
+}
 
-	return useCallback(async () => {
-		if (savedSearches === undefined) {
-			return;
-		}
-		const index = savedSearches.searches.findIndex(
-			(search) => search.name === editingSearch.name,
-		);
-		if (index >= 0) {
-			savedSearches.searches[index] = editingSearch;
-		} else {
-			savedSearches.searches.push(editingSearch);
-		}
-		await updateSavedSearches(
-			savedSearches.clone(),
-			UpdateMode.LOCAL_STATE | UpdateMode.PERSIST,
-		);
-		setEditingSearchStatus(EditingSearchStatus.SAVED);
-	}, [
-		editingSearch,
-		savedSearches,
-		setEditingSearchStatus,
-		updateSavedSearches,
-	]);
+/**
+ * Hook for updating search song table columns.
+ *
+ * @returns Update function
+ */
+export function useSetSearchSongTableColumnsState() {
+	const setSearchSongTableColumns = useSetAtom(searchSongTableColumnsAtom);
+	return useCallback(
+		(columns: SongTableColumn[]) => {
+			setSearchSongTableColumns(columns);
+		},
+		[setSearchSongTableColumns],
+	);
 }

@@ -1,7 +1,8 @@
-import { Slider, SliderFilledTrack, SliderTrack } from "@chakra-ui/react";
 import { MpdRequest } from "@sola_mpd/domain/src/models/mpd/mpd_command_pb.js";
 import { useCallback, useRef } from "react";
 
+import { Slider } from "@mantine/core";
+import { displayDuration } from "@sola_mpd/domain/src/utils/stringUtils.js";
 import { useMpdClientState } from "../../mpd";
 import { useCurrentMpdProfileState } from "../../profile";
 import {
@@ -76,20 +77,16 @@ export function PlayerSeekBar() {
 
 	return (
 		<Slider
-			m={0}
-			p={0}
 			w="100%"
+			mt={-4}
 			min={0}
 			max={100}
+			thumbSize={0}
 			value={elapsedTimePercentage}
-			colorScheme="brand"
-			onChange={(v) => {
+			label={displayDuration(playerStatusElapsed ?? 0)}
+			onChangeEnd={(v) => {
 				handleSeekBarClick(v);
 			}}
-		>
-			<SliderTrack h="10px">
-				<SliderFilledTrack h="15px" />
-			</SliderTrack>
-		</Slider>
+		/>
 	);
 }

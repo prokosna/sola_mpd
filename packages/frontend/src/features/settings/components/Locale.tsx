@@ -1,4 +1,4 @@
-import { Select, Text, VStack } from "@chakra-ui/react";
+import { Select, Stack, Title } from "@mantine/core";
 import {
 	useLocaleState,
 	useSetLocaleState,
@@ -12,23 +12,28 @@ export function Locale() {
 
 	return (
 		<>
-			<VStack spacing={"12px"} align={"start"}>
-				<Text fontSize="md">Locale (for language-aware sorting)</Text>
+			<Stack gap={16}>
+				<Title order={1} size="lg">
+					Locale (for language-aware sorting)
+				</Title>
 				<Select
 					value={localeState}
 					size="md"
-					width="200px"
-					onChange={(e) => setLocaleState(e.target.value)}
-				>
-					{Object.entries(supportedLocalesState).map(
-						([localeName, localeCode]) => (
-							<option key={localeCode} value={localeCode}>
-								{localeName}
-							</option>
-						),
+					w="200"
+					onChange={(value) => {
+						if (value == null) {
+							return;
+						}
+						setLocaleState(value);
+					}}
+					data={Object.entries(supportedLocalesState).map(
+						([localeName, localeCode]) => ({
+							label: localeName,
+							value: localeCode,
+						}),
 					)}
-				</Select>
-			</VStack>
+				/>
+			</Stack>
 		</>
 	);
 }

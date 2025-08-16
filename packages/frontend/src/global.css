@@ -1,12 +1,16 @@
 /* Allotment design customization */
-.allotment-light {
-	--focus-border: #3182ce; /* blue.500 */
-	--separator-border: #cbd5e0; /* gray.300 */
+:root[data-mantine-color-scheme="light"] .allotment-light {
+	--focus-border: var(--mantine-color-brand-5);
+	--separator-border: var(--mantine-color-gray-3);
 }
 
-.allotment-dark {
-	--focus-border: #3182ce;
-	--separator-border: #4a5568; /* gray.600 */
+:root[data-mantine-color-scheme="dark"] .allotment-dark {
+	--focus-border: var(--mantine-color-brand-6);
+	--separator-border: var(--mantine-color-dark-4);
+}
+
+.sash {
+	z-index: 1000 !important;
 }
 
 /* Ag Grid inrow font weight customization */

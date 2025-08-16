@@ -1,11 +1,11 @@
 import { MpdRequest } from "@sola_mpd/domain/src/models/mpd/mpd_command_pb.js";
 import { useCallback } from "react";
-import { IoStop } from "react-icons/io5";
 
 import { useMpdClientState } from "../../mpd";
 import { useCurrentMpdProfileState } from "../../profile";
 import { useCurrentSongState } from "../states/playerSongState";
 
+import { IconPlayerStop } from "@tabler/icons-react";
 import { PlayerControlsButton } from "./PlayerControlsButton";
 
 /**
@@ -41,8 +41,8 @@ export function PlayerControlsButtonStop() {
 		label: "Stop",
 		isDisabled: currentSong === undefined,
 		onButtonClicked,
-		icon: <IoStop size={"24"} />,
-		variant: "ghost",
+		icon: <IconPlayerStop size={"24"} />,
+		variant: "transparent",
 	};
 
 	return (

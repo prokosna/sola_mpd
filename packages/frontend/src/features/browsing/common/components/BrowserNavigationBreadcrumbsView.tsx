@@ -1,19 +1,16 @@
-import {
-	Breadcrumb,
-	BreadcrumbItem,
-	Center,
-	Flex,
-	IconButton,
-	Tag,
-	TagCloseButton,
-	TagLabel,
-	Tooltip,
-} from "@chakra-ui/react";
 import type { BrowserFilter } from "@sola_mpd/domain/src/models/browser_pb.js";
 import { convertSongMetadataValueToString } from "@sola_mpd/domain/src/utils/songUtils.js";
 import { useCallback, useMemo } from "react";
-import { IoChevronForward, IoClose } from "react-icons/io5";
 
+import {
+	ActionIcon,
+	Badge,
+	Breadcrumbs,
+	Group,
+	Tooltip,
+	useComputedColorScheme,
+} from "@mantine/core";
+import { IconX } from "@tabler/icons-react";
 import { UpdateMode } from "../../../../types/stateTypes";
 import {
 	resetAllBrowserFilters,
@@ -43,6 +40,7 @@ export function BrowserNavigationBreadcrumbsView(
 ) {
 	const browserFilters = props.browserFilters;
 	const updateBrowserFilters = props.updateBrowserFilters;
+	const scheme = useComputedColorScheme();
 
 	const selectedBrowserFilters = useMemo(
 		() =>
@@ -100,55 +98,63 @@ export function BrowserNavigationBreadcrumbsView(
 
 	return (
 		<>
-			<Flex className="layout-border-top layout-border-left">
-				<Center w="25px" px="1px">
-					<IconButton
-						variant="ghost"
-						colorScheme="gray"
-						aria-label="Reset filters"
-						size="xs"
+			<Group
+				w="100%"
+				h="100%"
+				justify="space-between"
+				bg={scheme === "dark" ? "dark.9" : "brand.1"}
+			>
+				<Group>
+					<ActionIcon
+						variant="transparent"
+						c="gray.5"
+						size="md"
 						onClick={handleResetClick}
-						icon={<IoClose />}
-					/>
-				</Center>
-				<Center px={5} py={1} w={"calc(100% - 27px)"} overflow={"auto"}>
-					<Breadcrumb spacing="8px" separator={<IoChevronForward />}>
+					>
+						<IconX />
+					</ActionIcon>
+				</Group>
+
+				<Group justify="center" flex={1}>
+					<Breadcrumbs separator=">" separatorMargin="xs">
 						{selectedBrowserFilters.map((browserFilter) => (
-							<BreadcrumbItem key={`breadcrumb_item_${browserFilter.tag}`}>
+							<Group key={`breadcrumb_item_${browserFilter.tag}`} gap={0}>
 								{browserFilter.selectedValues.map((value) => (
 									<Tooltip
 										key={convertSongMetadataValueToString(value)}
-										hasArrow
 										label={convertSongMetadataValueToString(value)}
+										withArrow
 									>
-										<Tag
-											key={convertSongMetadataValueToString(value)}
-											className="browser-breadcrumbs-tag"
-											size={"sm"}
-											borderRadius="full"
+										<Badge
+											c="brand"
 											variant="outline"
-											maxWidth="200px"
-											minWidth="50px"
+											size="xs"
+											maw={150}
+											rightSection={
+												<ActionIcon
+													size="xs"
+													color="gray.5"
+													variant="transparent"
+													onClick={() =>
+														handleCloseClick(
+															browserFilter,
+															convertSongMetadataValueToString(value),
+														)
+													}
+												>
+													<IconX />
+												</ActionIcon>
+											}
 										>
-											<TagLabel className="browser-breadcrumbs-tag-label">
-												{convertSongMetadataValueToString(value)}
-											</TagLabel>
-											<TagCloseButton
-												onClick={() =>
-													handleCloseClick(
-														browserFilter,
-														convertSongMetadataValueToString(value),
-													)
-												}
-											/>
-										</Tag>
+											{convertSongMetadataValueToString(value)}
+										</Badge>
 									</Tooltip>
 								))}
-							</BreadcrumbItem>
+							</Group>
 						))}
-					</Breadcrumb>
-				</Center>
-			</Flex>
+					</Breadcrumbs>
+				</Group>
+			</Group>
 		</>
 	);
 }

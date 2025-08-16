@@ -1,4 +1,3 @@
-import { Box, VStack, useColorMode } from "@chakra-ui/react";
 import { Allotment } from "allotment";
 import { type ReactElement, useCallback } from "react";
 
@@ -6,6 +5,7 @@ import { UpdateMode } from "../../../../types/stateTypes";
 import { useResizablePane } from "../../../layout";
 import { CenterSpinner } from "../../../loading";
 
+import { Divider, Group, Stack, useComputedColorScheme } from "@mantine/core";
 import type {
 	BrowserLayout,
 	FileExploreLayout,
@@ -45,7 +45,7 @@ export function BrowserView(props: BrowserViewProps) {
 	const layout = props.layout;
 	const updateLayout = props.updateLayout;
 
-	const { colorMode } = useColorMode();
+	const scheme = useComputedColorScheme();
 
 	const handlePanelWidthChanged = useCallback(
 		async (left: number | undefined) => {
@@ -65,19 +65,20 @@ export function BrowserView(props: BrowserViewProps) {
 	);
 
 	if (!isReady) {
-		return <CenterSpinner className="layout-border-top layout-border-left" />;
+		return <CenterSpinner />;
 	}
 
 	return (
 		<>
-			<VStack h="full" spacing={0}>
-				<Box className="browser-breadcrumbs-bg" w="100%">
+			<Stack h="100%" gap={0}>
+				<Group w="100%" bg={scheme === "light" ? "white" : "dark.7"}>
 					{props.browserNavigationBreadcrumbs}
-				</Box>
-				<Box w="100%" h="full">
+				</Group>
+				<Divider />
+				<Group w="100%" h="100%">
 					<Allotment
 						className={
-							colorMode === "light" ? "allotment-light" : "allotment-dark"
+							scheme === "light" ? "allotment-light" : "allotment-dark"
 						}
 						onChange={(sizes) => {
 							handlePanelResize(sizes[0], sizes[1]);
@@ -88,8 +89,8 @@ export function BrowserView(props: BrowserViewProps) {
 						</Allotment.Pane>
 						<Allotment.Pane>{props.browserContent}</Allotment.Pane>
 					</Allotment>
-				</Box>
-			</VStack>
+				</Group>
+			</Stack>
 		</>
 	);
 }

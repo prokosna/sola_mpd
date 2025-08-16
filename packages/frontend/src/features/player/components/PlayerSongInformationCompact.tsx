@@ -1,7 +1,7 @@
-import { HStack, Text, VStack } from "@chakra-ui/react";
-
+import { Group, Stack, Text } from "@mantine/core";
 import { useCurrentSongInformationLines } from "../hooks/useCurrentSongInformationLines";
 
+import { useCurrentSongFormat } from "../hooks/useCurrentSongFormat";
 import { PlayerSongInformationTag } from "./PlayerSongInformationTag";
 
 /**
@@ -14,18 +14,39 @@ import { PlayerSongInformationTag } from "./PlayerSongInformationTag";
  */
 export function PlayerSongInformationCompact() {
 	const { firstLine, secondLine, thirdLine } = useCurrentSongInformationLines();
+	const { formatString } = useCurrentSongFormat();
 
 	return (
 		<>
-			<VStack spacing={1} minW="100%" paddingX={12}>
-				<HStack spacing={2} width="100%">
-					<Text noOfLines={1} flex="1">
-						{`${firstLine} / ${secondLine}`}
+			<Stack gap={0} maw="80%" justify="center">
+				<Group wrap="nowrap" justify="center">
+					<Text
+						ta="center"
+						style={{
+							whiteSpace: "nowrap",
+							overflow: "hidden",
+							textOverflow: "ellipsis",
+						}}
+					>
+						{`${[firstLine, secondLine].filter((line) => line !== "").join(" / ")}`}
 					</Text>
-					<PlayerSongInformationTag />
-				</HStack>
-				<Text noOfLines={1}>{`${thirdLine}`}</Text>
-			</VStack>
+					{formatString === "" ? null : (
+						<Group miw={50} align="center">
+							<PlayerSongInformationTag />
+						</Group>
+					)}
+				</Group>
+				<Text
+					ta="center"
+					style={{
+						whiteSpace: "nowrap",
+						overflow: "hidden",
+						textOverflow: "ellipsis",
+					}}
+				>
+					{thirdLine || "-"}
+				</Text>
+			</Stack>
 		</>
 	);
 }

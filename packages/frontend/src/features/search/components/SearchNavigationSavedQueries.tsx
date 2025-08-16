@@ -1,8 +1,9 @@
-import { Box, Flex, Text } from "@chakra-ui/react";
-
+import { Box } from "@mantine/core";
+import type { UseFormReturnType } from "@mantine/form";
 import { FullWidthSkeleton } from "../../loading";
 import { SelectList } from "../../select_list";
 import { useSavedSearchesSelectListProps } from "../hooks/useSavedSearchesSelectListProps";
+import type { SearchFormValues } from "../types/searchTypes";
 
 /**
  * List of saved searches.
@@ -11,27 +12,18 @@ import { useSavedSearchesSelectListProps } from "../hooks/useSavedSearchesSelect
  *
  * @returns Saved queries component
  */
-export function SearchNavigationSavedQueries() {
-	const selectListProps = useSavedSearchesSelectListProps();
+export function SearchNavigationSavedQueries({
+	form,
+}: { form: UseFormReturnType<SearchFormValues> }) {
+	const selectListProps = useSavedSearchesSelectListProps({ form });
 
 	if (selectListProps === undefined) {
-		return (
-			<FullWidthSkeleton className="layout-border-top layout-border-left" />
-		);
+		return <FullWidthSkeleton />;
 	}
 
 	return (
 		<>
-			<Box
-				className="layout-border-left layout-general-header-bg"
-				w="100%"
-				h="100%"
-			>
-				<Flex w="100%" h="49px" alignItems={"center"}>
-					<Text as={"b"} px={18}>
-						Saved Searches
-					</Text>
-				</Flex>
+			<Box w="100%" h="100%">
 				<SelectList {...selectListProps} />
 			</Box>
 		</>

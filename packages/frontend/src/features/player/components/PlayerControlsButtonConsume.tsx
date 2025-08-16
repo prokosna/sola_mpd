@@ -1,12 +1,11 @@
 import { MpdRequest } from "@sola_mpd/domain/src/models/mpd/mpd_command_pb.js";
 import { useCallback } from "react";
-import { IoRestaurantOutline } from "react-icons/io5";
 
 import { useMpdClientState } from "../../mpd";
 import { useCurrentMpdProfileState } from "../../profile";
-import { useCurrentSongState } from "../states/playerSongState";
 import { usePlayerStatusIsConsumeState } from "../states/playerStatusState";
 
+import { IconEraser, IconEraserOff } from "@tabler/icons-react";
 import { PlayerControlsButton } from "./PlayerControlsButton";
 
 /**
@@ -21,7 +20,6 @@ import { PlayerControlsButton } from "./PlayerControlsButton";
 export function PlayerControlsButtonConsume() {
 	const profile = useCurrentMpdProfileState();
 	const mpdClient = useMpdClientState();
-	const currentSong = useCurrentSongState();
 	const playerStatusIsConsume = usePlayerStatusIsConsumeState();
 
 	const onButtonClicked = useCallback(async () => {
@@ -43,10 +41,14 @@ export function PlayerControlsButtonConsume() {
 
 	const props = {
 		label: playerStatusIsConsume ? "Consume enabled" : "Consume disabled",
-		isDisabled: currentSong === undefined,
+		isDisabled: false,
 		onButtonClicked,
-		icon: <IoRestaurantOutline size={"24"} />,
-		variant: playerStatusIsConsume ? "solid" : "ghost",
+		icon: playerStatusIsConsume ? (
+			<IconEraser size="24" />
+		) : (
+			<IconEraserOff size="24" />
+		),
+		variant: "transparent",
 	};
 
 	return (

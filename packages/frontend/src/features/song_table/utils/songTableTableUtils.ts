@@ -234,11 +234,12 @@ export function convertSongForGridRowValueCompact(
 		song,
 		Song_MetadataTag.ALBUM_ARTIST,
 	);
+	const composer = getSongMetadataAsString(song, Song_MetadataTag.COMPOSER);
 	const album = getSongMetadataAsString(song, Song_MetadataTag.ALBUM);
 
 	return {
 		firstLine: title,
-		secondLine: `${album} / ${artist ?? albumArtist ?? "-"}`,
+		secondLine: `${[album, artist ?? albumArtist ?? "-", composer].filter((v) => v !== "").join(" / ")}`,
 	};
 }
 

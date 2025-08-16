@@ -1,6 +1,6 @@
-import { Box, CircularProgress, CircularProgressLabel } from "@chakra-ui/react";
 import { PluginExecuteResponse } from "@sola_mpd/domain/src/models/plugin/plugin_pb.js";
 
+import { Box, RingProgress, Text } from "@mantine/core";
 import {
 	usePluginExecutionLatestResponseState,
 	usePluginExecutionPropsState,
@@ -26,23 +26,41 @@ export function PluginExecutionIndicator() {
 	return (
 		<>
 			<Box
+				style={{ cursor: "pointer" }}
 				onClick={() => setIsPluginExecutionModalOpen("progress")}
-				cursor="pointer"
 			>
 				{latestResponse instanceof PluginExecuteResponse ? (
-					<CircularProgress
-						size="40px"
-						color="brand.400"
-						value={latestResponse.progressPercentage}
-					>
-						<CircularProgressLabel>
-							{latestResponse.progressPercentage} %
-						</CircularProgressLabel>
-					</CircularProgress>
+					<RingProgress
+						size={48}
+						thickness={4}
+						sections={[
+							{
+								value: latestResponse.progressPercentage,
+								color: "brand",
+							},
+						]}
+						label={
+							<Text size="xs" c="brand" ta="center">
+								{latestResponse.progressPercentage}%
+							</Text>
+						}
+					/>
 				) : latestResponse instanceof Error ? (
-					<CircularProgress isIndeterminate size="40px" color="red.400">
-						<CircularProgressLabel>Error</CircularProgressLabel>
-					</CircularProgress>
+					<RingProgress
+						size={48}
+						thickness={4}
+						sections={[
+							{
+								value: 100,
+								color: "red",
+							},
+						]}
+						label={
+							<Text size="xs" c="red" ta="center">
+								Error
+							</Text>
+						}
+					/>
 				) : null}
 			</Box>
 		</>

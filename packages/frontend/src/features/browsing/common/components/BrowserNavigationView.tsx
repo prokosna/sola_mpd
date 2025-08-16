@@ -1,6 +1,6 @@
-import { VStack, useColorMode } from "@chakra-ui/react";
 import { Allotment } from "allotment";
 
+import { Stack, useComputedColorScheme } from "@mantine/core";
 import type { BrowserFilter } from "@sola_mpd/domain/src/models/browser_pb.js";
 import type { Song_MetadataTag } from "@sola_mpd/domain/src/models/song_pb.js";
 import type { UpdateMode } from "../../../../types/stateTypes";
@@ -29,12 +29,10 @@ type BrowserNavigationViewProps = {
 export function BrowserNavigationView(props: BrowserNavigationViewProps) {
 	const { browserFilters, browserFilterValues, updateBrowserFilters } = props;
 
-	const { colorMode } = useColorMode();
+	const scheme = useComputedColorScheme();
 
 	if (browserFilters === undefined) {
-		return (
-			<FullWidthSkeleton className="layout-border-top layout-border-left" />
-		);
+		return <FullWidthSkeleton />;
 	}
 
 	const usedTags = browserFilters.map((filter) => filter.tag);
@@ -44,11 +42,9 @@ export function BrowserNavigationView(props: BrowserNavigationViewProps) {
 
 	return (
 		<>
-			<VStack h="full" spacing={0}>
+			<Stack h="100%" gap={0}>
 				<Allotment
-					className={
-						colorMode === "light" ? "allotment-light" : "allotment-dark"
-					}
+					className={scheme === "light" ? "allotment-light" : "allotment-dark"}
 					vertical={true}
 				>
 					{browserFilters
@@ -67,7 +63,7 @@ export function BrowserNavigationView(props: BrowserNavigationViewProps) {
 							</Allotment.Pane>
 						))}
 				</Allotment>
-			</VStack>
+			</Stack>
 		</>
 	);
 }

@@ -1,4 +1,5 @@
-import { Box, Progress } from "@chakra-ui/react";
+import { NavigationProgress, nprogress } from "@mantine/nprogress";
+import { useEffect } from "react";
 
 /**
  * A progress bar that appears at the top of the viewport to indicate loading.
@@ -12,11 +13,16 @@ import { Box, Progress } from "@chakra-ui/react";
  * @component
  */
 export function TopLoadingProgressBar() {
+	useEffect(() => {
+		nprogress.start();
+		return () => {
+			nprogress.reset();
+		};
+	}, []);
+
 	return (
 		<>
-			<Box width="100%" position="fixed" top="0" zIndex="1">
-				<Progress isIndeterminate />
-			</Box>
+			<NavigationProgress />
 		</>
 	);
 }

@@ -1,23 +1,8 @@
-import {
-	Button,
-	Divider,
-	Modal,
-	ModalBody,
-	ModalContent,
-	ModalOverlay,
-	Table,
-	TableContainer,
-	Tbody,
-	Th,
-	Thead,
-	Tr,
-	VStack,
-	useDisclosure,
-} from "@chakra-ui/react";
-
+import { useDisclosure } from "@mantine/hooks";
 import { CenterSpinner } from "../../loading";
 import { MpdProfileForm, useMpdProfileState } from "../../profile";
 
+import { Button, Modal, Stack, Table, Title } from "@mantine/core";
 import { ProfilesProfile } from "./ProfilesProfile";
 
 /**
@@ -28,50 +13,59 @@ import { ProfilesProfile } from "./ProfilesProfile";
  */
 export function Profiles() {
 	const mpdProfileState = useMpdProfileState();
-	const { isOpen, onOpen, onClose } = useDisclosure();
+
+	const [opened, { open, close }] = useDisclosure(false);
 
 	if (mpdProfileState === undefined) {
-		return <CenterSpinner className="layout-border-top layout-border-left" />;
+		return <CenterSpinner />;
 	}
 
 	return (
 		<>
-			<VStack spacing={"12px"} align={"start"}>
-				<Button onClick={onOpen}>Add</Button>
-				<Divider />
-				<TableContainer>
-					<Table variant="simple">
-						<Thead>
-							<Tr>
-								<Th>NAME</Th>
-								<Th>HOST</Th>
-								<Th>PORT</Th>
-								<Th>ACTION</Th>
-							</Tr>
-						</Thead>
-						<Tbody>
-							{mpdProfileState.profiles.map((profile, index) => (
-								<ProfilesProfile
-									key={profile.name}
-									{...{ index, profile, mpdProfileState }}
-								/>
-							))}
-						</Tbody>
-					</Table>
-				</TableContainer>
-			</VStack>
-			<Modal isOpen={isOpen} onClose={onClose} size={"xl"} isCentered>
-				<ModalOverlay />
-				<ModalContent>
-					<ModalBody p={0}>
-						<MpdProfileForm
-							onProfileCreated={async () => {
-								onClose();
-							}}
-						/>
-					</ModalBody>
-				</ModalContent>
+			<Modal
+				centered
+				opened={opened}
+				onClose={close}
+				title="MPD Server Information"
+			>
+				<MpdProfileForm
+					onProfileCreated={async () => {
+						close();
+					}}
+					onCancelled={async () => {
+						close();
+					}}
+				/>
 			</Modal>
+
+			<Stack gap={16}>
+				<Title order={1} size="lg">
+					MPD Profiles
+				</Title>
+				<Button w={200} size="sm" onClick={open}>
+					New Profile
+				</Button>
+				<Table maw="50%">
+					<Table.Thead>
+						<Table.Tr>
+							<Table.Th>NAME</Table.Th>
+							<Table.Th>HOST</Table.Th>
+							<Table.Th>PORT</Table.Th>
+							<Table.Th>ACTION</Table.Th>
+						</Table.Tr>
+					</Table.Thead>
+					<Table.Tbody>
+						{mpdProfileState.profiles.map((profile, index) => (
+							<ProfilesProfile
+								key={profile.name}
+								index={index}
+								profile={profile}
+								mpdProfileState={mpdProfileState}
+							/>
+						))}
+					</Table.Tbody>
+				</Table>
+			</Stack>
 		</>
 	);
 }

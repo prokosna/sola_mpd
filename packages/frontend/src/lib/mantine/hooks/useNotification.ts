@@ -1,4 +1,4 @@
-import { type UseToastOptions, useToast } from "@chakra-ui/react";
+import { notifications } from "@mantine/notifications";
 
 /**
  * Parameters for displaying a notification.
@@ -28,18 +28,19 @@ export type NotificationParams = {
  * ```
  */
 export function useNotification(): (params: NotificationParams) => void {
-	const toast = useToast();
-
 	return ({ title, description, status }: NotificationParams) => {
-		const options: UseToastOptions = {
+		notifications.show({
 			title,
-			description,
-			status,
-			duration: 3000,
-			isClosable: true,
-			position: "bottom",
-		};
-
-		toast(options);
+			message: description,
+			color:
+				status === "info"
+					? "brand"
+					: status === "warning"
+						? "yellow"
+						: status === "success"
+							? "green"
+							: "red",
+			autoClose: status === "error" ? false : 3000,
+		});
 	};
 }

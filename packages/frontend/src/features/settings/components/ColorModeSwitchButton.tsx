@@ -1,5 +1,9 @@
-import { Button, Icon, useColorMode } from "@chakra-ui/react";
-import { IoMoon, IoSunny } from "react-icons/io5";
+import {
+	ActionIcon,
+	useComputedColorScheme,
+	useMantineColorScheme,
+} from "@mantine/core";
+import { IconMoon, IconSun } from "@tabler/icons-react";
 
 /**
  * Light/dark mode toggle button.
@@ -16,13 +20,20 @@ import { IoMoon, IoSunny } from "react-icons/io5";
  * ```
  */
 export function ColorModeSwitchButton() {
-	const { colorMode, toggleColorMode } = useColorMode();
+	const { setColorScheme } = useMantineColorScheme();
+	const scheme = useComputedColorScheme();
 
 	return (
 		<>
-			<Button m={0} p={0} variant={"ghost"} onClick={toggleColorMode}>
-				<Icon as={colorMode === "light" ? IoMoon : IoSunny} fontSize={24} />
-			</Button>
+			<ActionIcon
+				size="md"
+				variant="transparent"
+				onClick={() => {
+					setColorScheme(scheme === "dark" ? "light" : "dark");
+				}}
+			>
+				{scheme === "dark" ? <IconSun /> : <IconMoon />}
+			</ActionIcon>
 		</>
 	);
 }

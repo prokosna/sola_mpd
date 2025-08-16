@@ -1,4 +1,3 @@
-import { Box, useColorMode } from "@chakra-ui/react";
 import { Allotment } from "allotment";
 import { useCallback } from "react";
 
@@ -10,6 +9,7 @@ import {
 } from "../../layout";
 import { CenterSpinner } from "../../loading";
 
+import { Box, useComputedColorScheme } from "@mantine/core";
 import { PlaylistContent } from "./PlaylistContent";
 import { PlaylistNavigation } from "./PlaylistNavigation";
 
@@ -25,7 +25,7 @@ export function Playlist() {
 	const playlistLayout = usePlaylistLayoutState();
 	const updateLayout = useUpdateLayoutState();
 
-	const { colorMode } = useColorMode();
+	const scheme = useComputedColorScheme();
 
 	const handlePanelWidthChanged = useCallback(
 		async (left: number | undefined) => {
@@ -45,16 +45,14 @@ export function Playlist() {
 	);
 
 	if (!isReady) {
-		return <CenterSpinner className="layout-border-top layout-border-left" />;
+		return <CenterSpinner />;
 	}
 
 	return (
 		<>
-			<Box w="100%" h="full">
+			<Box w="100%" h="100%">
 				<Allotment
-					className={
-						colorMode === "light" ? "allotment-light" : "allotment-dark"
-					}
+					className={scheme === "light" ? "allotment-light" : "allotment-dark"}
 					onChange={(sizes) => {
 						handlePanelResize(sizes[0], sizes[1]);
 					}}

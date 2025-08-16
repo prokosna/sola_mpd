@@ -1,5 +1,4 @@
-import { Flex, Stack, Text } from "@chakra-ui/react";
-
+import { Group, Stack, Text } from "@mantine/core";
 import { useCurrentSongInformationLines } from "../hooks/useCurrentSongInformationLines";
 
 import { PlayerSongInformationTag } from "./PlayerSongInformationTag";
@@ -16,17 +15,37 @@ export function PlayerSongInformation() {
 	const { firstLine, secondLine, thirdLine } = useCurrentSongInformationLines();
 
 	return (
-		<Stack spacing={1} maxW="100%">
-			<Flex>
-				<Text noOfLines={1} flex={1}>
+		<Stack gap={1} w="100%">
+			<Group wrap="nowrap">
+				<Text
+					style={{
+						whiteSpace: "nowrap",
+						overflow: "hidden",
+						textOverflow: "ellipsis",
+					}}
+				>
 					{firstLine}
-					<PlayerSongInformationTag />
 				</Text>
-			</Flex>
-			<Text noOfLines={1} flex={1}>
+				<Group miw={50} align="center">
+					<PlayerSongInformationTag />
+				</Group>
+			</Group>
+			<Text
+				style={{
+					whiteSpace: "nowrap",
+					overflow: "hidden",
+					textOverflow: "ellipsis",
+				}}
+			>
 				{secondLine}
 			</Text>
-			<Text noOfLines={1} flex={1}>
+			<Text
+				style={{
+					whiteSpace: "nowrap",
+					overflow: "hidden",
+					textOverflow: "ellipsis",
+				}}
+			>
 				{thirdLine}
 			</Text>
 		</Stack>

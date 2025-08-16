@@ -1,8 +1,8 @@
-import { Button } from "@chakra-ui/react";
 import { MpdRequest } from "@sola_mpd/domain/src/models/mpd/mpd_command_pb.js";
 import { useCallback } from "react";
 
-import { useNotification } from "../../../lib/chakra/hooks/useNotification";
+import { Button } from "@mantine/core";
+import { useNotification } from "../../../lib/mantine/hooks/useNotification";
 import { useMpdClientState } from "../../mpd";
 import { usePlayerStatusIsDatabaseUpdatingState } from "../../player";
 import { useCurrentMpdProfileState } from "../../profile";
@@ -45,8 +45,8 @@ export function CardStatsDatabaseButton() {
 	return (
 		<>
 			<Button
-				isLoading={playerStatusIsDatabaseUpdating}
-				loadingText="Updating Database..."
+				loading={playerStatusIsDatabaseUpdating}
+				loaderProps={{ type: "dots" }}
 				w="100%"
 				variant="outline"
 				onClick={() => {

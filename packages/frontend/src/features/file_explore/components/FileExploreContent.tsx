@@ -1,7 +1,7 @@
-import { Box } from "@chakra-ui/react";
 import type { SongTableColumn } from "@sola_mpd/domain/src/models/song_table_pb.js";
 import { useCallback, useState } from "react";
 
+import { Box } from "@mantine/core";
 import { UpdateMode } from "../../../types/stateTypes";
 import { CenterSpinner } from "../../loading";
 import { PlaylistSelectModal, usePlaylistSelectModal } from "../../playlist";
@@ -76,12 +76,12 @@ export function FileExploreContent() {
 	);
 
 	if (songTableProps === undefined || columnEditModalProps === undefined) {
-		return <CenterSpinner className="layout-border-top layout-border-left" />;
+		return <CenterSpinner />;
 	}
 
 	return (
 		<>
-			<Box w="100%" h="full">
+			<Box w="100%" h="100%">
 				<SongTable {...songTableProps} />
 				<PlaylistSelectModal {...playlistSelectModalProps} />
 				<ColumnEditModal {...columnEditModalProps} />

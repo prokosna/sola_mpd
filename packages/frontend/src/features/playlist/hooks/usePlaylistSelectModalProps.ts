@@ -3,7 +3,7 @@ import type { Playlist } from "@sola_mpd/domain/src/models/playlist_pb.js";
 import type { Song } from "@sola_mpd/domain/src/models/song_pb.js";
 import { useCallback, useRef, useState } from "react";
 
-import { useNotification } from "../../../lib/chakra/hooks/useNotification";
+import { useNotification } from "../../../lib/mantine/hooks/useNotification";
 import { useMpdClientState } from "../../mpd";
 import { useCurrentMpdProfileState } from "../../profile";
 

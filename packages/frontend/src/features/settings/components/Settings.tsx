@@ -1,5 +1,4 @@
-import { Box, Tab, TabList, TabPanel, TabPanels, Tabs } from "@chakra-ui/react";
-
+import { Box, Tabs } from "@mantine/core";
 import { Locale } from "./Locale";
 import { Profiles } from "./Profiles";
 import { SettingsStates } from "./SettingsStates";
@@ -10,24 +9,28 @@ import { SettingsStates } from "./SettingsStates";
 export function Settings() {
 	return (
 		<>
-			<Box className="layout-border-top layout-border-left" w="100%" h="full">
-				<Tabs>
-					<TabList>
-						<Tab>Profiles</Tab>
-						<Tab>Locale</Tab>
-						<Tab>Settings</Tab>
-					</TabList>
-					<TabPanels>
-						<TabPanel>
+			<Box w="100%" h="100%">
+				<Tabs defaultValue="Profiles">
+					<Tabs.List>
+						<Tabs.Tab value="Profiles">Profiles</Tabs.Tab>
+						<Tabs.Tab value="Locale">Locale</Tabs.Tab>
+						<Tabs.Tab value="Settings">Settings</Tabs.Tab>
+					</Tabs.List>
+					<Tabs.Panel value="Profiles">
+						<Box p={16}>
 							<Profiles />
-						</TabPanel>
-						<TabPanel>
+						</Box>
+					</Tabs.Panel>
+					<Tabs.Panel value="Locale">
+						<Box p={16}>
 							<Locale />
-						</TabPanel>
-						<TabPanel>
+						</Box>
+					</Tabs.Panel>
+					<Tabs.Panel value="Settings">
+						<Box p={16}>
 							<SettingsStates />
-						</TabPanel>
-					</TabPanels>
+						</Box>
+					</Tabs.Panel>
 				</Tabs>
 			</Box>
 		</>

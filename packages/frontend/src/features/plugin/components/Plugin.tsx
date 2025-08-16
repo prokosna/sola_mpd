@@ -1,5 +1,5 @@
-import { Box, useDisclosure } from "@chakra-ui/react";
-
+import { Box } from "@mantine/core";
+import { useDisclosure } from "@mantine/hooks";
 import { PluginAddModal } from "./PluginAddModal";
 import { PluginList } from "./PluginList";
 
@@ -11,19 +11,14 @@ import { PluginList } from "./PluginList";
  * @returns Plugin component
  */
 export function Plugin() {
-	const { isOpen, onOpen, onClose } = useDisclosure();
+	const [isOpen, { open, close }] = useDisclosure();
 
 	return (
 		<>
-			<Box
-				className="layout-border-top layout-border-left"
-				w="100%"
-				h="full"
-				p="30px"
-			>
-				<PluginList {...{ onOpen }} />
+			<Box w="100%" h="100%" p="30">
+				<PluginList {...{ onOpen: open }} />
 			</Box>
-			<PluginAddModal {...{ isOpen, onClose }} />
+			<PluginAddModal {...{ isOpen, onClose: close }} />
 		</>
 	);
 }

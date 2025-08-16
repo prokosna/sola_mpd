@@ -40,23 +40,27 @@ Some features may use MPD's API in a suboptimal way (e.g., loading all songs at 
 
 ### Intuitive control
 
-![sola_mpd_usage_queue](https://github.com/prokosna/sola_mpd/assets/16056246/8da62b48-c8f2-4c2f-a669-74fdfffe36c7)
+![sola_mpd_usage_queue](https://github.com/user-attachments/assets/003e7a98-3918-440c-929a-8c7e601c9100)
 
 ### Flexible browsing
 
-![sola_mpd_usage_browser](https://github.com/prokosna/sola_mpd/assets/16056246/22f8c76d-6f35-4da2-9cba-94b539dc35fa)
+![sola_mpd_usage_browser](https://github.com/user-attachments/assets/ed3d16f2-55cc-4b5a-9a55-aa66326fa82a)
 
 ### Advanced search
 
-![sola_mpd_usage_search](https://github.com/prokosna/sola_mpd/assets/16056246/203ad3e9-f1a2-420d-a66b-38ad1a44f6a6)
+![sola_mpd_usage_search](https://github.com/user-attachments/assets/b1e59b46-1f35-4186-ad90-28b7aa86188a)
 
-### Dark theme
+### File explore
 
-![sola_mpd_usage_dark](https://github.com/prokosna/sola_mpd/assets/16056246/de0133fb-bfc4-4a30-be02-e0338397fb24)
+![sola_mpd_usage_file_explore](https://github.com/user-attachments/assets/c7213d09-a48e-4ebd-a975-30c57b6801dd)
 
-### Responsive layout for tablets
+### Light/Dark theme
 
-![sola_mpd_responsive](https://github.com/prokosna/sola_mpd/assets/16056246/be76062a-af86-4826-a575-4869a837a524)
+![sola_mpd_usage_dark](https://github.com/user-attachments/assets/6aefa0ec-4b66-4562-a9c3-9bbdeb1b8dbc)
+
+### Responsive layout for tablet and mobile
+
+![sola_mpd_responsive](https://github.com/user-attachments/assets/04e0eae5-a3ac-46dc-9078-2b247ff1c217)
 
 ## How to install
 

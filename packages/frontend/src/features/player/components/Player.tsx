@@ -1,5 +1,4 @@
-import { Flex, Grid, GridItem } from "@chakra-ui/react";
-
+import { Box, Group, Stack } from "@mantine/core";
 import { useIsCompactMode } from "../../user_device";
 
 import { PlayerCompact } from "./PlayerCompact";
@@ -28,28 +27,26 @@ export function Player() {
 
 	return (
 		<>
-			<Flex direction={"column"} w="100vw" h="full" position="relative">
+			<Stack w="100vw" h="100%">
 				<PlayerSeekBar />
 				<PlayerDuration />
-				<Grid
-					className="player-surface-grid"
-					templateAreas={`"info control"`}
-					gridTemplateColumns={"minmax(0, 1fr) 366px"}
-					h="full"
-					gap="0"
-				>
-					<GridItem area={"info"}>
-						<Flex h="full" pl="3" pt="2" align={"center"} justify={"start"}>
+				<Group w="100%" h="100%" px={12} pt={6} align="center" pos="absolute">
+					<Group
+						w="100%"
+						gap={2}
+						align="center"
+						justify="space-between"
+						wrap="nowrap"
+					>
+						<Box flex={1} miw="0">
 							<PlayerSongInformation />
-						</Flex>
-					</GridItem>
-					<GridItem area={"control"}>
-						<Flex h="full" pr="5" align={"center"} justify={"end"}>
+						</Box>
+						<Group justify="flex-end" gap={0} align="center">
 							<PlayerControls />
-						</Flex>
-					</GridItem>
-				</Grid>
-			</Flex>
+						</Group>
+					</Group>
+				</Group>
+			</Stack>
 			<PlayerObserver />
 		</>
 	);
