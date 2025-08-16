@@ -30,20 +30,20 @@
 	"workspaces": ["packages/domain", "packages/frontend", "packages/backend"],
 	"devDependencies": {
 		"@biomejs/biome": "1.9.4",
-		"@swc/cli": "^0.5.2",
-		"@swc/core": "^1.10.4",
+		"@swc/cli": "^0.7.8",
+		"@swc/core": "^1.13.3",
 		"clang-format": "^1.8.0",
 		"husky": "^9.1.7",
-		"lint-staged": "^15.3.0",
+		"lint-staged": "^15.5.2",
 		"npm-run-all": "^4.1.5",
-		"supertest": "^7.0.0",
-		"typescript": "^5.7.2",
-		"vitest": "^3.1.2"
+		"supertest": "^7.1.4",
+		"typescript": "^5.9.2",
+		"vitest": "^3.2.4"
 	},
 	"dependencies": {
-		"@bufbuild/protobuf": "^1.10.0",
+		"@bufbuild/protobuf": "^1.10.1",
 		"@connectrpc/connect": "^1.6.1",
 		"dayjs": "^1.11.13",
-		"uuid": "^11.0.3"
+		"uuid": "^11.1.0"
 	}
 }
