@@ -1,8 +1,7 @@
-import { CenterSpinner } from "../../loading";
-import { usePluginState } from "../states/pluginState";
-
 import { ActionIcon, Card, Center, Flex } from "@mantine/core";
 import { IconPlus } from "@tabler/icons-react";
+import { CenterSpinner } from "../../loading";
+import { usePluginState } from "../states/pluginState";
 import { PluginListInfoCard } from "./PluginListInfoCard";
 
 type PluginListProps = {
@@ -23,19 +22,17 @@ export function PluginList(props: PluginListProps) {
 	}
 
 	return (
-		<>
-			<Flex gap={20} wrap="wrap">
-				{pluginState.plugins.map((plugin) => (
-					<PluginListInfoCard key={plugin.info?.name} {...{ plugin }} />
-				))}
-				<Card w={300} h={350} withBorder>
-					<Center w="100%" h="100%">
-						<ActionIcon size={48} variant="transparent" onClick={props.onOpen}>
-							<IconPlus size={48} />
-						</ActionIcon>
-					</Center>
-				</Card>
-			</Flex>
-		</>
+		<Flex gap={20} wrap="wrap">
+			{pluginState.plugins.map((plugin) => (
+				<PluginListInfoCard key={plugin.info?.name} {...{ plugin }} />
+			))}
+			<Card w={300} h={350} withBorder>
+				<Center w="100%" h="100%">
+					<ActionIcon size={48} variant="transparent" onClick={props.onOpen}>
+						<IconPlus size={48} />
+					</ActionIcon>
+				</Center>
+			</Card>
+		</Flex>
 	);
 }

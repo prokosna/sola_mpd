@@ -24,16 +24,14 @@ export function ColorModeSwitchButton() {
 	const scheme = useComputedColorScheme();
 
 	return (
-		<>
-			<ActionIcon
-				size="md"
-				variant="transparent"
-				onClick={() => {
-					setColorScheme(scheme === "dark" ? "light" : "dark");
-				}}
-			>
-				{scheme === "dark" ? <IconSun /> : <IconMoon />}
-			</ActionIcon>
-		</>
+		<ActionIcon
+			size="md"
+			variant="transparent"
+			onClick={() => {
+				setColorScheme(scheme === "dark" ? "light" : "dark");
+			}}
+		>
+			{scheme === "dark" ? <IconSun /> : <IconMoon />}
+		</ActionIcon>
 	);
 }

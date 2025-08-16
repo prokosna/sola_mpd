@@ -1,7 +1,6 @@
+import { Button } from "@mantine/core";
 import { MpdRequest } from "@sola_mpd/domain/src/models/mpd/mpd_command_pb.js";
 import { useCallback } from "react";
-
-import { Button } from "@mantine/core";
 import { useNotification } from "../../../lib/mantine/hooks/useNotification";
 import { useMpdClientState } from "../../mpd";
 import { usePlayerStatusIsDatabaseUpdatingState } from "../../player";
@@ -43,20 +42,18 @@ export function CardStatsDatabaseButton() {
 	}, [mpdClient, profile, notify]);
 
 	return (
-		<>
-			<Button
-				loading={playerStatusIsDatabaseUpdating}
-				loaderProps={{ type: "dots" }}
-				w="100%"
-				variant="outline"
-				onClick={() => {
-					if (!playerStatusIsDatabaseUpdating) {
-						handleDatabaseUpdateButtonClick();
-					}
-				}}
-			>
-				Update Database
-			</Button>
-		</>
+		<Button
+			loading={playerStatusIsDatabaseUpdating}
+			loaderProps={{ type: "dots" }}
+			w="100%"
+			variant="outline"
+			onClick={() => {
+				if (!playerStatusIsDatabaseUpdating) {
+					handleDatabaseUpdateButtonClick();
+				}
+			}}
+		>
+			Update Database
+		</Button>
 	);
 }

@@ -1,6 +1,5 @@
-import { useState } from "react";
-
 import { Box } from "@mantine/core";
+import { useState } from "react";
 import { CenterSpinner } from "../../loading";
 import { PlaylistSelectModal, usePlaylistSelectModal } from "../../playlist";
 import {
@@ -50,12 +49,10 @@ export function SearchContent() {
 	}
 
 	return (
-		<>
-			<Box w="100%" h="100%">
-				<SongTable {...songTableProps} />
-				<PlaylistSelectModal {...playlistSelectModalProps} />
-				<ColumnEditModal {...columnEditModalProps} />
-			</Box>
-		</>
+		<Box w="100%" h="100%">
+			<SongTable {...songTableProps} />
+			<PlaylistSelectModal {...playlistSelectModalProps} />
+			<ColumnEditModal {...columnEditModalProps} />
+		</Box>
 	);
 }

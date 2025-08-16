@@ -1,7 +1,6 @@
+import { Card, Center, Title, useComputedColorScheme } from "@mantine/core";
 import { useCallback, useEffect } from "react";
 import { useNavigate } from "react-router";
-
-import { Card, Center, Title, useComputedColorScheme } from "@mantine/core";
 import { ROUTE_HOME_PLAY_QUEUE } from "../../const/routes";
 import {
 	MpdProfileForm,
@@ -28,13 +27,11 @@ export function LandingPage() {
 	};
 
 	return (
-		<>
-			<Center w="100%" h="100vh" bg={scheme === "light" ? "white" : "dark.7"}>
-				<Card>
-					<Title size="lg">MPD Server Information</Title>
-					<MpdProfileForm {...mpdProfileFormProps} />
-				</Card>
-			</Center>
-		</>
+		<Center w="100%" h="100vh" bg={scheme === "light" ? "white" : "dark.7"}>
+			<Card>
+				<Title size="lg">MPD Server Information</Title>
+				<MpdProfileForm {...mpdProfileFormProps} />
+			</Card>
+		</Center>
 	);
 }

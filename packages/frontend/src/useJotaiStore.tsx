@@ -21,7 +21,7 @@ import { SavedSearchesRepositoryImplHttp } from "./infrastructure/search/SavedSe
 import { SocketIoClientImpl } from "./infrastructure/socket_io/SocketIoClientImpl";
 import { SongTableStateRepositoryImplHttp } from "./infrastructure/song_table/SongTableStateRepositoryImplHttp";
 
-let globalStore: ReturnType<typeof createStore> | undefined = undefined;
+let globalStore: ReturnType<typeof createStore> | undefined;
 
 export function useJotaiStore() {
 	const injectDependencies = async (): Promise<

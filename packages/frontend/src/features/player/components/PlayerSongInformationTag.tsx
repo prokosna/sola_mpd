@@ -13,7 +13,7 @@ export function PlayerSongInformationTag() {
 	const { isHiRes, isDsd, formatString } = useCurrentSongFormat();
 
 	if (formatString === "") {
-		return <></>;
+		return null;
 	}
 	if (isDsd) {
 		return (

@@ -1,7 +1,3 @@
-import type { BrowserFilter } from "@sola_mpd/domain/src/models/browser_pb.js";
-import { convertSongMetadataValueToString } from "@sola_mpd/domain/src/utils/songUtils.js";
-import { useCallback, useMemo } from "react";
-
 import {
 	ActionIcon,
 	Badge,
@@ -10,7 +6,10 @@ import {
 	Tooltip,
 	useComputedColorScheme,
 } from "@mantine/core";
+import type { BrowserFilter } from "@sola_mpd/domain/src/models/browser_pb.js";
+import { convertSongMetadataValueToString } from "@sola_mpd/domain/src/utils/songUtils.js";
 import { IconX } from "@tabler/icons-react";
+import { useCallback, useMemo } from "react";
 import { UpdateMode } from "../../../../types/stateTypes";
 import {
 	resetAllBrowserFilters,
@@ -69,9 +68,7 @@ export function BrowserNavigationBreadcrumbsView(
 			const selectedValues = browserFilter.selectedValues.map((selectedValue) =>
 				convertSongMetadataValueToString(selectedValue),
 			);
-			const index = selectedValues.findIndex(
-				(selectedValue) => selectedValue === value,
-			);
+			const index = selectedValues.indexOf(value);
 			if (index < 0) {
 				return;
 			}
@@ -97,64 +94,62 @@ export function BrowserNavigationBreadcrumbsView(
 	}
 
 	return (
-		<>
-			<Group
-				w="100%"
-				h="100%"
-				justify="space-between"
-				bg={scheme === "dark" ? "dark.9" : "brand.1"}
-			>
-				<Group>
-					<ActionIcon
-						variant="transparent"
-						c="gray.5"
-						size="md"
-						onClick={handleResetClick}
-					>
-						<IconX />
-					</ActionIcon>
-				</Group>
-
-				<Group justify="center" flex={1}>
-					<Breadcrumbs separator=">" separatorMargin="xs">
-						{selectedBrowserFilters.map((browserFilter) => (
-							<Group key={`breadcrumb_item_${browserFilter.tag}`} gap={0}>
-								{browserFilter.selectedValues.map((value) => (
-									<Tooltip
-										key={convertSongMetadataValueToString(value)}
-										label={convertSongMetadataValueToString(value)}
-										withArrow
-									>
-										<Badge
-											c="brand"
-											variant="outline"
-											size="xs"
-											maw={150}
-											rightSection={
-												<ActionIcon
-													size="xs"
-													color="gray.5"
-													variant="transparent"
-													onClick={() =>
-														handleCloseClick(
-															browserFilter,
-															convertSongMetadataValueToString(value),
-														)
-													}
-												>
-													<IconX />
-												</ActionIcon>
-											}
-										>
-											{convertSongMetadataValueToString(value)}
-										</Badge>
-									</Tooltip>
-								))}
-							</Group>
-						))}
-					</Breadcrumbs>
-				</Group>
+		<Group
+			w="100%"
+			h="100%"
+			justify="space-between"
+			bg={scheme === "dark" ? "dark.9" : "brand.1"}
+		>
+			<Group>
+				<ActionIcon
+					variant="transparent"
+					c="gray.5"
+					size="md"
+					onClick={handleResetClick}
+				>
+					<IconX />
+				</ActionIcon>
 			</Group>
-		</>
+
+			<Group justify="center" flex={1}>
+				<Breadcrumbs separator=">" separatorMargin="xs">
+					{selectedBrowserFilters.map((browserFilter) => (
+						<Group key={`breadcrumb_item_${browserFilter.tag}`} gap={0}>
+							{browserFilter.selectedValues.map((value) => (
+								<Tooltip
+									key={convertSongMetadataValueToString(value)}
+									label={convertSongMetadataValueToString(value)}
+									withArrow
+								>
+									<Badge
+										c="brand"
+										variant="outline"
+										size="xs"
+										maw={150}
+										rightSection={
+											<ActionIcon
+												size="xs"
+												color="gray.5"
+												variant="transparent"
+												onClick={() =>
+													handleCloseClick(
+														browserFilter,
+														convertSongMetadataValueToString(value),
+													)
+												}
+											>
+												<IconX />
+											</ActionIcon>
+										}
+									>
+										{convertSongMetadataValueToString(value)}
+									</Badge>
+								</Tooltip>
+							))}
+						</Group>
+					))}
+				</Breadcrumbs>
+			</Group>
+		</Group>
 	);
 }

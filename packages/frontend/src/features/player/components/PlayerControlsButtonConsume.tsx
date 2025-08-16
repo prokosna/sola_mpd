@@ -1,11 +1,9 @@
 import { MpdRequest } from "@sola_mpd/domain/src/models/mpd/mpd_command_pb.js";
+import { IconEraser, IconEraserOff } from "@tabler/icons-react";
 import { useCallback } from "react";
-
 import { useMpdClientState } from "../../mpd";
 import { useCurrentMpdProfileState } from "../../profile";
 import { usePlayerStatusIsConsumeState } from "../states/playerStatusState";
-
-import { IconEraser, IconEraserOff } from "@tabler/icons-react";
 import { PlayerControlsButton } from "./PlayerControlsButton";
 
 /**
@@ -51,9 +49,5 @@ export function PlayerControlsButtonConsume() {
 		variant: "transparent",
 	};
 
-	return (
-		<>
-			<PlayerControlsButton {...props} />
-		</>
-	);
+	return <PlayerControlsButton {...props} />;
 }

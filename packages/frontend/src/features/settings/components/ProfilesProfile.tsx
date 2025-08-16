@@ -1,10 +1,9 @@
+import { Button, Table } from "@mantine/core";
 import type {
 	MpdProfile,
 	MpdProfileState,
 } from "@sola_mpd/domain/src/models/mpd/mpd_profile_pb.js";
 import { useCallback } from "react";
-
-import { Button, Table } from "@mantine/core";
 import { useNotification } from "../../../lib/mantine/hooks/useNotification";
 import { UpdateMode } from "../../../types/stateTypes";
 import { useUpdateMpdProfileState } from "../../profile";
@@ -48,26 +47,24 @@ export function ProfilesProfile(props: ProfilesProfileProps) {
 	}, [mpdProfileState, notify, profile.name, updateMpdProfileState]);
 
 	return (
-		<>
-			<Table.Tr>
-				<Table.Td>{profile.name}</Table.Td>
-				<Table.Td>{profile.host}</Table.Td>
-				<Table.Td>{profile.port}</Table.Td>
-				{index === 0 && mpdProfileState.profiles.length === 1 ? (
-					<Table.Td />
-				) : (
-					<Table.Td>
-						<Button
-							color="red"
-							variant="outline"
-							size="xs"
-							onClick={handleProfileDeleted}
-						>
-							Remove
-						</Button>
-					</Table.Td>
-				)}
-			</Table.Tr>
-		</>
+		<Table.Tr>
+			<Table.Td>{profile.name}</Table.Td>
+			<Table.Td>{profile.host}</Table.Td>
+			<Table.Td>{profile.port}</Table.Td>
+			{index === 0 && mpdProfileState.profiles.length === 1 ? (
+				<Table.Td />
+			) : (
+				<Table.Td>
+					<Button
+						color="red"
+						variant="outline"
+						size="xs"
+						onClick={handleProfileDeleted}
+					>
+						Remove
+					</Button>
+				</Table.Td>
+			)}
+		</Table.Tr>
 	);
 }

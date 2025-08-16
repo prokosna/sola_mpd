@@ -31,10 +31,8 @@ export function CenterSpinner(props: CenterSpinnerProps) {
 	);
 
 	return (
-		<>
-			<Center w="100%" h="100%">
-				<Loader size={params.size} type={params.type} c={params.color} />
-			</Center>
-		</>
+		<Center w="100%" h="100%">
+			<Loader size={params.size} type={params.type} c={params.color} />
+		</Center>
 	);
 }

@@ -1,6 +1,3 @@
-import type { Plugin } from "@sola_mpd/domain/src/models/plugin/plugin_pb.js";
-import { useCallback, useState } from "react";
-
 import {
 	Button,
 	Divider,
@@ -10,6 +7,8 @@ import {
 	TextInput,
 	Title,
 } from "@mantine/core";
+import type { Plugin } from "@sola_mpd/domain/src/models/plugin/plugin_pb.js";
+import { useCallback, useState } from "react";
 import { useNotification } from "../../../lib/mantine/hooks/useNotification";
 import { UpdateMode } from "../../../types/stateTypes";
 import { usePluginState, useUpdatePluginState } from "../states/pluginState";
@@ -73,31 +72,29 @@ export function PluginAddModalRegister(props: PluginAddModalRegisterProps) {
 	]);
 
 	return (
-		<>
-			<form>
-				<Stack gap={2}>
-					<Title size="h2">
-						{pluginToAdd.info?.name} {pluginToAdd.info?.version}
-					</Title>
-					<Text>{pluginToAdd.info?.description}</Text>
-					<Divider my={4} />
-					{(pluginToAdd.info?.requiredPluginParameters || []).map((key) => (
-						<TextInput
-							key={key}
-							label={key}
-							value={parameterValues.get(key) || ""}
-							onChange={(e) => {
-								const newValues = new Map(parameterValues);
-								newValues.set(key, e.target.value);
-								setParameterValues(newValues);
-							}}
-						/>
-					))}
-					<Group justify="flex-end">
-						<Button onClick={handlePluginRegistered}>Add</Button>
-					</Group>
-				</Stack>
-			</form>
-		</>
+		<form>
+			<Stack gap={2}>
+				<Title size="h2">
+					{pluginToAdd.info?.name} {pluginToAdd.info?.version}
+				</Title>
+				<Text>{pluginToAdd.info?.description}</Text>
+				<Divider my={4} />
+				{(pluginToAdd.info?.requiredPluginParameters || []).map((key) => (
+					<TextInput
+						key={key}
+						label={key}
+						value={parameterValues.get(key) || ""}
+						onChange={(e) => {
+							const newValues = new Map(parameterValues);
+							newValues.set(key, e.target.value);
+							setParameterValues(newValues);
+						}}
+					/>
+				))}
+				<Group justify="flex-end">
+					<Button onClick={handlePluginRegistered}>Add</Button>
+				</Group>
+			</Stack>
+		</form>
 	);
 }

@@ -89,7 +89,7 @@ export function normalizeSongTableColumns(
 		columns.filter(
 			(column) => column.sortOrder !== undefined && column.sortOrder >= 0,
 		),
-		// biome-ignore lint/style/noNonNullAssertion: <explanation>
+		// biome-ignore lint/style/noNonNullAssertion: Must not be null.
 	).sort((a, b) => a.sortOrder! - b.sortOrder!);
 	for (const column of columns) {
 		if (column.sortOrder !== undefined && column.sortOrder >= 0) {

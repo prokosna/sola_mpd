@@ -20,17 +20,15 @@ export type PlayerControlsButtonProps = {
  */
 export function PlayerControlsButton(props: PlayerControlsButtonProps) {
 	return (
-		<>
-			<Tooltip label={props.label} position="top" withArrow>
-				<ActionIcon
-					disabled={props.isDisabled}
-					onClick={props.onButtonClicked}
-					variant={props.variant}
-					m={2}
-				>
-					{props.icon}
-				</ActionIcon>
-			</Tooltip>
-		</>
+		<Tooltip label={props.label} position="top" withArrow>
+			<ActionIcon
+				disabled={props.isDisabled}
+				onClick={props.onButtonClicked}
+				variant={props.variant}
+				m={2}
+			>
+				{props.icon}
+			</ActionIcon>
+		</Tooltip>
 	);
 }

@@ -25,11 +25,17 @@
 		"*.{js,jsx,ts,tsx,json,md,css,yaml}": [
 			"npx @biomejs/biome check --write --no-errors-on-unmatched"
 		],
-		"*.proto": ["npx clang-format --style '{ BasedOnStyle: Google }' -i"]
+		"*.proto": [
+			"npx clang-format --style '{ BasedOnStyle: Google }' -i"
+		]
 	},
-	"workspaces": ["packages/domain", "packages/frontend", "packages/backend"],
+	"workspaces": [
+		"packages/domain",
+		"packages/frontend",
+		"packages/backend"
+	],
 	"devDependencies": {
-		"@biomejs/biome": "1.9.4",
+		"@biomejs/biome": "2.2.0",
 		"@swc/cli": "^0.7.8",
 		"@swc/core": "^1.13.3",
 		"clang-format": "^1.8.0",

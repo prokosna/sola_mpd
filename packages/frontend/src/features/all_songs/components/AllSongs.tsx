@@ -1,7 +1,6 @@
+import { Group } from "@mantine/core";
 import type { SongTableColumn } from "@sola_mpd/domain/src/models/song_table_pb.js";
 import { useCallback, useState } from "react";
-
-import { Group } from "@mantine/core";
 import { UpdateMode } from "../../../types/stateTypes";
 import { CenterSpinner } from "../../loading";
 import { PlaylistSelectModal, usePlaylistSelectModal } from "../../playlist";
@@ -71,12 +70,10 @@ export function AllSongs() {
 	}
 
 	return (
-		<>
-			<Group w="100%" h="100%">
-				<SongTable {...songTableProps} />
-				<PlaylistSelectModal {...playlistSelectModalProps} />
-				<ColumnEditModal {...columnEditModalProps} />
-			</Group>
-		</>
+		<Group w="100%" h="100%">
+			<SongTable {...songTableProps} />
+			<PlaylistSelectModal {...playlistSelectModalProps} />
+			<ColumnEditModal {...columnEditModalProps} />
+		</Group>
 	);
 }

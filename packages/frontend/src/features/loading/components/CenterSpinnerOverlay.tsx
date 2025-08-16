@@ -36,18 +36,16 @@ export function CenterSpinnerOverlay(props: CenterSpinnerOverlayProps) {
 	);
 
 	return (
-		<>
-			<Center w="100%" h="100%" pos="relative">
-				<LoadingOverlay
-					visible={params.visible}
-					loaderProps={{
-						size: params.size,
-						type: params.type,
-						color: params.color,
-					}}
-				/>
-				{props.children}
-			</Center>
-		</>
+		<Center w="100%" h="100%" pos="relative">
+			<LoadingOverlay
+				visible={params.visible}
+				loaderProps={{
+					size: params.size,
+					type: params.type,
+					color: params.color,
+				}}
+			/>
+			{props.children}
+		</Center>
 	);
 }

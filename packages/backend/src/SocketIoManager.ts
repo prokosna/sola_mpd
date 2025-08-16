@@ -13,7 +13,7 @@ import { MpdMessageHandler } from "./mpd/MpdMessageHandler.js";
 import { PluginMessageHandler } from "./plugins/PluginMessageHandler.js";
 
 export class SocketIoManager {
-	private constructor(private io: IOServer) {}
+	private constructor(_io: IOServer) {}
 
 	static initialize(io: IOServer): SocketIoManager {
 		console.info("Socket.io is initializing...");

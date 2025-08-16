@@ -30,18 +30,16 @@ export function CardStats() {
 	);
 
 	return (
-		<>
-			<Stack w="100%" h="100%" gap={4}>
-				<CardStatsNumber {...songStatsProps} />
-				<Divider />
-				<CardStatsNumber {...artistStatsProps} />
-				<Divider />
-				<CardStatsNumber {...albumStatsProps} />
-				<Divider />
-				<CardStatsNumber {...durationStatsProps} />
-				<Divider pb={6} />
-				<CardStatsDatabaseButton />
-			</Stack>
-		</>
+		<Stack w="100%" h="100%" gap={4}>
+			<CardStatsNumber {...songStatsProps} />
+			<Divider />
+			<CardStatsNumber {...artistStatsProps} />
+			<Divider />
+			<CardStatsNumber {...albumStatsProps} />
+			<Divider />
+			<CardStatsNumber {...durationStatsProps} />
+			<Divider pb={6} />
+			<CardStatsDatabaseButton />
+		</Stack>
 	);
 }

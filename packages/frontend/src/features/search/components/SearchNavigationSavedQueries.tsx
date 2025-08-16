@@ -14,7 +14,9 @@ import type { SearchFormValues } from "../types/searchTypes";
  */
 export function SearchNavigationSavedQueries({
 	form,
-}: { form: UseFormReturnType<SearchFormValues> }) {
+}: {
+	form: UseFormReturnType<SearchFormValues>;
+}) {
 	const selectListProps = useSavedSearchesSelectListProps({ form });
 
 	if (selectListProps === undefined) {
@@ -22,10 +24,8 @@ export function SearchNavigationSavedQueries({
 	}
 
 	return (
-		<>
-			<Box w="100%" h="100%">
-				<SelectList {...selectListProps} />
-			</Box>
-		</>
+		<Box w="100%" h="100%">
+			<SelectList {...selectListProps} />
+		</Box>
 	);
 }

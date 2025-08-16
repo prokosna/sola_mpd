@@ -11,29 +11,27 @@ export function Locale() {
 	const setLocaleState = useSetLocaleState();
 
 	return (
-		<>
-			<Stack gap={16}>
-				<Title order={1} size="lg">
-					Locale (for language-aware sorting)
-				</Title>
-				<Select
-					value={localeState}
-					size="md"
-					w="200"
-					onChange={(value) => {
-						if (value == null) {
-							return;
-						}
-						setLocaleState(value);
-					}}
-					data={Object.entries(supportedLocalesState).map(
-						([localeName, localeCode]) => ({
-							label: localeName,
-							value: localeCode,
-						}),
-					)}
-				/>
-			</Stack>
-		</>
+		<Stack gap={16}>
+			<Title order={1} size="lg">
+				Locale (for language-aware sorting)
+			</Title>
+			<Select
+				value={localeState}
+				size="md"
+				w="200"
+				onChange={(value) => {
+					if (value == null) {
+						return;
+					}
+					setLocaleState(value);
+				}}
+				data={Object.entries(supportedLocalesState).map(
+					([localeName, localeCode]) => ({
+						label: localeName,
+						value: localeCode,
+					}),
+				)}
+			/>
+		</Stack>
 	);
 }

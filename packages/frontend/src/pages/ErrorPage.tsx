@@ -1,3 +1,4 @@
+import { useId } from "react";
 import { useRouteError } from "react-router";
 
 export function ErrorPage() {
@@ -5,7 +6,7 @@ export function ErrorPage() {
 	console.error(error);
 
 	return (
-		<div id="error-page">
+		<div id={useId()}>
 			<h1>Oops!</h1>
 			<p>Something went wrong. Please try reloading the page.</p>
 			<p>

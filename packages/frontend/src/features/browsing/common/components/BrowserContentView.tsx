@@ -4,12 +4,12 @@ import {
 	PlaylistSelectModal,
 	type PlaylistSelectModalProps,
 } from "../../../playlist";
+import type { ColumnEditModalProps } from "../../../song_table";
 import {
 	ColumnEditModal,
 	SongTable,
 	type SongTableProps,
 } from "../../../song_table";
-import type { ColumnEditModalProps } from "../../../song_table";
 
 type BrowserContentViewProps = {
 	songTableProps?: SongTableProps;
@@ -34,12 +34,10 @@ export function BrowserContentView(props: BrowserContentViewProps) {
 	}
 
 	return (
-		<>
-			<Group w="100%" h="100%">
-				<SongTable {...songTableProps} />
-				<PlaylistSelectModal {...playlistSelectModalProps} />
-				<ColumnEditModal {...columnEditModalProps} />
-			</Group>
-		</>
+		<Group w="100%" h="100%">
+			<SongTable {...songTableProps} />
+			<PlaylistSelectModal {...playlistSelectModalProps} />
+			<ColumnEditModal {...columnEditModalProps} />
+		</Group>
 	);
 }
