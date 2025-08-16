@@ -1,6 +1,5 @@
-import { useCallback } from "react";
-
 import type { UseFormReturnType } from "@mantine/form";
+import { useCallback } from "react";
 import { COMPONENT_ID_SEARCH_SIDE_PANE } from "../../../const/component";
 import { useNotification } from "../../../lib/mantine/hooks/useNotification";
 import { UpdateMode } from "../../../types/stateTypes";
@@ -25,7 +24,9 @@ import { convertSearchToFormValues } from "../utils/searchUtils";
  */
 export function useSavedSearchesSelectListProps({
 	form,
-}: { form: UseFormReturnType<SearchFormValues> }) {
+}: {
+	form: UseFormReturnType<SearchFormValues>;
+}) {
 	const notify = useNotification();
 
 	const mpdClient = useMpdClientState();

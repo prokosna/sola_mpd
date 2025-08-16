@@ -47,7 +47,7 @@ export function extractRecentlyAddedFilterValues(
 	const filterValuesMap = new Map<Song_MetadataTag, string[]>();
 	for (const [tag, values] of valueTimestampMap.entries()) {
 		const valuesArray = Array.from(values.keys()).sort(
-			// biome-ignore lint/style/noNonNullAssertion: <explanation>
+			// biome-ignore lint/style/noNonNullAssertion: Must not be null.
 			(a, b) => values.get(b)! - values.get(a)!,
 		);
 		filterValuesMap.set(tag, valuesArray);

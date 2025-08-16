@@ -25,20 +25,18 @@ export function PluginExecutionModal() {
 	}
 
 	return (
-		<>
-			<Modal
-				opened={isPluginExecutionModalOpen !== "closed"}
-				onClose={() => setIsPluginExecutionModalOpen("closed")}
-				size={"xl"}
-				centered
-				title="Execute Plugin"
-			>
-				{isPluginExecutionModalOpen === "start" ? (
-					<PluginExecutionModalStart {...{ plugin, songs }} />
-				) : (
-					<PluginExecutionModalProgress {...{ plugin }} />
-				)}
-			</Modal>
-		</>
+		<Modal
+			opened={isPluginExecutionModalOpen !== "closed"}
+			onClose={() => setIsPluginExecutionModalOpen("closed")}
+			size={"xl"}
+			centered
+			title="Execute Plugin"
+		>
+			{isPluginExecutionModalOpen === "start" ? (
+				<PluginExecutionModalStart {...{ plugin, songs }} />
+			) : (
+				<PluginExecutionModalProgress {...{ plugin }} />
+			)}
+		</Modal>
 	);
 }

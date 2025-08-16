@@ -1,11 +1,9 @@
 import { MpdRequest } from "@sola_mpd/domain/src/models/mpd/mpd_command_pb.js";
+import { IconPlayerSkipBack } from "@tabler/icons-react";
 import { useCallback } from "react";
-
 import { useMpdClientState } from "../../mpd";
 import { useCurrentMpdProfileState } from "../../profile";
 import { useCurrentSongState } from "../states/playerSongState";
-
-import { IconPlayerSkipBack } from "@tabler/icons-react";
 import { PlayerControlsButton } from "./PlayerControlsButton";
 
 /**
@@ -45,9 +43,5 @@ export function PlayerControlsButtonPrevious() {
 		variant: "transparent",
 	};
 
-	return (
-		<>
-			<PlayerControlsButton {...props} />
-		</>
-	);
+	return <PlayerControlsButton {...props} />;
 }

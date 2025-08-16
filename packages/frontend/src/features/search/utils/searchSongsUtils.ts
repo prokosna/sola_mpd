@@ -34,7 +34,7 @@ export async function fetchSearchSongs(
 		// OR conditions
 		searchConditions.map(async (searchCondition) => {
 			// AND conditions
-			let songs = undefined;
+			let songs: Song[];
 
 			// Search conditions supported by MPD natively
 			const mpdConditions = searchCondition.mpdConditions;

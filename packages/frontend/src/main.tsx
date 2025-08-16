@@ -5,7 +5,7 @@ import { RouterProvider } from "react-router/dom";
 import { Providers } from "./providers.tsx";
 import router from "./router.tsx";
 
-// biome-ignore lint/style/noNonNullAssertion: <explanation>
+// biome-ignore lint/style/noNonNullAssertion: Must not be null.
 ReactDOM.createRoot(document.getElementById("root")!).render(
 	<React.StrictMode>
 		<Providers>

@@ -1,7 +1,6 @@
-import { useRef } from "react";
-
 import { ActionIcon, Group, TextInput } from "@mantine/core";
 import { IconSearch, IconX } from "@tabler/icons-react";
+import { useRef } from "react";
 import { useHandleGlobalFilterTextChangeWithDebounce } from "../hooks/useHandleGlobalFilterTextChangeWithDebounce";
 
 /**
@@ -31,38 +30,36 @@ export function GlobalFilterBox() {
 	const inputRef = useRef<HTMLInputElement>(null);
 
 	return (
-		<>
-			<Group w="100%" miw={100} maw={500}>
-				<TextInput
-					w="100%"
-					ref={inputRef}
-					size="md"
-					placeholder="Filter songs..."
-					leftSection={
-						<ActionIcon variant="transparent" color="gray.5">
-							<IconSearch />
-						</ActionIcon>
-					}
-					leftSectionPointerEvents="none"
-					onChange={(e) => {
-						handleGlobalFilterTextChange(e.target.value);
-					}}
-					rightSection={
-						<ActionIcon
-							variant="transparent"
-							color="gray.5"
-							onClick={() => {
-								if (inputRef.current != null) {
-									inputRef.current.value = "";
-								}
-								handleGlobalFilterTextChange("");
-							}}
-						>
-							<IconX />
-						</ActionIcon>
-					}
-				/>
-			</Group>
-		</>
+		<Group w="100%" miw={100} maw={500}>
+			<TextInput
+				w="100%"
+				ref={inputRef}
+				size="md"
+				placeholder="Filter songs..."
+				leftSection={
+					<ActionIcon variant="transparent" color="gray.5">
+						<IconSearch />
+					</ActionIcon>
+				}
+				leftSectionPointerEvents="none"
+				onChange={(e) => {
+					handleGlobalFilterTextChange(e.target.value);
+				}}
+				rightSection={
+					<ActionIcon
+						variant="transparent"
+						color="gray.5"
+						onClick={() => {
+							if (inputRef.current != null) {
+								inputRef.current.value = "";
+							}
+							handleGlobalFilterTextChange("");
+						}}
+					>
+						<IconX />
+					</ActionIcon>
+				}
+			/>
+		</Group>
 	);
 }

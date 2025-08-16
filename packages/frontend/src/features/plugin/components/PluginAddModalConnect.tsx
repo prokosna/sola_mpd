@@ -1,7 +1,6 @@
+import { Button, Group, Stack, Text, TextInput } from "@mantine/core";
 import type { Plugin } from "@sola_mpd/domain/src/models/plugin/plugin_pb.js";
 import { useRef } from "react";
-
-import { Button, Group, Stack, Text, TextInput } from "@mantine/core";
 import { useHandlePluginConnected } from "../hooks/useHandlePluginConnected";
 
 export type PluginAddModalConnectProps = {
@@ -26,22 +25,20 @@ export function PluginAddModalConnect(props: PluginAddModalConnectProps) {
 	);
 
 	return (
-		<>
-			<form>
-				<Stack gap={2}>
-					<TextInput
-						ref={endpointRef}
-						withAsterisk
-						label="Endpoint"
-						placeholder="localhost:3001"
-					/>
-					{errorMessage !== "" && <Text c="red">{errorMessage}</Text>}
+		<form>
+			<Stack gap={2}>
+				<TextInput
+					ref={endpointRef}
+					withAsterisk
+					label="Endpoint"
+					placeholder="localhost:3001"
+				/>
+				{errorMessage !== "" && <Text c="red">{errorMessage}</Text>}
 
-					<Group justify="flex-end">
-						<Button onClick={handlePluginConnected}>Connect</Button>
-					</Group>
-				</Stack>
-			</form>
-		</>
+				<Group justify="flex-end">
+					<Button onClick={handlePluginConnected}>Connect</Button>
+				</Group>
+			</Stack>
+		</form>
 	);
 }

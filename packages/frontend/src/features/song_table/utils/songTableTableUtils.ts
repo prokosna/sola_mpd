@@ -16,10 +16,10 @@ import type { GridApi, IRowNode } from "ag-grid-community";
 import dayjs from "dayjs";
 
 import {
+	type SongsInTable,
 	type SongTableContextMenuItemParams,
 	SongTableKeyType,
 	type SongTableRowCompact,
-	type SongsInTable,
 } from "../types/songTableTypes";
 
 import { copySortingAttributesToNewColumns } from "./songTableColumnUtils";
@@ -261,7 +261,7 @@ export function getSongsInTableFromGrid(
 	songsMap: Map<string, Song>,
 ): SongsInTable {
 	const nodes: IRowNode[] = [];
-	let clickedNode: IRowNode | undefined = undefined;
+	let clickedNode: IRowNode | undefined;
 	gridApi.forEachNodeAfterFilterAndSort((node) => {
 		nodes.push(node);
 		if (clickedSongKey !== undefined && node.data?.key === clickedSongKey) {
@@ -310,7 +310,7 @@ export function sortSongsByColumns(
 ): Song[] {
 	const conditions = columns
 		.filter((column) => (column.sortOrder ?? -1) >= 0)
-		// biome-ignore lint/style/noNonNullAssertion: <explanation>
+		// biome-ignore lint/style/noNonNullAssertion: Must not be null.
 		.sort((a, b) => a.sortOrder! - b.sortOrder!);
 	return songs.sort((a, b) => {
 		for (const condition of conditions) {
@@ -365,9 +365,9 @@ export function getTableIndexOfSong(
 	songKey: string,
 	gridApi: GridApi,
 ): number | undefined {
-	let index = undefined;
+	let index: number | undefined;
 	gridApi.forEachNodeAfterFilterAndSort((node) => {
-		if (node.data?.key === songKey && node.rowIndex !== undefined) {
+		if (node.data?.key === songKey && node.rowIndex !== null) {
 			index = node.rowIndex;
 		}
 	});

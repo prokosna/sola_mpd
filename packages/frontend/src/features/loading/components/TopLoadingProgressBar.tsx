@@ -20,9 +20,5 @@ export function TopLoadingProgressBar() {
 		};
 	}, []);
 
-	return (
-		<>
-			<NavigationProgress />
-		</>
-	);
+	return <NavigationProgress />;
 }

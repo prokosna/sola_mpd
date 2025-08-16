@@ -11,9 +11,5 @@ export function RootPage() {
 		navigate(ROUTE_LANDING);
 	}, [navigate]);
 
-	return (
-		<>
-			<CenterSpinner />
-		</>
-	);
+	return <CenterSpinner />;
 }

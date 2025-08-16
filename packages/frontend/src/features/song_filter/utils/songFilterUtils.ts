@@ -90,7 +90,7 @@ function matchesFilteringCondition(
 function convertSongMetadataValueToComparableValue(
 	value: Song_MetadataValue,
 ): ComparableSongMetadataValue | undefined {
-	let songMetadataValue: undefined | string | number = undefined;
+	let songMetadataValue: undefined | string | number;
 	const raw = value.value;
 	switch (raw.case) {
 		case "stringValue":
@@ -124,7 +124,7 @@ function convertSongMetadataValueToComparableValue(
 function convertFilterConditionToComparableValue(
 	condition: FilterCondition,
 ): ComparableConditionValue | undefined {
-	let conditionValue: undefined | number | string | RegExp = undefined;
+	let conditionValue: undefined | number | string | RegExp;
 	switch (condition.value?.value.case) {
 		case "stringValue":
 			conditionValue = condition.value.value.value.value;

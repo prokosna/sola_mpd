@@ -1,3 +1,4 @@
+import { useComputedColorScheme } from "@mantine/core";
 import {
 	Item,
 	type ItemParams,
@@ -5,8 +6,6 @@ import {
 	Separator,
 	Submenu,
 } from "react-contexify";
-
-import { useComputedColorScheme } from "@mantine/core";
 import type { ContextMenuProps } from "../types/contextMenuTypes";
 
 /**
@@ -75,10 +74,8 @@ export function ContextMenu<T>(props: ContextMenuProps<T>) {
 		.slice(0, -1);
 
 	return (
-		<>
-			<Menu id={props.id} animation={"scale"} theme={scheme}>
-				{items}
-			</Menu>
-		</>
+		<Menu id={props.id} animation={"scale"} theme={scheme}>
+			{items}
+		</Menu>
 	);
 }

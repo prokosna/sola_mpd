@@ -1,15 +1,3 @@
-import type { Song_MetadataTag } from "@sola_mpd/domain/src/models/song_pb.js";
-import type { SongTableColumn } from "@sola_mpd/domain/src/models/song_table_pb.js";
-import { listAllSongMetadataTags } from "@sola_mpd/domain/src/utils/songUtils.js";
-import { useCallback, useEffect, useState } from "react";
-
-import {
-	copySortingAttributesToNewColumns,
-	ensureTagsContainedInColumns,
-	getAverageWidthFlex,
-	normalizeSongTableColumns,
-} from "../utils/songTableColumnUtils";
-
 import {
 	ActionIcon,
 	Button,
@@ -18,7 +6,17 @@ import {
 	Modal,
 	Stack,
 } from "@mantine/core";
+import type { Song_MetadataTag } from "@sola_mpd/domain/src/models/song_pb.js";
+import type { SongTableColumn } from "@sola_mpd/domain/src/models/song_table_pb.js";
+import { listAllSongMetadataTags } from "@sola_mpd/domain/src/utils/songUtils.js";
 import { IconArrowLeft, IconArrowRight } from "@tabler/icons-react";
+import { useCallback, useEffect, useState } from "react";
+import {
+	copySortingAttributesToNewColumns,
+	ensureTagsContainedInColumns,
+	getAverageWidthFlex,
+	normalizeSongTableColumns,
+} from "../utils/songTableColumnUtils";
 import { ColumnEditModalTagListBox } from "./ColumnEditModalTagListBox";
 
 export type ColumnEditModalProps = {
@@ -110,55 +108,53 @@ export function ColumnEditModal(props: ColumnEditModalProps): JSX.Element {
 	}, [activeTagsState, props]);
 
 	return (
-		<>
-			<Modal
-				opened={props.isOpen}
-				centered
-				onClose={() => {
-					if (props.handleModalDisposed !== undefined) {
-						props.handleModalDisposed();
-					}
-				}}
-				title="Edit Columns"
-			>
-				<Stack>
-					<Group wrap="nowrap" justify="space-between">
-						<Stack>
-							<ColumnEditModalTagListBox
-								title="Active Tags"
-								selectedTag={selectedActiveTag}
-								tags={activeTagsState}
-								handleTagSelected={handleActiveTagSelected}
-							/>
-						</Stack>
-						<Stack>
-							<ActionIcon variant="outline" onClick={handleItemMovedToInactive}>
-								<IconArrowRight />
-							</ActionIcon>
-							<ActionIcon variant="outline" onClick={handleItemMovedToActive}>
-								<IconArrowLeft />
-							</ActionIcon>
-						</Stack>
-						<Stack>
-							<ColumnEditModalTagListBox
-								title="Inactive Tags"
-								selectedTag={selectedInactiveTag}
-								tags={inactiveTags}
-								handleTagSelected={handleInactiveTagSelected}
-							/>
-						</Stack>
-					</Group>
-				</Stack>
-				<Divider my={8} />
-				<Group justify="flex-end">
-					<Button mr={3} onClick={handleSubmit}>
-						OK
-					</Button>
-					<Button color="gray" onClick={props.handleModalDisposed}>
-						Cancel
-					</Button>
+		<Modal
+			opened={props.isOpen}
+			centered
+			onClose={() => {
+				if (props.handleModalDisposed !== undefined) {
+					props.handleModalDisposed();
+				}
+			}}
+			title="Edit Columns"
+		>
+			<Stack>
+				<Group wrap="nowrap" justify="space-between">
+					<Stack>
+						<ColumnEditModalTagListBox
+							title="Active Tags"
+							selectedTag={selectedActiveTag}
+							tags={activeTagsState}
+							handleTagSelected={handleActiveTagSelected}
+						/>
+					</Stack>
+					<Stack>
+						<ActionIcon variant="outline" onClick={handleItemMovedToInactive}>
+							<IconArrowRight />
+						</ActionIcon>
+						<ActionIcon variant="outline" onClick={handleItemMovedToActive}>
+							<IconArrowLeft />
+						</ActionIcon>
+					</Stack>
+					<Stack>
+						<ColumnEditModalTagListBox
+							title="Inactive Tags"
+							selectedTag={selectedInactiveTag}
+							tags={inactiveTags}
+							handleTagSelected={handleInactiveTagSelected}
+						/>
+					</Stack>
 				</Group>
-			</Modal>
-		</>
+			</Stack>
+			<Divider my={8} />
+			<Group justify="flex-end">
+				<Button mr={3} onClick={handleSubmit}>
+					OK
+				</Button>
+				<Button color="gray" onClick={props.handleModalDisposed}>
+					Cancel
+				</Button>
+			</Group>
+		</Modal>
 	);
 }

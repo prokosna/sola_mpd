@@ -23,24 +23,20 @@ export function BrowserView(props: BrowserViewProps) {
 	const scheme = useComputedColorScheme();
 
 	return (
-		<>
-			<Stack h="100%" gap={0}>
-				<Group w="100%" bg={scheme === "light" ? "white" : "dark.7"}>
-					{props.browserNavigationBreadcrumbs}
-				</Group>
-				<Divider />
-				<Group w="100%" h="100%">
-					<PanelGroup direction="horizontal" autoSaveId="browser-view">
-						<Panel defaultSize={30} minSize={10}>
-							{props.browserNavigation}
-						</Panel>
-						<PanelResizeHandle
-							className={clsx(styles.handle, styles.vertical)}
-						/>
-						<Panel minSize={30}>{props.browserContent}</Panel>
-					</PanelGroup>
-				</Group>
-			</Stack>
-		</>
+		<Stack h="100%" gap={0}>
+			<Group w="100%" bg={scheme === "light" ? "white" : "dark.7"}>
+				{props.browserNavigationBreadcrumbs}
+			</Group>
+			<Divider />
+			<Group w="100%" h="100%">
+				<PanelGroup direction="horizontal" autoSaveId="browser-view">
+					<Panel defaultSize={30} minSize={10}>
+						{props.browserNavigation}
+					</Panel>
+					<PanelResizeHandle className={clsx(styles.handle, styles.vertical)} />
+					<Panel minSize={30}>{props.browserContent}</Panel>
+				</PanelGroup>
+			</Group>
+		</Stack>
 	);
 }

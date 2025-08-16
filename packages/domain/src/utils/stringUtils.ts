@@ -1,4 +1,3 @@
-// biome-ignore lint/suspicious/noMisleadingCharacterClass: Expected usage.
 const normalizationRegex = new RegExp(/[\u0300-\u036F]/g);
 
 /**

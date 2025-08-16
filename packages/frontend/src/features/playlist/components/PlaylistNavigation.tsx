@@ -18,10 +18,8 @@ export function PlaylistNavigation() {
 	}
 
 	return (
-		<>
-			<Box w="100%" h="100%">
-				<SelectList {...selectListProps} />
-			</Box>
-		</>
+		<Box w="100%" h="100%">
+			<SelectList {...selectListProps} />
+		</Box>
 	);
 }

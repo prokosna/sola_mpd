@@ -1,6 +1,3 @@
-import { Playlist } from "@sola_mpd/domain/src/models/playlist_pb.js";
-import { useCallback } from "react";
-
 import {
 	Button,
 	Checkbox,
@@ -10,6 +7,8 @@ import {
 	TextInput,
 } from "@mantine/core";
 import { useForm } from "@mantine/form";
+import { Playlist } from "@sola_mpd/domain/src/models/playlist_pb.js";
+import { useCallback } from "react";
 import { useAddPlaylist } from "../hooks/useAddPlaylist";
 import { usePlaylistsState } from "../states/playlistState";
 
@@ -79,45 +78,43 @@ export function PlaylistSelectModal(props: PlaylistSelectModalProps) {
 	}, [props, form]);
 
 	return (
-		<>
-			<Modal
-				centered
-				opened={props.isOpen}
-				onClose={handleClose}
-				title="Select a playlist"
-			>
-				<form onSubmit={form.onSubmit(handleSubmit)}>
-					{form.getValues().isNewPlaylist ? (
-						<TextInput
-							withAsterisk
-							label="Playlist name"
-							placeholder="New playlist name"
-							key={form.key("playlistName")}
-							{...form.getInputProps("playlistName")}
-						/>
-					) : (
-						<Select
-							placeholder="Select a playlist"
-							data={playlists?.map((playlist) => playlist.name) || []}
-							key={form.key("playlistName")}
-							{...form.getInputProps("playlistName")}
-						/>
-					)}
-
-					<Checkbox
-						label="Create a new playlist"
-						key={form.key("isNewPlaylist")}
-						{...form.getInputProps("isNewPlaylist", { type: "checkbox" })}
+		<Modal
+			centered
+			opened={props.isOpen}
+			onClose={handleClose}
+			title="Select a playlist"
+		>
+			<form onSubmit={form.onSubmit(handleSubmit)}>
+				{form.getValues().isNewPlaylist ? (
+					<TextInput
+						withAsterisk
+						label="Playlist name"
+						placeholder="New playlist name"
+						key={form.key("playlistName")}
+						{...form.getInputProps("playlistName")}
 					/>
+				) : (
+					<Select
+						placeholder="Select a playlist"
+						data={playlists?.map((playlist) => playlist.name) || []}
+						key={form.key("playlistName")}
+						{...form.getInputProps("playlistName")}
+					/>
+				)}
 
-					<Group justify="flex-end">
-						<Button type="submit">Add</Button>
-						<Button onClick={handleClose} variant="default">
-							Cancel
-						</Button>
-					</Group>
-				</form>
-			</Modal>
-		</>
+				<Checkbox
+					label="Create a new playlist"
+					key={form.key("isNewPlaylist")}
+					{...form.getInputProps("isNewPlaylist", { type: "checkbox" })}
+				/>
+
+				<Group justify="flex-end">
+					<Button type="submit">Add</Button>
+					<Button onClick={handleClose} variant="default">
+						Cancel
+					</Button>
+				</Group>
+			</form>
+		</Modal>
 	);
 }

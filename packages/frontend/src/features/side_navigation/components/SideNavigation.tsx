@@ -1,15 +1,3 @@
-import {
-	ROUTE_HOME_ALL_SONGS,
-	ROUTE_HOME_BROWSER,
-	ROUTE_HOME_FILE_EXPLORE,
-	ROUTE_HOME_PLAYLIST,
-	ROUTE_HOME_PLAY_QUEUE,
-	ROUTE_HOME_PLUGIN,
-	ROUTE_HOME_RECENTLY_ADDED,
-	ROUTE_HOME_SEARCH,
-} from "../../../const/routes";
-import { useSideNavigationItems } from "../hooks/useSideNavigationItems";
-
 import { Divider, Group, Stack } from "@mantine/core";
 import {
 	IconArrowsExchange,
@@ -21,7 +9,18 @@ import {
 	IconPlaylist,
 	IconSearch,
 } from "@tabler/icons-react";
+import {
+	ROUTE_HOME_ALL_SONGS,
+	ROUTE_HOME_BROWSER,
+	ROUTE_HOME_FILE_EXPLORE,
+	ROUTE_HOME_PLAY_QUEUE,
+	ROUTE_HOME_PLAYLIST,
+	ROUTE_HOME_PLUGIN,
+	ROUTE_HOME_RECENTLY_ADDED,
+	ROUTE_HOME_SEARCH,
+} from "../../../const/routes";
 import { CardStats } from "../../stats";
+import { useSideNavigationItems } from "../hooks/useSideNavigationItems";
 import {
 	SideNavigationItem,
 	type SideNavigationItemProps,
@@ -87,23 +86,21 @@ export function SideNavigation({ isCompact }: { isCompact: boolean }) {
 	const sideNavigationItems = useSideNavigationItems(baseItems);
 
 	return (
-		<>
-			<Stack h="100%">
-				<Stack w="100%" px={10} pt={8} gap={0}>
-					{sideNavigationItems.map((item) => (
-						<SideNavigationItem key={item.name} {...item} />
-					))}
-				</Stack>
-				{isCompact ? null : (
-					<>
-						<Divider />
-						<Group w="100%" h="100%" px={24}>
-							<CardStats />
-						</Group>
-						<Divider />
-					</>
-				)}
+		<Stack h="100%">
+			<Stack w="100%" px={10} pt={8} gap={0}>
+				{sideNavigationItems.map((item) => (
+					<SideNavigationItem key={item.name} {...item} />
+				))}
 			</Stack>
-		</>
+			{isCompact ? null : (
+				<>
+					<Divider />
+					<Group w="100%" h="100%" px={24}>
+						<CardStats />
+					</Group>
+					<Divider />
+				</>
+			)}
+		</Stack>
 	);
 }

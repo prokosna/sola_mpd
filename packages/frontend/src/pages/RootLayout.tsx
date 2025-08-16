@@ -39,13 +39,11 @@ export function RootLayout() {
 	]);
 
 	return (
-		<>
-			<Suspense fallback={<TopLoadingProgressBar />}>
-				<Provider store={store}>
-					<Outlet />
-					<LocationObserver />
-				</Provider>
-			</Suspense>
-		</>
+		<Suspense fallback={<TopLoadingProgressBar />}>
+			<Provider store={store}>
+				<Outlet />
+				<LocationObserver />
+			</Provider>
+		</Suspense>
 	);
 }

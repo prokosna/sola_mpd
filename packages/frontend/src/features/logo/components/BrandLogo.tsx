@@ -23,10 +23,8 @@ export function BrandLogo() {
 	}
 
 	return (
-		<>
-			<Text pl={24} size="28" fw={700} c="brand">
-				Sola MPD
-			</Text>
-		</>
+		<Text pl={24} size="28" fw={700} c="brand">
+			Sola MPD
+		</Text>
 	);
 }

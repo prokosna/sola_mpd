@@ -69,34 +69,30 @@ export function SettingsStatesEditor<T extends Message>(
 	};
 
 	return (
-		<>
-			<Modal opened={isOpen} onClose={close} title="Edit JSON file">
-				<Stack>
-					<Text c="red">
-						{"Don't edit unless you understand what you are doing."}
-					</Text>
-					<Textarea
-						autosize
-						value={stateJsonText}
-						onChange={(e) => handleInput(e.target.value)}
-					/>
-					{errorMessage !== "" && <Text c="red">{errorMessage}</Text>}
-					<Group justify="flex-end">
-						<Button
-							disabled={
-								newStateRef.current === undefined || errorMessage !== ""
-							}
-							onClick={() => {
-								if (newStateRef.current === undefined) return;
-								onSave(newStateRef.current);
-								close();
-							}}
-						>
-							Save
-						</Button>
-					</Group>
-				</Stack>
-			</Modal>
-		</>
+		<Modal opened={isOpen} onClose={close} title="Edit JSON file">
+			<Stack>
+				<Text c="red">
+					{"Don't edit unless you understand what you are doing."}
+				</Text>
+				<Textarea
+					autosize
+					value={stateJsonText}
+					onChange={(e) => handleInput(e.target.value)}
+				/>
+				{errorMessage !== "" && <Text c="red">{errorMessage}</Text>}
+				<Group justify="flex-end">
+					<Button
+						disabled={newStateRef.current === undefined || errorMessage !== ""}
+						onClick={() => {
+							if (newStateRef.current === undefined) return;
+							onSave(newStateRef.current);
+							close();
+						}}
+					>
+						Save
+					</Button>
+				</Group>
+			</Stack>
+		</Modal>
 	);
 }

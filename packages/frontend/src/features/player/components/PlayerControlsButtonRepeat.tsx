@@ -1,11 +1,9 @@
 import { MpdRequest } from "@sola_mpd/domain/src/models/mpd/mpd_command_pb.js";
+import { IconRepeat, IconRepeatOff } from "@tabler/icons-react";
 import { useCallback } from "react";
-
 import { useMpdClientState } from "../../mpd";
 import { useCurrentMpdProfileState } from "../../profile";
 import { usePlayerStatusIsRepeatState } from "../states/playerStatusState";
-
-import { IconRepeat, IconRepeatOff } from "@tabler/icons-react";
 import { PlayerControlsButton } from "./PlayerControlsButton";
 
 /**
@@ -51,9 +49,5 @@ export function PlayerControlsButtonRepeat() {
 		variant: "transparent",
 	};
 
-	return (
-		<>
-			<PlayerControlsButton {...props} />
-		</>
-	);
+	return <PlayerControlsButton {...props} />;
 }
