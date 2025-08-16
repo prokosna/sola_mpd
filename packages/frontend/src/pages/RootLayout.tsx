@@ -18,8 +18,6 @@ import { Outlet } from "react-router";
 import { TopLoadingProgressBar } from "../features/loading";
 import { LocationObserver } from "../features/location";
 import { useJotaiStore } from "../useJotaiStore";
-
-import "allotment/dist/style.css";
 import "react-contexify/dist/ReactContexify.css";
 import "../global.css";
 

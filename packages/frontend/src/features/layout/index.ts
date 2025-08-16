@@ -1,5 +1,4 @@
 // Hooks
-export { useResizablePane } from "./hooks/useResizablePane";
 
 // Services
 export type { LayoutStateRepository } from "./services/LayoutStateRepository";

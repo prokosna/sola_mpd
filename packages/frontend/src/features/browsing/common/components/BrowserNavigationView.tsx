@@ -1,9 +1,12 @@
-import { Allotment } from "allotment";
-
-import { Stack, useComputedColorScheme } from "@mantine/core";
 import type { BrowserFilter } from "@sola_mpd/domain/src/models/browser_pb.js";
 import type { Song_MetadataTag } from "@sola_mpd/domain/src/models/song_pb.js";
+import clsx from "clsx";
+import { Panel, PanelGroup, PanelResizeHandle } from "react-resizable-panels";
+
+import { Stack } from "@mantine/core";
+import * as React from "react";
 import type { UpdateMode } from "../../../../types/stateTypes";
+import styles from "../../../layout/components/ResizeHandle.module.css";
 import { FullWidthSkeleton } from "../../../loading";
 import { listBrowserSongMetadataTags } from "../utils/browserFilterUtils";
 import { BrowserNavigationFilterView } from "./BrowserNavigationFilterView";
@@ -29,8 +32,6 @@ type BrowserNavigationViewProps = {
 export function BrowserNavigationView(props: BrowserNavigationViewProps) {
 	const { browserFilters, browserFilterValues, updateBrowserFilters } = props;
 
-	const scheme = useComputedColorScheme();
-
 	if (browserFilters === undefined) {
 		return <FullWidthSkeleton />;
 	}
@@ -41,16 +42,13 @@ export function BrowserNavigationView(props: BrowserNavigationViewProps) {
 	);
 
 	return (
-		<>
-			<Stack h="100%" gap={0}>
-				<Allotment
-					className={scheme === "light" ? "allotment-light" : "allotment-dark"}
-					vertical={true}
-				>
-					{browserFilters
-						.sort((a, b) => a.order - b.order)
-						.map((browserFilter) => (
-							<Allotment.Pane key={browserFilter.tag} minSize={20}>
+		<Stack h="100%" gap={0}>
+			<PanelGroup direction="vertical" autoSaveId="browser-navigation-view">
+				{browserFilters
+					.sort((a, b) => a.order - b.order)
+					.map((browserFilter, index, array) => (
+						<React.Fragment key={browserFilter.tag}>
+							<Panel minSize={20}>
 								<BrowserNavigationFilterView
 									{...{
 										browserFilter,
@@ -60,10 +58,15 @@ export function BrowserNavigationView(props: BrowserNavigationViewProps) {
 										updateBrowserFilters,
 									}}
 								/>
-							</Allotment.Pane>
-						))}
-				</Allotment>
-			</Stack>
-		</>
+							</Panel>
+							{index < array.length - 1 && (
+								<PanelResizeHandle
+									className={clsx(styles.handle, styles.horizontal)}
+								/>
+							)}
+						</React.Fragment>
+					))}
+			</PanelGroup>
+		</Stack>
 	);
 }

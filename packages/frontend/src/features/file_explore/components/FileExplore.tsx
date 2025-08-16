@@ -1,15 +1,7 @@
-import { Allotment } from "allotment";
-import { useCallback } from "react";
-
-import { UpdateMode } from "../../../types/stateTypes";
-import {
-	useFileExploreLayoutState,
-	useResizablePane,
-	useUpdateLayoutState,
-} from "../../layout";
-import { CenterSpinner } from "../../loading";
-
-import { Box, useComputedColorScheme } from "@mantine/core";
+import { Box } from "@mantine/core";
+import clsx from "clsx";
+import { Panel, PanelGroup, PanelResizeHandle } from "react-resizable-panels";
+import styles from "../../layout/components/ResizeHandle.module.css";
 import { FileExploreContent } from "./FileExploreContent";
 import { FileExploreNavigation } from "./FileExploreNavigation";
 
@@ -32,49 +24,17 @@ import { FileExploreNavigation } from "./FileExploreNavigation";
  * @returns Rendered file explorer component
  */
 export function FileExplore() {
-	const fileExploreLayout = useFileExploreLayoutState();
-	const updateLayout = useUpdateLayoutState();
-
-	const scheme = useComputedColorScheme();
-
-	const handlePanelWidthChanged = useCallback(
-		async (left: number | undefined) => {
-			if (left === undefined || fileExploreLayout === undefined) {
-				return;
-			}
-			const newLayout = fileExploreLayout.clone();
-			newLayout.sidePaneWidth = left;
-			updateLayout(newLayout, UpdateMode.PERSIST);
-		},
-		[fileExploreLayout, updateLayout],
-	);
-
-	const { isReady, leftPaneWidthStyle, handlePanelResize } = useResizablePane(
-		fileExploreLayout?.sidePaneWidth,
-		handlePanelWidthChanged,
-	);
-
-	if (!isReady) {
-		return <CenterSpinner />;
-	}
-
 	return (
-		<>
-			<Box w="100%" h="100%">
-				<Allotment
-					className={scheme === "light" ? "allotment-light" : "allotment-dark"}
-					onChange={(sizes) => {
-						handlePanelResize(sizes[0], sizes[1]);
-					}}
-				>
-					<Allotment.Pane preferredSize={leftPaneWidthStyle}>
-						<FileExploreNavigation />
-					</Allotment.Pane>
-					<Allotment.Pane>
-						<FileExploreContent />
-					</Allotment.Pane>
-				</Allotment>
-			</Box>
-		</>
+		<Box w="100%" h="100%">
+			<PanelGroup direction="horizontal" autoSaveId="file-explore">
+				<Panel defaultSize={30} minSize={10}>
+					<FileExploreNavigation />
+				</Panel>
+				<PanelResizeHandle className={clsx(styles.handle, styles.vertical)} />
+				<Panel minSize={30}>
+					<FileExploreContent />
+				</Panel>
+			</PanelGroup>
+		</Box>
 	);
 }

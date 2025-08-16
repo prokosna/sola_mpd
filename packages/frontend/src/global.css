@@ -1,16 +1,11 @@
-/* Allotment design customization */
-:root[data-mantine-color-scheme="light"] .allotment-light {
+:root[data-mantine-color-scheme="light"] {
 	--focus-border: var(--mantine-color-brand-5);
 	--separator-border: var(--mantine-color-gray-3);
 }
 
-:root[data-mantine-color-scheme="dark"] .allotment-dark {
+:root[data-mantine-color-scheme="dark"] {
 	--focus-border: var(--mantine-color-brand-6);
 	--separator-border: var(--mantine-color-dark-4);
-}
-
-.sash {
-	z-index: 1000 !important;
 }
 
 /* Ag Grid inrow font weight customization */
