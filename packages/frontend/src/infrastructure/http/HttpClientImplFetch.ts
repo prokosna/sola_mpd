@@ -20,16 +20,12 @@ export class HttpClientImplFetch implements HttpClient {
 	};
 
 	post = async (endpoint: string, payload: Uint8Array): Promise<void> => {
-		const bytes = payload.buffer.slice(
-			payload.byteOffset,
-			payload.byteLength + payload.byteOffset,
-		);
 		const ret = await fetch(endpoint, {
 			method: "POST",
 			headers: {
 				"Content-Type": "application/octet-stream",
 			},
-			body: bytes,
+			body: payload.slice().buffer,
 		});
 		if (!ret.ok) {
 			const body = await ret.text();
@@ -43,16 +39,12 @@ export class HttpClientImplFetch implements HttpClient {
 		payload: Uint8Array,
 		fromBinary: (bytes: Uint8Array) => R,
 	): Promise<R> => {
-		const bytes = payload.buffer.slice(
-			payload.byteOffset,
-			payload.byteLength + payload.byteOffset,
-		);
 		const ret = await fetch(endpoint, {
 			method: "PUT",
 			headers: {
 				"Content-Type": "application/octet-stream",
 			},
-			body: bytes,
+			body: payload.slice().buffer,
 		});
 		if (!ret.ok) {
 			const body = await ret.text();

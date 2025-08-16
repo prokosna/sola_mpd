@@ -53,11 +53,9 @@ export class PluginServiceImplSocketIo implements PluginService {
 
 		const subject = new Subject<PluginExecuteResponse>();
 
-		this.client.on(reqWrapper.callbackEvent, (data: ArrayBuffer) => {
+		this.client.on(reqWrapper.callbackEvent, (data: Uint8Array) => {
 			try {
-				const resp = PluginExecuteResponseWrapper.fromBinary(
-					new Uint8Array(data),
-				);
+				const resp = PluginExecuteResponseWrapper.fromBinary(data);
 				switch (resp.result.case) {
 					case "response":
 						subject.next(resp.result.value);
