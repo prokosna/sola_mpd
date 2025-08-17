@@ -1,11 +1,14 @@
+import { create, fromBinary, toBinary } from "@bufbuild/protobuf";
 import {
 	SIO_MPD_COMMAND,
 	SIO_MPD_COMMAND_BULK,
 } from "@sola_mpd/domain/src/const/socketio.js";
 import {
 	type MpdRequest,
-	MpdRequestBulk,
-	MpdResponse,
+	MpdRequestBulkSchema,
+	MpdRequestSchema,
+	type MpdResponse,
+	MpdResponseSchema,
 } from "@sola_mpd/domain/src/models/mpd/mpd_command_pb.js";
 
 import type { MpdClient } from "../../features/mpd";
@@ -21,8 +24,8 @@ export class MpdClientSocketIo implements MpdClient {
 	command = async (req: MpdRequest): Promise<MpdResponse> => {
 		const res = await this.client.fetch(
 			SIO_MPD_COMMAND,
-			req.toBinary(),
-			MpdResponse.fromBinary,
+			toBinary(MpdRequestSchema, req),
+			(bytes) => fromBinary(MpdResponseSchema, bytes),
 		);
 
 		if (res.command.case === "error") {
@@ -35,7 +38,10 @@ export class MpdClientSocketIo implements MpdClient {
 	commandBulk = async (reqs: MpdRequest[]): Promise<void> => {
 		await this.client.emit(
 			SIO_MPD_COMMAND_BULK,
-			new MpdRequestBulk({ requests: reqs }).toBinary(),
+			toBinary(
+				MpdRequestBulkSchema,
+				create(MpdRequestBulkSchema, { requests: reqs }),
+			),
 		);
 		return;
 	};

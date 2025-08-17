@@ -1,25 +1,38 @@
+import { create } from "@bufbuild/protobuf";
 import {
-	FloatValue,
-	Int32Value,
-	StringValue,
-	Timestamp,
-} from "@bufbuild/protobuf";
-import { Folder } from "@sola_mpd/domain/src/models/file_explore_pb.js";
-import { MpdOutputDevice } from "@sola_mpd/domain/src/models/mpd/mpd_output_pb.js";
+	FloatValueSchema,
+	Int32ValueSchema,
+	StringValueSchema,
+	TimestampSchema,
+	timestampFromDate,
+} from "@bufbuild/protobuf/wkt";
+import type { Folder } from "@sola_mpd/domain/src/models/file_explore_pb.js";
+import { FolderSchema } from "@sola_mpd/domain/src/models/file_explore_pb.js";
+import type { MpdOutputDevice } from "@sola_mpd/domain/src/models/mpd/mpd_output_pb.js";
+import { MpdOutputDeviceSchema } from "@sola_mpd/domain/src/models/mpd/mpd_output_pb.js";
+
 import {
-	MpdPlayerStatus,
+	type MpdPlayerStatus,
 	MpdPlayerStatus_PlaybackState,
-	MpdPlayerVolume,
+	MpdPlayerStatusSchema,
+	type MpdPlayerVolume,
+	MpdPlayerVolumeSchema,
 } from "@sola_mpd/domain/src/models/mpd/mpd_player_pb.js";
-import { MpdStats } from "@sola_mpd/domain/src/models/mpd/mpd_stats_pb.js";
-import { Playlist } from "@sola_mpd/domain/src/models/playlist_pb.js";
+import type { MpdStats } from "@sola_mpd/domain/src/models/mpd/mpd_stats_pb.js";
+import { MpdStatsSchema } from "@sola_mpd/domain/src/models/mpd/mpd_stats_pb.js";
+import type { Playlist } from "@sola_mpd/domain/src/models/playlist_pb.js";
+import { PlaylistSchema } from "@sola_mpd/domain/src/models/playlist_pb.js";
+
 import {
-	AudioFormat,
+	type AudioFormat,
 	AudioFormat_Encoding,
-	Song,
+	AudioFormatSchema,
+	type Song,
 	Song_MetadataTag,
-	Song_MetadataValue,
+	Song_MetadataValueSchema,
+	SongSchema,
 } from "@sola_mpd/domain/src/models/song_pb.js";
+
 import dayjs from "dayjs";
 
 function normalizeRecord(
@@ -37,7 +50,7 @@ function normalizeRecord(
 }
 
 export function parseSong(v?: Record<string, unknown>): Song | undefined {
-	const song = new Song();
+	const song = create(SongSchema);
 
 	const raw = normalizeRecord(v);
 	if (raw === undefined) {
@@ -51,141 +64,150 @@ export function parseSong(v?: Record<string, unknown>): Song | undefined {
 	}
 
 	const title = raw.title ? raw.title : "";
-	song.metadata[Song_MetadataTag.TITLE] = new Song_MetadataValue({
+	song.metadata[Song_MetadataTag.TITLE] = create(Song_MetadataValueSchema, {
 		value: {
 			case: "stringValue",
-			value: new StringValue({ value: title }),
+			value: create(StringValueSchema, { value: title }),
 		},
 	});
 
 	const artist = raw.artist ? raw.artist : "";
-	song.metadata[Song_MetadataTag.ARTIST] = new Song_MetadataValue({
+	song.metadata[Song_MetadataTag.ARTIST] = create(Song_MetadataValueSchema, {
 		value: {
 			case: "stringValue",
-			value: new StringValue({ value: artist }),
+			value: create(StringValueSchema, { value: artist }),
 		},
 	});
 
 	const albumArtist = raw.albumartist ? raw.albumartist : "";
-	song.metadata[Song_MetadataTag.ALBUM_ARTIST] = new Song_MetadataValue({
-		value: {
-			case: "stringValue",
-			value: new StringValue({ value: albumArtist }),
+	song.metadata[Song_MetadataTag.ALBUM_ARTIST] = create(
+		Song_MetadataValueSchema,
+		{
+			value: {
+				case: "stringValue",
+				value: create(StringValueSchema, { value: albumArtist }),
+			},
 		},
-	});
+	);
 
 	const album = raw.album ? raw.album : "";
-	song.metadata[Song_MetadataTag.ALBUM] = new Song_MetadataValue({
+	song.metadata[Song_MetadataTag.ALBUM] = create(Song_MetadataValueSchema, {
 		value: {
 			case: "stringValue",
-			value: new StringValue({ value: album }),
+			value: create(StringValueSchema, { value: album }),
 		},
 	});
 
 	const genre = raw.genre ? raw.genre : "";
-	song.metadata[Song_MetadataTag.GENRE] = new Song_MetadataValue({
+	song.metadata[Song_MetadataTag.GENRE] = create(Song_MetadataValueSchema, {
 		value: {
 			case: "stringValue",
-			value: new StringValue({ value: genre }),
+			value: create(StringValueSchema, { value: genre }),
 		},
 	});
 
 	const composer = raw.composer ? raw.composer : "";
-	song.metadata[Song_MetadataTag.COMPOSER] = new Song_MetadataValue({
+	song.metadata[Song_MetadataTag.COMPOSER] = create(Song_MetadataValueSchema, {
 		value: {
 			case: "stringValue",
-			value: new StringValue({ value: composer }),
+			value: create(StringValueSchema, { value: composer }),
 		},
 	});
 
 	const track = raw.track && !Number.isNaN(+raw.track) ? +raw.track : undefined;
-	song.metadata[Song_MetadataTag.TRACK] = new Song_MetadataValue({
+	song.metadata[Song_MetadataTag.TRACK] = create(Song_MetadataValueSchema, {
 		value: {
 			case: "intValue",
-			value: new Int32Value({ value: track }),
+			value: create(Int32ValueSchema, { value: track }),
 		},
 	});
 
 	const disc = raw.disc && !Number.isNaN(+raw.disc) ? +raw.disc : undefined;
-	song.metadata[Song_MetadataTag.DISC] = new Song_MetadataValue({
+	song.metadata[Song_MetadataTag.DISC] = create(Song_MetadataValueSchema, {
 		value: {
 			case: "intValue",
-			value: new Int32Value({ value: disc }),
+			value: create(Int32ValueSchema, { value: disc }),
 		},
 	});
 
 	const date = raw.date ? raw.date : "";
-	song.metadata[Song_MetadataTag.DATE] = new Song_MetadataValue({
+	song.metadata[Song_MetadataTag.DATE] = create(Song_MetadataValueSchema, {
 		value: {
 			case: "stringValue",
-			value: new StringValue({ value: date }),
+			value: create(StringValueSchema, { value: date }),
 		},
 	});
 
 	const duration =
 		raw.duration && !Number.isNaN(+raw.duration) ? +raw.duration : undefined;
-	song.metadata[Song_MetadataTag.DURATION] = new Song_MetadataValue({
+	song.metadata[Song_MetadataTag.DURATION] = create(Song_MetadataValueSchema, {
 		value: {
 			case: "floatValue",
-			value: new FloatValue({ value: duration }),
+			value: create(FloatValueSchema, { value: duration }),
 		},
 	});
 
 	const format = raw.format ? parseAudioFormat(raw.format) : undefined;
-	song.metadata[Song_MetadataTag.FORMAT] = new Song_MetadataValue({
+	song.metadata[Song_MetadataTag.FORMAT] = create(Song_MetadataValueSchema, {
 		value: {
 			case: "format",
-			value: format !== undefined ? format : new AudioFormat(),
+			value: format !== undefined ? format : create(AudioFormatSchema),
 		},
 	});
 
 	const lastModified = raw.lastmodified ? raw.lastmodified : undefined;
 	try {
 		const updatedAt = dayjs(lastModified);
-		song.metadata[Song_MetadataTag.UPDATED_AT] = new Song_MetadataValue({
-			value: {
-				case: "timestamp",
-				value: Timestamp.fromDate(updatedAt.toDate()),
+		song.metadata[Song_MetadataTag.UPDATED_AT] = create(
+			Song_MetadataValueSchema,
+			{
+				value: {
+					case: "timestamp",
+					value: timestampFromDate(updatedAt.toDate()),
+				},
 			},
-		});
+		);
 	} catch (_) {
-		song.metadata[Song_MetadataTag.UPDATED_AT] = new Song_MetadataValue({
-			value: {
-				case: "timestamp",
-				value: new Timestamp(undefined),
+		song.metadata[Song_MetadataTag.UPDATED_AT] = create(
+			Song_MetadataValueSchema,
+			{
+				value: {
+					case: "timestamp",
+					value: create(TimestampSchema, undefined),
+				},
 			},
-		});
+		);
 	}
 
 	const id = raw.id && !Number.isNaN(+raw.id) ? +raw.id : undefined;
-	song.metadata[Song_MetadataTag.ID] = new Song_MetadataValue({
+	song.metadata[Song_MetadataTag.ID] = create(Song_MetadataValueSchema, {
 		value: {
 			case: "intValue",
-			value: new Int32Value({ value: id }),
+			value: create(Int32ValueSchema, { value: id }),
 		},
 	});
 
 	const position = raw.pos && !Number.isNaN(+raw.pos) ? +raw.pos : undefined;
-	song.metadata[Song_MetadataTag.POSITION] = new Song_MetadataValue({
+	song.metadata[Song_MetadataTag.POSITION] = create(Song_MetadataValueSchema, {
 		value: {
 			case: "intValue",
-			value: new Int32Value({ value: position }),
+			value: create(Int32ValueSchema, { value: position }),
 		},
 	});
 
 	const comment = raw.comment ? raw.comment : "";
-	song.metadata[Song_MetadataTag.COMMENT] = new Song_MetadataValue({
+	song.metadata[Song_MetadataTag.COMMENT] = create(Song_MetadataValueSchema, {
 		value: {
 			case: "stringValue",
-			value: new StringValue({ value: comment }),
+			value: create(StringValueSchema, { value: comment }),
 		},
 	});
 
 	const label = raw.label ? raw.label : "";
-	song.metadata[Song_MetadataTag.LABEL] = new Song_MetadataValue({
+	song.metadata[Song_MetadataTag.LABEL] = create(Song_MetadataValueSchema, {
 		value: {
 			case: "stringValue",
-			value: new StringValue({ value: label }),
+			value: create(StringValueSchema, { value: label }),
 		},
 	});
 
@@ -197,7 +219,7 @@ function parseAudioFormat(v: string): AudioFormat | undefined {
 	if (elems.length === 0) {
 		return undefined;
 	}
-	const format = new AudioFormat();
+	const format = create(AudioFormatSchema);
 	if (elems[0].includes("dsd")) {
 		format.encoding = AudioFormat_Encoding.DSD;
 		const sr = elems[0].replace("dsd", "");
@@ -229,7 +251,7 @@ export function parseMpdStats(
 	version: string,
 	stats?: Record<string, unknown>,
 ): MpdStats | undefined {
-	const mpdStats = new MpdStats();
+	const mpdStats = create(MpdStatsSchema);
 
 	const raw = normalizeRecord(stats);
 
@@ -263,7 +285,7 @@ export function parseMpdStats(
 
 	const lastUpdated =
 		raw.dbupdate && !Number.isNaN(+raw.dbupdate) ? +raw.dbupdate : 0;
-	mpdStats.lastUpdated = Timestamp.fromDate(new Date(lastUpdated * 1000));
+	mpdStats.lastUpdated = timestampFromDate(new Date(lastUpdated * 1000));
 
 	return mpdStats;
 }
@@ -271,7 +293,7 @@ export function parseMpdStats(
 export function parseMpdOutputDevice(
 	v?: Record<string, unknown>,
 ): MpdOutputDevice | undefined {
-	const mpdOutput = new MpdOutputDevice();
+	const mpdOutput = create(MpdOutputDeviceSchema);
 
 	const raw = normalizeRecord(v);
 
@@ -301,7 +323,7 @@ export function parseMpdOutputDevice(
 export function parsePlaylist(
 	v?: Record<string, unknown>,
 ): Playlist | undefined {
-	const playlist = new Playlist();
+	const playlist = create(PlaylistSchema);
 
 	const raw = normalizeRecord(v);
 
@@ -318,7 +340,7 @@ export function parsePlaylist(
 	const lastModified = raw.lastmodified ? raw.lastmodified : undefined;
 	try {
 		const updatedAt = dayjs(lastModified);
-		playlist.updatedAt = Timestamp.fromDate(updatedAt.toDate());
+		playlist.updatedAt = timestampFromDate(updatedAt.toDate());
 	} catch (e) {
 		console.error(`Failed to parse last-modified: ${e}`);
 	}
@@ -327,7 +349,7 @@ export function parsePlaylist(
 }
 
 export function parseFolder(v?: Record<string, unknown>): Folder | undefined {
-	const folder = new Folder();
+	const folder = create(FolderSchema);
 
 	const raw = normalizeRecord(v);
 
@@ -346,7 +368,7 @@ export function parseFolder(v?: Record<string, unknown>): Folder | undefined {
 export function parseMpdPlayerVolume(
 	v?: Record<string, unknown>,
 ): MpdPlayerVolume | undefined {
-	const mpdVolume = new MpdPlayerVolume();
+	const mpdVolume = create(MpdPlayerVolumeSchema);
 
 	const raw = normalizeRecord(v);
 
@@ -364,7 +386,7 @@ export function parseMpdPlayerVolume(
 export function parseMpdPlayerStatus(
 	v?: Record<string, unknown>,
 ): MpdPlayerStatus | undefined {
-	const mpdStatus = new MpdPlayerStatus();
+	const mpdStatus = create(MpdPlayerStatusSchema);
 
 	const raw = normalizeRecord(v);
 	if (raw === undefined) {

@@ -1,3 +1,4 @@
+import { clone } from "@bufbuild/protobuf";
 import {
 	Button,
 	Divider,
@@ -7,7 +8,10 @@ import {
 	TextInput,
 	Title,
 } from "@mantine/core";
-import type { Plugin } from "@sola_mpd/domain/src/models/plugin/plugin_pb.js";
+import {
+	type Plugin,
+	PluginStateSchema,
+} from "@sola_mpd/domain/src/models/plugin/plugin_pb.js";
 import { useCallback, useState } from "react";
 import { useNotification } from "../../../lib/mantine/hooks/useNotification";
 import { UpdateMode } from "../../../types/stateTypes";
@@ -48,7 +52,7 @@ export function PluginAddModalRegister(props: PluginAddModalRegisterProps) {
 			pluginToAdd.pluginParameters[key] = value;
 		});
 
-		const newPluginState = pluginState.clone();
+		const newPluginState = clone(PluginStateSchema, pluginState);
 		newPluginState.plugins.push(pluginToAdd);
 		updatePluginState(
 			newPluginState,

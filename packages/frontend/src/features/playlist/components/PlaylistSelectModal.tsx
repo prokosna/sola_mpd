@@ -1,3 +1,4 @@
+import { create } from "@bufbuild/protobuf";
 import {
 	Button,
 	Checkbox,
@@ -7,7 +8,10 @@ import {
 	TextInput,
 } from "@mantine/core";
 import { useForm } from "@mantine/form";
-import { Playlist } from "@sola_mpd/domain/src/models/playlist_pb.js";
+import {
+	type Playlist,
+	PlaylistSchema,
+} from "@sola_mpd/domain/src/models/playlist_pb.js";
 import { useCallback } from "react";
 import { useAddPlaylist } from "../hooks/useAddPlaylist";
 import { usePlaylistsState } from "../states/playlistState";
@@ -60,7 +64,7 @@ export function PlaylistSelectModal(props: PlaylistSelectModalProps) {
 
 	const handleSubmit = useCallback(
 		async (values: typeof form.values) => {
-			const playlist = new Playlist({
+			const playlist = create(PlaylistSchema, {
 				name: values.playlistName,
 			});
 			if (values.isNewPlaylist) {

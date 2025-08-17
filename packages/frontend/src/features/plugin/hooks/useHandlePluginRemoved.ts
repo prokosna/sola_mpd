@@ -1,6 +1,9 @@
-import type { Plugin } from "@sola_mpd/domain/src/models/plugin/plugin_pb.js";
+import { clone } from "@bufbuild/protobuf";
+import {
+	type Plugin,
+	PluginStateSchema,
+} from "@sola_mpd/domain/src/models/plugin/plugin_pb.js";
 import { useCallback } from "react";
-
 import { useNotification } from "../../../lib/mantine/hooks/useNotification";
 import { UpdateMode } from "../../../types/stateTypes";
 import { usePluginState, useUpdatePluginState } from "../states/pluginState";
@@ -27,7 +30,7 @@ export function useHandlePluginRemoved(plugin: Plugin) {
 		if (index < 0) {
 			return;
 		}
-		const newState = pluginState.clone();
+		const newState = clone(PluginStateSchema, pluginState);
 		newState.plugins.splice(index, 1);
 		await updatePluginState(
 			newState,

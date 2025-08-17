@@ -1,9 +1,11 @@
+import { create } from "@bufbuild/protobuf";
 import {
-	FloatValue,
-	Int32Value,
-	StringValue,
-	Timestamp,
-} from "@bufbuild/protobuf";
+	FloatValueSchema,
+	Int32ValueSchema,
+	StringValueSchema,
+	timestampDate,
+	timestampFromDate,
+} from "@bufbuild/protobuf/wkt";
 import dayjs from "dayjs";
 
 import {
@@ -11,7 +13,8 @@ import {
 	AudioFormat_Encoding,
 	type Song,
 	Song_MetadataTag,
-	Song_MetadataValue,
+	type Song_MetadataValue,
+	Song_MetadataValueSchema,
 } from "../models/song_pb.js";
 
 /**
@@ -47,7 +50,7 @@ export function getSongMetadataAsNumber(
 		case "intValue":
 			return value.value.value.value;
 		case "timestamp":
-			return value.value.value.toDate().getTime();
+			return timestampDate(value.value.value).getTime();
 		case "format":
 			return value.value.value.samplingRate;
 	}
@@ -70,10 +73,10 @@ export function convertStringToSongMetadataValue(
 	value: string,
 ): Song_MetadataValue {
 	if (value === "") {
-		return new Song_MetadataValue({
+		return create(Song_MetadataValueSchema, {
 			value: {
 				case: "stringValue",
-				value: new StringValue({ value: "" }),
+				value: create(StringValueSchema, { value: "" }),
 			},
 		});
 	}
@@ -81,10 +84,10 @@ export function convertStringToSongMetadataValue(
 	// Date
 	const tryDate = dayjs(value);
 	if (tryDate.isValid() && value.includes("-")) {
-		return new Song_MetadataValue({
+		return create(Song_MetadataValueSchema, {
 			value: {
 				case: "timestamp",
-				value: Timestamp.fromDate(tryDate.toDate()),
+				value: timestampFromDate(tryDate.toDate()),
 			},
 		});
 	}
@@ -93,26 +96,26 @@ export function convertStringToSongMetadataValue(
 	const tryNumber = Number(value);
 	if (!Number.isNaN(tryNumber)) {
 		if (tryNumber % 1 === 0) {
-			return new Song_MetadataValue({
+			return create(Song_MetadataValueSchema, {
 				value: {
 					case: "intValue",
-					value: new Int32Value({ value: tryNumber }),
+					value: create(Int32ValueSchema, { value: tryNumber }),
 				},
 			});
 		}
-		return new Song_MetadataValue({
+		return create(Song_MetadataValueSchema, {
 			value: {
 				case: "floatValue",
-				value: new FloatValue({ value: tryNumber }),
+				value: create(FloatValueSchema, { value: tryNumber }),
 			},
 		});
 	}
 
 	// string
-	return new Song_MetadataValue({
+	return create(Song_MetadataValueSchema, {
 		value: {
 			case: "stringValue",
-			value: new StringValue({ value }),
+			value: create(StringValueSchema, { value }),
 		},
 	});
 }
@@ -138,7 +141,7 @@ export function convertSongMetadataValueToString(
 		case "intValue":
 			return String(value.value.value.value);
 		case "timestamp":
-			return dayjs(value.value.value.toDate()).format("YYYY-MM-DD");
+			return dayjs(timestampDate(value.value.value)).format("YYYY-MM-DD");
 		case "stringValue":
 			return value.value.value.value || "";
 		case "format":
@@ -208,8 +211,8 @@ export function compareSongsByMetadataValue(
 		return compareNumbers(valueA.value.value.value, valueB.value.value.value);
 	}
 	if (valueA.value.case === "timestamp" && valueB.value.case === "timestamp") {
-		const dateA = dayjs(valueA.value.value.toDate()).format("YYYY-MM-DD");
-		const dateB = dayjs(valueB.value.value.toDate()).format("YYYY-MM-DD");
+		const dateA = dayjs(timestampDate(valueA.value.value)).format("YYYY-MM-DD");
+		const dateB = dayjs(timestampDate(valueB.value.value)).format("YYYY-MM-DD");
 		return collator.compare(dateA, dateB);
 	}
 	if (valueA.value.case === "format" && valueB.value.case === "format") {

@@ -1,3 +1,4 @@
+import { create, fromBinary, toBinary } from "@bufbuild/protobuf";
 import {
 	SIO_PLUGIN_EXECUTE,
 	SIO_PLUGIN_REGISTER,
@@ -8,12 +9,14 @@ import type {
 	PluginRegisterRequest,
 	PluginRegisterResponse,
 } from "@sola_mpd/domain/src/models/plugin/plugin_pb.js";
+
 import {
-	PluginExecuteRequestWrapper,
-	PluginExecuteResponseWrapper,
-	PluginRegisterRequestWrapper,
-	PluginRegisterResponseWrapper,
+	PluginExecuteRequestWrapperSchema,
+	PluginExecuteResponseWrapperSchema,
+	PluginRegisterRequestWrapperSchema,
+	PluginRegisterResponseWrapperSchema,
 } from "@sola_mpd/domain/src/models/plugin/plugin_wrapper_pb.js";
+
 import { type Observable, Subject } from "rxjs";
 
 import type { PluginService } from "../../features/plugin";
@@ -28,12 +31,12 @@ export class PluginServiceImplSocketIo implements PluginService {
 	register = async (
 		req: PluginRegisterRequest,
 	): Promise<PluginRegisterResponse> => {
-		const reqWrapper = new PluginRegisterRequestWrapper({
+		const reqWrapper = create(PluginRegisterRequestWrapperSchema, {
 			request: req,
 		});
-		const bytes = reqWrapper.toBinary();
+		const bytes = toBinary(PluginRegisterRequestWrapperSchema, reqWrapper);
 		const data = await this.client.emit(SIO_PLUGIN_REGISTER, bytes);
-		const resp = PluginRegisterResponseWrapper.fromBinary(data);
+		const resp = fromBinary(PluginRegisterResponseWrapperSchema, data);
 		switch (resp.result.case) {
 			case "response":
 				return resp.result.value;
@@ -45,17 +48,17 @@ export class PluginServiceImplSocketIo implements PluginService {
 	};
 
 	execute = (req: PluginExecuteRequest): Observable<PluginExecuteResponse> => {
-		const reqWrapper = new PluginExecuteRequestWrapper({
+		const reqWrapper = create(PluginExecuteRequestWrapperSchema, {
 			request: req,
 			callbackEvent: `${Date.now()}_${Math.random()}`,
 		});
-		const bytes = reqWrapper.toBinary();
+		const bytes = toBinary(PluginExecuteRequestWrapperSchema, reqWrapper);
 
 		const subject = new Subject<PluginExecuteResponse>();
 
 		this.client.on(reqWrapper.callbackEvent, (data: Uint8Array) => {
 			try {
-				const resp = PluginExecuteResponseWrapper.fromBinary(data);
+				const resp = fromBinary(PluginExecuteResponseWrapperSchema, data);
 				switch (resp.result.case) {
 					case "response":
 						subject.next(resp.result.value);

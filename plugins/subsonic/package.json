@@ -21,9 +21,9 @@
 		"tsconfig-paths": "^4.2.0"
 	},
 	"dependencies": {
-		"@connectrpc/connect": "^1.6.1",
-		"@connectrpc/connect-express": "^1.6.1",
-		"@connectrpc/connect-node": "^1.6.1",
+		"@connectrpc/connect": "^2.0.4",
+		"@connectrpc/connect-express": "^2.0.4",
+		"@connectrpc/connect-node": "^2.0.4",
 		"@sola_mpd/domain": "file:../../packages/domain",
 		"express": "^4.21.2",
 		"lru-cache": "^11.0.2",

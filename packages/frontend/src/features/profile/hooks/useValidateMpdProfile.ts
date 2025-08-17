@@ -1,5 +1,6 @@
-import { MpdRequest } from "@sola_mpd/domain/src/models/mpd/mpd_command_pb.js";
-import { MpdProfile } from "@sola_mpd/domain/src/models/mpd/mpd_profile_pb.js";
+import { create } from "@bufbuild/protobuf";
+import { MpdRequestSchema } from "@sola_mpd/domain/src/models/mpd/mpd_command_pb.js";
+import { MpdProfileSchema } from "@sola_mpd/domain/src/models/mpd/mpd_profile_pb.js";
 import { compareVersions } from "compare-versions";
 import { useCallback } from "react";
 
@@ -41,8 +42,8 @@ export function useValidateMpdProfile() {
 
 			try {
 				const res = await mpdClient.command(
-					new MpdRequest({
-						profile: new MpdProfile({
+					create(MpdRequestSchema, {
+						profile: create(MpdProfileSchema, {
 							name: input.name,
 							host: input.host,
 							port: input.port,

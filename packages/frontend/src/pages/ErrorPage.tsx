@@ -1,4 +1,4 @@
-import { useId } from "react";
+import { Box, Title } from "@mantine/core";
 import { useRouteError } from "react-router";
 
 export function ErrorPage() {
@@ -6,12 +6,12 @@ export function ErrorPage() {
 	console.error(error);
 
 	return (
-		<div id={useId()}>
-			<h1>Oops!</h1>
+		<Box p={12}>
+			<Title>Oops!</Title>
 			<p>Something went wrong. Please try reloading the page.</p>
 			<p>
-				<i>{error.message}</i>
+				<i>Error: {error.message}</i>
 			</p>
-		</div>
+		</Box>
 	);
 }

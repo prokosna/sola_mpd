@@ -1,14 +1,15 @@
-import type {
-	MpdProfile,
-	MpdProfileState,
+import { clone, toJsonString } from "@bufbuild/protobuf";
+import {
+	type MpdProfile,
+	MpdProfileSchema,
+	type MpdProfileState,
+	MpdProfileStateSchema,
 } from "@sola_mpd/domain/src/models/mpd/mpd_profile_pb.js";
 import { atom, useAtomValue, useSetAtom } from "jotai";
 import { atomWithDefault, useResetAtom } from "jotai/utils";
 import { useCallback } from "react";
-
 import { atomWithSync } from "../../../lib/jotai/atomWithSync";
 import { UpdateMode } from "../../../types/stateTypes";
-
 import { mpdProfileStateRepositoryAtom } from "./mpdProfileStateRepository";
 
 /**
@@ -113,10 +114,10 @@ export function useUpdateCurrentMpdProfile() {
 		async (mpdProfile: MpdProfile, mode: UpdateMode) => {
 			if (!mpdProfileState.profiles.includes(mpdProfile)) {
 				throw Error(
-					`Invalid profile state: ${mpdProfile.toJsonString()} is not in profiles`,
+					`Invalid profile state: ${toJsonString(MpdProfileSchema, mpdProfile)} is not in profiles`,
 				);
 			}
-			const newMpdProfileState = mpdProfileState.clone();
+			const newMpdProfileState = clone(MpdProfileStateSchema, mpdProfileState);
 			newMpdProfileState.currentProfile = mpdProfile;
 			if (mode & UpdateMode.LOCAL_STATE) {
 				setMpdProfileState(Promise.resolve(newMpdProfileState));

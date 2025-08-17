@@ -1,5 +1,6 @@
+import { create } from "@bufbuild/protobuf";
 import { Button } from "@mantine/core";
-import { MpdRequest } from "@sola_mpd/domain/src/models/mpd/mpd_command_pb.js";
+import { MpdRequestSchema } from "@sola_mpd/domain/src/models/mpd/mpd_command_pb.js";
 import { useCallback } from "react";
 import { useNotification } from "../../../lib/mantine/hooks/useNotification";
 import { useMpdClientState } from "../../mpd";
@@ -26,7 +27,7 @@ export function CardStatsDatabaseButton() {
 			return;
 		}
 		await mpdClient.command(
-			new MpdRequest({
+			create(MpdRequestSchema, {
 				profile,
 				command: {
 					case: "update",

@@ -1,5 +1,3 @@
-import type { Plugin } from "@sola_mpd/domain/src/models/plugin/plugin_pb.js";
-
 import {
 	Badge,
 	Button,
@@ -10,6 +8,7 @@ import {
 	Text,
 	Title,
 } from "@mantine/core";
+import type { Plugin } from "@sola_mpd/domain/src/models/plugin/plugin_pb.js";
 import { useHandlePluginRemoved } from "../hooks/useHandlePluginRemoved";
 
 export type PluginListInfoCardProps = {
@@ -28,18 +27,18 @@ export function PluginListInfoCard(props: PluginListInfoCardProps) {
 	const handlePluginRemoved = useHandlePluginRemoved(plugin);
 
 	return (
-		<Card w={300} h={350} withBorder>
+		<Card w={320} h={350} withBorder>
 			<Stack w="100%" h="100%">
 				<Group>
 					<Title size="h2">
 						{plugin.info?.name} {plugin.info?.version}
 					</Title>
 					{plugin.isAvailable ? (
-						<Badge size="sm" variant="outline" color="green">
+						<Badge size="xs" variant="outline" color="green">
 							Avaialble
 						</Badge>
 					) : (
-						<Badge size="sm" variant="outline" color="red">
+						<Badge size="xs" variant="outline" color="red">
 							Not available
 						</Badge>
 					)}

@@ -1,8 +1,11 @@
+import { clone } from "@bufbuild/protobuf";
 import { Plugin_PluginType } from "@sola_mpd/domain/src/models/plugin/plugin_pb.js";
 import type { Song } from "@sola_mpd/domain/src/models/song_pb.js";
-import type { SongTableColumn } from "@sola_mpd/domain/src/models/song_table_pb.js";
+import {
+	type SongTableColumn,
+	SongTableStateSchema,
+} from "@sola_mpd/domain/src/models/song_table_pb.js";
 import { type MutableRefObject, useCallback } from "react";
-
 import { COMPONENT_ID_ALL_SONGS } from "../../../const/component";
 import { useNotification } from "../../../lib/mantine/hooks/useNotification";
 import { UpdateMode } from "../../../types/stateTypes";
@@ -11,13 +14,13 @@ import { useMpdClientState } from "../../mpd";
 import { usePluginContextMenuItems } from "../../plugin";
 import { useCurrentMpdProfileState } from "../../profile";
 import {
-	type SongTableContextMenuItemParams,
-	SongTableKeyType,
-	type SongTableProps,
 	getSongTableContextMenuAdd,
 	getSongTableContextMenuAddToPlaylist,
 	getSongTableContextMenuEditColumns,
 	getSongTableContextMenuReplace,
+	type SongTableContextMenuItemParams,
+	SongTableKeyType,
+	type SongTableProps,
 	useHandleSongDoubleClick,
 	useSetSelectedSongsState,
 	useSongTableState,
@@ -114,7 +117,7 @@ export function useAllSongsSongTableProps(
 			if (songTableState === undefined) {
 				return;
 			}
-			const newSongTableState = songTableState.clone();
+			const newSongTableState = clone(SongTableStateSchema, songTableState);
 			newSongTableState.columns = updatedColumns;
 			await updateSongTableState(newSongTableState, UpdateMode.PERSIST);
 		},

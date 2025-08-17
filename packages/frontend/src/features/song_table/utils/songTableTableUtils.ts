@@ -1,11 +1,14 @@
+import { clone } from "@bufbuild/protobuf";
+import { timestampDate } from "@bufbuild/protobuf/wkt";
 import {
 	type Song,
 	Song_MetadataTag,
 	type Song_MetadataValue,
 } from "@sola_mpd/domain/src/models/song_pb.js";
-import type {
-	SongTableColumn,
-	SongTableState,
+import {
+	type SongTableColumn,
+	type SongTableState,
+	SongTableStateSchema,
 } from "@sola_mpd/domain/src/models/song_table_pb.js";
 import {
 	compareSongsByMetadataValue,
@@ -14,14 +17,12 @@ import {
 } from "@sola_mpd/domain/src/utils/songUtils.js";
 import type { GridApi, IRowNode } from "ag-grid-community";
 import dayjs from "dayjs";
-
 import {
 	type SongsInTable,
 	type SongTableContextMenuItemParams,
 	SongTableKeyType,
 	type SongTableRowCompact,
 } from "../types/songTableTypes";
-
 import { copySortingAttributesToNewColumns } from "./songTableColumnUtils";
 
 /**
@@ -208,7 +209,7 @@ export function convertSongMetadataForGridRowValue(
 			case "intValue":
 				return value.value.value.value;
 			case "timestamp":
-				return dayjs(value.value.value.toDate()).format("YYYY-MM-DD");
+				return dayjs(timestampDate(value.value.value)).format("YYYY-MM-DD");
 			case "format":
 				return convertAudioFormatToString(value.value.value);
 		}
@@ -339,7 +340,7 @@ export function createNewSongTableStateFromColumns(
 	baseSongTableState: SongTableState,
 	isSortingEnabled: boolean,
 ): SongTableState {
-	const newState = baseSongTableState.clone();
+	const newState = clone(SongTableStateSchema, baseSongTableState);
 	if (isSortingEnabled) {
 		newState.columns = columns;
 	} else {

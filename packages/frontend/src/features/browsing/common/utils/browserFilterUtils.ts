@@ -1,14 +1,20 @@
-import { StringValue } from "@bufbuild/protobuf";
-import { BrowserFilter } from "@sola_mpd/domain/src/models/browser_pb.js";
+import { create, toJsonString } from "@bufbuild/protobuf";
+import { StringValueSchema } from "@bufbuild/protobuf/wkt";
+import type { BrowserFilter } from "@sola_mpd/domain/src/models/browser_pb.js";
+import { BrowserFilterSchema } from "@sola_mpd/domain/src/models/browser_pb.js";
 import {
-	FilterCondition,
+	type FilterCondition,
 	FilterCondition_Operator,
+	FilterConditionSchema,
 } from "@sola_mpd/domain/src/models/filter_pb.js";
-import { MpdRequest } from "@sola_mpd/domain/src/models/mpd/mpd_command_pb.js";
+import {
+	MpdRequestSchema,
+	MpdResponseSchema,
+} from "@sola_mpd/domain/src/models/mpd/mpd_command_pb.js";
 import type { MpdProfile } from "@sola_mpd/domain/src/models/mpd/mpd_profile_pb.js";
 import {
 	Song_MetadataTag,
-	Song_MetadataValue,
+	Song_MetadataValueSchema,
 } from "@sola_mpd/domain/src/models/song_pb.js";
 import { escapeRegexString } from "@sola_mpd/domain/src/utils/mpdUtils.js";
 import { convertSongMetadataValueToString } from "@sola_mpd/domain/src/utils/songUtils.js";
@@ -47,7 +53,7 @@ export function convertBrowserFilterToCondition(
 	}
 
 	if (browserFilter.selectedValues.length === 1) {
-		return new FilterCondition({
+		return create(FilterConditionSchema, {
 			tag: browserFilter.tag,
 			value: browserFilter.selectedValues[0],
 			operator: FilterCondition_Operator.EQUAL,
@@ -57,12 +63,12 @@ export function convertBrowserFilterToCondition(
 	const regexValue = `^(${browserFilter.selectedValues
 		.map((value) => escapeRegexString(convertSongMetadataValueToString(value)))
 		.join("|")})$`;
-	return new FilterCondition({
+	return create(FilterConditionSchema, {
 		tag: browserFilter.tag,
-		value: new Song_MetadataValue({
+		value: create(Song_MetadataValueSchema, {
 			value: {
 				case: "stringValue",
-				value: new StringValue({ value: regexValue }),
+				value: create(StringValueSchema, { value: regexValue }),
 			},
 		}),
 		operator: FilterCondition_Operator.REGEX,
@@ -156,7 +162,7 @@ export function addBrowserFilterNext(
 		}
 	}
 	newFilters.push(
-		new BrowserFilter({
+		create(BrowserFilterSchema, {
 			tag: next,
 			selectedOrder: -1,
 			selectedValues: [],
@@ -210,16 +216,15 @@ export function selectBrowserFilterValues(
 		);
 	}
 	const newFilters = [...currentFilters];
-	newFilters[index].selectedValues = selectedValues.map(
-		(value) =>
-			new Song_MetadataValue({
+	newFilters[index].selectedValues = selectedValues.map((value) =>
+		create(Song_MetadataValueSchema, {
+			value: {
+				case: "stringValue",
 				value: {
-					case: "stringValue",
-					value: {
-						value,
-					},
+					value,
 				},
-			}),
+			},
+		}),
 	);
 	return normalizeBrowserFilters(newFilters);
 }
@@ -286,7 +291,7 @@ export async function fetchBrowserFilterValues(
 					}
 				}
 
-				const req = new MpdRequest({
+				const req = create(MpdRequestSchema, {
 					profile,
 					command: {
 						case: "list",
@@ -298,7 +303,9 @@ export async function fetchBrowserFilterValues(
 				});
 				const res = await mpdClient.command(req);
 				if (res.command.case !== "list") {
-					throw Error(`Invalid MPD response: ${res.toJsonString()}`);
+					throw Error(
+						`Invalid MPD response: ${toJsonString(MpdResponseSchema, res)}`,
+					);
 				}
 				const values = res.command.value.values;
 				const sortedValues = values.sort((a, b) => collator.compare(a, b));

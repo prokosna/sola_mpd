@@ -1,4 +1,8 @@
-import { MpdRequest } from "@sola_mpd/domain/src/models/mpd/mpd_command_pb.js";
+import { create, toJsonString } from "@bufbuild/protobuf";
+import {
+	MpdRequestSchema,
+	MpdResponseSchema,
+} from "@sola_mpd/domain/src/models/mpd/mpd_command_pb.js";
 import type { MpdProfile } from "@sola_mpd/domain/src/models/mpd/mpd_profile_pb.js";
 import type { Playlist } from "@sola_mpd/domain/src/models/playlist_pb.js";
 import type { Song } from "@sola_mpd/domain/src/models/song_pb.js";
@@ -21,7 +25,7 @@ export async function addPlaylist(
 	playlist: Playlist,
 ): Promise<void> {
 	await mpdClient.commandBulk([
-		new MpdRequest({
+		create(MpdRequestSchema, {
 			profile,
 			command: {
 				case: "save",
@@ -30,7 +34,7 @@ export async function addPlaylist(
 				},
 			},
 		}),
-		new MpdRequest({
+		create(MpdRequestSchema, {
 			profile,
 			command: {
 				case: "playlistclear",
@@ -58,7 +62,7 @@ export async function fetchPlaylists(
 	profile: MpdProfile,
 ): Promise<Playlist[]> {
 	const res = await mpdClient.command(
-		new MpdRequest({
+		create(MpdRequestSchema, {
 			profile,
 			command: {
 				case: "listplaylists",
@@ -67,7 +71,9 @@ export async function fetchPlaylists(
 		}),
 	);
 	if (res.command.case !== "listplaylists") {
-		throw Error(`Invalid MPD response: ${res.toJsonString()}`);
+		throw Error(
+			`Invalid MPD response: ${toJsonString(MpdResponseSchema, res)}`,
+		);
 	}
 	return res.command.value.playlists;
 }
@@ -89,7 +95,7 @@ export async function fetchPlaylistSongs(
 	playlist: Playlist,
 ): Promise<Song[]> {
 	const res = await mpdClient.command(
-		new MpdRequest({
+		create(MpdRequestSchema, {
 			profile,
 			command: {
 				case: "listplaylistinfo",
@@ -100,7 +106,9 @@ export async function fetchPlaylistSongs(
 		}),
 	);
 	if (res.command.case !== "listplaylistinfo") {
-		throw Error(`Invalid MPD response: ${res.toJsonString()}`);
+		throw Error(
+			`Invalid MPD response: ${toJsonString(MpdResponseSchema, res)}`,
+		);
 	}
 	return res.command.value.songs;
 }

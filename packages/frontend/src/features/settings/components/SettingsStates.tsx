@@ -1,10 +1,28 @@
-import { BrowserState } from "@sola_mpd/domain/src/models/browser_pb.js";
-import { MpdProfileState } from "@sola_mpd/domain/src/models/mpd/mpd_profile_pb.js";
-import { PluginState } from "@sola_mpd/domain/src/models/plugin/plugin_pb.js";
-import { RecentlyAddedState } from "@sola_mpd/domain/src/models/recently_added_pb.js";
-import { SavedSearches } from "@sola_mpd/domain/src/models/search_pb.js";
-import { SongTableState } from "@sola_mpd/domain/src/models/song_table_pb.js";
-
+import { Button, Stack, Table, Text, Title } from "@mantine/core";
+import {
+	type BrowserState,
+	BrowserStateSchema,
+} from "@sola_mpd/domain/src/models/browser_pb.js";
+import {
+	type MpdProfileState,
+	MpdProfileStateSchema,
+} from "@sola_mpd/domain/src/models/mpd/mpd_profile_pb.js";
+import {
+	type PluginState,
+	PluginStateSchema,
+} from "@sola_mpd/domain/src/models/plugin/plugin_pb.js";
+import {
+	type RecentlyAddedState,
+	RecentlyAddedStateSchema,
+} from "@sola_mpd/domain/src/models/recently_added_pb.js";
+import {
+	type SavedSearches,
+	SavedSearchesSchema,
+} from "@sola_mpd/domain/src/models/search_pb.js";
+import {
+	type SongTableState,
+	SongTableStateSchema,
+} from "@sola_mpd/domain/src/models/song_table_pb.js";
 import { UpdateMode } from "../../../types/stateTypes";
 import {
 	useRecentlyAddedState,
@@ -23,8 +41,6 @@ import {
 } from "../../search";
 import { useSongTableState, useUpdateSongTableState } from "../../song_table";
 import { useSettingsStateEditorProps } from "../hooks/useSettingsStateEditorProps";
-
-import { Button, Stack, Table, Text, Title } from "@mantine/core";
 import { SettingsStatesEditor } from "./SettingsStatesEditor";
 
 /**
@@ -38,6 +54,7 @@ export function SettingsStates() {
 	const updateMpdProfileState = useUpdateMpdProfileState();
 	const [onOpenProfileState, profileStateProps] =
 		useSettingsStateEditorProps<MpdProfileState>(
+			MpdProfileStateSchema,
 			mpdProfileState,
 			async (newState: MpdProfileState) => {
 				updateMpdProfileState(
@@ -45,13 +62,13 @@ export function SettingsStates() {
 					UpdateMode.LOCAL_STATE | UpdateMode.PERSIST,
 				);
 			},
-			MpdProfileState.fromJson,
 		);
 
 	const songTableState = useSongTableState();
 	const updateSongTableState = useUpdateSongTableState();
 	const [onOpenSongTableState, songTableStateProps] =
 		useSettingsStateEditorProps<SongTableState>(
+			SongTableStateSchema,
 			songTableState,
 			async (newState: SongTableState) => {
 				updateSongTableState(
@@ -59,13 +76,13 @@ export function SettingsStates() {
 					UpdateMode.LOCAL_STATE | UpdateMode.PERSIST,
 				);
 			},
-			SongTableState.fromJson,
 		);
 
 	const browserState = useBrowserState();
 	const updateBrowserState = useUpdateBrowserState();
 	const [onOpenBrowserState, browserStateProps] =
 		useSettingsStateEditorProps<BrowserState>(
+			BrowserStateSchema,
 			browserState,
 			async (newState: BrowserState) => {
 				updateBrowserState(
@@ -73,13 +90,13 @@ export function SettingsStates() {
 					UpdateMode.LOCAL_STATE | UpdateMode.PERSIST,
 				);
 			},
-			BrowserState.fromJson,
 		);
 
 	const savedSearches = useSavedSearchesState();
 	const updateSavedSearches = useUpdateSavedSearchesState();
 	const [onOpenSavedSearches, savedSearchesProps] =
 		useSettingsStateEditorProps<SavedSearches>(
+			SavedSearchesSchema,
 			savedSearches,
 			async (savedSearches: SavedSearches) => {
 				updateSavedSearches(
@@ -87,13 +104,13 @@ export function SettingsStates() {
 					UpdateMode.LOCAL_STATE | UpdateMode.PERSIST,
 				);
 			},
-			SavedSearches.fromJson,
 		);
 
 	const pluginState = usePluginState();
 	const updatePluginState = useUpdatePluginState();
 	const [onOpenPluginState, pluginStateProps] =
 		useSettingsStateEditorProps<PluginState>(
+			PluginStateSchema,
 			pluginState,
 			async (pluginState: PluginState) => {
 				updatePluginState(
@@ -101,13 +118,13 @@ export function SettingsStates() {
 					UpdateMode.LOCAL_STATE | UpdateMode.PERSIST,
 				);
 			},
-			PluginState.fromJson,
 		);
 
 	const recentlyAddedState = useRecentlyAddedState();
 	const updateRecentlyAddedState = useUpdateRecentlyAddedState();
 	const [onOpenRecentlyAddedState, recentlyAddedStateProps] =
 		useSettingsStateEditorProps<RecentlyAddedState>(
+			RecentlyAddedStateSchema,
 			recentlyAddedState,
 			async (recentlyAddedState: RecentlyAddedState) => {
 				updateRecentlyAddedState(
@@ -115,7 +132,6 @@ export function SettingsStates() {
 					UpdateMode.LOCAL_STATE | UpdateMode.PERSIST,
 				);
 			},
-			RecentlyAddedState.fromJson,
 		);
 
 	if (

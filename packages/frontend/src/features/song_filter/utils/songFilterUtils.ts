@@ -1,3 +1,4 @@
+import { timestampDate } from "@bufbuild/protobuf/wkt";
 import {
 	type FilterCondition,
 	FilterCondition_Operator,
@@ -110,7 +111,7 @@ function convertSongMetadataValueToComparableValue(
 			songMetadataValue = raw.value.value;
 			break;
 		case "timestamp":
-			songMetadataValue = raw.value.toDate().getTime();
+			songMetadataValue = timestampDate(raw.value).getTime();
 			break;
 	}
 	return songMetadataValue;
@@ -145,7 +146,7 @@ function convertFilterConditionToComparableValue(
 			conditionValue = condition.value.value.value.value;
 			break;
 		case "timestamp":
-			conditionValue = condition.value.value.value.toDate().getTime();
+			conditionValue = timestampDate(condition.value.value.value).getTime();
 			break;
 	}
 	if (

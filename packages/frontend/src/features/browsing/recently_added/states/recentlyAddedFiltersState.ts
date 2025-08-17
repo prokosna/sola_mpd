@@ -1,27 +1,30 @@
-import { RecentlyAddedFilter } from "@sola_mpd/domain/src/models/recently_added_pb.js";
+import { clone, create } from "@bufbuild/protobuf";
+import type { BrowserFilter } from "@sola_mpd/domain/src/models/browser_pb.js";
+import { BrowserFilterSchema } from "@sola_mpd/domain/src/models/browser_pb.js";
+import {
+	RecentlyAddedFilterSchema,
+	RecentlyAddedStateSchema,
+} from "@sola_mpd/domain/src/models/recently_added_pb.js";
+import type { Song_MetadataTag } from "@sola_mpd/domain/src/models/song_pb.js";
 import { convertSongMetadataValueToString } from "@sola_mpd/domain/src/utils/songUtils.js";
 import { atom, useAtomValue, useSetAtom } from "jotai";
 import { atomWithDefault } from "jotai/utils";
 import { useCallback } from "react";
-
 import { ROUTE_HOME_RECENTLY_ADDED } from "../../../../const/routes";
+import { atomWithSync } from "../../../../lib/jotai/atomWithSync";
 import { UpdateMode } from "../../../../types/stateTypes";
 import { allSongsSyncAtom } from "../../../all_songs/states/allSongsState";
 import { filterStringsByGlobalFilter } from "../../../global_filter";
 import { globalFilterTokensAtom } from "../../../global_filter/states/globalFilterState";
 import { pathnameAtom } from "../../../location/states/locationState";
-import {
-	extractRecentlyAddedFilterValues,
-	sortRecentlyAddedFilterValues,
-} from "../utils/recentlyAddedFilterUtils";
-
-import { BrowserFilter } from "@sola_mpd/domain/src/models/browser_pb.js";
-import type { Song_MetadataTag } from "@sola_mpd/domain/src/models/song_pb.js";
-import { atomWithSync } from "../../../../lib/jotai/atomWithSync";
 import { mpdClientAtom } from "../../../mpd/states/mpdClient";
 import { currentMpdProfileSyncAtom } from "../../../profile/states/mpdProfileState";
 import { localeCollatorAtom } from "../../../settings/states/settingsLocale";
 import { fetchBrowserFilterValues } from "../../common/utils/browserFilterUtils";
+import {
+	extractRecentlyAddedFilterValues,
+	sortRecentlyAddedFilterValues,
+} from "../utils/recentlyAddedFilterUtils";
 import {
 	recentlyAddedStateSyncAtom,
 	useUpdateRecentlyAddedState,
@@ -43,7 +46,7 @@ const recentlyAddedFiltersSyncAtom = atom((get) => {
 export const recentlyAddedBrowserFiltersSyncAtom = atomWithDefault((get) => {
 	const recentlyAddedFilters = get(recentlyAddedFiltersSyncAtom);
 	const browserFilters = recentlyAddedFilters?.map((filter, index) => {
-		return new BrowserFilter({
+		return create(BrowserFilterSchema, {
 			tag: filter.tag,
 			selectedValues: [],
 			order: index,
@@ -202,12 +205,11 @@ export function useUpdateRecentlyAddedBrowserFiltersState() {
 				return;
 			}
 			setBrowserFiltersState(filters);
-			const newState = recentlyAddedState.clone();
-			newState.filters = filters.map(
-				(filter) =>
-					new RecentlyAddedFilter({
-						tag: filter.tag,
-					}),
+			const newState = clone(RecentlyAddedStateSchema, recentlyAddedState);
+			newState.filters = filters.map((filter) =>
+				create(RecentlyAddedFilterSchema, {
+					tag: filter.tag,
+				}),
 			);
 			await updateRecentlyAddedState(newState, UpdateMode.PERSIST);
 		},

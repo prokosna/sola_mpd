@@ -1,7 +1,8 @@
 import type { Message } from "@bufbuild/protobuf";
-import { useCallback } from "react";
+import type { GenMessage } from "@bufbuild/protobuf/codegenv2";
 
 import { useDisclosure } from "@mantine/hooks";
+import { useCallback } from "react";
 import { useNotification } from "../../../lib/mantine/hooks/useNotification";
 import type { SettingsStatesEditorProps } from "../components/SettingsStatesEditor";
 
@@ -15,9 +16,9 @@ import type { SettingsStatesEditorProps } from "../components/SettingsStatesEdit
  * @returns [Modal opener, Editor props]
  */
 export function useSettingsStateEditorProps<T extends Message>(
+	schema: GenMessage<T>,
 	state: T | undefined,
 	update: (newState: T) => Promise<void>,
-	fromJson: (json: string) => T,
 ): [() => void, SettingsStatesEditorProps<T> | undefined] {
 	const notify = useNotification();
 
@@ -42,11 +43,11 @@ export function useSettingsStateEditorProps<T extends Message>(
 	return [
 		open,
 		{
+			schema,
 			state,
 			onSave,
 			isOpen: opened,
 			onClose: close,
-			fromJson,
 		},
 	];
 }

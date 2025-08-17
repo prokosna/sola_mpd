@@ -1,21 +1,25 @@
+import { create } from "@bufbuild/protobuf";
 import { Code, ConnectError, type ConnectRouter } from "@connectrpc/connect";
+
 import {
+	Plugin_PluginType,
 	type PluginExecuteRequest,
 	type PluginExecuteResponse,
-	PluginInfo,
+	PluginInfoSchema,
 	type PluginRegisterRequest,
-	PluginRegisterResponse,
-	Plugin_PluginType,
+	type PluginRegisterResponse,
+	PluginRegisterResponseSchema,
 } from "@sola_mpd/domain/src/models/plugin/plugin_pb.js";
-import { PluginService } from "@sola_mpd/domain/src/models/plugin/plugin_service_connect.js";
+
+import { PluginService } from "@sola_mpd/domain/src/models/plugin/plugin_service_pb.js";
 
 import { syncWithSubsonic } from "./service.js";
 
 export function routes(router: ConnectRouter) {
 	router.service(PluginService, {
 		register(_req: PluginRegisterRequest): PluginRegisterResponse {
-			return new PluginRegisterResponse({
-				info: new PluginInfo({
+			return create(PluginRegisterResponseSchema, {
+				info: create(PluginInfoSchema, {
 					name: "Subsonic",
 					version: process.env.npm_package_version,
 					description: "Plugin to synchronize songs with a Subsonic playlist.",

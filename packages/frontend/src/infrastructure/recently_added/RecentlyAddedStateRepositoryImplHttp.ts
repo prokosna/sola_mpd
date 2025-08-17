@@ -1,6 +1,9 @@
+import { fromBinary, toBinary } from "@bufbuild/protobuf";
 import { API_CONFIGS_RECENTLY_ADDED_STATE } from "@sola_mpd/domain/src/const/api.js";
-import { RecentlyAddedState } from "@sola_mpd/domain/src/models/recently_added_pb.js";
-
+import {
+	type RecentlyAddedState,
+	RecentlyAddedStateSchema,
+} from "@sola_mpd/domain/src/models/recently_added_pb.js";
 import type { RecentlyAddedStateRepository } from "../../features/browsing";
 import type { HttpClient } from "../http/HttpClient";
 
@@ -15,14 +18,14 @@ export class RecentlyAddedStateRepositoryImplHttp
 	fetch = async (): Promise<RecentlyAddedState> => {
 		return this.client.get<RecentlyAddedState>(
 			API_CONFIGS_RECENTLY_ADDED_STATE,
-			RecentlyAddedState.fromBinary,
+			(bytes) => fromBinary(RecentlyAddedStateSchema, bytes),
 		);
 	};
 
 	save = async (recentlyAddedState: RecentlyAddedState): Promise<void> => {
 		return this.client.post(
 			API_CONFIGS_RECENTLY_ADDED_STATE,
-			recentlyAddedState.toBinary(),
+			toBinary(RecentlyAddedStateSchema, recentlyAddedState),
 		);
 	};
 }

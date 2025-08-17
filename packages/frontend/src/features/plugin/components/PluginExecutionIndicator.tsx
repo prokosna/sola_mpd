@@ -1,5 +1,4 @@
 import { Box, RingProgress, Text } from "@mantine/core";
-import { PluginExecuteResponse } from "@sola_mpd/domain/src/models/plugin/plugin_pb.js";
 import {
 	usePluginExecutionLatestResponseState,
 	usePluginExecutionPropsState,
@@ -27,23 +26,7 @@ export function PluginExecutionIndicator() {
 			style={{ cursor: "pointer" }}
 			onClick={() => setIsPluginExecutionModalOpen("progress")}
 		>
-			{latestResponse instanceof PluginExecuteResponse ? (
-				<RingProgress
-					size={48}
-					thickness={4}
-					sections={[
-						{
-							value: latestResponse.progressPercentage,
-							color: "brand",
-						},
-					]}
-					label={
-						<Text size="xs" c="brand" ta="center">
-							{latestResponse.progressPercentage}%
-						</Text>
-					}
-				/>
-			) : latestResponse instanceof Error ? (
+			{latestResponse === undefined ? null : latestResponse instanceof Error ? (
 				<RingProgress
 					size={48}
 					thickness={4}
@@ -59,7 +42,23 @@ export function PluginExecutionIndicator() {
 						</Text>
 					}
 				/>
-			) : null}
+			) : (
+				<RingProgress
+					size={48}
+					thickness={4}
+					sections={[
+						{
+							value: latestResponse.progressPercentage,
+							color: "brand",
+						},
+					]}
+					label={
+						<Text size="xs" c="brand" ta="center">
+							{latestResponse.progressPercentage}%
+						</Text>
+					}
+				/>
+			)}
 		</Box>
 	);
 }

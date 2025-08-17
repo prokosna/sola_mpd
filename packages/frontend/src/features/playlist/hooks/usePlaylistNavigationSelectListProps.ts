@@ -1,4 +1,5 @@
-import { MpdRequest } from "@sola_mpd/domain/src/models/mpd/mpd_command_pb.js";
+import { create } from "@bufbuild/protobuf";
+import { MpdRequestSchema } from "@sola_mpd/domain/src/models/mpd/mpd_command_pb.js";
 import { useCallback } from "react";
 
 import { COMPONENT_ID_PLAYLIST_SIDE_PANE } from "../../../const/component";
@@ -58,7 +59,7 @@ export function usePlaylistNavigationSelectListProps() {
 							}
 
 							await mpdClient.command(
-								new MpdRequest({
+								create(MpdRequestSchema, {
 									profile,
 									command: {
 										case: "rm",

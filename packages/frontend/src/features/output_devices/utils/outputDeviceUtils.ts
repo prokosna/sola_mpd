@@ -1,4 +1,8 @@
-import { MpdRequest } from "@sola_mpd/domain/src/models/mpd/mpd_command_pb.js";
+import { create, toJsonString } from "@bufbuild/protobuf";
+import {
+	MpdRequestSchema,
+	MpdResponseSchema,
+} from "@sola_mpd/domain/src/models/mpd/mpd_command_pb.js";
 import type { MpdProfile } from "@sola_mpd/domain/src/models/mpd/mpd_profile_pb.js";
 
 import type { MpdClient } from "../../mpd";
@@ -18,7 +22,7 @@ export async function fetchOutputDevices(
 	profile: MpdProfile,
 ) {
 	const res = await mpdClient.command(
-		new MpdRequest({
+		create(MpdRequestSchema, {
 			profile,
 			command: {
 				case: "outputs",
@@ -27,7 +31,9 @@ export async function fetchOutputDevices(
 		}),
 	);
 	if (res.command.case !== "outputs") {
-		throw Error(`Invalid MPD response: ${res.toJsonString()}`);
+		throw Error(
+			`Invalid MPD response: ${toJsonString(MpdResponseSchema, res)}`,
+		);
 	}
 	return res.command.value.devices;
 }

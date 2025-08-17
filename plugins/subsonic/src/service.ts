@@ -1,6 +1,8 @@
+import { create } from "@bufbuild/protobuf";
 import {
-	PluginExecuteResponse,
+	type PluginExecuteResponse,
 	PluginExecuteResponse_Status,
+	PluginExecuteResponseSchema,
 } from "@sola_mpd/domain/src/models/plugin/plugin_pb.js";
 import {
 	type Song,
@@ -20,7 +22,7 @@ export async function* syncWithSubsonic(
 ): AsyncGenerator<PluginExecuteResponse, void, unknown> {
 	const client = new SubsonicClient(url, user, password);
 
-	yield new PluginExecuteResponse({
+	yield create(PluginExecuteResponseSchema, {
 		message: "Calculating difference between playlists...",
 		progressPercentage: 0,
 		status: PluginExecuteResponse_Status.OK,
@@ -33,7 +35,7 @@ export async function* syncWithSubsonic(
 	// Figure out target songs
 	let diffSongs = client.diff(songs, existingSongs);
 	if (diffSongs === undefined) {
-		yield new PluginExecuteResponse({
+		yield create(PluginExecuteResponseSchema, {
 			message:
 				"Existing songs don't match to target songs. Deleting playlist...",
 			progressPercentage: 0,
@@ -48,7 +50,7 @@ export async function* syncWithSubsonic(
 	const total = diffSongs.length;
 	for (const [index, song] of diffSongs.entries()) {
 		const title = getSongMetadataAsString(song, Song_MetadataTag.TITLE);
-		yield new PluginExecuteResponse({
+		yield create(PluginExecuteResponseSchema, {
 			message: `(${index + 1}/${total}) Adding "${title}" to "${playlistName}"`,
 			progressPercentage: Math.floor(((index + 1) / total) * 100),
 			status: PluginExecuteResponse_Status.OK,
@@ -56,7 +58,7 @@ export async function* syncWithSubsonic(
 
 		const subsonicSong = await client.find(song);
 		if (subsonicSong === undefined) {
-			yield new PluginExecuteResponse({
+			yield create(PluginExecuteResponseSchema, {
 				message: `Failed to find "${title}" in Subsonic`,
 				progressPercentage: Math.floor(((index + 1) / total) * 100),
 				status: PluginExecuteResponse_Status.WARN,
