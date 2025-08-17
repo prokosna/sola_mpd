@@ -11,9 +11,9 @@
 		"test": "npx vitest run"
 	},
 	"dependencies": {
-		"@connectrpc/connect": "^2.0.0",
-		"@connectrpc/connect-express": "^2.0.0",
-		"@connectrpc/connect-node": "^2.0.0",
+		"@connectrpc/connect": "^2.0.4",
+		"@connectrpc/connect-express": "^2.0.4",
+		"@connectrpc/connect-node": "^2.0.4",
 		"@sola_mpd/domain": "^0.0.0",
 		"express": "^5.1.0",
 		"mpd3": "github:prokosna/mpd.js#0.1.3",
