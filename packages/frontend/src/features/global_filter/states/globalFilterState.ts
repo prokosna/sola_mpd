@@ -1,3 +1,4 @@
+import { normalize } from "@sola_mpd/domain/src/utils/stringUtils.js";
 import { atom, useSetAtom } from "jotai";
 import { useCallback } from "react";
 
@@ -56,7 +57,7 @@ export function useSetGlobalFilterTextState() {
 
 	return useCallback(
 		(text: string) => {
-			setGlobalFilterText(text);
+			setGlobalFilterText(normalize(text));
 		},
 		[setGlobalFilterText],
 	);
