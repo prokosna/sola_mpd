@@ -23,7 +23,15 @@ export function BrandLogo() {
 	}
 
 	return (
-		<Text pl={24} size="28" fw={700} c="brand">
+		<Text
+			pl={24}
+			size="28"
+			fw={700}
+			c="brand"
+			style={{
+				lineHeight: "100%",
+			}}
+		>
 			Sola MPD
 		</Text>
 	);
