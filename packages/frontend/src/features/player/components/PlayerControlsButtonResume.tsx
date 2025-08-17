@@ -1,4 +1,5 @@
-import { MpdRequest } from "@sola_mpd/domain/src/models/mpd/mpd_command_pb.js";
+import { create } from "@bufbuild/protobuf";
+import { MpdRequestSchema } from "@sola_mpd/domain/src/models/mpd/mpd_command_pb.js";
 import { MpdPlayerStatus_PlaybackState } from "@sola_mpd/domain/src/models/mpd/mpd_player_pb.js";
 import { IconPlayerPause, IconPlayerPlay } from "@tabler/icons-react";
 import { useCallback } from "react";
@@ -29,7 +30,7 @@ export function PlayerControlsButtonResume() {
 		}
 
 		mpdClient.command(
-			new MpdRequest({
+			create(MpdRequestSchema, {
 				profile,
 				command: {
 					case: "pause",

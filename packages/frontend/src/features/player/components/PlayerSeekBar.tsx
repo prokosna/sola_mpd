@@ -1,8 +1,8 @@
-import { MpdRequest } from "@sola_mpd/domain/src/models/mpd/mpd_command_pb.js";
-import { useCallback, useRef } from "react";
-
+import { create } from "@bufbuild/protobuf";
 import { Slider } from "@mantine/core";
+import { MpdRequestSchema } from "@sola_mpd/domain/src/models/mpd/mpd_command_pb.js";
 import { displayDuration } from "@sola_mpd/domain/src/utils/stringUtils.js";
+import { useCallback, useRef } from "react";
 import { useMpdClientState } from "../../mpd";
 import { useCurrentMpdProfileState } from "../../profile";
 import {
@@ -57,7 +57,7 @@ export function PlayerSeekBar() {
 
 			const seekTo = (value / 100) * playerStatusDuration;
 			mpdClient.command(
-				new MpdRequest({
+				create(MpdRequestSchema, {
 					profile,
 					command: {
 						case: "seek",

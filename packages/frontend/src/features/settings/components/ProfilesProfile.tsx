@@ -1,7 +1,9 @@
+import { clone } from "@bufbuild/protobuf";
 import { Button, Table } from "@mantine/core";
-import type {
-	MpdProfile,
-	MpdProfileState,
+import {
+	type MpdProfile,
+	type MpdProfileState,
+	MpdProfileStateSchema,
 } from "@sola_mpd/domain/src/models/mpd/mpd_profile_pb.js";
 import { useCallback } from "react";
 import { useNotification } from "../../../lib/mantine/hooks/useNotification";
@@ -27,7 +29,7 @@ export function ProfilesProfile(props: ProfilesProfileProps) {
 	const updateMpdProfileState = useUpdateMpdProfileState();
 
 	const handleProfileDeleted = useCallback(() => {
-		const newMpdProfileState = mpdProfileState.clone();
+		const newMpdProfileState = clone(MpdProfileStateSchema, mpdProfileState);
 		const index = newMpdProfileState.profiles.findIndex(
 			(p) => p.name === profile.name,
 		);

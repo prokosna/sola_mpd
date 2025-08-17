@@ -1,3 +1,4 @@
+import { create, toBinary } from "@bufbuild/protobuf";
 import {
 	SIO_MPD_COMMAND,
 	SIO_MPD_COMMAND_BULK,
@@ -6,7 +7,7 @@ import {
 	SIO_PLUGIN_EXECUTE,
 	SIO_PLUGIN_REGISTER,
 } from "@sola_mpd/domain/src/const/socketio.js";
-import { MpdResponse } from "@sola_mpd/domain/src/models/mpd/mpd_command_pb.js";
+import { MpdResponseSchema } from "@sola_mpd/domain/src/models/mpd/mpd_command_pb.js";
 import type { Server as IOServer } from "socket.io";
 
 import { MpdMessageHandler } from "./mpd/MpdMessageHandler.js";
@@ -53,12 +54,15 @@ export class SocketIoManager {
 					console.error(err);
 					callback(
 						Buffer.from(
-							new MpdResponse({
-								command: {
-									case: "error",
-									value: { message: (err as Error).message },
-								},
-							}).toBinary(),
+							toBinary(
+								MpdResponseSchema,
+								create(MpdResponseSchema, {
+									command: {
+										case: "error",
+										value: { message: (err as Error).message },
+									},
+								}),
+							),
 						),
 					);
 				}
@@ -73,12 +77,15 @@ export class SocketIoManager {
 					console.error(err);
 					callback(
 						Buffer.from(
-							new MpdResponse({
-								command: {
-									case: "error",
-									value: { message: (err as Error).message },
-								},
-							}).toBinary(),
+							toBinary(
+								MpdResponseSchema,
+								create(MpdResponseSchema, {
+									command: {
+										case: "error",
+										value: { message: (err as Error).message },
+									},
+								}),
+							),
 						),
 					);
 				}

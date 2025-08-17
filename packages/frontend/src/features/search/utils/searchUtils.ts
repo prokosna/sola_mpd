@@ -1,12 +1,18 @@
+import { clone, create } from "@bufbuild/protobuf";
 import {
-	FilterCondition,
+	type FilterCondition,
 	FilterCondition_Operator,
+	FilterConditionSchema,
 } from "@sola_mpd/domain/src/models/filter_pb.js";
-import { Query, Search } from "@sola_mpd/domain/src/models/search_pb.js";
+import type { Query, Search } from "@sola_mpd/domain/src/models/search_pb.js";
+import {
+	QuerySchema,
+	SearchSchema,
+} from "@sola_mpd/domain/src/models/search_pb.js";
 import {
 	type Song,
 	Song_MetadataTag,
-	Song_MetadataValue,
+	Song_MetadataValueSchema,
 } from "@sola_mpd/domain/src/models/song_pb.js";
 import type { SongTableColumn } from "@sola_mpd/domain/src/models/song_table_pb.js";
 
@@ -35,7 +41,7 @@ import type {
  * @returns New Search with default values
  */
 export function getDefaultSearch(): Search {
-	return new Search({
+	return create(SearchSchema, {
 		name: "New Search",
 		queries: [getDefaultQuery()],
 		columns: [],
@@ -48,7 +54,7 @@ export function getDefaultSearch(): Search {
  * @returns New Query with default values
  */
 export function getDefaultQuery(): Query {
-	return new Query({
+	return create(QuerySchema, {
 		conditions: [getDefaultCondition()],
 	});
 }
@@ -59,11 +65,11 @@ export function getDefaultQuery(): Query {
  * @returns New FilterCondition with default values
  */
 export function getDefaultCondition(): FilterCondition {
-	return new FilterCondition({
+	return create(FilterConditionSchema, {
 		uuid: uuidv4(),
 		tag: Song_MetadataTag.TITLE,
 		operator: FilterCondition_Operator.EQUAL,
-		value: new Song_MetadataValue({
+		value: create(Song_MetadataValueSchema, {
 			value: {
 				case: "stringValue",
 				value: { value: "" },
@@ -157,7 +163,7 @@ export function convertSearchToConditions(search: Search): SearchConditions[] {
  * @returns Updated search
  */
 export function changeEditingSearchName(search: Search, name: string): Search {
-	const newSearch = search.clone();
+	const newSearch = clone(SearchSchema, search);
 	newSearch.name = name;
 	return newSearch;
 }
@@ -173,7 +179,7 @@ export function changeEditingSearchColumns(
 	search: Search,
 	columns: SongTableColumn[],
 ): Search {
-	const newSearch = search.clone();
+	const newSearch = clone(SearchSchema, search);
 	newSearch.columns = columns;
 	return newSearch;
 }
@@ -194,9 +200,9 @@ export function changeEditingSearchQuery(
 	if (index < 0 || index >= search.queries.length) {
 		throw Error("Index out of range to change the search query.");
 	}
-	const newSearch = search.clone();
+	const newSearch = clone(SearchSchema, search);
 	const newQueries = [...search.queries];
-	newQueries[index] = query.clone();
+	newQueries[index] = clone(QuerySchema, query);
 	newSearch.queries = newQueries;
 	return newSearch;
 }
@@ -208,7 +214,7 @@ export function changeEditingSearchQuery(
  * @returns Updated search
  */
 export function addEditingSearchQuery(search: Search): Search {
-	const newSearch = search.clone();
+	const newSearch = clone(SearchSchema, search);
 	newSearch.queries = [...search.queries, getDefaultQuery()];
 	return newSearch;
 }
@@ -227,7 +233,7 @@ export function removeEditingSearchQuery(
 	if (index < 0 || index >= search.queries.length) {
 		throw Error("Index out of range to remove the search query.");
 	}
-	const newSearch = search.clone();
+	const newSearch = clone(SearchSchema, search);
 	const newQueries = [...search.queries];
 	newQueries.splice(index, 1);
 	newSearch.queries = newQueries;
@@ -251,9 +257,9 @@ export function changeEditingQueryCondition(
 	if (index < 0 || index >= query.conditions.length) {
 		throw Error("Index out of range to change the query condition.");
 	}
-	const newQuery = query.clone();
+	const newQuery = clone(QuerySchema, query);
 	const newConditions = [...query.conditions];
-	newConditions[index] = condition.clone();
+	newConditions[index] = clone(FilterConditionSchema, condition);
 	newQuery.conditions = newConditions;
 	return newQuery;
 }
@@ -265,7 +271,7 @@ export function changeEditingQueryCondition(
  * @returns Updated query
  */
 export function addEditingQueryCondition(query: Query): Query {
-	const newQuery = query.clone();
+	const newQuery = clone(QuerySchema, query);
 	newQuery.conditions = [...query.conditions, getDefaultCondition()];
 	return newQuery;
 }
@@ -285,7 +291,7 @@ export function removeEditingQueryCondition(
 	if (index < 0 || index >= query.conditions.length) {
 		throw Error("Index out of range to remove the query condition.");
 	}
-	const newQuery = query.clone();
+	const newQuery = clone(QuerySchema, query);
 	const newConditions = [...query.conditions];
 	newConditions.splice(index, 1);
 	newQuery.conditions = newConditions;
@@ -363,7 +369,7 @@ export function convertSearchToFormValues(search: Search): SearchFormValues {
  * @returns Search
  */
 export function convertFormValuesToSearch(values: SearchFormValues): Search {
-	return new Search({
+	return create(SearchSchema, {
 		name: values.name,
 		queries: values.queries.map((query) => ({
 			conditions: query.conditions.map((condition) => ({

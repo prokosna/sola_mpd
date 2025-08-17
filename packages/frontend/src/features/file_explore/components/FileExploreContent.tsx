@@ -1,5 +1,9 @@
+import { clone } from "@bufbuild/protobuf";
 import { Box } from "@mantine/core";
-import type { SongTableColumn } from "@sola_mpd/domain/src/models/song_table_pb.js";
+import {
+	type SongTableColumn,
+	SongTableStateSchema,
+} from "@sola_mpd/domain/src/models/song_table_pb.js";
 import { useCallback, useState } from "react";
 import { UpdateMode } from "../../../types/stateTypes";
 import { CenterSpinner } from "../../loading";
@@ -57,7 +61,7 @@ export function FileExploreContent() {
 			if (songTableState === undefined) {
 				return;
 			}
-			const newSongTableState = songTableState.clone();
+			const newSongTableState = clone(SongTableStateSchema, songTableState);
 			newSongTableState.columns = columns;
 			await updateSongTableState(
 				newSongTableState,

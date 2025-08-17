@@ -6,6 +6,7 @@ import { Panel, PanelGroup, PanelResizeHandle } from "react-resizable-panels";
 import styles from "../../../../ResizeHandle.module.css";
 import type { UpdateMode } from "../../../../types/stateTypes";
 import { FullWidthSkeleton } from "../../../loading";
+import { convertSongMetadataTagToDisplayName } from "../../../song_table";
 import { listBrowserSongMetadataTags } from "../utils/browserFilterUtils";
 import { BrowserNavigationFilterView } from "./BrowserNavigationFilterView";
 
@@ -45,7 +46,11 @@ export function BrowserNavigationView(props: BrowserNavigationViewProps) {
 				.sort((a, b) => a.order - b.order)
 				.map((browserFilter, index, array) => (
 					<React.Fragment key={browserFilter.tag}>
-						<Panel minSize={20}>
+						<Panel
+							minSize={20}
+							id={convertSongMetadataTagToDisplayName(browserFilter.tag)}
+							order={index}
+						>
 							<BrowserNavigationFilterView
 								{...{
 									browserFilter,

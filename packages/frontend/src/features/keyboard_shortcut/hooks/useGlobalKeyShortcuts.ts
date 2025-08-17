@@ -1,4 +1,5 @@
-import { MpdRequest } from "@sola_mpd/domain/src/models/mpd/mpd_command_pb.js";
+import { create } from "@bufbuild/protobuf";
+import { MpdRequestSchema } from "@sola_mpd/domain/src/models/mpd/mpd_command_pb.js";
 import { MpdPlayerStatus_PlaybackState } from "@sola_mpd/domain/src/models/mpd/mpd_player_pb.js";
 
 import { useMpdClientState } from "../../mpd";
@@ -52,7 +53,7 @@ export function useGlobalKeyShortcuts(): void {
 		switch (playerPlaybackState) {
 			case MpdPlayerStatus_PlaybackState.STOP:
 				mpdClient.command(
-					new MpdRequest({
+					create(MpdRequestSchema, {
 						profile,
 						command: {
 							case: "pause",
@@ -63,7 +64,7 @@ export function useGlobalKeyShortcuts(): void {
 				break;
 			case MpdPlayerStatus_PlaybackState.PAUSE:
 				mpdClient.command(
-					new MpdRequest({
+					create(MpdRequestSchema, {
 						profile,
 						command: {
 							case: "pause",
@@ -74,7 +75,7 @@ export function useGlobalKeyShortcuts(): void {
 				break;
 			case MpdPlayerStatus_PlaybackState.PLAY:
 				mpdClient.command(
-					new MpdRequest({
+					create(MpdRequestSchema, {
 						profile,
 						command: {
 							case: "pause",

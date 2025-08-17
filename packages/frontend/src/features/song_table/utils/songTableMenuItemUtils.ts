@@ -1,4 +1,5 @@
-import { MpdRequest } from "@sola_mpd/domain/src/models/mpd/mpd_command_pb.js";
+import { create } from "@bufbuild/protobuf";
+import { MpdRequestSchema } from "@sola_mpd/domain/src/models/mpd/mpd_command_pb.js";
 import type { MpdProfile } from "@sola_mpd/domain/src/models/mpd/mpd_profile_pb.js";
 import type { Song } from "@sola_mpd/domain/src/models/song_pb.js";
 import type { MutableRefObject } from "react";
@@ -49,17 +50,16 @@ export function getSongTableContextMenuAdd(
 			if (targetSongs.length === 0) {
 				return;
 			}
-			const commands = targetSongs.map(
-				(song) =>
-					new MpdRequest({
-						profile,
-						command: {
-							case: "add",
-							value: {
-								uri: song.path,
-							},
+			const commands = targetSongs.map((song) =>
+				create(MpdRequestSchema, {
+					profile,
+					command: {
+						case: "add",
+						value: {
+							uri: song.path,
 						},
-					}),
+					},
+				}),
 			);
 			await mpdClient.commandBulk(commands);
 			showNotification({
@@ -108,7 +108,7 @@ export function getSongTableContextMenuReplace(
 				return;
 			}
 			const commands = [
-				new MpdRequest({
+				create(MpdRequestSchema, {
 					profile,
 					command: {
 						case: "clear",
@@ -117,17 +117,16 @@ export function getSongTableContextMenuReplace(
 				}),
 			];
 			commands.push(
-				...targetSongs.map(
-					(song) =>
-						new MpdRequest({
-							profile,
-							command: {
-								case: "add",
-								value: {
-									uri: song.path,
-								},
+				...targetSongs.map((song) =>
+					create(MpdRequestSchema, {
+						profile,
+						command: {
+							case: "add",
+							value: {
+								uri: song.path,
 							},
-						}),
+						},
+					}),
 				),
 			);
 			await mpdClient.commandBulk(commands);

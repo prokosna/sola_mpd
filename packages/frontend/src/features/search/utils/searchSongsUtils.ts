@@ -1,4 +1,8 @@
-import { MpdRequest } from "@sola_mpd/domain/src/models/mpd/mpd_command_pb.js";
+import { create, toJsonString } from "@bufbuild/protobuf";
+import {
+	MpdRequestSchema,
+	MpdResponseSchema,
+} from "@sola_mpd/domain/src/models/mpd/mpd_command_pb.js";
 import type { MpdProfile } from "@sola_mpd/domain/src/models/mpd/mpd_profile_pb.js";
 import type { Search } from "@sola_mpd/domain/src/models/search_pb.js";
 import type { Song } from "@sola_mpd/domain/src/models/song_pb.js";
@@ -40,7 +44,7 @@ export async function fetchSearchSongs(
 			const mpdConditions = searchCondition.mpdConditions;
 			if (mpdConditions.length > 0) {
 				const res = await mpdClient.command(
-					new MpdRequest({
+					create(MpdRequestSchema, {
 						profile,
 						command: {
 							case: "search",
@@ -51,13 +55,15 @@ export async function fetchSearchSongs(
 					}),
 				);
 				if (res.command.case !== "search") {
-					throw Error(`Invalid MPD response: ${res.toJsonString()}`);
+					throw Error(
+						`Invalid MPD response: ${toJsonString(MpdResponseSchema, res)}`,
+					);
 				}
 				songs = res.command.value.songs;
 			} else {
 				// No choice not to fetch all of songs...
 				const res = await mpdClient.command(
-					new MpdRequest({
+					create(MpdRequestSchema, {
 						profile,
 						command: {
 							case: "listAllSongs",
@@ -66,7 +72,9 @@ export async function fetchSearchSongs(
 					}),
 				);
 				if (res.command.case !== "listAllSongs") {
-					throw Error(`Invalid MPD response: ${res.toJsonString()}`);
+					throw Error(
+						`Invalid MPD response: ${toJsonString(MpdResponseSchema, res)}`,
+					);
 				}
 				songs = res.command.value.songs;
 			}

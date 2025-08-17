@@ -1,18 +1,21 @@
+import { create } from "@bufbuild/protobuf";
 import {
-	FloatValue,
-	Int32Value,
-	StringValue,
-	Timestamp,
-} from "@bufbuild/protobuf";
+	FloatValueSchema,
+	Int32ValueSchema,
+	StringValueSchema,
+	type Timestamp,
+	timestampDate,
+	timestampFromDate,
+} from "@bufbuild/protobuf/wkt";
 import dayjs from "dayjs";
 import { describe, expect, it } from "vitest";
 
 import {
-	AudioFormat,
 	AudioFormat_Encoding,
-	Song,
+	AudioFormatSchema,
 	Song_MetadataTag,
-	Song_MetadataValue,
+	Song_MetadataValueSchema,
+	SongSchema,
 } from "../models/song_pb.js";
 
 import {
@@ -26,12 +29,12 @@ import {
 
 describe("SongUtils", () => {
 	it("getSongMetadataAsString should return correct string value", () => {
-		const song = new Song({
+		const song = create(SongSchema, {
 			metadata: {
-				[Song_MetadataTag.TITLE]: new Song_MetadataValue({
+				[Song_MetadataTag.TITLE]: create(Song_MetadataValueSchema, {
 					value: {
 						case: "stringValue",
-						value: new StringValue({ value: "Test Song" }),
+						value: create(StringValueSchema, { value: "Test Song" }),
 					},
 				}),
 			},
@@ -42,10 +45,13 @@ describe("SongUtils", () => {
 	});
 
 	it("getSongMetadataAsNumber should return correct number value", () => {
-		const song = new Song({
+		const song = create(SongSchema, {
 			metadata: {
-				[Song_MetadataTag.DURATION]: new Song_MetadataValue({
-					value: { case: "intValue", value: new Int32Value({ value: 120 }) },
+				[Song_MetadataTag.DURATION]: create(Song_MetadataValueSchema, {
+					value: {
+						case: "intValue",
+						value: create(Int32ValueSchema, { value: 120 }),
+					},
 				}),
 			},
 		});
@@ -53,30 +59,30 @@ describe("SongUtils", () => {
 	});
 
 	it("getSongMetadataAsNumber should handle different value types", () => {
-		const song = new Song({
+		const song = create(SongSchema, {
 			metadata: {
-				[Song_MetadataTag.TRACK]: new Song_MetadataValue({
+				[Song_MetadataTag.TRACK]: create(Song_MetadataValueSchema, {
 					value: {
 						case: "stringValue",
-						value: new StringValue({ value: "42" }),
+						value: create(StringValueSchema, { value: "42" }),
 					},
 				}),
-				[Song_MetadataTag.DURATION]: new Song_MetadataValue({
+				[Song_MetadataTag.DURATION]: create(Song_MetadataValueSchema, {
 					value: {
 						case: "floatValue",
-						value: new FloatValue({ value: 120.5 }),
+						value: create(FloatValueSchema, { value: 120.5 }),
 					},
 				}),
-				[Song_MetadataTag.UPDATED_AT]: new Song_MetadataValue({
+				[Song_MetadataTag.UPDATED_AT]: create(Song_MetadataValueSchema, {
 					value: {
 						case: "timestamp",
-						value: Timestamp.fromDate(new Date("2020-01-01")),
+						value: timestampFromDate(new Date("2020-01-01")),
 					},
 				}),
-				[Song_MetadataTag.FORMAT]: new Song_MetadataValue({
+				[Song_MetadataTag.FORMAT]: create(Song_MetadataValueSchema, {
 					value: {
 						case: "format",
-						value: new AudioFormat({
+						value: create(AudioFormatSchema, {
 							encoding: AudioFormat_Encoding.PCM,
 							channels: 2,
 							bits: 16,
@@ -100,15 +106,15 @@ describe("SongUtils", () => {
 	it("convertStringToSongMetadataValue should handle different types of values", () => {
 		expect(convertStringToSongMetadataValue("42").value).toEqual({
 			case: "intValue",
-			value: new Int32Value({ value: 42 }),
+			value: create(Int32ValueSchema, { value: 42 }),
 		});
 		expect(convertStringToSongMetadataValue("42.5").value).toEqual({
 			case: "floatValue",
-			value: new FloatValue({ value: 42.5 }),
+			value: create(FloatValueSchema, { value: 42.5 }),
 		});
 		expect(convertStringToSongMetadataValue("Test").value).toEqual({
 			case: "stringValue",
-			value: new StringValue({ value: "Test" }),
+			value: create(StringValueSchema, { value: "Test" }),
 		});
 	});
 
@@ -116,51 +122,63 @@ describe("SongUtils", () => {
 		const emptyValue = convertStringToSongMetadataValue("");
 		expect(emptyValue.value).toEqual({
 			case: "stringValue",
-			value: new StringValue({ value: "" }),
+			value: create(StringValueSchema, { value: "" }),
 		});
 
 		const dateValue = convertStringToSongMetadataValue("2020-01-01");
 		expect(dateValue.value.case).toBe("timestamp");
-		expect((dateValue.value.value as Timestamp).toDate()).toEqual(
+		expect(timestampDate(dateValue.value.value as Timestamp)).toEqual(
 			dayjs("2020-01-01").toDate(),
 		);
 	});
 
 	it("convertSongMetadataValueToString should return correct string representation", () => {
-		const stringValue = new Song_MetadataValue({
-			value: { case: "stringValue", value: new StringValue({ value: "Test" }) },
+		const stringValue = create(Song_MetadataValueSchema, {
+			value: {
+				case: "stringValue",
+				value: create(StringValueSchema, { value: "Test" }),
+			},
 		});
 		expect(convertSongMetadataValueToString(stringValue)).toBe("Test");
 
-		const dateValue = new Song_MetadataValue({
+		const dateValue = create(Song_MetadataValueSchema, {
 			value: {
 				case: "timestamp",
-				value: Timestamp.fromDate(new Date("2020-01-01")),
+				value: timestampFromDate(new Date("2020-01-01")),
 			},
 		});
 		expect(convertSongMetadataValueToString(dateValue)).toBe("2020-01-01");
 	});
 
 	it("convertSongMetadataValueToString should handle all value types", () => {
-		const floatValue = new Song_MetadataValue({
-			value: { case: "floatValue", value: new FloatValue({ value: 42.5 }) },
+		const floatValue = create(Song_MetadataValueSchema, {
+			value: {
+				case: "floatValue",
+				value: create(FloatValueSchema, { value: 42.5 }),
+			},
 		});
 		expect(convertSongMetadataValueToString(floatValue)).toBe("42.5");
 
-		const intValue = new Song_MetadataValue({
-			value: { case: "intValue", value: new Int32Value({ value: 42 }) },
+		const intValue = create(Song_MetadataValueSchema, {
+			value: {
+				case: "intValue",
+				value: create(Int32ValueSchema, { value: 42 }),
+			},
 		});
 		expect(convertSongMetadataValueToString(intValue)).toBe("42");
 
-		const emptyStringValue = new Song_MetadataValue({
-			value: { case: "stringValue", value: new StringValue({ value: "" }) },
+		const emptyStringValue = create(Song_MetadataValueSchema, {
+			value: {
+				case: "stringValue",
+				value: create(StringValueSchema, { value: "" }),
+			},
 		});
 		expect(convertSongMetadataValueToString(emptyStringValue)).toBe("");
 
-		const formatValue = new Song_MetadataValue({
+		const formatValue = create(Song_MetadataValueSchema, {
 			value: {
 				case: "format",
-				value: new AudioFormat({
+				value: create(AudioFormatSchema, {
 					encoding: AudioFormat_Encoding.PCM,
 					channels: 2,
 					bits: 16,
@@ -174,7 +192,7 @@ describe("SongUtils", () => {
 	});
 
 	it("convertAudioFormatToString should format audio format correctly", () => {
-		const format = new AudioFormat({
+		const format = create(AudioFormatSchema, {
 			encoding: AudioFormat_Encoding.PCM,
 			channels: 2,
 			bits: 16,
@@ -196,7 +214,7 @@ describe("SongUtils", () => {
 		];
 
 		for (const { encoding, expected } of formats) {
-			const format = new AudioFormat({
+			const format = create(AudioFormatSchema, {
 				encoding,
 				channels: 2,
 				bits: 16,

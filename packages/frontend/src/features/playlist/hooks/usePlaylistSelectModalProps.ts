@@ -1,4 +1,5 @@
-import { MpdRequest } from "@sola_mpd/domain/src/models/mpd/mpd_command_pb.js";
+import { create } from "@bufbuild/protobuf";
+import { MpdRequestSchema } from "@sola_mpd/domain/src/models/mpd/mpd_command_pb.js";
 import type { Playlist } from "@sola_mpd/domain/src/models/playlist_pb.js";
 import type { Song } from "@sola_mpd/domain/src/models/song_pb.js";
 import { useCallback, useRef, useState } from "react";
@@ -31,18 +32,17 @@ export function usePlaylistSelectModal() {
 				return;
 			}
 
-			const commands = songsToAddToPlaylistRef.current.map(
-				(song) =>
-					new MpdRequest({
-						profile,
-						command: {
-							case: "playlistadd",
-							value: {
-								name: playlist.name,
-								uri: song.path,
-							},
+			const commands = songsToAddToPlaylistRef.current.map((song) =>
+				create(MpdRequestSchema, {
+					profile,
+					command: {
+						case: "playlistadd",
+						value: {
+							name: playlist.name,
+							uri: song.path,
 						},
-					}),
+					},
+				}),
 			);
 			if (commands.length === 0) {
 				return;

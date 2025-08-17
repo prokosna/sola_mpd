@@ -1,5 +1,9 @@
+import { create, toJsonString } from "@bufbuild/protobuf";
 import type { Folder } from "@sola_mpd/domain/src/models/file_explore_pb.js";
-import { MpdRequest } from "@sola_mpd/domain/src/models/mpd/mpd_command_pb.js";
+import {
+	MpdRequestSchema,
+	MpdResponseSchema,
+} from "@sola_mpd/domain/src/models/mpd/mpd_command_pb.js";
 import type { MpdProfile } from "@sola_mpd/domain/src/models/mpd/mpd_profile_pb.js";
 
 import type { MpdClient } from "../../mpd";
@@ -17,7 +21,7 @@ export async function fetchFileExploreFolders(
 	mpdProfile: MpdProfile,
 ): Promise<Folder[]> {
 	const res = await mpdClient.command(
-		new MpdRequest({
+		create(MpdRequestSchema, {
 			profile: mpdProfile,
 			command: {
 				case: "listAllFolders",
@@ -26,7 +30,9 @@ export async function fetchFileExploreFolders(
 		}),
 	);
 	if (res.command.case !== "listAllFolders") {
-		throw Error(`Invalid MPD response: ${res.toJsonString()}`);
+		throw Error(
+			`Invalid MPD response: ${toJsonString(MpdResponseSchema, res)}`,
+		);
 	}
 	return res.command.value.folders;
 }

@@ -1,11 +1,15 @@
 import { type ReadableStream, TransformStream } from "node:stream/web";
+import { create, toJsonString } from "@bufbuild/protobuf";
 import {
 	type MpdRequest,
-	MpdResponse,
+	MpdRequestSchema,
+	type MpdResponse,
+	MpdResponseSchema,
 } from "@sola_mpd/domain/src/models/mpd/mpd_command_pb.js";
 import {
-	MpdEvent,
+	type MpdEvent,
 	MpdEvent_EventType,
+	MpdEventSchema,
 } from "@sola_mpd/domain/src/models/mpd/mpd_event_pb.js";
 import type { MpdProfile } from "@sola_mpd/domain/src/models/mpd/mpd_profile_pb.js";
 import type { Song } from "@sola_mpd/domain/src/models/song_pb.js";
@@ -63,35 +67,57 @@ class MpdClient {
 		const client = await this.connect(profile);
 		const handle = (name?: string) => {
 			if (name == null) {
-				callback(new MpdEvent({ eventType: MpdEvent_EventType.DISCONNECTED }));
+				callback(
+					create(MpdEventSchema, {
+						eventType: MpdEvent_EventType.DISCONNECTED,
+					}),
+				);
 				return;
 			}
 			console.info(`MPD event: ${name}`);
 			switch (name) {
 				case "database":
-					callback(new MpdEvent({ eventType: MpdEvent_EventType.DATABASE }));
+					callback(
+						create(MpdEventSchema, { eventType: MpdEvent_EventType.DATABASE }),
+					);
 					this.allSongsCache.delete(profile);
 					break;
 				case "update":
-					callback(new MpdEvent({ eventType: MpdEvent_EventType.UPDATE }));
+					callback(
+						create(MpdEventSchema, { eventType: MpdEvent_EventType.UPDATE }),
+					);
 					break;
 				case "mixier":
-					callback(new MpdEvent({ eventType: MpdEvent_EventType.MIXER }));
+					callback(
+						create(MpdEventSchema, { eventType: MpdEvent_EventType.MIXER }),
+					);
 					break;
 				case "options":
-					callback(new MpdEvent({ eventType: MpdEvent_EventType.OPTIONS }));
+					callback(
+						create(MpdEventSchema, { eventType: MpdEvent_EventType.OPTIONS }),
+					);
 					break;
 				case "player":
-					callback(new MpdEvent({ eventType: MpdEvent_EventType.PLAYER }));
+					callback(
+						create(MpdEventSchema, { eventType: MpdEvent_EventType.PLAYER }),
+					);
 					break;
 				case "playlist":
-					callback(new MpdEvent({ eventType: MpdEvent_EventType.PLAY_QUEUE }));
+					callback(
+						create(MpdEventSchema, {
+							eventType: MpdEvent_EventType.PLAY_QUEUE,
+						}),
+					);
 					break;
 				case "stored_playlist":
-					callback(new MpdEvent({ eventType: MpdEvent_EventType.PLAYLIST }));
+					callback(
+						create(MpdEventSchema, { eventType: MpdEvent_EventType.PLAYLIST }),
+					);
 					break;
 				default:
-					callback(new MpdEvent({ eventType: MpdEvent_EventType.UNKNOWN }));
+					callback(
+						create(MpdEventSchema, { eventType: MpdEvent_EventType.UNKNOWN }),
+					);
 			}
 		};
 		client.on("system", handle);
@@ -190,7 +216,7 @@ class MpdClient {
 			case "ping": {
 				await this.sendCommand(client, cmd);
 				const version = this.getVersion(client);
-				return new MpdResponse({
+				return create(MpdResponseSchema, {
 					command: {
 						case: "ping",
 						value: { version },
@@ -200,45 +226,61 @@ class MpdClient {
 			// Control
 			case "next":
 				await this.sendCommand(client, cmd);
-				return new MpdResponse({ command: { case: "next", value: {} } });
+				return create(MpdResponseSchema, {
+					command: { case: "next", value: {} },
+				});
 			case "pause":
 				await this.sendCommand(client, cmd);
-				return new MpdResponse({ command: { case: "pause", value: {} } });
+				return create(MpdResponseSchema, {
+					command: { case: "pause", value: {} },
+				});
 			case "play":
 				await this.sendCommand(client, cmd);
-				return new MpdResponse({ command: { case: "play", value: {} } });
+				return create(MpdResponseSchema, {
+					command: { case: "play", value: {} },
+				});
 			case "previous":
 				await this.sendCommand(client, cmd);
-				return new MpdResponse({
+				return create(MpdResponseSchema, {
 					command: { case: "previous", value: {} },
 				});
 			case "seek":
 				await this.sendCommand(client, cmd);
-				return new MpdResponse({ command: { case: "seek", value: {} } });
+				return create(MpdResponseSchema, {
+					command: { case: "seek", value: {} },
+				});
 			case "stop":
 				await this.sendCommand(client, cmd);
-				return new MpdResponse({ command: { case: "stop", value: {} } });
+				return create(MpdResponseSchema, {
+					command: { case: "stop", value: {} },
+				});
 
 			// Playback
 			case "consume":
 				await this.sendCommand(client, cmd);
-				return new MpdResponse({
+				return create(MpdResponseSchema, {
 					command: { case: "consume", value: {} },
 				});
 			case "random":
 				await this.sendCommand(client, cmd);
-				return new MpdResponse({ command: { case: "random", value: {} } });
+				return create(MpdResponseSchema, {
+					command: { case: "random", value: {} },
+				});
 			case "repeat":
 				await this.sendCommand(client, cmd);
-				return new MpdResponse({ command: { case: "repeat", value: {} } });
+				return create(MpdResponseSchema, {
+					command: { case: "repeat", value: {} },
+				});
 			case "setvol":
 				await this.sendCommand(client, cmd);
-				return new MpdResponse({ command: { case: "setvol", value: {} } });
+				return create(MpdResponseSchema, {
+					command: { case: "setvol", value: {} },
+				});
 			case "getvol": {
 				const ret = await this.streamCommandToObject(client, cmd);
 				const vol = parseMpdPlayerVolume(ret);
 				if (vol !== undefined) {
-					return new MpdResponse({
+					return create(MpdResponseSchema, {
 						command: {
 							case: "getvol",
 							value: { vol },
@@ -249,13 +291,15 @@ class MpdClient {
 			}
 			case "single":
 				await this.sendCommand(client, cmd);
-				return new MpdResponse({ command: { case: "single", value: {} } });
+				return create(MpdResponseSchema, {
+					command: { case: "single", value: {} },
+				});
 
 			// Status
 			case "currentsong": {
 				const ret = await this.streamCommandToObject(client, cmd);
 				const song = parseSong(ret);
-				return new MpdResponse({
+				return create(MpdResponseSchema, {
 					command: {
 						case: "currentsong",
 						value: { song },
@@ -265,7 +309,7 @@ class MpdClient {
 			case "status": {
 				const ret = await this.streamCommandToObject(client, cmd);
 				const status = parseMpdPlayerStatus(ret);
-				return new MpdResponse({
+				return create(MpdResponseSchema, {
 					command: {
 						case: "status",
 						value: { status },
@@ -276,7 +320,7 @@ class MpdClient {
 				const version = this.getVersion(client);
 				const ret = await this.streamCommandToObject(client, cmd);
 				const stats = parseMpdStats(version, ret);
-				return new MpdResponse({
+				return create(MpdResponseSchema, {
 					command: {
 						case: "stats",
 						value: { stats },
@@ -287,21 +331,29 @@ class MpdClient {
 			// Queue
 			case "add":
 				await this.sendCommand(client, cmd);
-				return new MpdResponse({ command: { case: "add", value: {} } });
+				return create(MpdResponseSchema, {
+					command: { case: "add", value: {} },
+				});
 			case "clear":
 				await this.sendCommand(client, cmd);
-				return new MpdResponse({ command: { case: "clear", value: {} } });
+				return create(MpdResponseSchema, {
+					command: { case: "clear", value: {} },
+				});
 			case "delete":
 				await this.sendCommand(client, cmd);
-				return new MpdResponse({ command: { case: "delete", value: {} } });
+				return create(MpdResponseSchema, {
+					command: { case: "delete", value: {} },
+				});
 			case "move":
 				await this.sendCommand(client, cmd);
-				return new MpdResponse({ command: { case: "move", value: {} } });
+				return create(MpdResponseSchema, {
+					command: { case: "move", value: {} },
+				});
 			case "playlistinfo": {
 				const songs = await this.streamCommandToStream(client, cmd, ["file"])
 					.then((stream) => stream.pipeThrough(this.transformToSong()))
 					.then(Parsers.aggregateToList);
-				return new MpdResponse({
+				return create(MpdResponseSchema, {
 					command: {
 						case: "playlistinfo",
 						value: { songs },
@@ -310,7 +362,7 @@ class MpdClient {
 			}
 			case "shuffle":
 				await this.sendCommand(client, cmd);
-				return new MpdResponse({
+				return create(MpdResponseSchema, {
 					command: { case: "shuffle", value: {} },
 				});
 
@@ -319,7 +371,7 @@ class MpdClient {
 				const songs = await this.streamCommandToStream(client, cmd, ["file"])
 					.then((stream) => stream.pipeThrough(this.transformToSong()))
 					.then(Parsers.aggregateToList);
-				return new MpdResponse({
+				return create(MpdResponseSchema, {
 					command: {
 						case: "listplaylistinfo",
 						value: {
@@ -343,7 +395,7 @@ class MpdClient {
 						),
 					)
 					.then(Parsers.aggregateToList);
-				return new MpdResponse({
+				return create(MpdResponseSchema, {
 					command: {
 						case: "listplaylists",
 						value: {
@@ -354,37 +406,37 @@ class MpdClient {
 			}
 			case "playlistadd":
 				await this.sendCommand(client, cmd);
-				return new MpdResponse({
+				return create(MpdResponseSchema, {
 					command: { case: "playlistadd", value: {} },
 				});
 			case "playlistclear":
 				await this.sendCommand(client, cmd);
-				return new MpdResponse({
+				return create(MpdResponseSchema, {
 					command: { case: "playlistclear", value: {} },
 				});
 			case "playlistdelete":
 				await this.sendCommand(client, cmd);
-				return new MpdResponse({
+				return create(MpdResponseSchema, {
 					command: { case: "playlistdelete", value: {} },
 				});
 			case "playlistmove":
 				await this.sendCommand(client, cmd);
-				return new MpdResponse({
+				return create(MpdResponseSchema, {
 					command: { case: "playlistmove", value: {} },
 				});
 			case "rename":
 				await this.sendCommand(client, cmd);
-				return new MpdResponse({
+				return create(MpdResponseSchema, {
 					command: { case: "rename", value: {} },
 				});
 			case "rm":
 				await this.sendCommand(client, cmd);
-				return new MpdResponse({
+				return create(MpdResponseSchema, {
 					command: { case: "rm", value: {} },
 				});
 			case "save":
 				await this.sendCommand(client, cmd);
-				return new MpdResponse({
+				return create(MpdResponseSchema, {
 					command: { case: "save", value: {} },
 				});
 
@@ -405,7 +457,7 @@ class MpdClient {
 						),
 					)
 					.then(Parsers.aggregateToList);
-				return new MpdResponse({
+				return create(MpdResponseSchema, {
 					command: {
 						case: "list",
 						value: { values },
@@ -416,7 +468,7 @@ class MpdClient {
 				const songs = await this.streamCommandToStream(client, cmd, ["file"])
 					.then((stream) => stream.pipeThrough(this.transformToSong()))
 					.then(Parsers.aggregateToList);
-				return new MpdResponse({
+				return create(MpdResponseSchema, {
 					command: {
 						case: "search",
 						value: { songs },
@@ -425,7 +477,7 @@ class MpdClient {
 			}
 			case "update":
 				await this.sendCommand(client, cmd);
-				return new MpdResponse({
+				return create(MpdResponseSchema, {
 					command: { case: "update", value: {} },
 				});
 
@@ -443,7 +495,7 @@ class MpdClient {
 						),
 					)
 					.then(Parsers.aggregateToList);
-				return new MpdResponse({
+				return create(MpdResponseSchema, {
 					command: {
 						case: "outputs",
 						value: { devices },
@@ -463,7 +515,7 @@ class MpdClient {
 						.then(Parsers.aggregateToList);
 					this.allSongsCache.set(profile, songs ?? []);
 				}
-				return new MpdResponse({
+				return create(MpdResponseSchema, {
 					command: {
 						case: "listAllSongs",
 						value: { songs },
@@ -485,7 +537,7 @@ class MpdClient {
 						),
 					)
 					.then(Parsers.aggregateToList);
-				return new MpdResponse({
+				return create(MpdResponseSchema, {
 					command: {
 						case: "listAllFolders",
 						value: { folders },
@@ -500,7 +552,7 @@ class MpdClient {
 				])
 					.then((stream) => stream.pipeThrough(this.transformToSong()))
 					.then(Parsers.aggregateToList);
-				return new MpdResponse({
+				return create(MpdResponseSchema, {
 					command: {
 						case: "listSongsInFolder",
 						value: { songs },
@@ -508,7 +560,9 @@ class MpdClient {
 				});
 			}
 			default: {
-				throw new Error(`Unsupported command: ${req.toJsonString()}`);
+				throw new Error(
+					`Unsupported command: ${toJsonString(MpdRequestSchema, req)}`,
+				);
 			}
 		}
 	}
@@ -534,7 +588,9 @@ class MpdClient {
 					case "pos":
 						return Command.cmd("play", req.command.value.target.value);
 					default:
-						throw new Error(`Unsupported command: ${req.toJsonString()}`);
+						throw new Error(
+							`Unsupported command: ${toJsonString(MpdRequestSchema, req)}`,
+						);
 				}
 			case "previous":
 				return Command.cmd("previous");
@@ -556,7 +612,9 @@ class MpdClient {
 					case "current":
 						return Command.cmd("seekcur", String(time));
 					default:
-						throw new Error(`Unsupported command: ${req.toJsonString()}`);
+						throw new Error(
+							`Unsupported command: ${toJsonString(MpdRequestSchema, req)}`,
+						);
 				}
 			}
 			case "stop":
@@ -596,7 +654,9 @@ class MpdClient {
 					case "pos":
 						return Command.cmd("delete", req.command.value.target.value);
 					default:
-						throw new Error(`Unsupported command: ${req.toJsonString()}`);
+						throw new Error(
+							`Unsupported command: ${toJsonString(MpdRequestSchema, req)}`,
+						);
 				}
 			case "move": {
 				const to = req.command.value.to;
@@ -610,7 +670,9 @@ class MpdClient {
 						return Command.cmd("move", fromPos, to);
 					}
 					default:
-						throw new Error(`Unsupported command: ${req.toJsonString()}`);
+						throw new Error(
+							`Unsupported command: ${toJsonString(MpdRequestSchema, req)}`,
+						);
 				}
 			}
 			case "playlistinfo":
@@ -690,7 +752,9 @@ class MpdClient {
 			}
 
 			default: {
-				throw new Error(`Unsupported command: ${req.toJsonString()}`);
+				throw new Error(
+					`Unsupported command: ${toJsonString(MpdRequestSchema, req)}`,
+				);
 			}
 		}
 	}

@@ -1,4 +1,8 @@
-import { MpdRequest } from "@sola_mpd/domain/src/models/mpd/mpd_command_pb.js";
+import { create, toJsonString } from "@bufbuild/protobuf";
+import {
+	MpdRequestSchema,
+	MpdResponseSchema,
+} from "@sola_mpd/domain/src/models/mpd/mpd_command_pb.js";
 import type { MpdProfile } from "@sola_mpd/domain/src/models/mpd/mpd_profile_pb.js";
 import type { Song } from "@sola_mpd/domain/src/models/song_pb.js";
 import { useCallback } from "react";
@@ -25,7 +29,7 @@ export function useHandleSongDoubleClick(
 			if (mpdProfile === undefined || mpdClient === undefined) {
 				return;
 			}
-			const addCommand = new MpdRequest({
+			const addCommand = create(MpdRequestSchema, {
 				profile: mpdProfile,
 				command: {
 					case: "add",
@@ -33,7 +37,7 @@ export function useHandleSongDoubleClick(
 				},
 			});
 			await mpdClient.command(addCommand);
-			const getCommand = new MpdRequest({
+			const getCommand = create(MpdRequestSchema, {
 				profile: mpdProfile,
 				command: {
 					case: "playlistinfo",
@@ -42,11 +46,13 @@ export function useHandleSongDoubleClick(
 			});
 			const res = await mpdClient.command(getCommand);
 			if (res.command.case !== "playlistinfo") {
-				throw Error(`Invalid MPD response: ${res.toJsonString()}`);
+				throw Error(
+					`Invalid MPD response: ${toJsonString(MpdResponseSchema, res)}`,
+				);
 			}
 			const playQueueSongs = res.command.value.songs;
 			await mpdClient.command(
-				new MpdRequest({
+				create(MpdRequestSchema, {
 					profile: mpdProfile,
 					command: {
 						case: "play",

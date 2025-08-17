@@ -1,6 +1,4 @@
-import { MpdRequest } from "@sola_mpd/domain/src/models/mpd/mpd_command_pb.js";
-import { useCallback } from "react";
-
+import { create } from "@bufbuild/protobuf";
 import {
 	ActionIcon,
 	Box,
@@ -8,7 +6,9 @@ import {
 	Tooltip,
 	useMantineTheme,
 } from "@mantine/core";
+import { MpdRequestSchema } from "@sola_mpd/domain/src/models/mpd/mpd_command_pb.js";
 import { IconVolumeOff } from "@tabler/icons-react";
+import { useCallback } from "react";
 import { useMpdClientState } from "../../mpd";
 import { useCurrentMpdProfileState } from "../../profile";
 import { useIsCompactMode } from "../../user_device";
@@ -44,7 +44,7 @@ export function PlayerControlsButtonVolume() {
 			}
 
 			mpdClient.command(
-				new MpdRequest({
+				create(MpdRequestSchema, {
 					profile,
 					command: {
 						case: "setvol",

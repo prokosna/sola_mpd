@@ -1,13 +1,20 @@
 import fs from "node:fs";
 import path from "node:path";
 
-import type { JsonObject, Message } from "@bufbuild/protobuf";
+import {
+	fromJson,
+	type JsonObject,
+	type Message,
+	toJson,
+} from "@bufbuild/protobuf";
+import type { GenMessage } from "@bufbuild/protobuf/codegenv2";
 
-export class FileRepository<T extends Message<T>> {
+export class FileRepository<T extends Message> {
 	private localCache: T;
 
 	constructor(
 		private localFilePath: string,
+		private schema: GenMessage<T>,
 		defaultValue: T,
 	) {
 		this.localFilePath = localFilePath;
@@ -18,7 +25,7 @@ export class FileRepository<T extends Message<T>> {
 
 			// Make sure that the local cache has all the latest necessary fields.
 			// Otherwise, copy the field from the default value.
-			const defaultValueJson = defaultValue.toJson();
+			const defaultValueJson = toJson(schema, defaultValue);
 			const fileContentJson = JSON.parse(fileContent);
 			for (const [key, value] of Object.entries(
 				defaultValueJson as JsonObject,
@@ -27,7 +34,7 @@ export class FileRepository<T extends Message<T>> {
 					fileContentJson[key] = value;
 				}
 			}
-			this.localCache = defaultValue.getType().fromJson(fileContentJson);
+			this.localCache = fromJson(schema, fileContentJson);
 		} catch (_) {
 			this.localCache = defaultValue;
 			this.save();
@@ -46,7 +53,7 @@ export class FileRepository<T extends Message<T>> {
 	private save() {
 		fs.writeFile(
 			this.localFilePath,
-			JSON.stringify(this.localCache.toJson(), null, 2),
+			JSON.stringify(toJson(this.schema, this.localCache), null, 2),
 			(err) => {
 				if (err) {
 					console.error(err);

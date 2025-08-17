@@ -1,6 +1,8 @@
+import { create } from "@bufbuild/protobuf";
+import type { Plugin } from "@sola_mpd/domain/src/models/plugin/plugin_pb.js";
 import {
-	Plugin,
-	PluginRegisterRequest,
+	PluginRegisterRequestSchema,
+	PluginSchema,
 } from "@sola_mpd/domain/src/models/plugin/plugin_pb.js";
 import { type RefObject, useCallback, useState } from "react";
 
@@ -35,7 +37,10 @@ export function useHandlePluginConnected(
 		setErrorMessage("");
 
 		const [host, port] = endpoint.split(":");
-		const req = new PluginRegisterRequest({ host, port: Number(port) });
+		const req = create(PluginRegisterRequestSchema, {
+			host,
+			port: Number(port),
+		});
 
 		try {
 			const resp = await pluginService.register(req);
@@ -48,7 +53,7 @@ export function useHandlePluginConnected(
 			setErrorMessage("");
 
 			setPluginToAdd(
-				new Plugin({
+				create(PluginSchema, {
 					host,
 					port: Number(port),
 					info: resp.info,

@@ -1,6 +1,9 @@
+import { clone, create } from "@bufbuild/protobuf";
+import type { PluginState } from "@sola_mpd/domain/src/models/plugin/plugin_pb.js";
 import {
-	PluginRegisterRequest,
-	PluginState,
+	PluginRegisterRequestSchema,
+	PluginSchema,
+	PluginStateSchema,
 } from "@sola_mpd/domain/src/models/plugin/plugin_pb.js";
 import { useAtomValue, useSetAtom } from "jotai";
 import { atomWithDefault, useResetAtom } from "jotai/utils";
@@ -26,10 +29,10 @@ const pluginStateAtom = atomWithDefault<Promise<PluginState> | PluginState>(
 
 		const newPlugins = await Promise.all(
 			plugins.map(async (plugin) => {
-				const newPlugin = plugin.clone();
+				const newPlugin = clone(PluginSchema, plugin);
 				newPlugin.isAvailable = false;
 
-				const req = new PluginRegisterRequest({
+				const req = create(PluginRegisterRequestSchema, {
 					host: plugin.host,
 					port: plugin.port,
 				});
@@ -47,7 +50,7 @@ const pluginStateAtom = atomWithDefault<Promise<PluginState> | PluginState>(
 			}),
 		);
 
-		return new PluginState({
+		return create(PluginStateSchema, {
 			plugins: newPlugins,
 		});
 	},

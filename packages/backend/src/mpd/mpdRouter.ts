@@ -1,6 +1,8 @@
+import { fromBinary, toBinary } from "@bufbuild/protobuf";
 import {
-	MpdRequest,
-	MpdRequestBulk,
+	MpdRequestBulkSchema,
+	MpdRequestSchema,
+	MpdResponseSchema,
 } from "@sola_mpd/domain/src/models/mpd/mpd_command_pb.js";
 import express, { type Request, type Response } from "express";
 
@@ -23,14 +25,14 @@ mpdRouter.use((_req, res, next) => {
 
 async function executeCommand(req: Request): Promise<Uint8Array> {
 	const body = req.body as Buffer;
-	const request = MpdRequest.fromBinary(new Uint8Array(body));
+	const request = fromBinary(MpdRequestSchema, new Uint8Array(body));
 	const res = await mpdClient.execute(request);
-	return res.toBinary();
+	return toBinary(MpdResponseSchema, res);
 }
 
 async function executeCommandBulk(req: Request): Promise<void> {
 	const body = req.body as Buffer;
-	const request = MpdRequestBulk.fromBinary(new Uint8Array(body));
+	const request = fromBinary(MpdRequestBulkSchema, new Uint8Array(body));
 	return mpdClient.executeBulk(request.requests);
 }
 

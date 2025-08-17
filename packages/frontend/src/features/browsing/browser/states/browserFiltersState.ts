@@ -1,9 +1,12 @@
-import type { BrowserFilter } from "@sola_mpd/domain/src/models/browser_pb.js";
+import { clone } from "@bufbuild/protobuf";
+import {
+	type BrowserFilter,
+	BrowserStateSchema,
+} from "@sola_mpd/domain/src/models/browser_pb.js";
 import type { Song_MetadataTag } from "@sola_mpd/domain/src/models/song_pb.js";
 import { convertSongMetadataValueToString } from "@sola_mpd/domain/src/utils/songUtils.js";
 import { atom, useAtomValue } from "jotai";
 import { useCallback } from "react";
-
 import { ROUTE_HOME_BROWSER } from "../../../../const/routes";
 import { atomWithSync } from "../../../../lib/jotai/atomWithSync";
 import type { UpdateMode } from "../../../../types/stateTypes";
@@ -12,9 +15,9 @@ import { globalFilterTokensAtom } from "../../../global_filter/states/globalFilt
 import { pathnameAtom } from "../../../location/states/locationState";
 import { mpdClientAtom } from "../../../mpd/states/mpdClient";
 import { currentMpdProfileSyncAtom } from "../../../profile/states/mpdProfileState";
-import { fetchBrowserFilterValues } from "../../common/utils/browserFilterUtils";
 
 import { localeCollatorAtom } from "../../../settings/states/settingsLocale";
+import { fetchBrowserFilterValues } from "../../common/utils/browserFilterUtils";
 import { browserStateSyncAtom, useUpdateBrowserState } from "./browserState";
 
 /**
@@ -127,7 +130,7 @@ export function useUpdateBrowserFiltersState() {
 			if (browserState === undefined) {
 				return;
 			}
-			const newBrowserState = browserState.clone();
+			const newBrowserState = clone(BrowserStateSchema, browserState);
 			newBrowserState.filters = browserFilters;
 			await updateBrowserState(newBrowserState, mode);
 		},

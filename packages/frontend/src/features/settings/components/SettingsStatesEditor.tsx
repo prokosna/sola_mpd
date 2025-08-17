@@ -1,4 +1,5 @@
-import type { Message } from "@bufbuild/protobuf";
+import { fromJson, type Message, toJson } from "@bufbuild/protobuf";
+import type { GenMessage } from "@bufbuild/protobuf/codegenv2";
 import { Button, Group, Modal, Stack, Text, Textarea } from "@mantine/core";
 import { useCallback, useEffect, useRef, useState } from "react";
 
@@ -12,12 +13,12 @@ import { useCallback, useEffect, useRef, useState } from "react";
  * @property onClose Close callback
  * @property fromJson JSON parser
  */
-export type SettingsStatesEditorProps<T> = {
+export type SettingsStatesEditorProps<T extends Message> = {
+	schema: GenMessage<T>;
 	state: T;
 	onSave: (state: T) => Promise<void>;
 	isOpen: boolean;
 	onClose: () => void;
-	fromJson: (json: string) => T;
 };
 
 /**
@@ -28,9 +29,9 @@ export type SettingsStatesEditorProps<T> = {
 export function SettingsStatesEditor<T extends Message>(
 	props: SettingsStatesEditorProps<T>,
 ) {
-	const { state, onSave, isOpen, onClose, fromJson } = props;
+	const { schema, state, onSave, isOpen, onClose } = props;
 
-	const baseJsonText = JSON.stringify(state.toJson(), null, 2);
+	const baseJsonText = JSON.stringify(toJson(schema, state), null, 2);
 	const [stateJsonText, setStateJsonText] = useState(baseJsonText);
 	const [errorMessage, setErrorMessage] = useState("");
 	const newStateRef = useRef<T | undefined>(undefined);
@@ -50,7 +51,7 @@ export function SettingsStatesEditor<T extends Message>(
 			}
 			setErrorMessage("");
 			try {
-				const newState = fromJson(JSON.parse(value));
+				const newState = fromJson(schema, JSON.parse(value));
 				newStateRef.current = newState;
 			} catch (e) {
 				if (e instanceof Error) {
@@ -60,7 +61,7 @@ export function SettingsStatesEditor<T extends Message>(
 				}
 			}
 		},
-		[fromJson],
+		[schema],
 	);
 
 	const close = () => {

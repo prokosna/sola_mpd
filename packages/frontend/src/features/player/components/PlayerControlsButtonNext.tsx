@@ -1,4 +1,5 @@
-import { MpdRequest } from "@sola_mpd/domain/src/models/mpd/mpd_command_pb.js";
+import { create } from "@bufbuild/protobuf";
+import { MpdRequestSchema } from "@sola_mpd/domain/src/models/mpd/mpd_command_pb.js";
 import { IconPlayerSkipForward } from "@tabler/icons-react";
 import { useCallback } from "react";
 import { useMpdClientState } from "../../mpd";
@@ -25,7 +26,7 @@ export function PlayerControlsButtonNext() {
 		}
 
 		mpdClient.command(
-			new MpdRequest({
+			create(MpdRequestSchema, {
 				profile,
 				command: {
 					case: "next",

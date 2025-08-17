@@ -1,16 +1,21 @@
+import { fromBinary, toBinary } from "@bufbuild/protobuf";
 import {
 	SIO_MESSAGE,
 	SIO_MPD_EVENT,
 } from "@sola_mpd/domain/src/const/socketio.js";
 import {
-	MpdRequest,
-	MpdRequestBulk,
+	MpdRequestBulkSchema,
+	MpdRequestSchema,
+	MpdResponseSchema,
 } from "@sola_mpd/domain/src/models/mpd/mpd_command_pb.js";
-import type { MpdEvent } from "@sola_mpd/domain/src/models/mpd/mpd_event_pb.js";
-import { MpdProfile } from "@sola_mpd/domain/src/models/mpd/mpd_profile_pb.js";
-import type { Server as IOServer, Socket } from "socket.io";
-
+import {
+	type MpdEvent,
+	MpdEventSchema,
+} from "@sola_mpd/domain/src/models/mpd/mpd_event_pb.js";
+import type { MpdProfile } from "@sola_mpd/domain/src/models/mpd/mpd_profile_pb.js";
+import { MpdProfileSchema } from "@sola_mpd/domain/src/models/mpd/mpd_profile_pb.js";
 import { DeepMap } from "@sola_mpd/domain/src/utils/DeepMap.js";
+import type { Server as IOServer, Socket } from "socket.io";
 import { mpdClient } from "./mpdClient.js";
 
 /**
@@ -41,7 +46,7 @@ export class MpdMessageHandler {
 		socket: Socket,
 	): Promise<void> {
 		try {
-			const profile = MpdProfile.fromBinary(msg);
+			const profile = fromBinary(MpdProfileSchema, msg);
 			if (this.idEventHandlerMap.has([id, profile])) {
 				return;
 			}
@@ -51,7 +56,7 @@ export class MpdMessageHandler {
 
 			// Event listener.
 			const handlePromise = mpdClient.subscribe(profile, (event: MpdEvent) => {
-				this.io.to(room).emit(SIO_MPD_EVENT, event.toBinary());
+				this.io.to(room).emit(SIO_MPD_EVENT, toBinary(MpdEventSchema, event));
 			});
 			this.idEventHandlerMap.set([id, profile], handlePromise);
 			await handlePromise;
@@ -69,7 +74,7 @@ export class MpdMessageHandler {
 		msg: Uint8Array,
 		socket: Socket,
 	): Promise<void> {
-		const profile = MpdProfile.fromBinary(msg);
+		const profile = fromBinary(MpdProfileSchema, msg);
 		if (!this.idEventHandlerMap.has([id, profile])) {
 			return;
 		}
@@ -94,13 +99,13 @@ export class MpdMessageHandler {
 	}
 
 	async command(msg: Uint8Array): Promise<Uint8Array> {
-		const req = MpdRequest.fromBinary(msg);
+		const req = fromBinary(MpdRequestSchema, msg);
 		const res = await mpdClient.execute(req);
-		return res.toBinary();
+		return toBinary(MpdResponseSchema, res);
 	}
 
 	async commandBulk(msg: Uint8Array): Promise<void> {
-		const req = MpdRequestBulk.fromBinary(msg);
+		const req = fromBinary(MpdRequestBulkSchema, msg);
 		await mpdClient.executeBulk(req.requests);
 		return;
 	}

@@ -1,4 +1,8 @@
-import { MpdRequest } from "@sola_mpd/domain/src/models/mpd/mpd_command_pb.js";
+import { create, toJsonString } from "@bufbuild/protobuf";
+import {
+	MpdRequestSchema,
+	MpdResponseSchema,
+} from "@sola_mpd/domain/src/models/mpd/mpd_command_pb.js";
 import type { MpdProfile } from "@sola_mpd/domain/src/models/mpd/mpd_profile_pb.js";
 
 import type { MpdClient } from "../../mpd";
@@ -18,7 +22,7 @@ export async function fetchCurrentSong(
 	profile: MpdProfile,
 ) {
 	const res = await mpdClient.command(
-		new MpdRequest({
+		create(MpdRequestSchema, {
 			profile,
 			command: {
 				case: "currentsong",
@@ -27,7 +31,9 @@ export async function fetchCurrentSong(
 		}),
 	);
 	if (res.command.case !== "currentsong") {
-		throw Error(`Invalid MPD response: ${res.toJsonString()}`);
+		throw Error(
+			`Invalid MPD response: ${toJsonString(MpdResponseSchema, res)}`,
+		);
 	}
 	return res.command.value.song;
 }
@@ -47,7 +53,7 @@ export async function fetchPlayerStatus(
 	profile: MpdProfile,
 ) {
 	const res = await mpdClient.command(
-		new MpdRequest({
+		create(MpdRequestSchema, {
 			profile,
 			command: {
 				case: "status",
@@ -56,7 +62,9 @@ export async function fetchPlayerStatus(
 		}),
 	);
 	if (res.command.case !== "status") {
-		throw Error(`Invalid MPD response: ${res.toJsonString()}`);
+		throw Error(
+			`Invalid MPD response: ${toJsonString(MpdResponseSchema, res)}`,
+		);
 	}
 	return res.command.value.status;
 }
@@ -76,7 +84,7 @@ export async function fetchPlayerVolume(
 	profile: MpdProfile,
 ) {
 	const res = await mpdClient.command(
-		new MpdRequest({
+		create(MpdRequestSchema, {
 			profile,
 			command: {
 				case: "getvol",
@@ -85,7 +93,9 @@ export async function fetchPlayerVolume(
 		}),
 	);
 	if (res.command.case !== "getvol") {
-		throw Error(`Invalid MPD response: ${res.toJsonString()}`);
+		throw Error(
+			`Invalid MPD response: ${toJsonString(MpdResponseSchema, res)}`,
+		);
 	}
 	return res.command.value.vol;
 }

@@ -1,5 +1,9 @@
+import { create, toJsonString } from "@bufbuild/protobuf";
 import type { Folder } from "@sola_mpd/domain/src/models/file_explore_pb.js";
-import { MpdRequest } from "@sola_mpd/domain/src/models/mpd/mpd_command_pb.js";
+import {
+	MpdRequestSchema,
+	MpdResponseSchema,
+} from "@sola_mpd/domain/src/models/mpd/mpd_command_pb.js";
 import type { MpdProfile } from "@sola_mpd/domain/src/models/mpd/mpd_profile_pb.js";
 import type { Song } from "@sola_mpd/domain/src/models/song_pb.js";
 
@@ -19,7 +23,7 @@ export async function fetchFileExploreSongs(
 	folder: Folder,
 ): Promise<Song[]> {
 	const res = await mpdClient.command(
-		new MpdRequest({
+		create(MpdRequestSchema, {
 			profile: mpdProfile,
 			command: {
 				case: "listSongsInFolder",
@@ -30,7 +34,9 @@ export async function fetchFileExploreSongs(
 		}),
 	);
 	if (res.command.case !== "listSongsInFolder") {
-		throw Error(`Invalid MPD response: ${res.toJsonString()}`);
+		throw Error(
+			`Invalid MPD response: ${toJsonString(MpdResponseSchema, res)}`,
+		);
 	}
 	return res.command.value.songs;
 }

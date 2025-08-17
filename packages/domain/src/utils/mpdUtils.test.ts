@@ -1,15 +1,20 @@
-import { StringValue } from "@bufbuild/protobuf";
+import { create } from "@bufbuild/protobuf";
+import { StringValueSchema } from "@bufbuild/protobuf/wkt";
 import { describe, expect, it } from "vitest";
 
 import {
-	FilterCondition,
+	type FilterCondition,
 	FilterCondition_Operator,
+	FilterConditionSchema,
 } from "../models/filter_pb.js";
-import { Song_MetadataTag, Song_MetadataValue } from "../models/song_pb.js";
+import {
+	Song_MetadataTag,
+	Song_MetadataValueSchema,
+} from "../models/song_pb.js";
 
 import {
-	convertConditionToString,
 	convertConditionsToString,
+	convertConditionToString,
 	convertSongMetadataTagToMpdTag,
 	escapeConditionArg,
 	escapeExpression,
@@ -34,13 +39,13 @@ describe("MpdUtils", () => {
 
 	it("convertConditionsToString should correctly convert conditions to string", () => {
 		const conditions: FilterCondition[] = [
-			new FilterCondition({
+			create(FilterConditionSchema, {
 				uuid: "1",
 				tag: Song_MetadataTag.TITLE,
-				value: new Song_MetadataValue({
+				value: create(Song_MetadataValueSchema, {
 					value: {
 						case: "stringValue",
-						value: new StringValue({ value: "Test Song" }),
+						value: create(StringValueSchema, { value: "Test Song" }),
 					},
 				}),
 				operator: FilterCondition_Operator.EQUAL,
@@ -57,24 +62,24 @@ describe("MpdUtils", () => {
 
 	it("convertConditionsToString should handle multiple conditions", () => {
 		const conditions: FilterCondition[] = [
-			new FilterCondition({
+			create(FilterConditionSchema, {
 				uuid: "1",
 				tag: Song_MetadataTag.TITLE,
-				value: new Song_MetadataValue({
+				value: create(Song_MetadataValueSchema, {
 					value: {
 						case: "stringValue",
-						value: new StringValue({ value: "Test Song" }),
+						value: create(StringValueSchema, { value: "Test Song" }),
 					},
 				}),
 				operator: FilterCondition_Operator.EQUAL,
 			}),
-			new FilterCondition({
+			create(FilterConditionSchema, {
 				uuid: "2",
 				tag: Song_MetadataTag.ARTIST,
-				value: new Song_MetadataValue({
+				value: create(Song_MetadataValueSchema, {
 					value: {
 						case: "stringValue",
-						value: new StringValue({ value: "Test Artist" }),
+						value: create(StringValueSchema, { value: "Test Artist" }),
 					},
 				}),
 				operator: FilterCondition_Operator.CONTAIN,
@@ -86,7 +91,7 @@ describe("MpdUtils", () => {
 	});
 
 	it("convertConditionToString should throw an error if value is undefined", () => {
-		const condition: FilterCondition = new FilterCondition({
+		const condition: FilterCondition = create(FilterConditionSchema, {
 			uuid: "1",
 			tag: Song_MetadataTag.ARTIST,
 			value: undefined,
@@ -101,27 +106,27 @@ describe("MpdUtils", () => {
 		const baseCondition = {
 			uuid: "1",
 			tag: Song_MetadataTag.TITLE,
-			value: new Song_MetadataValue({
+			value: create(Song_MetadataValueSchema, {
 				value: {
 					case: "stringValue",
-					value: new StringValue({ value: "Test" }),
+					value: create(StringValueSchema, { value: "Test" }),
 				},
 			}),
 		};
 
-		const equalCondition = new FilterCondition({
+		const equalCondition = create(FilterConditionSchema, {
 			...baseCondition,
 			operator: FilterCondition_Operator.EQUAL,
 		});
 		expect(convertConditionToString(equalCondition)).toBe('title == "Test"');
 
-		const notEqualCondition = new FilterCondition({
+		const notEqualCondition = create(FilterConditionSchema, {
 			...baseCondition,
 			operator: FilterCondition_Operator.NOT_EQUAL,
 		});
 		expect(convertConditionToString(notEqualCondition)).toBe('title != "Test"');
 
-		const containCondition = new FilterCondition({
+		const containCondition = create(FilterConditionSchema, {
 			...baseCondition,
 			operator: FilterCondition_Operator.CONTAIN,
 		});
@@ -129,7 +134,7 @@ describe("MpdUtils", () => {
 			'title contains "Test"',
 		);
 
-		const notContainCondition = new FilterCondition({
+		const notContainCondition = create(FilterConditionSchema, {
 			...baseCondition,
 			operator: FilterCondition_Operator.NOT_CONTAIN,
 		});
@@ -137,7 +142,7 @@ describe("MpdUtils", () => {
 			'!(title contains "Test")',
 		);
 
-		const regexCondition = new FilterCondition({
+		const regexCondition = create(FilterConditionSchema, {
 			...baseCondition,
 			operator: FilterCondition_Operator.REGEX,
 		});

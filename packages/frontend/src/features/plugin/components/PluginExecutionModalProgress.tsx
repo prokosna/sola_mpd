@@ -8,10 +8,7 @@ import {
 	Textarea,
 	Title,
 } from "@mantine/core";
-import {
-	type Plugin,
-	PluginExecuteResponse,
-} from "@sola_mpd/domain/src/models/plugin/plugin_pb.js";
+import type { Plugin } from "@sola_mpd/domain/src/models/plugin/plugin_pb.js";
 import {
 	usePluginExecutionLatestResponseState,
 	usePluginExecutionWarningLogsState,
@@ -44,9 +41,9 @@ export function PluginExecutionModalProgress(
 
 	const error = latestResponse instanceof Error ? latestResponse : undefined;
 	const response =
-		latestResponse instanceof PluginExecuteResponse
-			? latestResponse
-			: undefined;
+		latestResponse === undefined || latestResponse instanceof Error
+			? undefined
+			: latestResponse;
 
 	return (
 		<Stack gap={2}>

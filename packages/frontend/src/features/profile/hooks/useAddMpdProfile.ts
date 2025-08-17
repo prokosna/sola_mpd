@@ -1,4 +1,8 @@
-import { MpdProfile } from "@sola_mpd/domain/src/models/mpd/mpd_profile_pb.js";
+import { clone, create } from "@bufbuild/protobuf";
+import {
+	MpdProfileSchema,
+	MpdProfileStateSchema,
+} from "@sola_mpd/domain/src/models/mpd/mpd_profile_pb.js";
 import { useCallback } from "react";
 
 import { UpdateMode } from "../../../types/stateTypes";
@@ -24,13 +28,13 @@ export function useAddMpdProfile() {
 				throw Error("MpdProfileState is not ready.");
 			}
 
-			const profile = new MpdProfile({
+			const profile = create(MpdProfileSchema, {
 				name: input.name,
 				host: input.host,
 				port: input.port,
 			});
 
-			const newMpdProfileState = mpdProfileState.clone();
+			const newMpdProfileState = clone(MpdProfileStateSchema, mpdProfileState);
 			newMpdProfileState.profiles.push(profile);
 			if (newMpdProfileState.currentProfile === undefined) {
 				newMpdProfileState.currentProfile = profile;

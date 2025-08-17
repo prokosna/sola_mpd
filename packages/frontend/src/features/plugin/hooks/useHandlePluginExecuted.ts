@@ -1,9 +1,12 @@
+import { create } from "@bufbuild/protobuf";
 import {
 	type Plugin,
-	PluginExecuteRequest,
-	PluginExecuteResponse,
+	PluginExecuteRequestSchema,
+	type PluginExecuteResponse,
 	PluginExecuteResponse_Status,
+	PluginExecuteResponseSchema,
 } from "@sola_mpd/domain/src/models/plugin/plugin_pb.js";
+
 import type { Song } from "@sola_mpd/domain/src/models/song_pb.js";
 import { useCallback } from "react";
 
@@ -36,7 +39,7 @@ export function useHandlePluginExecuted() {
 				requestParameters[key] = value;
 			});
 
-			const req = new PluginExecuteRequest({
+			const req = create(PluginExecuteRequestSchema, {
 				host: plugin.host,
 				port: plugin.port,
 				pluginParameters: plugin.pluginParameters,
@@ -60,7 +63,7 @@ export function useHandlePluginExecuted() {
 				},
 				complete: () => {
 					setPluginExecutionLatestResponse(
-						new PluginExecuteResponse({
+						create(PluginExecuteResponseSchema, {
 							message: `Complete: Total ${songs.length} songs`,
 							progressPercentage: 100,
 							status: PluginExecuteResponse_Status.OK,

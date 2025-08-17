@@ -1,6 +1,10 @@
+import { create, toJsonString } from "@bufbuild/protobuf";
 import type { BrowserFilter } from "@sola_mpd/domain/src/models/browser_pb.js";
 import type { FilterCondition } from "@sola_mpd/domain/src/models/filter_pb.js";
-import { MpdRequest } from "@sola_mpd/domain/src/models/mpd/mpd_command_pb.js";
+import {
+	MpdRequestSchema,
+	MpdResponseSchema,
+} from "@sola_mpd/domain/src/models/mpd/mpd_command_pb.js";
 import type { MpdProfile } from "@sola_mpd/domain/src/models/mpd/mpd_profile_pb.js";
 import type { Song } from "@sola_mpd/domain/src/models/song_pb.js";
 
@@ -32,7 +36,7 @@ export async function fetchBrowserSongs(
 		return [];
 	}
 
-	const req = new MpdRequest({
+	const req = create(MpdRequestSchema, {
 		profile,
 		command: {
 			case: "search",
@@ -43,7 +47,9 @@ export async function fetchBrowserSongs(
 	});
 	const res = await mpdClient.command(req);
 	if (res.command.case !== "search") {
-		throw Error(`Invalid MPD response: ${res.toJsonString()}`);
+		throw Error(
+			`Invalid MPD response: ${toJsonString(MpdResponseSchema, res)}`,
+		);
 	}
 	return res.command.value.songs;
 }

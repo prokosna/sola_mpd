@@ -1,5 +1,7 @@
+import { clone, create } from "@bufbuild/protobuf";
 import type { Song_MetadataTag } from "@sola_mpd/domain/src/models/song_pb.js";
-import { SongTableColumn } from "@sola_mpd/domain/src/models/song_table_pb.js";
+import type { SongTableColumn } from "@sola_mpd/domain/src/models/song_table_pb.js";
+import { SongTableColumnSchema } from "@sola_mpd/domain/src/models/song_table_pb.js";
 import type { Column } from "ag-grid-community";
 
 import { convertSongMetadataTagFromDisplayName } from "./songTableTableUtils";
@@ -34,7 +36,7 @@ export function convertAgGridColumnsToSongTableColumns(
 			if (tag === undefined) {
 				return undefined;
 			}
-			const column = new SongTableColumn({
+			const column = create(SongTableColumnSchema, {
 				tag,
 				sortOrder: sortOrder != null ? sortOrder : undefined,
 				isSortDesc,
@@ -62,7 +64,7 @@ export function copySortingAttributesToNewColumns(
 	return newColumns.map((column) => {
 		for (const baseColumn of baseColumns) {
 			if (column.tag === baseColumn.tag) {
-				const newColumn = column.clone();
+				const newColumn = clone(SongTableColumnSchema, column);
 				newColumn.isSortDesc = baseColumn.isSortDesc;
 				newColumn.sortOrder = baseColumn.sortOrder;
 				return newColumn;
@@ -135,7 +137,7 @@ export function ensureTagsContainedInColumns(
 	for (const tag of tags) {
 		if (columns.every((column) => column.tag !== tag)) {
 			columns.push(
-				new SongTableColumn({
+				create(SongTableColumnSchema, {
 					tag,
 					widthFlex: widthFlexInt,
 					isSortDesc: false,
