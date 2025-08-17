@@ -3,11 +3,11 @@ import {
 	Divider,
 	Group,
 	NavLink,
-	ScrollArea,
 	Text,
 	useComputedColorScheme,
 	useMantineTheme,
 } from "@mantine/core";
+import { Virtuoso } from "react-virtuoso";
 import { FullWidthSkeleton } from "../../loading";
 import { useFileExploreTreeViewNodes } from "../hooks/useFileExploreTreeViewNodes";
 import type { TreeNode } from "../types/treeViewTypes";
@@ -84,20 +84,23 @@ export function FileExploreNavigation() {
 				</Group>
 				<Divider p={0} m={0} />
 			</Box>
-			<ScrollArea
+			<Box
 				style={{
 					position: "absolute",
 					top: "33px",
 					bottom: 0,
 					left: 0,
 					right: 0,
-					background: "transparent",
 				}}
 			>
-				{nodes.map((node) => (
-					<DirectoryNavLink key={node.id} node={node} />
-				))}
-			</ScrollArea>
+				<Virtuoso
+					style={{ height: "100%", background: "transparent" }}
+					data={nodes}
+					itemContent={(_index, node) => (
+						<DirectoryNavLink key={node.id} node={node} />
+					)}
+				/>
+			</Box>
 		</Box>
 	);
 }
