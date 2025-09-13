@@ -5,18 +5,20 @@ import { type MutableRefObject, useCallback } from "react";
 
 import { COMPONENT_ID_SEARCH_MAIN_PANE } from "../../../const/component";
 import { useNotification } from "../../../lib/mantine/hooks/useNotification";
+import { useSimilaritySearchContextMenuProps } from "../../advanced_search";
 import type { ContextMenuSection } from "../../context_menu";
 import { useMpdClientState } from "../../mpd";
 import { usePluginContextMenuItems } from "../../plugin";
 import { useCurrentMpdProfileState } from "../../profile";
 import {
-	type SongTableContextMenuItemParams,
-	SongTableKeyType,
-	type SongTableProps,
 	getSongTableContextMenuAdd,
 	getSongTableContextMenuAddToPlaylist,
 	getSongTableContextMenuEditColumns,
 	getSongTableContextMenuReplace,
+	getSongTableContextMenuSimilarSongs,
+	type SongTableContextMenuItemParams,
+	SongTableKeyType,
+	type SongTableProps,
 	useHandleSongDoubleClick,
 	useSetSelectedSongsState,
 	useSongTableState,
@@ -27,7 +29,6 @@ import {
 	useIsSearchLoadingState,
 	useSetIsSearchLoadingState,
 } from "../states/searchUiState";
-
 import { useHandleSearchColumnsUpdated } from "./useHandleSearchColumnsUpdated";
 
 /**
@@ -65,6 +66,14 @@ export function useSearchSongTableProps(
 		songTableKeyType,
 	);
 
+	// Similarity search
+	const {
+		isAdvancedSearchAvailable,
+		setSimilaritySearchTargetSong,
+		refreshSimilaritySearchSongs,
+		setIsSimilaritySearchModalOpen,
+	} = useSimilaritySearchContextMenuProps();
+
 	const contextMenuSections: ContextMenuSection<SongTableContextMenuItemParams>[] =
 		[
 			{
@@ -96,6 +105,17 @@ export function useSearchSongTableProps(
 				items: [getSongTableContextMenuEditColumns(setIsColumnEditModalOpen)],
 			},
 		];
+	if (isAdvancedSearchAvailable) {
+		contextMenuSections.push({
+			items: [
+				getSongTableContextMenuSimilarSongs(
+					setSimilaritySearchTargetSong,
+					refreshSimilaritySearchSongs,
+					setIsSimilaritySearchModalOpen,
+				),
+			],
+		});
+	}
 	if (pluginContextMenuItems.length > 0) {
 		contextMenuSections.push({
 			items: pluginContextMenuItems,

@@ -194,3 +194,33 @@ export function getSongTableContextMenuEditColumns(
 		},
 	};
 }
+
+/**
+ * Creates menu item for similarity search.
+ *
+ * Generates item that opens similarity search modal. Provides
+ * access to similarity search interface.
+ *
+ * @param setSimilaritySearchTargetSong Target song setter
+ * @param refreshSimilaritySearchSongs Songs refresh function
+ * @param setIsSimilaritySearchModalOpen Modal state setter
+ * @returns Context menu item
+ */
+export function getSongTableContextMenuSimilarSongs(
+	setSimilaritySearchTargetSong: (song: Song | undefined) => void,
+	refreshSimilaritySearchSongs: () => void,
+	setIsSimilaritySearchModalOpen: (open: boolean) => void,
+): ContextMenuItem<SongTableContextMenuItemParams> {
+	return {
+		name: "Similar Songs",
+		onClick: async (params?: SongTableContextMenuItemParams): Promise<void> => {
+			if (params === undefined) {
+				return;
+			}
+			const { clickedSong } = params;
+			setIsSimilaritySearchModalOpen(true);
+			setSimilaritySearchTargetSong(clickedSong);
+			refreshSimilaritySearchSongs();
+		},
+	};
+}

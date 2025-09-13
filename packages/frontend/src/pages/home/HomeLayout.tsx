@@ -8,11 +8,11 @@ import {
 	useComputedColorScheme,
 } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
+import { IconMenu2 } from "@tabler/icons-react";
 import { Suspense, useEffect } from "react";
 import { Outlet, useLocation, useNavigate } from "react-router";
-
-import { IconMenu2 } from "@tabler/icons-react";
 import { ROUTE_HOME, ROUTE_HOME_PLAY_QUEUE } from "../../const/routes";
+import { SimilaritySearchModal } from "../../features/advanced_search";
 import { GlobalFilterBox } from "../../features/global_filter";
 import { CenterSpinner } from "../../features/loading";
 import { BrandLogo } from "../../features/logo";
@@ -114,6 +114,7 @@ export function HomeLayout() {
 			</AppShell>
 			<MpdEventObserver />
 			<PluginExecutionModal />
+			<SimilaritySearchModal />
 		</>
 	);
 }

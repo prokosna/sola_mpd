@@ -5,28 +5,30 @@ import {
 	ROUTE_HOME_ALL_SONGS,
 	ROUTE_HOME_BROWSER,
 	ROUTE_HOME_FILE_EXPLORE,
-	ROUTE_HOME_PLAYLIST,
 	ROUTE_HOME_PLAY_QUEUE,
+	ROUTE_HOME_PLAYLIST,
 	ROUTE_HOME_PLUGIN,
 	ROUTE_HOME_RECENTLY_ADDED,
 	ROUTE_HOME_SEARCH,
 	ROUTE_HOME_SETTINGS,
+	ROUTE_HOME_TEXT_TO_MUSIC_SEARCH,
 	ROUTE_LANDING,
 } from "./const/routes";
 import { ErrorPage } from "./pages/ErrorPage";
-import { RootLayout } from "./pages/RootLayout";
-import { RootPage } from "./pages/RootPage";
 import { AllSongsPage } from "./pages/home/AllSongsPage";
 import { BrowserPage } from "./pages/home/BrowserPage";
 import { FileExplorePage } from "./pages/home/FileExplorePage";
 import { HomeLayout } from "./pages/home/HomeLayout";
-import { PlayQueuePage } from "./pages/home/PlayQueuePage";
 import { PlaylistPage } from "./pages/home/PlaylistPage";
+import { PlayQueuePage } from "./pages/home/PlayQueuePage";
 import { PluginsPage } from "./pages/home/PluginsPage";
 import { RecentlyAddedPage } from "./pages/home/RecentlyAddedPage";
 import { SearchPage } from "./pages/home/SearchPage";
 import { SettingsPage } from "./pages/home/SettingsPage";
+import { TextToMusicSearchPage } from "./pages/home/TextToMusicSearchPage";
 import { LandingPage } from "./pages/landing/LandingPage";
+import { RootLayout } from "./pages/RootLayout";
+import { RootPage } from "./pages/RootPage";
 
 const router = createBrowserRouter([
 	{
@@ -77,6 +79,12 @@ const router = createBrowserRouter([
 					{
 						path: ROUTE_HOME_ALL_SONGS.split("/").filter(Boolean).pop(),
 						element: <AllSongsPage />,
+					},
+					{
+						path: ROUTE_HOME_TEXT_TO_MUSIC_SEARCH.split("/")
+							.filter(Boolean)
+							.pop(),
+						element: <TextToMusicSearchPage />,
 					},
 				],
 			},

@@ -19,6 +19,8 @@ message Plugin {
     ON_BROWSER = 5;
     ON_FULL_TEXT_SEARCH = 6;
     ON_RECENTLY_ADDED = 7;
+    ON_ALL = 8;
+    ON_ADVANCED_SEARCH = 9;
   }
 }
 

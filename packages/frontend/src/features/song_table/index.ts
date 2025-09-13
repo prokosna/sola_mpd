@@ -27,18 +27,18 @@ export {
 	type SongTableContextMenuItemParams,
 	SongTableKeyType,
 } from "./types/songTableTypes";
-
-// Utils
-export {
-	getTargetSongsForContextMenu,
-	convertSongMetadataTagToDisplayName,
-	convertSongMetadataTagFromDisplayName,
-	convertOrderingToOperations,
-	getSongTableKey,
-} from "./utils/songTableTableUtils";
 export {
 	getSongTableContextMenuAdd,
 	getSongTableContextMenuAddToPlaylist,
 	getSongTableContextMenuEditColumns,
 	getSongTableContextMenuReplace,
+	getSongTableContextMenuSimilarSongs,
 } from "./utils/songTableMenuItemUtils";
+// Utils
+export {
+	convertOrderingToOperations,
+	convertSongMetadataTagFromDisplayName,
+	convertSongMetadataTagToDisplayName,
+	getSongTableKey,
+	getTargetSongsForContextMenu,
+} from "./utils/songTableTableUtils";

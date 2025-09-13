@@ -26,15 +26,7 @@ export function routes(router: ConnectRouter) {
 					contextMenuTitle: "Sync with Subsonic",
 					contextMenuDescription:
 						"Start synchronization with the Subsonic playlist.",
-					supportedTypes: [
-						Plugin_PluginType.ON_BROWSER,
-						Plugin_PluginType.ON_FILE_EXPLORE,
-						Plugin_PluginType.ON_PLAYLIST,
-						Plugin_PluginType.ON_PLAY_QUEUE,
-						Plugin_PluginType.ON_SAVED_SEARCH,
-						Plugin_PluginType.ON_FULL_TEXT_SEARCH,
-						Plugin_PluginType.ON_RECENTLY_ADDED,
-					],
+					supportedTypes: [Plugin_PluginType.ON_ALL],
 					requiredPluginParameters: ["Url", "User", "Password"],
 					requiredRequestParameters: ["Playlist Name"],
 				}),

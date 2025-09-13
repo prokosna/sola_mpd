@@ -1,4 +1,6 @@
 import { Box, Tabs } from "@mantine/core";
+import { useAdvancedSearchStatsState } from "../../advanced_search";
+import { AdvancedSearchSettings } from "./AdvancedSearchSettings";
 import { Locale } from "./Locale";
 import { Profiles } from "./Profiles";
 import { SettingsStates } from "./SettingsStates";
@@ -7,6 +9,8 @@ import { SettingsStates } from "./SettingsStates";
  * Settings interface with profiles and preferences tabs.
  */
 export function Settings() {
+	const advancedSearchStats = useAdvancedSearchStatsState();
+
 	return (
 		<Box w="100%" h="100%">
 			<Tabs defaultValue="Profiles">
@@ -14,6 +18,9 @@ export function Settings() {
 					<Tabs.Tab value="Profiles">Profiles</Tabs.Tab>
 					<Tabs.Tab value="Locale">Locale</Tabs.Tab>
 					<Tabs.Tab value="Settings">Settings</Tabs.Tab>
+					{advancedSearchStats !== undefined && (
+						<Tabs.Tab value="Advanced Search">Advanced Search</Tabs.Tab>
+					)}
 				</Tabs.List>
 				<Tabs.Panel value="Profiles">
 					<Box p={16}>
@@ -30,6 +37,13 @@ export function Settings() {
 						<SettingsStates />
 					</Box>
 				</Tabs.Panel>
+				{advancedSearchStats !== undefined && (
+					<Tabs.Panel value="Advanced Search">
+						<Box p={16}>
+							<AdvancedSearchSettings stats={advancedSearchStats} />
+						</Box>
+					</Tabs.Panel>
+				)}
 			</Tabs>
 		</Box>
 	);

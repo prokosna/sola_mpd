@@ -41,7 +41,10 @@ import {
 	useSetEditingSearchState,
 } from "../states/searchEditState";
 import { useSetTargetSearchState } from "../states/searchSongsState";
-import { useSetIsSearchLoadingState } from "../states/searchUiState";
+import {
+	useIsSearchLoadingState,
+	useSetIsSearchLoadingState,
+} from "../states/searchUiState";
 import {
 	EditingSearchStatus,
 	type SearchFormValues,
@@ -73,6 +76,7 @@ export function SearchNavigationQueryEditor({
 
 	const savedSearches = useSavedSearchesState();
 	const updateSavedSearches = useUpdateSavedSearchesState();
+	const isSearchLoading = useIsSearchLoadingState();
 	const setIsSearchLoading = useSetIsSearchLoadingState();
 	const setTargetSearch = useSetTargetSearchState();
 	const searchSongTableColumns = useSearchSongTableColumnsState();
@@ -337,7 +341,12 @@ export function SearchNavigationQueryEditor({
 						<Button size="xs" type="submit" variant="outline">
 							{isNewSearch ? "Save" : "Update"}
 						</Button>
-						<Button size="xs" ml="auto" onClick={handleSearch}>
+						<Button
+							size="xs"
+							ml="auto"
+							onClick={handleSearch}
+							loading={isSearchLoading}
+						>
 							Search
 						</Button>
 					</Flex>

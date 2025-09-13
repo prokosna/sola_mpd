@@ -2,6 +2,9 @@ FROM node:22-alpine
 
 RUN apk add --no-cache build-base python3
 
+ARG LAINBOW_ENDPOINT
+ENV VITE_LAINBOW_ENDPOINT=${LAINBOW_ENDPOINT}
+
 WORKDIR /app
 COPY . .
 RUN npm ci

@@ -1,5 +1,6 @@
 import { Divider, Group, Stack } from "@mantine/core";
 import {
+	IconAi,
 	IconArrowsExchange,
 	IconBrowser,
 	IconComet,
@@ -18,7 +19,9 @@ import {
 	ROUTE_HOME_PLUGIN,
 	ROUTE_HOME_RECENTLY_ADDED,
 	ROUTE_HOME_SEARCH,
+	ROUTE_HOME_TEXT_TO_MUSIC_SEARCH,
 } from "../../../const/routes";
+import { useAdvancedSearchStatsState } from "../../advanced_search";
 import { CardStats } from "../../stats";
 import { useSideNavigationItems } from "../hooks/useSideNavigationItems";
 import {
@@ -32,6 +35,8 @@ import {
  * @param props.isCompact Compact mode flag
  */
 export function SideNavigation({ isCompact }: { isCompact: boolean }) {
+	const advancedSearchStats = useAdvancedSearchStatsState();
+
 	const baseItems: SideNavigationItemProps[] = [
 		{
 			name: "Play Queue",
@@ -81,6 +86,12 @@ export function SideNavigation({ isCompact }: { isCompact: boolean }) {
 			link: ROUTE_HOME_PLUGIN,
 			isCompact,
 		},
+		{
+			name: "Text-to-Music",
+			icon: <IconAi />,
+			link: ROUTE_HOME_TEXT_TO_MUSIC_SEARCH,
+			isCompact,
+		},
 	];
 
 	const sideNavigationItems = useSideNavigationItems(baseItems);
@@ -88,9 +99,15 @@ export function SideNavigation({ isCompact }: { isCompact: boolean }) {
 	return (
 		<Stack h="100%">
 			<Stack w="100%" px={10} pt={8} gap={0}>
-				{sideNavigationItems.map((item) => (
-					<SideNavigationItem key={item.name} {...item} />
-				))}
+				{sideNavigationItems
+					.filter(
+						(item) =>
+							item.name !== "Text-to-Music" ||
+							advancedSearchStats !== undefined,
+					)
+					.map((item) => (
+						<SideNavigationItem key={item.name} {...item} />
+					))}
 			</Stack>
 			{isCompact ? null : (
 				<>

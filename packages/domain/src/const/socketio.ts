@@ -11,3 +11,6 @@ export const SIO_MPD_COMMAND_BULK = "sio_mpd_command_bulk";
 // Socket IO - plugin
 export const SIO_PLUGIN_REGISTER = "sio_plugin_register";
 export const SIO_PLUGIN_EXECUTE = "sio_plugin_execute";
+
+// Socket IO - Advanced Search
+export const SIO_ADVANCED_SEARCH = "sio_advanced_search";

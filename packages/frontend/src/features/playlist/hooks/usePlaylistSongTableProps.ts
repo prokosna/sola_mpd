@@ -11,6 +11,7 @@ import { type MutableRefObject, useCallback } from "react";
 import { COMPONENT_ID_PLAYLIST_MAIN_PANE } from "../../../const/component";
 import { useNotification } from "../../../lib/mantine/hooks/useNotification";
 import { UpdateMode } from "../../../types/stateTypes";
+import { useSimilaritySearchContextMenuProps } from "../../advanced_search";
 import type { ContextMenuSection } from "../../context_menu";
 import { useMpdClientState } from "../../mpd";
 import { usePluginContextMenuItems } from "../../plugin";
@@ -20,6 +21,7 @@ import {
 	getSongTableContextMenuAddToPlaylist,
 	getSongTableContextMenuEditColumns,
 	getSongTableContextMenuReplace,
+	getSongTableContextMenuSimilarSongs,
 	getSongTableKey,
 	getTargetSongsForContextMenu,
 	type SongTableContextMenuItemParams,
@@ -72,6 +74,14 @@ export function usePlaylistSongTableProps(
 		Plugin_PluginType.ON_PLAYLIST,
 		songTableKeyType,
 	);
+
+	// Similarity search
+	const {
+		isAdvancedSearchAvailable,
+		setSimilaritySearchTargetSong,
+		refreshSimilaritySearchSongs,
+		setIsSimilaritySearchModalOpen,
+	} = useSimilaritySearchContextMenuProps();
 
 	const contextMenuSections: ContextMenuSection<SongTableContextMenuItemParams>[] =
 		[
@@ -263,6 +273,17 @@ export function usePlaylistSongTableProps(
 				items: [getSongTableContextMenuEditColumns(setIsColumnEditModalOpen)],
 			},
 		];
+	if (isAdvancedSearchAvailable) {
+		contextMenuSections.push({
+			items: [
+				getSongTableContextMenuSimilarSongs(
+					setSimilaritySearchTargetSong,
+					refreshSimilaritySearchSongs,
+					setIsSimilaritySearchModalOpen,
+				),
+			],
+		});
+	}
 	if (pluginContextMenuItems.length > 0) {
 		contextMenuSections.push({
 			items: pluginContextMenuItems,

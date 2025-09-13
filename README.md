@@ -1,6 +1,6 @@
 # Sola MPD
 
-Sola MPD is a web-based MPD client focused on usability with flexible browsing and advanced search.
+Sola MPD is a web-based MPD client focused on usability with flexible browsing and search.
 
 The primary goal of this client is to help users efficiently find specific songs within large music libraries and freely organize them into a queue and playlists. If you're looking for a table-oriented UI for better music management, this client might be a good fit. However, if you're seeking a player with fancy visual design, this may not be what you're looking for.
 
@@ -10,7 +10,7 @@ This client has the following features:
 - [x] Play queue
 - [x] Flexible metadata browser (inspired by [GMPC](http://gmpclient.org/))
 - [x] MPD Playlist management
-- [x] Advanced search
+- [x] Flexible search
   - `=`, `!=`, `has`, `regular expression`, etc
   - Flexible AND/OR combinations
   - Saved searches (a.k.a Smart Playlist inspired by [MusicBee](https://www.getmusicbee.com/))
@@ -25,6 +25,9 @@ This client has the following features:
 - [x] Supports touch devices
 - [x] Browse recently added artists, albums and composers
 - [x] Playlist sync with Subsonic API compatible service (via plugin)
+- [x] Advanced search (Beta, requires [lainbow](https://github.com/prokosna/lainbow) integration)
+  - Text-to-Music search (MuQ-MuLan)
+  - Similarity search (MuQ)
 
 On the other hand, the following features are out of scope for now:
 
@@ -61,6 +64,14 @@ Some features may use MPD's API in a suboptimal way (e.g., loading all songs at 
 ### Responsive layout for tablet and mobile
 
 ![sola_mpd_responsive](https://github.com/user-attachments/assets/04e0eae5-a3ac-46dc-9078-2b247ff1c217)
+
+### Similarity search
+
+![sola_mpd_similarity_search](https://github.com/user-attachments/assets/27ebfff2-a099-4eb9-b78f-37c9d455bd6f)
+
+### Text-to-Music search
+
+![sola_mpd_text_to_music_search](https://github.com/user-attachments/assets/8935c616-806a-45d1-8331-80fd68136a58)
 
 ## How to install
 
@@ -120,7 +131,7 @@ The main branch should be always the latest working branch.
 
 You just need to stop the running container, pull the latest main branch and run the latest container.
 
-```
+```bash
 $ cd sola_mpd
 $ docker compose down
 $ git pull origin main
@@ -139,6 +150,37 @@ $ docker compose up --build -d
 | Add (Context menu)          | Add the selected songs to the play queue                                                                                    |
 | Replace (Context menu)      | Replace the current play queue with the selected songs                                                                      |
 | Edit Columns (Context menu) | Edit the metadata to be used as columns - The order can be changed by directly dragging & dropping the column on the table. |
+
+## Advanced search (Beta)
+
+You can unlock the following features by setting up [lainbow](https://github.com/prokosna/lainbow).
+
+- Text-to-Music search ([MuQ-MuLan](https://huggingface.co/OpenMuQ/MuQ-MuLan-large))
+- Similarity search ([MuQ](https://huggingface.co/OpenMuQ/MuQ-large-msd-iter))
+
+Once you have set up [lainbow](https://github.com/prokosna/lainbow), you can just uncomment the following line in [docker-compose.yaml](docker-compose.yaml),
+
+```yaml
+      args:
+        LAINBOW_ENDPOINT: "http://your.lainbow.endpoint:port/"
+```
+
+then restart the container.
+
+```bash
+$ docker compose down
+$ docker compose up --build -d
+```
+
+Sola MPD requires MuQ and MuQ-MuLan embeddings in the vector database for these features.
+After restarting the container, the "Advanced Search" tab will be available in the Settings page.
+If you use Settings > Advanced Search > Scan Library and Analyze buttons to prepare the vector database, only MuQ and MuQ-MuLan embeddings will be generated.
+
+<img width="734" height="323" alt="2025-09-13 173633" src="https://github.com/user-attachments/assets/f2d623bb-de82-4b44-96af-1b8fa19ff1a7" />
+
+Please note that lainbow requires a NVIDIA GPU to generate embeddings. It works with CPU but it takes much longer time to generate embeddings.
+
+**This feature may require some engineering skill to set up. Feel free to let me know if you are interested in this feature but having some trouble setting it up.**
 
 ## Plugin
 
