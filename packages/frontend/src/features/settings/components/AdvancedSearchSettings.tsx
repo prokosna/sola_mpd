@@ -72,8 +72,8 @@ export function AdvancedSearchSettings({
 				<Table.Thead>
 					<Table.Tr>
 						<Table.Th>Total Songs</Table.Th>
-						<Table.Th>Songs ready for Similarity Search</Table.Th>
-						<Table.Th>Songs ready for Text-to-Music Search</Table.Th>
+						<Table.Th>Songs Ready for Similarity Search</Table.Th>
+						<Table.Th>Songs Ready for Text-to-Music Search</Table.Th>
 						<Table.Th>Running Tasks</Table.Th>
 					</Table.Tr>
 				</Table.Thead>

@@ -65,6 +65,14 @@ Some features may use MPD's API in a suboptimal way (e.g., loading all songs at 
 
 ![sola_mpd_responsive](https://github.com/user-attachments/assets/04e0eae5-a3ac-46dc-9078-2b247ff1c217)
 
+### Similarity search
+
+![sola_mpd_similarity_search](https://github.com/user-attachments/assets/27ebfff2-a099-4eb9-b78f-37c9d455bd6f)
+
+### Text-to-Music search
+
+![sola_mpd_text_to_music_search](https://github.com/user-attachments/assets/8935c616-806a-45d1-8331-80fd68136a58)
+
 ## How to install
 
 Sola MPD is a web based client and needs to be deployed on your server in the local network.
@@ -150,19 +158,29 @@ You can unlock the following features by setting up [lainbow](https://github.com
 - Text-to-Music search ([MuQ-MuLan](https://huggingface.co/OpenMuQ/MuQ-MuLan-large))
 - Similarity search ([MuQ](https://huggingface.co/OpenMuQ/MuQ-large-msd-iter))
 
-Once you have set up [lainbow](https://github.com/prokosna/lainbow), you can just uncomment the following line in [docker-compose.yaml](docker-compose.yaml) and restart the container.
+Once you have set up [lainbow](https://github.com/prokosna/lainbow), you can just uncomment the following line in [docker-compose.yaml](docker-compose.yaml),
 
 ```yaml
       args:
         LAINBOW_ENDPOINT: "http://your.lainbow.endpoint:port/"
 ```
 
+then restart the container.
+
 ```bash
 $ docker compose down
 $ docker compose up --build -d
 ```
 
-**This feature might require some engineering skill to set up. Feel free to let me know if you are interested in this feature but having some trouble setting it up.**
+Sola MPD requires MuQ and MuQ-MuLan embeddings in the vector database for these features.
+After restarting the container, the "Advanced Search" tab will be available in the Settings page.
+If you use Settings > Advanced Search > Scan Library and Analyze buttons to prepare the vector database, only MuQ and MuQ-MuLan embeddings will be generated.
+
+<img width="734" height="323" alt="2025-09-13 173633" src="https://github.com/user-attachments/assets/f2d623bb-de82-4b44-96af-1b8fa19ff1a7" />
+
+Please note that lainbow requires a NVIDIA GPU to generate embeddings. It works with CPU but it takes much longer time to generate embeddings.
+
+**This feature may require some engineering skill to set up. Feel free to let me know if you are interested in this feature but having some trouble setting it up.**
 
 ## Plugin
 
