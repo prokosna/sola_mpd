@@ -10,3 +10,5 @@ export const COMPONENT_ID_ALL_SONGS = "all_songs";
 export const COMPONENT_ID_RECENTLY_ADDED = "recently_added";
 export const COMPONENT_ID_RECENTLY_ADDED_FILTER_LIST_PREFIX =
 	"recently_added_filter_list";
+export const COMPONENT_ID_TEXT_TO_MUSIC_SEARCH = "text_to_music_search";
+export const COMPONENT_ID_SIMILARITY_SEARCH = "similarity_search";

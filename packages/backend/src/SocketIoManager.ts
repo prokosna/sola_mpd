@@ -1,5 +1,6 @@
 import { create, toBinary } from "@bufbuild/protobuf";
 import {
+	SIO_ADVANCED_SEARCH,
 	SIO_MPD_COMMAND,
 	SIO_MPD_COMMAND_BULK,
 	SIO_MPD_SUBSCRIBE,
@@ -9,7 +10,7 @@ import {
 } from "@sola_mpd/domain/src/const/socketio.js";
 import { MpdResponseSchema } from "@sola_mpd/domain/src/models/mpd/mpd_command_pb.js";
 import type { Server as IOServer } from "socket.io";
-
+import { AdvancedSearchMessageHandler } from "./advanced_search/AdvancedSearchMessageHandler.js";
 import { MpdMessageHandler } from "./mpd/MpdMessageHandler.js";
 import { PluginMessageHandler } from "./plugins/PluginMessageHandler.js";
 
@@ -22,6 +23,7 @@ export class SocketIoManager {
 
 		const mpdHandler = MpdMessageHandler.initialize(io);
 		const pluginHandler = new PluginMessageHandler();
+		const advancedSearchHandler = AdvancedSearchMessageHandler.initialize();
 
 		io.on("connection", (socket) => {
 			const id = socket.id;
@@ -109,6 +111,16 @@ export class SocketIoManager {
 					)) {
 						socket.emit(callbackEvent, resp);
 					}
+				} catch (err) {
+					console.error(err);
+				}
+			});
+
+			// Execute an advanced search command.
+			socket.on(SIO_ADVANCED_SEARCH, async (msg: ArrayBuffer, callback) => {
+				try {
+					const resp = await advancedSearchHandler.command(new Uint8Array(msg));
+					callback(Buffer.from(resp));
 				} catch (err) {
 					console.error(err);
 				}

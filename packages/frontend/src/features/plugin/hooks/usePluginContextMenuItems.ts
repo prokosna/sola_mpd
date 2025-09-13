@@ -1,11 +1,11 @@
-import type { Plugin_PluginType } from "@sola_mpd/domain/src/models/plugin/plugin_pb.js";
+import { Plugin_PluginType } from "@sola_mpd/domain/src/models/plugin/plugin_pb.js";
 
 import { useNotification } from "../../../lib/mantine/hooks/useNotification";
 import type { ContextMenuItem } from "../../context_menu";
 import {
+	getTargetSongsForContextMenu,
 	type SongTableContextMenuItemParams,
 	type SongTableKeyType,
-	getTargetSongsForContextMenu,
 } from "../../song_table";
 import {
 	useIsPreviousPluginStillRunningState,
@@ -36,7 +36,10 @@ export function usePluginContextMenuItems(
 	for (const plugin of pluginState?.plugins || []) {
 		if (
 			!plugin.isAvailable ||
-			!plugin.info?.supportedTypes.includes(pluginType)
+			!(
+				plugin.info?.supportedTypes.includes(Plugin_PluginType.ON_ALL) ||
+				plugin.info?.supportedTypes.includes(pluginType)
+			)
 		) {
 			continue;
 		}

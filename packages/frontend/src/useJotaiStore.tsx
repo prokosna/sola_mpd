@@ -1,5 +1,5 @@
 import { createStore } from "jotai";
-
+import { advancedSearchClientAtom } from "./features/advanced_search/states/advancedSearchClient";
 import { browserStateRepositoryAtom } from "./features/browsing/browser/states/browserStateRepository";
 import { recentlyAddedStateRepositoryAtom } from "./features/browsing/recently_added/states/recentlyAddedStateRepository";
 import { mpdClientAtom } from "./features/mpd/states/mpdClient";
@@ -9,6 +9,7 @@ import { pluginStateRepositoryAtom } from "./features/plugin/states/pluginStateR
 import { mpdProfileStateRepositoryAtom } from "./features/profile/states/mpdProfileStateRepository";
 import { savedSearchesRepositoryAtom } from "./features/search/states/savedSearchesRepository";
 import { songTableStateRepositoryAtom } from "./features/song_table/states/songTableStateRepository";
+import { AdvancedSearchClientImplSocketIo } from "./infrastructure/advanced_search/AdvancedSearchClientImplSocketIo";
 import { BrowserStateRepositoryImplHttp } from "./infrastructure/browser/BrowserStateRepositoryImplHttp";
 import { HttpClientImplFetch } from "./infrastructure/http/HttpClientImplFetch";
 import { MpdClientSocketIo } from "./infrastructure/mpd/MpdClientImplSocketIo";
@@ -60,6 +61,10 @@ export function useJotaiStore() {
 		store.set(
 			recentlyAddedStateRepositoryAtom,
 			new RecentlyAddedStateRepositoryImplHttp(httpClient),
+		);
+		store.set(
+			advancedSearchClientAtom,
+			new AdvancedSearchClientImplSocketIo(socketIoClient),
 		);
 
 		globalStore = store;

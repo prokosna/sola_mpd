@@ -5,6 +5,10 @@ services:
     build:
       context: .
       dockerfile: docker/Dockerfile
+      # To unlock the advanced search features, uncomment the following line.
+      # Please read the README.md for more information.
+      # args:
+      #   LAINBOW_ENDPOINT: "http://your.lainbow.endpoint:port/"
     image: sola_mpd_prebuilt:latest
     container_name: sola_mpd
     volumes:

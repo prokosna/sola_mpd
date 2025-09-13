@@ -760,4 +760,5 @@ class MpdClient {
 	}
 }
 
+export type { MpdClient };
 export const mpdClient = new MpdClient();

@@ -1,6 +1,6 @@
 # Sola MPD
 
-Sola MPD is a web-based MPD client focused on usability with flexible browsing and advanced search.
+Sola MPD is a web-based MPD client focused on usability with flexible browsing and search.
 
 The primary goal of this client is to help users efficiently find specific songs within large music libraries and freely organize them into a queue and playlists. If you're looking for a table-oriented UI for better music management, this client might be a good fit. However, if you're seeking a player with fancy visual design, this may not be what you're looking for.
 
@@ -10,7 +10,7 @@ This client has the following features:
 - [x] Play queue
 - [x] Flexible metadata browser (inspired by [GMPC](http://gmpclient.org/))
 - [x] MPD Playlist management
-- [x] Advanced search
+- [x] Flexible search
   - `=`, `!=`, `has`, `regular expression`, etc
   - Flexible AND/OR combinations
   - Saved searches (a.k.a Smart Playlist inspired by [MusicBee](https://www.getmusicbee.com/))
@@ -25,6 +25,9 @@ This client has the following features:
 - [x] Supports touch devices
 - [x] Browse recently added artists, albums and composers
 - [x] Playlist sync with Subsonic API compatible service (via plugin)
+- [x] Advanced search (Beta, requires [lainbow](https://github.com/prokosna/lainbow) integration)
+  - Text-to-Music search (MuQ-MuLan)
+  - Similarity search (MuQ)
 
 On the other hand, the following features are out of scope for now:
 
@@ -120,7 +123,7 @@ The main branch should be always the latest working branch.
 
 You just need to stop the running container, pull the latest main branch and run the latest container.
 
-```
+```bash
 $ cd sola_mpd
 $ docker compose down
 $ git pull origin main
@@ -139,6 +142,27 @@ $ docker compose up --build -d
 | Add (Context menu)          | Add the selected songs to the play queue                                                                                    |
 | Replace (Context menu)      | Replace the current play queue with the selected songs                                                                      |
 | Edit Columns (Context menu) | Edit the metadata to be used as columns - The order can be changed by directly dragging & dropping the column on the table. |
+
+## Advanced search (Beta)
+
+You can unlock the following features by setting up [lainbow](https://github.com/prokosna/lainbow).
+
+- Text-to-Music search ([MuQ-MuLan](https://huggingface.co/OpenMuQ/MuQ-MuLan-large))
+- Similarity search ([MuQ](https://huggingface.co/OpenMuQ/MuQ-large-msd-iter))
+
+Once you have set up [lainbow](https://github.com/prokosna/lainbow), you can just uncomment the following line in [docker-compose.yaml](docker-compose.yaml) and restart the container.
+
+```yaml
+      args:
+        LAINBOW_ENDPOINT: "http://your.lainbow.endpoint:port/"
+```
+
+```bash
+$ docker compose down
+$ docker compose up --build -d
+```
+
+**This feature might require some engineering skill to set up. Feel free to let me know if you are interested in this feature but having some trouble setting it up.**
 
 ## Plugin
 
