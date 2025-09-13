@@ -11,7 +11,6 @@ import {
 import { getSongMetadataAsString } from "@sola_mpd/domain/src/utils/songUtils.js";
 
 import { SubsonicClient } from "./subsonic.js";
-import { sleep } from "./utils.js";
 
 export async function* syncWithSubsonic(
 	url: string,
@@ -66,6 +65,5 @@ export async function* syncWithSubsonic(
 			continue;
 		}
 		await client.add(subsonicSong, playlist);
-		await sleep(100);
 	}
 }

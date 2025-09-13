@@ -14,7 +14,6 @@ import {
 	SubsonicSearch3ResponseSchema,
 	type SubsonicSong,
 } from "./types.js";
-import { sleep } from "./utils.js";
 
 const fetchRetry = async (
 	url: string,
@@ -48,6 +47,9 @@ export class SubsonicClient {
 		const album = getSongMetadataAsString(song, Song_MetadataTag.ALBUM);
 		const queries = [album, artist, title];
 		for (const query of queries) {
+			if (query === "") {
+				continue;
+			}
 			let songs: SubsonicSong[] = [];
 			if (this.cache.has(query)) {
 				// biome-ignore lint/style/noNonNullAssertion: Already checked by has().
@@ -60,7 +62,6 @@ export class SubsonicClient {
 					songs = await this.search(query);
 					this.cache.set(query, songs);
 					if (songs.length === 0) {
-						await sleep(100);
 						count += 1;
 						continue;
 					}
@@ -69,14 +70,13 @@ export class SubsonicClient {
 			}
 			for (const song of songs) {
 				if (
-					song.title === title &&
-					song.artist === artist &&
-					song.album === album
+					(title === "" || song.title === title) &&
+					(artist === "" || song.artist === artist) &&
+					(album === "" || song.album === album)
 				) {
 					return song;
 				}
 			}
-			await sleep(100);
 		}
 		return;
 	}
