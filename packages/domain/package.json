@@ -14,8 +14,8 @@
 		"test": "npx vitest run"
 	},
 	"devDependencies": {
-		"@bufbuild/buf": "^1.56.0",
-		"@bufbuild/protoc-gen-es": "^2.6.3"
+		"@bufbuild/buf": "^1.57.0",
+		"@bufbuild/protoc-gen-es": "^2.8.0"
 	},
 	"dependencies": {
 		"fast-deep-equal": "^3.1.3"
