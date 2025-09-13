@@ -477,6 +477,7 @@ class MpdClient {
 			}
 			case "update":
 				await this.sendCommand(client, cmd);
+				this.allSongsCache.delete(profile);
 				return create(MpdResponseSchema, {
 					command: { case: "update", value: {} },
 				});
