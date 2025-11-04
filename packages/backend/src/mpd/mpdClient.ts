@@ -44,18 +44,39 @@ class MpdClient {
 			return client;
 		}
 
-		// Create new client
 		const config = {
 			host: profile.host,
 			port: profile.port,
+			reconnectDelay: 3000,
+			maxRetries: 5,
 		};
-		const clientPromise = Client.connect(config).then((client) => {
-			client.once("close", () => {
+
+		const clientPromise = Client.connect(config)
+			.then((client) => {
+				client.on("close", (error) => {
+					console.info(
+						`MPD connection closed for ${profile.name}: ${error?.message || "normal disconnect"}`,
+					);
+					this.clients.delete(profile);
+					this.allSongsCache.delete(profile);
+				});
+
+				client.on("error", (error) => {
+					console.warn(
+						`MPD connection error for ${profile.name}: ${error.message}`,
+					);
+				});
+
+				return client;
+			})
+			.catch((error) => {
+				console.error(
+					`Failed to connect to MPD server ${profile.name}: ${error.message}`,
+				);
 				this.clients.delete(profile);
-				console.info("Removed closed client");
+				throw error;
 			});
-			return client;
-		});
+
 		this.clients.set(profile, clientPromise);
 		return clientPromise;
 	}
