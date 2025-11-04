@@ -36,10 +36,7 @@ class MpdClient {
 	private allSongsCache: DeepMap<MpdProfile, Song[]> = new DeepMap(new Map());
 
 	private async connect(profile: MpdProfile): Promise<Client> {
-		console.info(`[MpdClient] connect() called for profile: ${profile.name}`);
-
 		if (this.clients.has(profile)) {
-			console.info(`[MpdClient] Using cached client for ${profile.name}`);
 			const client = this.clients.get(profile);
 			if (client === undefined) {
 				throw new Error("This shouldn't happen.");
@@ -47,7 +44,6 @@ class MpdClient {
 			return client;
 		}
 
-		console.info(`[MpdClient] Creating new client for ${profile.name}`);
 		const config = {
 			host: profile.host,
 			port: profile.port,
@@ -57,11 +53,9 @@ class MpdClient {
 
 		const clientPromise = Client.connect(config)
 			.then((client) => {
-				console.info(`[MpdClient] Successfully connected to ${profile.name}`);
-
 				client.on("close", (error) => {
 					console.info(
-						`[MpdClient] Connection closed for ${profile.name}: ${error?.message || "normal disconnect"}`,
+						`MPD connection closed for ${profile.name}: ${error?.message || "normal disconnect"}`,
 					);
 					this.clients.delete(profile);
 					this.allSongsCache.delete(profile);
@@ -69,7 +63,7 @@ class MpdClient {
 
 				client.on("error", (error) => {
 					console.warn(
-						`[MpdClient] Connection error for ${profile.name}: ${error.message}`,
+						`MPD connection error for ${profile.name}: ${error.message}`,
 					);
 				});
 
@@ -77,7 +71,7 @@ class MpdClient {
 			})
 			.catch((error) => {
 				console.error(
-					`[MpdClient] Failed to connect to ${profile.name}: ${error.message}`,
+					`Failed to connect to MPD server ${profile.name}: ${error.message}`,
 				);
 				this.clients.delete(profile);
 				throw error;
@@ -91,7 +85,6 @@ class MpdClient {
 		profile: MpdProfile,
 		callback: (event: MpdEvent) => void,
 	): Promise<(name?: string) => void> {
-		console.info(`[MpdClient] subscribe() called for profile: ${profile.name}`);
 		const client = await this.connect(profile);
 		const handle = (name?: string) => {
 			if (name == null) {
@@ -169,9 +162,6 @@ class MpdClient {
 	}
 
 	async executeBulk(reqs: MpdRequest[]): Promise<void> {
-		console.info(
-			`[MpdClient] executeBulk() called with ${reqs.length} requests`,
-		);
 		const commandGroup: DeepMap<MpdProfile, MpdRequest[]> = new DeepMap();
 		for (const req of reqs) {
 			if (req.profile === undefined) {
@@ -184,9 +174,6 @@ class MpdClient {
 		}
 
 		for (const [profile, reqs] of commandGroup) {
-			console.info(
-				`[MpdClient] executeBulk() connecting to ${profile.name} for ${reqs.length} commands`,
-			);
 			const client = await this.connect(profile);
 			const cmds = reqs.map(this.convertCommand);
 			await client.sendCommands(cmds);
@@ -242,9 +229,6 @@ class MpdClient {
 		if (profile === undefined) {
 			throw new Error("Profile is undefined");
 		}
-		console.info(
-			`[MpdClient] execute() called for profile: ${profile.name}, command: ${req.command?.case}`,
-		);
 		const client = await this.connect(profile);
 		const cmd = this.convertCommand(req);
 

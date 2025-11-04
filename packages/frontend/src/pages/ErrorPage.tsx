@@ -8,7 +8,10 @@ export function ErrorPage() {
 	return (
 		<Box p={12}>
 			<Title>Oops!</Title>
-			<p>Something went wrong. Please try reloading the page.</p>
+			<p>
+				Something went wrong. Please make sure that your MPD server is running
+				and try reloading the page.
+			</p>
 			<p>
 				<i>Error: {error.message}</i>
 			</p>
