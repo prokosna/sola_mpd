@@ -16,7 +16,7 @@
 		"@connectrpc/connect-node": "^2.1.0",
 		"@sola_mpd/domain": "^0.0.0",
 		"express": "^5.1.0",
-		"mpd3": "github:prokosna/mpd.js#0.1.3",
+		"mpd3": "github:prokosna/mpd.js#1.0.0",
 		"socket.io": "^4.8.1"
 	},
 	"devDependencies": {
