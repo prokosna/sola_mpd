@@ -29,7 +29,7 @@ services:
     # extra_hosts:
     #   - host.docker.internal:host-gateway
     
-    restart: always
+    restart: unless-stopped
     # Alternatively, use "no" for manual restart
     # restart: no
 
@@ -53,7 +53,7 @@ services:
   #   #   # Or use a custom port:
   #   #   # - 8081:3001
     
-  #   restart: always
+  #   restart: unless-stopped
   #   # Alternatively, use "no" for manual restart
   #   # restart: no
 
