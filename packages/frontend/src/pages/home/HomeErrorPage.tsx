@@ -7,7 +7,6 @@ import {
 	useComputedColorScheme,
 } from "@mantine/core";
 import { useRouteError } from "react-router";
-import { GlobalFilterBox } from "../../features/global_filter";
 import { BrandLogo } from "../../features/logo";
 import { MpdProfileSelector } from "../../features/profile";
 import {
@@ -36,7 +35,6 @@ export function HomeErrorPage() {
 						<BrandLogo />
 					</Group>
 					<Group style={{ flexGrow: 1 }} justify="space-between" wrap="nowrap">
-						<GlobalFilterBox />
 						<Group justify="flex-end" wrap="nowrap" gap="md">
 							<MpdProfileSelector />
 							<ColorModeSwitchButton />
