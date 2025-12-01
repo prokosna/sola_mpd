@@ -18,6 +18,7 @@ import { ErrorPage } from "./pages/ErrorPage";
 import { AllSongsPage } from "./pages/home/AllSongsPage";
 import { BrowserPage } from "./pages/home/BrowserPage";
 import { FileExplorePage } from "./pages/home/FileExplorePage";
+import { HomeErrorPage } from "./pages/home/HomeErrorPage";
 import { HomeLayout } from "./pages/home/HomeLayout";
 import { PlaylistPage } from "./pages/home/PlaylistPage";
 import { PlayQueuePage } from "./pages/home/PlayQueuePage";
@@ -43,6 +44,7 @@ const router = createBrowserRouter([
 			{
 				path: ROUTE_HOME,
 				element: <HomeLayout />,
+				errorElement: <HomeErrorPage />,
 				children: [
 					{
 						path: ROUTE_HOME_PLAY_QUEUE.split("/").filter(Boolean).pop(),
