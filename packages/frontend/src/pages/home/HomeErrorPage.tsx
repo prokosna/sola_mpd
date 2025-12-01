@@ -2,17 +2,11 @@ import {
 	AppShell,
 	Box,
 	Group,
-	Space,
 	Title,
 	useComputedColorScheme,
 } from "@mantine/core";
 import { useRouteError } from "react-router";
 import { BrandLogo } from "../../features/logo";
-import { MpdProfileSelector } from "../../features/profile";
-import {
-	ColorModeSwitchButton,
-	SettingsEntryButton,
-} from "../../features/settings";
 import { useUserDeviceType } from "../../features/user_device";
 
 export function HomeErrorPage() {
@@ -35,19 +29,14 @@ export function HomeErrorPage() {
 						<BrandLogo />
 					</Group>
 					<Group style={{ flexGrow: 1 }} justify="space-between" wrap="nowrap">
-						<Group justify="flex-end" wrap="nowrap" gap="md">
-							<MpdProfileSelector />
-							<ColorModeSwitchButton />
-							<SettingsEntryButton />
-							<Space />
-						</Group>
+						<Group justify="flex-end" wrap="nowrap" gap="md"></Group>
 					</Group>
 				</Group>
 			</AppShell.Header>
 
 			<AppShell.Main display="flex" bg={scheme === "dark" ? "dark.7" : "white"}>
 				<Box p={12}>
-					<Title>Oops!</Title>
+					<Title>Oops!@HomeError</Title>
 					<p>
 						Something went wrong. Please make sure that your MPD server is
 						running and try reloading the page.
