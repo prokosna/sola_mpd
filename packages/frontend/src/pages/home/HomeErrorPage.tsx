@@ -9,10 +9,7 @@ import {
 import { useRouteError } from "react-router";
 import { BrandLogo } from "../../features/logo";
 import { MpdProfileSelector } from "../../features/profile";
-import {
-	ColorModeSwitchButton,
-	SettingsEntryButton,
-} from "../../features/settings";
+import { ColorModeSwitchButton } from "../../features/settings";
 import { useUserDeviceType } from "../../features/user_device";
 
 export function HomeErrorPage() {
@@ -39,7 +36,6 @@ export function HomeErrorPage() {
 						<Group justify="flex-end" wrap="nowrap" gap="md">
 							<MpdProfileSelector />
 							<ColorModeSwitchButton />
-							<SettingsEntryButton />
 							<Space />
 						</Group>
 					</Group>
@@ -47,7 +43,7 @@ export function HomeErrorPage() {
 			</AppShell.Header>
 
 			<AppShell.Main display="flex" bg={scheme === "dark" ? "dark.7" : "white"}>
-				<Box p={12}>
+				<Box p={24}>
 					<Title>Oops!</Title>
 					<p>
 						Something went wrong. Please make sure that your MPD server is
