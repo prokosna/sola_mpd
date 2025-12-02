@@ -1,4 +1,5 @@
 import { Text } from "@mantine/core";
+import { useGlobalKeyShortcuts } from "../../keyboard_shortcut";
 import { useUserDeviceType } from "../../user_device";
 
 /**
@@ -14,6 +15,7 @@ import { useUserDeviceType } from "../../user_device";
  * @returns The BrandLogo component or null if on a non-large device
  */
 export function BrandLogo() {
+	useGlobalKeyShortcuts();
 	const userDeviceType = useUserDeviceType();
 
 	if (userDeviceType !== "large") {
