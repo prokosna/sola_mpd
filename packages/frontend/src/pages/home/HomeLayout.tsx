@@ -14,6 +14,7 @@ import { Outlet, useLocation, useNavigate } from "react-router";
 import { ROUTE_HOME, ROUTE_HOME_PLAY_QUEUE } from "../../const/routes";
 import { SimilaritySearchModal } from "../../features/advanced_search";
 import { GlobalFilterBox } from "../../features/global_filter";
+import { useGlobalKeyShortcuts } from "../../features/keyboard_shortcut";
 import { CenterSpinner } from "../../features/loading";
 import { BrandLogo } from "../../features/logo";
 import { MpdEventObserver } from "../../features/mpd";
@@ -34,6 +35,7 @@ import {
 } from "../../features/user_device";
 
 export function HomeLayout() {
+	useGlobalKeyShortcuts();
 	const location = useLocation();
 	const navigate = useNavigate();
 	const isCompactMode = useIsCompactMode();
