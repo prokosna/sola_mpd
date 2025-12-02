@@ -35,6 +35,7 @@ export function HomeErrorPage() {
 						<BrandLogo />
 					</Group>
 					<Group style={{ flexGrow: 1 }} justify="space-between" wrap="nowrap">
+						<Space />
 						<Group justify="flex-end" wrap="nowrap" gap="md">
 							<MpdProfileSelector />
 							<ColorModeSwitchButton />
