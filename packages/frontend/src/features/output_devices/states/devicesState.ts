@@ -1,4 +1,4 @@
-import { useAtomValue, useSetAtom } from "jotai";
+import { atom, useAtomValue, useSetAtom } from "jotai";
 import { atomWithRefresh } from "jotai/utils";
 
 import { atomWithSync } from "../../../lib/jotai/atomWithSync";
@@ -22,12 +22,21 @@ const outputDevicesAtom = atomWithRefresh(async (get) => {
 	return await fetchOutputDevices(mpdClient, profile);
 });
 
+const outputDevicesSafeAtom = atom(async (get) => {
+	try {
+		return await get(outputDevicesAtom);
+	} catch (error) {
+		console.error(error);
+		return undefined;
+	}
+});
+
 /**
  * Synchronized atom for output devices.
  *
  * Ensures consistent updates across subscribers.
  */
-const outputDevicesSyncAtom = atomWithSync(outputDevicesAtom);
+const outputDevicesSyncAtom = atomWithSync(outputDevicesSafeAtom);
 
 /**
  * Hook for output devices list.

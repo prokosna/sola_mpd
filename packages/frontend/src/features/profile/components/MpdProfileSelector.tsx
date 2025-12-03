@@ -20,8 +20,7 @@ export function MpdProfileSelector() {
 
 	return (
 		<Group px={0} w="100%" miw={100} maw={300}>
-			{mpdProfileState?.currentProfile === undefined ||
-			enabledOutputDevice === undefined ? (
+			{mpdProfileState?.currentProfile === undefined ? (
 				<Select w="100%" size="md" placeholder="Loading profiles..." />
 			) : (
 				<Select
@@ -33,7 +32,9 @@ export function MpdProfileSelector() {
 							profile.name === mpdProfileState.currentProfile?.name;
 						const text =
 							profile.name +
-							(isSelected ? ` - ${enabledOutputDevice?.name}` : "");
+							(isSelected
+								? `${enabledOutputDevice ? ` - ${enabledOutputDevice.name}` : ""}`
+								: "");
 						return {
 							value: profile.name,
 							label: text,

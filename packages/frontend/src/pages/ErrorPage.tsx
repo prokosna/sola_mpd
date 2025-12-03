@@ -6,7 +6,7 @@ export function ErrorPage() {
 	console.error(error);
 
 	return (
-		<Box p={12}>
+		<Box p={24}>
 			<Title>Oops!</Title>
 			<p>
 				Something went wrong. Please make sure that your MPD server is running
