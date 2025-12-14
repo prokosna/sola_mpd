@@ -4,7 +4,7 @@ import {
 	type SongTableColumn,
 	SongTableStateSchema,
 } from "@sola_mpd/domain/src/models/song_table_pb.js";
-import { useCallback, useState } from "react";
+import { useCallback, useRef, useState } from "react";
 import { UpdateMode } from "../../../types/stateTypes";
 import { CenterSpinner } from "../../loading";
 import { PlaylistSelectModal, usePlaylistSelectModal } from "../../playlist";
@@ -35,6 +35,7 @@ export function SimilaritySearchModal() {
 	const updateSongTableState = useUpdateSongTableState();
 
 	const [isColumnEditModalOpen, setIsColumnEditModalOpen] = useState(false);
+	const contextMenuAnchorRef = useRef<HTMLDivElement | null>(null);
 
 	const {
 		songsToAddToPlaylistRef,
@@ -92,31 +93,41 @@ export function SimilaritySearchModal() {
 	}
 
 	return (
-		<Modal
+		<Modal.Root
 			opened={isSimilaritySearchModalOpen}
 			onClose={handleClose}
-			title="Similar Songs"
 			size="80%"
 			centered
-			styles={{
-				body: {
-					display: "flex",
-					flexDirection: "column",
-					height: "80vh",
-				},
-			}}
 		>
-			<Box
-				w="100%"
-				flex={1}
-				style={{
-					border: "1px solid var(--mantine-color-default-border)",
-				}}
-			>
-				<SongTable {...songTableProps} />
-				<PlaylistSelectModal {...playlistSelectModalProps} />
-				<ColumnEditModal {...columnEditModalProps} />
-			</Box>
-		</Modal>
+			<Modal.Overlay />
+			<Modal.Content ref={contextMenuAnchorRef}>
+				<Modal.Header>
+					<Modal.Title>Similar Songs</Modal.Title>
+					<Modal.CloseButton />
+				</Modal.Header>
+				<Modal.Body
+					style={{
+						display: "flex",
+						flexDirection: "column",
+						height: "80vh",
+					}}
+				>
+					<Box
+						w="100%"
+						flex={1}
+						style={{
+							border: "1px solid var(--mantine-color-default-border)",
+						}}
+					>
+						<SongTable
+							{...songTableProps}
+							contextMenuAnchorRef={contextMenuAnchorRef}
+						/>
+						<PlaylistSelectModal {...playlistSelectModalProps} />
+						<ColumnEditModal {...columnEditModalProps} />
+					</Box>
+				</Modal.Body>
+			</Modal.Content>
+		</Modal.Root>
 	);
 }

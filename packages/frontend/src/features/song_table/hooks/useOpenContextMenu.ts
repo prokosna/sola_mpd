@@ -1,7 +1,7 @@
 import type { Song } from "@sola_mpd/domain/src/models/song_pb.js";
 import type { SongTableColumn } from "@sola_mpd/domain/src/models/song_table_pb.js";
 import type { CellContextMenuEvent } from "ag-grid-community";
-import { useCallback } from "react";
+import { type RefObject, useCallback } from "react";
 import { type TriggerEvent, useContextMenu } from "react-contexify";
 
 import type {
@@ -14,8 +14,8 @@ import {
 	copySortingAttributesToNewColumns,
 } from "../utils/songTableColumnUtils";
 import {
-	getSongTableKey,
 	getSongsInTableFromGrid,
+	getSongTableKey,
 } from "../utils/songTableTableUtils";
 
 /**
@@ -38,6 +38,7 @@ export function useOpenContextMenu(
 	songsMap: Map<SongTableKey, Song>,
 	columns: SongTableColumn[],
 	isSortingEnabled: boolean,
+	contextMenuAnchorRef?: RefObject<HTMLElement | null>,
 ): (event: CellContextMenuEvent) => void {
 	const contextMenu = useContextMenu({ id });
 	return useCallback(
@@ -82,11 +83,31 @@ export function useOpenContextMenu(
 				selectedSortedSongs,
 			};
 
+			const triggerEvent = event.event as TriggerEvent;
+			const mouseEvent = event.event as MouseEvent;
+			const anchorRect =
+				contextMenuAnchorRef?.current?.getBoundingClientRect?.() ?? undefined;
+			const x =
+				anchorRect && mouseEvent?.clientX != null
+					? mouseEvent.clientX - anchorRect.left
+					: mouseEvent?.clientX;
+			const y =
+				anchorRect && mouseEvent?.clientY != null
+					? mouseEvent.clientY - anchorRect.top
+					: mouseEvent?.clientY;
 			contextMenu.show({
-				event: event.event as TriggerEvent,
+				event: triggerEvent,
+				position: x != null && y != null ? { x, y } : undefined,
 				props,
 			});
 		},
-		[columns, contextMenu, isSortingEnabled, keyType, songsMap],
+		[
+			columns,
+			contextMenu,
+			contextMenuAnchorRef,
+			isSortingEnabled,
+			keyType,
+			songsMap,
+		],
 	);
 }
