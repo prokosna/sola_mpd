@@ -5,6 +5,21 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [4.2.7] - 2025-12-15
+
+### Fixed
+- Context menu is not positioned correctly on Similarity Search Modal
+
+## [4.2.6] - 2025-12-15
+
+### Added
+- Ability to switch profile even if error occurs
+
+## [4.2.5] - 2025-12-15
+
+### Changed
+- Containers are set to unless-stopped
+
 ## [4.2.4] - 2025-11-04
 
 ### Fixed

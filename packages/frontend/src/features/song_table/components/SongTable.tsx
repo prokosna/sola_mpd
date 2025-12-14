@@ -2,7 +2,7 @@ import type { Song } from "@sola_mpd/domain/src/models/song_pb.js";
 import type { SongTableColumn } from "@sola_mpd/domain/src/models/song_table_pb.js";
 import type { GetRowIdParams } from "ag-grid-community";
 import { AgGridReact } from "ag-grid-react";
-import { type JSX, useCallback, useRef } from "react";
+import { type JSX, type RefObject, useCallback, useRef } from "react";
 
 import { useAgGridTheme } from "../../../lib/agGrid/hooks/useAgGridTheme";
 import { ContextMenu, type ContextMenuSection } from "../../context_menu";
@@ -37,6 +37,7 @@ export type SongTableProps = {
 	isGlobalFilterEnabled: boolean;
 	contextMenuSections: ContextMenuSection<SongTableContextMenuItemParams>[];
 	isLoading: boolean;
+	contextMenuAnchorRef?: RefObject<HTMLElement | null>;
 	scrollToPlayingSong?: boolean;
 	onSongsReordered: (orderedSongs: Song[]) => Promise<void>;
 	onColumnsUpdated: (updatedColumns: SongTableColumn[]) => Promise<void>;
@@ -86,6 +87,7 @@ export function SongTable(props: SongTableProps): JSX.Element {
 		songsMap,
 		props.columns,
 		props.isSortingEnabled,
+		props.contextMenuAnchorRef,
 	);
 
 	// Keyboard shortcut
