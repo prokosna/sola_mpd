@@ -9,7 +9,7 @@
 		"start": "vite",
 		"dev": "vite",
 		"preview": "vite preview",
-		"test": "vitest run"
+		"test": "vitest run --passWithNoTests"
 	},
 	"dependencies": {
 		"@mantine/core": "^8.3.1",

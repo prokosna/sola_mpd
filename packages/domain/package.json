@@ -11,7 +11,7 @@
 		"dev_types": "tsc --watch",
 		"dev_ts": "swc src -d dist --watch --strip-leading-paths",
 		"proto": "rm -rf ./src/models/* && buf generate --template buf.gen.yaml ./proto",
-		"test": "vitest run"
+		"test": "vitest run --passWithNoTests"
 	},
 	"devDependencies": {
 		"@bufbuild/buf": "^1.57.0",
