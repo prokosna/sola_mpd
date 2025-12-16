@@ -3,15 +3,15 @@
 	"version": "0.0.0",
 	"type": "module",
 	"scripts": {
-		"build": "npm-run-all --parallel build_*",
-		"build:no_types": "npm run build_ts",
-		"build_types": "npx tsc",
-		"build_ts": "npx swc src -d dist --strip-leading-paths",
-		"dev": "npm-run-all --parallel dev_*",
-		"dev_types": "npx tsc --watch",
-		"dev_ts": "npx swc src -d dist --watch --strip-leading-paths",
-		"proto": "rm -rf ./src/models/* && npx buf generate --template buf.gen.yaml ./proto",
-		"test": "npx vitest run"
+		"build": "pnpm --parallel /^build_/",
+		"build:no_types": "pnpm build_ts",
+		"build_types": "tsc",
+		"build_ts": "swc src -d dist --strip-leading-paths",
+		"dev": "pnpm --parallel /^dev_/",
+		"dev_types": "tsc --watch",
+		"dev_ts": "swc src -d dist --watch --strip-leading-paths",
+		"proto": "rm -rf ./src/models/* && buf generate --template buf.gen.yaml ./proto",
+		"test": "vitest run --passWithNoTests"
 	},
 	"devDependencies": {
 		"@bufbuild/buf": "^1.57.0",

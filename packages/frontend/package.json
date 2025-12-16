@@ -9,7 +9,7 @@
 		"start": "vite",
 		"dev": "vite",
 		"preview": "vite preview",
-		"test": "npx vitest run"
+		"test": "vitest run --passWithNoTests"
 	},
 	"dependencies": {
 		"@mantine/core": "^8.3.1",
@@ -18,7 +18,7 @@
 		"@mantine/hooks": "^8.3.1",
 		"@mantine/notifications": "^8.3.1",
 		"@mantine/nprogress": "^8.3.1",
-		"@sola_mpd/domain": "^0.0.0",
+		"@sola_mpd/domain": "workspace:*",
 		"@tabler/icons-react": "^3.34.1",
 		"ag-grid-community": "^34.2.0",
 		"ag-grid-react": "^34.2.0",

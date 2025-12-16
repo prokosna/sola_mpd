@@ -19,8 +19,13 @@ jobs:
         with:
           node-version: 22.x
 
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10.18.3
+
       - name: Install dependencies
-        run: npm install
+        run: pnpm install
 
       - name: Configure git
         run: |
@@ -83,8 +88,14 @@ jobs:
       - name: Increment patch version
         if: env.major_minor_updated == 'false'
         run: |
-          new_version=$(npm version patch)
-          echo "new_version=$new_version" >> $GITHUB_ENV
+          current_version=$(node -p "require('./package.json').version")
+          IFS='.' read -r major minor patch <<< "$current_version"
+          new_patch=$((patch + 1))
+          new_version="$major.$minor.$new_patch"
+          sed -i "s/\"version\": \"$current_version\"/\"version\": \"$new_version\"/" package.json
+          git add package.json
+          git commit -m "chore: bump version to v$new_version"
+          echo "new_version=v$new_version" >> $GITHUB_ENV
 
       - name: Delete existing version-bump branch if exists (patch update)
         if: env.major_minor_updated == 'false'
