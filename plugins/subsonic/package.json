@@ -12,8 +12,6 @@
 		"test": "vitest run"
 	},
 	"devDependencies": {
-		"@swc/cli": "^0.7.8",
-		"@swc/core": "^1.13.5",
 		"@types/express": "^5.0.3",
 		"@types/node": "^22.17.2",
 		"nodemon": "^3.1.10",
@@ -21,7 +19,6 @@
 		"tsconfig-paths": "^4.2.0"
 	},
 	"dependencies": {
-		"@connectrpc/connect": "^2.1.0",
 		"@connectrpc/connect-express": "^2.1.0",
 		"@connectrpc/connect-node": "^2.1.0",
 		"@sola_mpd/domain": "workspace:*",
