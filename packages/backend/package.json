@@ -11,18 +11,18 @@
 		"test": "vitest run --passWithNoTests"
 	},
 	"dependencies": {
-		"@connectrpc/connect": "^2.1.0",
-		"@connectrpc/connect-express": "^2.1.0",
-		"@connectrpc/connect-node": "^2.1.0",
+		"@connectrpc/connect": "^2.1.1",
+		"@connectrpc/connect-express": "^2.1.1",
+		"@connectrpc/connect-node": "^2.1.1",
 		"@sola_mpd/domain": "workspace:*",
-		"express": "^5.1.0",
+		"express": "^5.2.1",
 		"mpd3": "github:prokosna/mpd.js#1.1.1",
 		"socket.io": "^4.8.1"
 	},
 	"devDependencies": {
-		"@types/express": "^5.0.3",
-		"@types/node": "^22.17.2",
-		"nodemon": "^3.1.10",
+		"@types/express": "^5.0.6",
+		"@types/node": "^25.0.2",
+		"nodemon": "^3.1.11",
 		"ts-node": "^10.9.2",
 		"tsconfig-paths": "^4.2.0"
 	}
