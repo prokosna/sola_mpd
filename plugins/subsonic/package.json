@@ -6,10 +6,10 @@
 	"license": "MIT",
 	"type": "module",
 	"scripts": {
-		"build": "npx swc src -d dist --strip-leading-paths",
+		"build": "swc src -d dist --strip-leading-paths",
 		"start": "node dist/index.js",
-		"dev": "nodemon --watch src --ext ts --exec 'npm run build && npm start'",
-		"test": "npx vitest run"
+		"dev": "nodemon --watch src --ext ts --exec 'pnpm build && pnpm start'",
+		"test": "vitest run"
 	},
 	"devDependencies": {
 		"@swc/cli": "^0.7.8",
@@ -24,7 +24,7 @@
 		"@connectrpc/connect": "^2.1.0",
 		"@connectrpc/connect-express": "^2.1.0",
 		"@connectrpc/connect-node": "^2.1.0",
-		"@sola_mpd/domain": "file:../../packages/domain",
+		"@sola_mpd/domain": "workspace:*",
 		"express": "^5.1.0",
 		"lru-cache": "^11.2.1",
 		"zod": "^4.1.8"

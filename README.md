@@ -212,11 +212,11 @@ Sola MPD is written in TypeScript with React, Vite, Protocol Buffers, Jotai, etc
 
 ```
 # 1. Install dependencies, set up a husky hook for format/lint
-$ npm i
+$ pnpm install
 
 # 2. Build the domain package first
-$ npm run -w packages/domain build
+$ pnpm --filter @sola_mpd/domain build
 
 # 3. Run dev servers
-$ npm run dev
+$ pnpm dev
 ```

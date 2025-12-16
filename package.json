@@ -5,35 +5,36 @@
 	"author": "prokosna",
 	"license": "MIT",
 	"scripts": {
-		"build": "npm run build -ws --if-present",
-		"build:no_types": "npm run build:no_types -ws --if-present",
-		"start": "npm start -w packages/backend",
-		"dev": "npm-run-all --parallel dev_*",
-		"dev_domain": "npm run dev -w packages/domain",
-		"dev_frontend": "npm run dev -w packages/frontend",
-		"dev_backend": "npm run dev -w packages/backend",
-		"proto": "npm run proto -w packages/domain",
+		"build": "pnpm -r --if-present build",
+		"build:no_types": "pnpm -r --if-present build:no_types",
+		"start": "pnpm --filter @sola_mpd/backend start",
+		"dev": "pnpm --parallel -r dev",
+		"dev_domain": "pnpm --filter @sola_mpd/domain dev",
+		"dev_frontend": "pnpm --filter @sola_mpd/frontend dev",
+		"dev_backend": "pnpm --filter @sola_mpd/backend dev",
+		"proto": "pnpm --filter @sola_mpd/domain proto",
 		"lint": "biome lint packages/**/src --write --unsafe && biome lint plugins/**/src --write --unsafe",
-		"fmt": "npm-run-all --parallel fmt_*",
+		"fmt": "pnpm --parallel /^fmt_/",
 		"fmt_biome": "biome format packages/**/src --write && biome format plugins/**/src --write",
 		"fmt_clang": "find . -name '*.proto' | xargs clang-format --style '{ BasedOnStyle: Google }' -i",
 		"prepare": "husky",
-		"lint-staged": "npx lint-staged",
-		"test": "npm run test -ws --if-present"
+		"lint-staged": "lint-staged",
+		"test": "pnpm -r --if-present test"
 	},
 	"lint-staged": {
 		"*.{js,jsx,ts,tsx,json,md,css,yaml}": [
-			"npx @biomejs/biome check --write --no-errors-on-unmatched"
+			"biome check --write --no-errors-on-unmatched"
 		],
 		"*.proto": [
-			"npx clang-format --style '{ BasedOnStyle: Google }' -i"
+			"clang-format --style '{ BasedOnStyle: Google }' -i"
 		]
 	},
-	"workspaces": [
-		"packages/domain",
-		"packages/frontend",
-		"packages/backend"
-	],
+	"packageManager": "pnpm@10.18.3",
+	"pnpm": {
+		"executionEnv": {
+			"nodeVersion": "22.21.1"
+		}
+	},
 	"devDependencies": {
 		"@biomejs/biome": "2.2.4",
 		"@swc/cli": "^0.7.8",
@@ -41,7 +42,6 @@
 		"clang-format": "^1.8.0",
 		"husky": "^9.1.7",
 		"lint-staged": "^16.1.6",
-		"npm-run-all": "^4.1.5",
 		"supertest": "^7.1.4",
 		"typescript": "^5.9.2",
 		"vitest": "^3.2.4"

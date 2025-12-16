@@ -4,19 +4,19 @@
 	"private": true,
 	"type": "module",
 	"scripts": {
-		"build": "npx swc src -d dist --strip-leading-paths",
-		"build:no_types": "npm run build",
+		"build": "swc src -d dist --strip-leading-paths",
+		"build:no_types": "pnpm build",
 		"start": "node dist/index.js",
-		"dev": "nodemon --watch src --ext ts --exec 'npm run build && npm start'",
-		"test": "npx vitest run"
+		"dev": "nodemon --watch src --ext ts --exec 'pnpm build && pnpm start'",
+		"test": "vitest run"
 	},
 	"dependencies": {
 		"@connectrpc/connect": "^2.1.0",
 		"@connectrpc/connect-express": "^2.1.0",
 		"@connectrpc/connect-node": "^2.1.0",
-		"@sola_mpd/domain": "^0.0.0",
+		"@sola_mpd/domain": "workspace:*",
 		"express": "^5.1.0",
-		"mpd3": "github:prokosna/mpd.js#1.1.0",
+		"mpd3": "github:prokosna/mpd.js#1.1.1",
 		"socket.io": "^4.8.1"
 	},
 	"devDependencies": {
