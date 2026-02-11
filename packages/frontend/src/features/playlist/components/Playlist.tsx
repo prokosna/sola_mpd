@@ -1,6 +1,11 @@
 import { Box } from "@mantine/core";
 import clsx from "clsx";
-import { Panel, PanelGroup, PanelResizeHandle } from "react-resizable-panels";
+import {
+	Group,
+	Panel,
+	Separator,
+	useDefaultLayout,
+} from "react-resizable-panels";
 import styles from "../../../ResizeHandle.module.css";
 import { PlaylistContent } from "./PlaylistContent";
 import { PlaylistNavigation } from "./PlaylistNavigation";
@@ -14,17 +19,27 @@ import { PlaylistNavigation } from "./PlaylistNavigation";
  * @returns Playlist view component
  */
 export function Playlist() {
+	const { defaultLayout, onLayoutChanged } = useDefaultLayout({
+		id: "playlist",
+		storage: localStorage,
+	});
+
 	return (
 		<Box w="100%" h="100%">
-			<PanelGroup direction="horizontal" autoSaveId="playlist">
-				<Panel defaultSize={30} minSize={10}>
+			<Group
+				id="playlist"
+				orientation="horizontal"
+				defaultLayout={defaultLayout}
+				onLayoutChanged={onLayoutChanged}
+			>
+				<Panel id="playlist-navigation" defaultSize="20%" minSize="10%">
 					<PlaylistNavigation />
 				</Panel>
-				<PanelResizeHandle className={clsx(styles.handle, styles.vertical)} />
-				<Panel minSize={30}>
+				<Separator className={clsx(styles.handle, styles.vertical)} />
+				<Panel id="playlist-content" minSize="20%">
 					<PlaylistContent />
 				</Panel>
-			</PanelGroup>
+			</Group>
 		</Box>
 	);
 }
