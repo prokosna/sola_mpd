@@ -16,25 +16,25 @@ describe("useInputKeyCombination", () => {
 		vi.restoreAllMocks();
 	});
 
-	it.each([[["a", "b"]], [["a", "b", "Control"]]])(
-		"should call the callback when the correct key combination (%i) is pressed",
-		(keys) => {
-			const elm = document.createElement("div");
-			document.body.appendChild(elm);
-			elm.focus();
-			ref = { current: elm };
+	it.each([
+		[["a", "b"]],
+		[["a", "b", "Control"]],
+	])("should call the callback when the correct key combination (%i) is pressed", (keys) => {
+		const elm = document.createElement("div");
+		document.body.appendChild(elm);
+		elm.focus();
+		ref = { current: elm };
 
-			renderHook(() => useInputKeyCombination(ref, keys, callback));
+		renderHook(() => useInputKeyCombination(ref, keys, callback));
 
-			for (const key of keys) {
-				fireEvent.keyDown(elm, { key });
-			}
+		for (const key of keys) {
+			fireEvent.keyDown(elm, { key });
+		}
 
-			expect(callback).toHaveBeenCalled();
+		expect(callback).toHaveBeenCalled();
 
-			document.body.removeChild(elm);
-		},
-	);
+		document.body.removeChild(elm);
+	});
 
 	it("should not call the callback when an input is active", () => {
 		const elm = document.createElement("input");
