@@ -5,6 +5,14 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [4.2.13](https://github.com/prokosna/sola_mpd/compare/v4.2.12...v4.2.13) (2026-02-11)
+
+
+### Bug Fixes
+
+* pnpm fmt command ([#321](https://github.com/prokosna/sola_mpd/issues/321)) ([5cfe8f3](https://github.com/prokosna/sola_mpd/commit/5cfe8f35da987bc1e7773760f530092d065bdf8e))
+* Revert "chore: upgrade react-resizable-panels to v4 ([#318](https://github.com/prokosna/sola_mpd/issues/318))" ([#319](https://github.com/prokosna/sola_mpd/issues/319)) ([d90520f](https://github.com/prokosna/sola_mpd/commit/d90520f6142ef5bdc9233bf923b21e5b0f0dbfbe))
+
 ## [4.2.12](https://github.com/prokosna/sola_mpd/compare/v4.2.11...v4.2.12) (2026-02-11)
 
 
