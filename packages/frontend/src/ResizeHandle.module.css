@@ -5,8 +5,8 @@
 	flex-shrink: 0;
 }
 
-.handle[data-resize-handle-state="drag"],
-.handle[data-resize-handle-state="hover"] {
+.handle[data-separator="active"],
+.handle[data-separator="hover"] {
 	background-color: var(--focus-border);
 }
 
