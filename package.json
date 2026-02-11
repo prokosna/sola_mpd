@@ -14,7 +14,7 @@
 		"dev_backend": "pnpm --filter @sola_mpd/backend dev",
 		"proto": "pnpm --filter @sola_mpd/domain proto",
 		"lint": "biome lint packages/**/src --write --unsafe && biome lint plugins/**/src --write --unsafe",
-		"fmt": "pnpm --parallel /^fmt_/",
+		"fmt": "pnpm fmt_biome && pnpm fmt_clang",
 		"fmt_biome": "biome format packages/**/src --write && biome format plugins/**/src --write",
 		"fmt_clang": "find . -name '*.proto' | xargs clang-format --style '{ BasedOnStyle: Google }' -i",
 		"prepare": "husky",
