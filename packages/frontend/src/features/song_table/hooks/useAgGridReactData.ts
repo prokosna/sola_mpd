@@ -134,8 +134,6 @@ export function useAgGridReactData(
 			sortable: false,
 			resizable: false,
 			suppressHeaderMenuButton: true,
-			headerCheckboxSelection: true,
-			checkboxSelection: true,
 			width: 38,
 			maxWidth: 38,
 			cellStyle: {
