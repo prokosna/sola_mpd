@@ -1,6 +1,6 @@
 FROM node:22.21.1-alpine
 
-RUN corepack enable && corepack prepare pnpm@10.18.3 --activate
+RUN corepack enable && corepack prepare pnpm@10.29.2 --activate
 
 WORKDIR /app
 COPY . .

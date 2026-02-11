@@ -1,3 +1,6 @@
 packages:
   - packages/*
   - plugins/*
+
+onlyBuiltDependencies:
+  - "mpd3"

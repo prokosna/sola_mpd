@@ -5,7 +5,7 @@ RUN apk add --no-cache build-base python3
 ARG LAINBOW_ENDPOINT
 ENV VITE_LAINBOW_ENDPOINT=${LAINBOW_ENDPOINT}
 
-RUN corepack enable && corepack prepare pnpm@10.18.3 --activate
+RUN corepack enable && corepack prepare pnpm@10.29.2 --activate
 
 WORKDIR /app
 COPY . .
