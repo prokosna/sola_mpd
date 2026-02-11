@@ -29,25 +29,25 @@
 			"clang-format --style '{ BasedOnStyle: Google }' -i"
 		]
 	},
-	"packageManager": "pnpm@10.18.3",
+	"packageManager": "pnpm@10.29.2",
 	"pnpm": {
 		"executionEnv": {
 			"nodeVersion": "22.21.1"
 		}
 	},
 	"devDependencies": {
-		"@biomejs/biome": "2.3.9",
-		"@swc/cli": "^0.7.9",
-		"@swc/core": "^1.15.5",
+		"@biomejs/biome": "2.3.14",
+		"@swc/cli": "^0.8.0",
+		"@swc/core": "^1.15.11",
 		"clang-format": "^1.8.0",
 		"husky": "^9.1.7",
 		"lint-staged": "^16.2.7",
-		"supertest": "^7.1.4",
+		"supertest": "^7.2.2",
 		"typescript": "^5.9.3",
-		"vitest": "^4.0.16"
+		"vitest": "^4.0.18"
 	},
 	"dependencies": {
-		"@bufbuild/protobuf": "^2.10.2",
+		"@bufbuild/protobuf": "^2.11.0",
 		"@connectrpc/connect": "^2.1.1",
 		"dayjs": "^1.11.19",
 		"uuid": "^13.0.0"
