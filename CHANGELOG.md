@@ -5,6 +5,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [4.2.11](https://github.com/prokosna/sola_mpd/compare/v4.2.10...v4.2.11) (2026-02-11)
+
+
+### Bug Fixes
+
+* release-please-config ([#311](https://github.com/prokosna/sola_mpd/issues/311)) ([47c3656](https://github.com/prokosna/sola_mpd/commit/47c36564f16de8b341fec31f5895daedc44695fa))
+
 ## [4.2.10] - 2026-02-10
 
 ### Fixed
