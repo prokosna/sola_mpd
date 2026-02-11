@@ -2,12 +2,7 @@ import type { BrowserFilter } from "@sola_mpd/domain/src/models/browser_pb.js";
 import type { Song_MetadataTag } from "@sola_mpd/domain/src/models/song_pb.js";
 import clsx from "clsx";
 import * as React from "react";
-import {
-	Group,
-	Panel,
-	Separator,
-	useDefaultLayout,
-} from "react-resizable-panels";
+import { Panel, PanelGroup, PanelResizeHandle } from "react-resizable-panels";
 import styles from "../../../../ResizeHandle.module.css";
 import type { UpdateMode } from "../../../../types/stateTypes";
 import { FullWidthSkeleton } from "../../../loading";
@@ -35,17 +30,6 @@ type BrowserNavigationViewProps = {
  */
 export function BrowserNavigationView(props: BrowserNavigationViewProps) {
 	const { browserFilters, browserFilterValues, updateBrowserFilters } = props;
-	const sortedFilters = [...(browserFilters ?? [])].sort(
-		(a, b) => a.order - b.order,
-	);
-	const panelIds = sortedFilters.map((filter) =>
-		convertSongMetadataTagToDisplayName(filter.tag),
-	);
-	const { defaultLayout, onLayoutChanged } = useDefaultLayout({
-		id: "browser-navigation-view",
-		panelIds,
-		storage: localStorage,
-	});
 
 	if (browserFilters === undefined) {
 		return <FullWidthSkeleton />;
@@ -57,33 +41,33 @@ export function BrowserNavigationView(props: BrowserNavigationViewProps) {
 	);
 
 	return (
-		<Group
-			id="browser-navigation-view"
-			orientation="vertical"
-			defaultLayout={defaultLayout}
-			onLayoutChanged={onLayoutChanged}
-		>
-			{sortedFilters.map((browserFilter, index, array) => (
-				<React.Fragment key={browserFilter.tag}>
-					<Panel
-						minSize="10%"
-						id={convertSongMetadataTagToDisplayName(browserFilter.tag)}
-					>
-						<BrowserNavigationFilterView
-							{...{
-								browserFilter,
-								values: browserFilterValues?.get(browserFilter.tag),
-								browserFilters,
-								availableTags,
-								updateBrowserFilters,
-							}}
-						/>
-					</Panel>
-					{index < array.length - 1 && (
-						<Separator className={clsx(styles.handle, styles.horizontal)} />
-					)}
-				</React.Fragment>
-			))}
-		</Group>
+		<PanelGroup direction="vertical" autoSaveId="browser-navigation-view">
+			{browserFilters
+				.sort((a, b) => a.order - b.order)
+				.map((browserFilter, index, array) => (
+					<React.Fragment key={browserFilter.tag}>
+						<Panel
+							minSize={20}
+							id={convertSongMetadataTagToDisplayName(browserFilter.tag)}
+							order={index}
+						>
+							<BrowserNavigationFilterView
+								{...{
+									browserFilter,
+									values: browserFilterValues?.get(browserFilter.tag),
+									browserFilters,
+									availableTags,
+									updateBrowserFilters,
+								}}
+							/>
+						</Panel>
+						{index < array.length - 1 && (
+							<PanelResizeHandle
+								className={clsx(styles.handle, styles.horizontal)}
+							/>
+						)}
+					</React.Fragment>
+				))}
+		</PanelGroup>
 	);
 }

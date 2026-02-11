@@ -1,11 +1,6 @@
 import { Box } from "@mantine/core";
 import clsx from "clsx";
-import {
-	Group,
-	Panel,
-	Separator,
-	useDefaultLayout,
-} from "react-resizable-panels";
+import { Panel, PanelGroup, PanelResizeHandle } from "react-resizable-panels";
 import styles from "../../../ResizeHandle.module.css";
 import { SearchContent } from "./SearchContent";
 import { SearchNavigation } from "./SearchNavigation";
@@ -18,27 +13,17 @@ import { SearchNavigation } from "./SearchNavigation";
  * @returns Search component
  */
 export function Search() {
-	const { defaultLayout, onLayoutChanged } = useDefaultLayout({
-		id: "search",
-		storage: localStorage,
-	});
-
 	return (
 		<Box w="100%" h="100%">
-			<Group
-				id="search"
-				orientation="horizontal"
-				defaultLayout={defaultLayout}
-				onLayoutChanged={onLayoutChanged}
-			>
-				<Panel id="search-navigation" defaultSize="20%" minSize="10%">
+			<PanelGroup direction="horizontal" autoSaveId="search">
+				<Panel defaultSize={30} minSize={10}>
 					<SearchNavigation />
 				</Panel>
-				<Separator className={clsx(styles.handle, styles.vertical)} />
-				<Panel id="search-content" minSize="20%">
+				<PanelResizeHandle className={clsx(styles.handle, styles.vertical)} />
+				<Panel minSize={30}>
 					<SearchContent />
 				</Panel>
-			</Group>
+			</PanelGroup>
 		</Box>
 	);
 }

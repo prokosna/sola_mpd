@@ -1,12 +1,7 @@
 import { isNotEmpty, useForm } from "@mantine/form";
 import clsx from "clsx";
 import equal from "fast-deep-equal";
-import {
-	Group,
-	Panel,
-	Separator,
-	useDefaultLayout,
-} from "react-resizable-panels";
+import { Panel, PanelGroup, PanelResizeHandle } from "react-resizable-panels";
 
 import styles from "../../../ResizeHandle.module.css";
 import { useSavedSearchesState } from "../states/savedSearchesState";
@@ -36,11 +31,6 @@ export function SearchNavigation() {
 	const savedSearches = useSavedSearchesState();
 	const editingSearchStatus = useEditingSearchStatusState();
 	const setEditingSearchStatus = useSetEditingSearchState();
-	const { defaultLayout, onLayoutChanged } = useDefaultLayout({
-		id: "search-navigation",
-		panelIds: ["search-navigation-query", "search-navigation-saved"],
-		storage: localStorage,
-	});
 
 	const form = useForm<SearchFormValues>({
 		mode: "uncontrolled",
@@ -65,22 +55,17 @@ export function SearchNavigation() {
 	});
 
 	return (
-		<Group
-			id="search-navigation"
-			orientation="vertical"
-			defaultLayout={defaultLayout}
-			onLayoutChanged={onLayoutChanged}
-		>
-			<Panel id="search-navigation-query" minSize="20%">
+		<PanelGroup direction="vertical" autoSaveId="search-navigation">
+			<Panel minSize={20}>
 				<SearchNavigationQueryEditor
 					form={form}
 					editingSearchStatus={editingSearchStatus}
 				/>
 			</Panel>
-			<Separator className={clsx(styles.handle, styles.horizontal)} />
-			<Panel id="search-navigation-saved" minSize="20%">
+			<PanelResizeHandle className={clsx(styles.handle, styles.horizontal)} />
+			<Panel minSize={20}>
 				<SearchNavigationSavedQueries form={form} />
 			</Panel>
-		</Group>
+		</PanelGroup>
 	);
 }
