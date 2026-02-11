@@ -115,20 +115,38 @@ export function parseSong(v?: Record<string, unknown>): Song | undefined {
 	});
 
 	const track = raw.track && !Number.isNaN(+raw.track) ? +raw.track : undefined;
-	song.metadata[Song_MetadataTag.TRACK] = create(Song_MetadataValueSchema, {
-		value: {
-			case: "intValue",
-			value: create(Int32ValueSchema, { value: track }),
-		},
-	});
+	if (track === undefined) {
+		song.metadata[Song_MetadataTag.TRACK] = create(Song_MetadataValueSchema, {
+			value: {
+				case: "stringValue",
+				value: create(StringValueSchema, { value: "" }),
+			},
+		});
+	} else {
+		song.metadata[Song_MetadataTag.TRACK] = create(Song_MetadataValueSchema, {
+			value: {
+				case: "intValue",
+				value: create(Int32ValueSchema, { value: track }),
+			},
+		});
+	}
 
 	const disc = raw.disc && !Number.isNaN(+raw.disc) ? +raw.disc : undefined;
-	song.metadata[Song_MetadataTag.DISC] = create(Song_MetadataValueSchema, {
-		value: {
-			case: "intValue",
-			value: create(Int32ValueSchema, { value: disc }),
-		},
-	});
+	if (disc === undefined) {
+		song.metadata[Song_MetadataTag.DISC] = create(Song_MetadataValueSchema, {
+			value: {
+				case: "stringValue",
+				value: create(StringValueSchema, { value: "" }),
+			},
+		});
+	} else {
+		song.metadata[Song_MetadataTag.DISC] = create(Song_MetadataValueSchema, {
+			value: {
+				case: "intValue",
+				value: create(Int32ValueSchema, { value: disc }),
+			},
+		});
+	}
 
 	const date = raw.date ? raw.date : "";
 	song.metadata[Song_MetadataTag.DATE] = create(Song_MetadataValueSchema, {
