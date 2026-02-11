@@ -5,6 +5,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [4.2.12](https://github.com/prokosna/sola_mpd/compare/v4.2.11...v4.2.12) (2026-02-11)
+
+
+### Bug Fixes
+
+* handle undefined track and disc ([#314](https://github.com/prokosna/sola_mpd/issues/314)) ([794955b](https://github.com/prokosna/sola_mpd/commit/794955bfc0aeb408bd95c313786c7d55f5271603))
+
 ## [4.2.11](https://github.com/prokosna/sola_mpd/compare/v4.2.10...v4.2.11) (2026-02-11)
 
 
