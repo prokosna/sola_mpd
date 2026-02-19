@@ -1,13 +1,36 @@
 /* ResizeHandle.module.css */
 .handle {
 	background-color: var(--separator-border);
+	position: relative;
+	z-index: 1;
 	transition: background-color 0.2s ease-in-out;
-	flex-shrink: 0;
+	touch-action: none;
 }
 
-.handle[data-resize-handle-state="drag"],
-.handle[data-resize-handle-state="hover"] {
+.handle::after {
+	content: "";
+	position: absolute;
 	background-color: var(--focus-border);
+	opacity: 0;
+	pointer-events: none;
+	transition: opacity 0.2s ease-in-out;
+}
+
+.handle[data-separator="active"],
+.handle[data-separator="hover"] {
+	background-color: var(--focus-border);
+}
+
+.handle[data-separator="active"]::after,
+.handle[data-separator="hover"]::after,
+.handle:hover::after,
+.handle:active::after {
+	opacity: 1;
+}
+
+.handle:focus,
+.handle:focus-visible {
+	outline: none;
 }
 
 .vertical {
@@ -15,7 +38,23 @@
 	cursor: col-resize;
 }
 
+.vertical::after {
+	top: 0;
+	bottom: 0;
+	left: 50%;
+	width: 6px;
+	transform: translateX(-50%);
+}
+
 .horizontal {
 	height: 1px;
 	cursor: row-resize;
+}
+
+.horizontal::after {
+	left: 0;
+	right: 0;
+	top: 50%;
+	height: 6px;
+	transform: translateY(-50%);
 }

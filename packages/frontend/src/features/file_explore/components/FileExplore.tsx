@@ -1,6 +1,11 @@
 import { Box } from "@mantine/core";
 import clsx from "clsx";
-import { Panel, PanelGroup, PanelResizeHandle } from "react-resizable-panels";
+import {
+	Panel,
+	Group as PanelGroup,
+	Separator,
+	useDefaultLayout,
+} from "react-resizable-panels";
 import styles from "../../../ResizeHandle.module.css";
 import { FileExploreContent } from "./FileExploreContent";
 import { FileExploreNavigation } from "./FileExploreNavigation";
@@ -24,14 +29,23 @@ import { FileExploreNavigation } from "./FileExploreNavigation";
  * @returns Rendered file explorer component
  */
 export function FileExplore() {
+	const { defaultLayout, onLayoutChanged } = useDefaultLayout({
+		id: "file-explore",
+		storage: globalThis.localStorage,
+	});
+
 	return (
 		<Box w="100%" h="100%">
-			<PanelGroup direction="horizontal" autoSaveId="file-explore">
-				<Panel defaultSize={30} minSize={10}>
+			<PanelGroup
+				orientation="horizontal"
+				defaultLayout={defaultLayout}
+				onLayoutChanged={onLayoutChanged}
+			>
+				<Panel defaultSize="30%" minSize="10%" id="file-explore-navigation">
 					<FileExploreNavigation />
 				</Panel>
-				<PanelResizeHandle className={clsx(styles.handle, styles.vertical)} />
-				<Panel minSize={30}>
+				<Separator className={clsx(styles.handle, styles.vertical)} />
+				<Panel minSize="10%" id="file-explore-content">
 					<FileExploreContent />
 				</Panel>
 			</PanelGroup>
