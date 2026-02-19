@@ -1,7 +1,12 @@
 import { Divider, Group, Stack, useComputedColorScheme } from "@mantine/core";
 import clsx from "clsx";
 import type { JSX, ReactElement } from "react";
-import { Panel, PanelGroup, PanelResizeHandle } from "react-resizable-panels";
+import {
+	Panel,
+	Group as PanelGroup,
+	Separator,
+	useDefaultLayout,
+} from "react-resizable-panels";
 import styles from "../../../../ResizeHandle.module.css";
 
 type BrowserViewProps = {
@@ -21,6 +26,10 @@ type BrowserViewProps = {
  */
 export function BrowserView(props: BrowserViewProps) {
 	const scheme = useComputedColorScheme();
+	const { defaultLayout, onLayoutChanged } = useDefaultLayout({
+		id: "browser-view",
+		storage: globalThis.localStorage,
+	});
 
 	return (
 		<Stack h="100%" gap={0}>
@@ -29,12 +38,18 @@ export function BrowserView(props: BrowserViewProps) {
 			</Group>
 			<Divider />
 			<Group w="100%" h="100%">
-				<PanelGroup direction="horizontal" autoSaveId="browser-view">
-					<Panel defaultSize={30} minSize={10}>
+				<PanelGroup
+					orientation="horizontal"
+					defaultLayout={defaultLayout}
+					onLayoutChanged={onLayoutChanged}
+				>
+					<Panel defaultSize="30%" minSize="10%" id="browser-navigation">
 						{props.browserNavigation}
 					</Panel>
-					<PanelResizeHandle className={clsx(styles.handle, styles.vertical)} />
-					<Panel minSize={30}>{props.browserContent}</Panel>
+					<Separator className={clsx(styles.handle, styles.vertical)} />
+					<Panel minSize="10%" id="browser-content">
+						{props.browserContent}
+					</Panel>
 				</PanelGroup>
 			</Group>
 		</Stack>

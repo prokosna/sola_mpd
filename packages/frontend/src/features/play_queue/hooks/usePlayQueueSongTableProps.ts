@@ -214,7 +214,7 @@ export function usePlayQueueSongTableProps(
 			);
 			await mpdClient.commandBulk(commands);
 		},
-		[mpdClient, profile, songTableKeyType, songs],
+		[mpdClient, profile, songs],
 	);
 
 	const onColumnsUpdated = useCallback(
