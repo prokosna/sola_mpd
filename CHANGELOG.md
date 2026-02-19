@@ -5,6 +5,18 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [4.3.0](https://github.com/prokosna/sola_mpd/compare/v4.2.13...v4.3.0) (2026-02-19)
+
+
+### Features
+
+* highlight and increase width when moving separator ([#325](https://github.com/prokosna/sola_mpd/issues/325)) ([7b35219](https://github.com/prokosna/sola_mpd/commit/7b3521989995ad6815a748c2ef026f01bbe18b5e))
+
+
+### Bug Fixes
+
+* remove deprecated ag-grid properties ([#323](https://github.com/prokosna/sola_mpd/issues/323)) ([e1d38a4](https://github.com/prokosna/sola_mpd/commit/e1d38a48307de819dfe6aba35c20767d13398bf9))
+
 ## [4.2.13](https://github.com/prokosna/sola_mpd/compare/v4.2.12...v4.2.13) (2026-02-11)
 
 
