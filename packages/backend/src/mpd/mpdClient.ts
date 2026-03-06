@@ -29,14 +29,26 @@ import {
 	parseSong,
 } from "./mpdParsers.js";
 
+type MpdConnectOptions = {
+	cache?: boolean;
+	timeout?: number;
+	maxRetries?: number;
+	reconnectDelay?: number;
+};
+
 class MpdClient {
 	private clients: DeepMap<MpdProfile, Promise<Client>> = new DeepMap(
 		new Map(),
 	);
 	private allSongsCache: DeepMap<MpdProfile, Song[]> = new DeepMap(new Map());
 
-	private async connect(profile: MpdProfile): Promise<Client> {
-		if (this.clients.has(profile)) {
+	private async connect(
+		profile: MpdProfile,
+		options?: MpdConnectOptions,
+	): Promise<Client> {
+		const useCache = options?.cache !== false;
+
+		if (useCache && this.clients.has(profile)) {
 			const client = this.clients.get(profile);
 			if (client === undefined) {
 				throw new Error("This shouldn't happen.");
@@ -44,12 +56,25 @@ class MpdClient {
 			return client;
 		}
 
-		const config = {
+		const config: {
+			host: string;
+			port: number;
+			reconnectDelay: number;
+			maxRetries: number;
+			timeout?: number;
+			password?: string;
+		} = {
 			host: profile.host,
 			port: profile.port,
-			reconnectDelay: 3000,
-			maxRetries: 5,
+			reconnectDelay: options?.reconnectDelay ?? 3000,
+			maxRetries: options?.maxRetries ?? 5,
 		};
+		if (options?.timeout !== undefined) {
+			config.timeout = options.timeout;
+		}
+		if (profile.password !== "") {
+			config.password = profile.password;
+		}
 
 		const clientPromise = Client.connect(config)
 			.then((client) => {
@@ -77,7 +102,9 @@ class MpdClient {
 				throw error;
 			});
 
-		this.clients.set(profile, clientPromise);
+		if (useCache) {
+			this.clients.set(profile, clientPromise);
+		}
 		return clientPromise;
 	}
 
@@ -229,20 +256,37 @@ class MpdClient {
 		if (profile === undefined) {
 			throw new Error("Profile is undefined");
 		}
-		const client = await this.connect(profile);
+
+		// No retry for ping to response immediately for failure cases
+		const noRetry = req.command?.case === "ping";
+		const connectOptions = noRetry
+			? {
+					cache: false,
+					maxRetries: 0,
+					reconnectDelay: 0,
+					timeout: 2000,
+				}
+			: undefined;
+		const client = await this.connect(profile, connectOptions);
 		const cmd = this.convertCommand(req);
 
 		switch (req.command?.case) {
 			// Connection
 			case "ping": {
-				await this.sendCommand(client, cmd);
-				const version = this.getVersion(client);
-				return create(MpdResponseSchema, {
-					command: {
-						case: "ping",
-						value: { version },
-					},
-				});
+				try {
+					await this.sendCommand(client, cmd);
+					const version = this.getVersion(client);
+					return create(MpdResponseSchema, {
+						command: {
+							case: "ping",
+							value: { version },
+						},
+					});
+				} finally {
+					if (noRetry) {
+						await client.disconnect();
+					}
+				}
 			}
 			// Control
 			case "next":

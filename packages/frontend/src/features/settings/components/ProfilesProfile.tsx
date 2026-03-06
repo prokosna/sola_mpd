@@ -53,6 +53,7 @@ export function ProfilesProfile(props: ProfilesProfileProps) {
 			<Table.Td>{profile.name}</Table.Td>
 			<Table.Td>{profile.host}</Table.Td>
 			<Table.Td>{profile.port}</Table.Td>
+			<Table.Td>{profile.password ? "••••" : ""}</Table.Td>
 			{index === 0 && mpdProfileState.profiles.length === 1 ? (
 				<Table.Td />
 			) : (
