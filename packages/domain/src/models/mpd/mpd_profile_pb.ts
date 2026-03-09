@@ -10,7 +10,7 @@ import type { Message } from "@bufbuild/protobuf";
  * Describes the file mpd/mpd_profile.proto.
  */
 export const file_mpd_mpd_profile: GenFile = /*@__PURE__*/
-  fileDesc("ChVtcGQvbXBkX3Byb2ZpbGUucHJvdG8iNgoKTXBkUHJvZmlsZRIMCgRuYW1lGAEgASgJEgwKBGhvc3QYAiABKAkSDAoEcG9ydBgDIAEoDSJWCg9NcGRQcm9maWxlU3RhdGUSJAoPY3VycmVudF9wcm9maWxlGAEgASgLMgsuTXBkUHJvZmlsZRIdCghwcm9maWxlcxgCIAMoCzILLk1wZFByb2ZpbGViBnByb3RvMw");
+  fileDesc("ChVtcGQvbXBkX3Byb2ZpbGUucHJvdG8iSAoKTXBkUHJvZmlsZRIMCgRuYW1lGAEgASgJEgwKBGhvc3QYAiABKAkSDAoEcG9ydBgDIAEoDRIQCghwYXNzd29yZBgEIAEoCSJWCg9NcGRQcm9maWxlU3RhdGUSJAoPY3VycmVudF9wcm9maWxlGAEgASgLMgsuTXBkUHJvZmlsZRIdCghwcm9maWxlcxgCIAMoCzILLk1wZFByb2ZpbGViBnByb3RvMw");
 
 /**
  * @generated from message MpdProfile
@@ -30,6 +30,11 @@ export type MpdProfile = Message<"MpdProfile"> & {
    * @generated from field: uint32 port = 3;
    */
   port: number;
+
+  /**
+   * @generated from field: string password = 4;
+   */
+  password: string;
 };
 
 /**

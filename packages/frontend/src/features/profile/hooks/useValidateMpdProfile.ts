@@ -47,6 +47,7 @@ export function useValidateMpdProfile() {
 							name: input.name,
 							host: input.host,
 							port: input.port,
+							password: input.password ?? "",
 						}),
 						command: {
 							case: "ping",

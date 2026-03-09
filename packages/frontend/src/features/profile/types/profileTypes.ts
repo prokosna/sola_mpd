@@ -5,9 +5,12 @@
  * - name: Profile identifier
  * - host: Server hostname/IP
  * - port: Server port
+ * Optional fields:
+ * - password: MPD password
  */
 export type ProfileInput = {
 	name: string;
 	host: string;
 	port: number;
+	password?: string;
 };

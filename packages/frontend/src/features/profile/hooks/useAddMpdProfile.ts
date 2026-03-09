@@ -32,6 +32,7 @@ export function useAddMpdProfile() {
 				name: input.name,
 				host: input.host,
 				port: input.port,
+				password: input.password ?? "",
 			});
 
 			const newMpdProfileState = clone(MpdProfileStateSchema, mpdProfileState);

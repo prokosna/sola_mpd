@@ -1,5 +1,3 @@
-import { useCallback, useState } from "react";
-
 import {
 	Button,
 	Divider,
@@ -9,6 +7,7 @@ import {
 	TextInput,
 } from "@mantine/core";
 import { isInRange, isNotEmpty, useForm } from "@mantine/form";
+import { useCallback, useState } from "react";
 import { useNotification } from "../../../lib/mantine/hooks/useNotification";
 import { useAddMpdProfile } from "../hooks/useAddMpdProfile";
 import { useValidateMpdProfile } from "../hooks/useValidateMpdProfile";
@@ -44,6 +43,7 @@ export function MpdProfileForm(props: MpdProfileFormProps) {
 			name: "",
 			host: "",
 			port: undefined,
+			password: "",
 		},
 		validate: {
 			name: (value) => {
@@ -68,6 +68,7 @@ export function MpdProfileForm(props: MpdProfileFormProps) {
 				name: values.name,
 				host: values.host,
 				port: values.port ?? 6600,
+				password: values.password || undefined,
 			};
 			const result = await validateMpdProfile(profileInput);
 			if (result.isValid) {
@@ -87,6 +88,7 @@ export function MpdProfileForm(props: MpdProfileFormProps) {
 				name: values.name,
 				host: values.host,
 				port: values.port ?? 6600,
+				password: values.password || undefined,
 			};
 			await addMpdProfile(profileInput);
 			notify({
@@ -134,6 +136,14 @@ export function MpdProfileForm(props: MpdProfileFormProps) {
 				placeholder="6600"
 				key={form.key("port")}
 				{...form.getInputProps("port")}
+			/>
+			<TextInput
+				w="400"
+				label="Password"
+				placeholder="(optional)"
+				type="password"
+				key={form.key("password")}
+				{...form.getInputProps("password")}
 			/>
 			<Divider my={8} />
 			<Group justify="space-between">

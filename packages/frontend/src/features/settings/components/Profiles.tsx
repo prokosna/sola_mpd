@@ -1,8 +1,7 @@
+import { Button, Modal, Stack, Table, Title } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import { CenterSpinner } from "../../loading";
 import { MpdProfileForm, useMpdProfileState } from "../../profile";
-
-import { Button, Modal, Stack, Table, Title } from "@mantine/core";
 import { ProfilesProfile } from "./ProfilesProfile";
 
 /**
@@ -51,6 +50,7 @@ export function Profiles() {
 							<Table.Th>NAME</Table.Th>
 							<Table.Th>HOST</Table.Th>
 							<Table.Th>PORT</Table.Th>
+							<Table.Th>PASSWORD</Table.Th>
 							<Table.Th>ACTION</Table.Th>
 						</Table.Tr>
 					</Table.Thead>
