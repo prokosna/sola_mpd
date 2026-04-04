@@ -1,0 +1,25 @@
+syntax = "proto3";
+
+import "song.proto";
+
+message FilterCondition {
+  string uuid = 1;
+  Song.MetadataTag tag = 2;
+  Song.MetadataValue value = 3;
+  Operator operator = 4;
+
+  enum Operator {
+    UNKNOWN = 0;
+    EQUAL = 1;
+    NOT_EQUAL = 2;
+    CONTAIN = 3;
+    NOT_CONTAIN = 4;
+    REGEX = 5;
+    // Following operators are not supported by MPD
+    // Need filtering on the client side.
+    LESS_THAN = 6;
+    LESS_THAN_OR_EQUAL = 7;
+    GREATER_THAN = 8;
+    GREATER_THAN_OR_EQUAL = 9;
+  }
+}

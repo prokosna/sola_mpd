@@ -1,0 +1,14 @@
+syntax = "proto3";
+
+import "song.proto";
+
+message BrowserFilter {
+  Song.MetadataTag tag = 1;
+  repeated Song.MetadataValue selected_values = 2;
+  int32 order = 3;
+  int32 selected_order = 4;
+}
+
+message BrowserState {
+  repeated BrowserFilter filters = 1;
+}

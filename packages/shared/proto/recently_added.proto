@@ -1,0 +1,11 @@
+syntax = "proto3";
+
+import "song.proto";
+
+message RecentlyAddedFilter {
+  Song.MetadataTag tag = 1;
+}
+
+message RecentlyAddedState {
+  repeated RecentlyAddedFilter filters = 1;
+}

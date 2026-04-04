@@ -1,0 +1,90 @@
+syntax = "proto3";
+
+import "mpd/mpd_profile.proto";
+import "song.proto";
+
+message AdvancedSearchCommand {
+  enum SimilarityType {
+    MUQ = 0;
+    MERT = 1;
+    ACOUSTIC_FEATURES = 2;
+  }
+
+  enum TextToMusicType {
+    MUQ_MULAN = 0;
+    CLAP = 1;
+  }
+
+  message StatsRequest {}
+  message StatsResponse {
+    AdvancedSearchStats stats = 1;
+  }
+
+  message SimilaritySearchRequest {
+    MpdProfile profile = 1;
+    Song song = 2;
+    SimilarityType similarity_type = 3;
+  }
+  message SimilaritySearchResponse {
+    SongList song_list = 1;
+  }
+
+  message TextToMusicSearchRequest {
+    MpdProfile profile = 1;
+    string query = 2;
+    TextToMusicType text_to_music_type = 3;
+  }
+  message TextToMusicSearchResponse {
+    SongList song_list = 1;
+  }
+
+  message ScanLibraryRequest {}
+  message ScanLibraryResponse {}
+
+  message VacuumLibraryRequest {}
+  message VacuumLibraryResponse {}
+
+  message AnalyzeRequest {}
+  message AnalyzeResponse {}
+}
+
+message AdvancedSearchStats {
+  int32 total_songs = 1;
+  int32 songs_with_muq = 2;
+  int32 songs_with_muq_mulan = 3;
+  int32 songs_with_acoustic_features = 4;
+  int32 songs_with_mert = 5;
+  int32 songs_with_clap = 6;
+  int32 pending_tasks = 7;
+  int32 running_tasks = 8;
+}
+
+message AdvancedSearchConfig {
+  string endpoint = 1;
+  int32 limit = 2;
+}
+
+message AdvancedSearchRequest {
+  AdvancedSearchConfig config = 1;
+  oneof command {
+    AdvancedSearchCommand.StatsRequest stats = 2;
+    AdvancedSearchCommand.SimilaritySearchRequest similarity_search = 3;
+    AdvancedSearchCommand.TextToMusicSearchRequest text_to_music_search = 4;
+    AdvancedSearchCommand.ScanLibraryRequest scan_library = 5;
+    AdvancedSearchCommand.VacuumLibraryRequest vacuum_library = 6;
+    AdvancedSearchCommand.AnalyzeRequest analyze = 7;
+  }
+}
+
+message AdvancedSearchResponse {
+  oneof command {
+    string error = 1;
+
+    AdvancedSearchCommand.StatsResponse stats = 2;
+    AdvancedSearchCommand.SimilaritySearchResponse similarity_search = 3;
+    AdvancedSearchCommand.TextToMusicSearchResponse text_to_music_search = 4;
+    AdvancedSearchCommand.ScanLibraryResponse scan_library = 5;
+    AdvancedSearchCommand.VacuumLibraryResponse vacuum_library = 6;
+    AdvancedSearchCommand.AnalyzeResponse analyze = 7;
+  }
+}

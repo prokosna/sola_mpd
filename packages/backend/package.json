@@ -14,6 +14,7 @@
 		"@connectrpc/connect": "^2.1.1",
 		"@connectrpc/connect-express": "^2.1.1",
 		"@connectrpc/connect-node": "^2.1.1",
+		"@sola_mpd/shared": "workspace:*",
 		"@sola_mpd/domain": "workspace:*",
 		"express": "^5.2.1",
 		"mpd3": "github:prokosna/mpd.js#1.1.1",

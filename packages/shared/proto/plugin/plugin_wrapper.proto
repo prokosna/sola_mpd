@@ -1,0 +1,28 @@
+syntax = "proto3";
+package sola;
+
+import "plugin/plugin.proto";
+
+message PluginRegisterRequestWrapper {
+  PluginRegisterRequest request = 1;
+}
+
+message PluginRegisterResponseWrapper {
+  oneof result {
+    PluginRegisterResponse response = 1;
+    string error = 2;
+  }
+}
+
+message PluginExecuteRequestWrapper {
+  PluginExecuteRequest request = 1;
+  string callback_event = 2;
+}
+
+message PluginExecuteResponseWrapper {
+  oneof result {
+    PluginExecuteResponse response = 1;
+    string error = 2;
+    bool complete = 3;
+  }
+}

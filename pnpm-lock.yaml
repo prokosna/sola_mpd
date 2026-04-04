@@ -63,6 +63,9 @@ importers:
       '@sola_mpd/domain':
         specifier: workspace:*
         version: link:../domain
+      '@sola_mpd/shared':
+        specifier: workspace:*
+        version: link:../shared
       express:
         specifier: ^5.2.1
         version: 5.2.1
@@ -125,6 +128,9 @@ importers:
       '@sola_mpd/domain':
         specifier: workspace:*
         version: link:../domain
+      '@sola_mpd/shared':
+        specifier: workspace:*
+        version: link:../shared
       '@tabler/icons-react':
         specifier: ^3.36.1
         version: 3.36.1(react@19.2.4)
@@ -205,6 +211,19 @@ importers:
         specifier: ^7.3.1
         version: 7.3.1(@types/node@25.0.2)(sugarss@5.0.1(postcss@8.5.6))(yaml@2.8.2)
 
+  packages/shared:
+    dependencies:
+      fast-deep-equal:
+        specifier: ^3.1.3
+        version: 3.1.3
+    devDependencies:
+      '@bufbuild/buf':
+        specifier: ^1.65.0
+        version: 1.65.0
+      '@bufbuild/protoc-gen-es':
+        specifier: ^2.11.0
+        version: 2.11.0(@bufbuild/protobuf@2.11.0)
+
   plugins/subsonic:
     dependencies:
       '@connectrpc/connect-express':
@@ -216,6 +235,9 @@ importers:
       '@sola_mpd/domain':
         specifier: workspace:*
         version: link:../../packages/domain
+      '@sola_mpd/shared':
+        specifier: workspace:*
+        version: link:../../packages/shared
       express:
         specifier: ^5.2.1
         version: 5.2.1
