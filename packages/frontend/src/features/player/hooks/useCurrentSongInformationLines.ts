@@ -1,8 +1,9 @@
 import { Song_MetadataTag } from "@sola_mpd/shared/src/models/song_pb.js";
 import { getSongMetadataAsString } from "@sola_mpd/shared/src/utils/songUtils.js";
+import { useAtomValue } from "jotai";
 import { useMemo } from "react";
 
-import { useCurrentSongState } from "../states/playerSongState";
+import { currentSongAtom } from "../states/atoms/currentSongAtom";
 
 /**
  * Hook for formatting current song's metadata.
@@ -13,7 +14,7 @@ import { useCurrentSongState } from "../states/playerSongState";
  * - thirdLine: Artist info with composer and date
  */
 export function useCurrentSongInformationLines() {
-	const song = useCurrentSongState();
+	const song = useAtomValue(currentSongAtom);
 
 	const firstLine = useMemo(() => {
 		if (song === undefined) {

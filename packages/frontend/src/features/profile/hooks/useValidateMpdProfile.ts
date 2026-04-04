@@ -2,9 +2,10 @@ import { create } from "@bufbuild/protobuf";
 import { MpdRequestSchema } from "@sola_mpd/shared/src/models/mpd/mpd_command_pb.js";
 import { MpdProfileSchema } from "@sola_mpd/shared/src/models/mpd/mpd_profile_pb.js";
 import { compareVersions } from "compare-versions";
+import { useAtomValue } from "jotai";
 import { useCallback } from "react";
 
-import { useMpdClientState } from "../../mpd";
+import { mpdClientAtom } from "../../mpd";
 import { useMpdProfileState } from "../states/mpdProfileState";
 import type { ProfileInput } from "../types/profileTypes";
 import type { ValidationResult } from "../types/validationTypes";
@@ -16,7 +17,7 @@ import { createValidationResult } from "../utils/validationUtils";
  * @returns Profile validation function
  */
 export function useValidateMpdProfile() {
-	const mpdClient = useMpdClientState();
+	const mpdClient = useAtomValue(mpdClientAtom);
 	const mpdProfileState = useMpdProfileState();
 
 	return useCallback(

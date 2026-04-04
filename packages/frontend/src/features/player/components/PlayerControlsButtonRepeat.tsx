@@ -1,10 +1,11 @@
 import { create } from "@bufbuild/protobuf";
 import { MpdRequestSchema } from "@sola_mpd/shared/src/models/mpd/mpd_command_pb.js";
 import { IconRepeat, IconRepeatOff } from "@tabler/icons-react";
+import { useAtomValue } from "jotai";
 import { useCallback } from "react";
-import { useMpdClientState } from "../../mpd";
+import { mpdClientAtom } from "../../mpd";
 import { useCurrentMpdProfileState } from "../../profile";
-import { usePlayerStatusIsRepeatState } from "../states/playerStatusState";
+import { playerStatusIsRepeatAtom } from "../states/atoms/playerStatusAtom";
 import { PlayerControlsButton } from "./PlayerControlsButton";
 
 /**
@@ -17,8 +18,8 @@ import { PlayerControlsButton } from "./PlayerControlsButton";
  */
 export function PlayerControlsButtonRepeat() {
 	const profile = useCurrentMpdProfileState();
-	const mpdClient = useMpdClientState();
-	const playerStatusIsRepeat = usePlayerStatusIsRepeatState();
+	const mpdClient = useAtomValue(mpdClientAtom);
+	const playerStatusIsRepeat = useAtomValue(playerStatusIsRepeatAtom);
 
 	const onButtonClicked = useCallback(async () => {
 		if (mpdClient === undefined) {

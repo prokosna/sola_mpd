@@ -2,13 +2,14 @@ import { create } from "@bufbuild/protobuf";
 import { Slider } from "@mantine/core";
 import { MpdRequestSchema } from "@sola_mpd/shared/src/models/mpd/mpd_command_pb.js";
 import { displayDuration } from "@sola_mpd/shared/src/utils/stringUtils.js";
+import { useAtomValue } from "jotai";
 import { useCallback, useRef } from "react";
-import { useMpdClientState } from "../../mpd";
+import { mpdClientAtom } from "../../mpd";
 import { useCurrentMpdProfileState } from "../../profile";
 import {
-	usePlayerStatusDurationState,
-	usePlayerStatusElapsedState,
-} from "../states/playerStatusState";
+	playerStatusDurationAtom,
+	playerStatusElapsedAtom,
+} from "../states/atoms/playerStatusAtom";
 import { getElapsedTimePercentage } from "../utils/playerDisplayUtils";
 
 /**
@@ -22,9 +23,9 @@ import { getElapsedTimePercentage } from "../utils/playerDisplayUtils";
  */
 export function PlayerSeekBar() {
 	const profile = useCurrentMpdProfileState();
-	const mpdClient = useMpdClientState();
-	const playerStatusElapsed = usePlayerStatusElapsedState();
-	const playerStatusDuration = usePlayerStatusDurationState();
+	const mpdClient = useAtomValue(mpdClientAtom);
+	const playerStatusElapsed = useAtomValue(playerStatusElapsedAtom);
+	const playerStatusDuration = useAtomValue(playerStatusDurationAtom);
 
 	const elapsedTimePercentage = getElapsedTimePercentage(
 		playerStatusElapsed,

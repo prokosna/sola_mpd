@@ -1,6 +1,7 @@
 import type { FirstDataRenderedEvent } from "ag-grid-community";
+import { useAtomValue } from "jotai";
 import { useCallback } from "react";
-import { useCurrentSongState } from "../../player";
+import { currentSongAtom } from "../../player";
 import type { SongTableKeyType } from "../types/songTableTypes";
 import {
 	getSongTableKey,
@@ -22,7 +23,7 @@ export function useHandleFirstDataRendered(
 	keyType: SongTableKeyType,
 	scrollToPlayingSong: boolean,
 ): (event: FirstDataRenderedEvent) => void {
-	const currentSong = useCurrentSongState();
+	const currentSong = useAtomValue(currentSongAtom);
 
 	return useCallback(
 		(event: FirstDataRenderedEvent) => {

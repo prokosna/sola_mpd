@@ -3,7 +3,7 @@ import { atom, useAtomValue, useSetAtom } from "jotai";
 import { atomWithRefresh } from "jotai/utils";
 
 import { atomWithSync } from "../../../lib/jotai/atomWithSync";
-import { mpdClientAtom } from "../../mpd/states/mpdClient";
+import { mpdClientAtom } from "../../mpd/states/atoms/mpdClientAtom";
 import { currentMpdProfileSyncAtom } from "../../profile/states/mpdProfileState";
 import { localeCollatorAtom } from "../../settings/states/settingsLocale";
 import { fetchPlaylists } from "../utils/playlistUtils";

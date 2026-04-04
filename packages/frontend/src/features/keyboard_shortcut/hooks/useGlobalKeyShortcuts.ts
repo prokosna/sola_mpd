@@ -1,9 +1,10 @@
 import { create } from "@bufbuild/protobuf";
 import { MpdRequestSchema } from "@sola_mpd/shared/src/models/mpd/mpd_command_pb.js";
 import { MpdPlayerStatus_PlaybackState } from "@sola_mpd/shared/src/models/mpd/mpd_player_pb.js";
+import { useAtomValue } from "jotai";
 
-import { useMpdClientState } from "../../mpd";
-import { usePlayerStatusPlaybackState } from "../../player";
+import { mpdClientAtom } from "../../mpd";
+import { playerStatusPlaybackStateAtom } from "../../player";
 import { useCurrentMpdProfileState } from "../../profile";
 
 import { useInputKeyCombination } from "./useInputKeyCombination";
@@ -42,9 +43,9 @@ import { useInputKeyCombination } from "./useInputKeyCombination";
  * - Input combination hook
  */
 export function useGlobalKeyShortcuts(): void {
-	const mpdClient = useMpdClientState();
+	const mpdClient = useAtomValue(mpdClientAtom);
 	const profile = useCurrentMpdProfileState();
-	const playerPlaybackState = usePlayerStatusPlaybackState();
+	const playerPlaybackState = useAtomValue(playerStatusPlaybackStateAtom);
 
 	useInputKeyCombination(undefined, [" "], async () => {
 		if (mpdClient === undefined || profile === undefined) {

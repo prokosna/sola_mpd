@@ -13,7 +13,7 @@ import type { UpdateMode } from "../../../../types/stateTypes";
 import { filterStringsByGlobalFilter } from "../../../global_filter";
 import { globalFilterTokensAtom } from "../../../global_filter/states/globalFilterState";
 import { pathnameAtom } from "../../../location/states/locationState";
-import { mpdClientAtom } from "../../../mpd/states/mpdClient";
+import { mpdClientAtom } from "../../../mpd/states/atoms/mpdClientAtom";
 import { currentMpdProfileSyncAtom } from "../../../profile/states/mpdProfileState";
 
 import { localeCollatorAtom } from "../../../settings/states/settingsLocale";

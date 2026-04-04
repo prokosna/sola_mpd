@@ -2,10 +2,11 @@ import { create } from "@bufbuild/protobuf";
 import { MpdRequestSchema } from "@sola_mpd/shared/src/models/mpd/mpd_command_pb.js";
 import type { Playlist } from "@sola_mpd/shared/src/models/playlist_pb.js";
 import type { Song } from "@sola_mpd/shared/src/models/song_pb.js";
+import { useAtomValue } from "jotai";
 import { useCallback, useRef, useState } from "react";
 
 import { useNotification } from "../../../lib/mantine/hooks/useNotification";
-import { useMpdClientState } from "../../mpd";
+import { mpdClientAtom } from "../../mpd";
 import { useCurrentMpdProfileState } from "../../profile";
 
 /**
@@ -24,7 +25,7 @@ export function usePlaylistSelectModal() {
 		useState(false);
 
 	const profile = useCurrentMpdProfileState();
-	const mpdClient = useMpdClientState();
+	const mpdClient = useAtomValue(mpdClientAtom);
 
 	const onOk = useCallback(
 		async (playlist: Playlist) => {

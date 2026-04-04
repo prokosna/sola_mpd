@@ -2,8 +2,8 @@ import { createStore } from "jotai";
 import { advancedSearchClientAtom } from "./features/advanced_search/states/advancedSearchClient";
 import { browserStateRepositoryAtom } from "./features/browsing/browser/states/browserStateRepository";
 import { recentlyAddedStateRepositoryAtom } from "./features/browsing/recently_added/states/recentlyAddedStateRepository";
-import { mpdClientAtom } from "./features/mpd/states/mpdClient";
-import { mpdListenerAtom } from "./features/mpd/states/mpdListener";
+import { setMpdClientActionAtom } from "./features/mpd/states/actions/setMpdClientActionAtom";
+import { setMpdListenerActionAtom } from "./features/mpd/states/actions/setMpdListenerActionAtom";
 import { pluginServiceAtom } from "./features/plugin/states/pluginServiceState";
 import { pluginStateRepositoryAtom } from "./features/plugin/states/pluginStateRepository";
 import { mpdProfileStateRepositoryAtom } from "./features/profile/states/mpdProfileStateRepository";
@@ -35,8 +35,11 @@ export function useJotaiStore() {
 		const socketIoClient = new SocketIoClientImpl();
 		await socketIoClient.isReady();
 
-		store.set(mpdClientAtom, new MpdClientSocketIo(socketIoClient));
-		store.set(mpdListenerAtom, new MpdListenerImplSocketIo(socketIoClient));
+		store.set(setMpdClientActionAtom, new MpdClientSocketIo(socketIoClient));
+		store.set(
+			setMpdListenerActionAtom,
+			new MpdListenerImplSocketIo(socketIoClient),
+		);
 		store.set(
 			songTableStateRepositoryAtom,
 			new SongTableStateRepositoryImplHttp(httpClient),

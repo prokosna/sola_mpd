@@ -4,7 +4,7 @@ import { atomWithRefresh } from "jotai/utils";
 import { useCallback } from "react";
 
 import { atomWithSync } from "../../../lib/jotai/atomWithSync";
-import { mpdClientAtom } from "../../mpd/states/mpdClient";
+import { mpdClientAtom } from "../../mpd/states/atoms/mpdClientAtom";
 import { currentMpdProfileSyncAtom } from "../../profile/states/mpdProfileState";
 import { fetchFileExploreFolders } from "../utils/fileExploreFoldersUtils";
 

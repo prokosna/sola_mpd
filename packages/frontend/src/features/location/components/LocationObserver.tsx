@@ -1,11 +1,12 @@
+import { useSetAtom } from "jotai";
 import { useEffect } from "react";
 import { useLocation } from "react-router";
 
 import {
-	ROUTE_HOME_PLAYLIST,
 	ROUTE_HOME_PLAY_QUEUE,
+	ROUTE_HOME_PLAYLIST,
 } from "../../../const/routes";
-import { useRefreshPlayQueueSongsState } from "../../play_queue";
+import { refreshPlayQueueSongsActionAtom } from "../../play_queue";
 import { useRefreshPlaylistsState } from "../../playlist";
 import { useSetSelectedSongsState } from "../../song_table";
 import { useSetPathname, useTransitionCounter } from "../states/locationState";
@@ -29,7 +30,9 @@ export function LocationObserver() {
 	const setPathname = useSetPathname();
 	const setSelectedSongs = useSetSelectedSongsState();
 	const refreshPlaylistsState = useRefreshPlaylistsState();
-	const refreshPlayQueueSongsState = useRefreshPlayQueueSongsState();
+	const refreshPlayQueueSongsState = useSetAtom(
+		refreshPlayQueueSongsActionAtom,
+	);
 
 	useEffect(() => {
 		setPathname(location.pathname);

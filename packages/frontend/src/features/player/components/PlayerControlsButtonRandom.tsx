@@ -1,10 +1,11 @@
 import { create } from "@bufbuild/protobuf";
 import { MpdRequestSchema } from "@sola_mpd/shared/src/models/mpd/mpd_command_pb.js";
 import { IconArrowsRight, IconArrowsShuffle } from "@tabler/icons-react";
+import { useAtomValue } from "jotai";
 import { useCallback } from "react";
-import { useMpdClientState } from "../../mpd";
+import { mpdClientAtom } from "../../mpd";
 import { useCurrentMpdProfileState } from "../../profile";
-import { usePlayerStatusIsRandomState } from "../states/playerStatusState";
+import { playerStatusIsRandomAtom } from "../states/atoms/playerStatusAtom";
 import { PlayerControlsButton } from "./PlayerControlsButton";
 
 /**
@@ -17,8 +18,8 @@ import { PlayerControlsButton } from "./PlayerControlsButton";
  */
 export function PlayerControlsButtonRandom() {
 	const profile = useCurrentMpdProfileState();
-	const mpdClient = useMpdClientState();
-	const playerStatusIsRandom = usePlayerStatusIsRandomState();
+	const mpdClient = useAtomValue(mpdClientAtom);
+	const playerStatusIsRandom = useAtomValue(playerStatusIsRandomAtom);
 
 	const onButtonClicked = useCallback(async () => {
 		if (profile === undefined || mpdClient === undefined) {

@@ -17,7 +17,7 @@ import { allSongsSyncAtom } from "../../../all_songs/states/allSongsState";
 import { filterStringsByGlobalFilter } from "../../../global_filter";
 import { globalFilterTokensAtom } from "../../../global_filter/states/globalFilterState";
 import { pathnameAtom } from "../../../location/states/locationState";
-import { mpdClientAtom } from "../../../mpd/states/mpdClient";
+import { mpdClientAtom } from "../../../mpd/states/atoms/mpdClientAtom";
 import { currentMpdProfileSyncAtom } from "../../../profile/states/mpdProfileState";
 import { localeCollatorAtom } from "../../../settings/states/settingsLocale";
 import { fetchBrowserFilterValues } from "../../common/utils/browserFilterUtils";

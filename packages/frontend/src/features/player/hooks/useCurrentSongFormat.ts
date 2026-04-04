@@ -3,9 +3,10 @@ import {
 	Song_MetadataTag,
 } from "@sola_mpd/shared/src/models/song_pb.js";
 import { convertAudioFormatToString } from "@sola_mpd/shared/src/utils/songUtils.js";
+import { useAtomValue } from "jotai";
 import { useMemo } from "react";
 
-import { useCurrentSongState } from "../states/playerSongState";
+import { currentSongAtom } from "../states/atoms/currentSongAtom";
 
 /**
  * Hook for retrieving current song's audio format info.
@@ -16,7 +17,7 @@ import { useCurrentSongState } from "../states/playerSongState";
  * - formatString: Human-readable format description
  */
 export function useCurrentSongFormat() {
-	const song = useCurrentSongState();
+	const song = useAtomValue(currentSongAtom);
 
 	const { isHiRes, isDsd, formatString } = useMemo(() => {
 		if (song === undefined) {

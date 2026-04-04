@@ -1,7 +1,7 @@
 import { atom, useAtom, useAtomValue, useSetAtom } from "jotai";
 import { atomEffect } from "jotai-effect";
 
-import { mpdClientAtom } from "../../mpd/states/mpdClient";
+import { mpdClientAtom } from "../../mpd/states/atoms/mpdClientAtom";
 import { currentMpdProfileSyncAtom } from "../../profile/states/mpdProfileState";
 
 /**

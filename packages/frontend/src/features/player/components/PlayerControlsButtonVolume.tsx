@@ -8,11 +8,12 @@ import {
 } from "@mantine/core";
 import { MpdRequestSchema } from "@sola_mpd/shared/src/models/mpd/mpd_command_pb.js";
 import { IconVolumeOff } from "@tabler/icons-react";
+import { useAtomValue } from "jotai";
 import { useCallback } from "react";
-import { useMpdClientState } from "../../mpd";
+import { mpdClientAtom } from "../../mpd";
 import { useCurrentMpdProfileState } from "../../profile";
 import { useIsCompactMode } from "../../user_device";
-import { usePlayerVolumeState } from "../states/playerVolumeState";
+import { playerVolumeAtom } from "../states/atoms/playerVolumeAtom";
 
 /**
  * Volume control component with button and slider.
@@ -25,8 +26,8 @@ import { usePlayerVolumeState } from "../states/playerVolumeState";
  */
 export function PlayerControlsButtonVolume() {
 	const profile = useCurrentMpdProfileState();
-	const mpdClient = useMpdClientState();
-	const playerVolume = usePlayerVolumeState();
+	const mpdClient = useAtomValue(mpdClientAtom);
+	const playerVolume = useAtomValue(playerVolumeAtom);
 	const isCompact = useIsCompactMode();
 
 	const volume = playerVolume?.volume !== undefined ? playerVolume.volume : -1;

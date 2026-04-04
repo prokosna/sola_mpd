@@ -1,7 +1,8 @@
+import { useSetAtom } from "jotai";
 import { useEffect, useRef } from "react";
 
-import { useRefreshCurrentSongState } from "../states/playerSongState";
-import { useRefreshPlayerStatusState } from "../states/playerStatusState";
+import { refreshCurrentSongActionAtom } from "../states/actions/refreshCurrentSongActionAtom";
+import { refreshPlayerStatusActionAtom } from "../states/actions/refreshPlayerStatusActionAtom";
 
 /**
  * Player state update manager.
@@ -13,8 +14,8 @@ import { useRefreshPlayerStatusState } from "../states/playerStatusState";
  * @returns null - Non-rendering component
  */
 export function PlayerObserver() {
-	const refreshCurrentSong = useRefreshCurrentSongState();
-	const refreshPlayerStatus = useRefreshPlayerStatusState();
+	const refreshCurrentSong = useSetAtom(refreshCurrentSongActionAtom);
+	const refreshPlayerStatus = useSetAtom(refreshPlayerStatusActionAtom);
 
 	const intervalIdRef = useRef<ReturnType<typeof setInterval> | undefined>(
 		undefined,

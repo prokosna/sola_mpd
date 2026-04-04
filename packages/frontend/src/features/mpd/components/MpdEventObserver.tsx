@@ -1,15 +1,16 @@
 import { MpdEvent_EventType } from "@sola_mpd/shared/src/models/mpd/mpd_event_pb.js";
+import { useAtomValue, useSetAtom } from "jotai";
 import { useEffect } from "react";
 
-import { useRefreshPlayQueueSongsState } from "../../play_queue";
-import { useRefreshPlayerVolumeState } from "../../player";
+import { refreshPlayQueueSongsActionAtom } from "../../play_queue";
+import { refreshPlayerVolumeActionAtom } from "../../player";
 import {
 	useRefreshPlaylistSongsState,
 	useRefreshPlaylistsState,
 } from "../../playlist";
 import { useCurrentMpdProfileState } from "../../profile";
 import { useRefreshStatsState } from "../../stats";
-import { useMpdListenerState } from "../states/mpdListener";
+import { mpdListenerAtom } from "../states/atoms/mpdListenerAtom";
 
 /**
  * Manages MPD event handling and corresponding state updates.
@@ -25,13 +26,13 @@ import { useMpdListenerState } from "../states/mpdListener";
  * @returns null - No UI rendered
  */
 export function MpdEventObserver() {
-	const mpdListener = useMpdListenerState();
+	const mpdListener = useAtomValue(mpdListenerAtom);
 	const profile = useCurrentMpdProfileState();
 	const refreshStats = useRefreshStatsState();
-	const refreshPlayQueueSongs = useRefreshPlayQueueSongsState();
+	const refreshPlayQueueSongs = useSetAtom(refreshPlayQueueSongsActionAtom);
 	const refreshPlaylists = useRefreshPlaylistsState();
 	const refreshPlaylistSongs = useRefreshPlaylistSongsState();
-	const refreshPlayerVolume = useRefreshPlayerVolumeState();
+	const refreshPlayerVolume = useSetAtom(refreshPlayerVolumeActionAtom);
 
 	useEffect(() => {
 		if (profile === undefined) {

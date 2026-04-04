@@ -1,12 +1,13 @@
 import { clone } from "@bufbuild/protobuf";
 import type { UseFormReturnType } from "@mantine/form";
 import { SavedSearchesSchema } from "@sola_mpd/shared/src/models/search_pb.js";
+import { useAtomValue } from "jotai";
 import { useCallback } from "react";
 import { COMPONENT_ID_SEARCH_SIDE_PANE } from "../../../const/component";
 import { useNotification } from "../../../lib/mantine/hooks/useNotification";
 import { UpdateMode } from "../../../types/stateTypes";
 import type { ContextMenuSection } from "../../context_menu";
-import { useMpdClientState } from "../../mpd";
+import { mpdClientAtom } from "../../mpd";
 import { useCurrentMpdProfileState } from "../../profile";
 import type { SelectListContextMenuItemParams } from "../../select_list";
 import {
@@ -31,7 +32,7 @@ export function useSavedSearchesSelectListProps({
 }) {
 	const notify = useNotification();
 
-	const mpdClient = useMpdClientState();
+	const mpdClient = useAtomValue(mpdClientAtom);
 	const profile = useCurrentMpdProfileState();
 	const savedSearches = useSavedSearchesState();
 	const updateSavedSearches = useUpdateSavedSearchesState();

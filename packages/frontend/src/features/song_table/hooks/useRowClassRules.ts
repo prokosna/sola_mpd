@@ -1,8 +1,9 @@
 import type { Song } from "@sola_mpd/shared/src/models/song_pb.js";
 import type { RowClassRules } from "ag-grid-community";
+import { useAtomValue } from "jotai";
 import { useMemo } from "react";
 
-import { useCurrentSongState } from "../../player";
+import { currentSongAtom } from "../../player";
 import type {
 	SongTableKey,
 	SongTableKeyType,
@@ -24,7 +25,7 @@ export function useRowClassRules(
 	keyType: SongTableKeyType,
 	songsMap: Map<SongTableKey, Song>,
 ): RowClassRules<SongTableRowData> {
-	const currentSong = useCurrentSongState();
+	const currentSong = useAtomValue(currentSongAtom);
 
 	return useMemo(() => {
 		const currentSongKey = currentSong

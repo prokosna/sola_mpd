@@ -10,6 +10,7 @@ import {
 	SongTableStateSchema,
 } from "@sola_mpd/shared/src/models/song_table_pb.js";
 import { getSongMetadataAsString } from "@sola_mpd/shared/src/utils/songUtils.js";
+import { useAtomValue, useSetAtom } from "jotai";
 import { type MutableRefObject, useCallback } from "react";
 
 import { COMPONENT_ID_PLAY_QUEUE } from "../../../const/component";
@@ -17,7 +18,7 @@ import { useNotification } from "../../../lib/mantine/hooks/useNotification";
 import { UpdateMode } from "../../../types/stateTypes";
 import { useSimilaritySearchContextMenuProps } from "../../advanced_search";
 import type { ContextMenuSection } from "../../context_menu";
-import { useMpdClientState } from "../../mpd";
+import { mpdClientAtom } from "../../mpd";
 import { usePluginContextMenuItems } from "../../plugin";
 import { useCurrentMpdProfileState } from "../../profile";
 import {
@@ -33,11 +34,12 @@ import {
 	useSongTableState,
 	useUpdateSongTableState,
 } from "../../song_table";
-import { usePlayQueueSongsState } from "../states/playQueueSongsState";
+import { setIsPlayQueueLoadingActionAtom } from "../states/actions/setIsPlayQueueLoadingActionAtom";
+import { playQueueSongsAtom } from "../states/atoms/playQueueSongsAtom";
 import {
-	useIsPlayQueueLoadingState,
-	useSetIsPlayQueueLoadingState,
-} from "../states/playQueueUiState";
+	isPlayQueueLoadingAtom,
+	syncPlayQueueLoadingEffectAtom,
+} from "../states/atoms/playQueueUiAtom";
 
 /**
  * Provides configuration and handlers for the play queue song table.
@@ -59,11 +61,12 @@ export function usePlayQueueSongTableProps(
 	const notify = useNotification();
 
 	const profile = useCurrentMpdProfileState();
-	const mpdClient = useMpdClientState();
-	const isLoading = useIsPlayQueueLoadingState();
-	const songs = usePlayQueueSongsState();
+	useAtomValue(syncPlayQueueLoadingEffectAtom);
+	const mpdClient = useAtomValue(mpdClientAtom);
+	const isLoading = useAtomValue(isPlayQueueLoadingAtom);
+	const songs = useAtomValue(playQueueSongsAtom);
 	const songTableState = useSongTableState();
-	const setIsPlayQueueLoading = useSetIsPlayQueueLoadingState();
+	const setIsPlayQueueLoading = useSetAtom(setIsPlayQueueLoadingActionAtom);
 	const updateSongTableState = useUpdateSongTableState();
 	const setSelectedSongs = useSetSelectedSongsState();
 

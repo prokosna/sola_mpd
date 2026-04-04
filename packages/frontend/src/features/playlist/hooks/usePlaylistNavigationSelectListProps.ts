@@ -1,11 +1,12 @@
 import { create } from "@bufbuild/protobuf";
 import { MpdRequestSchema } from "@sola_mpd/shared/src/models/mpd/mpd_command_pb.js";
+import { useAtomValue } from "jotai";
 import { useCallback } from "react";
 
 import { COMPONENT_ID_PLAYLIST_SIDE_PANE } from "../../../const/component";
 import { useNotification } from "../../../lib/mantine/hooks/useNotification";
 import type { ContextMenuSection } from "../../context_menu";
-import { useMpdClientState } from "../../mpd";
+import { mpdClientAtom } from "../../mpd";
 import { useCurrentMpdProfileState } from "../../profile";
 import type { SelectListContextMenuItemParams } from "../../select_list";
 import {
@@ -26,7 +27,7 @@ export function usePlaylistNavigationSelectListProps() {
 	const notify = useNotification();
 
 	const profile = useCurrentMpdProfileState();
-	const mpdClient = useMpdClientState();
+	const mpdClient = useAtomValue(mpdClientAtom);
 	const playlists = usePlaylistsState();
 	const selectedPlaylist = useSelectedPlaylistState();
 	const setSelectedPlaylist = useSetSelectedPlaylistState();

@@ -1,10 +1,11 @@
 import { create } from "@bufbuild/protobuf";
 import { Button } from "@mantine/core";
 import { MpdRequestSchema } from "@sola_mpd/shared/src/models/mpd/mpd_command_pb.js";
+import { useAtomValue } from "jotai";
 import { useCallback } from "react";
 import { useNotification } from "../../../lib/mantine/hooks/useNotification";
-import { useMpdClientState } from "../../mpd";
-import { usePlayerStatusIsDatabaseUpdatingState } from "../../player";
+import { mpdClientAtom } from "../../mpd";
+import { playerStatusIsDatabaseUpdatingAtom } from "../../player";
 import { useCurrentMpdProfileState } from "../../profile";
 
 /**
@@ -18,9 +19,10 @@ export function CardStatsDatabaseButton() {
 	const notify = useNotification();
 
 	const profile = useCurrentMpdProfileState();
-	const mpdClient = useMpdClientState();
-	const playerStatusIsDatabaseUpdating =
-		usePlayerStatusIsDatabaseUpdatingState();
+	const mpdClient = useAtomValue(mpdClientAtom);
+	const playerStatusIsDatabaseUpdating = useAtomValue(
+		playerStatusIsDatabaseUpdatingAtom,
+	);
 
 	const handleDatabaseUpdateButtonClick = useCallback(async () => {
 		if (profile === undefined || mpdClient === undefined) {

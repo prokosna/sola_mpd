@@ -1,13 +1,14 @@
 import { Plugin_PluginType } from "@sola_mpd/shared/src/models/plugin/plugin_pb.js";
 import type { Song } from "@sola_mpd/shared/src/models/song_pb.js";
 import type { SongTableColumn } from "@sola_mpd/shared/src/models/song_table_pb.js";
+import { useAtomValue } from "jotai";
 import { type MutableRefObject, useCallback } from "react";
 
 import { COMPONENT_ID_SEARCH_MAIN_PANE } from "../../../const/component";
 import { useNotification } from "../../../lib/mantine/hooks/useNotification";
 import { useSimilaritySearchContextMenuProps } from "../../advanced_search";
 import type { ContextMenuSection } from "../../context_menu";
-import { useMpdClientState } from "../../mpd";
+import { mpdClientAtom } from "../../mpd";
 import { usePluginContextMenuItems } from "../../plugin";
 import { useCurrentMpdProfileState } from "../../profile";
 import {
@@ -51,7 +52,7 @@ export function useSearchSongTableProps(
 	const notify = useNotification();
 
 	const profile = useCurrentMpdProfileState();
-	const mpdClient = useMpdClientState();
+	const mpdClient = useAtomValue(mpdClientAtom);
 	const isLoading = useIsSearchLoadingState();
 	const songs = useSearchSongsState();
 	const searchSongTableColumns = useSearchSongTableColumnsState();

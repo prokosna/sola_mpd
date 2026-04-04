@@ -5,12 +5,13 @@ import {
 	type SongTableColumn,
 	SongTableStateSchema,
 } from "@sola_mpd/shared/src/models/song_table_pb.js";
+import { useAtomValue } from "jotai";
 import { type RefObject, useCallback } from "react";
 import { COMPONENT_ID_TEXT_TO_MUSIC_SEARCH } from "../../../const/component";
 import { useNotification } from "../../../lib/mantine/hooks/useNotification";
 import { UpdateMode } from "../../../types/stateTypes";
 import type { ContextMenuSection } from "../../context_menu";
-import { useMpdClientState } from "../../mpd";
+import { mpdClientAtom } from "../../mpd";
 import { usePluginContextMenuItems } from "../../plugin";
 import { useCurrentMpdProfileState } from "../../profile";
 import {
@@ -44,7 +45,7 @@ export function useTextToMusicSearchSongTableProps(
 	const notify = useNotification();
 
 	const profile = useCurrentMpdProfileState();
-	const mpdClient = useMpdClientState();
+	const mpdClient = useAtomValue(mpdClientAtom);
 	const isLoading = useIsTextToMusicSearchLoadingState();
 	const songs = useTextToMusicSearchSongsState();
 	const songTableState = useSongTableState();
