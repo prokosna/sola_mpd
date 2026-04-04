@@ -1,4 +1,4 @@
-import type { PluginState } from "@sola_mpd/domain/src/models/plugin/plugin_pb.js";
+import type { PluginState } from "@sola_mpd/shared/src/models/plugin/plugin_pb.js";
 
 /**
  * Plugin state persistence.

@@ -3,7 +3,7 @@ import {
 	MpdRequestBulkSchema,
 	MpdRequestSchema,
 	MpdResponseSchema,
-} from "@sola_mpd/domain/src/models/mpd/mpd_command_pb.js";
+} from "@sola_mpd/shared/src/models/mpd/mpd_command_pb.js";
 import express, { type Request, type Response } from "express";
 
 import { wrap } from "../utils/wrap.js";

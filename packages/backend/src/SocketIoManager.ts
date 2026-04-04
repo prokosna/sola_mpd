@@ -7,8 +7,8 @@ import {
 	SIO_MPD_UNSUBSCRIBE,
 	SIO_PLUGIN_EXECUTE,
 	SIO_PLUGIN_REGISTER,
-} from "@sola_mpd/domain/src/const/socketio.js";
-import { MpdResponseSchema } from "@sola_mpd/domain/src/models/mpd/mpd_command_pb.js";
+} from "@sola_mpd/shared/src/const/socketio.js";
+import { MpdResponseSchema } from "@sola_mpd/shared/src/models/mpd/mpd_command_pb.js";
 import type { Server as IOServer } from "socket.io";
 import { AdvancedSearchMessageHandler } from "./advanced_search/AdvancedSearchMessageHandler.js";
 import { MpdMessageHandler } from "./mpd/MpdMessageHandler.js";

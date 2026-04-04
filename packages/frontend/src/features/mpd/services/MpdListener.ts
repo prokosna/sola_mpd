@@ -1,5 +1,5 @@
-import type { MpdEvent_EventType } from "@sola_mpd/domain/src/models/mpd/mpd_event_pb.js";
-import type { MpdProfile } from "@sola_mpd/domain/src/models/mpd/mpd_profile_pb.js";
+import type { MpdEvent_EventType } from "@sola_mpd/shared/src/models/mpd/mpd_event_pb.js";
+import type { MpdProfile } from "@sola_mpd/shared/src/models/mpd/mpd_profile_pb.js";
 
 /**
  * Interface for handling real-time MPD server events.

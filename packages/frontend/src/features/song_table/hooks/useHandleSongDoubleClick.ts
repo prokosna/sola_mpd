@@ -2,9 +2,9 @@ import { create, toJsonString } from "@bufbuild/protobuf";
 import {
 	MpdRequestSchema,
 	MpdResponseSchema,
-} from "@sola_mpd/domain/src/models/mpd/mpd_command_pb.js";
-import type { MpdProfile } from "@sola_mpd/domain/src/models/mpd/mpd_profile_pb.js";
-import type { Song } from "@sola_mpd/domain/src/models/song_pb.js";
+} from "@sola_mpd/shared/src/models/mpd/mpd_command_pb.js";
+import type { MpdProfile } from "@sola_mpd/shared/src/models/mpd/mpd_profile_pb.js";
+import type { Song } from "@sola_mpd/shared/src/models/song_pb.js";
 import { useCallback } from "react";
 
 import type { MpdClient } from "../../mpd";

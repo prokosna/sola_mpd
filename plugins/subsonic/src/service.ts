@@ -3,12 +3,12 @@ import {
 	type PluginExecuteResponse,
 	PluginExecuteResponse_Status,
 	PluginExecuteResponseSchema,
-} from "@sola_mpd/domain/src/models/plugin/plugin_pb.js";
+} from "@sola_mpd/shared/src/models/plugin/plugin_pb.js";
 import {
 	type Song,
 	Song_MetadataTag,
-} from "@sola_mpd/domain/src/models/song_pb.js";
-import { getSongMetadataAsString } from "@sola_mpd/domain/src/utils/songUtils.js";
+} from "@sola_mpd/shared/src/models/song_pb.js";
+import { getSongMetadataAsString } from "@sola_mpd/shared/src/utils/songUtils.js";
 
 import { SubsonicClient } from "./subsonic.js";
 

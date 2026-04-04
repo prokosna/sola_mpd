@@ -6,9 +6,9 @@ import {
 	Modal,
 	Stack,
 } from "@mantine/core";
-import type { Song_MetadataTag } from "@sola_mpd/domain/src/models/song_pb.js";
-import type { SongTableColumn } from "@sola_mpd/domain/src/models/song_table_pb.js";
-import { listAllSongMetadataTags } from "@sola_mpd/domain/src/utils/songUtils.js";
+import type { Song_MetadataTag } from "@sola_mpd/shared/src/models/song_pb.js";
+import type { SongTableColumn } from "@sola_mpd/shared/src/models/song_table_pb.js";
+import { listAllSongMetadataTags } from "@sola_mpd/shared/src/utils/songUtils.js";
 import { IconArrowLeft, IconArrowRight } from "@tabler/icons-react";
 import { type JSX, useCallback, useEffect, useState } from "react";
 import {

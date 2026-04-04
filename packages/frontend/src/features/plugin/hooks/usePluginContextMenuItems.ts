@@ -1,4 +1,4 @@
-import { Plugin_PluginType } from "@sola_mpd/domain/src/models/plugin/plugin_pb.js";
+import { Plugin_PluginType } from "@sola_mpd/shared/src/models/plugin/plugin_pb.js";
 
 import { useNotification } from "../../../lib/mantine/hooks/useNotification";
 import type { ContextMenuItem } from "../../context_menu";

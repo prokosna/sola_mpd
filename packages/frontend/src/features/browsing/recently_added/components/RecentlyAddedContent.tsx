@@ -2,7 +2,7 @@ import { clone } from "@bufbuild/protobuf";
 import {
 	type SongTableColumn,
 	SongTableStateSchema,
-} from "@sola_mpd/domain/src/models/song_table_pb.js";
+} from "@sola_mpd/shared/src/models/song_table_pb.js";
 import { useCallback, useState } from "react";
 import { UpdateMode } from "../../../../types/stateTypes";
 import { usePlaylistSelectModal } from "../../../playlist";

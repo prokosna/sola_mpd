@@ -1,5 +1,5 @@
 import { create } from "@bufbuild/protobuf";
-import { MpdRequestSchema } from "@sola_mpd/domain/src/models/mpd/mpd_command_pb.js";
+import { MpdRequestSchema } from "@sola_mpd/shared/src/models/mpd/mpd_command_pb.js";
 import { IconPlayerSkipBack } from "@tabler/icons-react";
 import { useCallback } from "react";
 import { useMpdClientState } from "../../mpd";

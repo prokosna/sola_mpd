@@ -1,4 +1,4 @@
-import type { SavedSearches } from "@sola_mpd/domain/src/models/search_pb.js";
+import type { SavedSearches } from "@sola_mpd/shared/src/models/search_pb.js";
 import { useAtomValue, useSetAtom } from "jotai";
 import { atomWithDefault } from "jotai/utils";
 import { useCallback } from "react";

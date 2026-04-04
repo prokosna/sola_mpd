@@ -6,8 +6,8 @@ import {
 	Tooltip,
 	useComputedColorScheme,
 } from "@mantine/core";
-import type { BrowserFilter } from "@sola_mpd/domain/src/models/browser_pb.js";
-import { convertSongMetadataValueToString } from "@sola_mpd/domain/src/utils/songUtils.js";
+import type { BrowserFilter } from "@sola_mpd/shared/src/models/browser_pb.js";
+import { convertSongMetadataValueToString } from "@sola_mpd/shared/src/utils/songUtils.js";
 import { IconX } from "@tabler/icons-react";
 import { useCallback, useMemo } from "react";
 import { UpdateMode } from "../../../../types/stateTypes";

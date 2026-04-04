@@ -1,4 +1,4 @@
-import type { BrowserState } from "@sola_mpd/domain/src/models/browser_pb.js";
+import type { BrowserState } from "@sola_mpd/shared/src/models/browser_pb.js";
 import { useAtomValue, useSetAtom } from "jotai";
 import { atomWithDefault, useResetAtom } from "jotai/utils";
 import { useCallback } from "react";

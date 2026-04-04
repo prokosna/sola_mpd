@@ -1,10 +1,10 @@
 import { create } from "@bufbuild/protobuf";
-import { DB_FILE_COMMON_SONG_TABLE_STATE } from "@sola_mpd/domain/src/const/database.js";
-import { Song_MetadataTag } from "@sola_mpd/domain/src/models/song_pb.js";
+import { DB_FILE_COMMON_SONG_TABLE_STATE } from "@sola_mpd/shared/src/const/database.js";
+import { Song_MetadataTag } from "@sola_mpd/shared/src/models/song_pb.js";
 import {
 	type SongTableState,
 	SongTableStateSchema,
-} from "@sola_mpd/domain/src/models/song_table_pb.js";
+} from "@sola_mpd/shared/src/models/song_table_pb.js";
 
 import { FileRepository } from "./FileRepository.js";
 

@@ -1,9 +1,9 @@
 import { create } from "@bufbuild/protobuf";
-import type { Plugin } from "@sola_mpd/domain/src/models/plugin/plugin_pb.js";
+import type { Plugin } from "@sola_mpd/shared/src/models/plugin/plugin_pb.js";
 import {
 	PluginRegisterRequestSchema,
 	PluginSchema,
-} from "@sola_mpd/domain/src/models/plugin/plugin_pb.js";
+} from "@sola_mpd/shared/src/models/plugin/plugin_pb.js";
 import { type RefObject, useCallback, useState } from "react";
 
 import { usePluginService } from "../states/pluginServiceState";

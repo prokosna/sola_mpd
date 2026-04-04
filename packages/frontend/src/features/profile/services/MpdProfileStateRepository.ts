@@ -1,4 +1,4 @@
-import type { MpdProfileState } from "@sola_mpd/domain/src/models/mpd/mpd_profile_pb.js";
+import type { MpdProfileState } from "@sola_mpd/shared/src/models/mpd/mpd_profile_pb.js";
 
 /**
  * Repository for MPD profile state persistence.

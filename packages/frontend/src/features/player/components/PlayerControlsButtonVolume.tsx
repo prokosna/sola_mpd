@@ -6,7 +6,7 @@ import {
 	Tooltip,
 	useMantineTheme,
 } from "@mantine/core";
-import { MpdRequestSchema } from "@sola_mpd/domain/src/models/mpd/mpd_command_pb.js";
+import { MpdRequestSchema } from "@sola_mpd/shared/src/models/mpd/mpd_command_pb.js";
 import { IconVolumeOff } from "@tabler/icons-react";
 import { useCallback } from "react";
 import { useMpdClientState } from "../../mpd";

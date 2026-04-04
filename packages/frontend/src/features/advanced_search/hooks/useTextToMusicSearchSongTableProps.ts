@@ -1,10 +1,10 @@
 import { clone } from "@bufbuild/protobuf";
-import { Plugin_PluginType } from "@sola_mpd/domain/src/models/plugin/plugin_pb.js";
-import type { Song } from "@sola_mpd/domain/src/models/song_pb.js";
+import { Plugin_PluginType } from "@sola_mpd/shared/src/models/plugin/plugin_pb.js";
+import type { Song } from "@sola_mpd/shared/src/models/song_pb.js";
 import {
 	type SongTableColumn,
 	SongTableStateSchema,
-} from "@sola_mpd/domain/src/models/song_table_pb.js";
+} from "@sola_mpd/shared/src/models/song_table_pb.js";
 import { type RefObject, useCallback } from "react";
 import { COMPONENT_ID_TEXT_TO_MUSIC_SEARCH } from "../../../const/component";
 import { useNotification } from "../../../lib/mantine/hooks/useNotification";

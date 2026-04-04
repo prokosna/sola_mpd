@@ -1,10 +1,10 @@
 import { clone, create } from "@bufbuild/protobuf";
-import type { PluginState } from "@sola_mpd/domain/src/models/plugin/plugin_pb.js";
+import type { PluginState } from "@sola_mpd/shared/src/models/plugin/plugin_pb.js";
 import {
 	PluginRegisterRequestSchema,
 	PluginSchema,
 	PluginStateSchema,
-} from "@sola_mpd/domain/src/models/plugin/plugin_pb.js";
+} from "@sola_mpd/shared/src/models/plugin/plugin_pb.js";
 import { useAtomValue, useSetAtom } from "jotai";
 import { atomWithDefault, useResetAtom } from "jotai/utils";
 import { useCallback } from "react";

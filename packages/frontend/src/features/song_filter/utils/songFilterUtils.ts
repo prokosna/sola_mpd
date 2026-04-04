@@ -2,16 +2,16 @@ import { timestampDate } from "@bufbuild/protobuf/wkt";
 import {
 	type FilterCondition,
 	FilterCondition_Operator,
-} from "@sola_mpd/domain/src/models/filter_pb.js";
+} from "@sola_mpd/shared/src/models/filter_pb.js";
 import type {
 	Song,
 	Song_MetadataValue,
-} from "@sola_mpd/domain/src/models/song_pb.js";
+} from "@sola_mpd/shared/src/models/song_pb.js";
 import {
 	convertAudioFormatToString,
 	convertSongMetadataValueToString,
-} from "@sola_mpd/domain/src/utils/songUtils.js";
-import { normalize } from "@sola_mpd/domain/src/utils/stringUtils.js";
+} from "@sola_mpd/shared/src/utils/songUtils.js";
+import { normalize } from "@sola_mpd/shared/src/utils/stringUtils.js";
 
 type ComparableSongMetadataValue = string | number;
 type ComparableConditionValue = string | number | RegExp;

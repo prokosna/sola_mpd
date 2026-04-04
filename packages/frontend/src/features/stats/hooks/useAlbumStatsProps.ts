@@ -1,7 +1,7 @@
 import {
 	type Song,
 	Song_MetadataTag,
-} from "@sola_mpd/domain/src/models/song_pb.js";
+} from "@sola_mpd/shared/src/models/song_pb.js";
 import { useMemo } from "react";
 
 import type { CardStatsNumberProps } from "../components/CardStatsNumber";

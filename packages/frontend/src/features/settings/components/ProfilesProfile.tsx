@@ -4,7 +4,7 @@ import {
 	type MpdProfile,
 	type MpdProfileState,
 	MpdProfileStateSchema,
-} from "@sola_mpd/domain/src/models/mpd/mpd_profile_pb.js";
+} from "@sola_mpd/shared/src/models/mpd/mpd_profile_pb.js";
 import { useCallback } from "react";
 import { useNotification } from "../../../lib/mantine/hooks/useNotification";
 import { UpdateMode } from "../../../types/stateTypes";

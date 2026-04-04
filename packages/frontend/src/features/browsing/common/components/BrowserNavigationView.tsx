@@ -1,5 +1,5 @@
-import type { BrowserFilter } from "@sola_mpd/domain/src/models/browser_pb.js";
-import type { Song_MetadataTag } from "@sola_mpd/domain/src/models/song_pb.js";
+import type { BrowserFilter } from "@sola_mpd/shared/src/models/browser_pb.js";
+import type { Song_MetadataTag } from "@sola_mpd/shared/src/models/song_pb.js";
 import clsx from "clsx";
 import * as React from "react";
 import {

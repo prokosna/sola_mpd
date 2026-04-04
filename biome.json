@@ -10,6 +10,7 @@
 		"includes": [
 			"**",
 			"!**/packages/domain/src/models/**/*",
+			"!**/packages/shared/src/models/**/*",
 			"!**/plugins/subsonic/src/models/**/*"
 		]
 	},

@@ -1,10 +1,10 @@
 import { fromBinary, toBinary } from "@bufbuild/protobuf";
-import { BrowserStateSchema } from "@sola_mpd/domain/src/models/browser_pb.js";
-import { MpdProfileStateSchema } from "@sola_mpd/domain/src/models/mpd/mpd_profile_pb.js";
-import { PluginStateSchema } from "@sola_mpd/domain/src/models/plugin/plugin_pb.js";
-import { RecentlyAddedStateSchema } from "@sola_mpd/domain/src/models/recently_added_pb.js";
-import { SavedSearchesSchema } from "@sola_mpd/domain/src/models/search_pb.js";
-import { SongTableStateSchema } from "@sola_mpd/domain/src/models/song_table_pb.js";
+import { BrowserStateSchema } from "@sola_mpd/shared/src/models/browser_pb.js";
+import { MpdProfileStateSchema } from "@sola_mpd/shared/src/models/mpd/mpd_profile_pb.js";
+import { PluginStateSchema } from "@sola_mpd/shared/src/models/plugin/plugin_pb.js";
+import { RecentlyAddedStateSchema } from "@sola_mpd/shared/src/models/recently_added_pb.js";
+import { SavedSearchesSchema } from "@sola_mpd/shared/src/models/search_pb.js";
+import { SongTableStateSchema } from "@sola_mpd/shared/src/models/song_table_pb.js";
 import express, { type Request, type Response, Router } from "express";
 
 import { wrap } from "../utils/wrap.js";

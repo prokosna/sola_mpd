@@ -1,11 +1,11 @@
 import { create } from "@bufbuild/protobuf";
-import { DB_FILE_BROWSER_STATE } from "@sola_mpd/domain/src/const/database.js";
+import { DB_FILE_BROWSER_STATE } from "@sola_mpd/shared/src/const/database.js";
 import {
 	BrowserFilterSchema,
 	type BrowserState,
 	BrowserStateSchema,
-} from "@sola_mpd/domain/src/models/browser_pb.js";
-import { Song_MetadataTag } from "@sola_mpd/domain/src/models/song_pb.js";
+} from "@sola_mpd/shared/src/models/browser_pb.js";
+import { Song_MetadataTag } from "@sola_mpd/shared/src/models/song_pb.js";
 
 import { FileRepository } from "./FileRepository.js";
 

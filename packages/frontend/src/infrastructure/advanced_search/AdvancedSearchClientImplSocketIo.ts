@@ -1,11 +1,11 @@
 import { fromBinary, toBinary } from "@bufbuild/protobuf";
-import { SIO_ADVANCED_SEARCH } from "@sola_mpd/domain/src/const/socketio.js";
+import { SIO_ADVANCED_SEARCH } from "@sola_mpd/shared/src/const/socketio.js";
 import {
 	type AdvancedSearchRequest,
 	AdvancedSearchRequestSchema,
 	type AdvancedSearchResponse,
 	AdvancedSearchResponseSchema,
-} from "@sola_mpd/domain/src/models/advanced_search_pb.js";
+} from "@sola_mpd/shared/src/models/advanced_search_pb.js";
 import type { AdvancedSearchClient } from "../../features/advanced_search";
 import type { SocketIoClient } from "../socket_io/SocketIoClient";
 

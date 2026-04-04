@@ -1,5 +1,5 @@
-import type { FilterCondition } from "@sola_mpd/domain/src/models/filter_pb.js";
-import type { SongTableColumn } from "@sola_mpd/domain/src/models/song_table_pb.js";
+import type { FilterCondition } from "@sola_mpd/shared/src/models/filter_pb.js";
+import type { SongTableColumn } from "@sola_mpd/shared/src/models/song_table_pb.js";
 
 /**
  * Filter conditions for search.

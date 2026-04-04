@@ -1,4 +1,4 @@
-import { MpdEvent_EventType } from "@sola_mpd/domain/src/models/mpd/mpd_event_pb.js";
+import { MpdEvent_EventType } from "@sola_mpd/shared/src/models/mpd/mpd_event_pb.js";
 import { useEffect } from "react";
 
 import { useRefreshPlayQueueSongsState } from "../../play_queue";

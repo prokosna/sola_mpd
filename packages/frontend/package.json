@@ -19,7 +19,6 @@
 		"@mantine/notifications": "^8.3.14",
 		"@mantine/nprogress": "^8.3.14",
 		"@sola_mpd/shared": "workspace:*",
-		"@sola_mpd/domain": "workspace:*",
 		"@tabler/icons-react": "^3.36.1",
 		"ag-grid-community": "^35.0.1",
 		"ag-grid-react": "^35.0.1",

@@ -1,9 +1,9 @@
 import { fromBinary, toBinary } from "@bufbuild/protobuf";
-import { API_CONFIGS_BROWSER_STATE } from "@sola_mpd/domain/src/const/api.js";
+import { API_CONFIGS_BROWSER_STATE } from "@sola_mpd/shared/src/const/api.js";
 import {
 	type BrowserState,
 	BrowserStateSchema,
-} from "@sola_mpd/domain/src/models/browser_pb.js";
+} from "@sola_mpd/shared/src/models/browser_pb.js";
 import type { BrowserStateRepository } from "../../features/browsing";
 import type { HttpClient } from "../http/HttpClient";
 

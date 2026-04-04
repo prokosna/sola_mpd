@@ -1,9 +1,9 @@
 import {
 	type Song,
 	Song_MetadataTag,
-} from "@sola_mpd/domain/src/models/song_pb.js";
-import { getSongMetadataAsNumber } from "@sola_mpd/domain/src/utils/songUtils.js";
-import { displayDuration } from "@sola_mpd/domain/src/utils/stringUtils.js";
+} from "@sola_mpd/shared/src/models/song_pb.js";
+import { getSongMetadataAsNumber } from "@sola_mpd/shared/src/utils/songUtils.js";
+import { displayDuration } from "@sola_mpd/shared/src/utils/stringUtils.js";
 import { useMemo } from "react";
 
 import type { CardStatsNumberProps } from "../components/CardStatsNumber";

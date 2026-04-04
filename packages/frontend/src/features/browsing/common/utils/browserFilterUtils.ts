@@ -1,23 +1,23 @@
 import { create, toJsonString } from "@bufbuild/protobuf";
 import { StringValueSchema } from "@bufbuild/protobuf/wkt";
-import type { BrowserFilter } from "@sola_mpd/domain/src/models/browser_pb.js";
-import { BrowserFilterSchema } from "@sola_mpd/domain/src/models/browser_pb.js";
+import type { BrowserFilter } from "@sola_mpd/shared/src/models/browser_pb.js";
+import { BrowserFilterSchema } from "@sola_mpd/shared/src/models/browser_pb.js";
 import {
 	type FilterCondition,
 	FilterCondition_Operator,
 	FilterConditionSchema,
-} from "@sola_mpd/domain/src/models/filter_pb.js";
+} from "@sola_mpd/shared/src/models/filter_pb.js";
 import {
 	MpdRequestSchema,
 	MpdResponseSchema,
-} from "@sola_mpd/domain/src/models/mpd/mpd_command_pb.js";
-import type { MpdProfile } from "@sola_mpd/domain/src/models/mpd/mpd_profile_pb.js";
+} from "@sola_mpd/shared/src/models/mpd/mpd_command_pb.js";
+import type { MpdProfile } from "@sola_mpd/shared/src/models/mpd/mpd_profile_pb.js";
 import {
 	Song_MetadataTag,
 	Song_MetadataValueSchema,
-} from "@sola_mpd/domain/src/models/song_pb.js";
-import { escapeRegexString } from "@sola_mpd/domain/src/utils/mpdUtils.js";
-import { convertSongMetadataValueToString } from "@sola_mpd/domain/src/utils/songUtils.js";
+} from "@sola_mpd/shared/src/models/song_pb.js";
+import { escapeRegexString } from "@sola_mpd/shared/src/utils/mpdUtils.js";
+import { convertSongMetadataValueToString } from "@sola_mpd/shared/src/utils/songUtils.js";
 
 import type { MpdClient } from "../../../mpd";
 

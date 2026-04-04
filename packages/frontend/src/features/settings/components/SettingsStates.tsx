@@ -2,27 +2,27 @@ import { Button, Stack, Table, Text, Title } from "@mantine/core";
 import {
 	type BrowserState,
 	BrowserStateSchema,
-} from "@sola_mpd/domain/src/models/browser_pb.js";
+} from "@sola_mpd/shared/src/models/browser_pb.js";
 import {
 	type MpdProfileState,
 	MpdProfileStateSchema,
-} from "@sola_mpd/domain/src/models/mpd/mpd_profile_pb.js";
+} from "@sola_mpd/shared/src/models/mpd/mpd_profile_pb.js";
 import {
 	type PluginState,
 	PluginStateSchema,
-} from "@sola_mpd/domain/src/models/plugin/plugin_pb.js";
+} from "@sola_mpd/shared/src/models/plugin/plugin_pb.js";
 import {
 	type RecentlyAddedState,
 	RecentlyAddedStateSchema,
-} from "@sola_mpd/domain/src/models/recently_added_pb.js";
+} from "@sola_mpd/shared/src/models/recently_added_pb.js";
 import {
 	type SavedSearches,
 	SavedSearchesSchema,
-} from "@sola_mpd/domain/src/models/search_pb.js";
+} from "@sola_mpd/shared/src/models/search_pb.js";
 import {
 	type SongTableState,
 	SongTableStateSchema,
-} from "@sola_mpd/domain/src/models/song_table_pb.js";
+} from "@sola_mpd/shared/src/models/song_table_pb.js";
 import { UpdateMode } from "../../../types/stateTypes";
 import {
 	useRecentlyAddedState,

@@ -1,8 +1,8 @@
 import {
 	AudioFormat_Encoding,
 	Song_MetadataTag,
-} from "@sola_mpd/domain/src/models/song_pb.js";
-import { convertAudioFormatToString } from "@sola_mpd/domain/src/utils/songUtils.js";
+} from "@sola_mpd/shared/src/models/song_pb.js";
+import { convertAudioFormatToString } from "@sola_mpd/shared/src/utils/songUtils.js";
 import { useMemo } from "react";
 
 import { useCurrentSongState } from "../states/playerSongState";

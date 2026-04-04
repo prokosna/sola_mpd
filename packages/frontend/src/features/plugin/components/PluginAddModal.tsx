@@ -1,5 +1,5 @@
 import { Modal } from "@mantine/core";
-import type { Plugin } from "@sola_mpd/domain/src/models/plugin/plugin_pb.js";
+import type { Plugin } from "@sola_mpd/shared/src/models/plugin/plugin_pb.js";
 import { useCallback, useState } from "react";
 import { PluginAddModalConnect } from "./PluginAddModalConnect";
 import { PluginAddModalRegister } from "./PluginAddModalRegister";

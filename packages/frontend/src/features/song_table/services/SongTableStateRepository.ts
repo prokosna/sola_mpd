@@ -1,4 +1,4 @@
-import type { SongTableState } from "@sola_mpd/domain/src/models/song_table_pb.js";
+import type { SongTableState } from "@sola_mpd/shared/src/models/song_table_pb.js";
 
 /**
  * Repository for managing song table state persistence.

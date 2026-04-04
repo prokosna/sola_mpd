@@ -11,7 +11,7 @@ import { useForm } from "@mantine/form";
 import {
 	type Playlist,
 	PlaylistSchema,
-} from "@sola_mpd/domain/src/models/playlist_pb.js";
+} from "@sola_mpd/shared/src/models/playlist_pb.js";
 import { useCallback } from "react";
 import { useAddPlaylist } from "../hooks/useAddPlaylist";
 import { usePlaylistsState } from "../states/playlistState";

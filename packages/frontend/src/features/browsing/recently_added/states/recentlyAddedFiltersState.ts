@@ -1,12 +1,12 @@
 import { clone, create } from "@bufbuild/protobuf";
-import type { BrowserFilter } from "@sola_mpd/domain/src/models/browser_pb.js";
-import { BrowserFilterSchema } from "@sola_mpd/domain/src/models/browser_pb.js";
+import type { BrowserFilter } from "@sola_mpd/shared/src/models/browser_pb.js";
+import { BrowserFilterSchema } from "@sola_mpd/shared/src/models/browser_pb.js";
 import {
 	RecentlyAddedFilterSchema,
 	RecentlyAddedStateSchema,
-} from "@sola_mpd/domain/src/models/recently_added_pb.js";
-import type { Song_MetadataTag } from "@sola_mpd/domain/src/models/song_pb.js";
-import { convertSongMetadataValueToString } from "@sola_mpd/domain/src/utils/songUtils.js";
+} from "@sola_mpd/shared/src/models/recently_added_pb.js";
+import type { Song_MetadataTag } from "@sola_mpd/shared/src/models/song_pb.js";
+import { convertSongMetadataValueToString } from "@sola_mpd/shared/src/utils/songUtils.js";
 import { atom, useAtomValue, useSetAtom } from "jotai";
 import { atomWithDefault } from "jotai/utils";
 import { useCallback } from "react";

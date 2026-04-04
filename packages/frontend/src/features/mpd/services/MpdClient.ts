@@ -1,7 +1,7 @@
 import type {
 	MpdRequest,
 	MpdResponse,
-} from "@sola_mpd/domain/src/models/mpd/mpd_command_pb.js";
+} from "@sola_mpd/shared/src/models/mpd/mpd_command_pb.js";
 
 /**
  * Interface for MPD server communication.

@@ -1,4 +1,4 @@
-import type { Song } from "@sola_mpd/domain/src/models/song_pb.js";
+import type { Song } from "@sola_mpd/shared/src/models/song_pb.js";
 import type { RowClassRules } from "ag-grid-community";
 import { useMemo } from "react";
 

@@ -1,5 +1,5 @@
-import type { Song } from "@sola_mpd/domain/src/models/song_pb.js";
-import type { SongTableColumn } from "@sola_mpd/domain/src/models/song_table_pb.js";
+import type { Song } from "@sola_mpd/shared/src/models/song_pb.js";
+import type { SongTableColumn } from "@sola_mpd/shared/src/models/song_table_pb.js";
 import type { GetRowIdParams } from "ag-grid-community";
 import { AgGridReact } from "ag-grid-react";
 import { type JSX, type RefObject, useCallback, useRef } from "react";

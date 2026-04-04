@@ -5,9 +5,9 @@ import {
 	type PluginExecuteResponse,
 	PluginExecuteResponse_Status,
 	PluginExecuteResponseSchema,
-} from "@sola_mpd/domain/src/models/plugin/plugin_pb.js";
+} from "@sola_mpd/shared/src/models/plugin/plugin_pb.js";
 
-import type { Song } from "@sola_mpd/domain/src/models/song_pb.js";
+import type { Song } from "@sola_mpd/shared/src/models/song_pb.js";
 import { useCallback } from "react";
 
 import {

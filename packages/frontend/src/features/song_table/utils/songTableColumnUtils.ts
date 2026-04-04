@@ -1,7 +1,7 @@
 import { clone, create } from "@bufbuild/protobuf";
-import type { Song_MetadataTag } from "@sola_mpd/domain/src/models/song_pb.js";
-import type { SongTableColumn } from "@sola_mpd/domain/src/models/song_table_pb.js";
-import { SongTableColumnSchema } from "@sola_mpd/domain/src/models/song_table_pb.js";
+import type { Song_MetadataTag } from "@sola_mpd/shared/src/models/song_pb.js";
+import type { SongTableColumn } from "@sola_mpd/shared/src/models/song_table_pb.js";
+import { SongTableColumnSchema } from "@sola_mpd/shared/src/models/song_table_pb.js";
 import type { Column } from "ag-grid-community";
 
 import { convertSongMetadataTagFromDisplayName } from "./songTableTableUtils";

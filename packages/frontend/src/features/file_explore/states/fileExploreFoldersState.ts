@@ -1,4 +1,4 @@
-import type { Folder } from "@sola_mpd/domain/src/models/file_explore_pb.js";
+import type { Folder } from "@sola_mpd/shared/src/models/file_explore_pb.js";
 import { atom, useAtomValue, useSetAtom } from "jotai";
 import { atomWithRefresh } from "jotai/utils";
 import { useCallback } from "react";

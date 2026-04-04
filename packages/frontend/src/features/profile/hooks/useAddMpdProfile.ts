@@ -2,7 +2,7 @@ import { clone, create } from "@bufbuild/protobuf";
 import {
 	MpdProfileSchema,
 	MpdProfileStateSchema,
-} from "@sola_mpd/domain/src/models/mpd/mpd_profile_pb.js";
+} from "@sola_mpd/shared/src/models/mpd/mpd_profile_pb.js";
 import { useCallback } from "react";
 
 import { UpdateMode } from "../../../types/stateTypes";

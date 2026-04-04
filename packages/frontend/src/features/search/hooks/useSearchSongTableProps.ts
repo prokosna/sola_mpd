@@ -1,6 +1,6 @@
-import { Plugin_PluginType } from "@sola_mpd/domain/src/models/plugin/plugin_pb.js";
-import type { Song } from "@sola_mpd/domain/src/models/song_pb.js";
-import type { SongTableColumn } from "@sola_mpd/domain/src/models/song_table_pb.js";
+import { Plugin_PluginType } from "@sola_mpd/shared/src/models/plugin/plugin_pb.js";
+import type { Song } from "@sola_mpd/shared/src/models/song_pb.js";
+import type { SongTableColumn } from "@sola_mpd/shared/src/models/song_table_pb.js";
 import { type MutableRefObject, useCallback } from "react";
 
 import { COMPONENT_ID_SEARCH_MAIN_PANE } from "../../../const/component";

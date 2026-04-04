@@ -1,4 +1,4 @@
-import type { PluginExecuteResponse } from "@sola_mpd/domain/src/models/plugin/plugin_pb.js";
+import type { PluginExecuteResponse } from "@sola_mpd/shared/src/models/plugin/plugin_pb.js";
 import { atom, useAtomValue, useSetAtom } from "jotai";
 
 import type { PluginExecutionProps } from "../types/plugin";

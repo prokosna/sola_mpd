@@ -1,6 +1,6 @@
 import { create } from "@bufbuild/protobuf";
-import { MpdRequestSchema } from "@sola_mpd/domain/src/models/mpd/mpd_command_pb.js";
-import { MpdPlayerStatus_PlaybackState } from "@sola_mpd/domain/src/models/mpd/mpd_player_pb.js";
+import { MpdRequestSchema } from "@sola_mpd/shared/src/models/mpd/mpd_command_pb.js";
+import { MpdPlayerStatus_PlaybackState } from "@sola_mpd/shared/src/models/mpd/mpd_player_pb.js";
 
 import { useMpdClientState } from "../../mpd";
 import { usePlayerStatusPlaybackState } from "../../player";

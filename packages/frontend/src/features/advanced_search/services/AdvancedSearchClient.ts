@@ -1,7 +1,7 @@
 import type {
 	AdvancedSearchRequest,
 	AdvancedSearchResponse,
-} from "@sola_mpd/domain/src/models/advanced_search_pb.js";
+} from "@sola_mpd/shared/src/models/advanced_search_pb.js";
 
 /**
  * Interface for advanced search client.

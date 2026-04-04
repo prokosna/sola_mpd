@@ -3,7 +3,7 @@ import {
 	AdvancedSearchRequestSchema,
 	AdvancedSearchResponseSchema,
 	type AdvancedSearchStats,
-} from "@sola_mpd/domain/src/models/advanced_search_pb.js";
+} from "@sola_mpd/shared/src/models/advanced_search_pb.js";
 import type { AdvancedSearchClient } from "../services/AdvancedSearchClient";
 
 export async function fetchAdvancedSearchStats(

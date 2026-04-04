@@ -4,17 +4,17 @@ import {
 	type Song,
 	Song_MetadataTag,
 	type Song_MetadataValue,
-} from "@sola_mpd/domain/src/models/song_pb.js";
+} from "@sola_mpd/shared/src/models/song_pb.js";
 import {
 	type SongTableColumn,
 	type SongTableState,
 	SongTableStateSchema,
-} from "@sola_mpd/domain/src/models/song_table_pb.js";
+} from "@sola_mpd/shared/src/models/song_table_pb.js";
 import {
 	compareSongsByMetadataValue,
 	convertAudioFormatToString,
 	getSongMetadataAsString,
-} from "@sola_mpd/domain/src/utils/songUtils.js";
+} from "@sola_mpd/shared/src/utils/songUtils.js";
 import type { GridApi, IRowNode } from "ag-grid-community";
 import dayjs from "dayjs";
 import {

@@ -1,9 +1,9 @@
 import { fromBinary, toBinary } from "@bufbuild/protobuf";
-import { API_CONFIGS_COMMON_SONG_TABLE_STATE } from "@sola_mpd/domain/src/const/api.js";
+import { API_CONFIGS_COMMON_SONG_TABLE_STATE } from "@sola_mpd/shared/src/const/api.js";
 import {
 	type SongTableState,
 	SongTableStateSchema,
-} from "@sola_mpd/domain/src/models/song_table_pb.js";
+} from "@sola_mpd/shared/src/models/song_table_pb.js";
 import type { SongTableStateRepository } from "../../features/song_table";
 import type { HttpClient } from "../http/HttpClient";
 

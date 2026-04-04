@@ -1,9 +1,9 @@
 import { fromBinary, toBinary } from "@bufbuild/protobuf";
-import { API_CONFIGS_SAVED_SEARCHES } from "@sola_mpd/domain/src/const/api.js";
+import { API_CONFIGS_SAVED_SEARCHES } from "@sola_mpd/shared/src/const/api.js";
 import {
 	type SavedSearches,
 	SavedSearchesSchema,
-} from "@sola_mpd/domain/src/models/search_pb.js";
+} from "@sola_mpd/shared/src/models/search_pb.js";
 import type { SavedSearchesRepository } from "../../features/search";
 import type { HttpClient } from "../http/HttpClient";
 

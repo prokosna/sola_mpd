@@ -1,11 +1,11 @@
 import { create } from "@bufbuild/protobuf";
-import { DB_FILE_RECENTLY_ADDED_STATE } from "@sola_mpd/domain/src/const/database.js";
+import { DB_FILE_RECENTLY_ADDED_STATE } from "@sola_mpd/shared/src/const/database.js";
 import {
 	RecentlyAddedFilterSchema,
 	type RecentlyAddedState,
 	RecentlyAddedStateSchema,
-} from "@sola_mpd/domain/src/models/recently_added_pb.js";
-import { Song_MetadataTag } from "@sola_mpd/domain/src/models/song_pb.js";
+} from "@sola_mpd/shared/src/models/recently_added_pb.js";
+import { Song_MetadataTag } from "@sola_mpd/shared/src/models/song_pb.js";
 
 import { FileRepository } from "./FileRepository.js";
 

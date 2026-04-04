@@ -1,5 +1,5 @@
-import type { Song } from "@sola_mpd/domain/src/models/song_pb.js";
-import type { SongTableColumn } from "@sola_mpd/domain/src/models/song_table_pb.js";
+import type { Song } from "@sola_mpd/shared/src/models/song_pb.js";
+import type { SongTableColumn } from "@sola_mpd/shared/src/models/song_table_pb.js";
 import type { CellContextMenuEvent } from "ag-grid-community";
 import { type RefObject, useCallback } from "react";
 import { type TriggerEvent, useContextMenu } from "react-contexify";

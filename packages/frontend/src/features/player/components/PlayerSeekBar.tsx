@@ -1,7 +1,7 @@
 import { create } from "@bufbuild/protobuf";
 import { Slider } from "@mantine/core";
-import { MpdRequestSchema } from "@sola_mpd/domain/src/models/mpd/mpd_command_pb.js";
-import { displayDuration } from "@sola_mpd/domain/src/utils/stringUtils.js";
+import { MpdRequestSchema } from "@sola_mpd/shared/src/models/mpd/mpd_command_pb.js";
+import { displayDuration } from "@sola_mpd/shared/src/utils/stringUtils.js";
 import { useCallback, useRef } from "react";
 import { useMpdClientState } from "../../mpd";
 import { useCurrentMpdProfileState } from "../../profile";

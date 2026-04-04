@@ -1,4 +1,4 @@
-import { normalize } from "@sola_mpd/domain/src/utils/stringUtils.js";
+import { normalize } from "@sola_mpd/shared/src/utils/stringUtils.js";
 import { atom, useSetAtom } from "jotai";
 import { useCallback } from "react";
 

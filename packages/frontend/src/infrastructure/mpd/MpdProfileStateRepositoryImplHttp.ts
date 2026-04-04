@@ -1,9 +1,9 @@
 import { fromBinary, toBinary } from "@bufbuild/protobuf";
-import { API_CONFIGS_MPD_PROFILE_STATE } from "@sola_mpd/domain/src/const/api.js";
+import { API_CONFIGS_MPD_PROFILE_STATE } from "@sola_mpd/shared/src/const/api.js";
 import {
 	type MpdProfileState,
 	MpdProfileStateSchema,
-} from "@sola_mpd/domain/src/models/mpd/mpd_profile_pb.js";
+} from "@sola_mpd/shared/src/models/mpd/mpd_profile_pb.js";
 import type { MpdProfileStateRepository } from "../../features/profile";
 import type { HttpClient } from "../http/HttpClient";
 

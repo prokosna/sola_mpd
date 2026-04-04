@@ -1,9 +1,9 @@
 import { fromBinary, toBinary } from "@bufbuild/protobuf";
-import { API_CONFIGS_PLUGIN_STATE } from "@sola_mpd/domain/src/const/api.js";
+import { API_CONFIGS_PLUGIN_STATE } from "@sola_mpd/shared/src/const/api.js";
 import {
 	type PluginState,
 	PluginStateSchema,
-} from "@sola_mpd/domain/src/models/plugin/plugin_pb.js";
+} from "@sola_mpd/shared/src/models/plugin/plugin_pb.js";
 import type { PluginStateRepository } from "../../features/plugin";
 import type { HttpClient } from "../http/HttpClient";
 

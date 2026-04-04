@@ -3,23 +3,23 @@ import {
 	type FilterCondition,
 	FilterCondition_Operator,
 	FilterConditionSchema,
-} from "@sola_mpd/domain/src/models/filter_pb.js";
-import type { Query, Search } from "@sola_mpd/domain/src/models/search_pb.js";
+} from "@sola_mpd/shared/src/models/filter_pb.js";
+import type { Query, Search } from "@sola_mpd/shared/src/models/search_pb.js";
 import {
 	QuerySchema,
 	SearchSchema,
-} from "@sola_mpd/domain/src/models/search_pb.js";
+} from "@sola_mpd/shared/src/models/search_pb.js";
 import {
 	type Song,
 	Song_MetadataTag,
 	Song_MetadataValueSchema,
-} from "@sola_mpd/domain/src/models/song_pb.js";
-import type { SongTableColumn } from "@sola_mpd/domain/src/models/song_table_pb.js";
+} from "@sola_mpd/shared/src/models/song_pb.js";
+import type { SongTableColumn } from "@sola_mpd/shared/src/models/song_table_pb.js";
 
 import {
 	convertSongMetadataValueToString,
 	convertStringToSongMetadataValue,
-} from "@sola_mpd/domain/src/utils/songUtils.js";
+} from "@sola_mpd/shared/src/utils/songUtils.js";
 import { v4 as uuidv4 } from "uuid";
 import {
 	convertDisplayNameToOperator,

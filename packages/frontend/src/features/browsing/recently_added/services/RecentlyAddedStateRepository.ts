@@ -1,4 +1,4 @@
-import type { RecentlyAddedState } from "@sola_mpd/domain/src/models/recently_added_pb.js";
+import type { RecentlyAddedState } from "@sola_mpd/shared/src/models/recently_added_pb.js";
 
 /**
  * Recently added state persistence.

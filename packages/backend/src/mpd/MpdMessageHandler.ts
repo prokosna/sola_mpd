@@ -2,19 +2,19 @@ import { fromBinary, toBinary } from "@bufbuild/protobuf";
 import {
 	SIO_MESSAGE,
 	SIO_MPD_EVENT,
-} from "@sola_mpd/domain/src/const/socketio.js";
+} from "@sola_mpd/shared/src/const/socketio.js";
 import {
 	MpdRequestBulkSchema,
 	MpdRequestSchema,
 	MpdResponseSchema,
-} from "@sola_mpd/domain/src/models/mpd/mpd_command_pb.js";
+} from "@sola_mpd/shared/src/models/mpd/mpd_command_pb.js";
 import {
 	type MpdEvent,
 	MpdEventSchema,
-} from "@sola_mpd/domain/src/models/mpd/mpd_event_pb.js";
-import type { MpdProfile } from "@sola_mpd/domain/src/models/mpd/mpd_profile_pb.js";
-import { MpdProfileSchema } from "@sola_mpd/domain/src/models/mpd/mpd_profile_pb.js";
-import { DeepMap } from "@sola_mpd/domain/src/utils/DeepMap.js";
+} from "@sola_mpd/shared/src/models/mpd/mpd_event_pb.js";
+import type { MpdProfile } from "@sola_mpd/shared/src/models/mpd/mpd_profile_pb.js";
+import { MpdProfileSchema } from "@sola_mpd/shared/src/models/mpd/mpd_profile_pb.js";
+import { DeepMap } from "@sola_mpd/shared/src/utils/DeepMap.js";
 import type { Server as IOServer, Socket } from "socket.io";
 import { mpdClient } from "./mpdClient.js";
 

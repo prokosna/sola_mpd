@@ -9,9 +9,9 @@ import {
 	type PluginRegisterRequest,
 	type PluginRegisterResponse,
 	PluginRegisterResponseSchema,
-} from "@sola_mpd/domain/src/models/plugin/plugin_pb.js";
+} from "@sola_mpd/shared/src/models/plugin/plugin_pb.js";
 
-import { PluginService } from "@sola_mpd/domain/src/models/plugin/plugin_service_pb.js";
+import { PluginService } from "@sola_mpd/shared/src/models/plugin/plugin_service_pb.js";
 
 import { syncWithSubsonic } from "./service.js";
 

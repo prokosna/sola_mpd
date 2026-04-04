@@ -1,7 +1,7 @@
 import { create } from "@bufbuild/protobuf";
-import { MpdRequestSchema } from "@sola_mpd/domain/src/models/mpd/mpd_command_pb.js";
-import type { Playlist } from "@sola_mpd/domain/src/models/playlist_pb.js";
-import type { Song } from "@sola_mpd/domain/src/models/song_pb.js";
+import { MpdRequestSchema } from "@sola_mpd/shared/src/models/mpd/mpd_command_pb.js";
+import type { Playlist } from "@sola_mpd/shared/src/models/playlist_pb.js";
+import type { Song } from "@sola_mpd/shared/src/models/song_pb.js";
 import { useCallback, useRef, useState } from "react";
 
 import { useNotification } from "../../../lib/mantine/hooks/useNotification";

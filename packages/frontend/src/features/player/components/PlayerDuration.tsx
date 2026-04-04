@@ -1,6 +1,5 @@
-import { displayDuration } from "@sola_mpd/domain/src/utils/stringUtils.js";
-
 import { Group, Text } from "@mantine/core";
+import { displayDuration } from "@sola_mpd/shared/src/utils/stringUtils.js";
 import {
 	usePlayerStatusDurationState,
 	usePlayerStatusElapsedState,

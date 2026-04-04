@@ -1,5 +1,5 @@
-import type { Song } from "@sola_mpd/domain/src/models/song_pb.js";
-import type { SongTableColumn } from "@sola_mpd/domain/src/models/song_table_pb.js";
+import type { Song } from "@sola_mpd/shared/src/models/song_pb.js";
+import type { SongTableColumn } from "@sola_mpd/shared/src/models/song_table_pb.js";
 import type { SuppressKeyboardEventParams } from "ag-grid-community";
 import type { CustomCellRendererProps } from "ag-grid-react";
 import type { JSX } from "react";

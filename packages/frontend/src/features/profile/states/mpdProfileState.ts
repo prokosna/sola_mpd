@@ -4,7 +4,7 @@ import {
 	MpdProfileSchema,
 	type MpdProfileState,
 	MpdProfileStateSchema,
-} from "@sola_mpd/domain/src/models/mpd/mpd_profile_pb.js";
+} from "@sola_mpd/shared/src/models/mpd/mpd_profile_pb.js";
 import { atom, useAtomValue, useSetAtom } from "jotai";
 import { atomWithDefault, useResetAtom } from "jotai/utils";
 import { useCallback } from "react";

@@ -2,9 +2,9 @@ import { clone } from "@bufbuild/protobuf";
 import {
 	type BrowserFilter,
 	BrowserStateSchema,
-} from "@sola_mpd/domain/src/models/browser_pb.js";
-import type { Song_MetadataTag } from "@sola_mpd/domain/src/models/song_pb.js";
-import { convertSongMetadataValueToString } from "@sola_mpd/domain/src/utils/songUtils.js";
+} from "@sola_mpd/shared/src/models/browser_pb.js";
+import type { Song_MetadataTag } from "@sola_mpd/shared/src/models/song_pb.js";
+import { convertSongMetadataValueToString } from "@sola_mpd/shared/src/utils/songUtils.js";
 import { atom, useAtomValue } from "jotai";
 import { useCallback } from "react";
 import { ROUTE_HOME_BROWSER } from "../../../../const/routes";

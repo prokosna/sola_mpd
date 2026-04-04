@@ -2,14 +2,14 @@ import { create, fromBinary, toBinary } from "@bufbuild/protobuf";
 import {
 	API_MPD_COMMAND,
 	API_MPD_COMMAND_BULK,
-} from "@sola_mpd/domain/src/const/api.js";
+} from "@sola_mpd/shared/src/const/api.js";
 import {
 	type MpdRequest,
 	MpdRequestBulkSchema,
 	MpdRequestSchema,
 	type MpdResponse,
 	MpdResponseSchema,
-} from "@sola_mpd/domain/src/models/mpd/mpd_command_pb.js";
+} from "@sola_mpd/shared/src/models/mpd/mpd_command_pb.js";
 
 import type { MpdClient } from "../../features/mpd";
 import type { HttpClient } from "../http/HttpClient";

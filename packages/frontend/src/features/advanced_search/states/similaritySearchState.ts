@@ -1,5 +1,5 @@
-import { AdvancedSearchCommand_SimilarityType } from "@sola_mpd/domain/src/models/advanced_search_pb.js";
-import type { Song } from "@sola_mpd/domain/src/models/song_pb.js";
+import { AdvancedSearchCommand_SimilarityType } from "@sola_mpd/shared/src/models/advanced_search_pb.js";
+import type { Song } from "@sola_mpd/shared/src/models/song_pb.js";
 import { atom, useAtomValue, useSetAtom } from "jotai";
 import { atomWithRefresh, atomWithStorage } from "jotai/utils";
 import { useCallback } from "react";

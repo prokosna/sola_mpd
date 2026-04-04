@@ -3,15 +3,15 @@ import {
 	SIO_MPD_EVENT,
 	SIO_MPD_SUBSCRIBE,
 	SIO_MPD_UNSUBSCRIBE,
-} from "@sola_mpd/domain/src/const/socketio.js";
+} from "@sola_mpd/shared/src/const/socketio.js";
 import {
 	MpdEvent_EventType,
 	MpdEventSchema,
-} from "@sola_mpd/domain/src/models/mpd/mpd_event_pb.js";
+} from "@sola_mpd/shared/src/models/mpd/mpd_event_pb.js";
 import {
 	type MpdProfile,
 	MpdProfileSchema,
-} from "@sola_mpd/domain/src/models/mpd/mpd_profile_pb.js";
+} from "@sola_mpd/shared/src/models/mpd/mpd_profile_pb.js";
 
 import type { MpdListener } from "../../features/mpd";
 import type { SocketIoClient } from "../socket_io/SocketIoClient.js";

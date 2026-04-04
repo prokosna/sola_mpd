@@ -1,14 +1,14 @@
 import { create, fromBinary, toBinary } from "@bufbuild/protobuf";
 import { createClient } from "@connectrpc/connect";
 import { createConnectTransport } from "@connectrpc/connect-node";
-import { PluginService } from "@sola_mpd/domain/src/models/plugin/plugin_service_pb.js";
+import { PluginService } from "@sola_mpd/shared/src/models/plugin/plugin_service_pb.js";
 
 import {
 	PluginExecuteRequestWrapperSchema,
 	PluginExecuteResponseWrapperSchema,
 	PluginRegisterRequestWrapperSchema,
 	PluginRegisterResponseWrapperSchema,
-} from "@sola_mpd/domain/src/models/plugin/plugin_wrapper_pb.js";
+} from "@sola_mpd/shared/src/models/plugin/plugin_wrapper_pb.js";
 
 export class PluginMessageHandler {
 	async register(msg: Uint8Array): Promise<Uint8Array> {

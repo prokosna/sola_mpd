@@ -6,10 +6,10 @@ import {
 	TimestampSchema,
 	timestampFromDate,
 } from "@bufbuild/protobuf/wkt";
-import type { Folder } from "@sola_mpd/domain/src/models/file_explore_pb.js";
-import { FolderSchema } from "@sola_mpd/domain/src/models/file_explore_pb.js";
-import type { MpdOutputDevice } from "@sola_mpd/domain/src/models/mpd/mpd_output_pb.js";
-import { MpdOutputDeviceSchema } from "@sola_mpd/domain/src/models/mpd/mpd_output_pb.js";
+import type { Folder } from "@sola_mpd/shared/src/models/file_explore_pb.js";
+import { FolderSchema } from "@sola_mpd/shared/src/models/file_explore_pb.js";
+import type { MpdOutputDevice } from "@sola_mpd/shared/src/models/mpd/mpd_output_pb.js";
+import { MpdOutputDeviceSchema } from "@sola_mpd/shared/src/models/mpd/mpd_output_pb.js";
 
 import {
 	type MpdPlayerStatus,
@@ -17,11 +17,11 @@ import {
 	MpdPlayerStatusSchema,
 	type MpdPlayerVolume,
 	MpdPlayerVolumeSchema,
-} from "@sola_mpd/domain/src/models/mpd/mpd_player_pb.js";
-import type { MpdStats } from "@sola_mpd/domain/src/models/mpd/mpd_stats_pb.js";
-import { MpdStatsSchema } from "@sola_mpd/domain/src/models/mpd/mpd_stats_pb.js";
-import type { Playlist } from "@sola_mpd/domain/src/models/playlist_pb.js";
-import { PlaylistSchema } from "@sola_mpd/domain/src/models/playlist_pb.js";
+} from "@sola_mpd/shared/src/models/mpd/mpd_player_pb.js";
+import type { MpdStats } from "@sola_mpd/shared/src/models/mpd/mpd_stats_pb.js";
+import { MpdStatsSchema } from "@sola_mpd/shared/src/models/mpd/mpd_stats_pb.js";
+import type { Playlist } from "@sola_mpd/shared/src/models/playlist_pb.js";
+import { PlaylistSchema } from "@sola_mpd/shared/src/models/playlist_pb.js";
 
 import {
 	type AudioFormat,
@@ -31,7 +31,7 @@ import {
 	Song_MetadataTag,
 	Song_MetadataValueSchema,
 	SongSchema,
-} from "@sola_mpd/domain/src/models/song_pb.js";
+} from "@sola_mpd/shared/src/models/song_pb.js";
 
 import dayjs from "dayjs";
 

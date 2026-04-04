@@ -1,6 +1,6 @@
 import { create } from "@bufbuild/protobuf";
-import { MpdRequestSchema } from "@sola_mpd/domain/src/models/mpd/mpd_command_pb.js";
-import { MpdProfileSchema } from "@sola_mpd/domain/src/models/mpd/mpd_profile_pb.js";
+import { MpdRequestSchema } from "@sola_mpd/shared/src/models/mpd/mpd_command_pb.js";
+import { MpdProfileSchema } from "@sola_mpd/shared/src/models/mpd/mpd_profile_pb.js";
 import { compareVersions } from "compare-versions";
 import { useCallback } from "react";
 

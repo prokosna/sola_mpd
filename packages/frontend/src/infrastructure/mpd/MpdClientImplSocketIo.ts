@@ -2,14 +2,14 @@ import { create, fromBinary, toBinary } from "@bufbuild/protobuf";
 import {
 	SIO_MPD_COMMAND,
 	SIO_MPD_COMMAND_BULK,
-} from "@sola_mpd/domain/src/const/socketio.js";
+} from "@sola_mpd/shared/src/const/socketio.js";
 import {
 	type MpdRequest,
 	MpdRequestBulkSchema,
 	MpdRequestSchema,
 	type MpdResponse,
 	MpdResponseSchema,
-} from "@sola_mpd/domain/src/models/mpd/mpd_command_pb.js";
+} from "@sola_mpd/shared/src/models/mpd/mpd_command_pb.js";
 
 import type { MpdClient } from "../../features/mpd";
 import type { SocketIoClient } from "../socket_io/SocketIoClient";

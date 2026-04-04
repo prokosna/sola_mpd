@@ -1,6 +1,6 @@
 import { create } from "@bufbuild/protobuf";
 import { Button } from "@mantine/core";
-import { MpdRequestSchema } from "@sola_mpd/domain/src/models/mpd/mpd_command_pb.js";
+import { MpdRequestSchema } from "@sola_mpd/shared/src/models/mpd/mpd_command_pb.js";
 import { useCallback } from "react";
 import { useNotification } from "../../../lib/mantine/hooks/useNotification";
 import { useMpdClientState } from "../../mpd";

@@ -1,9 +1,9 @@
 import { fromBinary, toBinary } from "@bufbuild/protobuf";
-import { API_CONFIGS_RECENTLY_ADDED_STATE } from "@sola_mpd/domain/src/const/api.js";
+import { API_CONFIGS_RECENTLY_ADDED_STATE } from "@sola_mpd/shared/src/const/api.js";
 import {
 	type RecentlyAddedState,
 	RecentlyAddedStateSchema,
-} from "@sola_mpd/domain/src/models/recently_added_pb.js";
+} from "@sola_mpd/shared/src/models/recently_added_pb.js";
 import type { RecentlyAddedStateRepository } from "../../features/browsing";
 import type { HttpClient } from "../http/HttpClient";
 

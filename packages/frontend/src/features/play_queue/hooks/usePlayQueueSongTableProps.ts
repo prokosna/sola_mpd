@@ -1,15 +1,15 @@
 import { clone, create } from "@bufbuild/protobuf";
-import { MpdRequestSchema } from "@sola_mpd/domain/src/models/mpd/mpd_command_pb.js";
-import { Plugin_PluginType } from "@sola_mpd/domain/src/models/plugin/plugin_pb.js";
+import { MpdRequestSchema } from "@sola_mpd/shared/src/models/mpd/mpd_command_pb.js";
+import { Plugin_PluginType } from "@sola_mpd/shared/src/models/plugin/plugin_pb.js";
 import {
 	type Song,
 	Song_MetadataTag,
-} from "@sola_mpd/domain/src/models/song_pb.js";
+} from "@sola_mpd/shared/src/models/song_pb.js";
 import {
 	type SongTableColumn,
 	SongTableStateSchema,
-} from "@sola_mpd/domain/src/models/song_table_pb.js";
-import { getSongMetadataAsString } from "@sola_mpd/domain/src/utils/songUtils.js";
+} from "@sola_mpd/shared/src/models/song_table_pb.js";
+import { getSongMetadataAsString } from "@sola_mpd/shared/src/utils/songUtils.js";
 import { type MutableRefObject, useCallback } from "react";
 
 import { COMPONENT_ID_PLAY_QUEUE } from "../../../const/component";

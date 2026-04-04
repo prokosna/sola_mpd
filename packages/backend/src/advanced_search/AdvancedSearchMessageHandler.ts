@@ -2,7 +2,7 @@ import { fromBinary, toBinary } from "@bufbuild/protobuf";
 import {
 	AdvancedSearchRequestSchema,
 	AdvancedSearchResponseSchema,
-} from "@sola_mpd/domain/src/models/advanced_search_pb.js";
+} from "@sola_mpd/shared/src/models/advanced_search_pb.js";
 import { advancedSearchClient } from "./advancedSearchClient.js";
 
 export class AdvancedSearchMessageHandler {

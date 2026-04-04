@@ -18,8 +18,8 @@ import {
 } from "@mantine/core";
 import { DateInput } from "@mantine/dates";
 import type { UseFormReturnType } from "@mantine/form";
-import { SavedSearchesSchema } from "@sola_mpd/domain/src/models/search_pb.js";
-import { Song_MetadataTag } from "@sola_mpd/domain/src/models/song_pb.js";
+import { SavedSearchesSchema } from "@sola_mpd/shared/src/models/search_pb.js";
+import { Song_MetadataTag } from "@sola_mpd/shared/src/models/song_pb.js";
 import { IconPlus, IconTrash } from "@tabler/icons-react";
 import { useCallback } from "react";
 import { UpdateMode } from "../../../types/stateTypes";

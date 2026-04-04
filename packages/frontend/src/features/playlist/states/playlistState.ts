@@ -1,4 +1,4 @@
-import type { Playlist } from "@sola_mpd/domain/src/models/playlist_pb.js";
+import type { Playlist } from "@sola_mpd/shared/src/models/playlist_pb.js";
 import { atom, useAtomValue, useSetAtom } from "jotai";
 import { atomWithRefresh } from "jotai/utils";
 

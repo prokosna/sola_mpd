@@ -1,5 +1,5 @@
 import { Button, Group, Stack, Text, TextInput } from "@mantine/core";
-import type { Plugin } from "@sola_mpd/domain/src/models/plugin/plugin_pb.js";
+import type { Plugin } from "@sola_mpd/shared/src/models/plugin/plugin_pb.js";
 import { useRef } from "react";
 import { useHandlePluginConnected } from "../hooks/useHandlePluginConnected";
 

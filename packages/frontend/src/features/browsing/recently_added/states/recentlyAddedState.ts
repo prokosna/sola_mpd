@@ -1,4 +1,4 @@
-import type { RecentlyAddedState } from "@sola_mpd/domain/src/models/recently_added_pb.js";
+import type { RecentlyAddedState } from "@sola_mpd/shared/src/models/recently_added_pb.js";
 import { useAtomValue, useSetAtom } from "jotai";
 import { atomWithDefault, useResetAtom } from "jotai/utils";
 import { useCallback } from "react";

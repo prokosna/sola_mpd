@@ -1,5 +1,5 @@
-import type { MpdProfile } from "@sola_mpd/domain/src/models/mpd/mpd_profile_pb.js";
-import type { Playlist } from "@sola_mpd/domain/src/models/playlist_pb.js";
+import type { MpdProfile } from "@sola_mpd/shared/src/models/mpd/mpd_profile_pb.js";
+import type { Playlist } from "@sola_mpd/shared/src/models/playlist_pb.js";
 import { useCallback } from "react";
 
 import type { MpdClient } from "../../mpd";

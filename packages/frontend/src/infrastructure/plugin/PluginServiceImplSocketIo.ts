@@ -2,20 +2,20 @@ import { create, fromBinary, toBinary } from "@bufbuild/protobuf";
 import {
 	SIO_PLUGIN_EXECUTE,
 	SIO_PLUGIN_REGISTER,
-} from "@sola_mpd/domain/src/const/socketio.js";
+} from "@sola_mpd/shared/src/const/socketio.js";
 import type {
 	PluginExecuteRequest,
 	PluginExecuteResponse,
 	PluginRegisterRequest,
 	PluginRegisterResponse,
-} from "@sola_mpd/domain/src/models/plugin/plugin_pb.js";
+} from "@sola_mpd/shared/src/models/plugin/plugin_pb.js";
 
 import {
 	PluginExecuteRequestWrapperSchema,
 	PluginExecuteResponseWrapperSchema,
 	PluginRegisterRequestWrapperSchema,
 	PluginRegisterResponseWrapperSchema,
-} from "@sola_mpd/domain/src/models/plugin/plugin_wrapper_pb.js";
+} from "@sola_mpd/shared/src/models/plugin/plugin_wrapper_pb.js";
 
 import { type Observable, Subject } from "rxjs";
 

@@ -1,6 +1,6 @@
 import { clone } from "@bufbuild/protobuf";
 import type { UseFormReturnType } from "@mantine/form";
-import { SavedSearchesSchema } from "@sola_mpd/domain/src/models/search_pb.js";
+import { SavedSearchesSchema } from "@sola_mpd/shared/src/models/search_pb.js";
 import { useCallback } from "react";
 import { COMPONENT_ID_SEARCH_SIDE_PANE } from "../../../const/component";
 import { useNotification } from "../../../lib/mantine/hooks/useNotification";

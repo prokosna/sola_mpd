@@ -1,4 +1,4 @@
-import type { Search } from "@sola_mpd/domain/src/models/search_pb.js";
+import type { Search } from "@sola_mpd/shared/src/models/search_pb.js";
 import { atom, useAtomValue, useSetAtom } from "jotai";
 import { atomWithRefresh } from "jotai/utils";
 

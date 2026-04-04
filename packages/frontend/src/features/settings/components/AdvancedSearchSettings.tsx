@@ -8,7 +8,7 @@ import {
 	Title,
 } from "@mantine/core";
 import { useForm } from "@mantine/form";
-import type { AdvancedSearchStats } from "@sola_mpd/domain/src/models/advanced_search_pb.js";
+import type { AdvancedSearchStats } from "@sola_mpd/shared/src/models/advanced_search_pb.js";
 import {
 	useAdvancedSearchQueryLimitState,
 	useAnalyze,

@@ -7,10 +7,10 @@ import {
 	AdvancedSearchResponseSchema,
 	type AdvancedSearchStats,
 	AdvancedSearchStatsSchema,
-} from "@sola_mpd/domain/src/models/advanced_search_pb.js";
-import { MpdRequestSchema } from "@sola_mpd/domain/src/models/mpd/mpd_command_pb.js";
-import type { MpdProfile } from "@sola_mpd/domain/src/models/mpd/mpd_profile_pb.js";
-import type { Song } from "@sola_mpd/domain/src/models/song_pb.js";
+} from "@sola_mpd/shared/src/models/advanced_search_pb.js";
+import { MpdRequestSchema } from "@sola_mpd/shared/src/models/mpd/mpd_command_pb.js";
+import type { MpdProfile } from "@sola_mpd/shared/src/models/mpd/mpd_profile_pb.js";
+import type { Song } from "@sola_mpd/shared/src/models/song_pb.js";
 import { mpdClient } from "../mpd/mpdClient.js";
 
 class AdvancedSearchClient {
