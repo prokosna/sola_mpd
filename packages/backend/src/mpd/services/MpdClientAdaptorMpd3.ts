@@ -27,7 +27,8 @@ import {
 	parseMpdStats,
 	parsePlaylist,
 	parseSong,
-} from "./mpdParsers.js";
+} from "../mpdParsers.js";
+import type { MpdClientPort } from "./MpdClientPort.js";
 
 type MpdConnectOptions = {
 	cache?: boolean;
@@ -826,5 +827,11 @@ class MpdClient {
 	}
 }
 
-export type { MpdClient };
-export const mpdClient = new MpdClient();
+const mpdClient = new MpdClient();
+
+export const mpdClientAdaptorMpd3: MpdClientPort = {
+	execute: (request) => mpdClient.execute(request),
+	executeBulk: (requests) => mpdClient.executeBulk(requests),
+	subscribe: (profile, callback) => mpdClient.subscribe(profile, callback),
+	unsubscribe: (profile, handler) => mpdClient.unsubscribe(profile, handler),
+};

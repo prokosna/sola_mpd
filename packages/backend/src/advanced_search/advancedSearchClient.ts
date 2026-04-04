@@ -11,7 +11,7 @@ import {
 import { MpdRequestSchema } from "@sola_mpd/shared/src/models/mpd/mpd_command_pb.js";
 import type { MpdProfile } from "@sola_mpd/shared/src/models/mpd/mpd_profile_pb.js";
 import type { Song } from "@sola_mpd/shared/src/models/song_pb.js";
-import { mpdClient } from "../mpd/mpdClient.js";
+import { mpdClientAdaptorMpd3 } from "../mpd/services/MpdClientAdaptorMpd3.js";
 
 class AdvancedSearchClient {
 	private static readonly SEARCH_RESULT_PLAYLIST_NAME = "_temp_search_result";
@@ -170,7 +170,7 @@ class AdvancedSearchClient {
 				},
 			}),
 		);
-		await mpdClient.executeBulk(addCommands);
+		await mpdClientAdaptorMpd3.executeBulk(addCommands);
 
 		const getSongsCommand = create(MpdRequestSchema, {
 			profile,
@@ -181,7 +181,7 @@ class AdvancedSearchClient {
 				},
 			},
 		});
-		const resp = await mpdClient.execute(getSongsCommand);
+		const resp = await mpdClientAdaptorMpd3.execute(getSongsCommand);
 		const songs =
 			resp.command?.case === "listplaylistinfo" ? resp.command.value.songs : [];
 
@@ -194,7 +194,7 @@ class AdvancedSearchClient {
 				},
 			},
 		});
-		await mpdClient.execute(removeCommand);
+		await mpdClientAdaptorMpd3.execute(removeCommand);
 
 		return songs;
 	}

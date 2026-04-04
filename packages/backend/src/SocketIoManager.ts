@@ -11,7 +11,8 @@ import {
 import { MpdResponseSchema } from "@sola_mpd/shared/src/models/mpd/mpd_command_pb.js";
 import type { Server as IOServer } from "socket.io";
 import { AdvancedSearchMessageHandler } from "./advanced_search/AdvancedSearchMessageHandler.js";
-import { MpdMessageHandler } from "./mpd/MpdMessageHandler.js";
+import { MpdMessageHandlerAdaptorSocketIo } from "./mpd/services/MpdMessageHandlerAdaptorSocketIo.js";
+import type { MpdMessageHandlerPort } from "./mpd/services/MpdMessageHandlerPort.js";
 import { PluginMessageHandler } from "./plugins/PluginMessageHandler.js";
 
 export class SocketIoManager {
@@ -21,7 +22,8 @@ export class SocketIoManager {
 		console.info("Socket.io is initializing...");
 		const socketIoManager = new SocketIoManager(io);
 
-		const mpdHandler = MpdMessageHandler.initialize(io);
+		const mpdHandler: MpdMessageHandlerPort =
+			MpdMessageHandlerAdaptorSocketIo.initialize(io);
 		const pluginHandler = new PluginMessageHandler();
 		const advancedSearchHandler = AdvancedSearchMessageHandler.initialize();
 
