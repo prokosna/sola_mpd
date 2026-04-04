@@ -1,5 +1,6 @@
 // States
+export { refreshOutputDevicesActionAtom } from "./states/actions/refreshOutputDevicesActionAtom";
 export {
-	useOutputDevicesState,
-	useEnabledOutputDeviceState as useEnabledOutputDevice,
-} from "./states/devicesState";
+	enabledOutputDeviceAtom,
+	outputDevicesAtom,
+} from "./states/atoms/outputDevicesAtom";

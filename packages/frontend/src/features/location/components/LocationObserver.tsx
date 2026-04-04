@@ -1,4 +1,4 @@
-import { useSetAtom } from "jotai";
+import { useAtomValue, useSetAtom } from "jotai";
 import { useEffect } from "react";
 import { useLocation } from "react-router";
 
@@ -7,9 +7,10 @@ import {
 	ROUTE_HOME_PLAYLIST,
 } from "../../../const/routes";
 import { refreshPlayQueueSongsActionAtom } from "../../play_queue";
-import { useRefreshPlaylistsState } from "../../playlist";
+import { refreshPlaylistsActionAtom } from "../../playlist";
 import { useSetSelectedSongsState } from "../../song_table";
-import { useSetPathname, useTransitionCounter } from "../states/locationState";
+import { setPathnameActionAtom } from "../states/actions/setPathnameActionAtom";
+import { transitionCounterAtom } from "../states/atoms/locationAtom";
 
 /**
  * Manages global side effects triggered by route changes.
@@ -25,11 +26,11 @@ import { useSetPathname, useTransitionCounter } from "../states/locationState";
  */
 export function LocationObserver() {
 	const location = useLocation();
-	const transitionCounter = useTransitionCounter();
+	const transitionCounter = useAtomValue(transitionCounterAtom);
 
-	const setPathname = useSetPathname();
+	const setPathname = useSetAtom(setPathnameActionAtom);
 	const setSelectedSongs = useSetSelectedSongsState();
-	const refreshPlaylistsState = useRefreshPlaylistsState();
+	const refreshPlaylistsState = useSetAtom(refreshPlaylistsActionAtom);
 	const refreshPlayQueueSongsState = useSetAtom(
 		refreshPlayQueueSongsActionAtom,
 	);

@@ -1,6 +1,7 @@
+import { useAtomValue } from "jotai";
 import { useMemo } from "react";
 
-import { usePathname } from "../../location";
+import { pathnameAtom } from "../../location/states/atoms/locationAtom";
 import type { SideNavigationItemProps } from "../components/SideNavigationItem";
 
 /**
@@ -12,7 +13,7 @@ import type { SideNavigationItemProps } from "../components/SideNavigationItem";
 export function useSideNavigationItems(
 	baseItems: SideNavigationItemProps[],
 ): SideNavigationItemProps[] {
-	const pathname = usePathname();
+	const pathname = useAtomValue(pathnameAtom);
 
 	const navItems = useMemo(() => {
 		return baseItems.map((item) => {

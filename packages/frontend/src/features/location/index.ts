@@ -2,8 +2,9 @@
 export { LocationObserver } from "./components/LocationObserver";
 
 // States
+export { incrementTransitionCounterActionAtom } from "./states/actions/incrementTransitionCounterActionAtom";
+export { setPathnameActionAtom } from "./states/actions/setPathnameActionAtom";
 export {
-	usePathname,
-	useIncrementTransitionCounter,
-	useTransitionCounter,
-} from "./states/locationState";
+	pathnameAtom,
+	transitionCounterAtom,
+} from "./states/atoms/locationAtom";

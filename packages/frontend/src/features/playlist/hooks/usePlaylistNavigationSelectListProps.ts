@@ -1,6 +1,6 @@
 import { create } from "@bufbuild/protobuf";
 import { MpdRequestSchema } from "@sola_mpd/shared/src/models/mpd/mpd_command_pb.js";
-import { useAtomValue } from "jotai";
+import { useAtomValue, useSetAtom } from "jotai";
 import { useCallback } from "react";
 
 import { COMPONENT_ID_PLAYLIST_SIDE_PANE } from "../../../const/component";
@@ -9,11 +9,11 @@ import type { ContextMenuSection } from "../../context_menu";
 import { mpdClientAtom } from "../../mpd";
 import { useCurrentMpdProfileState } from "../../profile";
 import type { SelectListContextMenuItemParams } from "../../select_list";
+import { setSelectedPlaylistActionAtom } from "../states/actions/setSelectedPlaylistActionAtom";
 import {
-	usePlaylistsState,
-	useSelectedPlaylistState,
-	useSetSelectedPlaylistState,
-} from "../states/playlistState";
+	playlistsAtom,
+	selectedPlaylistAtom,
+} from "../states/atoms/playlistAtom";
 
 /**
  * Hook for playlist navigation list props.
@@ -28,9 +28,9 @@ export function usePlaylistNavigationSelectListProps() {
 
 	const profile = useCurrentMpdProfileState();
 	const mpdClient = useAtomValue(mpdClientAtom);
-	const playlists = usePlaylistsState();
-	const selectedPlaylist = useSelectedPlaylistState();
-	const setSelectedPlaylist = useSetSelectedPlaylistState();
+	const playlists = useAtomValue(playlistsAtom);
+	const selectedPlaylist = useAtomValue(selectedPlaylistAtom);
+	const setSelectedPlaylist = useSetAtom(setSelectedPlaylistActionAtom);
 
 	const contextMenuSections: ContextMenuSection<SelectListContextMenuItemParams>[] =
 		[

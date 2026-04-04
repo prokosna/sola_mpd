@@ -5,8 +5,8 @@ import { useEffect } from "react";
 import { refreshPlayQueueSongsActionAtom } from "../../play_queue";
 import { refreshPlayerVolumeActionAtom } from "../../player";
 import {
-	useRefreshPlaylistSongsState,
-	useRefreshPlaylistsState,
+	refreshPlaylistSongsActionAtom,
+	refreshPlaylistsActionAtom,
 } from "../../playlist";
 import { useCurrentMpdProfileState } from "../../profile";
 import { useRefreshStatsState } from "../../stats";
@@ -30,8 +30,8 @@ export function MpdEventObserver() {
 	const profile = useCurrentMpdProfileState();
 	const refreshStats = useRefreshStatsState();
 	const refreshPlayQueueSongs = useSetAtom(refreshPlayQueueSongsActionAtom);
-	const refreshPlaylists = useRefreshPlaylistsState();
-	const refreshPlaylistSongs = useRefreshPlaylistSongsState();
+	const refreshPlaylists = useSetAtom(refreshPlaylistsActionAtom);
+	const refreshPlaylistSongs = useSetAtom(refreshPlaylistSongsActionAtom);
 	const refreshPlayerVolume = useSetAtom(refreshPlayerVolumeActionAtom);
 
 	useEffect(() => {

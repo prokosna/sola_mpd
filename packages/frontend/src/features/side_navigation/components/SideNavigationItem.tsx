@@ -1,7 +1,8 @@
 import { NavLink } from "@mantine/core";
+import { useSetAtom } from "jotai";
 import type { ReactNode } from "react";
 import { useNavigate } from "react-router";
-import { useIncrementTransitionCounter } from "../../location";
+import { incrementTransitionCounterActionAtom } from "../../location/states/actions/incrementTransitionCounterActionAtom";
 
 /**
  * Navigation item props.
@@ -27,7 +28,9 @@ export type SideNavigationItemProps = {
  */
 export function SideNavigationItem(props: SideNavigationItemProps) {
 	const navigate = useNavigate();
-	const incrementTransitionCounter = useIncrementTransitionCounter();
+	const incrementTransitionCounter = useSetAtom(
+		incrementTransitionCounterActionAtom,
+	);
 
 	const handleNavigation = (to: string) => {
 		incrementTransitionCounter();

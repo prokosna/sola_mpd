@@ -6,7 +6,7 @@ import {
 	type SongTableColumn,
 	SongTableStateSchema,
 } from "@sola_mpd/shared/src/models/song_table_pb.js";
-import { useAtomValue } from "jotai";
+import { useAtomValue, useSetAtom } from "jotai";
 import { type MutableRefObject, useCallback } from "react";
 
 import { COMPONENT_ID_PLAYLIST_MAIN_PANE } from "../../../const/component";
@@ -33,12 +33,13 @@ import {
 	useSongTableState,
 	useUpdateSongTableState,
 } from "../../song_table";
-import { usePlaylistSongsState } from "../states/playlistSongsState";
-import { useSelectedPlaylistState } from "../states/playlistState";
+import { setIsPlaylistLoadingActionAtom } from "../states/actions/setIsPlaylistLoadingActionAtom";
+import { selectedPlaylistAtom } from "../states/atoms/playlistAtom";
+import { playlistSongsAtom } from "../states/atoms/playlistSongsAtom";
 import {
-	useIsPlaylistLoadingState,
-	useSetIsPlaylistLoadingState,
-} from "../states/playlistUiState";
+	isPlaylistLoadingAtom,
+	syncPlaylistLoadingEffectAtom,
+} from "../states/atoms/playlistUiAtom";
 
 /**
  * Hook for playlist song table props.
@@ -62,11 +63,12 @@ export function usePlaylistSongTableProps(
 
 	const profile = useCurrentMpdProfileState();
 	const mpdClient = useAtomValue(mpdClientAtom);
-	const isLoading = useIsPlaylistLoadingState();
-	const songs = usePlaylistSongsState();
+	useAtomValue(syncPlaylistLoadingEffectAtom);
+	const isLoading = useAtomValue(isPlaylistLoadingAtom);
+	const songs = useAtomValue(playlistSongsAtom);
 	const songTableState = useSongTableState();
-	const selectedPlaylist = useSelectedPlaylistState();
-	const setIsPlaylistLoading = useSetIsPlaylistLoadingState();
+	const selectedPlaylist = useAtomValue(selectedPlaylistAtom);
+	const setIsPlaylistLoading = useSetAtom(setIsPlaylistLoadingActionAtom);
 	const updateSongTableState = useUpdateSongTableState();
 	const setSelectedSongs = useSetSelectedSongsState();
 
