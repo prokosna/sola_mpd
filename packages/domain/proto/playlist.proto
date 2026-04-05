@@ -1,8 +1,0 @@
-syntax = "proto3";
-
-import "google/protobuf/timestamp.proto";
-
-message Playlist {
-  string name = 1;
-  google.protobuf.Timestamp updated_at = 2;
-}
