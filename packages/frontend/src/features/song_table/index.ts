@@ -4,6 +4,12 @@ export {
 	type ColumnEditModalProps,
 } from "./components/ColumnEditModal";
 export { SongTable, type SongTableProps } from "./components/SongTable";
+// Functions
+export {
+	getSongTableKey,
+	getTargetSongsForContextMenu,
+} from "./functions/songTableKey";
+export { convertOrderingToOperations } from "./functions/songTableOrdering";
 
 // Hooks
 export { useColumnEditModalProps } from "./hooks/useColumnEditModalProps";
@@ -31,9 +37,6 @@ export {
 } from "./utils/songTableMenuItemUtils";
 // Utils
 export {
-	convertOrderingToOperations,
 	convertSongMetadataTagFromDisplayName,
 	convertSongMetadataTagToDisplayName,
-	getSongTableKey,
-	getTargetSongsForContextMenu,
 } from "./utils/songTableTableUtils";

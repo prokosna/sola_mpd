@@ -1,8 +1,7 @@
 import type { Song } from "@sola_mpd/shared/src/models/song_pb.js";
 import { useMemo } from "react";
-
+import { getSongTableKey } from "../functions/songTableKey";
 import type { SongTableKey, SongTableKeyType } from "../types/songTableTypes";
-import { getSongTableKey } from "../utils/songTableTableUtils";
 
 /**
  * Creates a memoized map for song lookup by key.

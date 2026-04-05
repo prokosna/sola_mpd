@@ -14,9 +14,9 @@ import { type JSX, useCallback, useEffect, useState } from "react";
 import {
 	copySortingAttributesToNewColumns,
 	ensureTagsContainedInColumns,
-	getAverageWidthFlex,
 	normalizeSongTableColumns,
-} from "../utils/songTableColumnUtils";
+} from "../functions/songTableColumn";
+import { getAverageWidthFlex } from "../utils/songTableColumnUtils";
 import { ColumnEditModalTagListBox } from "./ColumnEditModalTagListBox";
 
 export type ColumnEditModalProps = {

@@ -3,20 +3,17 @@ import type { SongTableColumn } from "@sola_mpd/shared/src/models/song_table_pb.
 import type { CellContextMenuEvent } from "ag-grid-community";
 import { type RefObject, useCallback } from "react";
 import { type TriggerEvent, useContextMenu } from "react-contexify";
-
+import {
+	convertAgGridColumnsToSongTableColumns,
+	copySortingAttributesToNewColumns,
+} from "../functions/songTableColumn";
+import { getSongTableKey } from "../functions/songTableKey";
+import { getSongsInTableFromGrid } from "../functions/songTableState";
 import type {
 	SongTableContextMenuItemParams,
 	SongTableKey,
 	SongTableKeyType,
 } from "../types/songTableTypes";
-import {
-	convertAgGridColumnsToSongTableColumns,
-	copySortingAttributesToNewColumns,
-} from "../utils/songTableColumnUtils";
-import {
-	getSongsInTableFromGrid,
-	getSongTableKey,
-} from "../utils/songTableTableUtils";
 
 /**
  * Creates handler for song table context menu.

@@ -3,8 +3,8 @@ import type { AgGridReact } from "ag-grid-react";
 import type { RefObject } from "react";
 
 import { useInputKeyCombination } from "../../keyboard_shortcut";
+import { convertNodeToSong } from "../functions/songTableKey";
 import type { SongTableKey } from "../types/songTableTypes";
-import { convertNodeToSong } from "../utils/songTableTableUtils";
 
 /**
  * Sets up Ctrl+A keyboard shortcut for song selection.

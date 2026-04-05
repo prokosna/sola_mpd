@@ -5,7 +5,7 @@ import { useCallback } from "react";
 import {
 	convertAgGridColumnsToSongTableColumns,
 	copySortingAttributesToNewColumns,
-} from "../utils/songTableColumnUtils";
+} from "../functions/songTableColumn";
 
 /**
  * Creates handler for AG Grid column updates.

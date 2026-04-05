@@ -4,12 +4,12 @@ import { useAtomValue } from "jotai";
 import { useMemo } from "react";
 
 import { currentSongAtom } from "../../player";
+import { getSongTableKey } from "../functions/songTableKey";
 import type {
 	SongTableKey,
 	SongTableKeyType,
 	SongTableRowData,
 } from "../types/songTableTypes";
-import { getSongTableKey } from "../utils/songTableTableUtils";
 
 /**
  * Creates row class rules for highlighting currently playing song.

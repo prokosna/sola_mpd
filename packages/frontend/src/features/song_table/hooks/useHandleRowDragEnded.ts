@@ -1,9 +1,8 @@
 import type { Song } from "@sola_mpd/shared/src/models/song_pb.js";
 import type { RowDragEndEvent } from "ag-grid-community";
 import { useCallback } from "react";
-
+import { getSongsInTableFromGrid } from "../functions/songTableState";
 import type { SongTableKey } from "../types/songTableTypes";
-import { getSongsInTableFromGrid } from "../utils/songTableTableUtils";
 
 /**
  * Creates handler for song row drag-and-drop events.

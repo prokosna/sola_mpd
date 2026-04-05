@@ -1,25 +1,10 @@
-import { create, toJsonString } from "@bufbuild/protobuf";
-import {
-	MpdRequestSchema,
-	MpdResponseSchema,
-} from "@sola_mpd/shared/src/models/mpd/mpd_command_pb.js";
 import type { MpdProfile } from "@sola_mpd/shared/src/models/mpd/mpd_profile_pb.js";
 import type { Song } from "@sola_mpd/shared/src/models/song_pb.js";
 import { useCallback } from "react";
 
 import type { MpdClient } from "../../mpd";
+import { addSongAndPlay } from "../functions/songTableCommand";
 
-/**
- * Creates handler for song double-click playback.
- *
- * Adds clicked song to play queue and starts playback. Manages
- * MPD client communication and error handling for playlist
- * operations.
- *
- * @param mpdClient MPD client instance
- * @param mpdProfile Active MPD profile
- * @returns Song double-click handler
- */
 export function useHandleSongDoubleClick(
 	mpdClient?: MpdClient,
 	mpdProfile?: MpdProfile,
@@ -29,42 +14,7 @@ export function useHandleSongDoubleClick(
 			if (mpdProfile === undefined || mpdClient === undefined) {
 				return;
 			}
-			const addCommand = create(MpdRequestSchema, {
-				profile: mpdProfile,
-				command: {
-					case: "add",
-					value: { uri: clickedSong.path },
-				},
-			});
-			await mpdClient.command(addCommand);
-			const getCommand = create(MpdRequestSchema, {
-				profile: mpdProfile,
-				command: {
-					case: "playlistinfo",
-					value: {},
-				},
-			});
-			const res = await mpdClient.command(getCommand);
-			if (res.command.case !== "playlistinfo") {
-				throw Error(
-					`Invalid MPD response: ${toJsonString(MpdResponseSchema, res)}`,
-				);
-			}
-			const playQueueSongs = res.command.value.songs;
-			await mpdClient.command(
-				create(MpdRequestSchema, {
-					profile: mpdProfile,
-					command: {
-						case: "play",
-						value: {
-							target: {
-								case: "pos",
-								value: String(playQueueSongs.length - 1),
-							},
-						},
-					},
-				}),
-			);
+			await addSongAndPlay(clickedSong, mpdClient, mpdProfile);
 		},
 		[mpdClient, mpdProfile],
 	);

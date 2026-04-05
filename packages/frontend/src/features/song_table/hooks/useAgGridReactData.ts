@@ -8,6 +8,8 @@ import { useAtomValue } from "jotai";
 import { useMemo } from "react";
 import { localeCollatorAtom } from "../../settings";
 import { CustomCellCompact } from "../components/CustomCellCompact";
+import { getSongTableKey } from "../functions/songTableKey";
+import { sortSongsByColumns } from "../functions/songTableSorting";
 import {
 	SONGS_TAG_COMPACT,
 	type SongTableColumnDefinition,
@@ -18,8 +20,6 @@ import {
 	convertSongForGridRowValueCompact,
 	convertSongMetadataForGridRowValue,
 	convertSongMetadataTagToDisplayName,
-	getSongTableKey,
-	sortSongsByColumns,
 } from "../utils/songTableTableUtils";
 
 /**

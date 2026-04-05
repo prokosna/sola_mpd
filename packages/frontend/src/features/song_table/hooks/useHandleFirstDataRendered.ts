@@ -2,11 +2,9 @@ import type { FirstDataRenderedEvent } from "ag-grid-community";
 import { useAtomValue } from "jotai";
 import { useCallback } from "react";
 import { currentSongAtom } from "../../player";
+import { getSongTableKey } from "../functions/songTableKey";
+import { getTableIndexOfSong } from "../functions/songTableState";
 import type { SongTableKeyType } from "../types/songTableTypes";
-import {
-	getSongTableKey,
-	getTableIndexOfSong,
-} from "../utils/songTableTableUtils";
 
 /**
  * Custom hook to handle the first data rendered event in a song table.
