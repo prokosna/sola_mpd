@@ -27,7 +27,7 @@ import {
 	parseMpdStats,
 	parsePlaylist,
 	parseSong,
-} from "../mpdParsers.js";
+} from "../functions/mpdParsers.js";
 import type { MpdClient as MpdClientService } from "./MpdClient.js";
 
 type MpdConnectOptions = {
