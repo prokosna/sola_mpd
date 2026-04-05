@@ -4,6 +4,7 @@ import {
 	type SongTableColumn,
 	SongTableStateSchema,
 } from "@sola_mpd/shared/src/models/song_table_pb.js";
+import { useAtomValue, useSetAtom } from "jotai";
 import { useCallback, useRef, useState } from "react";
 import { UpdateMode } from "../../../types/stateTypes";
 import { CenterSpinner } from "../../loading";
@@ -16,14 +17,10 @@ import {
 	useUpdateSongTableState,
 } from "../../song_table";
 import { useSimilaritySearchSongTableProps } from "../hooks/useSimilaritySearchSongTableProps";
-import {
-	useRefreshSimilaritySearchSongsState,
-	useSetSimilaritySearchTargetSongState,
-} from "../states/similaritySearchState";
-import {
-	useIsSimilaritySearchModalOpenState,
-	useSetIsSimilaritySearchModalOpenState,
-} from "../states/similaritySearchUiState";
+import { refreshSimilaritySearchSongsActionAtom } from "../states/actions/refreshSimilaritySearchSongsActionAtom";
+import { setIsSimilaritySearchModalOpenActionAtom } from "../states/actions/setIsSimilaritySearchModalOpenActionAtom";
+import { setSimilaritySearchTargetSongActionAtom } from "../states/actions/setSimilaritySearchTargetSongActionAtom";
+import { isSimilaritySearchModalOpenAtom } from "../states/atoms/similaritySearchUiAtom";
 
 /**
  * Renders the similarity search modal.
@@ -71,12 +68,18 @@ export function SimilaritySearchModal() {
 		async () => {},
 	);
 
-	const isSimilaritySearchModalOpen = useIsSimilaritySearchModalOpenState();
-	const setIsSimilaritySearchModalOpen =
-		useSetIsSimilaritySearchModalOpenState();
-	const setSimilaritySearchTargetSong = useSetSimilaritySearchTargetSongState();
-	const refreshSimilaritySearchSongsState =
-		useRefreshSimilaritySearchSongsState();
+	const isSimilaritySearchModalOpen = useAtomValue(
+		isSimilaritySearchModalOpenAtom,
+	);
+	const setIsSimilaritySearchModalOpen = useSetAtom(
+		setIsSimilaritySearchModalOpenActionAtom,
+	);
+	const setSimilaritySearchTargetSong = useSetAtom(
+		setSimilaritySearchTargetSongActionAtom,
+	);
+	const refreshSimilaritySearchSongsState = useSetAtom(
+		refreshSimilaritySearchSongsActionAtom,
+	);
 
 	const handleClose = useCallback(() => {
 		setIsSimilaritySearchModalOpen(false);

@@ -10,6 +10,7 @@ import {
 	IconPlaylist,
 	IconSearch,
 } from "@tabler/icons-react";
+import { useAtomValue } from "jotai";
 import {
 	ROUTE_HOME_ALL_SONGS,
 	ROUTE_HOME_BROWSER,
@@ -21,7 +22,7 @@ import {
 	ROUTE_HOME_SEARCH,
 	ROUTE_HOME_TEXT_TO_MUSIC_SEARCH,
 } from "../../../const/routes";
-import { useAdvancedSearchStatsState } from "../../advanced_search";
+import { advancedSearchStatsAtom } from "../../advanced_search";
 import { CardStats } from "../../stats";
 import { useSideNavigationItems } from "../hooks/useSideNavigationItems";
 import {
@@ -35,7 +36,7 @@ import {
  * @param props.isCompact Compact mode flag
  */
 export function SideNavigation({ isCompact }: { isCompact: boolean }) {
-	const advancedSearchStats = useAdvancedSearchStatsState();
+	const advancedSearchStats = useAtomValue(advancedSearchStatsAtom);
 
 	const baseItems: SideNavigationItemProps[] = [
 		{

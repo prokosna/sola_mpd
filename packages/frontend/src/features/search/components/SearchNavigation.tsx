@@ -1,19 +1,17 @@
 import { isNotEmpty, useForm } from "@mantine/form";
 import clsx from "clsx";
 import equal from "fast-deep-equal";
+import { useAtomValue, useSetAtom } from "jotai";
 import {
 	Panel,
 	Group as PanelGroup,
 	Separator,
 	useDefaultLayout,
 } from "react-resizable-panels";
-
 import styles from "../../../ResizeHandle.module.css";
-import { useSavedSearchesState } from "../states/savedSearchesState";
-import {
-	useEditingSearchStatusState,
-	useSetEditingSearchState,
-} from "../states/searchEditState";
+import { setEditingSearchStatusActionAtom } from "../states/actions/setEditingSearchStatusActionAtom";
+import { savedSearchesAtom } from "../states/atoms/savedSearchesAtom";
+import { editingSearchStatusAtom } from "../states/atoms/searchEditAtom";
 import {
 	EditingSearchStatus,
 	type SearchFormValues,
@@ -33,9 +31,9 @@ import { SearchNavigationSavedQueries } from "./SearchNavigationSavedQueries";
  * @returns Navigation component
  */
 export function SearchNavigation() {
-	const savedSearches = useSavedSearchesState();
-	const editingSearchStatus = useEditingSearchStatusState();
-	const setEditingSearchStatus = useSetEditingSearchState();
+	const savedSearches = useAtomValue(savedSearchesAtom);
+	const editingSearchStatus = useAtomValue(editingSearchStatusAtom);
+	const setEditingSearchStatus = useSetAtom(setEditingSearchStatusActionAtom);
 	const { defaultLayout, onLayoutChanged } = useDefaultLayout({
 		id: "search-navigation",
 		storage: globalThis.localStorage,

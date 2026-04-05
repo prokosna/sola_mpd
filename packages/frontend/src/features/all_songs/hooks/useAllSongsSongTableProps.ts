@@ -5,7 +5,7 @@ import {
 	type SongTableColumn,
 	SongTableStateSchema,
 } from "@sola_mpd/shared/src/models/song_table_pb.js";
-import { useAtomValue } from "jotai";
+import { useAtom, useAtomValue, useSetAtom } from "jotai";
 import { type MutableRefObject, useCallback } from "react";
 import { COMPONENT_ID_ALL_SONGS } from "../../../const/component";
 import { useNotification } from "../../../lib/mantine/hooks/useNotification";
@@ -29,11 +29,12 @@ import {
 	useSongTableState,
 	useUpdateSongTableState,
 } from "../../song_table";
-import { useAllSongsState } from "../states/allSongsState";
+import { setIsAllSongsLoadingActionAtom } from "../states/actions/setIsAllSongsLoadingActionAtom";
+import { allVisibleSongsAtom } from "../states/atoms/allSongsAtom";
 import {
-	useIsAllSongsLoadingState,
-	useSetIsAllSongsLoadingState,
-} from "../states/allSongsUiState";
+	isAllSongsLoadingAtom,
+	syncAllSongsLoadingEffectAtom,
+} from "../states/atoms/allSongsUiAtom";
 
 /**
  * Custom hook for managing All Songs Table properties and interactions.
@@ -60,10 +61,11 @@ export function useAllSongsSongTableProps(
 
 	const profile = useCurrentMpdProfileState();
 	const mpdClient = useAtomValue(mpdClientAtom);
-	const isLoading = useIsAllSongsLoadingState();
-	const songs = useAllSongsState();
+	useAtom(syncAllSongsLoadingEffectAtom);
+	const isLoading = useAtomValue(isAllSongsLoadingAtom);
+	const songs = useAtomValue(allVisibleSongsAtom);
 	const songTableState = useSongTableState();
-	const setIsAllSongsLoading = useSetIsAllSongsLoadingState();
+	const setIsAllSongsLoading = useSetAtom(setIsAllSongsLoadingActionAtom);
 	const updateSongTableState = useUpdateSongTableState();
 	const setSelectedSongs = useSetSelectedSongsState();
 

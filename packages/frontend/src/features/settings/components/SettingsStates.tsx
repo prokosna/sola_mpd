@@ -23,22 +23,19 @@ import {
 	type SongTableState,
 	SongTableStateSchema,
 } from "@sola_mpd/shared/src/models/song_table_pb.js";
+import { useAtomValue, useSetAtom } from "jotai";
+import { useCallback } from "react";
 import { UpdateMode } from "../../../types/stateTypes";
 import {
-	useRecentlyAddedState,
-	useUpdateRecentlyAddedState,
+	browserStateAtom,
+	recentlyAddedStateAtom,
+	updateBrowserStateActionAtom,
+	updateRecentlyAddedStateActionAtom,
 } from "../../browsing";
-import {
-	useBrowserState,
-	useUpdateBrowserState,
-} from "../../browsing/browser/states/browserState";
 import { CenterSpinner } from "../../loading";
 import { usePluginState, useUpdatePluginState } from "../../plugin";
 import { useMpdProfileState, useUpdateMpdProfileState } from "../../profile";
-import {
-	useSavedSearchesState,
-	useUpdateSavedSearchesState,
-} from "../../search";
+import { savedSearchesAtom, updateSavedSearchesActionAtom } from "../../search";
 import { useSongTableState, useUpdateSongTableState } from "../../song_table";
 import { useSettingsStateEditorProps } from "../hooks/useSettingsStateEditorProps";
 import { SettingsStatesEditor } from "./SettingsStatesEditor";
@@ -78,8 +75,13 @@ export function SettingsStates() {
 			},
 		);
 
-	const browserState = useBrowserState();
-	const updateBrowserState = useUpdateBrowserState();
+	const browserState = useAtomValue(browserStateAtom);
+	const updateBrowserStateAction = useSetAtom(updateBrowserStateActionAtom);
+	const updateBrowserState = useCallback(
+		(state: BrowserState, mode: UpdateMode) =>
+			updateBrowserStateAction({ state, mode }),
+		[updateBrowserStateAction],
+	);
 	const [onOpenBrowserState, browserStateProps] =
 		useSettingsStateEditorProps<BrowserState>(
 			BrowserStateSchema,
@@ -92,8 +94,13 @@ export function SettingsStates() {
 			},
 		);
 
-	const savedSearches = useSavedSearchesState();
-	const updateSavedSearches = useUpdateSavedSearchesState();
+	const savedSearches = useAtomValue(savedSearchesAtom);
+	const updateSavedSearchesAction = useSetAtom(updateSavedSearchesActionAtom);
+	const updateSavedSearches = useCallback(
+		(savedSearches: SavedSearches, mode: UpdateMode) =>
+			updateSavedSearchesAction({ savedSearches, mode }),
+		[updateSavedSearchesAction],
+	);
 	const [onOpenSavedSearches, savedSearchesProps] =
 		useSettingsStateEditorProps<SavedSearches>(
 			SavedSearchesSchema,
@@ -120,8 +127,15 @@ export function SettingsStates() {
 			},
 		);
 
-	const recentlyAddedState = useRecentlyAddedState();
-	const updateRecentlyAddedState = useUpdateRecentlyAddedState();
+	const recentlyAddedState = useAtomValue(recentlyAddedStateAtom);
+	const updateRecentlyAddedStateAction = useSetAtom(
+		updateRecentlyAddedStateActionAtom,
+	);
+	const updateRecentlyAddedState = useCallback(
+		(state: RecentlyAddedState, mode: UpdateMode) =>
+			updateRecentlyAddedStateAction({ state, mode }),
+		[updateRecentlyAddedStateAction],
+	);
 	const [onOpenRecentlyAddedState, recentlyAddedStateProps] =
 		useSettingsStateEditorProps<RecentlyAddedState>(
 			RecentlyAddedStateSchema,

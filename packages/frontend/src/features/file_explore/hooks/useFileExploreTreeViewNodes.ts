@@ -1,10 +1,11 @@
+import { useAtomValue, useSetAtom } from "jotai";
 import { useMemo } from "react";
 
+import { setSelectedFileExploreFolderActionAtom } from "../states/actions/setSelectedFileExploreFolderActionAtom";
 import {
-	useFileExploreFoldersState,
-	useSelectedFileExploreFolderState,
-	useSetSelectedFileExploreFolderState,
-} from "../states/fileExploreFoldersState";
+	fileExploreFoldersAtom,
+	selectedFileExploreFolderAtom,
+} from "../states/atoms/fileExploreFoldersAtom";
 import type { TreeNode } from "../types/treeViewTypes";
 
 /**
@@ -40,9 +41,11 @@ export type FileExploreTreeViewProps = {
  * @returns Root-level tree nodes or undefined if loading
  */
 export function useFileExploreTreeViewNodes() {
-	const fileExploreFolders = useFileExploreFoldersState();
-	const selectedFolder = useSelectedFileExploreFolderState();
-	const setSelectedFileExploreFolder = useSetSelectedFileExploreFolderState();
+	const fileExploreFolders = useAtomValue(fileExploreFoldersAtom);
+	const selectedFolder = useAtomValue(selectedFileExploreFolderAtom);
+	const setSelectedFileExploreFolder = useSetAtom(
+		setSelectedFileExploreFolderActionAtom,
+	);
 
 	const treeNodes = useMemo(() => {
 		if (fileExploreFolders === undefined) return undefined;

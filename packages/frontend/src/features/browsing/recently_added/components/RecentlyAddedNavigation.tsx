@@ -1,19 +1,33 @@
+import type { BrowserFilter } from "@sola_mpd/shared/src/models/browser_pb.js";
+import { useAtomValue, useSetAtom } from "jotai";
+import { useCallback } from "react";
+
+import type { UpdateMode } from "../../../../types/stateTypes";
 import { BrowserNavigationView } from "../../common/components/BrowserNavigationView";
+import { updateRecentlyAddedBrowserFiltersActionAtom } from "../states/actions/updateRecentlyAddedBrowserFiltersActionAtom";
 import {
-	useRecentlyAddedBrowserFilterValuesMapState,
-	useRecentlyAddedBrowserFiltersState,
-	useUpdateRecentlyAddedBrowserFiltersState,
-} from "../states/recentlyAddedFiltersState";
+	filteredRecentlyAddedBrowserFilterValuesMapAtom,
+	recentlyAddedBrowserFiltersAtom,
+} from "../states/atoms/recentlyAddedFiltersAtom";
 
 /**
  * Component for rendering the navigation for recently added items.
- * It uses browser filters, filter values, and update function to display
- * and manage the navigation view for recently added content.
  */
 export function RecentlyAddedNavigation() {
-	const browserFilters = useRecentlyAddedBrowserFiltersState();
-	const browserFilterValues = useRecentlyAddedBrowserFilterValuesMapState();
-	const updateBrowserFilters = useUpdateRecentlyAddedBrowserFiltersState();
+	const browserFilters = useAtomValue(recentlyAddedBrowserFiltersAtom);
+	const browserFilterValues = useAtomValue(
+		filteredRecentlyAddedBrowserFilterValuesMapAtom,
+	);
+	const updateFiltersAction = useSetAtom(
+		updateRecentlyAddedBrowserFiltersActionAtom,
+	);
+
+	const updateBrowserFilters = useCallback(
+		async (filters: BrowserFilter[], _mode: UpdateMode) => {
+			await updateFiltersAction(filters);
+		},
+		[updateFiltersAction],
+	);
 
 	return (
 		<BrowserNavigationView

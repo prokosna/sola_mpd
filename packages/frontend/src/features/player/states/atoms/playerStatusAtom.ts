@@ -17,36 +17,36 @@ export const playerStatusAsyncAtom = atomWithRefresh(async (get) => {
 	return await fetchPlayerStatus(mpdClient, profile);
 });
 
-const playerStatusSourceAtom = atomWithSync(playerStatusAsyncAtom);
+const playerStatusAtom = atomWithSync(playerStatusAsyncAtom);
 
 export const playerStatusPlaybackStateAtom = atom((get) => {
-	return get(playerStatusSourceAtom)?.playbackState;
+	return get(playerStatusAtom)?.playbackState;
 });
 
 export const playerStatusIsConsumeAtom = atom((get) => {
-	return get(playerStatusSourceAtom)?.isConsume;
+	return get(playerStatusAtom)?.isConsume;
 });
 
 export const playerStatusIsRandomAtom = atom((get) => {
-	return get(playerStatusSourceAtom)?.isRandom;
+	return get(playerStatusAtom)?.isRandom;
 });
 
 export const playerStatusIsRepeatAtom = atom((get) => {
-	return get(playerStatusSourceAtom)?.isRepeat;
+	return get(playerStatusAtom)?.isRepeat;
 });
 
 export const playerStatusIsSingleAtom = atom((get) => {
-	return get(playerStatusSourceAtom)?.isSingle;
+	return get(playerStatusAtom)?.isSingle;
 });
 
 export const playerStatusIsDatabaseUpdatingAtom = atom((get) => {
-	return get(playerStatusSourceAtom)?.isDatabaseUpdating;
+	return get(playerStatusAtom)?.isDatabaseUpdating;
 });
 
 export const playerStatusElapsedAtom = atom((get) => {
-	return get(playerStatusSourceAtom)?.elapsed;
+	return get(playerStatusAtom)?.elapsed;
 });
 
 export const playerStatusDurationAtom = atom((get) => {
-	return get(playerStatusSourceAtom)?.duration;
+	return get(playerStatusAtom)?.duration;
 });

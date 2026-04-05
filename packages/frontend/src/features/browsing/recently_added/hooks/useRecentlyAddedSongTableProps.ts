@@ -5,7 +5,7 @@ import {
 	type SongTableColumn,
 	SongTableStateSchema,
 } from "@sola_mpd/shared/src/models/song_table_pb.js";
-import { useAtomValue } from "jotai";
+import { useAtom, useAtomValue, useSetAtom } from "jotai";
 import { type MutableRefObject, useCallback } from "react";
 import { COMPONENT_ID_RECENTLY_ADDED } from "../../../../const/component";
 import { useNotification } from "../../../../lib/mantine/hooks/useNotification";
@@ -29,11 +29,12 @@ import {
 	useSongTableState,
 	useUpdateSongTableState,
 } from "../../../song_table";
-import { useRecentlyAddedSongsState } from "../states/recentlyAddedSongsState";
+import { setIsRecentlyAddedLoadingActionAtom } from "../states/actions/setIsRecentlyAddedLoadingActionAtom";
+import { recentlyAddedVisibleSongsAtom } from "../states/atoms/recentlyAddedSongsAtom";
 import {
-	useIsRecentlyAddedLoadingState,
-	useSetIsRecentlyAddedLoadingState,
-} from "../states/recentlyAddedUiState";
+	isRecentlyAddedLoadingAtom,
+	setRecentlyAddedLoadingTrueEffectAtom,
+} from "../states/atoms/recentlyAddedUiAtom";
 
 /**
  * Get props for recently added song table.
@@ -54,10 +55,13 @@ export function useRecentlyAddedSongTableProps(
 
 	const profile = useCurrentMpdProfileState();
 	const mpdClient = useAtomValue(mpdClientAtom);
-	const isLoading = useIsRecentlyAddedLoadingState();
-	const songs = useRecentlyAddedSongsState();
+	useAtom(setRecentlyAddedLoadingTrueEffectAtom);
+	const isLoading = useAtomValue(isRecentlyAddedLoadingAtom);
+	const songs = useAtomValue(recentlyAddedVisibleSongsAtom);
 	const songTableState = useSongTableState();
-	const setIsRecentlyAddedLoading = useSetIsRecentlyAddedLoadingState();
+	const setIsRecentlyAddedLoading = useSetAtom(
+		setIsRecentlyAddedLoadingActionAtom,
+	);
 	const updateSongTableState = useUpdateSongTableState();
 	const setSelectedSongs = useSetSelectedSongsState();
 

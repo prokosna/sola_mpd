@@ -1,13 +1,13 @@
 import { createStore } from "jotai";
-import { advancedSearchClientAtom } from "./features/advanced_search/states/advancedSearchClient";
-import { browserStateRepositoryAtom } from "./features/browsing/browser/states/browserStateRepository";
-import { recentlyAddedStateRepositoryAtom } from "./features/browsing/recently_added/states/recentlyAddedStateRepository";
+import { advancedSearchClientAtom } from "./features/advanced_search/states/atoms/advancedSearchClientAtom";
+import { browserStateRepositoryAtom } from "./features/browsing/browser/states/atoms/browserStateRepositoryAtom";
+import { recentlyAddedStateRepositoryAtom } from "./features/browsing/recently_added/states/atoms/recentlyAddedStateRepositoryAtom";
 import { setMpdClientActionAtom } from "./features/mpd/states/actions/setMpdClientActionAtom";
 import { setMpdListenerActionAtom } from "./features/mpd/states/actions/setMpdListenerActionAtom";
 import { pluginServiceAtom } from "./features/plugin/states/pluginServiceState";
 import { pluginStateRepositoryAtom } from "./features/plugin/states/pluginStateRepository";
 import { mpdProfileStateRepositoryAtom } from "./features/profile/states/mpdProfileStateRepository";
-import { savedSearchesRepositoryAtom } from "./features/search/states/savedSearchesRepository";
+import { savedSearchesRepositoryAtom } from "./features/search/states/atoms/savedSearchesRepositoryAtom";
 import { songTableStateRepositoryAtom } from "./features/song_table/states/songTableStateRepository";
 import { AdvancedSearchClientImplSocketIo } from "./infrastructure/advanced_search/AdvancedSearchClientImplSocketIo";
 import { BrowserStateRepositoryImplHttp } from "./infrastructure/browser/BrowserStateRepositoryImplHttp";

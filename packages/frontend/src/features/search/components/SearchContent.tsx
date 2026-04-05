@@ -1,4 +1,5 @@
 import { Box } from "@mantine/core";
+import { useAtomValue } from "jotai";
 import { useState } from "react";
 import { CenterSpinner } from "../../loading";
 import { PlaylistSelectModal, usePlaylistSelectModal } from "../../playlist";
@@ -9,7 +10,7 @@ import {
 } from "../../song_table";
 import { useHandleSearchColumnsUpdated } from "../hooks/useHandleSearchColumnsUpdated";
 import { useSearchSongTableProps } from "../hooks/useSearchSongTableProps";
-import { useSearchSongTableColumnsState } from "../states/searchEditState";
+import { searchSongTableColumnsAtom } from "../states/atoms/searchEditAtom";
 
 /**
  * Search content area component.
@@ -19,7 +20,7 @@ import { useSearchSongTableColumnsState } from "../states/searchEditState";
  * @returns Content component
  */
 export function SearchContent() {
-	const columns = useSearchSongTableColumnsState();
+	const columns = useAtomValue(searchSongTableColumnsAtom);
 	const handleSearchColumnsUpdated = useHandleSearchColumnsUpdated();
 
 	const [isColumnEditModalOpen, setIsColumnEditModalOpen] = useState(false);

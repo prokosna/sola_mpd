@@ -4,7 +4,7 @@ import { atomWithRefresh } from "jotai/utils";
 import { ROUTE_HOME_PLAY_QUEUE } from "../../../../const/routes";
 import { atomWithSync } from "../../../../lib/jotai/atomWithSync";
 import { filterSongsByGlobalFilter } from "../../../global_filter";
-import { globalFilterTokensAtom } from "../../../global_filter/states/globalFilterState";
+import { globalFilterTokensAtom } from "../../../global_filter/states/atoms/globalFilterAtom";
 import { pathnameAtom } from "../../../location/states/atoms/locationAtom";
 import { mpdClientAtom } from "../../../mpd/states/atoms/mpdClientAtom";
 import { currentMpdProfileSyncAtom as currentMpdProfileAtom } from "../../../profile/states/mpdProfileState";
@@ -22,10 +22,10 @@ export const playQueueSongsAsyncAtom = atomWithRefresh(async (get) => {
 	return await fetchPlayQueueSongs(mpdClient, profile);
 });
 
-const playQueueSongsSourceAtom = atomWithSync(playQueueSongsAsyncAtom);
+const playQueueSongsAtom = atomWithSync(playQueueSongsAsyncAtom);
 
-export const playQueueSongsAtom = atom((get) => {
-	const playQueueSongs = get(playQueueSongsSourceAtom);
+export const playQueueVisibleSongsAtom = atom((get) => {
+	const playQueueSongs = get(playQueueSongsAtom);
 	const songTableState = get(songTableStateAtom);
 	const globalFilterTokens = get(globalFilterTokensAtom);
 	const pathname = get(pathnameAtom);

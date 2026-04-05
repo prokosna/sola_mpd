@@ -5,7 +5,7 @@ import {
 	type SongTableColumn,
 	SongTableStateSchema,
 } from "@sola_mpd/shared/src/models/song_table_pb.js";
-import { useAtomValue } from "jotai";
+import { useAtomValue, useSetAtom } from "jotai";
 import { type RefObject, useCallback } from "react";
 import { COMPONENT_ID_TEXT_TO_MUSIC_SEARCH } from "../../../const/component";
 import { useNotification } from "../../../lib/mantine/hooks/useNotification";
@@ -28,11 +28,9 @@ import {
 	useSongTableState,
 	useUpdateSongTableState,
 } from "../../song_table";
-import { useTextToMusicSearchSongsState } from "../states/textToMusicSearchState";
-import {
-	useIsTextToMusicSearchLoadingState,
-	useSetIsTextToMusicSearchLoadingState,
-} from "../states/textToMusicSearchUiState";
+import { setIsTextToMusicSearchLoadingActionAtom } from "../states/actions/setIsTextToMusicSearchLoadingActionAtom";
+import { textToMusicSearchSongsAtom } from "../states/atoms/textToMusicSearchAtom";
+import { isTextToMusicSearchLoadingAtom } from "../states/atoms/textToMusicSearchUiAtom";
 import { useSimilaritySearchContextMenuProps } from "./useSimilaritySearchContextMenuProps";
 
 export function useTextToMusicSearchSongTableProps(
@@ -46,10 +44,12 @@ export function useTextToMusicSearchSongTableProps(
 
 	const profile = useCurrentMpdProfileState();
 	const mpdClient = useAtomValue(mpdClientAtom);
-	const isLoading = useIsTextToMusicSearchLoadingState();
-	const songs = useTextToMusicSearchSongsState();
+	const isLoading = useAtomValue(isTextToMusicSearchLoadingAtom);
+	const songs = useAtomValue(textToMusicSearchSongsAtom);
 	const songTableState = useSongTableState();
-	const setIsTextToMusicSearchLoading = useSetIsTextToMusicSearchLoadingState();
+	const setIsTextToMusicSearchLoading = useSetAtom(
+		setIsTextToMusicSearchLoadingActionAtom,
+	);
 	const updateSongTableState = useUpdateSongTableState();
 	const setSelectedSongs = useSetSelectedSongsState();
 

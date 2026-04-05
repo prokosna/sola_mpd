@@ -26,9 +26,7 @@ const outputDevicesSafeAsyncAtom = atom(async (get) => {
 	}
 });
 
-const outputDevicesSourceAtom = atomWithSync(outputDevicesSafeAsyncAtom);
-
-export const outputDevicesAtom = atom((get) => get(outputDevicesSourceAtom));
+export const outputDevicesAtom = atomWithSync(outputDevicesSafeAsyncAtom);
 
 export const enabledOutputDeviceAtom = atom((get) =>
 	get(outputDevicesAtom)?.find((device) => device.isEnabled),

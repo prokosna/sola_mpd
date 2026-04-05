@@ -5,7 +5,7 @@ import {
 	type SongTableColumn,
 	SongTableStateSchema,
 } from "@sola_mpd/shared/src/models/song_table_pb.js";
-import { useAtomValue } from "jotai";
+import { useAtom, useAtomValue, useSetAtom } from "jotai";
 import { type MutableRefObject, useCallback } from "react";
 import { COMPONENT_ID_FILE_EXPLORE_MAIN_PANE } from "../../../const/component";
 import { useNotification } from "../../../lib/mantine/hooks/useNotification";
@@ -29,11 +29,12 @@ import {
 	useSongTableState,
 	useUpdateSongTableState,
 } from "../../song_table";
-import { useFileExploreSongsState } from "../states/fileExploreSongsState";
+import { setIsFileExploreLoadingActionAtom } from "../states/actions/setIsFileExploreLoadingActionAtom";
+import { fileExploreVisibleSongsAtom } from "../states/atoms/fileExploreSongsAtom";
 import {
-	useIsFileExploreLoadingState,
-	useSetIsFileExploreLoadingState,
-} from "../states/fileExploreUiState";
+	isFileExploreLoadingAtom,
+	syncFileExploreLoadingEffectAtom,
+} from "../states/atoms/fileExploreUiAtom";
 
 /**
  * Hook for managing file explorer song table functionality.
@@ -61,10 +62,11 @@ export function useFileExploreSongTableProps(
 
 	const profile = useCurrentMpdProfileState();
 	const mpdClient = useAtomValue(mpdClientAtom);
-	const isLoading = useIsFileExploreLoadingState();
-	const songs = useFileExploreSongsState();
+	useAtom(syncFileExploreLoadingEffectAtom);
+	const isLoading = useAtomValue(isFileExploreLoadingAtom);
+	const songs = useAtomValue(fileExploreVisibleSongsAtom);
 	const songTableState = useSongTableState();
-	const setIsFileExploreLoading = useSetIsFileExploreLoadingState();
+	const setIsFileExploreLoading = useSetAtom(setIsFileExploreLoadingActionAtom);
 	const updateSongTableState = useUpdateSongTableState();
 	const setSelectedSongs = useSetSelectedSongsState();
 

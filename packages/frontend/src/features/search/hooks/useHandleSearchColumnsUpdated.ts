@@ -1,11 +1,10 @@
 import type { SongTableColumn } from "@sola_mpd/shared/src/models/song_table_pb.js";
+import { useAtomValue, useSetAtom } from "jotai";
 import { useCallback } from "react";
 
-import {
-	useSearchSongTableColumnsState,
-	useSetEditingSearchState,
-	useSetSearchSongTableColumnsState,
-} from "../states/searchEditState";
+import { setEditingSearchStatusActionAtom } from "../states/actions/setEditingSearchStatusActionAtom";
+import { setSearchSongTableColumnsActionAtom } from "../states/actions/setSearchSongTableColumnsActionAtom";
+import { searchSongTableColumnsAtom } from "../states/atoms/searchEditAtom";
 import { EditingSearchStatus } from "../types/searchTypes";
 
 /**
@@ -16,9 +15,11 @@ import { EditingSearchStatus } from "../types/searchTypes";
  * @returns Column update handler
  */
 export function useHandleSearchColumnsUpdated() {
-	const searchSongTableColumns = useSearchSongTableColumnsState();
-	const setSearchSongTableColumns = useSetSearchSongTableColumnsState();
-	const setEditingSearchStatus = useSetEditingSearchState();
+	const searchSongTableColumns = useAtomValue(searchSongTableColumnsAtom);
+	const setSearchSongTableColumns = useSetAtom(
+		setSearchSongTableColumnsActionAtom,
+	);
+	const setEditingSearchStatus = useSetAtom(setEditingSearchStatusActionAtom);
 
 	return useCallback(
 		(columns: SongTableColumn[]) => {

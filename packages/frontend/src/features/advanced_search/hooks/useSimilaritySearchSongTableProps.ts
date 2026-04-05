@@ -27,8 +27,8 @@ import {
 	useSongTableState,
 	useUpdateSongTableState,
 } from "../../song_table";
-import { useSimilaritySearchSongsState } from "../states/similaritySearchState";
-import { useIsSimilaritySearchLoadingState } from "../states/similaritySearchUiState";
+import { similaritySearchSongsAtom } from "../states/atoms/similaritySearchAtom";
+import { isSimilaritySearchLoadingAtom } from "../states/atoms/similaritySearchUiAtom";
 
 export function useSimilaritySearchSongTableProps(
 	songsToAddToPlaylistRef: RefObject<Song[]>,
@@ -41,8 +41,8 @@ export function useSimilaritySearchSongTableProps(
 
 	const profile = useCurrentMpdProfileState();
 	const mpdClient = useAtomValue(mpdClientAtom);
-	const isLoading = useIsSimilaritySearchLoadingState();
-	const songs = useSimilaritySearchSongsState();
+	const isLoading = useAtomValue(isSimilaritySearchLoadingAtom);
+	const songs = useAtomValue(similaritySearchSongsAtom);
 	const songTableState = useSongTableState();
 	const updateSongTableState = useUpdateSongTableState();
 	const setSelectedSongs = useSetSelectedSongsState();

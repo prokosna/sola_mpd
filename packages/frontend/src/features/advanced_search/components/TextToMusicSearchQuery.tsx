@@ -11,25 +11,29 @@ import {
 } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import { IconSearch, IconX } from "@tabler/icons-react";
+import { useAtomValue, useSetAtom } from "jotai";
 import { useCallback } from "react";
-import {
-	useRefreshTextToMusicSearchSongsState,
-	useSetTextToMusicSearchTextState,
-} from "../states/textToMusicSearchState";
-import {
-	useIsTextToMusicSearchLoadingState,
-	useSetIsTextToMusicSearchLoadingState,
-} from "../states/textToMusicSearchUiState";
+import { refreshTextToMusicSearchSongsActionAtom } from "../states/actions/refreshTextToMusicSearchSongsActionAtom";
+import { setIsTextToMusicSearchLoadingActionAtom } from "../states/actions/setIsTextToMusicSearchLoadingActionAtom";
+import { setTextToMusicSearchTextActionAtom } from "../states/actions/setTextToMusicSearchTextActionAtom";
+import { isTextToMusicSearchLoadingAtom } from "../states/atoms/textToMusicSearchUiAtom";
 
 export function TextToMusicSearchQuery() {
 	const scheme = useComputedColorScheme();
 	const theme = useMantineTheme();
 
-	const setIsTextToMusicSearchLoading = useSetIsTextToMusicSearchLoadingState();
-	const isTextToMusicSearchLoading = useIsTextToMusicSearchLoadingState();
-	const setTextToMusicSearchText = useSetTextToMusicSearchTextState();
-	const refreshTextToMusicSearchSongsState =
-		useRefreshTextToMusicSearchSongsState();
+	const setIsTextToMusicSearchLoading = useSetAtom(
+		setIsTextToMusicSearchLoadingActionAtom,
+	);
+	const isTextToMusicSearchLoading = useAtomValue(
+		isTextToMusicSearchLoadingAtom,
+	);
+	const setTextToMusicSearchText = useSetAtom(
+		setTextToMusicSearchTextActionAtom,
+	);
+	const refreshTextToMusicSearchSongsState = useSetAtom(
+		refreshTextToMusicSearchSongsActionAtom,
+	);
 
 	const form = useForm({
 		mode: "uncontrolled",

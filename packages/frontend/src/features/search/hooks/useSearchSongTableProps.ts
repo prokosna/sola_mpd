@@ -1,7 +1,7 @@
 import { Plugin_PluginType } from "@sola_mpd/shared/src/models/plugin/plugin_pb.js";
 import type { Song } from "@sola_mpd/shared/src/models/song_pb.js";
 import type { SongTableColumn } from "@sola_mpd/shared/src/models/song_table_pb.js";
-import { useAtomValue } from "jotai";
+import { useAtomValue, useSetAtom } from "jotai";
 import { type MutableRefObject, useCallback } from "react";
 
 import { COMPONENT_ID_SEARCH_MAIN_PANE } from "../../../const/component";
@@ -24,12 +24,10 @@ import {
 	useSetSelectedSongsState,
 	useSongTableState,
 } from "../../song_table";
-import { useSearchSongTableColumnsState } from "../states/searchEditState";
-import { useSearchSongsState } from "../states/searchSongsState";
-import {
-	useIsSearchLoadingState,
-	useSetIsSearchLoadingState,
-} from "../states/searchUiState";
+import { setIsSearchLoadingActionAtom } from "../states/actions/setIsSearchLoadingActionAtom";
+import { searchSongTableColumnsAtom } from "../states/atoms/searchEditAtom";
+import { searchVisibleSongsAtom } from "../states/atoms/searchSongsAtom";
+import { isSearchLoadingAtom } from "../states/atoms/searchUiAtom";
 import { useHandleSearchColumnsUpdated } from "./useHandleSearchColumnsUpdated";
 
 /**
@@ -53,11 +51,11 @@ export function useSearchSongTableProps(
 
 	const profile = useCurrentMpdProfileState();
 	const mpdClient = useAtomValue(mpdClientAtom);
-	const isLoading = useIsSearchLoadingState();
-	const songs = useSearchSongsState();
-	const searchSongTableColumns = useSearchSongTableColumnsState();
+	const isLoading = useAtomValue(isSearchLoadingAtom);
+	const songs = useAtomValue(searchVisibleSongsAtom);
+	const searchSongTableColumns = useAtomValue(searchSongTableColumnsAtom);
 	const songTableState = useSongTableState();
-	const setIsSearchLoading = useSetIsSearchLoadingState();
+	const setIsSearchLoading = useSetAtom(setIsSearchLoadingActionAtom);
 	const setSelectedSongs = useSetSelectedSongsState();
 	const handleSearchColumnsUpdated = useHandleSearchColumnsUpdated();
 

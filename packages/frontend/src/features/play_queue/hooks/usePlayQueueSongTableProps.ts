@@ -35,7 +35,7 @@ import {
 	useUpdateSongTableState,
 } from "../../song_table";
 import { setIsPlayQueueLoadingActionAtom } from "../states/actions/setIsPlayQueueLoadingActionAtom";
-import { playQueueSongsAtom } from "../states/atoms/playQueueSongsAtom";
+import { playQueueVisibleSongsAtom } from "../states/atoms/playQueueSongsAtom";
 import {
 	isPlayQueueLoadingAtom,
 	syncPlayQueueLoadingEffectAtom,
@@ -64,7 +64,7 @@ export function usePlayQueueSongTableProps(
 	useAtomValue(syncPlayQueueLoadingEffectAtom);
 	const mpdClient = useAtomValue(mpdClientAtom);
 	const isLoading = useAtomValue(isPlayQueueLoadingAtom);
-	const songs = useAtomValue(playQueueSongsAtom);
+	const songs = useAtomValue(playQueueVisibleSongsAtom);
 	const songTableState = useSongTableState();
 	const setIsPlayQueueLoading = useSetAtom(setIsPlayQueueLoadingActionAtom);
 	const updateSongTableState = useUpdateSongTableState();

@@ -35,7 +35,7 @@ import {
 } from "../../song_table";
 import { setIsPlaylistLoadingActionAtom } from "../states/actions/setIsPlaylistLoadingActionAtom";
 import { selectedPlaylistAtom } from "../states/atoms/playlistAtom";
-import { playlistSongsAtom } from "../states/atoms/playlistSongsAtom";
+import { playlistVisibleSongsAtom } from "../states/atoms/playlistSongsAtom";
 import {
 	isPlaylistLoadingAtom,
 	syncPlaylistLoadingEffectAtom,
@@ -65,7 +65,7 @@ export function usePlaylistSongTableProps(
 	const mpdClient = useAtomValue(mpdClientAtom);
 	useAtomValue(syncPlaylistLoadingEffectAtom);
 	const isLoading = useAtomValue(isPlaylistLoadingAtom);
-	const songs = useAtomValue(playlistSongsAtom);
+	const songs = useAtomValue(playlistVisibleSongsAtom);
 	const songTableState = useSongTableState();
 	const selectedPlaylist = useAtomValue(selectedPlaylistAtom);
 	const setIsPlaylistLoading = useSetAtom(setIsPlaylistLoadingActionAtom);

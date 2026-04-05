@@ -21,6 +21,7 @@ import type { UseFormReturnType } from "@mantine/form";
 import { SavedSearchesSchema } from "@sola_mpd/shared/src/models/search_pb.js";
 import { Song_MetadataTag } from "@sola_mpd/shared/src/models/song_pb.js";
 import { IconPlus, IconTrash } from "@tabler/icons-react";
+import { useAtomValue, useSetAtom } from "jotai";
 import { useCallback } from "react";
 import { UpdateMode } from "../../../types/stateTypes";
 import { FullWidthSkeleton } from "../../loading";
@@ -32,19 +33,13 @@ import {
 	convertSongMetadataTagFromDisplayName,
 	convertSongMetadataTagToDisplayName,
 } from "../../song_table";
-import {
-	useSavedSearchesState,
-	useUpdateSavedSearchesState,
-} from "../states/savedSearchesState";
-import {
-	useSearchSongTableColumnsState,
-	useSetEditingSearchState,
-} from "../states/searchEditState";
-import { useSetTargetSearchState } from "../states/searchSongsState";
-import {
-	useIsSearchLoadingState,
-	useSetIsSearchLoadingState,
-} from "../states/searchUiState";
+import { setEditingSearchStatusActionAtom } from "../states/actions/setEditingSearchStatusActionAtom";
+import { setIsSearchLoadingActionAtom } from "../states/actions/setIsSearchLoadingActionAtom";
+import { setTargetSearchActionAtom } from "../states/actions/setTargetSearchActionAtom";
+import { updateSavedSearchesActionAtom } from "../states/actions/updateSavedSearchesActionAtom";
+import { savedSearchesAtom } from "../states/atoms/savedSearchesAtom";
+import { searchSongTableColumnsAtom } from "../states/atoms/searchEditAtom";
+import { isSearchLoadingAtom } from "../states/atoms/searchUiAtom";
 import {
 	EditingSearchStatus,
 	type SearchFormValues,
@@ -74,13 +69,13 @@ export function SearchNavigationQueryEditor({
 	const scheme = useComputedColorScheme();
 	const theme = useMantineTheme();
 
-	const savedSearches = useSavedSearchesState();
-	const updateSavedSearches = useUpdateSavedSearchesState();
-	const isSearchLoading = useIsSearchLoadingState();
-	const setIsSearchLoading = useSetIsSearchLoadingState();
-	const setTargetSearch = useSetTargetSearchState();
-	const searchSongTableColumns = useSearchSongTableColumnsState();
-	const setEditingSearchStatus = useSetEditingSearchState();
+	const savedSearches = useAtomValue(savedSearchesAtom);
+	const updateSavedSearchesAction = useSetAtom(updateSavedSearchesActionAtom);
+	const isSearchLoading = useAtomValue(isSearchLoadingAtom);
+	const setIsSearchLoading = useSetAtom(setIsSearchLoadingActionAtom);
+	const setTargetSearch = useSetAtom(setTargetSearchActionAtom);
+	const searchSongTableColumns = useAtomValue(searchSongTableColumnsAtom);
+	const setEditingSearchStatus = useSetAtom(setEditingSearchStatusActionAtom);
 
 	const existingSearchNames = savedSearches?.searches.map(
 		(search) => search.name,
@@ -107,17 +102,17 @@ export function SearchNavigationQueryEditor({
 				savedSearches.searches.push(editingSearch);
 			}
 
-			updateSavedSearches(
-				clone(SavedSearchesSchema, savedSearches),
-				UpdateMode.LOCAL_STATE | UpdateMode.PERSIST,
-			);
+			updateSavedSearchesAction({
+				savedSearches: clone(SavedSearchesSchema, savedSearches),
+				mode: UpdateMode.LOCAL_STATE | UpdateMode.PERSIST,
+			});
 			setEditingSearchStatus(EditingSearchStatus.SAVED);
 		},
 		[
 			savedSearches,
-			updateSavedSearches,
 			searchSongTableColumns,
 			setEditingSearchStatus,
+			updateSavedSearchesAction,
 		],
 	);
 

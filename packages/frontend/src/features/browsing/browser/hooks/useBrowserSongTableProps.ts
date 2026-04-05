@@ -5,7 +5,7 @@ import {
 	type SongTableColumn,
 	SongTableStateSchema,
 } from "@sola_mpd/shared/src/models/song_table_pb.js";
-import { useAtomValue } from "jotai";
+import { useAtom, useAtomValue, useSetAtom } from "jotai";
 import { type MutableRefObject, useCallback } from "react";
 import { COMPONENT_ID_BROWSER } from "../../../../const/component";
 import { useNotification } from "../../../../lib/mantine/hooks/useNotification";
@@ -29,27 +29,13 @@ import {
 	useSongTableState,
 	useUpdateSongTableState,
 } from "../../../song_table";
-import { useBrowserSongsState } from "../states/browserSongsState";
+import { setIsBrowserLoadingActionAtom } from "../states/actions/setIsBrowserLoadingActionAtom";
+import { browserVisibleSongsAtom } from "../states/atoms/browserSongsAtom";
 import {
-	useIsBrowserLoadingState,
-	useSetIsBrowserLoadingState,
-} from "../states/browserUiState";
+	isBrowserLoadingAtom,
+	setBrowserLoadingTrueEffectAtom,
+} from "../states/atoms/browserUiAtom";
 
-/**
- * Custom hook for managing browser song table functionality.
- *
- * Features:
- * - Queue and playlist management
- * - Plugin integration
- * - Column customization
- * - Selection and interaction handling
- * - Loading state management
- *
- * @param songsToAddToPlaylistRef - Reference for playlist operations
- * @param setIsPlaylistSelectModalOpen - Playlist modal control
- * @param setIsColumnEditModalOpen - Column edit modal control
- * @returns Song table properties or undefined if data not ready
- */
 export function useBrowserSongTableProps(
 	songsToAddToPlaylistRef: MutableRefObject<Song[]>,
 	setIsPlaylistSelectModalOpen: (open: boolean) => void,
@@ -61,10 +47,11 @@ export function useBrowserSongTableProps(
 
 	const profile = useCurrentMpdProfileState();
 	const mpdClient = useAtomValue(mpdClientAtom);
-	const isLoading = useIsBrowserLoadingState();
-	const songs = useBrowserSongsState();
+	useAtom(setBrowserLoadingTrueEffectAtom);
+	const isLoading = useAtomValue(isBrowserLoadingAtom);
+	const songs = useAtomValue(browserVisibleSongsAtom);
 	const songTableState = useSongTableState();
-	const setIsBrowserLoading = useSetIsBrowserLoadingState();
+	const setIsBrowserLoading = useSetAtom(setIsBrowserLoadingActionAtom);
 	const updateSongTableState = useUpdateSongTableState();
 	const setSelectedSongs = useSetSelectedSongsState();
 

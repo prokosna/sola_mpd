@@ -17,10 +17,10 @@ export const currentSongAsyncAtom = atomWithRefresh(async (get) => {
 	return await fetchCurrentSong(mpdClient, profile);
 });
 
-const currentSongSourceAtom = atomWithSync(currentSongAsyncAtom);
+const currentSongBaseAtom = atomWithSync(currentSongAsyncAtom);
 
 export const currentSongAtom = selectAtom<Song | undefined, Song | undefined>(
-	currentSongSourceAtom,
+	currentSongBaseAtom,
 	(state, _prev) => state,
 	(a, b) => a?.path === b?.path,
 );
