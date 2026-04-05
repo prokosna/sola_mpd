@@ -6,7 +6,7 @@ import {
 	type Song,
 	Song_MetadataTag,
 } from "@sola_mpd/shared/src/models/song_pb.js";
-import { listBrowserSongMetadataTags } from "../../common/utils/browserFilterUtils";
+import { listBrowserSongMetadataTags } from "../../common/functions/browserFilter";
 
 /**
  * Extract filter values.

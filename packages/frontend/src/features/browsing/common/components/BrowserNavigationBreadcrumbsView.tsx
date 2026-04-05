@@ -14,7 +14,7 @@ import { UpdateMode } from "../../../../types/stateTypes";
 import {
 	resetAllBrowserFilters,
 	selectBrowserFilterValues,
-} from "../utils/browserFilterUtils";
+} from "../functions/browserFilter";
 
 type BrowserNavigationBreadcrumbsViewProps = {
 	browserFilters?: BrowserFilter[];

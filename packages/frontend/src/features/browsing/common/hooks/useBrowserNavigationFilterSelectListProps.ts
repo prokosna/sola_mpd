@@ -15,7 +15,7 @@ import {
 	changeBrowserFilterToTheOtherTag,
 	removeBrowserFilter,
 	selectBrowserFilterValues,
-} from "../utils/browserFilterUtils";
+} from "../functions/browserFilter";
 
 /**
  * Custom hook for generating SelectList props for browser navigation filter.

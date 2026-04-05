@@ -10,7 +10,7 @@ import type { Song } from "@sola_mpd/shared/src/models/song_pb.js";
 
 import type { MpdClient } from "../../../mpd";
 
-import { convertBrowserFilterToCondition } from "./browserFilterUtils";
+import { convertBrowserFilterToCondition } from "../functions/browserFilter";
 
 /**
  * Fetches songs from MPD that match the current browser filter conditions.

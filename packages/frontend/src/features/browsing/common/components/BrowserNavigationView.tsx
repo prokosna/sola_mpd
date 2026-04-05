@@ -12,7 +12,7 @@ import styles from "../../../../ResizeHandle.module.css";
 import type { UpdateMode } from "../../../../types/stateTypes";
 import { FullWidthSkeleton } from "../../../loading";
 import { convertSongMetadataTagToDisplayName } from "../../../song_table";
-import { listBrowserSongMetadataTags } from "../utils/browserFilterUtils";
+import { listBrowserSongMetadataTags } from "../functions/browserFilter";
 import { BrowserNavigationFilterView } from "./BrowserNavigationFilterView";
 
 type BrowserNavigationViewProps = {
