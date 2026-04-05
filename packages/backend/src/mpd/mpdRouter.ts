@@ -6,7 +6,7 @@ import {
 	executeMpdCommandBulkUseCase,
 	executeMpdCommandUseCase,
 } from "./application/mpdUseCases.js";
-import { mpdClientAdaptorMpd3 } from "./services/MpdClientAdaptorMpd3.js";
+import { mpdClientMpd3 } from "./services/MpdClientMpd3.js";
 
 const mpdRouter: ReturnType<typeof Router> = Router();
 
@@ -26,7 +26,7 @@ mpdRouter.use(
 	wrap(async (req: Request, res: Response, _next) => {
 		const data = await executeMpdCommandUseCase(
 			new Uint8Array(req.body as Buffer),
-			mpdClientAdaptorMpd3,
+			mpdClientMpd3,
 		);
 		res.send(data);
 	}),
@@ -37,7 +37,7 @@ mpdRouter.use(
 	wrap(async (req: Request, res: Response, _next) => {
 		await executeMpdCommandBulkUseCase(
 			new Uint8Array(req.body as Buffer),
-			mpdClientAdaptorMpd3,
+			mpdClientMpd3,
 		);
 		res.end();
 	}),

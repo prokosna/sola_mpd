@@ -12,8 +12,8 @@ import {
 import { MpdProfileSchema } from "@sola_mpd/shared/src/models/mpd/mpd_profile_pb.js";
 import { SongSchema } from "@sola_mpd/shared/src/models/song_pb.js";
 import { describe, expect, it, vi } from "vitest";
-import type { MpdClientPort } from "../../mpd/services/MpdClientPort.js";
-import type { AdvancedSearchApiPort } from "../services/AdvancedSearchApiPort.js";
+import type { MpdClient } from "../../mpd/services/MpdClient.js";
+import type { AdvancedSearchApi } from "../services/AdvancedSearchApi.js";
 import {
 	executeAdvancedSearchCommandUseCase,
 	executeAdvancedSearchRequestUseCase,
@@ -28,9 +28,9 @@ const createProfile = () => {
 	});
 };
 
-const createAdvancedSearchApiPort = (
-	overrides?: Partial<AdvancedSearchApiPort>,
-): AdvancedSearchApiPort => {
+const createAdvancedSearchApi = (
+	overrides?: Partial<AdvancedSearchApi>,
+): AdvancedSearchApi => {
 	return {
 		fetchStats: vi.fn(),
 		searchTextToMusic: vi.fn(),
@@ -42,9 +42,7 @@ const createAdvancedSearchApiPort = (
 	};
 };
 
-const createMpdClientPort = (
-	overrides?: Partial<MpdClientPort>,
-): MpdClientPort => {
+const createMpdClient = (overrides?: Partial<MpdClient>): MpdClient => {
 	return {
 		execute: vi.fn(),
 		executeBulk: vi.fn(),
@@ -59,10 +57,10 @@ describe("advancedSearchUseCases", () => {
 		const song = create(SongSchema, {
 			path: "music/song.mp3",
 		});
-		const advancedSearchApiPort = createAdvancedSearchApiPort({
+		const advancedSearchApi = createAdvancedSearchApi({
 			searchTextToMusic: vi.fn().mockResolvedValue(["music/song.mp3"]),
 		});
-		const mpdClientPort = createMpdClientPort({
+		const mpdClient = createMpdClient({
 			executeBulk: vi.fn().mockResolvedValue(undefined),
 			execute: vi
 				.fn<(request: unknown) => Promise<MpdResponse>>()
@@ -103,13 +101,13 @@ describe("advancedSearchUseCases", () => {
 
 		const result = await executeAdvancedSearchRequestUseCase(
 			request,
-			advancedSearchApiPort,
-			mpdClientPort,
+			advancedSearchApi,
+			mpdClient,
 		);
 
-		expect(advancedSearchApiPort.searchTextToMusic).toHaveBeenCalledTimes(1);
-		expect(mpdClientPort.executeBulk).toHaveBeenCalledTimes(1);
-		expect(mpdClientPort.execute).toHaveBeenCalledTimes(2);
+		expect(advancedSearchApi.searchTextToMusic).toHaveBeenCalledTimes(1);
+		expect(mpdClient.executeBulk).toHaveBeenCalledTimes(1);
+		expect(mpdClient.execute).toHaveBeenCalledTimes(2);
 		expect(result.command.case).toBe("textToMusicSearch");
 		if (result.command.case !== "textToMusicSearch") {
 			throw new Error("Unexpected command case");
@@ -118,13 +116,13 @@ describe("advancedSearchUseCases", () => {
 	});
 
 	it("similaritySearch returns error response on not-found result", async () => {
-		const advancedSearchApiPort = createAdvancedSearchApiPort({
+		const advancedSearchApi = createAdvancedSearchApi({
 			searchSimilarSongs: vi.fn().mockResolvedValue({
 				kind: "error",
 				message: "song not found",
 			}),
 		});
-		const mpdClientPort = createMpdClientPort();
+		const mpdClient = createMpdClient();
 		const request = create(AdvancedSearchRequestSchema, {
 			config: {
 				endpoint: "http://localhost:3001",
@@ -141,18 +139,18 @@ describe("advancedSearchUseCases", () => {
 
 		const result = await executeAdvancedSearchRequestUseCase(
 			request,
-			advancedSearchApiPort,
-			mpdClientPort,
+			advancedSearchApi,
+			mpdClient,
 		);
 
 		expect(result.command.case).toBe("error");
-		expect(mpdClientPort.executeBulk).not.toHaveBeenCalled();
-		expect(mpdClientPort.execute).not.toHaveBeenCalled();
+		expect(mpdClient.executeBulk).not.toHaveBeenCalled();
+		expect(mpdClient.execute).not.toHaveBeenCalled();
 	});
 
 	it("returns endpoint error when config endpoint is missing", async () => {
-		const advancedSearchApiPort = createAdvancedSearchApiPort();
-		const mpdClientPort = createMpdClientPort();
+		const advancedSearchApi = createAdvancedSearchApi();
+		const mpdClient = createMpdClient();
 		const request = create(AdvancedSearchRequestSchema, {
 			command: {
 				case: "stats",
@@ -162,19 +160,19 @@ describe("advancedSearchUseCases", () => {
 
 		const result = await executeAdvancedSearchRequestUseCase(
 			request,
-			advancedSearchApiPort,
-			mpdClientPort,
+			advancedSearchApi,
+			mpdClient,
 		);
 
 		expect(result.command.case).toBe("error");
-		expect(advancedSearchApiPort.fetchStats).not.toHaveBeenCalled();
+		expect(advancedSearchApi.fetchStats).not.toHaveBeenCalled();
 	});
 
 	it("executeAdvancedSearchCommandUseCase encodes response bytes", async () => {
-		const advancedSearchApiPort = createAdvancedSearchApiPort({
+		const advancedSearchApi = createAdvancedSearchApi({
 			scanLibrary: vi.fn().mockResolvedValue(undefined),
 		});
-		const mpdClientPort = createMpdClientPort();
+		const mpdClient = createMpdClient();
 		const msg = new Uint8Array(
 			toBinary(
 				AdvancedSearchRequestSchema,
@@ -192,8 +190,8 @@ describe("advancedSearchUseCases", () => {
 
 		const result = await executeAdvancedSearchCommandUseCase(
 			msg,
-			advancedSearchApiPort,
-			mpdClientPort,
+			advancedSearchApi,
+			mpdClient,
 		);
 
 		const decoded = fromBinary(AdvancedSearchResponseSchema, result);

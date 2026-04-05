@@ -5,11 +5,11 @@ import {
 	PluginRegisterRequestWrapperSchema,
 	PluginRegisterResponseWrapperSchema,
 } from "@sola_mpd/shared/src/models/plugin/plugin_wrapper_pb.js";
-import type { PluginClientPort } from "../services/PluginClientPort.js";
+import type { PluginClient } from "../services/PluginClient.js";
 
 export const registerPluginUseCase = async (
 	msg: Uint8Array,
-	pluginClientPort: PluginClientPort,
+	pluginClient: PluginClient,
 ): Promise<Uint8Array> => {
 	const req = fromBinary(PluginRegisterRequestWrapperSchema, msg);
 
@@ -19,7 +19,7 @@ export const registerPluginUseCase = async (
 			throw new Error("Invalid PluginRegisterRequest: undefined");
 		}
 
-		const response = await pluginClientPort.register(request);
+		const response = await pluginClient.register(request);
 		const wrapper = create(PluginRegisterResponseWrapperSchema, {
 			result: {
 				case: "response",
@@ -41,7 +41,7 @@ export const registerPluginUseCase = async (
 
 export const executePluginUseCase = async function* (
 	msg: Uint8Array,
-	pluginClientPort: PluginClientPort,
+	pluginClient: PluginClient,
 ): AsyncGenerator<[string, Uint8Array]> {
 	const req = fromBinary(PluginExecuteRequestWrapperSchema, msg);
 
@@ -51,7 +51,7 @@ export const executePluginUseCase = async function* (
 			throw new Error("Invalid PluginExecutionRequest: undefined");
 		}
 
-		for await (const response of pluginClientPort.execute(request)) {
+		for await (const response of pluginClient.execute(request)) {
 			yield [
 				req.callbackEvent,
 				toBinary(

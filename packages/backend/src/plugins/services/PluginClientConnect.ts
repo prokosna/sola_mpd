@@ -1,9 +1,9 @@
 import { createClient } from "@connectrpc/connect";
 import { createConnectTransport } from "@connectrpc/connect-node";
 import { PluginService } from "@sola_mpd/shared/src/models/plugin/plugin_service_pb.js";
-import type { PluginClientPort } from "./PluginClientPort.js";
+import type { PluginClient } from "./PluginClient.js";
 
-export const pluginClientAdaptorConnect: PluginClientPort = {
+export const pluginClientConnect: PluginClient = {
 	register: async (request) => {
 		const transport = createConnectTransport({
 			baseUrl: `http://${request.host}:${request.port}`,

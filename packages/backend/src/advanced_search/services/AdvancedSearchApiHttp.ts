@@ -5,11 +5,11 @@ import {
 	AdvancedSearchStatsSchema,
 } from "@sola_mpd/shared/src/models/advanced_search_pb.js";
 import type {
-	AdvancedSearchApiPort,
+	AdvancedSearchApi,
 	SearchSimilarSongsInput,
 	SearchSimilarSongsResult,
 	SearchTextToMusicInput,
-} from "./AdvancedSearchApiPort.js";
+} from "./AdvancedSearchApi.js";
 
 class AdvancedSearchApiClient {
 	async fetchStats(endpoint: string) {
@@ -158,7 +158,7 @@ class AdvancedSearchApiClient {
 
 const advancedSearchApiClient = new AdvancedSearchApiClient();
 
-export const advancedSearchApiAdaptorHttp: AdvancedSearchApiPort = {
+export const advancedSearchApiHttp: AdvancedSearchApi = {
 	fetchStats: (endpoint) => advancedSearchApiClient.fetchStats(endpoint),
 	searchTextToMusic: (input) =>
 		advancedSearchApiClient.searchTextToMusic(input),

@@ -12,15 +12,15 @@ import {
 	PluginRegisterResponseWrapperSchema,
 } from "@sola_mpd/shared/src/models/plugin/plugin_wrapper_pb.js";
 import { describe, expect, it, vi } from "vitest";
-import type { PluginClientPort } from "../services/PluginClientPort.js";
+import type { PluginClient } from "../services/PluginClient.js";
 import {
 	executePluginUseCase,
 	registerPluginUseCase,
 } from "./pluginUseCases.js";
 
-const createPluginClientPort = (
-	overrides?: Partial<PluginClientPort>,
-): PluginClientPort => {
+const createPluginClient = (
+	overrides?: Partial<PluginClient>,
+): PluginClient => {
 	return {
 		register: vi.fn(),
 		execute: vi.fn(),
@@ -86,7 +86,7 @@ async function* streamResponses() {
 
 describe("pluginUseCases", () => {
 	it("registerPluginUseCase returns encoded response on success", async () => {
-		const pluginClientPort = createPluginClientPort({
+		const pluginClient = createPluginClient({
 			register: vi
 				.fn()
 				.mockResolvedValue(create(PluginRegisterResponseSchema, {})),
@@ -94,37 +94,37 @@ describe("pluginUseCases", () => {
 
 		const result = await registerPluginUseCase(
 			createRegisterMessage(),
-			pluginClientPort,
+			pluginClient,
 		);
 
-		expect(pluginClientPort.register).toHaveBeenCalledTimes(1);
+		expect(pluginClient.register).toHaveBeenCalledTimes(1);
 		const decoded = fromBinary(PluginRegisterResponseWrapperSchema, result);
 		expect(decoded.result.case).toBe("response");
 	});
 
 	it("registerPluginUseCase returns error wrapper when request is missing", async () => {
-		const pluginClientPort = createPluginClientPort();
+		const pluginClient = createPluginClient();
 
 		const result = await registerPluginUseCase(
 			createRegisterMessage(false),
-			pluginClientPort,
+			pluginClient,
 		);
 
-		expect(pluginClientPort.register).not.toHaveBeenCalled();
+		expect(pluginClient.register).not.toHaveBeenCalled();
 		const decoded = fromBinary(PluginRegisterResponseWrapperSchema, result);
 		expect(decoded.result.case).toBe("error");
 	});
 
 	it("executePluginUseCase yields response and completion", async () => {
-		const pluginClientPort = createPluginClientPort({
+		const pluginClient = createPluginClient({
 			execute: vi.fn().mockReturnValue(streamResponses()),
 		});
 
 		const result = await collect(
-			executePluginUseCase(createExecuteMessage(), pluginClientPort),
+			executePluginUseCase(createExecuteMessage(), pluginClient),
 		);
 
-		expect(pluginClientPort.execute).toHaveBeenCalledTimes(1);
+		expect(pluginClient.execute).toHaveBeenCalledTimes(1);
 		expect(result).toHaveLength(2);
 		expect(result[0][0]).toBe("plugin:callback");
 		expect(result[1][0]).toBe("plugin:callback");
@@ -136,7 +136,7 @@ describe("pluginUseCases", () => {
 	});
 
 	it("executePluginUseCase yields error when execution fails", async () => {
-		const pluginClientPort = createPluginClientPort({
+		const pluginClient = createPluginClient({
 			execute: vi.fn().mockReturnValue({
 				[Symbol.asyncIterator]: () => ({
 					next: async () => {
@@ -147,7 +147,7 @@ describe("pluginUseCases", () => {
 		});
 
 		const result = await collect(
-			executePluginUseCase(createExecuteMessage(), pluginClientPort),
+			executePluginUseCase(createExecuteMessage(), pluginClient),
 		);
 
 		expect(result).toHaveLength(1);

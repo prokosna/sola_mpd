@@ -7,7 +7,7 @@ import type { MpdProfile } from "@sola_mpd/shared/src/models/mpd/mpd_profile_pb.
 
 export type MpdSubscriptionHandler = (name?: string) => void;
 
-export interface MpdClientPort {
+export interface MpdClient {
 	execute: (request: MpdRequest) => Promise<MpdResponse>;
 	executeBulk: (requests: MpdRequest[]) => Promise<void>;
 	subscribe: (

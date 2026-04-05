@@ -15,14 +15,14 @@ import {
 	subscribeMpdEventsUseCase,
 	unsubscribeMpdEventsUseCase,
 } from "../application/mpdUseCases.js";
-import { mpdClientAdaptorMpd3 } from "./MpdClientAdaptorMpd3.js";
-import type { MpdSubscriptionHandler } from "./MpdClientPort.js";
+import type { MpdSubscriptionHandler } from "./MpdClient.js";
+import { mpdClientMpd3 } from "./MpdClientMpd3.js";
 import type {
-	MpdMessageHandlerPort,
+	MpdMessageHandler,
 	MpdTransportConnection,
-} from "./MpdMessageHandlerPort.js";
+} from "./MpdMessageHandler.js";
 
-export class MpdMessageHandlerAdaptorSocketIo implements MpdMessageHandlerPort {
+export class MpdMessageHandlerSocketIo implements MpdMessageHandler {
 	private idEventHandlerMap: DeepMap<
 		[string, MpdProfile],
 		Promise<MpdSubscriptionHandler>
@@ -32,8 +32,8 @@ export class MpdMessageHandlerAdaptorSocketIo implements MpdMessageHandlerPort {
 		this.idEventHandlerMap = new DeepMap();
 	}
 
-	static initialize(io: IOServer): MpdMessageHandlerAdaptorSocketIo {
-		return new MpdMessageHandlerAdaptorSocketIo(io);
+	static initialize(io: IOServer): MpdMessageHandlerSocketIo {
+		return new MpdMessageHandlerSocketIo(io);
 	}
 
 	async subscribeEvents(
@@ -53,7 +53,7 @@ export class MpdMessageHandlerAdaptorSocketIo implements MpdMessageHandlerPort {
 					const room = `${profile.host}:${profile.port}`;
 					this.io.to(room).emit(SIO_MPD_EVENT, toBinary(MpdEventSchema, event));
 				},
-				mpdClientPort: mpdClientAdaptorMpd3,
+				mpdClient: mpdClientMpd3,
 			});
 
 			const room = `${profile.host}:${profile.port}`;
@@ -82,7 +82,7 @@ export class MpdMessageHandlerAdaptorSocketIo implements MpdMessageHandlerPort {
 			const unsubscribedProfile = await unsubscribeMpdEventsUseCase({
 				msg,
 				handlerPromise,
-				mpdClientPort: mpdClientAdaptorMpd3,
+				mpdClient: mpdClientMpd3,
 			});
 			if (unsubscribedProfile !== undefined) {
 				this.idEventHandlerMap.delete([id, unsubscribedProfile]);
@@ -99,11 +99,11 @@ export class MpdMessageHandlerAdaptorSocketIo implements MpdMessageHandlerPort {
 	}
 
 	async command(msg: Uint8Array): Promise<Uint8Array> {
-		return executeMpdCommandUseCase(msg, mpdClientAdaptorMpd3);
+		return executeMpdCommandUseCase(msg, mpdClientMpd3);
 	}
 
 	async commandBulk(msg: Uint8Array): Promise<void> {
-		return executeMpdCommandBulkUseCase(msg, mpdClientAdaptorMpd3);
+		return executeMpdCommandBulkUseCase(msg, mpdClientMpd3);
 	}
 
 	async disconnect(
@@ -119,7 +119,7 @@ export class MpdMessageHandlerAdaptorSocketIo implements MpdMessageHandlerPort {
 			await disconnectMpdEventsUseCase({
 				profile,
 				handlerPromise,
-				mpdClientPort: mpdClientAdaptorMpd3,
+				mpdClient: mpdClientMpd3,
 			});
 			this.idEventHandlerMap.delete(key);
 			const room = `${profile.host}:${profile.port}`;

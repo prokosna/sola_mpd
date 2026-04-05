@@ -4,7 +4,7 @@ export type MpdTransportConnection = {
 	emit: (event: string, payload: unknown) => void;
 };
 
-export interface MpdMessageHandlerPort {
+export interface MpdMessageHandler {
 	subscribeEvents: (
 		id: string,
 		msg: Uint8Array,

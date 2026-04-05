@@ -8,29 +8,29 @@ import {
 import { MpdRequestSchema } from "@sola_mpd/shared/src/models/mpd/mpd_command_pb.js";
 import type { MpdProfile } from "@sola_mpd/shared/src/models/mpd/mpd_profile_pb.js";
 import type { Song } from "@sola_mpd/shared/src/models/song_pb.js";
-import type { MpdClientPort } from "../../mpd/services/MpdClientPort.js";
-import type { AdvancedSearchApiPort } from "../services/AdvancedSearchApiPort.js";
+import type { MpdClient } from "../../mpd/services/MpdClient.js";
+import type { AdvancedSearchApi } from "../services/AdvancedSearchApi.js";
 
 const SEARCH_RESULT_PLAYLIST_NAME = "_temp_search_result";
 
 export const executeAdvancedSearchCommandUseCase = async (
 	msg: Uint8Array,
-	advancedSearchApiPort: AdvancedSearchApiPort,
-	mpdClientPort: MpdClientPort,
+	advancedSearchApi: AdvancedSearchApi,
+	mpdClient: MpdClient,
 ): Promise<Uint8Array> => {
 	const request = fromBinary(AdvancedSearchRequestSchema, msg);
 	const response = await executeAdvancedSearchRequestUseCase(
 		request,
-		advancedSearchApiPort,
-		mpdClientPort,
+		advancedSearchApi,
+		mpdClient,
 	);
 	return toBinary(AdvancedSearchResponseSchema, response);
 };
 
 export const executeAdvancedSearchRequestUseCase = async (
 	req: AdvancedSearchRequest,
-	advancedSearchApiPort: AdvancedSearchApiPort,
-	mpdClientPort: MpdClientPort,
+	advancedSearchApi: AdvancedSearchApi,
+	mpdClient: MpdClient,
 ): Promise<AdvancedSearchResponse> => {
 	switch (req.command?.case) {
 		case "stats":
@@ -38,9 +38,7 @@ export const executeAdvancedSearchRequestUseCase = async (
 				if (req.config?.endpoint === undefined) {
 					throw new Error("Endpoint is undefined");
 				}
-				const stats = await advancedSearchApiPort.fetchStats(
-					req.config.endpoint,
-				);
+				const stats = await advancedSearchApi.fetchStats(req.config.endpoint);
 				return create(AdvancedSearchResponseSchema, {
 					command: {
 						case: "stats",
@@ -58,7 +56,7 @@ export const executeAdvancedSearchRequestUseCase = async (
 				if (req.command.value.profile === undefined) {
 					throw new Error("Profile is undefined");
 				}
-				const filePaths = await advancedSearchApiPort.searchTextToMusic({
+				const filePaths = await advancedSearchApi.searchTextToMusic({
 					endpoint: req.config.endpoint,
 					query: req.command.value.query,
 					textToMusicType: req.command.value.textToMusicType,
@@ -67,7 +65,7 @@ export const executeAdvancedSearchRequestUseCase = async (
 				const songs = await fetchSongs(
 					req.command.value.profile,
 					filePaths,
-					mpdClientPort,
+					mpdClient,
 				);
 
 				return create(AdvancedSearchResponseSchema, {
@@ -91,7 +89,7 @@ export const executeAdvancedSearchRequestUseCase = async (
 					throw new Error("Song is undefined");
 				}
 
-				const result = await advancedSearchApiPort.searchSimilarSongs({
+				const result = await advancedSearchApi.searchSimilarSongs({
 					endpoint: req.config.endpoint,
 					songPath: req.command.value.song.path,
 					similarityType: req.command.value.similarityType,
@@ -105,7 +103,7 @@ export const executeAdvancedSearchRequestUseCase = async (
 				const songs = await fetchSongs(
 					req.command.value.profile,
 					result.filePaths,
-					mpdClientPort,
+					mpdClient,
 				);
 
 				return create(AdvancedSearchResponseSchema, {
@@ -122,7 +120,7 @@ export const executeAdvancedSearchRequestUseCase = async (
 				if (req.config?.endpoint === undefined) {
 					throw new Error("Endpoint is undefined");
 				}
-				await advancedSearchApiPort.scanLibrary(req.config.endpoint);
+				await advancedSearchApi.scanLibrary(req.config.endpoint);
 				return create(AdvancedSearchResponseSchema, {
 					command: {
 						case: "scanLibrary",
@@ -137,7 +135,7 @@ export const executeAdvancedSearchRequestUseCase = async (
 				if (req.config?.endpoint === undefined) {
 					throw new Error("Endpoint is undefined");
 				}
-				await advancedSearchApiPort.vacuumLibrary(req.config.endpoint);
+				await advancedSearchApi.vacuumLibrary(req.config.endpoint);
 				return create(AdvancedSearchResponseSchema, {
 					command: {
 						case: "vacuumLibrary",
@@ -152,7 +150,7 @@ export const executeAdvancedSearchRequestUseCase = async (
 				if (req.config?.endpoint === undefined) {
 					throw new Error("Endpoint is undefined");
 				}
-				await advancedSearchApiPort.analyze(req.config.endpoint);
+				await advancedSearchApi.analyze(req.config.endpoint);
 				return create(AdvancedSearchResponseSchema, {
 					command: {
 						case: "analyze",
@@ -189,7 +187,7 @@ const toErrorMessage = (err: unknown): string => {
 const fetchSongs = async (
 	profile: MpdProfile,
 	filePaths: string[],
-	mpdClientPort: MpdClientPort,
+	mpdClient: MpdClient,
 ): Promise<Song[]> => {
 	const playlistName = `${SEARCH_RESULT_PLAYLIST_NAME}_${Math.round(Math.random() * 1000000)}`;
 	const addCommands = filePaths.map((filePath) =>
@@ -204,7 +202,7 @@ const fetchSongs = async (
 			},
 		}),
 	);
-	await mpdClientPort.executeBulk(addCommands);
+	await mpdClient.executeBulk(addCommands);
 
 	const getSongsCommand = create(MpdRequestSchema, {
 		profile,
@@ -215,7 +213,7 @@ const fetchSongs = async (
 			},
 		},
 	});
-	const response = await mpdClientPort.execute(getSongsCommand);
+	const response = await mpdClient.execute(getSongsCommand);
 	const songs =
 		response.command?.case === "listplaylistinfo"
 			? response.command.value.songs
@@ -230,7 +228,7 @@ const fetchSongs = async (
 			},
 		},
 	});
-	await mpdClientPort.execute(removeCommand);
+	await mpdClient.execute(removeCommand);
 
 	return songs;
 };

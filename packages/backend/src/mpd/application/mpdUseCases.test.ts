@@ -11,9 +11,9 @@ import {
 import { MpdProfileSchema } from "@sola_mpd/shared/src/models/mpd/mpd_profile_pb.js";
 import { describe, expect, it, vi } from "vitest";
 import type {
-	MpdClientPort,
+	MpdClient,
 	MpdSubscriptionHandler,
-} from "../services/MpdClientPort.js";
+} from "../services/MpdClient.js";
 import {
 	disconnectMpdEventsUseCase,
 	executeMpdCommandBulkUseCase,
@@ -46,9 +46,7 @@ const createProfileMessage = () => {
 	return new Uint8Array(toBinary(MpdProfileSchema, createProfile()));
 };
 
-const createMpdClientPort = (
-	overrides?: Partial<MpdClientPort>,
-): MpdClientPort => {
+const createMpdClient = (overrides?: Partial<MpdClient>): MpdClient => {
 	return {
 		execute: vi.fn(),
 		executeBulk: vi.fn(),
@@ -66,16 +64,16 @@ describe("mpdUseCases", () => {
 				value: { version: "0.24.0" },
 			},
 		});
-		const mpdClientPort = createMpdClientPort({
+		const mpdClient = createMpdClient({
 			execute: vi.fn().mockResolvedValue(response),
 		});
 
 		const result = await executeMpdCommandUseCase(
 			createCommandMessage(),
-			mpdClientPort,
+			mpdClient,
 		);
 
-		expect(mpdClientPort.execute).toHaveBeenCalledTimes(1);
+		expect(mpdClient.execute).toHaveBeenCalledTimes(1);
 		const decoded = fromBinary(MpdResponseSchema, result);
 		expect(decoded).toMatchObject({
 			command: {
@@ -89,12 +87,12 @@ describe("mpdUseCases", () => {
 
 	it("executeMpdCommandUseCase propagates client errors", async () => {
 		const expected = new Error("execute failed");
-		const mpdClientPort = createMpdClientPort({
+		const mpdClient = createMpdClient({
 			execute: vi.fn().mockRejectedValue(expected),
 		});
 
 		await expect(
-			executeMpdCommandUseCase(createCommandMessage(), mpdClientPort),
+			executeMpdCommandUseCase(createCommandMessage(), mpdClient),
 		).rejects.toThrow("execute failed");
 	});
 
@@ -114,14 +112,14 @@ describe("mpdUseCases", () => {
 				}),
 			),
 		);
-		const mpdClientPort = createMpdClientPort({
+		const mpdClient = createMpdClient({
 			executeBulk: vi.fn().mockResolvedValue(undefined),
 		});
 
-		await executeMpdCommandBulkUseCase(msg, mpdClientPort);
+		await executeMpdCommandBulkUseCase(msg, mpdClient);
 
-		expect(mpdClientPort.executeBulk).toHaveBeenCalledTimes(1);
-		expect(mpdClientPort.executeBulk).toHaveBeenCalledWith(
+		expect(mpdClient.executeBulk).toHaveBeenCalledTimes(1);
+		expect(mpdClient.executeBulk).toHaveBeenCalledWith(
 			expect.arrayContaining([
 				expect.objectContaining({
 					command: expect.objectContaining({ case: "ping" }),
@@ -135,7 +133,7 @@ describe("mpdUseCases", () => {
 		const event = create(MpdEventSchema, {
 			eventType: MpdEvent_EventType.PLAYER,
 		});
-		const mpdClientPort = createMpdClientPort({
+		const mpdClient = createMpdClient({
 			subscribe: vi.fn().mockImplementation(async (_profile, callback) => {
 				callback(event);
 				return handler;
@@ -146,7 +144,7 @@ describe("mpdUseCases", () => {
 		const result = await subscribeMpdEventsUseCase({
 			msg: createProfileMessage(),
 			onEvent,
-			mpdClientPort,
+			mpdClient: mpdClient,
 		});
 
 		expect(result.profile).toMatchObject({
@@ -159,43 +157,43 @@ describe("mpdUseCases", () => {
 	});
 
 	it("subscribeMpdEventsUseCase propagates subscribe errors", async () => {
-		const mpdClientPort = createMpdClientPort();
+		const mpdClient = createMpdClient();
 		const onEvent = vi.fn();
 		const expected = new Error("subscribe failed");
-		mpdClientPort.subscribe = vi.fn().mockRejectedValue(expected);
+		mpdClient.subscribe = vi.fn().mockRejectedValue(expected);
 
 		const result = await subscribeMpdEventsUseCase({
 			msg: createProfileMessage(),
 			onEvent,
-			mpdClientPort,
+			mpdClient: mpdClient,
 		});
 
 		await expect(result.handlerPromise).rejects.toThrow("subscribe failed");
 	});
 
 	it("unsubscribeMpdEventsUseCase returns undefined when handler is missing", async () => {
-		const mpdClientPort = createMpdClientPort();
+		const mpdClient = createMpdClient();
 
 		const result = await unsubscribeMpdEventsUseCase({
 			msg: createProfileMessage(),
 			handlerPromise: undefined,
-			mpdClientPort,
+			mpdClient: mpdClient,
 		});
 
 		expect(result).toBeUndefined();
-		expect(mpdClientPort.unsubscribe).not.toHaveBeenCalled();
+		expect(mpdClient.unsubscribe).not.toHaveBeenCalled();
 	});
 
 	it("unsubscribeMpdEventsUseCase unsubscribes and returns profile", async () => {
 		const handler: MpdSubscriptionHandler = () => {};
-		const mpdClientPort = createMpdClientPort({
+		const mpdClient = createMpdClient({
 			unsubscribe: vi.fn().mockResolvedValue(true),
 		});
 
 		const result = await unsubscribeMpdEventsUseCase({
 			msg: createProfileMessage(),
 			handlerPromise: Promise.resolve(handler),
-			mpdClientPort,
+			mpdClient: mpdClient,
 		});
 
 		expect(result).toMatchObject({
@@ -203,7 +201,7 @@ describe("mpdUseCases", () => {
 			host: "localhost",
 			port: 6600,
 		});
-		expect(mpdClientPort.unsubscribe).toHaveBeenCalledTimes(1);
+		expect(mpdClient.unsubscribe).toHaveBeenCalledTimes(1);
 	});
 
 	it("disconnectMpdEventsUseCase unsubscribes one profile handler", async () => {
@@ -214,17 +212,17 @@ describe("mpdUseCases", () => {
 			port: 6600,
 			password: "",
 		});
-		const mpdClientPort = createMpdClientPort({
+		const mpdClient = createMpdClient({
 			unsubscribe: vi.fn().mockResolvedValue(true),
 		});
 
 		await disconnectMpdEventsUseCase({
 			profile,
 			handlerPromise: Promise.resolve(handler),
-			mpdClientPort,
+			mpdClient: mpdClient,
 		});
 
-		expect(mpdClientPort.unsubscribe).toHaveBeenCalledTimes(1);
-		expect(mpdClientPort.unsubscribe).toHaveBeenCalledWith(profile, handler);
+		expect(mpdClient.unsubscribe).toHaveBeenCalledTimes(1);
+		expect(mpdClient.unsubscribe).toHaveBeenCalledWith(profile, handler);
 	});
 });

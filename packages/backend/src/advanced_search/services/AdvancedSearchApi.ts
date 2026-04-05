@@ -28,7 +28,7 @@ export type SearchSimilarSongsResult =
 			message: string;
 	  };
 
-export interface AdvancedSearchApiPort {
+export interface AdvancedSearchApi {
 	fetchStats: (endpoint: string) => Promise<AdvancedSearchStats>;
 	searchTextToMusic: (input: SearchTextToMusicInput) => Promise<string[]>;
 	searchSimilarSongs: (

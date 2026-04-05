@@ -10,12 +10,12 @@ import {
 } from "@sola_mpd/shared/src/const/socketio.js";
 import { MpdResponseSchema } from "@sola_mpd/shared/src/models/mpd/mpd_command_pb.js";
 import type { Server as IOServer } from "socket.io";
-import { AdvancedSearchMessageHandlerAdaptorSocketIo } from "./advanced_search/services/AdvancedSearchMessageHandlerAdaptorSocketIo.js";
-import type { AdvancedSearchMessageHandlerPort } from "./advanced_search/services/AdvancedSearchMessageHandlerPort.js";
-import { MpdMessageHandlerAdaptorSocketIo } from "./mpd/services/MpdMessageHandlerAdaptorSocketIo.js";
-import type { MpdMessageHandlerPort } from "./mpd/services/MpdMessageHandlerPort.js";
-import { PluginMessageHandlerAdaptorSocketIo } from "./plugins/services/PluginMessageHandlerAdaptorSocketIo.js";
-import type { PluginMessageHandlerPort } from "./plugins/services/PluginMessageHandlerPort.js";
+import type { AdvancedSearchMessageHandler } from "./advanced_search/services/AdvancedSearchMessageHandler.js";
+import { AdvancedSearchMessageHandlerSocketIo } from "./advanced_search/services/AdvancedSearchMessageHandlerSocketIo.js";
+import type { MpdMessageHandler } from "./mpd/services/MpdMessageHandler.js";
+import { MpdMessageHandlerSocketIo } from "./mpd/services/MpdMessageHandlerSocketIo.js";
+import type { PluginMessageHandler } from "./plugins/services/PluginMessageHandler.js";
+import { PluginMessageHandlerSocketIo } from "./plugins/services/PluginMessageHandlerSocketIo.js";
 
 export class SocketIoManager {
 	private constructor(_io: IOServer) {}
@@ -24,12 +24,12 @@ export class SocketIoManager {
 		console.info("Socket.io is initializing...");
 		const socketIoManager = new SocketIoManager(io);
 
-		const mpdHandler: MpdMessageHandlerPort =
-			MpdMessageHandlerAdaptorSocketIo.initialize(io);
-		const pluginHandler: PluginMessageHandlerPort =
-			new PluginMessageHandlerAdaptorSocketIo();
-		const advancedSearchHandler: AdvancedSearchMessageHandlerPort =
-			AdvancedSearchMessageHandlerAdaptorSocketIo.initialize();
+		const mpdHandler: MpdMessageHandler =
+			MpdMessageHandlerSocketIo.initialize(io);
+		const pluginHandler: PluginMessageHandler =
+			new PluginMessageHandlerSocketIo();
+		const advancedSearchHandler: AdvancedSearchMessageHandler =
+			AdvancedSearchMessageHandlerSocketIo.initialize();
 
 		io.on("connection", (socket) => {
 			const id = socket.id;

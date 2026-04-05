@@ -28,7 +28,7 @@ import {
 	parsePlaylist,
 	parseSong,
 } from "../mpdParsers.js";
-import type { MpdClientPort } from "./MpdClientPort.js";
+import type { MpdClient as MpdClientService } from "./MpdClient.js";
 
 type MpdConnectOptions = {
 	cache?: boolean;
@@ -37,7 +37,7 @@ type MpdConnectOptions = {
 	reconnectDelay?: number;
 };
 
-class MpdClient {
+class MpdClientMpd3Impl {
 	private clients: DeepMap<MpdProfile, Promise<Client>> = new DeepMap(
 		new Map(),
 	);
@@ -827,9 +827,9 @@ class MpdClient {
 	}
 }
 
-const mpdClient = new MpdClient();
+const mpdClient = new MpdClientMpd3Impl();
 
-export const mpdClientAdaptorMpd3: MpdClientPort = {
+export const mpdClientMpd3: MpdClientService = {
 	execute: (request) => mpdClient.execute(request),
 	executeBulk: (requests) => mpdClient.executeBulk(requests),
 	subscribe: (profile, callback) => mpdClient.subscribe(profile, callback),
