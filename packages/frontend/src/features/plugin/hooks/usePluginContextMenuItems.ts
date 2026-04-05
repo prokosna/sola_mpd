@@ -1,5 +1,5 @@
 import { Plugin_PluginType } from "@sola_mpd/shared/src/models/plugin/plugin_pb.js";
-
+import { useAtomValue, useSetAtom } from "jotai";
 import { useNotification } from "../../../lib/mantine/hooks/useNotification";
 import type { ContextMenuItem } from "../../context_menu";
 import {
@@ -7,12 +7,12 @@ import {
 	type SongTableContextMenuItemParams,
 	type SongTableKeyType,
 } from "../../song_table";
+import { pluginAtom } from "../states/atoms/pluginAtom";
 import {
-	useIsPreviousPluginStillRunningState,
-	useSetIsPluginExecutionModalOpenState,
-	useSetPluginExecutionPropsState,
-} from "../states/executionState";
-import { usePluginState } from "../states/pluginState";
+	isPreviousPluginStillRunningAtom,
+	pluginExecutionModalOpenAtom,
+	pluginExecutionPropsAtom,
+} from "../states/atoms/pluginExecutionAtom";
 
 /**
  * Get plugin context menu items.
@@ -27,10 +27,14 @@ export function usePluginContextMenuItems(
 ): ContextMenuItem<SongTableContextMenuItemParams>[] {
 	const notify = useNotification();
 
-	const pluginState = usePluginState();
-	const isPreviousPluginStillRunning = useIsPreviousPluginStillRunningState();
-	const setPluginExecutionProps = useSetPluginExecutionPropsState();
-	const setIsPluginExecutionModalOpen = useSetIsPluginExecutionModalOpenState();
+	const pluginState = useAtomValue(pluginAtom);
+	const isPreviousPluginStillRunning = useAtomValue(
+		isPreviousPluginStillRunningAtom,
+	);
+	const setPluginExecutionProps = useSetAtom(pluginExecutionPropsAtom);
+	const setIsPluginExecutionModalOpen = useSetAtom(
+		pluginExecutionModalOpenAtom,
+	);
 
 	const items: ContextMenuItem<SongTableContextMenuItemParams>[] = [];
 	for (const plugin of pluginState?.plugins || []) {

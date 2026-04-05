@@ -7,7 +7,7 @@ import { useCallback, useRef, useState } from "react";
 
 import { useNotification } from "../../../lib/mantine/hooks/useNotification";
 import { mpdClientAtom } from "../../mpd";
-import { useCurrentMpdProfileState } from "../../profile";
+import { currentMpdProfileAtom } from "../../profile";
 
 /**
  * Hook for playlist selection modal.
@@ -24,7 +24,7 @@ export function usePlaylistSelectModal() {
 	const [isPlaylistSelectModalOpen, setIsPlaylistSelectModalOpen] =
 		useState(false);
 
-	const profile = useCurrentMpdProfileState();
+	const profile = useAtomValue(currentMpdProfileAtom);
 	const mpdClient = useAtomValue(mpdClientAtom);
 
 	const onOk = useCallback(

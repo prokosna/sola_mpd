@@ -1,5 +1,6 @@
 import { Divider, Stack } from "@mantine/core";
-import { useSelectedSongsState } from "../../song_table";
+import { useAtomValue } from "jotai";
+import { selectedSongsAtom } from "../../song_table";
 import { useAlbumStatsProps } from "../hooks/useAlbumStatsProps";
 import { useArtistStatsProps } from "../hooks/useArtistStatsProps";
 import { useDurationStatsProps } from "../hooks/useDurationStatsProps";
@@ -16,7 +17,7 @@ import { CardStatsNumber } from "./CardStatsNumber";
  * @returns {JSX.Element} The rendered CardStats component
  */
 export function CardStats() {
-	const selectedSongs = useSelectedSongsState();
+	const selectedSongs = useAtomValue(selectedSongsAtom);
 	const showSelectedStats = selectedSongs.length >= 2;
 	const songStatsProps = useSongStatsProps(showSelectedStats, selectedSongs);
 	const artistStatsProps = useArtistStatsProps(

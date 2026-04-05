@@ -7,7 +7,7 @@ import { COMPONENT_ID_PLAYLIST_SIDE_PANE } from "../../../const/component";
 import { useNotification } from "../../../lib/mantine/hooks/useNotification";
 import type { ContextMenuSection } from "../../context_menu";
 import { mpdClientAtom } from "../../mpd";
-import { useCurrentMpdProfileState } from "../../profile";
+import { currentMpdProfileAtom } from "../../profile";
 import type { SelectListContextMenuItemParams } from "../../select_list";
 import { setSelectedPlaylistActionAtom } from "../states/actions/setSelectedPlaylistActionAtom";
 import {
@@ -26,7 +26,7 @@ import {
 export function usePlaylistNavigationSelectListProps() {
 	const notify = useNotification();
 
-	const profile = useCurrentMpdProfileState();
+	const profile = useAtomValue(currentMpdProfileAtom);
 	const mpdClient = useAtomValue(mpdClientAtom);
 	const playlists = useAtomValue(playlistsAtom);
 	const selectedPlaylist = useAtomValue(selectedPlaylistAtom);

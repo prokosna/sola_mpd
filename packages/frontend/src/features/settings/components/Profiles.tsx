@@ -1,7 +1,8 @@
 import { Button, Modal, Stack, Table, Title } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
+import { useAtomValue } from "jotai";
 import { CenterSpinner } from "../../loading";
-import { MpdProfileForm, useMpdProfileState } from "../../profile";
+import { MpdProfileForm, mpdProfileStateAtom } from "../../profile";
 import { ProfilesProfile } from "./ProfilesProfile";
 
 /**
@@ -11,7 +12,7 @@ import { ProfilesProfile } from "./ProfilesProfile";
  * to add, edit, and delete profiles.
  */
 export function Profiles() {
-	const mpdProfileState = useMpdProfileState();
+	const mpdProfileState = useAtomValue(mpdProfileStateAtom);
 
 	const [opened, { open, close }] = useDisclosure(false);
 

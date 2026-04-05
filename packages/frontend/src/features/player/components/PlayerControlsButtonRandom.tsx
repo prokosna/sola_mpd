@@ -4,7 +4,7 @@ import { IconArrowsRight, IconArrowsShuffle } from "@tabler/icons-react";
 import { useAtomValue } from "jotai";
 import { useCallback } from "react";
 import { mpdClientAtom } from "../../mpd";
-import { useCurrentMpdProfileState } from "../../profile";
+import { currentMpdProfileAtom } from "../../profile";
 import { playerStatusIsRandomAtom } from "../states/atoms/playerStatusAtom";
 import { PlayerControlsButton } from "./PlayerControlsButton";
 
@@ -17,7 +17,7 @@ import { PlayerControlsButton } from "./PlayerControlsButton";
  * @returns Random mode toggle button
  */
 export function PlayerControlsButtonRandom() {
-	const profile = useCurrentMpdProfileState();
+	const profile = useAtomValue(currentMpdProfileAtom);
 	const mpdClient = useAtomValue(mpdClientAtom);
 	const playerStatusIsRandom = useAtomValue(playerStatusIsRandomAtom);
 

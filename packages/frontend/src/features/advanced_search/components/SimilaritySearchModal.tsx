@@ -12,9 +12,9 @@ import { PlaylistSelectModal, usePlaylistSelectModal } from "../../playlist";
 import {
 	ColumnEditModal,
 	SongTable,
+	songTableStateAtom,
+	updateSongTableStateActionAtom,
 	useColumnEditModalProps,
-	useSongTableState,
-	useUpdateSongTableState,
 } from "../../song_table";
 import { useSimilaritySearchSongTableProps } from "../hooks/useSimilaritySearchSongTableProps";
 import { refreshSimilaritySearchSongsActionAtom } from "../states/actions/refreshSimilaritySearchSongsActionAtom";
@@ -28,8 +28,8 @@ import { isSimilaritySearchModalOpenAtom } from "../states/atoms/similaritySearc
  * @returns The similarity search modal component
  */
 export function SimilaritySearchModal() {
-	const songTableState = useSongTableState();
-	const updateSongTableState = useUpdateSongTableState();
+	const songTableState = useAtomValue(songTableStateAtom);
+	const updateSongTableState = useSetAtom(updateSongTableStateActionAtom);
 
 	const [isColumnEditModalOpen, setIsColumnEditModalOpen] = useState(false);
 	const contextMenuAnchorRef = useRef<HTMLDivElement | null>(null);
@@ -53,10 +53,10 @@ export function SimilaritySearchModal() {
 			}
 			const newSongTableState = clone(SongTableStateSchema, songTableState);
 			newSongTableState.columns = columns;
-			await updateSongTableState(
-				newSongTableState,
-				UpdateMode.LOCAL_STATE | UpdateMode.PERSIST,
-			);
+			await updateSongTableState({
+				state: newSongTableState,
+				mode: UpdateMode.LOCAL_STATE | UpdateMode.PERSIST,
+			});
 		},
 		[songTableState, updateSongTableState],
 	);

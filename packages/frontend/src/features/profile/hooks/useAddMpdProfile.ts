@@ -3,13 +3,11 @@ import {
 	MpdProfileSchema,
 	MpdProfileStateSchema,
 } from "@sola_mpd/shared/src/models/mpd/mpd_profile_pb.js";
+import { useAtomValue, useSetAtom } from "jotai";
 import { useCallback } from "react";
-
 import { UpdateMode } from "../../../types/stateTypes";
-import {
-	useMpdProfileState,
-	useUpdateMpdProfileState,
-} from "../states/mpdProfileState";
+import { updateMpdProfileStateActionAtom } from "../states/actions/updateMpdProfileStateActionAtom";
+import { mpdProfileStateAtom } from "../states/atoms/mpdProfileAtom";
 import type { ProfileInput } from "../types/profileTypes";
 
 /**
@@ -19,8 +17,8 @@ import type { ProfileInput } from "../types/profileTypes";
  * @throws When state is not ready
  */
 export function useAddMpdProfile() {
-	const mpdProfileState = useMpdProfileState();
-	const updateMpdProfileState = useUpdateMpdProfileState();
+	const mpdProfileState = useAtomValue(mpdProfileStateAtom);
+	const updateMpdProfileState = useSetAtom(updateMpdProfileStateActionAtom);
 
 	return useCallback(
 		async (input: ProfileInput) => {
@@ -41,10 +39,10 @@ export function useAddMpdProfile() {
 				newMpdProfileState.currentProfile = profile;
 			}
 
-			return updateMpdProfileState(
-				newMpdProfileState,
-				UpdateMode.LOCAL_STATE | UpdateMode.PERSIST,
-			);
+			return updateMpdProfileState({
+				state: newMpdProfileState,
+				mode: UpdateMode.LOCAL_STATE | UpdateMode.PERSIST,
+			});
 		},
 		[mpdProfileState, updateMpdProfileState],
 	);

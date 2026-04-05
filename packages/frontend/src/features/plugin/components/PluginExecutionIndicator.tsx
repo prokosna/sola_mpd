@@ -1,9 +1,10 @@
 import { Box, RingProgress, Text } from "@mantine/core";
+import { useAtomValue, useSetAtom } from "jotai";
 import {
-	usePluginExecutionLatestResponseState,
-	usePluginExecutionPropsState,
-	useSetIsPluginExecutionModalOpenState,
-} from "../states/executionState";
+	pluginExecutionLatestResponseAtom,
+	pluginExecutionModalOpenAtom,
+	pluginExecutionPropsAtom,
+} from "../states/atoms/pluginExecutionAtom";
 
 /**
  * Plugin execution progress indicator.
@@ -13,9 +14,11 @@ import {
  * @returns Progress indicator or null
  */
 export function PluginExecutionIndicator() {
-	const { plugin } = usePluginExecutionPropsState();
-	const latestResponse = usePluginExecutionLatestResponseState();
-	const setIsPluginExecutionModalOpen = useSetIsPluginExecutionModalOpenState();
+	const { plugin } = useAtomValue(pluginExecutionPropsAtom);
+	const latestResponse = useAtomValue(pluginExecutionLatestResponseAtom);
+	const setIsPluginExecutionModalOpen = useSetAtom(
+		pluginExecutionModalOpenAtom,
+	);
 
 	if (plugin === undefined) {
 		return null;

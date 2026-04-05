@@ -9,12 +9,13 @@ import {
 } from "@mantine/core";
 import type { Plugin } from "@sola_mpd/shared/src/models/plugin/plugin_pb.js";
 import type { Song } from "@sola_mpd/shared/src/models/song_pb.js";
+import { useAtomValue, useSetAtom } from "jotai";
 import { useCallback, useState } from "react";
 import { useHandlePluginExecuted } from "../hooks/useHandlePluginExecuted";
 import {
-	useIsPreviousPluginStillRunningState,
-	useSetIsPluginExecutionModalOpenState,
-} from "../states/executionState";
+	isPreviousPluginStillRunningAtom,
+	pluginExecutionModalOpenAtom,
+} from "../states/atoms/pluginExecutionAtom";
 
 type PluginExecutionModalStartProps = {
 	plugin: Plugin;
@@ -35,9 +36,13 @@ export function PluginExecutionModalStart(
 ) {
 	const { plugin, songs } = props;
 
-	const isPreviousPluginStillRunning = useIsPreviousPluginStillRunningState();
+	const isPreviousPluginStillRunning = useAtomValue(
+		isPreviousPluginStillRunningAtom,
+	);
 	const handlePluginExecuted = useHandlePluginExecuted();
-	const setIsPluginExecutionModalOpen = useSetIsPluginExecutionModalOpenState();
+	const setIsPluginExecutionModalOpen = useSetAtom(
+		pluginExecutionModalOpenAtom,
+	);
 
 	const [parameterValues, setParameterValues] = useState<Map<string, string>>(
 		new Map(),

@@ -8,8 +8,8 @@ import { filterStringsByGlobalFilter } from "../../../../global_filter";
 import { globalFilterTokensAtom } from "../../../../global_filter/states/atoms/globalFilterAtom";
 import { pathnameAtom } from "../../../../location/states/atoms/locationAtom";
 import { mpdClientAtom } from "../../../../mpd/states/atoms/mpdClientAtom";
-import { currentMpdProfileSyncAtom } from "../../../../profile/states/mpdProfileState";
-import { localeCollatorAtom } from "../../../../settings/states/settingsLocale";
+import { currentMpdProfileAtom } from "../../../../profile/states/atoms/mpdProfileAtom";
+import { localeCollatorAtom } from "../../../../settings/states/atoms/localeAtom";
 import { fetchBrowserFilterValues } from "../../../common/utils/browserFilterUtils";
 import { browserStateAtom } from "./browserStateAtom";
 
@@ -21,7 +21,7 @@ export const browserFiltersAtom = atom((get) => {
 const browserFilterValuesMapAsyncAtom = atom(async (get) => {
 	const mpdClient = get(mpdClientAtom);
 	const browserFilters = get(browserFiltersAtom);
-	const currentMpdProfile = get(currentMpdProfileSyncAtom);
+	const currentMpdProfile = get(currentMpdProfileAtom);
 	const collator = get(localeCollatorAtom);
 
 	if (currentMpdProfile === undefined || browserFilters === undefined) {

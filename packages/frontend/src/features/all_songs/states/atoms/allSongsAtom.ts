@@ -7,8 +7,8 @@ import { filterSongsByGlobalFilter } from "../../../global_filter";
 import { globalFilterTokensAtom } from "../../../global_filter/states/atoms/globalFilterAtom";
 import { pathnameAtom } from "../../../location/states/atoms/locationAtom";
 import { mpdClientAtom } from "../../../mpd/states/atoms/mpdClientAtom";
-import { currentMpdProfileSyncAtom as currentMpdProfileAtom } from "../../../profile/states/mpdProfileState";
-import { songTableStateSyncAtom as songTableStateAtom } from "../../../song_table/states/songTableState";
+import { currentMpdProfileAtom } from "../../../profile/states/atoms/mpdProfileAtom";
+import { songTableStateAtom } from "../../../song_table/states/atoms/songTableAtom";
 import { fetchAllSongs } from "../../utils/allSongsUtils";
 
 export const allSongsAsyncAtom = atomWithRefresh(async (get) => {

@@ -3,7 +3,7 @@ import { atom } from "jotai";
 import { atomWithRefresh, atomWithStorage } from "jotai/utils";
 
 import { atomWithSync } from "../../../../lib/jotai/atomWithSync";
-import { currentMpdProfileSyncAtom } from "../../../profile/states/mpdProfileState";
+import { currentMpdProfileAtom } from "../../../profile/states/atoms/mpdProfileAtom";
 import { searchSongsByText } from "../../utils/textToMusicSearchUtils";
 import {
 	advancedSearchEndpointAtom,
@@ -36,7 +36,7 @@ export const textToMusicSearchQueryAtom = atom((get) => {
 
 export const textToMusicSearchSongsAsyncAtom = atomWithRefresh(async (get) => {
 	const query = get(textToMusicSearchQueryAtom);
-	const profile = get(currentMpdProfileSyncAtom);
+	const profile = get(currentMpdProfileAtom);
 	const client = get(advancedSearchClientAtom);
 	const endpoint = get(advancedSearchEndpointAtom);
 	const limit = get(advancedSearchQueryLimitAtom);

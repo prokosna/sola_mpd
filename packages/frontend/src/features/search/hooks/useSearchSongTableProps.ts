@@ -10,7 +10,7 @@ import { useSimilaritySearchContextMenuProps } from "../../advanced_search";
 import type { ContextMenuSection } from "../../context_menu";
 import { mpdClientAtom } from "../../mpd";
 import { usePluginContextMenuItems } from "../../plugin";
-import { useCurrentMpdProfileState } from "../../profile";
+import { currentMpdProfileAtom } from "../../profile";
 import {
 	getSongTableContextMenuAdd,
 	getSongTableContextMenuAddToPlaylist,
@@ -20,9 +20,9 @@ import {
 	type SongTableContextMenuItemParams,
 	SongTableKeyType,
 	type SongTableProps,
+	selectedSongsAtom,
+	songTableStateAtom,
 	useHandleSongDoubleClick,
-	useSetSelectedSongsState,
-	useSongTableState,
 } from "../../song_table";
 import { setIsSearchLoadingActionAtom } from "../states/actions/setIsSearchLoadingActionAtom";
 import { searchSongTableColumnsAtom } from "../states/atoms/searchEditAtom";
@@ -49,14 +49,14 @@ export function useSearchSongTableProps(
 
 	const notify = useNotification();
 
-	const profile = useCurrentMpdProfileState();
+	const profile = useAtomValue(currentMpdProfileAtom);
 	const mpdClient = useAtomValue(mpdClientAtom);
 	const isLoading = useAtomValue(isSearchLoadingAtom);
 	const songs = useAtomValue(searchVisibleSongsAtom);
 	const searchSongTableColumns = useAtomValue(searchSongTableColumnsAtom);
-	const songTableState = useSongTableState();
+	const songTableState = useAtomValue(songTableStateAtom);
 	const setIsSearchLoading = useSetAtom(setIsSearchLoadingActionAtom);
-	const setSelectedSongs = useSetSelectedSongsState();
+	const setSelectedSongs = useSetAtom(selectedSongsAtom);
 	const handleSearchColumnsUpdated = useHandleSearchColumnsUpdated();
 
 	// Plugin context menu items

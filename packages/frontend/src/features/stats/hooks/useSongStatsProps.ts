@@ -1,8 +1,9 @@
 import type { Song } from "@sola_mpd/shared/src/models/song_pb.js";
+import { useAtomValue } from "jotai";
 import { useMemo } from "react";
 
 import type { CardStatsNumberProps } from "../components/CardStatsNumber";
-import { useStatsState } from "../states/statsState";
+import { statsAtom } from "../states/atoms/statsAtom";
 
 /**
  * Custom hook to generate props for song statistics.
@@ -15,7 +16,7 @@ export function useSongStatsProps(
 	showSelectedStats: boolean,
 	selectedSongs: Song[],
 ): CardStatsNumberProps {
-	const stats = useStatsState();
+	const stats = useAtomValue(statsAtom);
 
 	const count = useMemo(() => {
 		if (stats === undefined) {

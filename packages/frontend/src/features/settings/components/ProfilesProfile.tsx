@@ -5,10 +5,11 @@ import {
 	type MpdProfileState,
 	MpdProfileStateSchema,
 } from "@sola_mpd/shared/src/models/mpd/mpd_profile_pb.js";
+import { useSetAtom } from "jotai";
 import { useCallback } from "react";
 import { useNotification } from "../../../lib/mantine/hooks/useNotification";
 import { UpdateMode } from "../../../types/stateTypes";
-import { useUpdateMpdProfileState } from "../../profile";
+import { updateMpdProfileStateActionAtom } from "../../profile";
 
 export type ProfilesProfileProps = {
 	index: number;
@@ -26,7 +27,7 @@ export function ProfilesProfile(props: ProfilesProfileProps) {
 
 	const notify = useNotification();
 
-	const updateMpdProfileState = useUpdateMpdProfileState();
+	const updateMpdProfileState = useSetAtom(updateMpdProfileStateActionAtom);
 
 	const handleProfileDeleted = useCallback(() => {
 		const newMpdProfileState = clone(MpdProfileStateSchema, mpdProfileState);
@@ -37,10 +38,10 @@ export function ProfilesProfile(props: ProfilesProfileProps) {
 			return;
 		}
 		newMpdProfileState.profiles.splice(index, 1);
-		updateMpdProfileState(
-			newMpdProfileState,
-			UpdateMode.LOCAL_STATE | UpdateMode.PERSIST,
-		);
+		updateMpdProfileState({
+			state: newMpdProfileState,
+			mode: UpdateMode.LOCAL_STATE | UpdateMode.PERSIST,
+		});
 		notify({
 			status: "success",
 			title: "Profile successfully deleted",

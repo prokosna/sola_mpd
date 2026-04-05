@@ -16,7 +16,7 @@ import { useSimilaritySearchContextMenuProps } from "../../advanced_search";
 import type { ContextMenuSection } from "../../context_menu";
 import { mpdClientAtom } from "../../mpd";
 import { usePluginContextMenuItems } from "../../plugin";
-import { useCurrentMpdProfileState } from "../../profile";
+import { currentMpdProfileAtom } from "../../profile";
 import {
 	getSongTableContextMenuAdd,
 	getSongTableContextMenuAddToPlaylist,
@@ -28,10 +28,10 @@ import {
 	type SongTableContextMenuItemParams,
 	SongTableKeyType,
 	type SongTableProps,
+	selectedSongsAtom,
+	songTableStateAtom,
+	updateSongTableStateActionAtom,
 	useHandleSongDoubleClick,
-	useSetSelectedSongsState,
-	useSongTableState,
-	useUpdateSongTableState,
 } from "../../song_table";
 import { setIsPlaylistLoadingActionAtom } from "../states/actions/setIsPlaylistLoadingActionAtom";
 import { selectedPlaylistAtom } from "../states/atoms/playlistAtom";
@@ -61,16 +61,16 @@ export function usePlaylistSongTableProps(
 
 	const notify = useNotification();
 
-	const profile = useCurrentMpdProfileState();
+	const profile = useAtomValue(currentMpdProfileAtom);
 	const mpdClient = useAtomValue(mpdClientAtom);
 	useAtomValue(syncPlaylistLoadingEffectAtom);
 	const isLoading = useAtomValue(isPlaylistLoadingAtom);
 	const songs = useAtomValue(playlistVisibleSongsAtom);
-	const songTableState = useSongTableState();
+	const songTableState = useAtomValue(songTableStateAtom);
 	const selectedPlaylist = useAtomValue(selectedPlaylistAtom);
 	const setIsPlaylistLoading = useSetAtom(setIsPlaylistLoadingActionAtom);
-	const updateSongTableState = useUpdateSongTableState();
-	const setSelectedSongs = useSetSelectedSongsState();
+	const updateSongTableState = useSetAtom(updateSongTableStateActionAtom);
+	const setSelectedSongs = useSetAtom(selectedSongsAtom);
 
 	// Plugin context menu items
 	const pluginContextMenuItems = usePluginContextMenuItems(
@@ -339,7 +339,10 @@ export function usePlaylistSongTableProps(
 			}
 			const newSongTableState = clone(SongTableStateSchema, songTableState);
 			newSongTableState.columns = updatedColumns;
-			updateSongTableState(newSongTableState, UpdateMode.PERSIST);
+			updateSongTableState({
+				state: newSongTableState,
+				mode: UpdateMode.PERSIST,
+			});
 		},
 		[songTableState, updateSongTableState],
 	);

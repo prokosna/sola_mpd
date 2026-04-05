@@ -2,7 +2,7 @@ import { atom } from "jotai";
 import { atomEffect } from "jotai-effect";
 
 import { mpdClientAtom } from "../../../mpd/states/atoms/mpdClientAtom";
-import { currentMpdProfileSyncAtom as currentMpdProfileAtom } from "../../../profile/states/mpdProfileState";
+import { currentMpdProfileAtom } from "../../../profile/states/atoms/mpdProfileAtom";
 
 export const isAllSongsLoadingAtom = atom(true);
 

@@ -4,7 +4,7 @@ import { IconEraser, IconEraserOff } from "@tabler/icons-react";
 import { useAtomValue } from "jotai";
 import { useCallback } from "react";
 import { mpdClientAtom } from "../../mpd";
-import { useCurrentMpdProfileState } from "../../profile";
+import { currentMpdProfileAtom } from "../../profile";
 import { playerStatusIsConsumeAtom } from "../states/atoms/playerStatusAtom";
 import { PlayerControlsButton } from "./PlayerControlsButton";
 
@@ -18,7 +18,7 @@ import { PlayerControlsButton } from "./PlayerControlsButton";
  * @returns Consume mode toggle button
  */
 export function PlayerControlsButtonConsume() {
-	const profile = useCurrentMpdProfileState();
+	const profile = useAtomValue(currentMpdProfileAtom);
 	const mpdClient = useAtomValue(mpdClientAtom);
 	const playerStatusIsConsume = useAtomValue(playerStatusIsConsumeAtom);
 

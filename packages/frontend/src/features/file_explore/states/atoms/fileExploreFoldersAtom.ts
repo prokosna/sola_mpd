@@ -4,7 +4,7 @@ import { atomWithRefresh } from "jotai/utils";
 
 import { atomWithSync } from "../../../../lib/jotai/atomWithSync";
 import { mpdClientAtom } from "../../../mpd/states/atoms/mpdClientAtom";
-import { currentMpdProfileSyncAtom as currentMpdProfileAtom } from "../../../profile/states/mpdProfileState";
+import { currentMpdProfileAtom } from "../../../profile/states/atoms/mpdProfileAtom";
 import { fetchFileExploreFolders } from "../../utils/fileExploreFoldersUtils";
 
 export const fileExploreFoldersAsyncAtom = atomWithRefresh(async (get) => {

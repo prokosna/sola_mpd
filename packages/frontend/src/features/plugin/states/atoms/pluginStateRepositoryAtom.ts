@@ -1,6 +1,6 @@
 import { atomWithDefault } from "jotai/utils";
 
-import type { PluginStateRepository } from "../services/PluginStateRepository";
+import type { PluginStateRepository } from "../../services/PluginStateRepository";
 
 export const pluginStateRepositoryAtom = atomWithDefault<PluginStateRepository>(
 	() => {

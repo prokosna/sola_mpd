@@ -5,7 +5,7 @@ import { useAtomValue } from "jotai";
 
 import { mpdClientAtom } from "../../mpd";
 import { playerStatusPlaybackStateAtom } from "../../player";
-import { useCurrentMpdProfileState } from "../../profile";
+import { currentMpdProfileAtom } from "../../profile";
 
 import { useInputKeyCombination } from "./useInputKeyCombination";
 
@@ -44,7 +44,7 @@ import { useInputKeyCombination } from "./useInputKeyCombination";
  */
 export function useGlobalKeyShortcuts(): void {
 	const mpdClient = useAtomValue(mpdClientAtom);
-	const profile = useCurrentMpdProfileState();
+	const profile = useAtomValue(currentMpdProfileAtom);
 	const playerPlaybackState = useAtomValue(playerStatusPlaybackStateAtom);
 
 	useInputKeyCombination(undefined, [" "], async () => {

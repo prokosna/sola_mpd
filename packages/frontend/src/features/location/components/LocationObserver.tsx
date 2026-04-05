@@ -8,7 +8,7 @@ import {
 } from "../../../const/routes";
 import { refreshPlayQueueSongsActionAtom } from "../../play_queue";
 import { refreshPlaylistsActionAtom } from "../../playlist";
-import { useSetSelectedSongsState } from "../../song_table";
+import { selectedSongsAtom } from "../../song_table";
 import { setPathnameActionAtom } from "../states/actions/setPathnameActionAtom";
 import { transitionCounterAtom } from "../states/atoms/locationAtom";
 
@@ -29,7 +29,7 @@ export function LocationObserver() {
 	const transitionCounter = useAtomValue(transitionCounterAtom);
 
 	const setPathname = useSetAtom(setPathnameActionAtom);
-	const setSelectedSongs = useSetSelectedSongsState();
+	const setSelectedSongs = useSetAtom(selectedSongsAtom);
 	const refreshPlaylistsState = useSetAtom(refreshPlaylistsActionAtom);
 	const refreshPlayQueueSongsState = useSetAtom(
 		refreshPlayQueueSongsActionAtom,

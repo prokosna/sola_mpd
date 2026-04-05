@@ -8,14 +8,14 @@ import {
 } from "@sola_mpd/shared/src/models/plugin/plugin_pb.js";
 
 import type { Song } from "@sola_mpd/shared/src/models/song_pb.js";
+import { useAtomValue, useSetAtom } from "jotai";
 import { useCallback } from "react";
-
+import { appendPluginExecutionWarningLogActionAtom } from "../states/actions/appendPluginExecutionWarningLogActionAtom";
 import {
-	useAppendPluginExecutionWarningLogState,
-	useSetPluginExecutionLatestResponseState,
-	useSetPluginExecutionWarningLogsState,
-} from "../states/executionState";
-import { usePluginService } from "../states/pluginServiceState";
+	pluginExecutionLatestResponseAtom,
+	pluginExecutionWarningLogsAtom,
+} from "../states/atoms/pluginExecutionAtom";
+import { pluginServiceAtom } from "../states/atoms/pluginServiceAtom";
 
 /**
  * Handle plugin execution.
@@ -25,12 +25,16 @@ import { usePluginService } from "../states/pluginServiceState";
  * @returns Plugin execution handler
  */
 export function useHandlePluginExecuted() {
-	const pluginService = usePluginService();
-	const setPluginExecutionLatestResponse =
-		useSetPluginExecutionLatestResponseState();
-	const setPluginExecutionWarningLogs = useSetPluginExecutionWarningLogsState();
-	const appendPluginExecutionWarningLog =
-		useAppendPluginExecutionWarningLogState();
+	const pluginService = useAtomValue(pluginServiceAtom);
+	const setPluginExecutionLatestResponse = useSetAtom(
+		pluginExecutionLatestResponseAtom,
+	);
+	const setPluginExecutionWarningLogs = useSetAtom(
+		pluginExecutionWarningLogsAtom,
+	);
+	const appendPluginExecutionWarningLog = useSetAtom(
+		appendPluginExecutionWarningLogActionAtom,
+	);
 
 	return useCallback(
 		(plugin: Plugin, songs: Song[], parameters: Map<string, string>) => {

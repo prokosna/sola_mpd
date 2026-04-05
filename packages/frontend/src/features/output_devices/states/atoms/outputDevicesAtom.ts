@@ -3,7 +3,7 @@ import { atomWithRefresh } from "jotai/utils";
 
 import { atomWithSync } from "../../../../lib/jotai/atomWithSync";
 import { mpdClientAtom } from "../../../mpd/states/atoms/mpdClientAtom";
-import { currentMpdProfileSyncAtom as currentMpdProfileAtom } from "../../../profile/states/mpdProfileState";
+import { currentMpdProfileAtom } from "../../../profile/states/atoms/mpdProfileAtom";
 import { fetchOutputDevices } from "../../utils/outputDeviceUtils";
 
 export const outputDevicesAsyncAtom = atomWithRefresh(async (get) => {

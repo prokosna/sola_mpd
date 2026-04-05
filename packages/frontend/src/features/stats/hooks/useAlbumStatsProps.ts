@@ -2,10 +2,11 @@ import {
 	type Song,
 	Song_MetadataTag,
 } from "@sola_mpd/shared/src/models/song_pb.js";
+import { useAtomValue } from "jotai";
 import { useMemo } from "react";
 
 import type { CardStatsNumberProps } from "../components/CardStatsNumber";
-import { useStatsState } from "../states/statsState";
+import { statsAtom } from "../states/atoms/statsAtom";
 import { getMetadataValueCountDistinct } from "../utils/statsUtils";
 
 /**
@@ -19,7 +20,7 @@ export function useAlbumStatsProps(
 	showSelectedStats: boolean,
 	selectedSongs: Song[],
 ): CardStatsNumberProps {
-	const stats = useStatsState();
+	const stats = useAtomValue(statsAtom);
 
 	const count = useMemo(() => {
 		if (stats === undefined) {

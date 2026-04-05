@@ -12,10 +12,12 @@ import {
 	type Plugin,
 	PluginStateSchema,
 } from "@sola_mpd/shared/src/models/plugin/plugin_pb.js";
+import { useAtomValue, useSetAtom } from "jotai";
 import { useCallback, useState } from "react";
 import { useNotification } from "../../../lib/mantine/hooks/useNotification";
 import { UpdateMode } from "../../../types/stateTypes";
-import { usePluginState, useUpdatePluginState } from "../states/pluginState";
+import { updatePluginActionAtom } from "../states/actions/updatePluginActionAtom";
+import { pluginAtom } from "../states/atoms/pluginAtom";
 
 export type PluginAddModalRegisterProps = {
 	pluginToAdd: Plugin;
@@ -36,8 +38,8 @@ export function PluginAddModalRegister(props: PluginAddModalRegisterProps) {
 
 	const notify = useNotification();
 
-	const pluginState = usePluginState();
-	const updatePluginState = useUpdatePluginState();
+	const pluginState = useAtomValue(pluginAtom);
+	const updatePlugin = useSetAtom(updatePluginActionAtom);
 
 	const [parameterValues, setParameterValues] = useState<Map<string, string>>(
 		new Map(),
@@ -54,10 +56,10 @@ export function PluginAddModalRegister(props: PluginAddModalRegisterProps) {
 
 		const newPluginState = clone(PluginStateSchema, pluginState);
 		newPluginState.plugins.push(pluginToAdd);
-		updatePluginState(
-			newPluginState,
-			UpdateMode.LOCAL_STATE | UpdateMode.PERSIST,
-		);
+		updatePlugin({
+			pluginState: newPluginState,
+			mode: UpdateMode.LOCAL_STATE | UpdateMode.PERSIST,
+		});
 
 		notify({
 			status: "success",
@@ -70,7 +72,7 @@ export function PluginAddModalRegister(props: PluginAddModalRegisterProps) {
 		pluginState,
 		parameterValues,
 		pluginToAdd,
-		updatePluginState,
+		updatePlugin,
 		notify,
 		handleModalClosed,
 	]);

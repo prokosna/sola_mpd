@@ -11,16 +11,11 @@ export { useHandleSongDoubleClick } from "./hooks/useHandleSongDoubleClick";
 
 // Services
 export type { SongTableStateRepository } from "./services/SongTableStateRepository";
-
+export { refreshSongTableStateActionAtom } from "./states/actions/refreshSongTableStateActionAtom";
+export { updateSongTableStateActionAtom } from "./states/actions/updateSongTableStateActionAtom";
 // States
-export {
-	useSelectedSongsState,
-	useSetSelectedSongsState,
-} from "./states/selectedSongs";
-export {
-	useSongTableState,
-	useUpdateSongTableState,
-} from "./states/songTableState";
+export { selectedSongsAtom } from "./states/atoms/selectedSongsAtom";
+export { songTableStateAtom } from "./states/atoms/songTableAtom";
 
 // Types
 export {

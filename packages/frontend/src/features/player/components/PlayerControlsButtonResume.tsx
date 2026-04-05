@@ -5,7 +5,7 @@ import { IconPlayerPause, IconPlayerPlay } from "@tabler/icons-react";
 import { useAtomValue } from "jotai";
 import { useCallback } from "react";
 import { mpdClientAtom } from "../../mpd";
-import { useCurrentMpdProfileState } from "../../profile";
+import { currentMpdProfileAtom } from "../../profile";
 import { currentSongAtom } from "../states/atoms/currentSongAtom";
 import { playerStatusPlaybackStateAtom } from "../states/atoms/playerStatusAtom";
 import { PlayerControlsButton } from "./PlayerControlsButton";
@@ -20,7 +20,7 @@ import { PlayerControlsButton } from "./PlayerControlsButton";
  * @returns Play/pause toggle button
  */
 export function PlayerControlsButtonResume() {
-	const profile = useCurrentMpdProfileState();
+	const profile = useAtomValue(currentMpdProfileAtom);
 	const mpdClient = useAtomValue(mpdClientAtom);
 	const currentSong = useAtomValue(currentSongAtom);
 	const playerStatusPlaybackState = useAtomValue(playerStatusPlaybackStateAtom);

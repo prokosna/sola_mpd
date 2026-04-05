@@ -6,7 +6,7 @@ import { useCallback } from "react";
 import { useNotification } from "../../../lib/mantine/hooks/useNotification";
 import { mpdClientAtom } from "../../mpd";
 import { playerStatusIsDatabaseUpdatingAtom } from "../../player";
-import { useCurrentMpdProfileState } from "../../profile";
+import { currentMpdProfileAtom } from "../../profile";
 
 /**
  * CardStatsDatabaseButton component renders a button that triggers an update of the MPD database.
@@ -18,7 +18,7 @@ import { useCurrentMpdProfileState } from "../../profile";
 export function CardStatsDatabaseButton() {
 	const notify = useNotification();
 
-	const profile = useCurrentMpdProfileState();
+	const profile = useAtomValue(currentMpdProfileAtom);
 	const mpdClient = useAtomValue(mpdClientAtom);
 	const playerStatusIsDatabaseUpdating = useAtomValue(
 		playerStatusIsDatabaseUpdatingAtom,

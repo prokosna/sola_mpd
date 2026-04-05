@@ -4,8 +4,8 @@ import { atomWithRefresh } from "jotai/utils";
 
 import { atomWithSync } from "../../../../lib/jotai/atomWithSync";
 import { mpdClientAtom } from "../../../mpd/states/atoms/mpdClientAtom";
-import { currentMpdProfileSyncAtom as currentMpdProfileAtom } from "../../../profile/states/mpdProfileState";
-import { localeCollatorAtom } from "../../../settings/states/settingsLocale";
+import { currentMpdProfileAtom } from "../../../profile/states/atoms/mpdProfileAtom";
+import { localeCollatorAtom } from "../../../settings/states/atoms/localeAtom";
 import { fetchPlaylists } from "../../utils/playlistUtils";
 
 export const playlistsAsyncAtom = atomWithRefresh(async (get) => {

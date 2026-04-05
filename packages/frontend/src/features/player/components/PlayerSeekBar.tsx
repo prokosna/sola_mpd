@@ -5,7 +5,7 @@ import { displayDuration } from "@sola_mpd/shared/src/utils/stringUtils.js";
 import { useAtomValue } from "jotai";
 import { useCallback, useRef } from "react";
 import { mpdClientAtom } from "../../mpd";
-import { useCurrentMpdProfileState } from "../../profile";
+import { currentMpdProfileAtom } from "../../profile";
 import {
 	playerStatusDurationAtom,
 	playerStatusElapsedAtom,
@@ -22,7 +22,7 @@ import { getElapsedTimePercentage } from "../utils/playerDisplayUtils";
  * @returns Seek bar slider component
  */
 export function PlayerSeekBar() {
-	const profile = useCurrentMpdProfileState();
+	const profile = useAtomValue(currentMpdProfileAtom);
 	const mpdClient = useAtomValue(mpdClientAtom);
 	const playerStatusElapsed = useAtomValue(playerStatusElapsedAtom);
 	const playerStatusDuration = useAtomValue(playerStatusDurationAtom);

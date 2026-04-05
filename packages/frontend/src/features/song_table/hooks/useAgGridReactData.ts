@@ -4,9 +4,9 @@ import type {
 	SelectionColumnDef,
 	SuppressKeyboardEventParams,
 } from "ag-grid-community";
+import { useAtomValue } from "jotai";
 import { useMemo } from "react";
-
-import { useLocaleCollatorState } from "../../settings";
+import { localeCollatorAtom } from "../../settings";
 import { CustomCellCompact } from "../components/CustomCellCompact";
 import {
 	SONGS_TAG_COMPACT,
@@ -50,7 +50,7 @@ export function useAgGridReactData(
 	columnDefs: SongTableColumnDefinition[];
 	selectionColumnDef: SelectionColumnDef;
 } {
-	const localeCollator = useLocaleCollatorState();
+	const localeCollator = useAtomValue(localeCollatorAtom);
 
 	// Convert Song to AdGrid item format (Column -> Value).
 	const rowData = useMemo(() => {

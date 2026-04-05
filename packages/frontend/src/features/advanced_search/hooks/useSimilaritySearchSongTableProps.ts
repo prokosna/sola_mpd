@@ -5,7 +5,7 @@ import {
 	type SongTableColumn,
 	SongTableStateSchema,
 } from "@sola_mpd/shared/src/models/song_table_pb.js";
-import { useAtomValue } from "jotai";
+import { useAtomValue, useSetAtom } from "jotai";
 import { type RefObject, useCallback } from "react";
 import { COMPONENT_ID_SIMILARITY_SEARCH } from "../../../const/component";
 import { useNotification } from "../../../lib/mantine/hooks/useNotification";
@@ -13,7 +13,7 @@ import { UpdateMode } from "../../../types/stateTypes";
 import type { ContextMenuSection } from "../../context_menu";
 import { mpdClientAtom } from "../../mpd";
 import { usePluginContextMenuItems } from "../../plugin";
-import { useCurrentMpdProfileState } from "../../profile";
+import { currentMpdProfileAtom } from "../../profile";
 import {
 	getSongTableContextMenuAdd,
 	getSongTableContextMenuAddToPlaylist,
@@ -22,10 +22,10 @@ import {
 	type SongTableContextMenuItemParams,
 	SongTableKeyType,
 	type SongTableProps,
+	selectedSongsAtom,
+	songTableStateAtom,
+	updateSongTableStateActionAtom,
 	useHandleSongDoubleClick,
-	useSetSelectedSongsState,
-	useSongTableState,
-	useUpdateSongTableState,
 } from "../../song_table";
 import { similaritySearchSongsAtom } from "../states/atoms/similaritySearchAtom";
 import { isSimilaritySearchLoadingAtom } from "../states/atoms/similaritySearchUiAtom";
@@ -39,13 +39,13 @@ export function useSimilaritySearchSongTableProps(
 
 	const notify = useNotification();
 
-	const profile = useCurrentMpdProfileState();
+	const profile = useAtomValue(currentMpdProfileAtom);
 	const mpdClient = useAtomValue(mpdClientAtom);
 	const isLoading = useAtomValue(isSimilaritySearchLoadingAtom);
 	const songs = useAtomValue(similaritySearchSongsAtom);
-	const songTableState = useSongTableState();
-	const updateSongTableState = useUpdateSongTableState();
-	const setSelectedSongs = useSetSelectedSongsState();
+	const songTableState = useAtomValue(songTableStateAtom);
+	const updateSongTableState = useSetAtom(updateSongTableStateActionAtom);
+	const setSelectedSongs = useSetAtom(selectedSongsAtom);
 
 	// Plugin context menu items
 	const pluginContextMenuItems = usePluginContextMenuItems(
@@ -102,7 +102,10 @@ export function useSimilaritySearchSongTableProps(
 			}
 			const newSongTableState = clone(SongTableStateSchema, songTableState);
 			newSongTableState.columns = updatedColumns;
-			await updateSongTableState(newSongTableState, UpdateMode.PERSIST);
+			await updateSongTableState({
+				state: newSongTableState,
+				mode: UpdateMode.PERSIST,
+			});
 		},
 		[songTableState, updateSongTableState],
 	);

@@ -33,10 +33,16 @@ import {
 	updateRecentlyAddedStateActionAtom,
 } from "../../browsing";
 import { CenterSpinner } from "../../loading";
-import { usePluginState, useUpdatePluginState } from "../../plugin";
-import { useMpdProfileState, useUpdateMpdProfileState } from "../../profile";
+import { pluginAtom, updatePluginActionAtom } from "../../plugin";
+import {
+	mpdProfileStateAtom,
+	updateMpdProfileStateActionAtom,
+} from "../../profile";
 import { savedSearchesAtom, updateSavedSearchesActionAtom } from "../../search";
-import { useSongTableState, useUpdateSongTableState } from "../../song_table";
+import {
+	songTableStateAtom,
+	updateSongTableStateActionAtom,
+} from "../../song_table";
 import { useSettingsStateEditorProps } from "../hooks/useSettingsStateEditorProps";
 import { SettingsStatesEditor } from "./SettingsStatesEditor";
 
@@ -47,31 +53,33 @@ import { SettingsStatesEditor } from "./SettingsStatesEditor";
  * states like profiles, layout, browser, and search history.
  */
 export function SettingsStates() {
-	const mpdProfileState = useMpdProfileState();
-	const updateMpdProfileState = useUpdateMpdProfileState();
+	const mpdProfileState = useAtomValue(mpdProfileStateAtom);
+	const updateMpdProfileStateAction = useSetAtom(
+		updateMpdProfileStateActionAtom,
+	);
 	const [onOpenProfileState, profileStateProps] =
 		useSettingsStateEditorProps<MpdProfileState>(
 			MpdProfileStateSchema,
 			mpdProfileState,
 			async (newState: MpdProfileState) => {
-				updateMpdProfileState(
-					newState,
-					UpdateMode.LOCAL_STATE | UpdateMode.PERSIST,
-				);
+				updateMpdProfileStateAction({
+					state: newState,
+					mode: UpdateMode.LOCAL_STATE | UpdateMode.PERSIST,
+				});
 			},
 		);
 
-	const songTableState = useSongTableState();
-	const updateSongTableState = useUpdateSongTableState();
+	const songTableState = useAtomValue(songTableStateAtom);
+	const updateSongTableStateAction = useSetAtom(updateSongTableStateActionAtom);
 	const [onOpenSongTableState, songTableStateProps] =
 		useSettingsStateEditorProps<SongTableState>(
 			SongTableStateSchema,
 			songTableState,
 			async (newState: SongTableState) => {
-				updateSongTableState(
-					newState,
-					UpdateMode.LOCAL_STATE | UpdateMode.PERSIST,
-				);
+				updateSongTableStateAction({
+					state: newState,
+					mode: UpdateMode.LOCAL_STATE | UpdateMode.PERSIST,
+				});
 			},
 		);
 
@@ -113,17 +121,17 @@ export function SettingsStates() {
 			},
 		);
 
-	const pluginState = usePluginState();
-	const updatePluginState = useUpdatePluginState();
+	const pluginState = useAtomValue(pluginAtom);
+	const updatePluginAction = useSetAtom(updatePluginActionAtom);
 	const [onOpenPluginState, pluginStateProps] =
 		useSettingsStateEditorProps<PluginState>(
 			PluginStateSchema,
 			pluginState,
 			async (pluginState: PluginState) => {
-				updatePluginState(
+				updatePluginAction({
 					pluginState,
-					UpdateMode.LOCAL_STATE | UpdateMode.PERSIST,
-				);
+					mode: UpdateMode.LOCAL_STATE | UpdateMode.PERSIST,
+				});
 			},
 		);
 

@@ -3,13 +3,14 @@ import {
 	type SongTableColumn,
 	SongTableStateSchema,
 } from "@sola_mpd/shared/src/models/song_table_pb.js";
+import { useAtomValue, useSetAtom } from "jotai";
 import { useCallback, useState } from "react";
 import { UpdateMode } from "../../../../types/stateTypes";
 import { usePlaylistSelectModal } from "../../../playlist";
 import {
+	songTableStateAtom,
+	updateSongTableStateActionAtom,
 	useColumnEditModalProps,
-	useSongTableState,
-	useUpdateSongTableState,
 } from "../../../song_table";
 import { BrowserContentView } from "../../common/components/BrowserContentView";
 import { useBrowserSongTableProps } from "../hooks/useBrowserSongTableProps";
@@ -27,8 +28,8 @@ import { useBrowserSongTableProps } from "../hooks/useBrowserSongTableProps";
  * @component
  */
 export function BrowserContent() {
-	const songTableState = useSongTableState();
-	const updateSongTableState = useUpdateSongTableState();
+	const songTableState = useAtomValue(songTableStateAtom);
+	const updateSongTableState = useSetAtom(updateSongTableStateActionAtom);
 
 	const [isColumnEditModalOpen, setIsColumnEditModalOpen] = useState(false);
 
@@ -51,10 +52,10 @@ export function BrowserContent() {
 			}
 			const newSongTableState = clone(SongTableStateSchema, songTableState);
 			newSongTableState.columns = columns;
-			await updateSongTableState(
-				newSongTableState,
-				UpdateMode.LOCAL_STATE | UpdateMode.PERSIST,
-			);
+			await updateSongTableState({
+				state: newSongTableState,
+				mode: UpdateMode.LOCAL_STATE | UpdateMode.PERSIST,
+			});
 		},
 		[songTableState, updateSongTableState],
 	);

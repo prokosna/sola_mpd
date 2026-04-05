@@ -8,7 +8,7 @@ import { filterSongsByGlobalFilter } from "../../../global_filter";
 import { globalFilterTokensAtom } from "../../../global_filter/states/atoms/globalFilterAtom";
 import { pathnameAtom } from "../../../location/states/atoms/locationAtom";
 import { mpdClientAtom } from "../../../mpd/states/atoms/mpdClientAtom";
-import { currentMpdProfileSyncAtom } from "../../../profile/states/mpdProfileState";
+import { currentMpdProfileAtom } from "../../../profile/states/atoms/mpdProfileAtom";
 import { fetchSearchSongs } from "../../utils/searchSongsUtils";
 import { searchSongTableColumnsAtom } from "./searchEditAtom";
 
@@ -16,7 +16,7 @@ export const targetSearchAtom = atom<Search | undefined>(undefined);
 
 export const searchSongsAsyncAtom = atomWithRefresh(async (get) => {
 	const mpdClient = get(mpdClientAtom);
-	const profile = get(currentMpdProfileSyncAtom);
+	const profile = get(currentMpdProfileAtom);
 	const search = get(targetSearchAtom);
 
 	if (profile === undefined) {

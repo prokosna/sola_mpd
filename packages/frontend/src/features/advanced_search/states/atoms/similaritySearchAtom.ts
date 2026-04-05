@@ -4,7 +4,7 @@ import { atom } from "jotai";
 import { atomWithRefresh, atomWithStorage } from "jotai/utils";
 
 import { atomWithSync } from "../../../../lib/jotai/atomWithSync";
-import { currentMpdProfileSyncAtom } from "../../../profile/states/mpdProfileState";
+import { currentMpdProfileAtom } from "../../../profile/states/atoms/mpdProfileAtom";
 import { searchSimilarSongs } from "../../utils/similaritySearchUtils";
 import {
 	advancedSearchEndpointAtom,
@@ -24,7 +24,7 @@ export const similaritySearchTypeAtom =
 
 export const similaritySearchSongsAsyncAtom = atomWithRefresh(async (get) => {
 	const targetSong = get(similaritySearchTargetSongAtom);
-	const profile = get(currentMpdProfileSyncAtom);
+	const profile = get(currentMpdProfileAtom);
 	const client = get(advancedSearchClientAtom);
 	const endpoint = get(advancedSearchEndpointAtom);
 	const limit = get(advancedSearchQueryLimitAtom);

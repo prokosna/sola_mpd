@@ -4,9 +4,9 @@ import {
 	PluginRegisterRequestSchema,
 	PluginSchema,
 } from "@sola_mpd/shared/src/models/plugin/plugin_pb.js";
+import { useAtomValue } from "jotai";
 import { type RefObject, useCallback, useState } from "react";
-
-import { usePluginService } from "../states/pluginServiceState";
+import { pluginServiceAtom } from "../states/atoms/pluginServiceAtom";
 import { validateIpAndPort } from "../utils/validationUtils";
 
 /**
@@ -20,7 +20,7 @@ export function useHandlePluginConnected(
 	endpointRef: RefObject<HTMLInputElement | null>,
 	setPluginToAdd: (plugin: Plugin | undefined) => void,
 ) {
-	const pluginService = usePluginService();
+	const pluginService = useAtomValue(pluginServiceAtom);
 	const [errorMessage, setErrorMessage] = useState("");
 
 	const handlePluginConnected = useCallback(async () => {

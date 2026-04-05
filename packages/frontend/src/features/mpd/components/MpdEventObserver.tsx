@@ -8,8 +8,8 @@ import {
 	refreshPlaylistSongsActionAtom,
 	refreshPlaylistsActionAtom,
 } from "../../playlist";
-import { useCurrentMpdProfileState } from "../../profile";
-import { useRefreshStatsState } from "../../stats";
+import { currentMpdProfileAtom } from "../../profile";
+import { refreshStatsActionAtom } from "../../stats";
 import { mpdListenerAtom } from "../states/atoms/mpdListenerAtom";
 
 /**
@@ -27,8 +27,8 @@ import { mpdListenerAtom } from "../states/atoms/mpdListenerAtom";
  */
 export function MpdEventObserver() {
 	const mpdListener = useAtomValue(mpdListenerAtom);
-	const profile = useCurrentMpdProfileState();
-	const refreshStats = useRefreshStatsState();
+	const profile = useAtomValue(currentMpdProfileAtom);
+	const refreshStats = useSetAtom(refreshStatsActionAtom);
 	const refreshPlayQueueSongs = useSetAtom(refreshPlayQueueSongsActionAtom);
 	const refreshPlaylists = useSetAtom(refreshPlaylistsActionAtom);
 	const refreshPlaylistSongs = useSetAtom(refreshPlaylistSongsActionAtom);

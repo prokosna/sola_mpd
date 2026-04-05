@@ -8,7 +8,7 @@ import { useNotification } from "../../../lib/mantine/hooks/useNotification";
 import { UpdateMode } from "../../../types/stateTypes";
 import type { ContextMenuSection } from "../../context_menu";
 import { mpdClientAtom } from "../../mpd";
-import { useCurrentMpdProfileState } from "../../profile";
+import { currentMpdProfileAtom } from "../../profile";
 import type { SelectListContextMenuItemParams } from "../../select_list";
 import { setTargetSearchActionAtom } from "../states/actions/setTargetSearchActionAtom";
 import { updateSavedSearchesActionAtom } from "../states/actions/updateSavedSearchesActionAtom";
@@ -31,7 +31,7 @@ export function useSavedSearchesSelectListProps({
 	const notify = useNotification();
 
 	const mpdClient = useAtomValue(mpdClientAtom);
-	const profile = useCurrentMpdProfileState();
+	const profile = useAtomValue(currentMpdProfileAtom);
 	const savedSearches = useAtomValue(savedSearchesAtom);
 	const updateSavedSearchesAction = useSetAtom(updateSavedSearchesActionAtom);
 	const setTargetSearch = useSetAtom(setTargetSearchActionAtom);

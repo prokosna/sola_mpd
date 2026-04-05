@@ -1,7 +1,8 @@
 import { ActionIcon, Card, Center, Flex } from "@mantine/core";
 import { IconPlus } from "@tabler/icons-react";
+import { useAtomValue } from "jotai";
 import { CenterSpinner } from "../../loading";
-import { usePluginState } from "../states/pluginState";
+import { pluginAtom } from "../states/atoms/pluginAtom";
 import { PluginListInfoCard } from "./PluginListInfoCard";
 
 type PluginListProps = {
@@ -15,7 +16,7 @@ type PluginListProps = {
  * @returns Plugin list view
  */
 export function PluginList(props: PluginListProps) {
-	const pluginState = usePluginState();
+	const pluginState = useAtomValue(pluginAtom);
 
 	if (pluginState === undefined) {
 		return <CenterSpinner />;

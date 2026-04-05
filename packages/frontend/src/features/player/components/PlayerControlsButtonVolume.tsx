@@ -11,7 +11,7 @@ import { IconVolumeOff } from "@tabler/icons-react";
 import { useAtomValue } from "jotai";
 import { useCallback } from "react";
 import { mpdClientAtom } from "../../mpd";
-import { useCurrentMpdProfileState } from "../../profile";
+import { currentMpdProfileAtom } from "../../profile";
 import { useIsCompactMode } from "../../user_device";
 import { playerVolumeAtom } from "../states/atoms/playerVolumeAtom";
 
@@ -25,7 +25,7 @@ import { playerVolumeAtom } from "../states/atoms/playerVolumeAtom";
  * @returns Volume control component
  */
 export function PlayerControlsButtonVolume() {
-	const profile = useCurrentMpdProfileState();
+	const profile = useAtomValue(currentMpdProfileAtom);
 	const mpdClient = useAtomValue(mpdClientAtom);
 	const playerVolume = useAtomValue(playerVolumeAtom);
 	const isCompact = useIsCompactMode();

@@ -4,7 +4,7 @@ import { IconRepeat, IconRepeatOff } from "@tabler/icons-react";
 import { useAtomValue } from "jotai";
 import { useCallback } from "react";
 import { mpdClientAtom } from "../../mpd";
-import { useCurrentMpdProfileState } from "../../profile";
+import { currentMpdProfileAtom } from "../../profile";
 import { playerStatusIsRepeatAtom } from "../states/atoms/playerStatusAtom";
 import { PlayerControlsButton } from "./PlayerControlsButton";
 
@@ -17,7 +17,7 @@ import { PlayerControlsButton } from "./PlayerControlsButton";
  * @returns Repeat mode toggle button
  */
 export function PlayerControlsButtonRepeat() {
-	const profile = useCurrentMpdProfileState();
+	const profile = useAtomValue(currentMpdProfileAtom);
 	const mpdClient = useAtomValue(mpdClientAtom);
 	const playerStatusIsRepeat = useAtomValue(playerStatusIsRepeatAtom);
 

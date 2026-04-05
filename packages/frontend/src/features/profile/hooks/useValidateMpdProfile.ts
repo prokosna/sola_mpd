@@ -6,7 +6,7 @@ import { useAtomValue } from "jotai";
 import { useCallback } from "react";
 
 import { mpdClientAtom } from "../../mpd";
-import { useMpdProfileState } from "../states/mpdProfileState";
+import { mpdProfileStateAtom } from "../states/atoms/mpdProfileAtom";
 import type { ProfileInput } from "../types/profileTypes";
 import type { ValidationResult } from "../types/validationTypes";
 import { createValidationResult } from "../utils/validationUtils";
@@ -18,7 +18,7 @@ import { createValidationResult } from "../utils/validationUtils";
  */
 export function useValidateMpdProfile() {
 	const mpdClient = useAtomValue(mpdClientAtom);
-	const mpdProfileState = useMpdProfileState();
+	const mpdProfileState = useAtomValue(mpdProfileStateAtom);
 
 	return useCallback(
 		async (input: ProfileInput): Promise<ValidationResult> => {

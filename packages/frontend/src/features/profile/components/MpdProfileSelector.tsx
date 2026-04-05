@@ -3,7 +3,7 @@ import { useAtomValue } from "jotai";
 import { useNotification } from "../../../lib/mantine/hooks/useNotification";
 import { enabledOutputDeviceAtom } from "../../output_devices";
 import { useChangeCurrentMpdProfile } from "../hooks/useChangeCurrentMpdProfile";
-import { useMpdProfileState } from "../states/mpdProfileState";
+import { mpdProfileStateAtom } from "../states/atoms/mpdProfileAtom";
 
 /**
  * Dropdown for MPD profile selection.
@@ -15,7 +15,7 @@ import { useMpdProfileState } from "../states/mpdProfileState";
 export function MpdProfileSelector() {
 	const notify = useNotification();
 
-	const mpdProfileState = useMpdProfileState();
+	const mpdProfileState = useAtomValue(mpdProfileStateAtom);
 	const enabledOutputDevice = useAtomValue(enabledOutputDeviceAtom);
 	const changeCurrentMpdProfile = useChangeCurrentMpdProfile();
 

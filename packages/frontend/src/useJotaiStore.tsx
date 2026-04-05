@@ -4,11 +4,11 @@ import { browserStateRepositoryAtom } from "./features/browsing/browser/states/a
 import { recentlyAddedStateRepositoryAtom } from "./features/browsing/recently_added/states/atoms/recentlyAddedStateRepositoryAtom";
 import { setMpdClientActionAtom } from "./features/mpd/states/actions/setMpdClientActionAtom";
 import { setMpdListenerActionAtom } from "./features/mpd/states/actions/setMpdListenerActionAtom";
-import { pluginServiceAtom } from "./features/plugin/states/pluginServiceState";
-import { pluginStateRepositoryAtom } from "./features/plugin/states/pluginStateRepository";
-import { mpdProfileStateRepositoryAtom } from "./features/profile/states/mpdProfileStateRepository";
+import { pluginServiceAtom } from "./features/plugin/states/atoms/pluginServiceAtom";
+import { pluginStateRepositoryAtom } from "./features/plugin/states/atoms/pluginStateRepositoryAtom";
+import { mpdProfileStateRepositoryAtom } from "./features/profile/states/atoms/mpdProfileStateRepositoryAtom";
 import { savedSearchesRepositoryAtom } from "./features/search/states/atoms/savedSearchesRepositoryAtom";
-import { songTableStateRepositoryAtom } from "./features/song_table/states/songTableStateRepository";
+import { songTableStateRepositoryAtom } from "./features/song_table/states/atoms/songTableStateRepositoryAtom";
 import { AdvancedSearchClientImplSocketIo } from "./infrastructure/advanced_search/AdvancedSearchClientImplSocketIo";
 import { BrowserStateRepositoryImplHttp } from "./infrastructure/browser/BrowserStateRepositoryImplHttp";
 import { HttpClientImplFetch } from "./infrastructure/http/HttpClientImplFetch";
