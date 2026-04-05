@@ -1,5 +1,9 @@
 import { timestampDate } from "@bufbuild/protobuf/wkt";
 import {
+	convertAudioFormatToString,
+	convertSongMetadataValueToString,
+} from "@sola_mpd/shared/src/functions/songMetadata.js";
+import {
 	type FilterCondition,
 	FilterCondition_Operator,
 } from "@sola_mpd/shared/src/models/filter_pb.js";
@@ -7,10 +11,6 @@ import type {
 	Song,
 	Song_MetadataValue,
 } from "@sola_mpd/shared/src/models/song_pb.js";
-import {
-	convertAudioFormatToString,
-	convertSongMetadataValueToString,
-} from "@sola_mpd/shared/src/utils/songUtils.js";
 import { normalize } from "@sola_mpd/shared/src/utils/stringUtils.js";
 
 type ComparableSongMetadataValue = string | number;

@@ -1,4 +1,4 @@
-import { convertSongMetadataValueToString } from "@sola_mpd/shared/src/utils/songUtils.js";
+import { convertSongMetadataValueToString } from "@sola_mpd/shared/src/functions/songMetadata.js";
 import { useCallback } from "react";
 
 import { COMPONENT_ID_BROWSER_FILTER_LIST_PREFIX } from "../../../../const/component";

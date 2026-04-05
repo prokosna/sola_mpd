@@ -1,9 +1,9 @@
 import { createHash, randomBytes } from "node:crypto";
+import { getSongMetadataAsString } from "@sola_mpd/shared/src/functions/songMetadata.js";
 import {
 	type Song,
 	Song_MetadataTag,
 } from "@sola_mpd/shared/src/models/song_pb.js";
-import { getSongMetadataAsString } from "@sola_mpd/shared/src/utils/songUtils.js";
 import { LRUCache } from "lru-cache";
 
 import {

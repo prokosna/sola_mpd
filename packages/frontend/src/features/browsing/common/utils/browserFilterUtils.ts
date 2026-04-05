@@ -1,5 +1,7 @@
 import { create, toJsonString } from "@bufbuild/protobuf";
 import { StringValueSchema } from "@bufbuild/protobuf/wkt";
+import { escapeRegexString } from "@sola_mpd/shared/src/functions/mpdConverters.js";
+import { convertSongMetadataValueToString } from "@sola_mpd/shared/src/functions/songMetadata.js";
 import type { BrowserFilter } from "@sola_mpd/shared/src/models/browser_pb.js";
 import { BrowserFilterSchema } from "@sola_mpd/shared/src/models/browser_pb.js";
 import {
@@ -16,8 +18,6 @@ import {
 	Song_MetadataTag,
 	Song_MetadataValueSchema,
 } from "@sola_mpd/shared/src/models/song_pb.js";
-import { escapeRegexString } from "@sola_mpd/shared/src/utils/mpdUtils.js";
-import { convertSongMetadataValueToString } from "@sola_mpd/shared/src/utils/songUtils.js";
 
 import type { MpdClient } from "../../../mpd";
 

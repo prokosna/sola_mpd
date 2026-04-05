@@ -25,9 +25,9 @@ import {
 	getSongMetadataAsNumber,
 	getSongMetadataAsString,
 	listAllSongMetadataTags,
-} from "./songUtils.js";
+} from "./songMetadata.js";
 
-describe("SongUtils", () => {
+describe("songMetadata", () => {
 	it("getSongMetadataAsString should return correct string value", () => {
 		const song = create(SongSchema, {
 			metadata: {

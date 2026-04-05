@@ -1,11 +1,11 @@
 import {
+	getSongMetadataAsNumber,
+	getSongMetadataAsString,
+} from "@sola_mpd/shared/src/functions/songMetadata.js";
+import {
 	type Song,
 	Song_MetadataTag,
 } from "@sola_mpd/shared/src/models/song_pb.js";
-import {
-	getSongMetadataAsNumber,
-	getSongMetadataAsString,
-} from "@sola_mpd/shared/src/utils/songUtils.js";
 import { listBrowserSongMetadataTags } from "../../common/utils/browserFilterUtils";
 
 /**

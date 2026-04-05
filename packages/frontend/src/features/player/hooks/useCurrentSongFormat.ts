@@ -1,8 +1,8 @@
+import { convertAudioFormatToString } from "@sola_mpd/shared/src/functions/songMetadata.js";
 import {
 	AudioFormat_Encoding,
 	Song_MetadataTag,
 } from "@sola_mpd/shared/src/models/song_pb.js";
-import { convertAudioFormatToString } from "@sola_mpd/shared/src/utils/songUtils.js";
 import { useAtomValue } from "jotai";
 import { useMemo } from "react";
 

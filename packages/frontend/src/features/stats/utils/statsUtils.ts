@@ -1,4 +1,5 @@
 import { create, toJsonString } from "@bufbuild/protobuf";
+import { getSongMetadataAsString } from "@sola_mpd/shared/src/functions/songMetadata.js";
 import {
 	MpdRequestSchema,
 	MpdResponseSchema,
@@ -8,7 +9,6 @@ import type {
 	Song,
 	Song_MetadataTag,
 } from "@sola_mpd/shared/src/models/song_pb.js";
-import { getSongMetadataAsString } from "@sola_mpd/shared/src/utils/songUtils.js";
 
 import type { MpdClient } from "../../mpd";
 

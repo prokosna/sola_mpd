@@ -1,6 +1,11 @@
 import { clone } from "@bufbuild/protobuf";
 import { timestampDate } from "@bufbuild/protobuf/wkt";
 import {
+	compareSongsByMetadataValue,
+	convertAudioFormatToString,
+	getSongMetadataAsString,
+} from "@sola_mpd/shared/src/functions/songMetadata.js";
+import {
 	type Song,
 	Song_MetadataTag,
 	type Song_MetadataValue,
@@ -10,11 +15,6 @@ import {
 	type SongTableState,
 	SongTableStateSchema,
 } from "@sola_mpd/shared/src/models/song_table_pb.js";
-import {
-	compareSongsByMetadataValue,
-	convertAudioFormatToString,
-	getSongMetadataAsString,
-} from "@sola_mpd/shared/src/utils/songUtils.js";
 import type { GridApi, IRowNode } from "ag-grid-community";
 import dayjs from "dayjs";
 import {

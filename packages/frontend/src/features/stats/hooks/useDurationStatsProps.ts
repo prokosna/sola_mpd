@@ -1,8 +1,8 @@
+import { getSongMetadataAsNumber } from "@sola_mpd/shared/src/functions/songMetadata.js";
 import {
 	type Song,
 	Song_MetadataTag,
 } from "@sola_mpd/shared/src/models/song_pb.js";
-import { getSongMetadataAsNumber } from "@sola_mpd/shared/src/utils/songUtils.js";
 import { displayDuration } from "@sola_mpd/shared/src/utils/stringUtils.js";
 import { useAtomValue } from "jotai";
 import { useMemo } from "react";

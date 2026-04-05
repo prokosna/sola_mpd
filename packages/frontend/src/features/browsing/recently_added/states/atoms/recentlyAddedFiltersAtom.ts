@@ -1,7 +1,7 @@
 import { create } from "@bufbuild/protobuf";
+import { convertSongMetadataValueToString } from "@sola_mpd/shared/src/functions/songMetadata.js";
 import { BrowserFilterSchema } from "@sola_mpd/shared/src/models/browser_pb.js";
 import type { Song_MetadataTag } from "@sola_mpd/shared/src/models/song_pb.js";
-import { convertSongMetadataValueToString } from "@sola_mpd/shared/src/utils/songUtils.js";
 import { atom } from "jotai";
 import { atomWithDefault } from "jotai/utils";
 

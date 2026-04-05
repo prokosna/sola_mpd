@@ -1,4 +1,5 @@
 import { clone, create } from "@bufbuild/protobuf";
+import { getSongMetadataAsString } from "@sola_mpd/shared/src/functions/songMetadata.js";
 import { MpdRequestSchema } from "@sola_mpd/shared/src/models/mpd/mpd_command_pb.js";
 import { Plugin_PluginType } from "@sola_mpd/shared/src/models/plugin/plugin_pb.js";
 import {
@@ -9,7 +10,6 @@ import {
 	type SongTableColumn,
 	SongTableStateSchema,
 } from "@sola_mpd/shared/src/models/song_table_pb.js";
-import { getSongMetadataAsString } from "@sola_mpd/shared/src/utils/songUtils.js";
 import { useAtomValue, useSetAtom } from "jotai";
 import { type MutableRefObject, useCallback } from "react";
 

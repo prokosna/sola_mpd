@@ -4,7 +4,7 @@ import {
 } from "../models/filter_pb.js";
 import { Song_MetadataTag } from "../models/song_pb.js";
 
-import { convertSongMetadataValueToString } from "./songUtils.js";
+import { convertSongMetadataValueToString } from "./songMetadata.js";
 
 /**
  * Escapes special characters in a condition argument for MPD filter expressions.

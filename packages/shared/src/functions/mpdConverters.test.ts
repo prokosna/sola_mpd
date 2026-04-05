@@ -19,9 +19,9 @@ import {
 	escapeConditionArg,
 	escapeExpression,
 	escapeRegexString,
-} from "./mpdUtils.js";
+} from "./mpdConverters.js";
 
-describe("MpdUtils", () => {
+describe("mpdConverters", () => {
 	it("escapeConditionArg should correctly escape special characters", () => {
 		expect(escapeConditionArg('test"value')).toBe('test\\\\"value');
 		expect(escapeConditionArg("test'value")).toBe("test\\'value");

@@ -1,5 +1,9 @@
 import { clone, create } from "@bufbuild/protobuf";
 import {
+	convertSongMetadataValueToString,
+	convertStringToSongMetadataValue,
+} from "@sola_mpd/shared/src/functions/songMetadata.js";
+import {
 	type FilterCondition,
 	FilterCondition_Operator,
 	FilterConditionSchema,
@@ -15,11 +19,6 @@ import {
 	Song_MetadataValueSchema,
 } from "@sola_mpd/shared/src/models/song_pb.js";
 import type { SongTableColumn } from "@sola_mpd/shared/src/models/song_table_pb.js";
-
-import {
-	convertSongMetadataValueToString,
-	convertStringToSongMetadataValue,
-} from "@sola_mpd/shared/src/utils/songUtils.js";
 import { v4 as uuidv4 } from "uuid";
 import {
 	convertDisplayNameToOperator,
