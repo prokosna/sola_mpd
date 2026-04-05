@@ -4,13 +4,10 @@ import {
 	type PluginState,
 	PluginStateSchema,
 } from "@sola_mpd/shared/src/models/plugin/plugin_pb.js";
-import type { PluginStateRepository } from "../../features/plugin";
-import type { HttpClient } from "../http/HttpClient";
+import type { HttpClient } from "../../../lib/http/HttpClient";
+import type { PluginStateRepository } from "./PluginStateRepository";
 
-/**
- * Implementation of PluginStateRepository using HttpClient.
- */
-export class PluginStateRepositoryImplHttp implements PluginStateRepository {
+export class PluginStateRepositoryHttp implements PluginStateRepository {
 	constructor(private readonly client: HttpClient) {}
 
 	fetch = async (): Promise<PluginState> => {

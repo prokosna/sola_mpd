@@ -11,13 +11,9 @@ import {
 	MpdResponseSchema,
 } from "@sola_mpd/shared/src/models/mpd/mpd_command_pb.js";
 
-import type { MpdClient } from "../../features/mpd";
-import type { SocketIoClient } from "../socket_io/SocketIoClient";
+import type { SocketIoClient } from "../../../lib/socket_io/SocketIoClient";
+import type { MpdClient } from "./MpdClient";
 
-/**
- * MpdClientSocketIo is an implementation of MpdClient that uses socket.io as the underlying transport.
- * It provides methods to send commands to mpd and to listen to events emitted by mpd.
- */
 export class MpdClientSocketIo implements MpdClient {
 	constructor(private client: SocketIoClient) {}
 

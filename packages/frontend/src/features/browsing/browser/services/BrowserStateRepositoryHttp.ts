@@ -4,13 +4,10 @@ import {
 	type BrowserState,
 	BrowserStateSchema,
 } from "@sola_mpd/shared/src/models/browser_pb.js";
-import type { BrowserStateRepository } from "../../features/browsing";
-import type { HttpClient } from "../http/HttpClient";
+import type { HttpClient } from "../../../../lib/http/HttpClient";
+import type { BrowserStateRepository } from "./BrowserStateRepository";
 
-/**
- * Implementation of BrowserStateRepository using HttpClient.
- */
-export class BrowserStateRepositoryImplHttp implements BrowserStateRepository {
+export class BrowserStateRepositoryHttp implements BrowserStateRepository {
 	constructor(private readonly client: HttpClient) {}
 
 	fetch = async (): Promise<BrowserState> => {

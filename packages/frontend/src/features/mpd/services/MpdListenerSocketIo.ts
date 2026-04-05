@@ -13,15 +13,10 @@ import {
 	MpdProfileSchema,
 } from "@sola_mpd/shared/src/models/mpd/mpd_profile_pb.js";
 
-import type { MpdListener } from "../../features/mpd";
-import type { SocketIoClient } from "../socket_io/SocketIoClient.js";
+import type { SocketIoClient } from "../../../lib/socket_io/SocketIoClient";
+import type { MpdListener } from "./MpdListener";
 
-/**
- * MpdListenerImplSocketIo is an implementation of MpdListener that uses socket.io as the underlying transport.
- * It sends a subscription request to the server when a client subscribes to an event, and when the event is
- * received, it calls the callback function registered by the client.
- */
-export class MpdListenerImplSocketIo implements MpdListener {
+export class MpdListenerSocketIo implements MpdListener {
 	private socket: SocketIoClient;
 	private callbacks: Map<MpdEvent_EventType, () => void>;
 

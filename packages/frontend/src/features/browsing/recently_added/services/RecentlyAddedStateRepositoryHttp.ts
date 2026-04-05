@@ -4,13 +4,10 @@ import {
 	type RecentlyAddedState,
 	RecentlyAddedStateSchema,
 } from "@sola_mpd/shared/src/models/recently_added_pb.js";
-import type { RecentlyAddedStateRepository } from "../../features/browsing";
-import type { HttpClient } from "../http/HttpClient";
+import type { HttpClient } from "../../../../lib/http/HttpClient";
+import type { RecentlyAddedStateRepository } from "./RecentlyAddedStateRepository";
 
-/**
- * Implementation of RecentlyAddedStateRepository using HttpClient.
- */
-export class RecentlyAddedStateRepositoryImplHttp
+export class RecentlyAddedStateRepositoryHttp
 	implements RecentlyAddedStateRepository
 {
 	constructor(private readonly client: HttpClient) {}

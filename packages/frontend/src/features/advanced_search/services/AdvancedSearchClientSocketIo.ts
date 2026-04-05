@@ -6,13 +6,10 @@ import {
 	type AdvancedSearchResponse,
 	AdvancedSearchResponseSchema,
 } from "@sola_mpd/shared/src/models/advanced_search_pb.js";
-import type { AdvancedSearchClient } from "../../features/advanced_search";
-import type { SocketIoClient } from "../socket_io/SocketIoClient";
+import type { SocketIoClient } from "../../../lib/socket_io/SocketIoClient";
+import type { AdvancedSearchClient } from "./AdvancedSearchClient";
 
-/**
- * AdvancedSearchClientSocketIo is an implementation of AdvancedSearchClient that uses socket.io as the underlying transport.
- */
-export class AdvancedSearchClientImplSocketIo implements AdvancedSearchClient {
+export class AdvancedSearchClientSocketIo implements AdvancedSearchClient {
 	constructor(private client: SocketIoClient) {}
 
 	command = async (

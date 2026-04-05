@@ -1,26 +1,26 @@
 import { createStore } from "jotai";
+import { AdvancedSearchClientSocketIo } from "./features/advanced_search/services/AdvancedSearchClientSocketIo";
 import { advancedSearchClientAtom } from "./features/advanced_search/states/atoms/advancedSearchClientAtom";
+import { BrowserStateRepositoryHttp } from "./features/browsing/browser/services/BrowserStateRepositoryHttp";
 import { browserStateRepositoryAtom } from "./features/browsing/browser/states/atoms/browserStateRepositoryAtom";
+import { RecentlyAddedStateRepositoryHttp } from "./features/browsing/recently_added/services/RecentlyAddedStateRepositoryHttp";
 import { recentlyAddedStateRepositoryAtom } from "./features/browsing/recently_added/states/atoms/recentlyAddedStateRepositoryAtom";
+import { MpdClientSocketIo } from "./features/mpd/services/MpdClientSocketIo";
+import { MpdListenerSocketIo } from "./features/mpd/services/MpdListenerSocketIo";
 import { setMpdClientActionAtom } from "./features/mpd/states/actions/setMpdClientActionAtom";
 import { setMpdListenerActionAtom } from "./features/mpd/states/actions/setMpdListenerActionAtom";
+import { PluginServiceSocketIo } from "./features/plugin/services/PluginServiceSocketIo";
+import { PluginStateRepositoryHttp } from "./features/plugin/services/PluginStateRepositoryHttp";
 import { pluginServiceAtom } from "./features/plugin/states/atoms/pluginServiceAtom";
 import { pluginStateRepositoryAtom } from "./features/plugin/states/atoms/pluginStateRepositoryAtom";
+import { MpdProfileStateRepositoryHttp } from "./features/profile/services/MpdProfileStateRepositoryHttp";
 import { mpdProfileStateRepositoryAtom } from "./features/profile/states/atoms/mpdProfileStateRepositoryAtom";
+import { SavedSearchesRepositoryHttp } from "./features/search/services/SavedSearchesRepositoryHttp";
 import { savedSearchesRepositoryAtom } from "./features/search/states/atoms/savedSearchesRepositoryAtom";
+import { SongTableStateRepositoryHttp } from "./features/song_table/services/SongTableStateRepositoryHttp";
 import { songTableStateRepositoryAtom } from "./features/song_table/states/atoms/songTableStateRepositoryAtom";
-import { AdvancedSearchClientImplSocketIo } from "./infrastructure/advanced_search/AdvancedSearchClientImplSocketIo";
-import { BrowserStateRepositoryImplHttp } from "./infrastructure/browser/BrowserStateRepositoryImplHttp";
-import { HttpClientImplFetch } from "./infrastructure/http/HttpClientImplFetch";
-import { MpdClientSocketIo } from "./infrastructure/mpd/MpdClientImplSocketIo";
-import { MpdListenerImplSocketIo } from "./infrastructure/mpd/MpdListenerImplSocketIo";
-import { MpdProfileStateRepositoryImplHttp } from "./infrastructure/mpd/MpdProfileStateRepositoryImplHttp";
-import { PluginServiceImplSocketIo } from "./infrastructure/plugin/PluginServiceImplSocketIo";
-import { PluginStateRepositoryImplHttp } from "./infrastructure/plugin/PluginStateRepositoryImplHttp";
-import { RecentlyAddedStateRepositoryImplHttp } from "./infrastructure/recently_added/RecentlyAddedStateRepositoryImplHttp";
-import { SavedSearchesRepositoryImplHttp } from "./infrastructure/search/SavedSearchesRepositoryImplHttp";
-import { SocketIoClientImpl } from "./infrastructure/socket_io/SocketIoClientImpl";
-import { SongTableStateRepositoryImplHttp } from "./infrastructure/song_table/SongTableStateRepositoryImplHttp";
+import { HttpClientFetch } from "./lib/http/HttpClientFetch";
+import { SocketIoClientDefault } from "./lib/socket_io/SocketIoClientDefault";
 
 let globalStore: ReturnType<typeof createStore> | undefined;
 
@@ -31,43 +31,43 @@ export function useJotaiStore() {
 		const store = createStore();
 
 		// DI
-		const httpClient = new HttpClientImplFetch();
-		const socketIoClient = new SocketIoClientImpl();
+		const httpClient = new HttpClientFetch();
+		const socketIoClient = new SocketIoClientDefault();
 		await socketIoClient.isReady();
 
 		store.set(setMpdClientActionAtom, new MpdClientSocketIo(socketIoClient));
 		store.set(
 			setMpdListenerActionAtom,
-			new MpdListenerImplSocketIo(socketIoClient),
+			new MpdListenerSocketIo(socketIoClient),
 		);
 		store.set(
 			songTableStateRepositoryAtom,
-			new SongTableStateRepositoryImplHttp(httpClient),
+			new SongTableStateRepositoryHttp(httpClient),
 		);
 		store.set(
 			browserStateRepositoryAtom,
-			new BrowserStateRepositoryImplHttp(httpClient),
+			new BrowserStateRepositoryHttp(httpClient),
 		);
 		store.set(
 			pluginStateRepositoryAtom,
-			new PluginStateRepositoryImplHttp(httpClient),
+			new PluginStateRepositoryHttp(httpClient),
 		);
-		store.set(pluginServiceAtom, new PluginServiceImplSocketIo(socketIoClient));
+		store.set(pluginServiceAtom, new PluginServiceSocketIo(socketIoClient));
 		store.set(
 			mpdProfileStateRepositoryAtom,
-			new MpdProfileStateRepositoryImplHttp(httpClient),
+			new MpdProfileStateRepositoryHttp(httpClient),
 		);
 		store.set(
 			savedSearchesRepositoryAtom,
-			new SavedSearchesRepositoryImplHttp(httpClient),
+			new SavedSearchesRepositoryHttp(httpClient),
 		);
 		store.set(
 			recentlyAddedStateRepositoryAtom,
-			new RecentlyAddedStateRepositoryImplHttp(httpClient),
+			new RecentlyAddedStateRepositoryHttp(httpClient),
 		);
 		store.set(
 			advancedSearchClientAtom,
-			new AdvancedSearchClientImplSocketIo(socketIoClient),
+			new AdvancedSearchClientSocketIo(socketIoClient),
 		);
 
 		globalStore = store;

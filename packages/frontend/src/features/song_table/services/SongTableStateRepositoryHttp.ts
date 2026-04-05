@@ -4,12 +4,10 @@ import {
 	type SongTableState,
 	SongTableStateSchema,
 } from "@sola_mpd/shared/src/models/song_table_pb.js";
-import type { SongTableStateRepository } from "../../features/song_table";
-import type { HttpClient } from "../http/HttpClient";
+import type { HttpClient } from "../../../lib/http/HttpClient";
+import type { SongTableStateRepository } from "./SongTableStateRepository";
 
-export class SongTableStateRepositoryImplHttp
-	implements SongTableStateRepository
-{
+export class SongTableStateRepositoryHttp implements SongTableStateRepository {
 	constructor(private readonly client: HttpClient) {}
 
 	fetch = async (): Promise<SongTableState> => {

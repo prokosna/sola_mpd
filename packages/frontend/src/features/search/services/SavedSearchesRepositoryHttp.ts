@@ -4,15 +4,10 @@ import {
 	type SavedSearches,
 	SavedSearchesSchema,
 } from "@sola_mpd/shared/src/models/search_pb.js";
-import type { SavedSearchesRepository } from "../../features/search";
-import type { HttpClient } from "../http/HttpClient";
+import type { HttpClient } from "../../../lib/http/HttpClient";
+import type { SavedSearchesRepository } from "./SavedSearchesRepository";
 
-/**
- * Implementation of SavedSearchesRepository using HttpClient.
- */
-export class SavedSearchesRepositoryImplHttp
-	implements SavedSearchesRepository
-{
+export class SavedSearchesRepositoryHttp implements SavedSearchesRepository {
 	constructor(private readonly client: HttpClient) {}
 
 	fetch = async (): Promise<SavedSearches> => {

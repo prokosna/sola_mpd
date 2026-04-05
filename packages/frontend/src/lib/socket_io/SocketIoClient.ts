@@ -1,8 +1,3 @@
-/**
- * SocketIoClient is an interface for a socket.io client.
- * It provides methods to fetch data from the server and to emit events.
- * It also provides methods to listen to events and to remove listeners.
- */
 export interface SocketIoClient {
 	isReady: () => Promise<boolean>;
 

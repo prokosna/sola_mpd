@@ -4,13 +4,10 @@ import {
 	type MpdProfileState,
 	MpdProfileStateSchema,
 } from "@sola_mpd/shared/src/models/mpd/mpd_profile_pb.js";
-import type { MpdProfileStateRepository } from "../../features/profile";
-import type { HttpClient } from "../http/HttpClient";
+import type { HttpClient } from "../../../lib/http/HttpClient";
+import type { MpdProfileStateRepository } from "./MpdProfileStateRepository";
 
-/**
- * Implementation of MpdProfileStateRepository using HttpClient.
- */
-export class MpdProfileStateRepositoryImplHttp
+export class MpdProfileStateRepositoryHttp
 	implements MpdProfileStateRepository
 {
 	constructor(private readonly client: HttpClient) {}

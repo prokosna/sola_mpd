@@ -1,13 +1,8 @@
-import { type Socket, io } from "socket.io-client";
+import { io, type Socket } from "socket.io-client";
 
 import type { SocketIoClient } from "./SocketIoClient";
 
-/**
- * SocketIoClientImpl is an implementation of SocketIoClient that uses socket.io as the underlying transport.
- * It provides methods to fetch data from the server and to emit events.
- * It also provides methods to listen to events and to remove listeners.
- */
-export class SocketIoClientImpl implements SocketIoClient {
+export class SocketIoClientDefault implements SocketIoClient {
 	private socket: Promise<Socket>;
 
 	constructor() {

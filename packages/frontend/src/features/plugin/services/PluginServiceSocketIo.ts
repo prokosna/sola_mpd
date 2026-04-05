@@ -19,13 +19,10 @@ import {
 
 import { type Observable, Subject } from "rxjs";
 
-import type { PluginService } from "../../features/plugin";
-import type { SocketIoClient } from "../socket_io/SocketIoClient";
+import type { SocketIoClient } from "../../../lib/socket_io/SocketIoClient";
+import type { PluginService } from "./PluginService";
 
-/**
- * Implementation of PluginService using SocketIoClient.
- */
-export class PluginServiceImplSocketIo implements PluginService {
+export class PluginServiceSocketIo implements PluginService {
 	constructor(private readonly client: SocketIoClient) {}
 
 	register = async (
