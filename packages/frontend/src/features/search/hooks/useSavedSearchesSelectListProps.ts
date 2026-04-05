@@ -10,11 +10,11 @@ import type { ContextMenuSection } from "../../context_menu";
 import { mpdClientAtom } from "../../mpd";
 import { currentMpdProfileAtom } from "../../profile";
 import type { SelectListContextMenuItemParams } from "../../select_list";
+import { convertSearchToFormValues } from "../functions/search";
 import { setTargetSearchActionAtom } from "../states/actions/setTargetSearchActionAtom";
 import { updateSavedSearchesActionAtom } from "../states/actions/updateSavedSearchesActionAtom";
 import { savedSearchesAtom } from "../states/atoms/savedSearchesAtom";
 import type { SearchFormValues } from "../types/searchTypes";
-import { convertSearchToFormValues } from "../utils/searchUtils";
 
 /**
  * Hook for saved searches SelectList props.

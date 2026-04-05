@@ -33,6 +33,13 @@ import {
 	convertSongMetadataTagFromDisplayName,
 	convertSongMetadataTagToDisplayName,
 } from "../../song_table";
+import {
+	convertConditionToFormValues,
+	convertFormValuesToSearch,
+	getDefaultCondition,
+	isValidOperatorWithMetadataTag,
+	listSearchSongMetadataTags,
+} from "../functions/search";
 import { setEditingSearchStatusActionAtom } from "../states/actions/setEditingSearchStatusActionAtom";
 import { setIsSearchLoadingActionAtom } from "../states/actions/setIsSearchLoadingActionAtom";
 import { setTargetSearchActionAtom } from "../states/actions/setTargetSearchActionAtom";
@@ -44,13 +51,6 @@ import {
 	EditingSearchStatus,
 	type SearchFormValues,
 } from "../types/searchTypes";
-import {
-	convertConditionToFormValues,
-	convertFormValuesToSearch,
-	getDefaultCondition,
-	isValidOperatorWithMetadataTag,
-	listSearchSongMetadataTags,
-} from "../utils/searchUtils";
 
 /**
  * Query editor for search navigation.

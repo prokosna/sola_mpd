@@ -34,11 +34,6 @@ import type {
 	SearchFormValues,
 } from "../types/searchTypes";
 
-/**
- * Create default Search object.
- *
- * @returns New Search with default values
- */
 export function getDefaultSearch(): Search {
 	return create(SearchSchema, {
 		name: "New Search",
@@ -47,22 +42,12 @@ export function getDefaultSearch(): Search {
 	});
 }
 
-/**
- * Create default Query object.
- *
- * @returns New Query with default values
- */
 export function getDefaultQuery(): Query {
 	return create(QuerySchema, {
 		conditions: [getDefaultCondition()],
 	});
 }
 
-/**
- * Create default FilterCondition object.
- *
- * @returns New FilterCondition with default values
- */
 export function getDefaultCondition(): FilterCondition {
 	return create(FilterConditionSchema, {
 		uuid: uuidv4(),
@@ -77,11 +62,6 @@ export function getDefaultCondition(): FilterCondition {
 	});
 }
 
-/**
- * List supported song metadata tags.
- *
- * @returns Array of metadata tags
- */
 export function listSearchSongMetadataTags(): Song_MetadataTag[] {
 	return [
 		Song_MetadataTag.TITLE,
@@ -99,12 +79,6 @@ export function listSearchSongMetadataTags(): Song_MetadataTag[] {
 	];
 }
 
-/**
- * Merge song arrays, removing duplicates by path.
- *
- * @param songsList Arrays to merge
- * @returns Merged unique songs
- */
 export function mergeSongsList(songsList: Song[][]): Song[] {
 	const all: [string, Song][] = songsList
 		.flat()
@@ -113,14 +87,6 @@ export function mergeSongsList(songsList: Song[][]): Song[] {
 	return unique;
 }
 
-/**
- * Convert Search to SearchConditions.
- *
- * Separates MPD and non-MPD conditions.
- *
- * @param search Search to convert
- * @returns Array of conditions
- */
 export function convertSearchToConditions(search: Search): SearchConditions[] {
 	return search.queries
 		.map((query): SearchConditions => {
@@ -154,26 +120,12 @@ export function convertSearchToConditions(search: Search): SearchConditions[] {
 		});
 }
 
-/**
- * Update search name.
- *
- * @param search Original search
- * @param name New name
- * @returns Updated search
- */
 export function changeEditingSearchName(search: Search, name: string): Search {
 	const newSearch = clone(SearchSchema, search);
 	newSearch.name = name;
 	return newSearch;
 }
 
-/**
- * Update search columns.
- *
- * @param search Original search
- * @param columns New columns
- * @returns Updated search
- */
 export function changeEditingSearchColumns(
 	search: Search,
 	columns: SongTableColumn[],
@@ -183,14 +135,6 @@ export function changeEditingSearchColumns(
 	return newSearch;
 }
 
-/**
- * Update query in search.
- *
- * @param search Original search
- * @param index Query index
- * @param query New query
- * @returns Updated search
- */
 export function changeEditingSearchQuery(
 	search: Search,
 	index: number,
@@ -200,31 +144,16 @@ export function changeEditingSearchQuery(
 		throw Error("Index out of range to change the search query.");
 	}
 	const newSearch = clone(SearchSchema, search);
-	const newQueries = [...search.queries];
-	newQueries[index] = clone(QuerySchema, query);
-	newSearch.queries = newQueries;
+	newSearch.queries[index] = clone(QuerySchema, query);
 	return newSearch;
 }
 
-/**
- * Add default query to search.
- *
- * @param search Original search
- * @returns Updated search
- */
 export function addEditingSearchQuery(search: Search): Search {
 	const newSearch = clone(SearchSchema, search);
-	newSearch.queries = [...search.queries, getDefaultQuery()];
+	newSearch.queries.push(getDefaultQuery());
 	return newSearch;
 }
 
-/**
- * Remove query from search.
- *
- * @param search Original search
- * @param index Query index
- * @returns Updated search
- */
 export function removeEditingSearchQuery(
 	search: Search,
 	index: number,
@@ -233,21 +162,10 @@ export function removeEditingSearchQuery(
 		throw Error("Index out of range to remove the search query.");
 	}
 	const newSearch = clone(SearchSchema, search);
-	const newQueries = [...search.queries];
-	newQueries.splice(index, 1);
-	newSearch.queries = newQueries;
+	newSearch.queries.splice(index, 1);
 	return newSearch;
 }
 
-/**
- * Update condition in query.
- *
- * @param query Original query
- * @param index Condition index
- * @param condition New condition
- * @returns Updated query
- * @throws If index invalid
- */
 export function changeEditingQueryCondition(
 	query: Query,
 	index: number,
@@ -257,32 +175,16 @@ export function changeEditingQueryCondition(
 		throw Error("Index out of range to change the query condition.");
 	}
 	const newQuery = clone(QuerySchema, query);
-	const newConditions = [...query.conditions];
-	newConditions[index] = clone(FilterConditionSchema, condition);
-	newQuery.conditions = newConditions;
+	newQuery.conditions[index] = clone(FilterConditionSchema, condition);
 	return newQuery;
 }
 
-/**
- * Add default condition to query.
- *
- * @param query Original query
- * @returns Updated query
- */
 export function addEditingQueryCondition(query: Query): Query {
 	const newQuery = clone(QuerySchema, query);
-	newQuery.conditions = [...query.conditions, getDefaultCondition()];
+	newQuery.conditions.push(getDefaultCondition());
 	return newQuery;
 }
 
-/**
- * Remove condition from query.
- *
- * @param query Original query
- * @param index Condition index
- * @returns Updated query
- * @throws If index invalid
- */
 export function removeEditingQueryCondition(
 	query: Query,
 	index: number,
@@ -291,19 +193,10 @@ export function removeEditingQueryCondition(
 		throw Error("Index out of range to remove the query condition.");
 	}
 	const newQuery = clone(QuerySchema, query);
-	const newConditions = [...query.conditions];
-	newConditions.splice(index, 1);
-	newQuery.conditions = newConditions;
+	newQuery.conditions.splice(index, 1);
 	return newQuery;
 }
 
-/**
- * Check if operator valid for tag.
- *
- * @param tag Metadata tag
- * @param operator Filter operator
- * @returns True if valid
- */
 export function isValidOperatorWithMetadataTag(
 	tag: Song_MetadataTag,
 	operator: FilterCondition_Operator,
@@ -325,12 +218,6 @@ export function isValidOperatorWithMetadataTag(
 	return true;
 }
 
-/**
- * Convert FilterCondition to ConditionFormValues.
- *
- * @param condition FilterCondition to convert
- * @returns ConditionFormValues
- */
 export function convertConditionToFormValues(
 	condition: FilterCondition,
 ): ConditionFormValues {
@@ -345,12 +232,6 @@ export function convertConditionToFormValues(
 	};
 }
 
-/**
- * Convert Search to SearchFormValues.
- *
- * @param search Search to convert
- * @returns Form values
- */
 export function convertSearchToFormValues(search: Search): SearchFormValues {
 	return {
 		name: search.name,
@@ -361,12 +242,6 @@ export function convertSearchToFormValues(search: Search): SearchFormValues {
 	};
 }
 
-/**
- * Convert SearchFormValues to Search.
- *
- * @param values Form values to convert
- * @returns Search
- */
 export function convertFormValuesToSearch(values: SearchFormValues): Search {
 	return create(SearchSchema, {
 		name: values.name,

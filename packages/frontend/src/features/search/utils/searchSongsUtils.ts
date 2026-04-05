@@ -10,7 +10,7 @@ import type { Song } from "@sola_mpd/shared/src/models/song_pb.js";
 import type { MpdClient } from "../../mpd";
 import { filterSongsByAndConditions } from "../../song_filter";
 
-import { convertSearchToConditions, mergeSongsList } from "./searchUtils";
+import { convertSearchToConditions, mergeSongsList } from "../functions/search";
 
 /**
  * Fetch songs matching search criteria.

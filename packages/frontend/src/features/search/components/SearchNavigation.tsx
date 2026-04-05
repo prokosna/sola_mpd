@@ -9,6 +9,10 @@ import {
 	useDefaultLayout,
 } from "react-resizable-panels";
 import styles from "../../../ResizeHandle.module.css";
+import {
+	convertSearchToFormValues,
+	getDefaultSearch,
+} from "../functions/search";
 import { setEditingSearchStatusActionAtom } from "../states/actions/setEditingSearchStatusActionAtom";
 import { savedSearchesAtom } from "../states/atoms/savedSearchesAtom";
 import { editingSearchStatusAtom } from "../states/atoms/searchEditAtom";
@@ -16,10 +20,6 @@ import {
 	EditingSearchStatus,
 	type SearchFormValues,
 } from "../types/searchTypes";
-import {
-	convertSearchToFormValues,
-	getDefaultSearch,
-} from "../utils/searchUtils";
 import { SearchNavigationQueryEditor } from "./SearchNavigationQueryEditor";
 import { SearchNavigationSavedQueries } from "./SearchNavigationSavedQueries";
 
