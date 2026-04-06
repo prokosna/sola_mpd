@@ -360,7 +360,9 @@ export function parsePlaylist(
 		const updatedAt = dayjs(lastModified);
 		playlist.updatedAt = timestampFromDate(updatedAt.toDate());
 	} catch (e) {
-		console.error(`Failed to parse last-modified: ${e}`);
+		console.error(
+			`Failed to parse last-modified: ${e instanceof Error ? e.message : String(e)}`,
+		);
 	}
 
 	return playlist;

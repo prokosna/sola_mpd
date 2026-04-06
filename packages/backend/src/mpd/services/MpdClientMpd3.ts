@@ -353,7 +353,7 @@ class MpdClientMpd3Impl {
 						},
 					});
 				}
-				throw new Error(`Invalid volume: ${ret}`);
+				throw new Error(`Invalid volume: ${JSON.stringify(ret)}`);
 			}
 			case "single":
 				await this.sendCommand(client, cmd);

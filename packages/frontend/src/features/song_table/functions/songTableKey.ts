@@ -1,6 +1,10 @@
+import { toJsonString } from "@bufbuild/protobuf";
 import { getSongMetadataAsString } from "@sola_mpd/shared/src/functions/songMetadata.js";
 import type { Song } from "@sola_mpd/shared/src/models/song_pb.js";
-import { Song_MetadataTag } from "@sola_mpd/shared/src/models/song_pb.js";
+import {
+	Song_MetadataTag,
+	SongSchema,
+} from "@sola_mpd/shared/src/models/song_pb.js";
 import type { IRowNode } from "ag-grid-community";
 
 import type {
@@ -15,7 +19,7 @@ export function getSongTableKey(song: Song, keyType: SongTableKeyType): string {
 			const id = getSongMetadataAsString(song, Song_MetadataTag.ID);
 			if (id === "") {
 				console.warn(
-					`ID is specified as a song table key, but ID is empty: ${song}`,
+					`ID is specified as a song table key, but ID is empty: ${toJsonString(SongSchema, song)}`,
 				);
 			}
 			return id;
@@ -38,7 +42,7 @@ export function convertNodeToSong(
 	const key = node.data?.key;
 	if (key == null) {
 		throw new Error(
-			`Key is not defined for ${node}. This should be an implementation error.`,
+			`Key is not defined for node (id=${node.id}). This should be an implementation error.`,
 		);
 	}
 	const song = songsMap.get(key);
