@@ -18,7 +18,7 @@ import { fetchBrowserFilterValues } from "../../../common/functions/browserFilte
 import {
 	extractRecentlyAddedFilterValues,
 	sortRecentlyAddedFilterValues,
-} from "../../utils/recentlyAddedFilterUtils";
+} from "../../functions/recentlyAddedFiltering";
 import { recentlyAddedStateAtom } from "./recentlyAddedStateAtom";
 
 const recentlyAddedFiltersAtom = atom((get) => {

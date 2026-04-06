@@ -1,10 +1,9 @@
-import { create } from "@bufbuild/protobuf";
-import { MpdRequestSchema } from "@sola_mpd/shared/src/models/mpd/mpd_command_pb.js";
 import { IconEraser, IconEraserOff } from "@tabler/icons-react";
 import { useAtomValue } from "jotai";
 import { useCallback } from "react";
 import { mpdClientAtom } from "../../mpd";
 import { currentMpdProfileAtom } from "../../profile";
+import { buildConsumeCommand } from "../functions/playerCommand";
 import { playerStatusIsConsumeAtom } from "../states/atoms/playerStatusAtom";
 import { PlayerControlsButton } from "./PlayerControlsButton";
 
@@ -26,17 +25,7 @@ export function PlayerControlsButtonConsume() {
 		if (profile === undefined || mpdClient === undefined) {
 			return;
 		}
-		mpdClient.command(
-			create(MpdRequestSchema, {
-				profile,
-				command: {
-					case: "consume",
-					value: {
-						enable: !playerStatusIsConsume,
-					},
-				},
-			}),
-		);
+		mpdClient.command(buildConsumeCommand(profile, !playerStatusIsConsume));
 	}, [mpdClient, playerStatusIsConsume, profile]);
 
 	const props = {

@@ -1,11 +1,10 @@
-import { create } from "@bufbuild/protobuf";
 import { Slider } from "@mantine/core";
-import { MpdRequestSchema } from "@sola_mpd/shared/src/models/mpd/mpd_command_pb.js";
 import { displayDuration } from "@sola_mpd/shared/src/utils/stringUtils.js";
 import { useAtomValue } from "jotai";
 import { useCallback, useRef } from "react";
 import { mpdClientAtom } from "../../mpd";
 import { currentMpdProfileAtom } from "../../profile";
+import { buildSeekCommand } from "../functions/playerCommand";
 import {
 	playerStatusDurationAtom,
 	playerStatusElapsedAtom,
@@ -57,21 +56,7 @@ export function PlayerSeekBar() {
 			lastSeekClicked.current = now;
 
 			const seekTo = (value / 100) * playerStatusDuration;
-			mpdClient.command(
-				create(MpdRequestSchema, {
-					profile,
-					command: {
-						case: "seek",
-						value: {
-							target: {
-								case: "current",
-								value: true,
-							},
-							time: seekTo,
-						},
-					},
-				}),
-			);
+			mpdClient.command(buildSeekCommand(profile, seekTo));
 		},
 		[mpdClient, playerStatusDuration, profile],
 	);

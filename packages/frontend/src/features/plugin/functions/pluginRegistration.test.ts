@@ -5,6 +5,7 @@ import {
 	type PluginRegisterResponse,
 	PluginRegisterResponseSchema,
 	PluginSchema,
+	PluginStateSchema,
 } from "@sola_mpd/shared/src/models/plugin/plugin_pb.js";
 import { describe, expect, it, vi } from "vitest";
 
@@ -13,6 +14,7 @@ import type { PluginService } from "../services/PluginService";
 import {
 	registerAllPluginsAndCheckAvailability,
 	registerPluginAndCheckAvailability,
+	removePluginFromState,
 } from "./pluginRegistration";
 
 function createPlugin(host: string, port: number): Plugin {
@@ -106,6 +108,37 @@ describe("pluginRegistration", () => {
 			const results = await registerAllPluginsAndCheckAvailability([], service);
 
 			expect(results).toHaveLength(0);
+		});
+	});
+
+	describe("removePluginFromState", () => {
+		it("should remove a plugin by host and port", () => {
+			const pluginState = create(PluginStateSchema, {
+				plugins: [createPlugin("host1", 8080), createPlugin("host2", 9090)],
+			});
+
+			const result = removePluginFromState(pluginState, "host1", 8080);
+			expect(result).toBeDefined();
+			expect(result?.plugins).toHaveLength(1);
+			expect(result?.plugins[0].host).toBe("host2");
+		});
+
+		it("should return undefined when plugin not found", () => {
+			const pluginState = create(PluginStateSchema, {
+				plugins: [createPlugin("host1", 8080)],
+			});
+
+			const result = removePluginFromState(pluginState, "nonexistent", 9999);
+			expect(result).toBeUndefined();
+		});
+
+		it("should not mutate the original state", () => {
+			const pluginState = create(PluginStateSchema, {
+				plugins: [createPlugin("host1", 8080)],
+			});
+
+			removePluginFromState(pluginState, "host1", 8080);
+			expect(pluginState.plugins).toHaveLength(1);
 		});
 	});
 });

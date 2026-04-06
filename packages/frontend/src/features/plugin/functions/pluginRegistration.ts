@@ -1,8 +1,12 @@
 import { clone, create } from "@bufbuild/protobuf";
-import type { Plugin } from "@sola_mpd/shared/src/models/plugin/plugin_pb.js";
+import type {
+	Plugin,
+	PluginState,
+} from "@sola_mpd/shared/src/models/plugin/plugin_pb.js";
 import {
 	PluginRegisterRequestSchema,
 	PluginSchema,
+	PluginStateSchema,
 } from "@sola_mpd/shared/src/models/plugin/plugin_pb.js";
 
 import type { PluginService } from "../services/PluginService";
@@ -41,4 +45,20 @@ export async function registerAllPluginsAndCheckAvailability(
 			registerPluginAndCheckAvailability(plugin, pluginService),
 		),
 	);
+}
+
+export function removePluginFromState(
+	pluginState: PluginState,
+	host: string,
+	port: number,
+): PluginState | undefined {
+	const index = pluginState.plugins.findIndex(
+		(v) => v.host === host && v.port === port,
+	);
+	if (index < 0) {
+		return undefined;
+	}
+	const newState = clone(PluginStateSchema, pluginState);
+	newState.plugins.splice(index, 1);
+	return newState;
 }

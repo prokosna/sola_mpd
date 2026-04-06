@@ -1,11 +1,10 @@
-import { create } from "@bufbuild/protobuf";
-import { MpdRequestSchema } from "@sola_mpd/shared/src/models/mpd/mpd_command_pb.js";
 import { MpdPlayerStatus_PlaybackState } from "@sola_mpd/shared/src/models/mpd/mpd_player_pb.js";
 import { IconPlayerPause, IconPlayerPlay } from "@tabler/icons-react";
 import { useAtomValue } from "jotai";
 import { useCallback } from "react";
 import { mpdClientAtom } from "../../mpd";
 import { currentMpdProfileAtom } from "../../profile";
+import { buildPauseCommand } from "../functions/playerCommand";
 import { currentSongAtom } from "../states/atoms/currentSongAtom";
 import { playerStatusPlaybackStateAtom } from "../states/atoms/playerStatusAtom";
 import { PlayerControlsButton } from "./PlayerControlsButton";
@@ -29,19 +28,9 @@ export function PlayerControlsButtonResume() {
 		if (profile === undefined || mpdClient === undefined) {
 			return;
 		}
-
-		mpdClient.command(
-			create(MpdRequestSchema, {
-				profile,
-				command: {
-					case: "pause",
-					value: {
-						pause:
-							playerStatusPlaybackState === MpdPlayerStatus_PlaybackState.PLAY,
-					},
-				},
-			}),
-		);
+		const pause =
+			playerStatusPlaybackState === MpdPlayerStatus_PlaybackState.PLAY;
+		mpdClient.command(buildPauseCommand(profile, pause));
 	}, [mpdClient, playerStatusPlaybackState, profile]);
 
 	const props = {

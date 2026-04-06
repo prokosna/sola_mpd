@@ -1,10 +1,9 @@
-import { create } from "@bufbuild/protobuf";
-import { MpdRequestSchema } from "@sola_mpd/shared/src/models/mpd/mpd_command_pb.js";
 import { IconPlayerStop } from "@tabler/icons-react";
 import { useAtomValue } from "jotai";
 import { useCallback } from "react";
 import { mpdClientAtom } from "../../mpd";
 import { currentMpdProfileAtom } from "../../profile";
+import { buildStopCommand } from "../functions/playerCommand";
 import { currentSongAtom } from "../states/atoms/currentSongAtom";
 import { PlayerControlsButton } from "./PlayerControlsButton";
 
@@ -25,16 +24,7 @@ export function PlayerControlsButtonStop() {
 		if (profile === undefined || mpdClient === undefined) {
 			return;
 		}
-
-		mpdClient.command(
-			create(MpdRequestSchema, {
-				profile,
-				command: {
-					case: "stop",
-					value: {},
-				},
-			}),
-		);
+		mpdClient.command(buildStopCommand(profile));
 	}, [mpdClient, profile]);
 
 	const props = {

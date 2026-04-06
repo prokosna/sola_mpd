@@ -1,12 +1,11 @@
-import { create } from "@bufbuild/protobuf";
 import { Button } from "@mantine/core";
-import { MpdRequestSchema } from "@sola_mpd/shared/src/models/mpd/mpd_command_pb.js";
 import { useAtomValue } from "jotai";
 import { useCallback } from "react";
 import { useNotification } from "../../../lib/mantine/hooks/useNotification";
 import { mpdClientAtom } from "../../mpd";
 import { playerStatusIsDatabaseUpdatingAtom } from "../../player";
 import { currentMpdProfileAtom } from "../../profile";
+import { buildUpdateDatabaseCommand } from "../functions/statsFetching";
 
 /**
  * CardStatsDatabaseButton component renders a button that triggers an update of the MPD database.
@@ -28,15 +27,7 @@ export function CardStatsDatabaseButton() {
 		if (profile === undefined || mpdClient === undefined) {
 			return;
 		}
-		await mpdClient.command(
-			create(MpdRequestSchema, {
-				profile,
-				command: {
-					case: "update",
-					value: {},
-				},
-			}),
-		);
+		await mpdClient.command(buildUpdateDatabaseCommand(profile));
 		notify({
 			status: "info",
 			title: "Update MPD Database",

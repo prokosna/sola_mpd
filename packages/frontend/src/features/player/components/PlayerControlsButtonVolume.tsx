@@ -1,4 +1,3 @@
-import { create } from "@bufbuild/protobuf";
 import {
 	ActionIcon,
 	Box,
@@ -6,13 +5,13 @@ import {
 	Tooltip,
 	useMantineTheme,
 } from "@mantine/core";
-import { MpdRequestSchema } from "@sola_mpd/shared/src/models/mpd/mpd_command_pb.js";
 import { IconVolumeOff } from "@tabler/icons-react";
 import { useAtomValue } from "jotai";
 import { useCallback } from "react";
 import { mpdClientAtom } from "../../mpd";
 import { currentMpdProfileAtom } from "../../profile";
 import { useIsCompactMode } from "../../user_device";
+import { buildSetVolumeCommand } from "../functions/playerCommand";
 import { playerVolumeAtom } from "../states/atoms/playerVolumeAtom";
 
 /**
@@ -44,17 +43,7 @@ export function PlayerControlsButtonVolume() {
 				return;
 			}
 
-			mpdClient.command(
-				create(MpdRequestSchema, {
-					profile,
-					command: {
-						case: "setvol",
-						value: {
-							vol: volume,
-						},
-					},
-				}),
-			);
+			mpdClient.command(buildSetVolumeCommand(profile, volume));
 		},
 		[mpdClient, profile],
 	);

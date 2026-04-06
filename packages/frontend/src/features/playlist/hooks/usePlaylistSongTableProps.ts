@@ -1,5 +1,4 @@
-import { clone, create } from "@bufbuild/protobuf";
-import { MpdRequestSchema } from "@sola_mpd/shared/src/models/mpd/mpd_command_pb.js";
+import { clone } from "@bufbuild/protobuf";
 import { Plugin_PluginType } from "@sola_mpd/shared/src/models/plugin/plugin_pb.js";
 import type { Song } from "@sola_mpd/shared/src/models/song_pb.js";
 import {
@@ -23,7 +22,6 @@ import {
 	getSongTableContextMenuEditColumns,
 	getSongTableContextMenuReplace,
 	getSongTableContextMenuSimilarSongs,
-	getSongTableKey,
 	getTargetSongsForContextMenu,
 	type SongTableContextMenuItemParams,
 	SongTableKeyType,
@@ -33,6 +31,12 @@ import {
 	updateSongTableStateActionAtom,
 	useHandleSongDoubleClick,
 } from "../../song_table";
+import {
+	buildClearPlaylistCommands,
+	buildDropDuplicatePlaylistSongsCommands,
+	buildRemovePlaylistSongsCommands,
+	buildReorderPlaylistCommands,
+} from "../functions/playlistSongOperations";
 import { setIsPlaylistLoadingActionAtom } from "../states/actions/setIsPlaylistLoadingActionAtom";
 import { selectedPlaylistAtom } from "../states/atoms/playlistAtom";
 import { playlistVisibleSongsAtom } from "../states/atoms/playlistSongsAtom";
@@ -124,40 +128,12 @@ export function usePlaylistSongTableProps(
 							if (targetSongs.length === 0) {
 								return;
 							}
-
-							// Playlist doesn't support delete by id but only pos.
-							// To effectively remove songs from the playlist,
-							// clear the playlist and then add remaining songs again.
-							const targetKeys = targetSongs.map((song) =>
-								getSongTableKey(song, songTableKeyType),
-							);
-							const remainingSongs = params.sortedSongs.filter(
-								(song) =>
-									!targetKeys.includes(getSongTableKey(song, songTableKeyType)),
-							);
-
-							const commands = [
-								create(MpdRequestSchema, {
-									profile,
-									command: {
-										case: "playlistclear",
-										value: { name: selectedPlaylist.name },
-									},
-								}),
-							];
-							commands.push(
-								...remainingSongs.map((song) =>
-									create(MpdRequestSchema, {
-										profile,
-										command: {
-											case: "playlistadd",
-											value: {
-												name: selectedPlaylist.name,
-												uri: song.path,
-											},
-										},
-									}),
-								),
+							const commands = buildRemovePlaylistSongsCommands(
+								targetSongs,
+								params.sortedSongs,
+								selectedPlaylist.name,
+								profile,
+								songTableKeyType,
 							);
 							await mpdClient.commandBulk(commands);
 							notify({
@@ -178,15 +154,11 @@ export function usePlaylistSongTableProps(
 							) {
 								return;
 							}
-							await mpdClient.command(
-								create(MpdRequestSchema, {
-									profile,
-									command: {
-										case: "playlistclear",
-										value: { name: selectedPlaylist.name },
-									},
-								}),
+							const commands = buildClearPlaylistCommands(
+								selectedPlaylist.name,
+								profile,
 							);
+							await mpdClient.commandBulk(commands);
 							notify({
 								status: "success",
 								title: "Songs successfully cleared",
@@ -208,16 +180,13 @@ export function usePlaylistSongTableProps(
 							if (params.sortedSongs.length === 0) {
 								return;
 							}
-
-							const uniqueSongs = params.sortedSongs.reduce(
-								(uniqueList: Song[], song) =>
-									uniqueList.some((v) => v.path === song.path)
-										? uniqueList
-										: uniqueList.concat([song]),
-								[],
-							);
-
-							if (params.sortedSongs.length === uniqueSongs.length) {
+							const { commands, duplicateCount } =
+								buildDropDuplicatePlaylistSongsCommands(
+									params.sortedSongs,
+									selectedPlaylist.name,
+									profile,
+								);
+							if (duplicateCount === 0) {
 								notify({
 									status: "info",
 									title: "No duplicated songs",
@@ -225,39 +194,11 @@ export function usePlaylistSongTableProps(
 								});
 								return;
 							}
-
-							const commands = [
-								create(MpdRequestSchema, {
-									profile,
-									command: {
-										case: "playlistclear",
-										value: { name: selectedPlaylist.name },
-									},
-								}),
-							];
-							commands.push(
-								...uniqueSongs.map((song) =>
-									create(MpdRequestSchema, {
-										profile,
-										command: {
-											case: "playlistadd",
-											value: {
-												name: selectedPlaylist.name,
-												uri: song.path,
-											},
-										},
-									}),
-								),
-							);
 							await mpdClient.commandBulk(commands);
 							notify({
 								status: "success",
 								title: "Songs successfully removed",
-								description: `${
-									params.sortedSongs.length - uniqueSongs.length
-								} duplicated songs have been removed from the playlist "${
-									selectedPlaylist.name
-								}".`,
+								description: `${duplicateCount} duplicated songs have been removed from the playlist "${selectedPlaylist.name}".`,
 							});
 						},
 					},
@@ -303,29 +244,10 @@ export function usePlaylistSongTableProps(
 			) {
 				return;
 			}
-
-			const commands = [
-				create(MpdRequestSchema, {
-					profile,
-					command: {
-						case: "playlistclear",
-						value: { name: selectedPlaylist.name },
-					},
-				}),
-			];
-			commands.push(
-				...orderedSongs.map((song) =>
-					create(MpdRequestSchema, {
-						profile,
-						command: {
-							case: "playlistadd",
-							value: {
-								name: selectedPlaylist.name,
-								uri: song.path,
-							},
-						},
-					}),
-				),
+			const commands = buildReorderPlaylistCommands(
+				orderedSongs,
+				selectedPlaylist.name,
+				profile,
 			);
 			await mpdClient.commandBulk(commands);
 		},

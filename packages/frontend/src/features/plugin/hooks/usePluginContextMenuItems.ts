@@ -1,4 +1,4 @@
-import { Plugin_PluginType } from "@sola_mpd/shared/src/models/plugin/plugin_pb.js";
+import type { Plugin_PluginType } from "@sola_mpd/shared/src/models/plugin/plugin_pb.js";
 import { useAtomValue, useSetAtom } from "jotai";
 import { useNotification } from "../../../lib/mantine/hooks/useNotification";
 import type { ContextMenuItem } from "../../context_menu";
@@ -7,6 +7,7 @@ import {
 	type SongTableContextMenuItemParams,
 	type SongTableKeyType,
 } from "../../song_table";
+import { filterAvailablePlugins } from "../functions/pluginFiltering";
 import { pluginAtom } from "../states/atoms/pluginAtom";
 import {
 	isPreviousPluginStillRunningAtom,
@@ -36,45 +37,37 @@ export function usePluginContextMenuItems(
 		pluginExecutionModalOpenAtom,
 	);
 
-	const items: ContextMenuItem<SongTableContextMenuItemParams>[] = [];
-	for (const plugin of pluginState?.plugins || []) {
-		if (
-			!plugin.isAvailable ||
-			!(
-				plugin.info?.supportedTypes.includes(Plugin_PluginType.ON_ALL) ||
-				plugin.info?.supportedTypes.includes(pluginType)
-			)
-		) {
-			continue;
-		}
-		items.push({
-			name: plugin.info.contextMenuTitle,
-			onClick: async (params?: SongTableContextMenuItemParams) => {
-				if (params === undefined) {
-					return;
-				}
-				if (isPreviousPluginStillRunning) {
-					notify({
-						status: "warning",
-						title: "Previous plugin is still running",
-						description: "Please wait until the previous plugin finishes.",
-					});
-					return;
-				}
-				const targetSongs = getTargetSongsForContextMenu(
-					params,
-					songTableKeyType,
-				);
-				if (targetSongs.length === 0) {
-					return;
-				}
-				setPluginExecutionProps({
-					plugin,
-					songs: targetSongs,
+	const availablePlugins = filterAvailablePlugins(
+		pluginState?.plugins ?? [],
+		pluginType,
+	);
+
+	return availablePlugins.map((plugin) => ({
+		name: plugin.info?.contextMenuTitle ?? "",
+		onClick: async (params?: SongTableContextMenuItemParams) => {
+			if (params === undefined) {
+				return;
+			}
+			if (isPreviousPluginStillRunning) {
+				notify({
+					status: "warning",
+					title: "Previous plugin is still running",
+					description: "Please wait until the previous plugin finishes.",
 				});
-				setIsPluginExecutionModalOpen("start");
-			},
-		});
-	}
-	return items;
+				return;
+			}
+			const targetSongs = getTargetSongsForContextMenu(
+				params,
+				songTableKeyType,
+			);
+			if (targetSongs.length === 0) {
+				return;
+			}
+			setPluginExecutionProps({
+				plugin,
+				songs: targetSongs,
+			});
+			setIsPluginExecutionModalOpen("start");
+		},
+	}));
 }

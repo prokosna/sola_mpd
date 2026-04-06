@@ -9,12 +9,17 @@ export {
 	getSongTableKey,
 	getTargetSongsForContextMenu,
 } from "./functions/songTableKey";
+export {
+	getSongTableContextMenuAdd,
+	getSongTableContextMenuAddToPlaylist,
+	getSongTableContextMenuEditColumns,
+	getSongTableContextMenuReplace,
+	getSongTableContextMenuSimilarSongs,
+} from "./functions/songTableMenuItem";
 export { convertOrderingToOperations } from "./functions/songTableOrdering";
-
 // Hooks
 export { useColumnEditModalProps } from "./hooks/useColumnEditModalProps";
 export { useHandleSongDoubleClick } from "./hooks/useHandleSongDoubleClick";
-
 // Services
 export type { SongTableStateRepository } from "./services/SongTableStateRepository";
 export { refreshSongTableStateActionAtom } from "./states/actions/refreshSongTableStateActionAtom";
@@ -22,19 +27,11 @@ export { updateSongTableStateActionAtom } from "./states/actions/updateSongTable
 // States
 export { selectedSongsAtom } from "./states/atoms/selectedSongsAtom";
 export { songTableStateAtom } from "./states/atoms/songTableAtom";
-
 // Types
 export {
 	type SongTableContextMenuItemParams,
 	SongTableKeyType,
 } from "./types/songTableTypes";
-export {
-	getSongTableContextMenuAdd,
-	getSongTableContextMenuAddToPlaylist,
-	getSongTableContextMenuEditColumns,
-	getSongTableContextMenuReplace,
-	getSongTableContextMenuSimilarSongs,
-} from "./utils/songTableMenuItemUtils";
 // Utils
 export {
 	convertSongMetadataTagFromDisplayName,

@@ -1,4 +1,5 @@
 import { create, toJsonString } from "@bufbuild/protobuf";
+import { getSongMetadataAsString } from "@sola_mpd/shared/src/functions/songMetadata.js";
 import type { MpdRequest } from "@sola_mpd/shared/src/models/mpd/mpd_command_pb.js";
 import {
 	MpdRequestSchema,
@@ -6,8 +7,11 @@ import {
 } from "@sola_mpd/shared/src/models/mpd/mpd_command_pb.js";
 import type { MpdProfile } from "@sola_mpd/shared/src/models/mpd/mpd_profile_pb.js";
 import type { Song } from "@sola_mpd/shared/src/models/song_pb.js";
+import { Song_MetadataTag } from "@sola_mpd/shared/src/models/song_pb.js";
 
 import type { MpdClient } from "../../mpd";
+import type { SongTableKeyType } from "../types/songTableTypes";
+import { convertOrderingToOperations } from "./songTableOrdering";
 
 export function buildAddCommands(
 	songs: Song[],
@@ -26,10 +30,7 @@ export function buildAddCommands(
 	);
 }
 
-export function buildReplaceQueueCommands(
-	songs: Song[],
-	profile: MpdProfile,
-): MpdRequest[] {
+export function buildClearQueueCommands(profile: MpdProfile): MpdRequest[] {
 	return [
 		create(MpdRequestSchema, {
 			profile,
@@ -38,8 +39,80 @@ export function buildReplaceQueueCommands(
 				value: {},
 			},
 		}),
+	];
+}
+
+export function buildReplaceQueueCommands(
+	songs: Song[],
+	profile: MpdProfile,
+): MpdRequest[] {
+	return [
+		...buildClearQueueCommands(profile),
 		...buildAddCommands(songs, profile),
 	];
+}
+
+export function buildRemoveQueueSongsCommands(
+	targetSongs: Song[],
+	profile: MpdProfile,
+): MpdRequest[] {
+	return targetSongs.map((song) =>
+		create(MpdRequestSchema, {
+			profile,
+			command: {
+				case: "delete",
+				value: {
+					target: {
+						case: "id",
+						value: getSongMetadataAsString(song, Song_MetadataTag.ID),
+					},
+				},
+			},
+		}),
+	);
+}
+
+export function buildReorderQueueCommands(
+	currentSongs: Song[],
+	orderedSongs: Song[],
+	songTableKeyType: SongTableKeyType,
+	profile: MpdProfile,
+): MpdRequest[] {
+	const ops = convertOrderingToOperations(
+		currentSongs,
+		orderedSongs,
+		songTableKeyType,
+	);
+	return ops.map((op) =>
+		create(MpdRequestSchema, {
+			profile,
+			command: {
+				case: "move",
+				value: {
+					from: { case: "fromId", value: op.id },
+					to: String(op.to),
+				},
+			},
+		}),
+	);
+}
+
+export function buildPlaySongByIdCommand(
+	song: Song,
+	profile: MpdProfile,
+): MpdRequest {
+	return create(MpdRequestSchema, {
+		profile,
+		command: {
+			case: "play",
+			value: {
+				target: {
+					case: "id",
+					value: getSongMetadataAsString(song, Song_MetadataTag.ID),
+				},
+			},
+		},
+	});
 }
 
 export async function addSongsToQueue(

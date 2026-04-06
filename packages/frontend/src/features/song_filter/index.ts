@@ -3,4 +3,4 @@ export {
 	convertDisplayNameToOperator,
 	convertOperatorToDisplayName,
 	listAllFilterConditionOperators,
-} from "./utils/songFilterUtils";
+} from "./functions/songFilterConversion";

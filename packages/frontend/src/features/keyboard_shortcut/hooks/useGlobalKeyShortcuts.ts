@@ -1,10 +1,9 @@
-import { create } from "@bufbuild/protobuf";
-import { MpdRequestSchema } from "@sola_mpd/shared/src/models/mpd/mpd_command_pb.js";
 import { MpdPlayerStatus_PlaybackState } from "@sola_mpd/shared/src/models/mpd/mpd_player_pb.js";
 import { useAtomValue } from "jotai";
 
 import { mpdClientAtom } from "../../mpd";
 import { playerStatusPlaybackStateAtom } from "../../player";
+import { buildPauseCommand } from "../../player/functions/playerCommand";
 import { currentMpdProfileAtom } from "../../profile";
 
 import { useInputKeyCombination } from "./useInputKeyCombination";
@@ -53,37 +52,11 @@ export function useGlobalKeyShortcuts(): void {
 		}
 		switch (playerPlaybackState) {
 			case MpdPlayerStatus_PlaybackState.STOP:
-				mpdClient.command(
-					create(MpdRequestSchema, {
-						profile,
-						command: {
-							case: "pause",
-							value: { pause: false },
-						},
-					}),
-				);
-				break;
 			case MpdPlayerStatus_PlaybackState.PAUSE:
-				mpdClient.command(
-					create(MpdRequestSchema, {
-						profile,
-						command: {
-							case: "pause",
-							value: { pause: false },
-						},
-					}),
-				);
+				mpdClient.command(buildPauseCommand(profile, false));
 				break;
 			case MpdPlayerStatus_PlaybackState.PLAY:
-				mpdClient.command(
-					create(MpdRequestSchema, {
-						profile,
-						command: {
-							case: "pause",
-							value: { pause: true },
-						},
-					}),
-				);
+				mpdClient.command(buildPauseCommand(profile, true));
 				break;
 			default:
 				return;

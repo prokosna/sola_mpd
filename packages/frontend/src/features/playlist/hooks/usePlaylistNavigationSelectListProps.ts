@@ -1,5 +1,3 @@
-import { create } from "@bufbuild/protobuf";
-import { MpdRequestSchema } from "@sola_mpd/shared/src/models/mpd/mpd_command_pb.js";
 import { useAtomValue, useSetAtom } from "jotai";
 import { useCallback } from "react";
 
@@ -9,6 +7,7 @@ import type { ContextMenuSection } from "../../context_menu";
 import { mpdClientAtom } from "../../mpd";
 import { currentMpdProfileAtom } from "../../profile";
 import type { SelectListContextMenuItemParams } from "../../select_list";
+import { buildDeletePlaylistCommand } from "../functions/playlistSongOperations";
 import { setSelectedPlaylistActionAtom } from "../states/actions/setSelectedPlaylistActionAtom";
 import {
 	playlistsAtom,
@@ -59,17 +58,11 @@ export function usePlaylistNavigationSelectListProps() {
 								setSelectedPlaylist(undefined);
 							}
 
-							await mpdClient.command(
-								create(MpdRequestSchema, {
-									profile,
-									command: {
-										case: "rm",
-										value: {
-											name: params.clickedValue,
-										},
-									},
-								}),
+							const command = buildDeletePlaylistCommand(
+								params.clickedValue,
+								profile,
 							);
+							await mpdClient.command(command);
 							notify({
 								status: "success",
 								title: "Playlist successfully deleted",

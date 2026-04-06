@@ -7,6 +7,19 @@ import {
 
 import type { ProfileInput } from "../types/profileTypes";
 
+export function removeProfileFromState(
+	currentState: MpdProfileState,
+	profileName: string,
+): MpdProfileState | undefined {
+	const index = currentState.profiles.findIndex((p) => p.name === profileName);
+	if (index < 0) {
+		return undefined;
+	}
+	const newState = clone(MpdProfileStateSchema, currentState);
+	newState.profiles.splice(index, 1);
+	return newState;
+}
+
 export function buildMpdProfileStateWithNewProfile(
 	currentState: MpdProfileState,
 	input: ProfileInput,

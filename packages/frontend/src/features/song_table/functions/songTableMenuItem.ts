@@ -5,15 +5,12 @@ import type { MutableRefObject } from "react";
 import type { NotificationParams } from "../../../lib/mantine/hooks/useNotification";
 import type { ContextMenuItem } from "../../context_menu";
 import type { MpdClient } from "../../mpd";
-import {
-	addSongsToQueue,
-	replaceQueueWithSongs,
-} from "../functions/songTableCommand";
-import { getTargetSongsForContextMenu } from "../functions/songTableKey";
 import type {
 	SongTableContextMenuItemParams,
 	SongTableKeyType,
 } from "../types/songTableTypes";
+import { addSongsToQueue, replaceQueueWithSongs } from "./songTableCommand";
+import { getTargetSongsForContextMenu } from "./songTableKey";
 
 export function getSongTableContextMenuAdd(
 	songTableKeyType: SongTableKeyType,

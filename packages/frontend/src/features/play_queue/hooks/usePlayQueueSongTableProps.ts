@@ -1,11 +1,6 @@
-import { clone, create } from "@bufbuild/protobuf";
-import { getSongMetadataAsString } from "@sola_mpd/shared/src/functions/songMetadata.js";
-import { MpdRequestSchema } from "@sola_mpd/shared/src/models/mpd/mpd_command_pb.js";
+import { clone } from "@bufbuild/protobuf";
 import { Plugin_PluginType } from "@sola_mpd/shared/src/models/plugin/plugin_pb.js";
-import {
-	type Song,
-	Song_MetadataTag,
-} from "@sola_mpd/shared/src/models/song_pb.js";
+import type { Song } from "@sola_mpd/shared/src/models/song_pb.js";
 import {
 	type SongTableColumn,
 	SongTableStateSchema,
@@ -22,7 +17,6 @@ import { mpdClientAtom } from "../../mpd";
 import { usePluginContextMenuItems } from "../../plugin";
 import { currentMpdProfileAtom } from "../../profile";
 import {
-	convertOrderingToOperations,
 	getSongTableContextMenuAddToPlaylist,
 	getSongTableContextMenuEditColumns,
 	getSongTableContextMenuSimilarSongs,
@@ -34,6 +28,12 @@ import {
 	songTableStateAtom,
 	updateSongTableStateActionAtom,
 } from "../../song_table";
+import {
+	buildClearQueueCommands,
+	buildPlaySongByIdCommand,
+	buildRemoveQueueSongsCommands,
+	buildReorderQueueCommands,
+} from "../functions/playQueueSongOperations";
 import { setIsPlayQueueLoadingActionAtom } from "../states/actions/setIsPlayQueueLoadingActionAtom";
 import { playQueueVisibleSongsAtom } from "../states/atoms/playQueueSongsAtom";
 import {
@@ -105,22 +105,9 @@ export function usePlayQueueSongTableProps(
 							if (targetSongs.length === 0) {
 								return;
 							}
-							const commands = targetSongs.map((song) =>
-								create(MpdRequestSchema, {
-									profile,
-									command: {
-										case: "delete",
-										value: {
-											target: {
-												case: "id",
-												value: getSongMetadataAsString(
-													song,
-													Song_MetadataTag.ID,
-												),
-											},
-										},
-									},
-								}),
+							const commands = buildRemoveQueueSongsCommands(
+								targetSongs,
+								profile,
 							);
 							await mpdClient.commandBulk(commands);
 							notify({
@@ -140,15 +127,8 @@ export function usePlayQueueSongTableProps(
 							) {
 								return;
 							}
-							await mpdClient.command(
-								create(MpdRequestSchema, {
-									profile,
-									command: {
-										case: "clear",
-										value: {},
-									},
-								}),
-							);
+							const commands = buildClearQueueCommands(profile);
+							await mpdClient.commandBulk(commands);
 							notify({
 								status: "success",
 								title: "Songs successfully cleared",
@@ -198,22 +178,11 @@ export function usePlayQueueSongTableProps(
 			) {
 				return;
 			}
-			const ops = convertOrderingToOperations(
+			const commands = buildReorderQueueCommands(
 				songs,
 				orderedSongs,
 				songTableKeyType,
-			);
-			const commands = ops.map((op) =>
-				create(MpdRequestSchema, {
-					profile,
-					command: {
-						case: "move",
-						value: {
-							from: { case: "fromId", value: op.id },
-							to: String(op.to),
-						},
-					},
-				}),
+				profile,
 			);
 			await mpdClient.commandBulk(commands);
 		},
@@ -247,23 +216,8 @@ export function usePlayQueueSongTableProps(
 			if (profile === undefined || mpdClient === undefined) {
 				return;
 			}
-			await mpdClient.command(
-				create(MpdRequestSchema, {
-					profile,
-					command: {
-						case: "play",
-						value: {
-							target: {
-								case: "id",
-								value: getSongMetadataAsString(
-									clickedSong,
-									Song_MetadataTag.ID,
-								),
-							},
-						},
-					},
-				}),
-			);
+			const command = buildPlaySongByIdCommand(clickedSong, profile);
+			await mpdClient.command(command);
 		},
 		[mpdClient, profile],
 	);

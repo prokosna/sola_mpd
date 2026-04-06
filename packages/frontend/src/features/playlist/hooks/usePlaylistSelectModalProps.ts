@@ -1,5 +1,3 @@
-import { create } from "@bufbuild/protobuf";
-import { MpdRequestSchema } from "@sola_mpd/shared/src/models/mpd/mpd_command_pb.js";
 import type { Playlist } from "@sola_mpd/shared/src/models/playlist_pb.js";
 import type { Song } from "@sola_mpd/shared/src/models/song_pb.js";
 import { useAtomValue } from "jotai";
@@ -8,6 +6,7 @@ import { useCallback, useRef, useState } from "react";
 import { useNotification } from "../../../lib/mantine/hooks/useNotification";
 import { mpdClientAtom } from "../../mpd";
 import { currentMpdProfileAtom } from "../../profile";
+import { buildAddSongsToPlaylistCommands } from "../functions/playlistSongOperations";
 
 /**
  * Hook for playlist selection modal.
@@ -33,17 +32,10 @@ export function usePlaylistSelectModal() {
 				return;
 			}
 
-			const commands = songsToAddToPlaylistRef.current.map((song) =>
-				create(MpdRequestSchema, {
-					profile,
-					command: {
-						case: "playlistadd",
-						value: {
-							name: playlist.name,
-							uri: song.path,
-						},
-					},
-				}),
+			const commands = buildAddSongsToPlaylistCommands(
+				songsToAddToPlaylistRef.current,
+				playlist.name,
+				profile,
 			);
 			if (commands.length === 0) {
 				return;

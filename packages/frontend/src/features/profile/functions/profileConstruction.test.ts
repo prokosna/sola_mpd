@@ -7,7 +7,10 @@ import { describe, expect, it } from "vitest";
 
 import type { ProfileInput } from "../types/profileTypes";
 
-import { buildMpdProfileStateWithNewProfile } from "./profileConstruction";
+import {
+	buildMpdProfileStateWithNewProfile,
+	removeProfileFromState,
+} from "./profileConstruction";
 
 const baseInput: ProfileInput = {
 	name: "New Profile",
@@ -80,5 +83,57 @@ describe("buildMpdProfileStateWithNewProfile", () => {
 
 		buildMpdProfileStateWithNewProfile(currentState, baseInput);
 		expect(currentState.profiles).toHaveLength(0);
+	});
+});
+
+describe("removeProfileFromState", () => {
+	it("should remove a profile by name", () => {
+		const profileA = create(MpdProfileSchema, {
+			name: "A",
+			host: "localhost",
+			port: 6600,
+		});
+		const profileB = create(MpdProfileSchema, {
+			name: "B",
+			host: "localhost",
+			port: 6601,
+		});
+		const state = create(MpdProfileStateSchema, {
+			profiles: [profileA, profileB],
+		});
+
+		const result = removeProfileFromState(state, "A");
+		expect(result).toBeDefined();
+		expect(result?.profiles).toHaveLength(1);
+		expect(result?.profiles[0].name).toBe("B");
+	});
+
+	it("should return undefined when profile not found", () => {
+		const state = create(MpdProfileStateSchema, {
+			profiles: [
+				create(MpdProfileSchema, {
+					name: "A",
+					host: "localhost",
+					port: 6600,
+				}),
+			],
+		});
+
+		const result = removeProfileFromState(state, "NonExistent");
+		expect(result).toBeUndefined();
+	});
+
+	it("should not mutate the original state", () => {
+		const profileA = create(MpdProfileSchema, {
+			name: "A",
+			host: "localhost",
+			port: 6600,
+		});
+		const state = create(MpdProfileStateSchema, {
+			profiles: [profileA],
+		});
+
+		removeProfileFromState(state, "A");
+		expect(state.profiles).toHaveLength(1);
 	});
 });

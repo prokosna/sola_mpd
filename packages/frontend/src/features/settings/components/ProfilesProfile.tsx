@@ -1,15 +1,14 @@
-import { clone } from "@bufbuild/protobuf";
 import { Button, Table } from "@mantine/core";
-import {
-	type MpdProfile,
-	type MpdProfileState,
-	MpdProfileStateSchema,
+import type {
+	MpdProfile,
+	MpdProfileState,
 } from "@sola_mpd/shared/src/models/mpd/mpd_profile_pb.js";
 import { useSetAtom } from "jotai";
 import { useCallback } from "react";
 import { useNotification } from "../../../lib/mantine/hooks/useNotification";
 import { UpdateMode } from "../../../types/stateTypes";
 import { updateMpdProfileStateActionAtom } from "../../profile";
+import { removeProfileFromState } from "../../profile/functions/profileConstruction";
 
 export type ProfilesProfileProps = {
 	index: number;
@@ -30,16 +29,12 @@ export function ProfilesProfile(props: ProfilesProfileProps) {
 	const updateMpdProfileState = useSetAtom(updateMpdProfileStateActionAtom);
 
 	const handleProfileDeleted = useCallback(() => {
-		const newMpdProfileState = clone(MpdProfileStateSchema, mpdProfileState);
-		const index = newMpdProfileState.profiles.findIndex(
-			(p) => p.name === profile.name,
-		);
-		if (index < 0) {
+		const newState = removeProfileFromState(mpdProfileState, profile.name);
+		if (newState === undefined) {
 			return;
 		}
-		newMpdProfileState.profiles.splice(index, 1);
 		updateMpdProfileState({
-			state: newMpdProfileState,
+			state: newState,
 			mode: UpdateMode.LOCAL_STATE | UpdateMode.PERSIST,
 		});
 		notify({
