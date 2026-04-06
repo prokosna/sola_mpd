@@ -6,8 +6,8 @@ import type { NotificationParams } from "../../../lib/mantine/hooks/useNotificat
 import type { ContextMenuItem } from "../../context_menu";
 import type { MpdClient } from "../../mpd";
 import {
-	buildAddCommands,
-	buildReplaceQueueCommands,
+	addSongsToQueue,
+	replaceQueueWithSongs,
 } from "../functions/songTableCommand";
 import { getTargetSongsForContextMenu } from "../functions/songTableKey";
 import type {
@@ -38,8 +38,7 @@ export function getSongTableContextMenuAdd(
 			if (targetSongs.length === 0) {
 				return;
 			}
-			const commands = buildAddCommands(targetSongs, profile);
-			await mpdClient.commandBulk(commands);
+			await addSongsToQueue(mpdClient, targetSongs, profile);
 			showNotification({
 				status: "success",
 				title: "Added songs to queue",
@@ -72,8 +71,7 @@ export function getSongTableContextMenuReplace(
 			if (targetSongs.length === 0) {
 				return;
 			}
-			const commands = buildReplaceQueueCommands(targetSongs, profile);
-			await mpdClient.commandBulk(commands);
+			await replaceQueueWithSongs(mpdClient, targetSongs, profile);
 			showNotification({
 				status: "success",
 				title: "Replaced queue with selected songs",

@@ -1,4 +1,4 @@
-import { create } from "@bufbuild/protobuf";
+import { create, toJsonString } from "@bufbuild/protobuf";
 import { StringValueSchema } from "@bufbuild/protobuf/wkt";
 import { escapeRegexString } from "@sola_mpd/shared/src/functions/mpdConverters.js";
 import { convertSongMetadataValueToString } from "@sola_mpd/shared/src/functions/songMetadata.js";
@@ -10,9 +10,16 @@ import {
 	FilterConditionSchema,
 } from "@sola_mpd/shared/src/models/filter_pb.js";
 import {
+	MpdRequestSchema,
+	MpdResponseSchema,
+} from "@sola_mpd/shared/src/models/mpd/mpd_command_pb.js";
+import type { MpdProfile } from "@sola_mpd/shared/src/models/mpd/mpd_profile_pb.js";
+import {
 	Song_MetadataTag,
 	Song_MetadataValueSchema,
 } from "@sola_mpd/shared/src/models/song_pb.js";
+
+import type { MpdClient } from "../../../mpd";
 
 export function listBrowserSongMetadataTags(): Song_MetadataTag[] {
 	return [
@@ -212,4 +219,58 @@ export function resetAllBrowserFilters(
 		}),
 	);
 	return normalizeBrowserFilters(newFilters);
+}
+
+export async function fetchBrowserFilterValues(
+	mpdClient: MpdClient,
+	profile: MpdProfile,
+	browserFilters: BrowserFilter[],
+	collator: Intl.Collator,
+): Promise<Map<Song_MetadataTag, string[]>> {
+	const selectedSortedFilters = Array.from(
+		browserFilters.filter(
+			(browserFilter) => browserFilter.selectedValues.length !== 0,
+		),
+	).sort((a, b) => a.selectedOrder - b.selectedOrder);
+
+	const browserFilterValuesPairs: [Song_MetadataTag, string[]][] =
+		await Promise.all(
+			browserFilters.map(async (browserFilter) => {
+				const conditions: FilterCondition[] = [];
+				if (browserFilter.selectedOrder !== 1) {
+					for (const selectedFilter of selectedSortedFilters) {
+						if (browserFilter === selectedFilter) {
+							break;
+						}
+						const condition = convertBrowserFilterToCondition(selectedFilter);
+						if (condition === undefined) {
+							continue;
+						}
+						conditions.push(condition);
+					}
+				}
+
+				const req = create(MpdRequestSchema, {
+					profile,
+					command: {
+						case: "list",
+						value: {
+							tag: browserFilter.tag,
+							conditions,
+						},
+					},
+				});
+				const res = await mpdClient.command(req);
+				if (res.command.case !== "list") {
+					throw Error(
+						`Invalid MPD response: ${toJsonString(MpdResponseSchema, res)}`,
+					);
+				}
+				const values = res.command.value.values;
+				const sortedValues = values.sort((a, b) => collator.compare(a, b));
+				return [browserFilter.tag, sortedValues];
+			}),
+		);
+
+	return new Map(browserFilterValuesPairs);
 }

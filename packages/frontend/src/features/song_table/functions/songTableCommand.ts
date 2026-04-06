@@ -42,6 +42,24 @@ export function buildReplaceQueueCommands(
 	];
 }
 
+export async function addSongsToQueue(
+	mpdClient: MpdClient,
+	songs: Song[],
+	profile: MpdProfile,
+): Promise<void> {
+	const commands = buildAddCommands(songs, profile);
+	await mpdClient.commandBulk(commands);
+}
+
+export async function replaceQueueWithSongs(
+	mpdClient: MpdClient,
+	songs: Song[],
+	profile: MpdProfile,
+): Promise<void> {
+	const commands = buildReplaceQueueCommands(songs, profile);
+	await mpdClient.commandBulk(commands);
+}
+
 export async function addSongAndPlay(
 	song: Song,
 	mpdClient: MpdClient,

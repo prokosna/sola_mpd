@@ -9,7 +9,7 @@ import { globalFilterTokensAtom } from "../../../global_filter/states/atoms/glob
 import { pathnameAtom } from "../../../location/states/atoms/locationAtom";
 import { mpdClientAtom } from "../../../mpd/states/atoms/mpdClientAtom";
 import { currentMpdProfileAtom } from "../../../profile/states/atoms/mpdProfileAtom";
-import { fetchSearchSongs } from "../../utils/searchSongsUtils";
+import { fetchSearchSongs } from "../../functions/search";
 import { searchSongTableColumnsAtom } from "./searchEditAtom";
 
 export const targetSearchAtom = atom<Search | undefined>(undefined);

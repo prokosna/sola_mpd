@@ -10,20 +10,8 @@ import type { Song } from "@sola_mpd/shared/src/models/song_pb.js";
 
 import type { MpdClient } from "../../../mpd";
 
-import { convertBrowserFilterToCondition } from "../functions/browserFilter";
+import { convertBrowserFilterToCondition } from "./browserFilter";
 
-/**
- * Fetches songs from MPD that match the current browser filter conditions.
- *
- * Converts browser filters to MPD filter conditions and executes a search.
- * If no filters are selected, returns an empty array to avoid fetching all songs.
- *
- * @param mpdClient Client for MPD communication
- * @param profile Current MPD profile
- * @param browserFilters Active browser filters
- * @returns Promise resolving to matching songs, or empty array if no filters active
- * @throws Error if MPD response is invalid
- */
 export async function fetchBrowserSongs(
 	mpdClient: MpdClient,
 	profile: MpdProfile,

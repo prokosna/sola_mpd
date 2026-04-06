@@ -9,7 +9,7 @@ import { pathnameAtom } from "../../../../location/states/atoms/locationAtom";
 import { mpdClientAtom } from "../../../../mpd/states/atoms/mpdClientAtom";
 import { currentMpdProfileAtom } from "../../../../profile/states/atoms/mpdProfileAtom";
 import { songTableStateAtom } from "../../../../song_table/states/atoms/songTableAtom";
-import { fetchBrowserSongs } from "../../../common/utils/browserSongsUtils";
+import { fetchBrowserSongs } from "../../../common/functions/browserSongs";
 import { browserFiltersAtom } from "./browserFiltersAtom";
 
 export const browserSongsAsyncAtom = atomWithRefresh(async (get) => {

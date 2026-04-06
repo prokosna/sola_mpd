@@ -1,4 +1,4 @@
-import { clone, create } from "@bufbuild/protobuf";
+import { clone, create, toJsonString } from "@bufbuild/protobuf";
 import {
 	convertSongMetadataValueToString,
 	convertStringToSongMetadataValue,
@@ -8,6 +8,11 @@ import {
 	FilterCondition_Operator,
 	FilterConditionSchema,
 } from "@sola_mpd/shared/src/models/filter_pb.js";
+import {
+	MpdRequestSchema,
+	MpdResponseSchema,
+} from "@sola_mpd/shared/src/models/mpd/mpd_command_pb.js";
+import type { MpdProfile } from "@sola_mpd/shared/src/models/mpd/mpd_profile_pb.js";
 import type { Query, Search } from "@sola_mpd/shared/src/models/search_pb.js";
 import {
 	QuerySchema,
@@ -20,9 +25,11 @@ import {
 } from "@sola_mpd/shared/src/models/song_pb.js";
 import type { SongTableColumn } from "@sola_mpd/shared/src/models/song_table_pb.js";
 import { v4 as uuidv4 } from "uuid";
+import type { MpdClient } from "../../mpd";
 import {
 	convertDisplayNameToOperator,
 	convertOperatorToDisplayName,
+	filterSongsByAndConditions,
 } from "../../song_filter";
 import {
 	convertSongMetadataTagFromDisplayName,
@@ -255,4 +262,64 @@ export function convertFormValuesToSearch(values: SearchFormValues): Search {
 		})),
 		columns: values.columns,
 	});
+}
+
+export async function fetchSearchSongs(
+	mpdClient: MpdClient,
+	profile: MpdProfile,
+	search: Search,
+): Promise<Song[]> {
+	const searchConditions = convertSearchToConditions(search);
+
+	if (searchConditions.length === 0) {
+		return [];
+	}
+
+	const songsList = await Promise.all(
+		searchConditions.map(async (searchCondition) => {
+			let songs: Song[];
+
+			const mpdConditions = searchCondition.mpdConditions;
+			if (mpdConditions.length > 0) {
+				const res = await mpdClient.command(
+					create(MpdRequestSchema, {
+						profile,
+						command: {
+							case: "search",
+							value: {
+								conditions: mpdConditions,
+							},
+						},
+					}),
+				);
+				if (res.command.case !== "search") {
+					throw Error(
+						`Invalid MPD response: ${toJsonString(MpdResponseSchema, res)}`,
+					);
+				}
+				songs = res.command.value.songs;
+			} else {
+				const res = await mpdClient.command(
+					create(MpdRequestSchema, {
+						profile,
+						command: {
+							case: "listAllSongs",
+							value: {},
+						},
+					}),
+				);
+				if (res.command.case !== "listAllSongs") {
+					throw Error(
+						`Invalid MPD response: ${toJsonString(MpdResponseSchema, res)}`,
+					);
+				}
+				songs = res.command.value.songs;
+			}
+
+			const nonMpdConditions = searchCondition.nonMpdConditions;
+			return filterSongsByAndConditions(songs, nonMpdConditions);
+		}),
+	);
+
+	return mergeSongsList(songsList);
 }

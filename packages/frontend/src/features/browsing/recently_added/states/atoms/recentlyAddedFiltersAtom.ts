@@ -14,7 +14,7 @@ import { pathnameAtom } from "../../../../location/states/atoms/locationAtom";
 import { mpdClientAtom } from "../../../../mpd/states/atoms/mpdClientAtom";
 import { currentMpdProfileAtom } from "../../../../profile/states/atoms/mpdProfileAtom";
 import { localeCollatorAtom } from "../../../../settings/states/atoms/localeAtom";
-import { fetchBrowserFilterValues } from "../../../common/utils/browserFilterUtils";
+import { fetchBrowserFilterValues } from "../../../common/functions/browserFilter";
 import {
 	extractRecentlyAddedFilterValues,
 	sortRecentlyAddedFilterValues,
