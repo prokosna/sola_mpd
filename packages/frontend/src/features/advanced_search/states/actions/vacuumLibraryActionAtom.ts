@@ -1,6 +1,6 @@
 import { atom } from "jotai";
 
-import { vacuumLibrary } from "../../utils/advancedSearchUtils";
+import { vacuumLibrary } from "../../functions/advancedSearchOperations";
 import { advancedSearchEndpointAtom } from "../atoms/advancedSearchAtom";
 import { advancedSearchClientAtom } from "../atoms/advancedSearchClientAtom";
 

@@ -5,7 +5,7 @@ import { atomWithRefresh, atomWithStorage } from "jotai/utils";
 
 import { atomWithSync } from "../../../../lib/jotai/atomWithSync";
 import { currentMpdProfileAtom } from "../../../profile/states/atoms/mpdProfileAtom";
-import { searchSimilarSongs } from "../../utils/similaritySearchUtils";
+import { searchSimilarSongs } from "../../functions/similaritySearch";
 import {
 	advancedSearchEndpointAtom,
 	advancedSearchQueryLimitAtom,

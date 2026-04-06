@@ -1,6 +1,6 @@
 import { atom } from "jotai";
 
-import { analyze } from "../../utils/advancedSearchUtils";
+import { analyze } from "../../functions/advancedSearchOperations";
 import { advancedSearchEndpointAtom } from "../atoms/advancedSearchAtom";
 import { advancedSearchClientAtom } from "../atoms/advancedSearchClientAtom";
 

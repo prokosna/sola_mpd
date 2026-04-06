@@ -3,7 +3,7 @@ import { atomWithStorage } from "jotai/utils";
 
 import { ENV_ADVANCED_SEARCH_ENDPOINT } from "../../../../const/envs";
 import { atomWithSync } from "../../../../lib/jotai/atomWithSync";
-import { fetchAdvancedSearchStats } from "../../utils/advancedSearchUtils";
+import { fetchAdvancedSearchStats } from "../../functions/advancedSearchOperations";
 import { advancedSearchClientAtom } from "./advancedSearchClientAtom";
 
 export const advancedSearchEndpointAtom = atom<string | undefined>(
