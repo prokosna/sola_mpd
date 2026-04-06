@@ -7,17 +7,6 @@ import type { MpdProfile } from "@sola_mpd/shared/src/models/mpd/mpd_profile_pb.
 
 import type { MpdClient } from "../../mpd";
 
-/**
- * Fetches all songs from the MPD server using the listAllSongs command.
- *
- * @param mpdClient - MPD client instance for server communication
- * @param mpdProfile - Profile containing server connection details
- * @returns Promise resolving to array of Song objects from the server
- * @throws {Error} When:
- *   - Server connection fails
- *   - Response command type doesn't match listAllSongs
- *   - Response format is invalid
- */
 export async function fetchAllSongs(
 	mpdClient: MpdClient,
 	mpdProfile: MpdProfile,

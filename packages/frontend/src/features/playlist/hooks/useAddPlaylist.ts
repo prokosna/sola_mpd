@@ -3,7 +3,7 @@ import type { Playlist } from "@sola_mpd/shared/src/models/playlist_pb.js";
 import { useCallback } from "react";
 
 import type { MpdClient } from "../../mpd";
-import { addPlaylist } from "../utils/playlistUtils";
+import { addPlaylist } from "../functions/playlistOperations";
 
 /**
  * Hook for adding playlists to MPD server.

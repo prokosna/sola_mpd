@@ -9,14 +9,6 @@ import type { Song } from "@sola_mpd/shared/src/models/song_pb.js";
 
 import type { MpdClient } from "../../mpd";
 
-/**
- * Fetches songs for the file explorer from the MPD server.
- * @param mpdClient - The MPD client instance used to communicate with the server.
- * @param mpdProfile - The MPD profile containing connection details.
- * @param folder - The folder to fetch songs from.
- * @returns A promise that resolves to an array of Song objects.
- * @throws Error if the MPD response is invalid.
- */
 export async function fetchFileExploreSongs(
 	mpdClient: MpdClient,
 	mpdProfile: MpdProfile,
@@ -39,4 +31,25 @@ export async function fetchFileExploreSongs(
 		);
 	}
 	return res.command.value.songs;
+}
+
+export async function fetchFileExploreFolders(
+	mpdClient: MpdClient,
+	mpdProfile: MpdProfile,
+): Promise<Folder[]> {
+	const res = await mpdClient.command(
+		create(MpdRequestSchema, {
+			profile: mpdProfile,
+			command: {
+				case: "listAllFolders",
+				value: {},
+			},
+		}),
+	);
+	if (res.command.case !== "listAllFolders") {
+		throw Error(
+			`Invalid MPD response: ${toJsonString(MpdResponseSchema, res)}`,
+		);
+	}
+	return res.command.value.folders;
 }

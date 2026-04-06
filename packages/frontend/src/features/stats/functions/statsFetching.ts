@@ -7,33 +7,20 @@ import type { MpdProfile } from "@sola_mpd/shared/src/models/mpd/mpd_profile_pb.
 
 import type { MpdClient } from "../../mpd";
 
-/**
- * Fetch MPD output devices.
- *
- * Gets device list with ID, name, plugin, and state.
- *
- * @param mpdClient MPD client instance
- * @param profile MPD profile
- * @returns Output devices array
- * @throws On invalid response
- */
-export async function fetchOutputDevices(
-	mpdClient: MpdClient,
-	profile: MpdProfile,
-) {
+export async function fetchStats(mpdClient: MpdClient, mpdProfile: MpdProfile) {
 	const res = await mpdClient.command(
 		create(MpdRequestSchema, {
-			profile,
+			profile: mpdProfile,
 			command: {
-				case: "outputs",
+				case: "stats",
 				value: {},
 			},
 		}),
 	);
-	if (res.command.case !== "outputs") {
+	if (res.command.case !== "stats") {
 		throw Error(
 			`Invalid MPD response: ${toJsonString(MpdResponseSchema, res)}`,
 		);
 	}
-	return res.command.value.devices;
+	return res.command.value.stats;
 }

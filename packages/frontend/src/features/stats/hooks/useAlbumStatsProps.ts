@@ -6,8 +6,8 @@ import { useAtomValue } from "jotai";
 import { useMemo } from "react";
 
 import type { CardStatsNumberProps } from "../components/CardStatsNumber";
+import { getMetadataValueCountDistinct } from "../functions/statsCalculation";
 import { statsAtom } from "../states/atoms/statsAtom";
-import { getMetadataValueCountDistinct } from "../utils/statsUtils";
 
 /**
  * Custom hook to generate props for album statistics.

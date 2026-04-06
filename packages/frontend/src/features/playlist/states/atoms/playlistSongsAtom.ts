@@ -9,7 +9,7 @@ import { pathnameAtom } from "../../../location/states/atoms/locationAtom";
 import { mpdClientAtom } from "../../../mpd/states/atoms/mpdClientAtom";
 import { currentMpdProfileAtom } from "../../../profile/states/atoms/mpdProfileAtom";
 import { songTableStateAtom } from "../../../song_table/states/atoms/songTableAtom";
-import { fetchPlaylistSongs } from "../../utils/playlistUtils";
+import { fetchPlaylistSongs } from "../../functions/playlistOperations";
 
 import { selectedPlaylistAtom } from "./playlistAtom";
 

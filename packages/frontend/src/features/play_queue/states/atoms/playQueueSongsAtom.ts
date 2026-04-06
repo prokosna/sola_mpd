@@ -9,7 +9,7 @@ import { pathnameAtom } from "../../../location/states/atoms/locationAtom";
 import { mpdClientAtom } from "../../../mpd/states/atoms/mpdClientAtom";
 import { currentMpdProfileAtom } from "../../../profile/states/atoms/mpdProfileAtom";
 import { songTableStateAtom } from "../../../song_table/states/atoms/songTableAtom";
-import { fetchPlayQueueSongs } from "../../utils/playQueueSongsUtils";
+import { fetchPlayQueueSongs } from "../../functions/playQueueFetching";
 
 export const playQueueSongsAsyncAtom = atomWithRefresh(async (get) => {
 	const mpdClient = get(mpdClientAtom);

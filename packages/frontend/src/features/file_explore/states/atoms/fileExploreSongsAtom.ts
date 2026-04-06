@@ -8,7 +8,7 @@ import { pathnameAtom } from "../../../location/states/atoms/locationAtom";
 import { mpdClientAtom } from "../../../mpd/states/atoms/mpdClientAtom";
 import { currentMpdProfileAtom } from "../../../profile/states/atoms/mpdProfileAtom";
 import { songTableStateAtom } from "../../../song_table/states/atoms/songTableAtom";
-import { fetchFileExploreSongs } from "../../utils/fileExploreSongsUtils";
+import { fetchFileExploreSongs } from "../../functions/fileExploreFetching";
 
 import { selectedFileExploreFolderAtom } from "./fileExploreFoldersAtom";
 
