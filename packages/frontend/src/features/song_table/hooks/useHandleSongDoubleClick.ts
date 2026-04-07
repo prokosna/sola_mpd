@@ -1,21 +1,16 @@
-import type { MpdProfile } from "@sola_mpd/shared/src/models/mpd/mpd_profile_pb.js";
 import type { Song } from "@sola_mpd/shared/src/models/song_pb.js";
+import { useSetAtom } from "jotai";
 import { useCallback } from "react";
 
-import type { MpdClient } from "../../mpd";
-import { addSongAndPlay } from "../functions/songTableCommand";
+import { addSongAndPlayActionAtom } from "../states/actions/addSongAndPlayActionAtom";
 
-export function useHandleSongDoubleClick(
-	mpdClient?: MpdClient,
-	mpdProfile?: MpdProfile,
-) {
+export function useHandleSongDoubleClick() {
+	const addSongAndPlay = useSetAtom(addSongAndPlayActionAtom);
+
 	return useCallback(
 		async (clickedSong: Song) => {
-			if (mpdProfile === undefined || mpdClient === undefined) {
-				return;
-			}
-			await addSongAndPlay(clickedSong, mpdClient, mpdProfile);
+			await addSongAndPlay(clickedSong);
 		},
-		[mpdClient, mpdProfile],
+		[addSongAndPlay],
 	);
 }

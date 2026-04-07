@@ -1,9 +1,7 @@
 import { create } from "@bufbuild/protobuf";
-import { MpdProfileSchema } from "@sola_mpd/shared/src/models/mpd/mpd_profile_pb.js";
 import { SongSchema } from "@sola_mpd/shared/src/models/song_pb.js";
 import { describe, expect, it, vi } from "vitest";
 
-import type { MpdClient } from "../../mpd";
 import { SongTableKeyType } from "../types/songTableTypes";
 import {
 	getSongTableContextMenuAdd,
@@ -13,26 +11,12 @@ import {
 	getSongTableContextMenuSimilarSongs,
 } from "./songTableMenuItem";
 
-function createMockMpdClient(): MpdClient {
-	return {
-		command: vi.fn().mockResolvedValue(undefined),
-		commandBulk: vi.fn().mockResolvedValue(undefined),
-	};
-}
-
-const profile = create(MpdProfileSchema, {
-	name: "test",
-	host: "localhost",
-	port: 6600,
-});
-
 describe("getSongTableContextMenuAdd", () => {
 	it("should create an Add menu item", () => {
 		const item = getSongTableContextMenuAdd(
 			SongTableKeyType.PATH,
 			vi.fn(),
-			profile,
-			createMockMpdClient(),
+			vi.fn().mockResolvedValue(undefined),
 		);
 		expect(item.name).toBe("Add");
 		expect(item.onClick).toBeDefined();
@@ -42,8 +26,7 @@ describe("getSongTableContextMenuAdd", () => {
 		const item = getSongTableContextMenuAdd(
 			SongTableKeyType.PATH,
 			vi.fn(),
-			profile,
-			createMockMpdClient(),
+			vi.fn().mockResolvedValue(undefined),
 		);
 		await expect(item.onClick(undefined)).resolves.toBeUndefined();
 	});
@@ -54,8 +37,7 @@ describe("getSongTableContextMenuReplace", () => {
 		const item = getSongTableContextMenuReplace(
 			SongTableKeyType.PATH,
 			vi.fn(),
-			profile,
-			createMockMpdClient(),
+			vi.fn().mockResolvedValue(undefined),
 		);
 		expect(item.name).toBe("Replace");
 	});

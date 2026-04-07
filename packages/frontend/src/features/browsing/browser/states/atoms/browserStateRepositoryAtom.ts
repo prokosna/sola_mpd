@@ -1,8 +1,5 @@
-import { atomWithDefault } from "jotai/utils";
-
-import type { BrowserStateRepository } from "../../services/BrowserStateRepository";
+import { createStateRepositoryAtom } from "../../../../common/states/atoms/stateRepositoryAtom";
+import type { BrowserStateRepository } from "../../repositories/BrowserStateRepository";
 
 export const browserStateRepositoryAtom =
-	atomWithDefault<BrowserStateRepository>(() => {
-		throw new Error("Not initialized. Should be setup DI in the provider.");
-	});
+	createStateRepositoryAtom<BrowserStateRepository>();

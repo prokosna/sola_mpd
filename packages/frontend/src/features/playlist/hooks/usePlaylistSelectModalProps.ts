@@ -1,12 +1,10 @@
 import type { Playlist } from "@sola_mpd/shared/src/models/playlist_pb.js";
 import type { Song } from "@sola_mpd/shared/src/models/song_pb.js";
-import { useAtomValue } from "jotai";
+import { useSetAtom } from "jotai";
 import { useCallback, useRef, useState } from "react";
 
 import { useNotification } from "../../../lib/mantine/hooks/useNotification";
-import { mpdClientAtom } from "../../mpd";
-import { currentMpdProfileAtom } from "../../profile";
-import { buildAddSongsToPlaylistCommands } from "../functions/playlistSongOperations";
+import { addSongsToPlaylistActionAtom } from "../states/actions/addSongsToPlaylistActionAtom";
 
 /**
  * Hook for playlist selection modal.
@@ -23,33 +21,27 @@ export function usePlaylistSelectModal() {
 	const [isPlaylistSelectModalOpen, setIsPlaylistSelectModalOpen] =
 		useState(false);
 
-	const profile = useAtomValue(currentMpdProfileAtom);
-	const mpdClient = useAtomValue(mpdClientAtom);
+	const addSongsToPlaylist = useSetAtom(addSongsToPlaylistActionAtom);
 
 	const onOk = useCallback(
 		async (playlist: Playlist) => {
-			if (profile === undefined || mpdClient === undefined) {
+			const songs = songsToAddToPlaylistRef.current;
+			if (songs.length === 0) {
 				return;
 			}
 
-			const commands = buildAddSongsToPlaylistCommands(
-				songsToAddToPlaylistRef.current,
-				playlist.name,
-				profile,
-			);
-			if (commands.length === 0) {
-				return;
-			}
-
-			await mpdClient.commandBulk(commands);
+			await addSongsToPlaylist({
+				songs,
+				playlistName: playlist.name,
+			});
 			setIsPlaylistSelectModalOpen(false);
 			notify({
 				status: "success",
 				title: "Songs successfully added",
-				description: `${songsToAddToPlaylistRef.current.length} songs have been added to ${playlist.name}.`,
+				description: `${songs.length} songs have been added to ${playlist.name}.`,
 			});
 		},
-		[mpdClient, notify, profile],
+		[addSongsToPlaylist, notify],
 	);
 
 	const onCancel = useCallback(async () => {

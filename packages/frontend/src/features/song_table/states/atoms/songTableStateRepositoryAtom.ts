@@ -1,8 +1,5 @@
-import { atomWithDefault } from "jotai/utils";
-
-import type { SongTableStateRepository } from "../../services/SongTableStateRepository";
+import { createStateRepositoryAtom } from "../../../common/states/atoms/stateRepositoryAtom";
+import type { SongTableStateRepository } from "../../repositories/SongTableStateRepository";
 
 export const songTableStateRepositoryAtom =
-	atomWithDefault<SongTableStateRepository>(() => {
-		throw new Error("Not initialized. Should be setup DI in the provider.");
-	});
+	createStateRepositoryAtom<SongTableStateRepository>();

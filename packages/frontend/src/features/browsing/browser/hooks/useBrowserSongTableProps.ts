@@ -12,15 +12,15 @@ import { useNotification } from "../../../../lib/mantine/hooks/useNotification";
 import { UpdateMode } from "../../../../types/stateTypes";
 import { useSimilaritySearchContextMenuProps } from "../../../advanced_search";
 import type { ContextMenuSection } from "../../../context_menu";
-import { mpdClientAtom } from "../../../mpd";
 import { usePluginContextMenuItems } from "../../../plugin";
-import { currentMpdProfileAtom } from "../../../profile";
 import {
+	addSongsToQueueActionAtom,
 	getSongTableContextMenuAdd,
 	getSongTableContextMenuAddToPlaylist,
 	getSongTableContextMenuEditColumns,
 	getSongTableContextMenuReplace,
 	getSongTableContextMenuSimilarSongs,
+	replaceQueueWithSongsActionAtom,
 	type SongTableContextMenuItemParams,
 	SongTableKeyType,
 	type SongTableProps,
@@ -33,7 +33,7 @@ import { setIsBrowserLoadingActionAtom } from "../states/actions/setIsBrowserLoa
 import { browserVisibleSongsAtom } from "../states/atoms/browserSongsAtom";
 import {
 	isBrowserLoadingAtom,
-	setBrowserLoadingTrueEffectAtom,
+	syncBrowserLoadingEffectAtom,
 } from "../states/atoms/browserUiAtom";
 
 export function useBrowserSongTableProps(
@@ -45,15 +45,15 @@ export function useBrowserSongTableProps(
 
 	const notify = useNotification();
 
-	const profile = useAtomValue(currentMpdProfileAtom);
-	const mpdClient = useAtomValue(mpdClientAtom);
-	useAtom(setBrowserLoadingTrueEffectAtom);
+	useAtom(syncBrowserLoadingEffectAtom);
 	const isLoading = useAtomValue(isBrowserLoadingAtom);
 	const songs = useAtomValue(browserVisibleSongsAtom);
 	const songTableState = useAtomValue(songTableStateAtom);
 	const setIsBrowserLoading = useSetAtom(setIsBrowserLoadingActionAtom);
 	const updateSongTableState = useSetAtom(updateSongTableStateActionAtom);
 	const setSelectedSongs = useSetAtom(selectedSongsAtom);
+	const addSongsToQueue = useSetAtom(addSongsToQueueActionAtom);
+	const replaceQueueWithSongs = useSetAtom(replaceQueueWithSongsActionAtom);
 
 	// Plugin context menu items
 	const pluginContextMenuItems = usePluginContextMenuItems(
@@ -74,17 +74,11 @@ export function useBrowserSongTableProps(
 		[
 			{
 				items: [
-					getSongTableContextMenuAdd(
-						songTableKeyType,
-						notify,
-						profile,
-						mpdClient,
-					),
+					getSongTableContextMenuAdd(songTableKeyType, notify, addSongsToQueue),
 					getSongTableContextMenuReplace(
 						songTableKeyType,
 						notify,
-						profile,
-						mpdClient,
+						replaceQueueWithSongs,
 					),
 				],
 			},
@@ -145,7 +139,7 @@ export function useBrowserSongTableProps(
 		[setSelectedSongs],
 	);
 
-	const onSongDoubleClick = useHandleSongDoubleClick(mpdClient, profile);
+	const onSongDoubleClick = useHandleSongDoubleClick();
 
 	const onLoadingCompleted = useCallback(async () => {
 		setIsBrowserLoading(false);

@@ -12,15 +12,15 @@ import { useNotification } from "../../../../lib/mantine/hooks/useNotification";
 import { UpdateMode } from "../../../../types/stateTypes";
 import { useSimilaritySearchContextMenuProps } from "../../../advanced_search";
 import type { ContextMenuSection } from "../../../context_menu";
-import { mpdClientAtom } from "../../../mpd";
 import { usePluginContextMenuItems } from "../../../plugin";
-import { currentMpdProfileAtom } from "../../../profile";
 import {
+	addSongsToQueueActionAtom,
 	getSongTableContextMenuAdd,
 	getSongTableContextMenuAddToPlaylist,
 	getSongTableContextMenuEditColumns,
 	getSongTableContextMenuReplace,
 	getSongTableContextMenuSimilarSongs,
+	replaceQueueWithSongsActionAtom,
 	type SongTableContextMenuItemParams,
 	SongTableKeyType,
 	type SongTableProps,
@@ -33,7 +33,7 @@ import { setIsRecentlyAddedLoadingActionAtom } from "../states/actions/setIsRece
 import { recentlyAddedVisibleSongsAtom } from "../states/atoms/recentlyAddedSongsAtom";
 import {
 	isRecentlyAddedLoadingAtom,
-	setRecentlyAddedLoadingTrueEffectAtom,
+	syncRecentlyAddedLoadingEffectAtom,
 } from "../states/atoms/recentlyAddedUiAtom";
 
 /**
@@ -53,9 +53,7 @@ export function useRecentlyAddedSongTableProps(
 
 	const notify = useNotification();
 
-	const profile = useAtomValue(currentMpdProfileAtom);
-	const mpdClient = useAtomValue(mpdClientAtom);
-	useAtom(setRecentlyAddedLoadingTrueEffectAtom);
+	useAtom(syncRecentlyAddedLoadingEffectAtom);
 	const isLoading = useAtomValue(isRecentlyAddedLoadingAtom);
 	const songs = useAtomValue(recentlyAddedVisibleSongsAtom);
 	const songTableState = useAtomValue(songTableStateAtom);
@@ -64,6 +62,8 @@ export function useRecentlyAddedSongTableProps(
 	);
 	const updateSongTableState = useSetAtom(updateSongTableStateActionAtom);
 	const setSelectedSongs = useSetAtom(selectedSongsAtom);
+	const addSongsToQueue = useSetAtom(addSongsToQueueActionAtom);
+	const replaceQueueWithSongs = useSetAtom(replaceQueueWithSongsActionAtom);
 
 	// Plugin context menu items
 	const pluginContextMenuItems = usePluginContextMenuItems(
@@ -84,17 +84,11 @@ export function useRecentlyAddedSongTableProps(
 		[
 			{
 				items: [
-					getSongTableContextMenuAdd(
-						songTableKeyType,
-						notify,
-						profile,
-						mpdClient,
-					),
+					getSongTableContextMenuAdd(songTableKeyType, notify, addSongsToQueue),
 					getSongTableContextMenuReplace(
 						songTableKeyType,
 						notify,
-						profile,
-						mpdClient,
+						replaceQueueWithSongs,
 					),
 				],
 			},
@@ -155,7 +149,7 @@ export function useRecentlyAddedSongTableProps(
 		[setSelectedSongs],
 	);
 
-	const onSongDoubleClick = useHandleSongDoubleClick(mpdClient, profile);
+	const onSongDoubleClick = useHandleSongDoubleClick();
 
 	const onLoadingCompleted = useCallback(async () => {
 		setIsRecentlyAddedLoading(false);

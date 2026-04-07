@@ -1,10 +1,8 @@
 import { MpdPlayerStatus_PlaybackState } from "@sola_mpd/shared/src/models/mpd/mpd_player_pb.js";
 import { IconPlayerPause, IconPlayerPlay } from "@tabler/icons-react";
-import { useAtomValue } from "jotai";
+import { useAtomValue, useSetAtom } from "jotai";
 import { useCallback } from "react";
-import { mpdClientAtom } from "../../mpd";
-import { currentMpdProfileAtom } from "../../profile";
-import { buildPauseCommand } from "../functions/playerCommand";
+import { togglePauseActionAtom } from "../states/actions/togglePauseActionAtom";
 import { currentSongAtom } from "../states/atoms/currentSongAtom";
 import { playerStatusPlaybackStateAtom } from "../states/atoms/playerStatusAtom";
 import { PlayerControlsButton } from "./PlayerControlsButton";
@@ -19,19 +17,13 @@ import { PlayerControlsButton } from "./PlayerControlsButton";
  * @returns Play/pause toggle button
  */
 export function PlayerControlsButtonResume() {
-	const profile = useAtomValue(currentMpdProfileAtom);
-	const mpdClient = useAtomValue(mpdClientAtom);
 	const currentSong = useAtomValue(currentSongAtom);
 	const playerStatusPlaybackState = useAtomValue(playerStatusPlaybackStateAtom);
+	const togglePause = useSetAtom(togglePauseActionAtom);
 
-	const onButtonClicked = useCallback(async () => {
-		if (profile === undefined || mpdClient === undefined) {
-			return;
-		}
-		const pause =
-			playerStatusPlaybackState === MpdPlayerStatus_PlaybackState.PLAY;
-		mpdClient.command(buildPauseCommand(profile, pause));
-	}, [mpdClient, playerStatusPlaybackState, profile]);
+	const onButtonClicked = useCallback(() => {
+		togglePause();
+	}, [togglePause]);
 
 	const props = {
 		label:

@@ -8,15 +8,15 @@ import { COMPONENT_ID_SEARCH_MAIN_PANE } from "../../../const/component";
 import { useNotification } from "../../../lib/mantine/hooks/useNotification";
 import { useSimilaritySearchContextMenuProps } from "../../advanced_search";
 import type { ContextMenuSection } from "../../context_menu";
-import { mpdClientAtom } from "../../mpd";
 import { usePluginContextMenuItems } from "../../plugin";
-import { currentMpdProfileAtom } from "../../profile";
 import {
+	addSongsToQueueActionAtom,
 	getSongTableContextMenuAdd,
 	getSongTableContextMenuAddToPlaylist,
 	getSongTableContextMenuEditColumns,
 	getSongTableContextMenuReplace,
 	getSongTableContextMenuSimilarSongs,
+	replaceQueueWithSongsActionAtom,
 	type SongTableContextMenuItemParams,
 	SongTableKeyType,
 	type SongTableProps,
@@ -49,14 +49,14 @@ export function useSearchSongTableProps(
 
 	const notify = useNotification();
 
-	const profile = useAtomValue(currentMpdProfileAtom);
-	const mpdClient = useAtomValue(mpdClientAtom);
 	const isLoading = useAtomValue(isSearchLoadingAtom);
 	const songs = useAtomValue(searchVisibleSongsAtom);
 	const searchSongTableColumns = useAtomValue(searchSongTableColumnsAtom);
 	const songTableState = useAtomValue(songTableStateAtom);
 	const setIsSearchLoading = useSetAtom(setIsSearchLoadingActionAtom);
 	const setSelectedSongs = useSetAtom(selectedSongsAtom);
+	const addSongsToQueue = useSetAtom(addSongsToQueueActionAtom);
+	const replaceQueueWithSongs = useSetAtom(replaceQueueWithSongsActionAtom);
 	const handleSearchColumnsUpdated = useHandleSearchColumnsUpdated();
 
 	// Plugin context menu items
@@ -77,17 +77,11 @@ export function useSearchSongTableProps(
 		[
 			{
 				items: [
-					getSongTableContextMenuAdd(
-						songTableKeyType,
-						notify,
-						profile,
-						mpdClient,
-					),
+					getSongTableContextMenuAdd(songTableKeyType, notify, addSongsToQueue),
 					getSongTableContextMenuReplace(
 						songTableKeyType,
 						notify,
-						profile,
-						mpdClient,
+						replaceQueueWithSongs,
 					),
 				],
 			},
@@ -140,7 +134,7 @@ export function useSearchSongTableProps(
 		[setSelectedSongs],
 	);
 
-	const onSongDoubleClick = useHandleSongDoubleClick(mpdClient, profile);
+	const onSongDoubleClick = useHandleSongDoubleClick();
 
 	const onLoadingCompleted = useCallback(async () => {
 		setIsSearchLoading(false);

@@ -8,14 +8,17 @@ import {
 	SIO_PLUGIN_EXECUTE,
 	SIO_PLUGIN_REGISTER,
 } from "@sola_mpd/shared/src/const/socketio.js";
+import { AdvancedSearchResponseSchema } from "@sola_mpd/shared/src/models/advanced_search_pb.js";
 import { MpdResponseSchema } from "@sola_mpd/shared/src/models/mpd/mpd_command_pb.js";
+import { PluginRegisterResponseWrapperSchema } from "@sola_mpd/shared/src/models/plugin/plugin_wrapper_pb.js";
 import type { Server as IOServer } from "socket.io";
-import type { AdvancedSearchMessageHandler } from "./advanced_search/services/AdvancedSearchMessageHandler.js";
-import { AdvancedSearchMessageHandlerSocketIo } from "./advanced_search/services/AdvancedSearchMessageHandlerSocketIo.js";
-import type { MpdMessageHandler } from "./mpd/services/MpdMessageHandler.js";
-import { MpdMessageHandlerSocketIo } from "./mpd/services/MpdMessageHandlerSocketIo.js";
-import type { PluginMessageHandler } from "./plugins/services/PluginMessageHandler.js";
-import { PluginMessageHandlerSocketIo } from "./plugins/services/PluginMessageHandlerSocketIo.js";
+import type { AdvancedSearchMessageHandler } from "./advanced_search/transports/AdvancedSearchMessageHandler.js";
+import { AdvancedSearchMessageHandlerSocketIo } from "./advanced_search/transports/AdvancedSearchMessageHandlerSocketIo.js";
+import type { MpdMessageHandler } from "./mpd/transports/MpdMessageHandler.js";
+import { MpdMessageHandlerSocketIo } from "./mpd/transports/MpdMessageHandlerSocketIo.js";
+import type { PluginMessageHandler } from "./plugins/transports/PluginMessageHandler.js";
+import { PluginMessageHandlerSocketIo } from "./plugins/transports/PluginMessageHandlerSocketIo.js";
+import { toErrorMessage } from "./utils/errorUtils.js";
 
 export class SocketIoManager {
 	private constructor(_io: IOServer) {}
@@ -106,6 +109,19 @@ export class SocketIoManager {
 					callback(Buffer.from(resp));
 				} catch (err) {
 					console.error(err);
+					callback(
+						Buffer.from(
+							toBinary(
+								PluginRegisterResponseWrapperSchema,
+								create(PluginRegisterResponseWrapperSchema, {
+									result: {
+										case: "error",
+										value: toErrorMessage(err),
+									},
+								}),
+							),
+						),
+					);
 				}
 			});
 
@@ -129,6 +145,19 @@ export class SocketIoManager {
 					callback(Buffer.from(resp));
 				} catch (err) {
 					console.error(err);
+					callback(
+						Buffer.from(
+							toBinary(
+								AdvancedSearchResponseSchema,
+								create(AdvancedSearchResponseSchema, {
+									command: {
+										case: "error",
+										value: toErrorMessage(err),
+									},
+								}),
+							),
+						),
+					);
 				}
 			});
 

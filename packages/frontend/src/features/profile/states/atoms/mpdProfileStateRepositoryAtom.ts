@@ -1,8 +1,5 @@
-import { atomWithDefault } from "jotai/utils";
-
-import type { MpdProfileStateRepository } from "../../services/MpdProfileStateRepository";
+import { createStateRepositoryAtom } from "../../../common/states/atoms/stateRepositoryAtom";
+import type { MpdProfileStateRepository } from "../../repositories/MpdProfileStateRepository";
 
 export const mpdProfileStateRepositoryAtom =
-	atomWithDefault<MpdProfileStateRepository>(() => {
-		throw new Error("Not initialized. Should be setup DI in the provider.");
-	});
+	createStateRepositoryAtom<MpdProfileStateRepository>();

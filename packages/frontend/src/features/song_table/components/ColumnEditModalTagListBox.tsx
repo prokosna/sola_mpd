@@ -1,7 +1,7 @@
 import { Card, NavLink, ScrollArea, Text } from "@mantine/core";
 import type { Song_MetadataTag } from "@sola_mpd/shared/src/models/song_pb.js";
 import type { JSX } from "react";
-import { convertSongMetadataTagToDisplayName } from "../utils/songTableTableUtils";
+import { convertSongMetadataTagToDisplayName } from "../functions/songTableConversion";
 
 export type ColumnEditModalTagListBoxProps = {
 	title: string;

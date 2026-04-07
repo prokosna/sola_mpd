@@ -5,6 +5,7 @@ import {
 	PluginRegisterRequestWrapperSchema,
 	PluginRegisterResponseWrapperSchema,
 } from "@sola_mpd/shared/src/models/plugin/plugin_wrapper_pb.js";
+import { toErrorMessage } from "../../utils/errorUtils.js";
 import type { PluginClient } from "../services/PluginClient.js";
 
 export const registerPluginUseCase = async (
@@ -28,7 +29,7 @@ export const registerPluginUseCase = async (
 		});
 		return toBinary(PluginRegisterResponseWrapperSchema, wrapper);
 	} catch (err) {
-		const message = err instanceof Error ? err.message : String(err);
+		const message = toErrorMessage(err);
 		const wrapper = create(PluginRegisterResponseWrapperSchema, {
 			result: {
 				case: "error",
@@ -79,7 +80,7 @@ export const executePluginUseCase = async function* (
 			),
 		];
 	} catch (err) {
-		const message = err instanceof Error ? err.message : String(err);
+		const message = toErrorMessage(err);
 		const wrapper = create(PluginExecuteResponseWrapperSchema, {
 			result: {
 				case: "error",

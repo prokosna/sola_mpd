@@ -11,14 +11,14 @@ import { COMPONENT_ID_SIMILARITY_SEARCH } from "../../../const/component";
 import { useNotification } from "../../../lib/mantine/hooks/useNotification";
 import { UpdateMode } from "../../../types/stateTypes";
 import type { ContextMenuSection } from "../../context_menu";
-import { mpdClientAtom } from "../../mpd";
 import { usePluginContextMenuItems } from "../../plugin";
-import { currentMpdProfileAtom } from "../../profile";
 import {
+	addSongsToQueueActionAtom,
 	getSongTableContextMenuAdd,
 	getSongTableContextMenuAddToPlaylist,
 	getSongTableContextMenuEditColumns,
 	getSongTableContextMenuReplace,
+	replaceQueueWithSongsActionAtom,
 	type SongTableContextMenuItemParams,
 	SongTableKeyType,
 	type SongTableProps,
@@ -39,13 +39,13 @@ export function useSimilaritySearchSongTableProps(
 
 	const notify = useNotification();
 
-	const profile = useAtomValue(currentMpdProfileAtom);
-	const mpdClient = useAtomValue(mpdClientAtom);
 	const isLoading = useAtomValue(isSimilaritySearchLoadingAtom);
 	const songs = useAtomValue(similaritySearchSongsAtom);
 	const songTableState = useAtomValue(songTableStateAtom);
 	const updateSongTableState = useSetAtom(updateSongTableStateActionAtom);
 	const setSelectedSongs = useSetAtom(selectedSongsAtom);
+	const addSongsToQueue = useSetAtom(addSongsToQueueActionAtom);
+	const replaceQueueWithSongs = useSetAtom(replaceQueueWithSongsActionAtom);
 
 	// Plugin context menu items
 	const pluginContextMenuItems = usePluginContextMenuItems(
@@ -57,17 +57,11 @@ export function useSimilaritySearchSongTableProps(
 		[
 			{
 				items: [
-					getSongTableContextMenuAdd(
-						songTableKeyType,
-						notify,
-						profile,
-						mpdClient,
-					),
+					getSongTableContextMenuAdd(songTableKeyType, notify, addSongsToQueue),
 					getSongTableContextMenuReplace(
 						songTableKeyType,
 						notify,
-						profile,
-						mpdClient,
+						replaceQueueWithSongs,
 					),
 				],
 			},
@@ -117,7 +111,7 @@ export function useSimilaritySearchSongTableProps(
 		[setSelectedSongs],
 	);
 
-	const onSongDoubleClick = useHandleSongDoubleClick(mpdClient, profile);
+	const onSongDoubleClick = useHandleSongDoubleClick();
 
 	const onLoadingCompleted = async () => {};
 

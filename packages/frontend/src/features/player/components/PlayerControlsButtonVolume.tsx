@@ -6,12 +6,9 @@ import {
 	useMantineTheme,
 } from "@mantine/core";
 import { IconVolumeOff } from "@tabler/icons-react";
-import { useAtomValue } from "jotai";
-import { useCallback } from "react";
-import { mpdClientAtom } from "../../mpd";
-import { currentMpdProfileAtom } from "../../profile";
+import { useAtomValue, useSetAtom } from "jotai";
 import { useIsCompactMode } from "../../user_device";
-import { buildSetVolumeCommand } from "../functions/playerCommand";
+import { setVolumeActionAtom } from "../states/actions/setVolumeActionAtom";
 import { playerVolumeAtom } from "../states/atoms/playerVolumeAtom";
 
 /**
@@ -24,29 +21,13 @@ import { playerVolumeAtom } from "../states/atoms/playerVolumeAtom";
  * @returns Volume control component
  */
 export function PlayerControlsButtonVolume() {
-	const profile = useAtomValue(currentMpdProfileAtom);
-	const mpdClient = useAtomValue(mpdClientAtom);
 	const playerVolume = useAtomValue(playerVolumeAtom);
+	const setVolume = useSetAtom(setVolumeActionAtom);
 	const isCompact = useIsCompactMode();
 
 	const volume = playerVolume?.volume !== undefined ? playerVolume.volume : -1;
 
 	const theme = useMantineTheme();
-
-	const onVolumeChanged = useCallback(
-		async (volume: number) => {
-			if (profile === undefined || mpdClient === undefined) {
-				return;
-			}
-
-			if (volume < 0 || volume > 100) {
-				return;
-			}
-
-			mpdClient.command(buildSetVolumeCommand(profile, volume));
-		},
-		[mpdClient, profile],
-	);
 
 	return (
 		<>
@@ -66,7 +47,7 @@ export function PlayerControlsButtonVolume() {
 						defaultValue={playerVolume?.volume}
 						min={0}
 						max={100}
-						onChangeEnd={(v) => onVolumeChanged(v)}
+						onChangeEnd={(v) => setVolume(v)}
 					/>
 				</Box>
 			)}

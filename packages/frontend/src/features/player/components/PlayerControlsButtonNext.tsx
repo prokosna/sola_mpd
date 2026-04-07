@@ -1,9 +1,7 @@
 import { IconPlayerSkipForward } from "@tabler/icons-react";
-import { useAtomValue } from "jotai";
+import { useAtomValue, useSetAtom } from "jotai";
 import { useCallback } from "react";
-import { mpdClientAtom } from "../../mpd";
-import { currentMpdProfileAtom } from "../../profile";
-import { buildNextCommand } from "../functions/playerCommand";
+import { nextActionAtom } from "../states/actions/nextActionAtom";
 import { currentSongAtom } from "../states/atoms/currentSongAtom";
 import { PlayerControlsButton } from "./PlayerControlsButton";
 
@@ -16,16 +14,12 @@ import { PlayerControlsButton } from "./PlayerControlsButton";
  * @returns Next track button
  */
 export function PlayerControlsButtonNext() {
-	const profile = useAtomValue(currentMpdProfileAtom);
-	const mpdClient = useAtomValue(mpdClientAtom);
 	const currentSong = useAtomValue(currentSongAtom);
+	const next = useSetAtom(nextActionAtom);
 
-	const onButtonClicked = useCallback(async () => {
-		if (profile === undefined || mpdClient === undefined) {
-			return;
-		}
-		mpdClient.command(buildNextCommand(profile));
-	}, [mpdClient, profile]);
+	const onButtonClicked = useCallback(() => {
+		next();
+	}, [next]);
 
 	const props = {
 		label: "Play next",

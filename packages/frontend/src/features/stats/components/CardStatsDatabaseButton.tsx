@@ -1,11 +1,9 @@
 import { Button } from "@mantine/core";
-import { useAtomValue } from "jotai";
+import { useAtomValue, useSetAtom } from "jotai";
 import { useCallback } from "react";
 import { useNotification } from "../../../lib/mantine/hooks/useNotification";
-import { mpdClientAtom } from "../../mpd";
 import { playerStatusIsDatabaseUpdatingAtom } from "../../player";
-import { currentMpdProfileAtom } from "../../profile";
-import { buildUpdateDatabaseCommand } from "../functions/statsFetching";
+import { updateDatabaseActionAtom } from "../states/actions/updateDatabaseActionAtom";
 
 /**
  * CardStatsDatabaseButton component renders a button that triggers an update of the MPD database.
@@ -17,23 +15,19 @@ import { buildUpdateDatabaseCommand } from "../functions/statsFetching";
 export function CardStatsDatabaseButton() {
 	const notify = useNotification();
 
-	const profile = useAtomValue(currentMpdProfileAtom);
-	const mpdClient = useAtomValue(mpdClientAtom);
 	const playerStatusIsDatabaseUpdating = useAtomValue(
 		playerStatusIsDatabaseUpdatingAtom,
 	);
+	const updateDatabase = useSetAtom(updateDatabaseActionAtom);
 
 	const handleDatabaseUpdateButtonClick = useCallback(async () => {
-		if (profile === undefined || mpdClient === undefined) {
-			return;
-		}
-		await mpdClient.command(buildUpdateDatabaseCommand(profile));
+		await updateDatabase();
 		notify({
 			status: "info",
 			title: "Update MPD Database",
 			description: "Database is now updating...",
 		});
-	}, [mpdClient, profile, notify]);
+	}, [updateDatabase, notify]);
 
 	return (
 		<Button

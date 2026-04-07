@@ -1,15 +1,13 @@
 import { Slider } from "@mantine/core";
 import { displayDuration } from "@sola_mpd/shared/src/utils/stringUtils.js";
-import { useAtomValue } from "jotai";
+import { useAtomValue, useSetAtom } from "jotai";
 import { useCallback, useRef } from "react";
-import { mpdClientAtom } from "../../mpd";
-import { currentMpdProfileAtom } from "../../profile";
-import { buildSeekCommand } from "../functions/playerCommand";
+import { getElapsedTimePercentage } from "../functions/playerDisplay";
+import { seekActionAtom } from "../states/actions/seekActionAtom";
 import {
 	playerStatusDurationAtom,
 	playerStatusElapsedAtom,
 } from "../states/atoms/playerStatusAtom";
-import { getElapsedTimePercentage } from "../utils/playerDisplayUtils";
 
 /**
  * Seek bar for track navigation.
@@ -21,10 +19,9 @@ import { getElapsedTimePercentage } from "../utils/playerDisplayUtils";
  * @returns Seek bar slider component
  */
 export function PlayerSeekBar() {
-	const profile = useAtomValue(currentMpdProfileAtom);
-	const mpdClient = useAtomValue(mpdClientAtom);
 	const playerStatusElapsed = useAtomValue(playerStatusElapsedAtom);
 	const playerStatusDuration = useAtomValue(playerStatusDurationAtom);
+	const seek = useSetAtom(seekActionAtom);
 
 	const elapsedTimePercentage = getElapsedTimePercentage(
 		playerStatusElapsed,
@@ -33,19 +30,7 @@ export function PlayerSeekBar() {
 
 	const lastSeekClicked = useRef(new Date());
 	const handleSeekBarClick = useCallback(
-		async (value: number) => {
-			if (profile === undefined || mpdClient === undefined) {
-				return;
-			}
-
-			if (value < 0 || value > 100) {
-				return;
-			}
-
-			if (playerStatusDuration === undefined) {
-				return;
-			}
-
+		(value: number) => {
 			// It is possible that onChange() is fired frequently.
 			const now = new Date();
 			const last = lastSeekClicked.current;
@@ -55,10 +40,9 @@ export function PlayerSeekBar() {
 			}
 			lastSeekClicked.current = now;
 
-			const seekTo = (value / 100) * playerStatusDuration;
-			mpdClient.command(buildSeekCommand(profile, seekTo));
+			seek(value);
 		},
-		[mpdClient, playerStatusDuration, profile],
+		[seek],
 	);
 
 	return (

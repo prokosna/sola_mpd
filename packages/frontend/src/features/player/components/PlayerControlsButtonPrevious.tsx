@@ -1,9 +1,7 @@
 import { IconPlayerSkipBack } from "@tabler/icons-react";
-import { useAtomValue } from "jotai";
+import { useAtomValue, useSetAtom } from "jotai";
 import { useCallback } from "react";
-import { mpdClientAtom } from "../../mpd";
-import { currentMpdProfileAtom } from "../../profile";
-import { buildPreviousCommand } from "../functions/playerCommand";
+import { previousActionAtom } from "../states/actions/previousActionAtom";
 import { currentSongAtom } from "../states/atoms/currentSongAtom";
 import { PlayerControlsButton } from "./PlayerControlsButton";
 
@@ -16,16 +14,12 @@ import { PlayerControlsButton } from "./PlayerControlsButton";
  * @returns Previous track button
  */
 export function PlayerControlsButtonPrevious() {
-	const profile = useAtomValue(currentMpdProfileAtom);
-	const mpdClient = useAtomValue(mpdClientAtom);
 	const currentSong = useAtomValue(currentSongAtom);
+	const previous = useSetAtom(previousActionAtom);
 
 	const onButtonClicked = useCallback(async () => {
-		if (profile === undefined || mpdClient === undefined) {
-			return;
-		}
-		mpdClient.command(buildPreviousCommand(profile));
-	}, [mpdClient, profile]);
+		previous();
+	}, [previous]);
 
 	const props = {
 		label: "Play previous",

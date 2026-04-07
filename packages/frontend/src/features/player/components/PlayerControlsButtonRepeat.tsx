@@ -1,9 +1,7 @@
 import { IconRepeat, IconRepeatOff } from "@tabler/icons-react";
-import { useAtomValue } from "jotai";
+import { useAtomValue, useSetAtom } from "jotai";
 import { useCallback } from "react";
-import { mpdClientAtom } from "../../mpd";
-import { currentMpdProfileAtom } from "../../profile";
-import { buildRepeatCommand } from "../functions/playerCommand";
+import { toggleRepeatActionAtom } from "../states/actions/toggleRepeatActionAtom";
 import { playerStatusIsRepeatAtom } from "../states/atoms/playerStatusAtom";
 import { PlayerControlsButton } from "./PlayerControlsButton";
 
@@ -16,16 +14,12 @@ import { PlayerControlsButton } from "./PlayerControlsButton";
  * @returns Repeat mode toggle button
  */
 export function PlayerControlsButtonRepeat() {
-	const profile = useAtomValue(currentMpdProfileAtom);
-	const mpdClient = useAtomValue(mpdClientAtom);
 	const playerStatusIsRepeat = useAtomValue(playerStatusIsRepeatAtom);
+	const toggleRepeat = useSetAtom(toggleRepeatActionAtom);
 
-	const onButtonClicked = useCallback(async () => {
-		if (mpdClient === undefined || profile === undefined) {
-			return;
-		}
-		mpdClient.command(buildRepeatCommand(profile, !playerStatusIsRepeat));
-	}, [mpdClient, playerStatusIsRepeat, profile]);
+	const onButtonClicked = useCallback(() => {
+		toggleRepeat();
+	}, [toggleRepeat]);
 
 	const props = {
 		label: playerStatusIsRepeat ? "Repeat enabled" : "Repeat disabled",

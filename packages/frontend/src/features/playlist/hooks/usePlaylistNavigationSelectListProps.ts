@@ -4,10 +4,8 @@ import { useCallback } from "react";
 import { COMPONENT_ID_PLAYLIST_SIDE_PANE } from "../../../const/component";
 import { useNotification } from "../../../lib/mantine/hooks/useNotification";
 import type { ContextMenuSection } from "../../context_menu";
-import { mpdClientAtom } from "../../mpd";
-import { currentMpdProfileAtom } from "../../profile";
 import type { SelectListContextMenuItemParams } from "../../select_list";
-import { buildDeletePlaylistCommand } from "../functions/playlistSongOperations";
+import { deletePlaylistActionAtom } from "../states/actions/deletePlaylistActionAtom";
 import { setSelectedPlaylistActionAtom } from "../states/actions/setSelectedPlaylistActionAtom";
 import {
 	playlistsAtom,
@@ -25,11 +23,10 @@ import {
 export function usePlaylistNavigationSelectListProps() {
 	const notify = useNotification();
 
-	const profile = useAtomValue(currentMpdProfileAtom);
-	const mpdClient = useAtomValue(mpdClientAtom);
 	const playlists = useAtomValue(playlistsAtom);
 	const selectedPlaylist = useAtomValue(selectedPlaylistAtom);
 	const setSelectedPlaylist = useSetAtom(setSelectedPlaylistActionAtom);
+	const deletePlaylist = useSetAtom(deletePlaylistActionAtom);
 
 	const contextMenuSections: ContextMenuSection<SelectListContextMenuItemParams>[] =
 		[
@@ -38,12 +35,7 @@ export function usePlaylistNavigationSelectListProps() {
 					{
 						name: "Delete",
 						onClick: async (params?: SelectListContextMenuItemParams) => {
-							if (
-								params === undefined ||
-								profile === undefined ||
-								mpdClient === undefined ||
-								playlists === undefined
-							) {
+							if (params === undefined || playlists === undefined) {
 								return;
 							}
 
@@ -58,11 +50,7 @@ export function usePlaylistNavigationSelectListProps() {
 								setSelectedPlaylist(undefined);
 							}
 
-							const command = buildDeletePlaylistCommand(
-								params.clickedValue,
-								profile,
-							);
-							await mpdClient.command(command);
+							await deletePlaylist(params.clickedValue);
 							notify({
 								status: "success",
 								title: "Playlist successfully deleted",

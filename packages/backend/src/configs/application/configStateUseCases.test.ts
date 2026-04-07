@@ -2,7 +2,7 @@ import { create, fromBinary, toBinary } from "@bufbuild/protobuf";
 import type { BrowserState } from "@sola_mpd/shared/src/models/browser_pb.js";
 import { BrowserStateSchema } from "@sola_mpd/shared/src/models/browser_pb.js";
 import { describe, expect, it, vi } from "vitest";
-import type { ConfigRepository } from "../services/ConfigRepository.js";
+import type { ConfigRepository } from "../repositories/ConfigRepository.js";
 import {
 	createReadConfigUseCase,
 	createUpdateConfigUseCase,

@@ -118,7 +118,6 @@ export class SubsonicApiHttp implements SubsonicApi {
 		await fetchRetry(`${endpoint}?${searchParams}`, {
 			method: "GET",
 		});
-		return;
 	}
 
 	async fetchSongs(playlist: SubsonicPlaylist): Promise<SubsonicSong[]> {

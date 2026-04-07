@@ -1,9 +1,7 @@
 import { IconPlayerStop } from "@tabler/icons-react";
-import { useAtomValue } from "jotai";
+import { useAtomValue, useSetAtom } from "jotai";
 import { useCallback } from "react";
-import { mpdClientAtom } from "../../mpd";
-import { currentMpdProfileAtom } from "../../profile";
-import { buildStopCommand } from "../functions/playerCommand";
+import { stopActionAtom } from "../states/actions/stopActionAtom";
 import { currentSongAtom } from "../states/atoms/currentSongAtom";
 import { PlayerControlsButton } from "./PlayerControlsButton";
 
@@ -16,16 +14,12 @@ import { PlayerControlsButton } from "./PlayerControlsButton";
  * @returns Stop button
  */
 export function PlayerControlsButtonStop() {
-	const profile = useAtomValue(currentMpdProfileAtom);
-	const mpdClient = useAtomValue(mpdClientAtom);
 	const currentSong = useAtomValue(currentSongAtom);
+	const stop = useSetAtom(stopActionAtom);
 
-	const onButtonClicked = useCallback(async () => {
-		if (profile === undefined || mpdClient === undefined) {
-			return;
-		}
-		mpdClient.command(buildStopCommand(profile));
-	}, [mpdClient, profile]);
+	const onButtonClicked = useCallback(() => {
+		stop();
+	}, [stop]);
 
 	const props = {
 		label: "Stop",

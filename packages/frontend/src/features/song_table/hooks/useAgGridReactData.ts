@@ -8,6 +8,11 @@ import { useAtomValue } from "jotai";
 import { useMemo } from "react";
 import { localeCollatorAtom } from "../../settings";
 import { CustomCellCompact } from "../components/CustomCellCompact";
+import {
+	convertSongForGridRowValueCompact,
+	convertSongMetadataForGridRowValue,
+	convertSongMetadataTagToDisplayName,
+} from "../functions/songTableConversion";
 import { getSongTableKey } from "../functions/songTableKey";
 import { sortSongsByColumns } from "../functions/songTableSorting";
 import {
@@ -16,11 +21,6 @@ import {
 	type SongTableKeyType,
 	type SongTableRowData,
 } from "../types/songTableTypes";
-import {
-	convertSongForGridRowValueCompact,
-	convertSongMetadataForGridRowValue,
-	convertSongMetadataTagToDisplayName,
-} from "../utils/songTableTableUtils";
 
 /**
  * Prepares data for AG Grid song table display.

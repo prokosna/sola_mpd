@@ -6,13 +6,15 @@ import { PluginStateSchema } from "@sola_mpd/shared/src/models/plugin/plugin_pb.
 import { RecentlyAddedStateSchema } from "@sola_mpd/shared/src/models/recently_added_pb.js";
 import { SavedSearchesSchema } from "@sola_mpd/shared/src/models/search_pb.js";
 import { SongTableStateSchema } from "@sola_mpd/shared/src/models/song_table_pb.js";
-import { browserStateRepository } from "../services/browserStateRepository.js";
-import type { ConfigRepository } from "../services/ConfigRepository.js";
-import { commonSongTableStateRepository } from "../services/commonSongTableStateRepository.js";
-import { mpdProfileStateRepository } from "../services/mpdProfileStateRepository.js";
-import { pluginStateRepository } from "../services/pluginStateRepository.js";
-import { recentlyAddedStateRepository } from "../services/recentlyAddedStateRepository.js";
-import { savedSearchRepository } from "../services/savedSearchRepository.js";
+import type { ConfigRepository } from "../repositories/ConfigRepository.js";
+import {
+	browserStateRepository,
+	commonSongTableStateRepository,
+	mpdProfileStateRepository,
+	pluginStateRepository,
+	recentlyAddedStateRepository,
+	savedSearchRepository,
+} from "../repositories/ConfigRepositoryFile.js";
 
 export const createReadConfigUseCase = <T extends Message>(
 	schema: GenMessage<T>,

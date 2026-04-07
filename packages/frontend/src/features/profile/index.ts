@@ -1,11 +1,12 @@
 // Components
 export { MpdProfileForm } from "./components/MpdProfileForm";
 export { MpdProfileSelector } from "./components/MpdProfileSelector";
-// Services
-export type { MpdProfileStateRepository } from "./services/MpdProfileStateRepository";
+// Repositories
+export type { MpdProfileStateRepository } from "./repositories/MpdProfileStateRepository";
 export { refreshMpdProfileActionAtom } from "./states/actions/refreshMpdProfileActionAtom";
 export { updateCurrentMpdProfileActionAtom } from "./states/actions/updateCurrentMpdProfileActionAtom";
 export { updateMpdProfileStateActionAtom } from "./states/actions/updateMpdProfileStateActionAtom";
+export { validateMpdProfileActionAtom } from "./states/actions/validateMpdProfileActionAtom";
 // States
 export {
 	currentMpdProfileAtom,

@@ -4,7 +4,14 @@ import type { SongTableColumn } from "@sola_mpd/shared/src/models/song_table_pb.
 import { SongTableColumnSchema } from "@sola_mpd/shared/src/models/song_table_pb.js";
 import type { Column } from "ag-grid-community";
 
-import { convertSongMetadataTagFromDisplayName } from "../utils/songTableTableUtils";
+import { convertSongMetadataTagFromDisplayName } from "./songTableConversion";
+
+export function getAverageWidthFlex(columns: SongTableColumn[]): number {
+	const sum = columns
+		.map((column) => column.widthFlex)
+		.reduce((a, b) => a + b, 0);
+	return Math.floor(sum / columns.length || 0);
+}
 
 export function convertAgGridColumnsToSongTableColumns(
 	agGridColumns: Column[],

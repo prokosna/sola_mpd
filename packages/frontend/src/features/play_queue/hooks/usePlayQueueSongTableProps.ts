@@ -13,9 +13,7 @@ import { useNotification } from "../../../lib/mantine/hooks/useNotification";
 import { UpdateMode } from "../../../types/stateTypes";
 import { useSimilaritySearchContextMenuProps } from "../../advanced_search";
 import type { ContextMenuSection } from "../../context_menu";
-import { mpdClientAtom } from "../../mpd";
 import { usePluginContextMenuItems } from "../../plugin";
-import { currentMpdProfileAtom } from "../../profile";
 import {
 	getSongTableContextMenuAddToPlaylist,
 	getSongTableContextMenuEditColumns,
@@ -28,12 +26,10 @@ import {
 	songTableStateAtom,
 	updateSongTableStateActionAtom,
 } from "../../song_table";
-import {
-	buildClearQueueCommands,
-	buildPlaySongByIdCommand,
-	buildRemoveQueueSongsCommands,
-	buildReorderQueueCommands,
-} from "../functions/playQueueSongOperations";
+import { clearQueueActionAtom } from "../states/actions/clearQueueActionAtom";
+import { playSongByIdActionAtom } from "../states/actions/playSongByIdActionAtom";
+import { removeQueueSongsActionAtom } from "../states/actions/removeQueueSongsActionAtom";
+import { reorderQueueActionAtom } from "../states/actions/reorderQueueActionAtom";
 import { setIsPlayQueueLoadingActionAtom } from "../states/actions/setIsPlayQueueLoadingActionAtom";
 import { playQueueVisibleSongsAtom } from "../states/atoms/playQueueSongsAtom";
 import {
@@ -60,15 +56,17 @@ export function usePlayQueueSongTableProps(
 
 	const notify = useNotification();
 
-	const profile = useAtomValue(currentMpdProfileAtom);
 	useAtomValue(syncPlayQueueLoadingEffectAtom);
-	const mpdClient = useAtomValue(mpdClientAtom);
 	const isLoading = useAtomValue(isPlayQueueLoadingAtom);
 	const songs = useAtomValue(playQueueVisibleSongsAtom);
 	const songTableState = useAtomValue(songTableStateAtom);
 	const setIsPlayQueueLoading = useSetAtom(setIsPlayQueueLoadingActionAtom);
 	const updateSongTableState = useSetAtom(updateSongTableStateActionAtom);
 	const setSelectedSongs = useSetAtom(selectedSongsAtom);
+	const removeQueueSongs = useSetAtom(removeQueueSongsActionAtom);
+	const clearQueue = useSetAtom(clearQueueActionAtom);
+	const reorderQueue = useSetAtom(reorderQueueActionAtom);
+	const playSongById = useSetAtom(playSongByIdActionAtom);
 
 	// Plugin context menu items
 	const pluginContextMenuItems = usePluginContextMenuItems(
@@ -91,11 +89,7 @@ export function usePlayQueueSongTableProps(
 					{
 						name: "Remove",
 						onClick: async (params?: SongTableContextMenuItemParams) => {
-							if (
-								params === undefined ||
-								mpdClient === undefined ||
-								profile === undefined
-							) {
+							if (params === undefined) {
 								return;
 							}
 							const targetSongs = getTargetSongsForContextMenu(
@@ -105,11 +99,7 @@ export function usePlayQueueSongTableProps(
 							if (targetSongs.length === 0) {
 								return;
 							}
-							const commands = buildRemoveQueueSongsCommands(
-								targetSongs,
-								profile,
-							);
-							await mpdClient.commandBulk(commands);
+							await removeQueueSongs(targetSongs);
 							notify({
 								status: "success",
 								title: "Songs successfully removed",
@@ -120,15 +110,10 @@ export function usePlayQueueSongTableProps(
 					{
 						name: "Clear",
 						onClick: async (params?: SongTableContextMenuItemParams) => {
-							if (
-								params === undefined ||
-								mpdClient === undefined ||
-								profile === undefined
-							) {
+							if (params === undefined) {
 								return;
 							}
-							const commands = buildClearQueueCommands(profile);
-							await mpdClient.commandBulk(commands);
+							await clearQueue();
 							notify({
 								status: "success",
 								title: "Songs successfully cleared",
@@ -171,22 +156,9 @@ export function usePlayQueueSongTableProps(
 	// Handlers
 	const onSongsReordered = useCallback(
 		async (orderedSongs: Song[]) => {
-			if (
-				profile === undefined ||
-				songs === undefined ||
-				mpdClient === undefined
-			) {
-				return;
-			}
-			const commands = buildReorderQueueCommands(
-				songs,
-				orderedSongs,
-				songTableKeyType,
-				profile,
-			);
-			await mpdClient.commandBulk(commands);
+			await reorderQueue(orderedSongs);
 		},
-		[mpdClient, profile, songs],
+		[reorderQueue],
 	);
 
 	const onColumnsUpdated = useCallback(
@@ -213,13 +185,9 @@ export function usePlayQueueSongTableProps(
 
 	const onSongDoubleClick = useCallback(
 		async (clickedSong: Song) => {
-			if (profile === undefined || mpdClient === undefined) {
-				return;
-			}
-			const command = buildPlaySongByIdCommand(clickedSong, profile);
-			await mpdClient.command(command);
+			await playSongById(clickedSong);
 		},
-		[mpdClient, profile],
+		[playSongById],
 	);
 
 	const onLoadingCompleted = useCallback(async () => {

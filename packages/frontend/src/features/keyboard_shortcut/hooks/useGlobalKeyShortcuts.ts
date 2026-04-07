@@ -1,10 +1,6 @@
-import { MpdPlayerStatus_PlaybackState } from "@sola_mpd/shared/src/models/mpd/mpd_player_pb.js";
-import { useAtomValue } from "jotai";
+import { useSetAtom } from "jotai";
 
-import { mpdClientAtom } from "../../mpd";
-import { playerStatusPlaybackStateAtom } from "../../player";
-import { buildPauseCommand } from "../../player/functions/playerCommand";
-import { currentMpdProfileAtom } from "../../profile";
+import { togglePauseActionAtom } from "../../player/states/actions/togglePauseActionAtom";
 
 import { useInputKeyCombination } from "./useInputKeyCombination";
 
@@ -42,24 +38,9 @@ import { useInputKeyCombination } from "./useInputKeyCombination";
  * - Input combination hook
  */
 export function useGlobalKeyShortcuts(): void {
-	const mpdClient = useAtomValue(mpdClientAtom);
-	const profile = useAtomValue(currentMpdProfileAtom);
-	const playerPlaybackState = useAtomValue(playerStatusPlaybackStateAtom);
+	const togglePause = useSetAtom(togglePauseActionAtom);
 
-	useInputKeyCombination(undefined, [" "], async () => {
-		if (mpdClient === undefined || profile === undefined) {
-			return;
-		}
-		switch (playerPlaybackState) {
-			case MpdPlayerStatus_PlaybackState.STOP:
-			case MpdPlayerStatus_PlaybackState.PAUSE:
-				mpdClient.command(buildPauseCommand(profile, false));
-				break;
-			case MpdPlayerStatus_PlaybackState.PLAY:
-				mpdClient.command(buildPauseCommand(profile, true));
-				break;
-			default:
-				return;
-		}
+	useInputKeyCombination(undefined, [" "], () => {
+		togglePause();
 	});
 }

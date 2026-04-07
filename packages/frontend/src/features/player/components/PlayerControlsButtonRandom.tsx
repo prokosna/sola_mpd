@@ -1,9 +1,7 @@
 import { IconArrowsRight, IconArrowsShuffle } from "@tabler/icons-react";
-import { useAtomValue } from "jotai";
+import { useAtomValue, useSetAtom } from "jotai";
 import { useCallback } from "react";
-import { mpdClientAtom } from "../../mpd";
-import { currentMpdProfileAtom } from "../../profile";
-import { buildRandomCommand } from "../functions/playerCommand";
+import { toggleRandomActionAtom } from "../states/actions/toggleRandomActionAtom";
 import { playerStatusIsRandomAtom } from "../states/atoms/playerStatusAtom";
 import { PlayerControlsButton } from "./PlayerControlsButton";
 
@@ -16,16 +14,12 @@ import { PlayerControlsButton } from "./PlayerControlsButton";
  * @returns Random mode toggle button
  */
 export function PlayerControlsButtonRandom() {
-	const profile = useAtomValue(currentMpdProfileAtom);
-	const mpdClient = useAtomValue(mpdClientAtom);
 	const playerStatusIsRandom = useAtomValue(playerStatusIsRandomAtom);
+	const toggleRandom = useSetAtom(toggleRandomActionAtom);
 
-	const onButtonClicked = useCallback(async () => {
-		if (profile === undefined || mpdClient === undefined) {
-			return;
-		}
-		mpdClient.command(buildRandomCommand(profile, !playerStatusIsRandom));
-	}, [mpdClient, playerStatusIsRandom, profile]);
+	const onButtonClicked = useCallback(() => {
+		toggleRandom();
+	}, [toggleRandom]);
 
 	const props = {
 		label: playerStatusIsRandom ? "Random enabled" : "Random disabled",

@@ -6,6 +6,7 @@ import { describe, expect, it } from "vitest";
 import {
 	copySortingAttributesToNewColumns,
 	ensureTagsContainedInColumns,
+	getAverageWidthFlex,
 	normalizeSongTableColumns,
 } from "./songTableColumn";
 
@@ -22,6 +23,28 @@ function createColumn(
 }
 
 describe("songTableColumn", () => {
+	describe("getAverageWidthFlex", () => {
+		it("should return average of column widths", () => {
+			const columns = [
+				createColumn(Song_MetadataTag.TITLE, { widthFlex: 100 }),
+				createColumn(Song_MetadataTag.ARTIST, { widthFlex: 200 }),
+			];
+			expect(getAverageWidthFlex(columns)).toBe(150);
+		});
+
+		it("should floor the result", () => {
+			const columns = [
+				createColumn(Song_MetadataTag.TITLE, { widthFlex: 100 }),
+				createColumn(Song_MetadataTag.ARTIST, { widthFlex: 101 }),
+			];
+			expect(getAverageWidthFlex(columns)).toBe(100);
+		});
+
+		it("should return 0 for empty array", () => {
+			expect(getAverageWidthFlex([])).toBe(0);
+		});
+	});
+
 	describe("copySortingAttributesToNewColumns", () => {
 		it("should copy sort attributes from base columns to matching new columns", () => {
 			const base = [

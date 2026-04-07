@@ -5,8 +5,7 @@ import { recentlyAddedBrowserFiltersAtom } from "./recentlyAddedFiltersAtom";
 
 export const isRecentlyAddedLoadingAtom = atom(true);
 
-export const setRecentlyAddedLoadingTrueEffectAtom = atomEffect((get, set) => {
-	// Set isRecentlyAddedLoadingAtom to true when recentlyAddedBrowserFiltersAtom is updated.
+export const syncRecentlyAddedLoadingEffectAtom = atomEffect((get, set) => {
 	get(recentlyAddedBrowserFiltersAtom);
 	set(isRecentlyAddedLoadingAtom, true);
 });

@@ -1,8 +1,5 @@
-import { atomWithDefault } from "jotai/utils";
-
-import type { SavedSearchesRepository } from "../../services/SavedSearchesRepository";
+import { createStateRepositoryAtom } from "../../../common/states/atoms/stateRepositoryAtom";
+import type { SavedSearchesRepository } from "../../repositories/SavedSearchesRepository";
 
 export const savedSearchesRepositoryAtom =
-	atomWithDefault<SavedSearchesRepository>(() => {
-		throw new Error("Not initialized. Should be setup DI in the provider.");
-	});
+	createStateRepositoryAtom<SavedSearchesRepository>();

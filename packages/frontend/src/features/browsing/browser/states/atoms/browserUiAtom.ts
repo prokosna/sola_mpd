@@ -5,8 +5,7 @@ import { browserFiltersAtom } from "./browserFiltersAtom";
 
 export const isBrowserLoadingAtom = atom(true);
 
-export const setBrowserLoadingTrueEffectAtom = atomEffect((get, set) => {
-	// Set isBrowserLoadingAtom to true when browserFiltersAtom is updated.
+export const syncBrowserLoadingEffectAtom = atomEffect((get, set) => {
 	get(browserFiltersAtom);
 	set(isBrowserLoadingAtom, true);
 });

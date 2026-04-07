@@ -1,31 +1,23 @@
-import type { MpdProfile } from "@sola_mpd/shared/src/models/mpd/mpd_profile_pb.js";
 import type { Song } from "@sola_mpd/shared/src/models/song_pb.js";
 import type { MutableRefObject } from "react";
 
 import type { NotificationParams } from "../../../lib/mantine/hooks/useNotification";
 import type { ContextMenuItem } from "../../context_menu";
-import type { MpdClient } from "../../mpd";
 import type {
 	SongTableContextMenuItemParams,
 	SongTableKeyType,
 } from "../types/songTableTypes";
-import { addSongsToQueue, replaceQueueWithSongs } from "./songTableCommand";
 import { getTargetSongsForContextMenu } from "./songTableKey";
 
 export function getSongTableContextMenuAdd(
 	songTableKeyType: SongTableKeyType,
 	showNotification: (params: NotificationParams) => void,
-	profile?: MpdProfile,
-	mpdClient?: MpdClient,
+	addSongsToQueue: (songs: Song[]) => Promise<void>,
 ): ContextMenuItem<SongTableContextMenuItemParams> {
 	return {
 		name: "Add",
 		onClick: async (params?: SongTableContextMenuItemParams): Promise<void> => {
-			if (
-				params === undefined ||
-				mpdClient === undefined ||
-				profile === undefined
-			) {
+			if (params === undefined) {
 				return;
 			}
 			const targetSongs = getTargetSongsForContextMenu(
@@ -35,7 +27,7 @@ export function getSongTableContextMenuAdd(
 			if (targetSongs.length === 0) {
 				return;
 			}
-			await addSongsToQueue(mpdClient, targetSongs, profile);
+			await addSongsToQueue(targetSongs);
 			showNotification({
 				status: "success",
 				title: "Added songs to queue",
@@ -48,17 +40,12 @@ export function getSongTableContextMenuAdd(
 export function getSongTableContextMenuReplace(
 	songTableKeyType: SongTableKeyType,
 	showNotification: (params: NotificationParams) => void,
-	profile?: MpdProfile,
-	mpdClient?: MpdClient,
+	replaceQueueWithSongs: (songs: Song[]) => Promise<void>,
 ): ContextMenuItem<SongTableContextMenuItemParams> {
 	return {
 		name: "Replace",
 		onClick: async (params?: SongTableContextMenuItemParams): Promise<void> => {
-			if (
-				params === undefined ||
-				mpdClient === undefined ||
-				profile === undefined
-			) {
+			if (params === undefined) {
 				return;
 			}
 			const targetSongs = getTargetSongsForContextMenu(
@@ -68,7 +55,7 @@ export function getSongTableContextMenuReplace(
 			if (targetSongs.length === 0) {
 				return;
 			}
-			await replaceQueueWithSongs(mpdClient, targetSongs, profile);
+			await replaceQueueWithSongs(targetSongs);
 			showNotification({
 				status: "success",
 				title: "Replaced queue with selected songs",

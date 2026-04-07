@@ -1,8 +1,5 @@
-import { atomWithDefault } from "jotai/utils";
-
-import type { RecentlyAddedStateRepository } from "../../services/RecentlyAddedStateRepository";
+import { createStateRepositoryAtom } from "../../../../common/states/atoms/stateRepositoryAtom";
+import type { RecentlyAddedStateRepository } from "../../repositories/RecentlyAddedStateRepository";
 
 export const recentlyAddedStateRepositoryAtom =
-	atomWithDefault<RecentlyAddedStateRepository>(() => {
-		throw new Error("Not initialized. Should be setup DI in the provider.");
-	});
+	createStateRepositoryAtom<RecentlyAddedStateRepository>();

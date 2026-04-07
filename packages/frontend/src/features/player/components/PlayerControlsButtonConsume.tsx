@@ -1,9 +1,7 @@
 import { IconEraser, IconEraserOff } from "@tabler/icons-react";
-import { useAtomValue } from "jotai";
+import { useAtomValue, useSetAtom } from "jotai";
 import { useCallback } from "react";
-import { mpdClientAtom } from "../../mpd";
-import { currentMpdProfileAtom } from "../../profile";
-import { buildConsumeCommand } from "../functions/playerCommand";
+import { toggleConsumeActionAtom } from "../states/actions/toggleConsumeActionAtom";
 import { playerStatusIsConsumeAtom } from "../states/atoms/playerStatusAtom";
 import { PlayerControlsButton } from "./PlayerControlsButton";
 
@@ -17,16 +15,12 @@ import { PlayerControlsButton } from "./PlayerControlsButton";
  * @returns Consume mode toggle button
  */
 export function PlayerControlsButtonConsume() {
-	const profile = useAtomValue(currentMpdProfileAtom);
-	const mpdClient = useAtomValue(mpdClientAtom);
 	const playerStatusIsConsume = useAtomValue(playerStatusIsConsumeAtom);
+	const toggleConsume = useSetAtom(toggleConsumeActionAtom);
 
-	const onButtonClicked = useCallback(async () => {
-		if (profile === undefined || mpdClient === undefined) {
-			return;
-		}
-		mpdClient.command(buildConsumeCommand(profile, !playerStatusIsConsume));
-	}, [mpdClient, playerStatusIsConsume, profile]);
+	const onButtonClicked = useCallback(() => {
+		toggleConsume();
+	}, [toggleConsume]);
 
 	const props = {
 		label: playerStatusIsConsume ? "Consume enabled" : "Consume disabled",
