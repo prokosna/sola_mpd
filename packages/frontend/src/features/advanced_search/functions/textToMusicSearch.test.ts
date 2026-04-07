@@ -52,7 +52,7 @@ describe("searchSongsByText", () => {
 			client,
 			"happy music",
 			10,
-			AdvancedSearchCommand_TextToMusicType.MULAN,
+			AdvancedSearchCommand_TextToMusicType.MUQ_MULAN,
 		);
 		expect(result).toHaveLength(2);
 		expect(result[0].path).toBe("/a.mp3");
@@ -74,7 +74,7 @@ describe("searchSongsByText", () => {
 			client,
 			"happy music",
 			10,
-			AdvancedSearchCommand_TextToMusicType.MULAN,
+			AdvancedSearchCommand_TextToMusicType.MUQ_MULAN,
 		);
 		expect(result).toHaveLength(0);
 	});
@@ -93,7 +93,7 @@ describe("searchSongsByText", () => {
 				client,
 				"happy music",
 				10,
-				AdvancedSearchCommand_TextToMusicType.MULAN,
+				AdvancedSearchCommand_TextToMusicType.MUQ_MULAN,
 			),
 		).rejects.toThrow("Invalid AdvancedSearch response");
 	});

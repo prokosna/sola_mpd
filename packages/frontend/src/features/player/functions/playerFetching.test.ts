@@ -82,12 +82,12 @@ describe("fetchPlayerVolume", () => {
 	it("should return volume on valid response", async () => {
 		const client = createMockMpdClient(
 			create(MpdResponseSchema, {
-				command: { case: "getvol", value: { vol: 75 } },
+				command: { case: "getvol", value: { vol: { volume: 75 } } },
 			}),
 		);
 
 		const result = await fetchPlayerVolume(client, profile);
-		expect(result).toBe(75);
+		expect(result?.volume).toBe(75);
 	});
 
 	it("should throw on invalid response type", async () => {

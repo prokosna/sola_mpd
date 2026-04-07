@@ -1,4 +1,5 @@
 import { create } from "@bufbuild/protobuf";
+import type { Song } from "@sola_mpd/shared/src/models/song_pb.js";
 import { SongSchema } from "@sola_mpd/shared/src/models/song_pb.js";
 import { describe, expect, it, vi } from "vitest";
 
@@ -28,7 +29,7 @@ describe("getSongTableContextMenuAdd", () => {
 			vi.fn(),
 			vi.fn().mockResolvedValue(undefined),
 		);
-		await expect(item.onClick(undefined)).resolves.toBeUndefined();
+		await expect(item.onClick?.(undefined)).resolves.toBeUndefined();
 	});
 });
 
@@ -45,7 +46,7 @@ describe("getSongTableContextMenuReplace", () => {
 
 describe("getSongTableContextMenuAddToPlaylist", () => {
 	it("should create an Add to Playlist menu item", () => {
-		const ref = { current: [] as ReturnType<typeof create>[] };
+		const ref = { current: [] as Song[] };
 		const item = getSongTableContextMenuAddToPlaylist(
 			SongTableKeyType.PATH,
 			ref,
@@ -55,7 +56,7 @@ describe("getSongTableContextMenuAddToPlaylist", () => {
 	});
 
 	it("should set songs ref and open modal on click with valid params", async () => {
-		const ref = { current: [] as ReturnType<typeof create>[] };
+		const ref = { current: [] as Song[] };
 		const setOpen = vi.fn();
 		const item = getSongTableContextMenuAddToPlaylist(
 			SongTableKeyType.PATH,
@@ -63,7 +64,7 @@ describe("getSongTableContextMenuAddToPlaylist", () => {
 			setOpen,
 		);
 		const clickedSong = create(SongSchema, { path: "/a.mp3" });
-		await item.onClick({
+		await item.onClick?.({
 			columns: [],
 			clickedSong,
 			sortedSongs: [clickedSong],
@@ -83,7 +84,7 @@ describe("getSongTableContextMenuEditColumns", () => {
 	it("should call setIsColumnEditModalOpen on click", async () => {
 		const setOpen = vi.fn();
 		const item = getSongTableContextMenuEditColumns(setOpen);
-		await item.onClick(undefined);
+		await item.onClick?.(undefined);
 		expect(setOpen).toHaveBeenCalledWith(true);
 	});
 });

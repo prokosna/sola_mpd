@@ -44,7 +44,7 @@ describe("fetchBrowserSongs", () => {
 				tag: Song_MetadataTag.ARTIST,
 				selectedValues: [
 					create(Song_MetadataValueSchema, {
-						value: { case: "stringValue", value: "Test Artist" },
+						value: { case: "stringValue", value: { value: "Test Artist" } },
 					}),
 				],
 				order: 0,
@@ -88,7 +88,7 @@ describe("fetchBrowserSongs", () => {
 				tag: Song_MetadataTag.ARTIST,
 				selectedValues: [
 					create(Song_MetadataValueSchema, {
-						value: { case: "stringValue", value: "Test" },
+						value: { case: "stringValue", value: { value: "Test" } },
 					}),
 				],
 				order: 0,

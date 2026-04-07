@@ -3,7 +3,7 @@ import { ActionIcon, Tooltip } from "@mantine/core";
 export type PlayerControlsButtonProps = {
 	label: string;
 	isDisabled: boolean;
-	onButtonClicked: () => Promise<void>;
+	onButtonClicked: () => void | Promise<void>;
 	icon: React.ReactElement;
 	variant: string;
 };
