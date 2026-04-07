@@ -37,7 +37,7 @@ type MpdConnectOptions = {
 	reconnectDelay?: number;
 };
 
-class MpdClientMpd3 {
+class MpdClientMpd3 implements MpdClient {
 	private clients: DeepMap<MpdProfile, Promise<Client>> = new DeepMap(
 		new Map(),
 	);
@@ -827,11 +827,4 @@ class MpdClientMpd3 {
 	}
 }
 
-const mpdClient = new MpdClientMpd3();
-
-export const mpdClientMpd3: MpdClient = {
-	execute: (request) => mpdClient.execute(request),
-	executeBulk: (requests) => mpdClient.executeBulk(requests),
-	subscribe: (profile, callback) => mpdClient.subscribe(profile, callback),
-	unsubscribe: (profile, handler) => mpdClient.unsubscribe(profile, handler),
-};
+export const mpdClientMpd3: MpdClient = new MpdClientMpd3();

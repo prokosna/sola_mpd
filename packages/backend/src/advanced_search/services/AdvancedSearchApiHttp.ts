@@ -11,7 +11,7 @@ import type {
 	SearchTextToMusicInput,
 } from "./AdvancedSearchApi.js";
 
-class AdvancedSearchApiHttp {
+class AdvancedSearchApiHttp implements AdvancedSearchApi {
 	async fetchStats(endpoint: string) {
 		const url = `${endpoint}/api/v1/stats`;
 		const response = await fetch(url);
@@ -156,13 +156,5 @@ class AdvancedSearchApiHttp {
 	}
 }
 
-const advancedSearchApi = new AdvancedSearchApiHttp();
-
-export const advancedSearchApiHttp: AdvancedSearchApi = {
-	fetchStats: (endpoint) => advancedSearchApi.fetchStats(endpoint),
-	searchTextToMusic: (input) => advancedSearchApi.searchTextToMusic(input),
-	searchSimilarSongs: (input) => advancedSearchApi.searchSimilarSongs(input),
-	scanLibrary: (endpoint) => advancedSearchApi.scanLibrary(endpoint),
-	vacuumLibrary: (endpoint) => advancedSearchApi.vacuumLibrary(endpoint),
-	analyze: (endpoint) => advancedSearchApi.analyze(endpoint),
-};
+export const advancedSearchApiHttp: AdvancedSearchApi =
+	new AdvancedSearchApiHttp();
