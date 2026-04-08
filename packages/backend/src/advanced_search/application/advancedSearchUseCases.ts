@@ -160,6 +160,6 @@ export const executeAdvancedSearchRequestUseCase = async (
 				return createErrorResponse(err);
 			}
 		default:
-			throw new Error(`Unknown command: ${req.command?.case}`);
+			return createErrorResponse(`Unknown command: ${req.command?.case}`);
 	}
 };

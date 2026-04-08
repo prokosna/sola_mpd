@@ -45,6 +45,7 @@ export const executePluginUseCase = async function* (
 	pluginClient: PluginClient,
 ): AsyncGenerator<[string, Uint8Array]> {
 	const req = fromBinary(PluginExecuteRequestWrapperSchema, msg);
+	const callbackEvent = req.callbackEvent;
 
 	try {
 		const request = req.request;
@@ -54,7 +55,7 @@ export const executePluginUseCase = async function* (
 
 		for await (const response of pluginClient.execute(request)) {
 			yield [
-				req.callbackEvent,
+				callbackEvent,
 				toBinary(
 					PluginExecuteResponseWrapperSchema,
 					create(PluginExecuteResponseWrapperSchema, {
@@ -68,7 +69,7 @@ export const executePluginUseCase = async function* (
 		}
 
 		yield [
-			req.callbackEvent,
+			callbackEvent,
 			toBinary(
 				PluginExecuteResponseWrapperSchema,
 				create(PluginExecuteResponseWrapperSchema, {
@@ -88,7 +89,7 @@ export const executePluginUseCase = async function* (
 			},
 		});
 		yield [
-			req.callbackEvent,
+			callbackEvent,
 			toBinary(PluginExecuteResponseWrapperSchema, wrapper),
 		];
 	}

@@ -63,19 +63,7 @@ export class SocketIoManager {
 					callback(Buffer.from(res));
 				} catch (err) {
 					console.error(err);
-					callback(
-						Buffer.from(
-							toBinary(
-								MpdResponseSchema,
-								create(MpdResponseSchema, {
-									command: {
-										case: "error",
-										value: { message: (err as Error).message },
-									},
-								}),
-							),
-						),
-					);
+					callback(createMpdErrorBuffer(err));
 				}
 			});
 
@@ -86,19 +74,7 @@ export class SocketIoManager {
 					callback();
 				} catch (err) {
 					console.error(err);
-					callback(
-						Buffer.from(
-							toBinary(
-								MpdResponseSchema,
-								create(MpdResponseSchema, {
-									command: {
-										case: "error",
-										value: { message: (err as Error).message },
-									},
-								}),
-							),
-						),
-					);
+					callback(createMpdErrorBuffer(err));
 				}
 			});
 
@@ -109,19 +85,7 @@ export class SocketIoManager {
 					callback(Buffer.from(resp));
 				} catch (err) {
 					console.error(err);
-					callback(
-						Buffer.from(
-							toBinary(
-								PluginRegisterResponseWrapperSchema,
-								create(PluginRegisterResponseWrapperSchema, {
-									result: {
-										case: "error",
-										value: toErrorMessage(err),
-									},
-								}),
-							),
-						),
-					);
+					callback(createPluginRegisterErrorBuffer(err));
 				}
 			});
 
@@ -145,19 +109,7 @@ export class SocketIoManager {
 					callback(Buffer.from(resp));
 				} catch (err) {
 					console.error(err);
-					callback(
-						Buffer.from(
-							toBinary(
-								AdvancedSearchResponseSchema,
-								create(AdvancedSearchResponseSchema, {
-									command: {
-										case: "error",
-										value: toErrorMessage(err),
-									},
-								}),
-							),
-						),
-					);
+					callback(createAdvancedSearchErrorBuffer(err));
 				}
 			});
 
@@ -174,3 +126,45 @@ export class SocketIoManager {
 		return socketIoManager;
 	}
 }
+
+const createMpdErrorBuffer = (err: unknown): Buffer => {
+	return Buffer.from(
+		toBinary(
+			MpdResponseSchema,
+			create(MpdResponseSchema, {
+				command: {
+					case: "error",
+					value: { message: toErrorMessage(err) },
+				},
+			}),
+		),
+	);
+};
+
+const createPluginRegisterErrorBuffer = (err: unknown): Buffer => {
+	return Buffer.from(
+		toBinary(
+			PluginRegisterResponseWrapperSchema,
+			create(PluginRegisterResponseWrapperSchema, {
+				result: {
+					case: "error",
+					value: toErrorMessage(err),
+				},
+			}),
+		),
+	);
+};
+
+const createAdvancedSearchErrorBuffer = (err: unknown): Buffer => {
+	return Buffer.from(
+		toBinary(
+			AdvancedSearchResponseSchema,
+			create(AdvancedSearchResponseSchema, {
+				command: {
+					case: "error",
+					value: toErrorMessage(err),
+				},
+			}),
+		),
+	);
+};
