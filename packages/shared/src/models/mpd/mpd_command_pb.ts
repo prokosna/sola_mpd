@@ -2,7 +2,6 @@
 // @generated from file mpd/mpd_command.proto (syntax proto3)
 /* eslint-disable */
 
-import type { Message } from "@bufbuild/protobuf";
 import type { GenFile, GenMessage } from "@bufbuild/protobuf/codegenv2";
 import { fileDesc, messageDesc } from "@bufbuild/protobuf/codegenv2";
 import type { Folder } from "../file_explore_pb.js";
@@ -21,2122 +20,1902 @@ import type { MpdProfile } from "./mpd_profile_pb.js";
 import { file_mpd_mpd_profile } from "./mpd_profile_pb.js";
 import type { MpdStats } from "./mpd_stats_pb.js";
 import { file_mpd_mpd_stats } from "./mpd_stats_pb.js";
+import type { Message } from "@bufbuild/protobuf";
 
 /**
  * Describes the file mpd/mpd_command.proto.
  */
-export const file_mpd_mpd_command: GenFile =
-	/*@__PURE__*/
-	fileDesc(
-		"ChVtcGQvbXBkX2NvbW1hbmQucHJvdG8i+hMKCk1wZENvbW1hbmQaPAoKQ29ubmVjdGlvbhoNCgtQaW5nUmVxdWVzdBofCgxQaW5nUmVzcG9uc2USDwoHdmVyc2lvbhgBIAEoCRrLAgoHQ29udHJvbBoNCgtOZXh0UmVxdWVzdBoOCgxOZXh0UmVzcG9uc2UaHQoMUGF1c2VSZXF1ZXN0Eg0KBXBhdXNlGAEgASgIGg8KDVBhdXNlUmVzcG9uc2UaNAoLUGxheVJlcXVlc3QSDQoDcG9zGAEgASgJSAASDAoCaWQYAiABKAlIAEIICgZ0YXJnZXQaDgoMUGxheVJlc3BvbnNlGhEKD1ByZXZpb3VzUmVxdWVzdBoSChBQcmV2aW91c1Jlc3BvbnNlGlUKC1NlZWtSZXF1ZXN0EgwKBHRpbWUYASABKAISDQoDcG9zGAIgASgJSAASDAoCaWQYAyABKAlIABIRCgdjdXJyZW50GAQgASgISABCCAoGdGFyZ2V0Gg4KDFNlZWtSZXNwb25zZRoNCgtTdG9wUmVxdWVzdBoOCgxTdG9wUmVzcG9uc2UaygIKCFBsYXliYWNrGiAKDkNvbnN1bWVSZXF1ZXN0Eg4KBmVuYWJsZRgBIAEoCBoRCg9Db25zdW1lUmVzcG9uc2UaHwoNUmFuZG9tUmVxdWVzdBIOCgZlbmFibGUYASABKAgaEAoOUmFuZG9tUmVzcG9uc2UaHwoNUmVwZWF0UmVxdWVzdBIOCgZlbmFibGUYASABKAgaEAoOUmVwZWF0UmVzcG9uc2UaHAoNU2V0Vm9sUmVxdWVzdBILCgN2b2wYASABKAUaEAoOU2V0Vm9sUmVzcG9uc2UaDwoNR2V0Vm9sUmVxdWVzdBovCg5HZXRWb2xSZXNwb25zZRIdCgN2b2wYASABKAsyEC5NcGRQbGF5ZXJWb2x1bWUaHwoNU2luZ2xlUmVxdWVzdBIOCgZlbmFibGUYASABKAgaEAoOU2luZ2xlUmVzcG9uc2UaygEKBlN0YXR1cxoUChJDdXJyZW50U29uZ1JlcXVlc3QaKgoTQ3VycmVudFNvbmdSZXNwb25zZRITCgRzb25nGAEgASgLMgUuU29uZxoPCg1TdGF0dXNSZXF1ZXN0GjIKDlN0YXR1c1Jlc3BvbnNlEiAKBnN0YXR1cxgBIAEoCzIQLk1wZFBsYXllclN0YXR1cxoOCgxTdGF0c1JlcXVlc3QaKQoNU3RhdHNSZXNwb25zZRIYCgVzdGF0cxgBIAEoCzIJLk1wZFN0YXRzGuACCgVRdWV1ZRoZCgpBZGRSZXF1ZXN0EgsKA3VyaRgBIAEoCRoNCgtBZGRSZXNwb25zZRoOCgxDbGVhclJlcXVlc3QaDwoNQ2xlYXJSZXNwb25zZRo2Cg1EZWxldGVSZXF1ZXN0Eg0KA3BvcxgBIAEoCUgAEgwKAmlkGAIgASgJSABCCAoGdGFyZ2V0GhAKDkRlbGV0ZVJlc3BvbnNlGkgKC01vdmVSZXF1ZXN0EhIKCGZyb21fcG9zGAEgASgJSAASEQoHZnJvbV9pZBgCIAEoCUgAEgoKAnRvGAMgASgJQgYKBGZyb20aDgoMTW92ZVJlc3BvbnNlGhUKE1BsYXlsaXN0SW5mb1JlcXVlc3QaLAoUUGxheWxpc3RJbmZvUmVzcG9uc2USFAoFc29uZ3MYASADKAsyBS5Tb25nGhAKDlNodWZmbGVSZXF1ZXN0GhEKD1NodWZmbGVSZXNwb25zZRqHBQoOU3RvcmVkUGxheWxpc3QaJwoXTGlzdFBsYXlsaXN0SW5mb1JlcXVlc3QSDAoEbmFtZRgBIAEoCRowChhMaXN0UGxheWxpc3RJbmZvUmVzcG9uc2USFAoFc29uZ3MYASADKAsyBS5Tb25nGhYKFExpc3RQbGF5bGlzdHNSZXF1ZXN0GjUKFUxpc3RQbGF5bGlzdHNSZXNwb25zZRIcCglwbGF5bGlzdHMYASADKAsyCS5QbGF5bGlzdBovChJQbGF5bGlzdEFkZFJlcXVlc3QSDAoEbmFtZRgBIAEoCRILCgN1cmkYAiABKAkaFQoTUGxheWxpc3RBZGRSZXNwb25zZRokChRQbGF5bGlzdENsZWFyUmVxdWVzdBIMCgRuYW1lGAEgASgJGhcKFVBsYXlsaXN0Q2xlYXJSZXNwb25zZRoyChVQbGF5bGlzdERlbGV0ZVJlcXVlc3QSDAoEbmFtZRgBIAEoCRILCgNwb3MYAiABKAkaGAoWUGxheWxpc3REZWxldGVSZXNwb25zZRo9ChNQbGF5bGlzdE1vdmVSZXF1ZXN0EgwKBG5hbWUYASABKAkSDAoEZnJvbRgCIAEoCRIKCgJ0bxgDIAEoCRoWChRQbGF5bGlzdE1vdmVSZXNwb25zZRovCg1SZW5hbWVSZXF1ZXN0EgwKBG5hbWUYASABKAkSEAoIbmV3X25hbWUYAiABKAkaEAoOUmVuYW1lUmVzcG9uc2UaHQoNUmVtb3ZlUmVxdWVzdBIMCgRuYW1lGAEgASgJGhAKDlJlbW92ZVJlc3BvbnNlGhsKC1NhdmVSZXF1ZXN0EgwKBG5hbWUYASABKAkaDgoMU2F2ZVJlc3BvbnNlGoECCghEYXRhYmFzZRpTCgtMaXN0UmVxdWVzdBIeCgN0YWcYASABKA4yES5Tb25nLk1ldGFkYXRhVGFnEiQKCmNvbmRpdGlvbnMYAiADKAsyEC5GaWx0ZXJDb25kaXRpb24aHgoMTGlzdFJlc3BvbnNlEg4KBnZhbHVlcxgBIAMoCRo1Cg1TZWFyY2hSZXF1ZXN0EiQKCmNvbmRpdGlvbnMYASADKAsyEC5GaWx0ZXJDb25kaXRpb24aJgoOU2VhcmNoUmVzcG9uc2USFAoFc29uZ3MYASADKAsyBS5Tb25nGg8KDVVwZGF0ZVJlcXVlc3QaEAoOVXBkYXRlUmVzcG9uc2UaTwoFQXVkaW8aEAoOT3V0cHV0c1JlcXVlc3QaNAoPT3V0cHV0c1Jlc3BvbnNlEiEKB2RldmljZXMYASADKAsyEC5NcGRPdXRwdXREZXZpY2UagwIKB1V0aWxpdHkaFQoTTGlzdEFsbFNvbmdzUmVxdWVzdBosChRMaXN0QWxsU29uZ3NSZXNwb25zZRIUCgVzb25ncxgBIAMoCzIFLlNvbmcaFwoVTGlzdEFsbEZvbGRlcnNSZXF1ZXN0GjIKFkxpc3RBbGxGb2xkZXJzUmVzcG9uc2USGAoHZm9sZGVycxgBIAMoCzIHLkZvbGRlchozChhMaXN0U29uZ3NJbkZvbGRlclJlcXVlc3QSFwoGZm9sZGVyGAEgASgLMgcuRm9sZGVyGjEKGUxpc3RTb25nc0luRm9sZGVyUmVzcG9uc2USFAoFc29uZ3MYASADKAsyBS5Tb25nIswRCgpNcGRSZXF1ZXN0EhwKB3Byb2ZpbGUYASABKAsyCy5NcGRQcm9maWxlEjIKBHBpbmcYAiABKAsyIi5NcGRDb21tYW5kLkNvbm5lY3Rpb24uUGluZ1JlcXVlc3RIABIvCgRuZXh0GAMgASgLMh8uTXBkQ29tbWFuZC5Db250cm9sLk5leHRSZXF1ZXN0SAASMQoFcGF1c2UYBCABKAsyIC5NcGRDb21tYW5kLkNvbnRyb2wuUGF1c2VSZXF1ZXN0SAASLwoEcGxheRgFIAEoCzIfLk1wZENvbW1hbmQuQ29udHJvbC5QbGF5UmVxdWVzdEgAEjcKCHByZXZpb3VzGAYgASgLMiMuTXBkQ29tbWFuZC5Db250cm9sLlByZXZpb3VzUmVxdWVzdEgAEi8KBHNlZWsYByABKAsyHy5NcGRDb21tYW5kLkNvbnRyb2wuU2Vla1JlcXVlc3RIABIvCgRzdG9wGAggASgLMh8uTXBkQ29tbWFuZC5Db250cm9sLlN0b3BSZXF1ZXN0SAASNgoHY29uc3VtZRgJIAEoCzIjLk1wZENvbW1hbmQuUGxheWJhY2suQ29uc3VtZVJlcXVlc3RIABI0CgZyYW5kb20YCiABKAsyIi5NcGRDb21tYW5kLlBsYXliYWNrLlJhbmRvbVJlcXVlc3RIABI0CgZyZXBlYXQYCyABKAsyIi5NcGRDb21tYW5kLlBsYXliYWNrLlJlcGVhdFJlcXVlc3RIABI0CgZzZXR2b2wYDCABKAsyIi5NcGRDb21tYW5kLlBsYXliYWNrLlNldFZvbFJlcXVlc3RIABI0CgZnZXR2b2wYDSABKAsyIi5NcGRDb21tYW5kLlBsYXliYWNrLkdldFZvbFJlcXVlc3RIABI0CgZzaW5nbGUYDiABKAsyIi5NcGRDb21tYW5kLlBsYXliYWNrLlNpbmdsZVJlcXVlc3RIABI8CgtjdXJyZW50c29uZxgPIAEoCzIlLk1wZENvbW1hbmQuU3RhdHVzLkN1cnJlbnRTb25nUmVxdWVzdEgAEjIKBnN0YXR1cxgQIAEoCzIgLk1wZENvbW1hbmQuU3RhdHVzLlN0YXR1c1JlcXVlc3RIABIwCgVzdGF0cxgRIAEoCzIfLk1wZENvbW1hbmQuU3RhdHVzLlN0YXRzUmVxdWVzdEgAEisKA2FkZBgSIAEoCzIcLk1wZENvbW1hbmQuUXVldWUuQWRkUmVxdWVzdEgAEi8KBWNsZWFyGBMgASgLMh4uTXBkQ29tbWFuZC5RdWV1ZS5DbGVhclJlcXVlc3RIABIxCgZkZWxldGUYFCABKAsyHy5NcGRDb21tYW5kLlF1ZXVlLkRlbGV0ZVJlcXVlc3RIABItCgRtb3ZlGBUgASgLMh0uTXBkQ29tbWFuZC5RdWV1ZS5Nb3ZlUmVxdWVzdEgAEj0KDHBsYXlsaXN0aW5mbxgWIAEoCzIlLk1wZENvbW1hbmQuUXVldWUuUGxheWxpc3RJbmZvUmVxdWVzdEgAEjMKB3NodWZmbGUYFyABKAsyIC5NcGRDb21tYW5kLlF1ZXVlLlNodWZmbGVSZXF1ZXN0SAASTgoQbGlzdHBsYXlsaXN0aW5mbxgYIAEoCzIyLk1wZENvbW1hbmQuU3RvcmVkUGxheWxpc3QuTGlzdFBsYXlsaXN0SW5mb1JlcXVlc3RIABJICg1saXN0cGxheWxpc3RzGBkgASgLMi8uTXBkQ29tbWFuZC5TdG9yZWRQbGF5bGlzdC5MaXN0UGxheWxpc3RzUmVxdWVzdEgAEkQKC3BsYXlsaXN0YWRkGBogASgLMi0uTXBkQ29tbWFuZC5TdG9yZWRQbGF5bGlzdC5QbGF5bGlzdEFkZFJlcXVlc3RIABJICg1wbGF5bGlzdGNsZWFyGBsgASgLMi8uTXBkQ29tbWFuZC5TdG9yZWRQbGF5bGlzdC5QbGF5bGlzdENsZWFyUmVxdWVzdEgAEkoKDnBsYXlsaXN0ZGVsZXRlGBwgASgLMjAuTXBkQ29tbWFuZC5TdG9yZWRQbGF5bGlzdC5QbGF5bGlzdERlbGV0ZVJlcXVlc3RIABJGCgxwbGF5bGlzdG1vdmUYHSABKAsyLi5NcGRDb21tYW5kLlN0b3JlZFBsYXlsaXN0LlBsYXlsaXN0TW92ZVJlcXVlc3RIABI6CgZyZW5hbWUYHiABKAsyKC5NcGRDb21tYW5kLlN0b3JlZFBsYXlsaXN0LlJlbmFtZVJlcXVlc3RIABI2CgJybRgfIAEoCzIoLk1wZENvbW1hbmQuU3RvcmVkUGxheWxpc3QuUmVtb3ZlUmVxdWVzdEgAEjYKBHNhdmUYICABKAsyJi5NcGRDb21tYW5kLlN0b3JlZFBsYXlsaXN0LlNhdmVSZXF1ZXN0SAASMAoEbGlzdBghIAEoCzIgLk1wZENvbW1hbmQuRGF0YWJhc2UuTGlzdFJlcXVlc3RIABI0CgZzZWFyY2gYIiABKAsyIi5NcGRDb21tYW5kLkRhdGFiYXNlLlNlYXJjaFJlcXVlc3RIABI0CgZ1cGRhdGUYIyABKAsyIi5NcGRDb21tYW5kLkRhdGFiYXNlLlVwZGF0ZVJlcXVlc3RIABIzCgdvdXRwdXRzGCQgASgLMiAuTXBkQ29tbWFuZC5BdWRpby5PdXRwdXRzUmVxdWVzdEgAEkEKDmxpc3RfYWxsX3NvbmdzGCUgASgLMicuTXBkQ29tbWFuZC5VdGlsaXR5Lkxpc3RBbGxTb25nc1JlcXVlc3RIABJFChBsaXN0X2FsbF9mb2xkZXJzGCYgASgLMikuTXBkQ29tbWFuZC5VdGlsaXR5Lkxpc3RBbGxGb2xkZXJzUmVxdWVzdEgAEkwKFGxpc3Rfc29uZ3NfaW5fZm9sZGVyGCcgASgLMiwuTXBkQ29tbWFuZC5VdGlsaXR5Lkxpc3RTb25nc0luRm9sZGVyUmVxdWVzdEgAQgkKB2NvbW1hbmQiLwoOTXBkUmVxdWVzdEJ1bGsSHQoIcmVxdWVzdHMYASADKAsyCy5NcGRSZXF1ZXN0IiIKD01wZENvbW1hbmRFcnJvchIPCgdtZXNzYWdlGAEgASgJIvgRCgtNcGRSZXNwb25zZRIzCgRwaW5nGAIgASgLMiMuTXBkQ29tbWFuZC5Db25uZWN0aW9uLlBpbmdSZXNwb25zZUgAEjAKBG5leHQYAyABKAsyIC5NcGRDb21tYW5kLkNvbnRyb2wuTmV4dFJlc3BvbnNlSAASMgoFcGF1c2UYBCABKAsyIS5NcGRDb21tYW5kLkNvbnRyb2wuUGF1c2VSZXNwb25zZUgAEjAKBHBsYXkYBSABKAsyIC5NcGRDb21tYW5kLkNvbnRyb2wuUGxheVJlc3BvbnNlSAASOAoIcHJldmlvdXMYBiABKAsyJC5NcGRDb21tYW5kLkNvbnRyb2wuUHJldmlvdXNSZXNwb25zZUgAEjAKBHNlZWsYByABKAsyIC5NcGRDb21tYW5kLkNvbnRyb2wuU2Vla1Jlc3BvbnNlSAASMAoEc3RvcBgIIAEoCzIgLk1wZENvbW1hbmQuQ29udHJvbC5TdG9wUmVzcG9uc2VIABI3Cgdjb25zdW1lGAkgASgLMiQuTXBkQ29tbWFuZC5QbGF5YmFjay5Db25zdW1lUmVzcG9uc2VIABI1CgZyYW5kb20YCiABKAsyIy5NcGRDb21tYW5kLlBsYXliYWNrLlJhbmRvbVJlc3BvbnNlSAASNQoGcmVwZWF0GAsgASgLMiMuTXBkQ29tbWFuZC5QbGF5YmFjay5SZXBlYXRSZXNwb25zZUgAEjUKBnNldHZvbBgMIAEoCzIjLk1wZENvbW1hbmQuUGxheWJhY2suU2V0Vm9sUmVzcG9uc2VIABI1CgZnZXR2b2wYDSABKAsyIy5NcGRDb21tYW5kLlBsYXliYWNrLkdldFZvbFJlc3BvbnNlSAASNQoGc2luZ2xlGA4gASgLMiMuTXBkQ29tbWFuZC5QbGF5YmFjay5TaW5nbGVSZXNwb25zZUgAEj0KC2N1cnJlbnRzb25nGA8gASgLMiYuTXBkQ29tbWFuZC5TdGF0dXMuQ3VycmVudFNvbmdSZXNwb25zZUgAEjMKBnN0YXR1cxgQIAEoCzIhLk1wZENvbW1hbmQuU3RhdHVzLlN0YXR1c1Jlc3BvbnNlSAASMQoFc3RhdHMYESABKAsyIC5NcGRDb21tYW5kLlN0YXR1cy5TdGF0c1Jlc3BvbnNlSAASLAoDYWRkGBIgASgLMh0uTXBkQ29tbWFuZC5RdWV1ZS5BZGRSZXNwb25zZUgAEjAKBWNsZWFyGBMgASgLMh8uTXBkQ29tbWFuZC5RdWV1ZS5DbGVhclJlc3BvbnNlSAASMgoGZGVsZXRlGBQgASgLMiAuTXBkQ29tbWFuZC5RdWV1ZS5EZWxldGVSZXNwb25zZUgAEi4KBG1vdmUYFSABKAsyHi5NcGRDb21tYW5kLlF1ZXVlLk1vdmVSZXNwb25zZUgAEj4KDHBsYXlsaXN0aW5mbxgWIAEoCzImLk1wZENvbW1hbmQuUXVldWUuUGxheWxpc3RJbmZvUmVzcG9uc2VIABI0CgdzaHVmZmxlGBcgASgLMiEuTXBkQ29tbWFuZC5RdWV1ZS5TaHVmZmxlUmVzcG9uc2VIABJPChBsaXN0cGxheWxpc3RpbmZvGBggASgLMjMuTXBkQ29tbWFuZC5TdG9yZWRQbGF5bGlzdC5MaXN0UGxheWxpc3RJbmZvUmVzcG9uc2VIABJJCg1saXN0cGxheWxpc3RzGBkgASgLMjAuTXBkQ29tbWFuZC5TdG9yZWRQbGF5bGlzdC5MaXN0UGxheWxpc3RzUmVzcG9uc2VIABJFCgtwbGF5bGlzdGFkZBgaIAEoCzIuLk1wZENvbW1hbmQuU3RvcmVkUGxheWxpc3QuUGxheWxpc3RBZGRSZXNwb25zZUgAEkkKDXBsYXlsaXN0Y2xlYXIYGyABKAsyMC5NcGRDb21tYW5kLlN0b3JlZFBsYXlsaXN0LlBsYXlsaXN0Q2xlYXJSZXNwb25zZUgAEksKDnBsYXlsaXN0ZGVsZXRlGBwgASgLMjEuTXBkQ29tbWFuZC5TdG9yZWRQbGF5bGlzdC5QbGF5bGlzdERlbGV0ZVJlc3BvbnNlSAASRwoMcGxheWxpc3Rtb3ZlGB0gASgLMi8uTXBkQ29tbWFuZC5TdG9yZWRQbGF5bGlzdC5QbGF5bGlzdE1vdmVSZXNwb25zZUgAEjsKBnJlbmFtZRgeIAEoCzIpLk1wZENvbW1hbmQuU3RvcmVkUGxheWxpc3QuUmVuYW1lUmVzcG9uc2VIABI3CgJybRgfIAEoCzIpLk1wZENvbW1hbmQuU3RvcmVkUGxheWxpc3QuUmVtb3ZlUmVzcG9uc2VIABI3CgRzYXZlGCAgASgLMicuTXBkQ29tbWFuZC5TdG9yZWRQbGF5bGlzdC5TYXZlUmVzcG9uc2VIABIxCgRsaXN0GCEgASgLMiEuTXBkQ29tbWFuZC5EYXRhYmFzZS5MaXN0UmVzcG9uc2VIABI1CgZzZWFyY2gYIiABKAsyIy5NcGRDb21tYW5kLkRhdGFiYXNlLlNlYXJjaFJlc3BvbnNlSAASNQoGdXBkYXRlGCMgASgLMiMuTXBkQ29tbWFuZC5EYXRhYmFzZS5VcGRhdGVSZXNwb25zZUgAEjQKB291dHB1dHMYJCABKAsyIS5NcGRDb21tYW5kLkF1ZGlvLk91dHB1dHNSZXNwb25zZUgAEkIKDmxpc3RfYWxsX3NvbmdzGCUgASgLMiguTXBkQ29tbWFuZC5VdGlsaXR5Lkxpc3RBbGxTb25nc1Jlc3BvbnNlSAASRgoQbGlzdF9hbGxfZm9sZGVycxgmIAEoCzIqLk1wZENvbW1hbmQuVXRpbGl0eS5MaXN0QWxsRm9sZGVyc1Jlc3BvbnNlSAASTQoUbGlzdF9zb25nc19pbl9mb2xkZXIYJyABKAsyLS5NcGRDb21tYW5kLlV0aWxpdHkuTGlzdFNvbmdzSW5Gb2xkZXJSZXNwb25zZUgAEiEKBWVycm9yGCggASgLMhAuTXBkQ29tbWFuZEVycm9ySABCCQoHY29tbWFuZGIGcHJvdG8z",
-		[
-			file_file_explore,
-			file_filter,
-			file_playlist,
-			file_song,
-			file_mpd_mpd_output,
-			file_mpd_mpd_player,
-			file_mpd_mpd_profile,
-			file_mpd_mpd_stats,
-		],
-	);
+export const file_mpd_mpd_command: GenFile = /*@__PURE__*/
+  fileDesc("ChVtcGQvbXBkX2NvbW1hbmQucHJvdG8i+hMKCk1wZENvbW1hbmQaPAoKQ29ubmVjdGlvbhoNCgtQaW5nUmVxdWVzdBofCgxQaW5nUmVzcG9uc2USDwoHdmVyc2lvbhgBIAEoCRrLAgoHQ29udHJvbBoNCgtOZXh0UmVxdWVzdBoOCgxOZXh0UmVzcG9uc2UaHQoMUGF1c2VSZXF1ZXN0Eg0KBXBhdXNlGAEgASgIGg8KDVBhdXNlUmVzcG9uc2UaNAoLUGxheVJlcXVlc3QSDQoDcG9zGAEgASgJSAASDAoCaWQYAiABKAlIAEIICgZ0YXJnZXQaDgoMUGxheVJlc3BvbnNlGhEKD1ByZXZpb3VzUmVxdWVzdBoSChBQcmV2aW91c1Jlc3BvbnNlGlUKC1NlZWtSZXF1ZXN0EgwKBHRpbWUYASABKAISDQoDcG9zGAIgASgJSAASDAoCaWQYAyABKAlIABIRCgdjdXJyZW50GAQgASgISABCCAoGdGFyZ2V0Gg4KDFNlZWtSZXNwb25zZRoNCgtTdG9wUmVxdWVzdBoOCgxTdG9wUmVzcG9uc2UaygIKCFBsYXliYWNrGiAKDkNvbnN1bWVSZXF1ZXN0Eg4KBmVuYWJsZRgBIAEoCBoRCg9Db25zdW1lUmVzcG9uc2UaHwoNUmFuZG9tUmVxdWVzdBIOCgZlbmFibGUYASABKAgaEAoOUmFuZG9tUmVzcG9uc2UaHwoNUmVwZWF0UmVxdWVzdBIOCgZlbmFibGUYASABKAgaEAoOUmVwZWF0UmVzcG9uc2UaHAoNU2V0Vm9sUmVxdWVzdBILCgN2b2wYASABKAUaEAoOU2V0Vm9sUmVzcG9uc2UaDwoNR2V0Vm9sUmVxdWVzdBovCg5HZXRWb2xSZXNwb25zZRIdCgN2b2wYASABKAsyEC5NcGRQbGF5ZXJWb2x1bWUaHwoNU2luZ2xlUmVxdWVzdBIOCgZlbmFibGUYASABKAgaEAoOU2luZ2xlUmVzcG9uc2UaygEKBlN0YXR1cxoUChJDdXJyZW50U29uZ1JlcXVlc3QaKgoTQ3VycmVudFNvbmdSZXNwb25zZRITCgRzb25nGAEgASgLMgUuU29uZxoPCg1TdGF0dXNSZXF1ZXN0GjIKDlN0YXR1c1Jlc3BvbnNlEiAKBnN0YXR1cxgBIAEoCzIQLk1wZFBsYXllclN0YXR1cxoOCgxTdGF0c1JlcXVlc3QaKQoNU3RhdHNSZXNwb25zZRIYCgVzdGF0cxgBIAEoCzIJLk1wZFN0YXRzGuACCgVRdWV1ZRoZCgpBZGRSZXF1ZXN0EgsKA3VyaRgBIAEoCRoNCgtBZGRSZXNwb25zZRoOCgxDbGVhclJlcXVlc3QaDwoNQ2xlYXJSZXNwb25zZRo2Cg1EZWxldGVSZXF1ZXN0Eg0KA3BvcxgBIAEoCUgAEgwKAmlkGAIgASgJSABCCAoGdGFyZ2V0GhAKDkRlbGV0ZVJlc3BvbnNlGkgKC01vdmVSZXF1ZXN0EhIKCGZyb21fcG9zGAEgASgJSAASEQoHZnJvbV9pZBgCIAEoCUgAEgoKAnRvGAMgASgJQgYKBGZyb20aDgoMTW92ZVJlc3BvbnNlGhUKE1BsYXlsaXN0SW5mb1JlcXVlc3QaLAoUUGxheWxpc3RJbmZvUmVzcG9uc2USFAoFc29uZ3MYASADKAsyBS5Tb25nGhAKDlNodWZmbGVSZXF1ZXN0GhEKD1NodWZmbGVSZXNwb25zZRqHBQoOU3RvcmVkUGxheWxpc3QaJwoXTGlzdFBsYXlsaXN0SW5mb1JlcXVlc3QSDAoEbmFtZRgBIAEoCRowChhMaXN0UGxheWxpc3RJbmZvUmVzcG9uc2USFAoFc29uZ3MYASADKAsyBS5Tb25nGhYKFExpc3RQbGF5bGlzdHNSZXF1ZXN0GjUKFUxpc3RQbGF5bGlzdHNSZXNwb25zZRIcCglwbGF5bGlzdHMYASADKAsyCS5QbGF5bGlzdBovChJQbGF5bGlzdEFkZFJlcXVlc3QSDAoEbmFtZRgBIAEoCRILCgN1cmkYAiABKAkaFQoTUGxheWxpc3RBZGRSZXNwb25zZRokChRQbGF5bGlzdENsZWFyUmVxdWVzdBIMCgRuYW1lGAEgASgJGhcKFVBsYXlsaXN0Q2xlYXJSZXNwb25zZRoyChVQbGF5bGlzdERlbGV0ZVJlcXVlc3QSDAoEbmFtZRgBIAEoCRILCgNwb3MYAiABKAkaGAoWUGxheWxpc3REZWxldGVSZXNwb25zZRo9ChNQbGF5bGlzdE1vdmVSZXF1ZXN0EgwKBG5hbWUYASABKAkSDAoEZnJvbRgCIAEoCRIKCgJ0bxgDIAEoCRoWChRQbGF5bGlzdE1vdmVSZXNwb25zZRovCg1SZW5hbWVSZXF1ZXN0EgwKBG5hbWUYASABKAkSEAoIbmV3X25hbWUYAiABKAkaEAoOUmVuYW1lUmVzcG9uc2UaHQoNUmVtb3ZlUmVxdWVzdBIMCgRuYW1lGAEgASgJGhAKDlJlbW92ZVJlc3BvbnNlGhsKC1NhdmVSZXF1ZXN0EgwKBG5hbWUYASABKAkaDgoMU2F2ZVJlc3BvbnNlGoECCghEYXRhYmFzZRpTCgtMaXN0UmVxdWVzdBIeCgN0YWcYASABKA4yES5Tb25nLk1ldGFkYXRhVGFnEiQKCmNvbmRpdGlvbnMYAiADKAsyEC5GaWx0ZXJDb25kaXRpb24aHgoMTGlzdFJlc3BvbnNlEg4KBnZhbHVlcxgBIAMoCRo1Cg1TZWFyY2hSZXF1ZXN0EiQKCmNvbmRpdGlvbnMYASADKAsyEC5GaWx0ZXJDb25kaXRpb24aJgoOU2VhcmNoUmVzcG9uc2USFAoFc29uZ3MYASADKAsyBS5Tb25nGg8KDVVwZGF0ZVJlcXVlc3QaEAoOVXBkYXRlUmVzcG9uc2UaTwoFQXVkaW8aEAoOT3V0cHV0c1JlcXVlc3QaNAoPT3V0cHV0c1Jlc3BvbnNlEiEKB2RldmljZXMYASADKAsyEC5NcGRPdXRwdXREZXZpY2UagwIKB1V0aWxpdHkaFQoTTGlzdEFsbFNvbmdzUmVxdWVzdBosChRMaXN0QWxsU29uZ3NSZXNwb25zZRIUCgVzb25ncxgBIAMoCzIFLlNvbmcaFwoVTGlzdEFsbEZvbGRlcnNSZXF1ZXN0GjIKFkxpc3RBbGxGb2xkZXJzUmVzcG9uc2USGAoHZm9sZGVycxgBIAMoCzIHLkZvbGRlchozChhMaXN0U29uZ3NJbkZvbGRlclJlcXVlc3QSFwoGZm9sZGVyGAEgASgLMgcuRm9sZGVyGjEKGUxpc3RTb25nc0luRm9sZGVyUmVzcG9uc2USFAoFc29uZ3MYASADKAsyBS5Tb25nIswRCgpNcGRSZXF1ZXN0EhwKB3Byb2ZpbGUYASABKAsyCy5NcGRQcm9maWxlEjIKBHBpbmcYAiABKAsyIi5NcGRDb21tYW5kLkNvbm5lY3Rpb24uUGluZ1JlcXVlc3RIABIvCgRuZXh0GAMgASgLMh8uTXBkQ29tbWFuZC5Db250cm9sLk5leHRSZXF1ZXN0SAASMQoFcGF1c2UYBCABKAsyIC5NcGRDb21tYW5kLkNvbnRyb2wuUGF1c2VSZXF1ZXN0SAASLwoEcGxheRgFIAEoCzIfLk1wZENvbW1hbmQuQ29udHJvbC5QbGF5UmVxdWVzdEgAEjcKCHByZXZpb3VzGAYgASgLMiMuTXBkQ29tbWFuZC5Db250cm9sLlByZXZpb3VzUmVxdWVzdEgAEi8KBHNlZWsYByABKAsyHy5NcGRDb21tYW5kLkNvbnRyb2wuU2Vla1JlcXVlc3RIABIvCgRzdG9wGAggASgLMh8uTXBkQ29tbWFuZC5Db250cm9sLlN0b3BSZXF1ZXN0SAASNgoHY29uc3VtZRgJIAEoCzIjLk1wZENvbW1hbmQuUGxheWJhY2suQ29uc3VtZVJlcXVlc3RIABI0CgZyYW5kb20YCiABKAsyIi5NcGRDb21tYW5kLlBsYXliYWNrLlJhbmRvbVJlcXVlc3RIABI0CgZyZXBlYXQYCyABKAsyIi5NcGRDb21tYW5kLlBsYXliYWNrLlJlcGVhdFJlcXVlc3RIABI0CgZzZXR2b2wYDCABKAsyIi5NcGRDb21tYW5kLlBsYXliYWNrLlNldFZvbFJlcXVlc3RIABI0CgZnZXR2b2wYDSABKAsyIi5NcGRDb21tYW5kLlBsYXliYWNrLkdldFZvbFJlcXVlc3RIABI0CgZzaW5nbGUYDiABKAsyIi5NcGRDb21tYW5kLlBsYXliYWNrLlNpbmdsZVJlcXVlc3RIABI8CgtjdXJyZW50c29uZxgPIAEoCzIlLk1wZENvbW1hbmQuU3RhdHVzLkN1cnJlbnRTb25nUmVxdWVzdEgAEjIKBnN0YXR1cxgQIAEoCzIgLk1wZENvbW1hbmQuU3RhdHVzLlN0YXR1c1JlcXVlc3RIABIwCgVzdGF0cxgRIAEoCzIfLk1wZENvbW1hbmQuU3RhdHVzLlN0YXRzUmVxdWVzdEgAEisKA2FkZBgSIAEoCzIcLk1wZENvbW1hbmQuUXVldWUuQWRkUmVxdWVzdEgAEi8KBWNsZWFyGBMgASgLMh4uTXBkQ29tbWFuZC5RdWV1ZS5DbGVhclJlcXVlc3RIABIxCgZkZWxldGUYFCABKAsyHy5NcGRDb21tYW5kLlF1ZXVlLkRlbGV0ZVJlcXVlc3RIABItCgRtb3ZlGBUgASgLMh0uTXBkQ29tbWFuZC5RdWV1ZS5Nb3ZlUmVxdWVzdEgAEj0KDHBsYXlsaXN0aW5mbxgWIAEoCzIlLk1wZENvbW1hbmQuUXVldWUuUGxheWxpc3RJbmZvUmVxdWVzdEgAEjMKB3NodWZmbGUYFyABKAsyIC5NcGRDb21tYW5kLlF1ZXVlLlNodWZmbGVSZXF1ZXN0SAASTgoQbGlzdHBsYXlsaXN0aW5mbxgYIAEoCzIyLk1wZENvbW1hbmQuU3RvcmVkUGxheWxpc3QuTGlzdFBsYXlsaXN0SW5mb1JlcXVlc3RIABJICg1saXN0cGxheWxpc3RzGBkgASgLMi8uTXBkQ29tbWFuZC5TdG9yZWRQbGF5bGlzdC5MaXN0UGxheWxpc3RzUmVxdWVzdEgAEkQKC3BsYXlsaXN0YWRkGBogASgLMi0uTXBkQ29tbWFuZC5TdG9yZWRQbGF5bGlzdC5QbGF5bGlzdEFkZFJlcXVlc3RIABJICg1wbGF5bGlzdGNsZWFyGBsgASgLMi8uTXBkQ29tbWFuZC5TdG9yZWRQbGF5bGlzdC5QbGF5bGlzdENsZWFyUmVxdWVzdEgAEkoKDnBsYXlsaXN0ZGVsZXRlGBwgASgLMjAuTXBkQ29tbWFuZC5TdG9yZWRQbGF5bGlzdC5QbGF5bGlzdERlbGV0ZVJlcXVlc3RIABJGCgxwbGF5bGlzdG1vdmUYHSABKAsyLi5NcGRDb21tYW5kLlN0b3JlZFBsYXlsaXN0LlBsYXlsaXN0TW92ZVJlcXVlc3RIABI6CgZyZW5hbWUYHiABKAsyKC5NcGRDb21tYW5kLlN0b3JlZFBsYXlsaXN0LlJlbmFtZVJlcXVlc3RIABI2CgJybRgfIAEoCzIoLk1wZENvbW1hbmQuU3RvcmVkUGxheWxpc3QuUmVtb3ZlUmVxdWVzdEgAEjYKBHNhdmUYICABKAsyJi5NcGRDb21tYW5kLlN0b3JlZFBsYXlsaXN0LlNhdmVSZXF1ZXN0SAASMAoEbGlzdBghIAEoCzIgLk1wZENvbW1hbmQuRGF0YWJhc2UuTGlzdFJlcXVlc3RIABI0CgZzZWFyY2gYIiABKAsyIi5NcGRDb21tYW5kLkRhdGFiYXNlLlNlYXJjaFJlcXVlc3RIABI0CgZ1cGRhdGUYIyABKAsyIi5NcGRDb21tYW5kLkRhdGFiYXNlLlVwZGF0ZVJlcXVlc3RIABIzCgdvdXRwdXRzGCQgASgLMiAuTXBkQ29tbWFuZC5BdWRpby5PdXRwdXRzUmVxdWVzdEgAEkEKDmxpc3RfYWxsX3NvbmdzGCUgASgLMicuTXBkQ29tbWFuZC5VdGlsaXR5Lkxpc3RBbGxTb25nc1JlcXVlc3RIABJFChBsaXN0X2FsbF9mb2xkZXJzGCYgASgLMikuTXBkQ29tbWFuZC5VdGlsaXR5Lkxpc3RBbGxGb2xkZXJzUmVxdWVzdEgAEkwKFGxpc3Rfc29uZ3NfaW5fZm9sZGVyGCcgASgLMiwuTXBkQ29tbWFuZC5VdGlsaXR5Lkxpc3RTb25nc0luRm9sZGVyUmVxdWVzdEgAQgkKB2NvbW1hbmQiLwoOTXBkUmVxdWVzdEJ1bGsSHQoIcmVxdWVzdHMYASADKAsyCy5NcGRSZXF1ZXN0IiIKD01wZENvbW1hbmRFcnJvchIPCgdtZXNzYWdlGAEgASgJIvgRCgtNcGRSZXNwb25zZRIzCgRwaW5nGAIgASgLMiMuTXBkQ29tbWFuZC5Db25uZWN0aW9uLlBpbmdSZXNwb25zZUgAEjAKBG5leHQYAyABKAsyIC5NcGRDb21tYW5kLkNvbnRyb2wuTmV4dFJlc3BvbnNlSAASMgoFcGF1c2UYBCABKAsyIS5NcGRDb21tYW5kLkNvbnRyb2wuUGF1c2VSZXNwb25zZUgAEjAKBHBsYXkYBSABKAsyIC5NcGRDb21tYW5kLkNvbnRyb2wuUGxheVJlc3BvbnNlSAASOAoIcHJldmlvdXMYBiABKAsyJC5NcGRDb21tYW5kLkNvbnRyb2wuUHJldmlvdXNSZXNwb25zZUgAEjAKBHNlZWsYByABKAsyIC5NcGRDb21tYW5kLkNvbnRyb2wuU2Vla1Jlc3BvbnNlSAASMAoEc3RvcBgIIAEoCzIgLk1wZENvbW1hbmQuQ29udHJvbC5TdG9wUmVzcG9uc2VIABI3Cgdjb25zdW1lGAkgASgLMiQuTXBkQ29tbWFuZC5QbGF5YmFjay5Db25zdW1lUmVzcG9uc2VIABI1CgZyYW5kb20YCiABKAsyIy5NcGRDb21tYW5kLlBsYXliYWNrLlJhbmRvbVJlc3BvbnNlSAASNQoGcmVwZWF0GAsgASgLMiMuTXBkQ29tbWFuZC5QbGF5YmFjay5SZXBlYXRSZXNwb25zZUgAEjUKBnNldHZvbBgMIAEoCzIjLk1wZENvbW1hbmQuUGxheWJhY2suU2V0Vm9sUmVzcG9uc2VIABI1CgZnZXR2b2wYDSABKAsyIy5NcGRDb21tYW5kLlBsYXliYWNrLkdldFZvbFJlc3BvbnNlSAASNQoGc2luZ2xlGA4gASgLMiMuTXBkQ29tbWFuZC5QbGF5YmFjay5TaW5nbGVSZXNwb25zZUgAEj0KC2N1cnJlbnRzb25nGA8gASgLMiYuTXBkQ29tbWFuZC5TdGF0dXMuQ3VycmVudFNvbmdSZXNwb25zZUgAEjMKBnN0YXR1cxgQIAEoCzIhLk1wZENvbW1hbmQuU3RhdHVzLlN0YXR1c1Jlc3BvbnNlSAASMQoFc3RhdHMYESABKAsyIC5NcGRDb21tYW5kLlN0YXR1cy5TdGF0c1Jlc3BvbnNlSAASLAoDYWRkGBIgASgLMh0uTXBkQ29tbWFuZC5RdWV1ZS5BZGRSZXNwb25zZUgAEjAKBWNsZWFyGBMgASgLMh8uTXBkQ29tbWFuZC5RdWV1ZS5DbGVhclJlc3BvbnNlSAASMgoGZGVsZXRlGBQgASgLMiAuTXBkQ29tbWFuZC5RdWV1ZS5EZWxldGVSZXNwb25zZUgAEi4KBG1vdmUYFSABKAsyHi5NcGRDb21tYW5kLlF1ZXVlLk1vdmVSZXNwb25zZUgAEj4KDHBsYXlsaXN0aW5mbxgWIAEoCzImLk1wZENvbW1hbmQuUXVldWUuUGxheWxpc3RJbmZvUmVzcG9uc2VIABI0CgdzaHVmZmxlGBcgASgLMiEuTXBkQ29tbWFuZC5RdWV1ZS5TaHVmZmxlUmVzcG9uc2VIABJPChBsaXN0cGxheWxpc3RpbmZvGBggASgLMjMuTXBkQ29tbWFuZC5TdG9yZWRQbGF5bGlzdC5MaXN0UGxheWxpc3RJbmZvUmVzcG9uc2VIABJJCg1saXN0cGxheWxpc3RzGBkgASgLMjAuTXBkQ29tbWFuZC5TdG9yZWRQbGF5bGlzdC5MaXN0UGxheWxpc3RzUmVzcG9uc2VIABJFCgtwbGF5bGlzdGFkZBgaIAEoCzIuLk1wZENvbW1hbmQuU3RvcmVkUGxheWxpc3QuUGxheWxpc3RBZGRSZXNwb25zZUgAEkkKDXBsYXlsaXN0Y2xlYXIYGyABKAsyMC5NcGRDb21tYW5kLlN0b3JlZFBsYXlsaXN0LlBsYXlsaXN0Q2xlYXJSZXNwb25zZUgAEksKDnBsYXlsaXN0ZGVsZXRlGBwgASgLMjEuTXBkQ29tbWFuZC5TdG9yZWRQbGF5bGlzdC5QbGF5bGlzdERlbGV0ZVJlc3BvbnNlSAASRwoMcGxheWxpc3Rtb3ZlGB0gASgLMi8uTXBkQ29tbWFuZC5TdG9yZWRQbGF5bGlzdC5QbGF5bGlzdE1vdmVSZXNwb25zZUgAEjsKBnJlbmFtZRgeIAEoCzIpLk1wZENvbW1hbmQuU3RvcmVkUGxheWxpc3QuUmVuYW1lUmVzcG9uc2VIABI3CgJybRgfIAEoCzIpLk1wZENvbW1hbmQuU3RvcmVkUGxheWxpc3QuUmVtb3ZlUmVzcG9uc2VIABI3CgRzYXZlGCAgASgLMicuTXBkQ29tbWFuZC5TdG9yZWRQbGF5bGlzdC5TYXZlUmVzcG9uc2VIABIxCgRsaXN0GCEgASgLMiEuTXBkQ29tbWFuZC5EYXRhYmFzZS5MaXN0UmVzcG9uc2VIABI1CgZzZWFyY2gYIiABKAsyIy5NcGRDb21tYW5kLkRhdGFiYXNlLlNlYXJjaFJlc3BvbnNlSAASNQoGdXBkYXRlGCMgASgLMiMuTXBkQ29tbWFuZC5EYXRhYmFzZS5VcGRhdGVSZXNwb25zZUgAEjQKB291dHB1dHMYJCABKAsyIS5NcGRDb21tYW5kLkF1ZGlvLk91dHB1dHNSZXNwb25zZUgAEkIKDmxpc3RfYWxsX3NvbmdzGCUgASgLMiguTXBkQ29tbWFuZC5VdGlsaXR5Lkxpc3RBbGxTb25nc1Jlc3BvbnNlSAASRgoQbGlzdF9hbGxfZm9sZGVycxgmIAEoCzIqLk1wZENvbW1hbmQuVXRpbGl0eS5MaXN0QWxsRm9sZGVyc1Jlc3BvbnNlSAASTQoUbGlzdF9zb25nc19pbl9mb2xkZXIYJyABKAsyLS5NcGRDb21tYW5kLlV0aWxpdHkuTGlzdFNvbmdzSW5Gb2xkZXJSZXNwb25zZUgAEiEKBWVycm9yGCggASgLMhAuTXBkQ29tbWFuZEVycm9ySABCCQoHY29tbWFuZGIGcHJvdG8z", [file_file_explore, file_filter, file_playlist, file_song, file_mpd_mpd_output, file_mpd_mpd_player, file_mpd_mpd_profile, file_mpd_mpd_stats]);
 
 /**
  * @generated from message MpdCommand
  */
-export type MpdCommand = Message<"MpdCommand"> & {};
+export type MpdCommand = Message<"MpdCommand"> & {
+};
 
 /**
  * Describes the message MpdCommand.
  * Use `create(MpdCommandSchema)` to create a new message.
  */
-export const MpdCommandSchema: GenMessage<MpdCommand> =
-	/*@__PURE__*/
-	messageDesc(file_mpd_mpd_command, 0);
+export const MpdCommandSchema: GenMessage<MpdCommand> = /*@__PURE__*/
+  messageDesc(file_mpd_mpd_command, 0);
 
 /**
  * @generated from message MpdCommand.Connection
  */
-export type MpdCommand_Connection = Message<"MpdCommand.Connection"> & {};
+export type MpdCommand_Connection = Message<"MpdCommand.Connection"> & {
+};
 
 /**
  * Describes the message MpdCommand.Connection.
  * Use `create(MpdCommand_ConnectionSchema)` to create a new message.
  */
-export const MpdCommand_ConnectionSchema: GenMessage<MpdCommand_Connection> =
-	/*@__PURE__*/
-	messageDesc(file_mpd_mpd_command, 0, 0);
+export const MpdCommand_ConnectionSchema: GenMessage<MpdCommand_Connection> = /*@__PURE__*/
+  messageDesc(file_mpd_mpd_command, 0, 0);
 
 /**
  * @generated from message MpdCommand.Connection.PingRequest
  */
-export type MpdCommand_Connection_PingRequest =
-	Message<"MpdCommand.Connection.PingRequest"> & {};
+export type MpdCommand_Connection_PingRequest = Message<"MpdCommand.Connection.PingRequest"> & {
+};
 
 /**
  * Describes the message MpdCommand.Connection.PingRequest.
  * Use `create(MpdCommand_Connection_PingRequestSchema)` to create a new message.
  */
-export const MpdCommand_Connection_PingRequestSchema: GenMessage<MpdCommand_Connection_PingRequest> =
-	/*@__PURE__*/
-	messageDesc(file_mpd_mpd_command, 0, 0, 0);
+export const MpdCommand_Connection_PingRequestSchema: GenMessage<MpdCommand_Connection_PingRequest> = /*@__PURE__*/
+  messageDesc(file_mpd_mpd_command, 0, 0, 0);
 
 /**
  * @generated from message MpdCommand.Connection.PingResponse
  */
-export type MpdCommand_Connection_PingResponse =
-	Message<"MpdCommand.Connection.PingResponse"> & {
-		/**
-		 * @generated from field: string version = 1;
-		 */
-		version: string;
-	};
+export type MpdCommand_Connection_PingResponse = Message<"MpdCommand.Connection.PingResponse"> & {
+  /**
+   * @generated from field: string version = 1;
+   */
+  version: string;
+};
 
 /**
  * Describes the message MpdCommand.Connection.PingResponse.
  * Use `create(MpdCommand_Connection_PingResponseSchema)` to create a new message.
  */
-export const MpdCommand_Connection_PingResponseSchema: GenMessage<MpdCommand_Connection_PingResponse> =
-	/*@__PURE__*/
-	messageDesc(file_mpd_mpd_command, 0, 0, 1);
+export const MpdCommand_Connection_PingResponseSchema: GenMessage<MpdCommand_Connection_PingResponse> = /*@__PURE__*/
+  messageDesc(file_mpd_mpd_command, 0, 0, 1);
 
 /**
  * @generated from message MpdCommand.Control
  */
-export type MpdCommand_Control = Message<"MpdCommand.Control"> & {};
+export type MpdCommand_Control = Message<"MpdCommand.Control"> & {
+};
 
 /**
  * Describes the message MpdCommand.Control.
  * Use `create(MpdCommand_ControlSchema)` to create a new message.
  */
-export const MpdCommand_ControlSchema: GenMessage<MpdCommand_Control> =
-	/*@__PURE__*/
-	messageDesc(file_mpd_mpd_command, 0, 1);
+export const MpdCommand_ControlSchema: GenMessage<MpdCommand_Control> = /*@__PURE__*/
+  messageDesc(file_mpd_mpd_command, 0, 1);
 
 /**
  * @generated from message MpdCommand.Control.NextRequest
  */
-export type MpdCommand_Control_NextRequest =
-	Message<"MpdCommand.Control.NextRequest"> & {};
+export type MpdCommand_Control_NextRequest = Message<"MpdCommand.Control.NextRequest"> & {
+};
 
 /**
  * Describes the message MpdCommand.Control.NextRequest.
  * Use `create(MpdCommand_Control_NextRequestSchema)` to create a new message.
  */
-export const MpdCommand_Control_NextRequestSchema: GenMessage<MpdCommand_Control_NextRequest> =
-	/*@__PURE__*/
-	messageDesc(file_mpd_mpd_command, 0, 1, 0);
+export const MpdCommand_Control_NextRequestSchema: GenMessage<MpdCommand_Control_NextRequest> = /*@__PURE__*/
+  messageDesc(file_mpd_mpd_command, 0, 1, 0);
 
 /**
  * @generated from message MpdCommand.Control.NextResponse
  */
-export type MpdCommand_Control_NextResponse =
-	Message<"MpdCommand.Control.NextResponse"> & {};
+export type MpdCommand_Control_NextResponse = Message<"MpdCommand.Control.NextResponse"> & {
+};
 
 /**
  * Describes the message MpdCommand.Control.NextResponse.
  * Use `create(MpdCommand_Control_NextResponseSchema)` to create a new message.
  */
-export const MpdCommand_Control_NextResponseSchema: GenMessage<MpdCommand_Control_NextResponse> =
-	/*@__PURE__*/
-	messageDesc(file_mpd_mpd_command, 0, 1, 1);
+export const MpdCommand_Control_NextResponseSchema: GenMessage<MpdCommand_Control_NextResponse> = /*@__PURE__*/
+  messageDesc(file_mpd_mpd_command, 0, 1, 1);
 
 /**
  * @generated from message MpdCommand.Control.PauseRequest
  */
-export type MpdCommand_Control_PauseRequest =
-	Message<"MpdCommand.Control.PauseRequest"> & {
-		/**
-		 * @generated from field: bool pause = 1;
-		 */
-		pause: boolean;
-	};
+export type MpdCommand_Control_PauseRequest = Message<"MpdCommand.Control.PauseRequest"> & {
+  /**
+   * @generated from field: bool pause = 1;
+   */
+  pause: boolean;
+};
 
 /**
  * Describes the message MpdCommand.Control.PauseRequest.
  * Use `create(MpdCommand_Control_PauseRequestSchema)` to create a new message.
  */
-export const MpdCommand_Control_PauseRequestSchema: GenMessage<MpdCommand_Control_PauseRequest> =
-	/*@__PURE__*/
-	messageDesc(file_mpd_mpd_command, 0, 1, 2);
+export const MpdCommand_Control_PauseRequestSchema: GenMessage<MpdCommand_Control_PauseRequest> = /*@__PURE__*/
+  messageDesc(file_mpd_mpd_command, 0, 1, 2);
 
 /**
  * @generated from message MpdCommand.Control.PauseResponse
  */
-export type MpdCommand_Control_PauseResponse =
-	Message<"MpdCommand.Control.PauseResponse"> & {};
+export type MpdCommand_Control_PauseResponse = Message<"MpdCommand.Control.PauseResponse"> & {
+};
 
 /**
  * Describes the message MpdCommand.Control.PauseResponse.
  * Use `create(MpdCommand_Control_PauseResponseSchema)` to create a new message.
  */
-export const MpdCommand_Control_PauseResponseSchema: GenMessage<MpdCommand_Control_PauseResponse> =
-	/*@__PURE__*/
-	messageDesc(file_mpd_mpd_command, 0, 1, 3);
+export const MpdCommand_Control_PauseResponseSchema: GenMessage<MpdCommand_Control_PauseResponse> = /*@__PURE__*/
+  messageDesc(file_mpd_mpd_command, 0, 1, 3);
 
 /**
  * @generated from message MpdCommand.Control.PlayRequest
  */
-export type MpdCommand_Control_PlayRequest =
-	Message<"MpdCommand.Control.PlayRequest"> & {
-		/**
-		 * @generated from oneof MpdCommand.Control.PlayRequest.target
-		 */
-		target:
-			| {
-					/**
-					 * @generated from field: string pos = 1;
-					 */
-					value: string;
-					case: "pos";
-			  }
-			| {
-					/**
-					 * @generated from field: string id = 2;
-					 */
-					value: string;
-					case: "id";
-			  }
-			| { case: undefined; value?: undefined };
-	};
+export type MpdCommand_Control_PlayRequest = Message<"MpdCommand.Control.PlayRequest"> & {
+  /**
+   * @generated from oneof MpdCommand.Control.PlayRequest.target
+   */
+  target: {
+    /**
+     * @generated from field: string pos = 1;
+     */
+    value: string;
+    case: "pos";
+  } | {
+    /**
+     * @generated from field: string id = 2;
+     */
+    value: string;
+    case: "id";
+  } | { case: undefined; value?: undefined };
+};
 
 /**
  * Describes the message MpdCommand.Control.PlayRequest.
  * Use `create(MpdCommand_Control_PlayRequestSchema)` to create a new message.
  */
-export const MpdCommand_Control_PlayRequestSchema: GenMessage<MpdCommand_Control_PlayRequest> =
-	/*@__PURE__*/
-	messageDesc(file_mpd_mpd_command, 0, 1, 4);
+export const MpdCommand_Control_PlayRequestSchema: GenMessage<MpdCommand_Control_PlayRequest> = /*@__PURE__*/
+  messageDesc(file_mpd_mpd_command, 0, 1, 4);
 
 /**
  * @generated from message MpdCommand.Control.PlayResponse
  */
-export type MpdCommand_Control_PlayResponse =
-	Message<"MpdCommand.Control.PlayResponse"> & {};
+export type MpdCommand_Control_PlayResponse = Message<"MpdCommand.Control.PlayResponse"> & {
+};
 
 /**
  * Describes the message MpdCommand.Control.PlayResponse.
  * Use `create(MpdCommand_Control_PlayResponseSchema)` to create a new message.
  */
-export const MpdCommand_Control_PlayResponseSchema: GenMessage<MpdCommand_Control_PlayResponse> =
-	/*@__PURE__*/
-	messageDesc(file_mpd_mpd_command, 0, 1, 5);
+export const MpdCommand_Control_PlayResponseSchema: GenMessage<MpdCommand_Control_PlayResponse> = /*@__PURE__*/
+  messageDesc(file_mpd_mpd_command, 0, 1, 5);
 
 /**
  * @generated from message MpdCommand.Control.PreviousRequest
  */
-export type MpdCommand_Control_PreviousRequest =
-	Message<"MpdCommand.Control.PreviousRequest"> & {};
+export type MpdCommand_Control_PreviousRequest = Message<"MpdCommand.Control.PreviousRequest"> & {
+};
 
 /**
  * Describes the message MpdCommand.Control.PreviousRequest.
  * Use `create(MpdCommand_Control_PreviousRequestSchema)` to create a new message.
  */
-export const MpdCommand_Control_PreviousRequestSchema: GenMessage<MpdCommand_Control_PreviousRequest> =
-	/*@__PURE__*/
-	messageDesc(file_mpd_mpd_command, 0, 1, 6);
+export const MpdCommand_Control_PreviousRequestSchema: GenMessage<MpdCommand_Control_PreviousRequest> = /*@__PURE__*/
+  messageDesc(file_mpd_mpd_command, 0, 1, 6);
 
 /**
  * @generated from message MpdCommand.Control.PreviousResponse
  */
-export type MpdCommand_Control_PreviousResponse =
-	Message<"MpdCommand.Control.PreviousResponse"> & {};
+export type MpdCommand_Control_PreviousResponse = Message<"MpdCommand.Control.PreviousResponse"> & {
+};
 
 /**
  * Describes the message MpdCommand.Control.PreviousResponse.
  * Use `create(MpdCommand_Control_PreviousResponseSchema)` to create a new message.
  */
-export const MpdCommand_Control_PreviousResponseSchema: GenMessage<MpdCommand_Control_PreviousResponse> =
-	/*@__PURE__*/
-	messageDesc(file_mpd_mpd_command, 0, 1, 7);
+export const MpdCommand_Control_PreviousResponseSchema: GenMessage<MpdCommand_Control_PreviousResponse> = /*@__PURE__*/
+  messageDesc(file_mpd_mpd_command, 0, 1, 7);
 
 /**
  * @generated from message MpdCommand.Control.SeekRequest
  */
-export type MpdCommand_Control_SeekRequest =
-	Message<"MpdCommand.Control.SeekRequest"> & {
-		/**
-		 * @generated from field: float time = 1;
-		 */
-		time: number;
+export type MpdCommand_Control_SeekRequest = Message<"MpdCommand.Control.SeekRequest"> & {
+  /**
+   * @generated from field: float time = 1;
+   */
+  time: number;
 
-		/**
-		 * @generated from oneof MpdCommand.Control.SeekRequest.target
-		 */
-		target:
-			| {
-					/**
-					 * @generated from field: string pos = 2;
-					 */
-					value: string;
-					case: "pos";
-			  }
-			| {
-					/**
-					 * @generated from field: string id = 3;
-					 */
-					value: string;
-					case: "id";
-			  }
-			| {
-					/**
-					 * @generated from field: bool current = 4;
-					 */
-					value: boolean;
-					case: "current";
-			  }
-			| { case: undefined; value?: undefined };
-	};
+  /**
+   * @generated from oneof MpdCommand.Control.SeekRequest.target
+   */
+  target: {
+    /**
+     * @generated from field: string pos = 2;
+     */
+    value: string;
+    case: "pos";
+  } | {
+    /**
+     * @generated from field: string id = 3;
+     */
+    value: string;
+    case: "id";
+  } | {
+    /**
+     * @generated from field: bool current = 4;
+     */
+    value: boolean;
+    case: "current";
+  } | { case: undefined; value?: undefined };
+};
 
 /**
  * Describes the message MpdCommand.Control.SeekRequest.
  * Use `create(MpdCommand_Control_SeekRequestSchema)` to create a new message.
  */
-export const MpdCommand_Control_SeekRequestSchema: GenMessage<MpdCommand_Control_SeekRequest> =
-	/*@__PURE__*/
-	messageDesc(file_mpd_mpd_command, 0, 1, 8);
+export const MpdCommand_Control_SeekRequestSchema: GenMessage<MpdCommand_Control_SeekRequest> = /*@__PURE__*/
+  messageDesc(file_mpd_mpd_command, 0, 1, 8);
 
 /**
  * @generated from message MpdCommand.Control.SeekResponse
  */
-export type MpdCommand_Control_SeekResponse =
-	Message<"MpdCommand.Control.SeekResponse"> & {};
+export type MpdCommand_Control_SeekResponse = Message<"MpdCommand.Control.SeekResponse"> & {
+};
 
 /**
  * Describes the message MpdCommand.Control.SeekResponse.
  * Use `create(MpdCommand_Control_SeekResponseSchema)` to create a new message.
  */
-export const MpdCommand_Control_SeekResponseSchema: GenMessage<MpdCommand_Control_SeekResponse> =
-	/*@__PURE__*/
-	messageDesc(file_mpd_mpd_command, 0, 1, 9);
+export const MpdCommand_Control_SeekResponseSchema: GenMessage<MpdCommand_Control_SeekResponse> = /*@__PURE__*/
+  messageDesc(file_mpd_mpd_command, 0, 1, 9);
 
 /**
  * @generated from message MpdCommand.Control.StopRequest
  */
-export type MpdCommand_Control_StopRequest =
-	Message<"MpdCommand.Control.StopRequest"> & {};
+export type MpdCommand_Control_StopRequest = Message<"MpdCommand.Control.StopRequest"> & {
+};
 
 /**
  * Describes the message MpdCommand.Control.StopRequest.
  * Use `create(MpdCommand_Control_StopRequestSchema)` to create a new message.
  */
-export const MpdCommand_Control_StopRequestSchema: GenMessage<MpdCommand_Control_StopRequest> =
-	/*@__PURE__*/
-	messageDesc(file_mpd_mpd_command, 0, 1, 10);
+export const MpdCommand_Control_StopRequestSchema: GenMessage<MpdCommand_Control_StopRequest> = /*@__PURE__*/
+  messageDesc(file_mpd_mpd_command, 0, 1, 10);
 
 /**
  * @generated from message MpdCommand.Control.StopResponse
  */
-export type MpdCommand_Control_StopResponse =
-	Message<"MpdCommand.Control.StopResponse"> & {};
+export type MpdCommand_Control_StopResponse = Message<"MpdCommand.Control.StopResponse"> & {
+};
 
 /**
  * Describes the message MpdCommand.Control.StopResponse.
  * Use `create(MpdCommand_Control_StopResponseSchema)` to create a new message.
  */
-export const MpdCommand_Control_StopResponseSchema: GenMessage<MpdCommand_Control_StopResponse> =
-	/*@__PURE__*/
-	messageDesc(file_mpd_mpd_command, 0, 1, 11);
+export const MpdCommand_Control_StopResponseSchema: GenMessage<MpdCommand_Control_StopResponse> = /*@__PURE__*/
+  messageDesc(file_mpd_mpd_command, 0, 1, 11);
 
 /**
  * @generated from message MpdCommand.Playback
  */
-export type MpdCommand_Playback = Message<"MpdCommand.Playback"> & {};
+export type MpdCommand_Playback = Message<"MpdCommand.Playback"> & {
+};
 
 /**
  * Describes the message MpdCommand.Playback.
  * Use `create(MpdCommand_PlaybackSchema)` to create a new message.
  */
-export const MpdCommand_PlaybackSchema: GenMessage<MpdCommand_Playback> =
-	/*@__PURE__*/
-	messageDesc(file_mpd_mpd_command, 0, 2);
+export const MpdCommand_PlaybackSchema: GenMessage<MpdCommand_Playback> = /*@__PURE__*/
+  messageDesc(file_mpd_mpd_command, 0, 2);
 
 /**
  * @generated from message MpdCommand.Playback.ConsumeRequest
  */
-export type MpdCommand_Playback_ConsumeRequest =
-	Message<"MpdCommand.Playback.ConsumeRequest"> & {
-		/**
-		 * @generated from field: bool enable = 1;
-		 */
-		enable: boolean;
-	};
+export type MpdCommand_Playback_ConsumeRequest = Message<"MpdCommand.Playback.ConsumeRequest"> & {
+  /**
+   * @generated from field: bool enable = 1;
+   */
+  enable: boolean;
+};
 
 /**
  * Describes the message MpdCommand.Playback.ConsumeRequest.
  * Use `create(MpdCommand_Playback_ConsumeRequestSchema)` to create a new message.
  */
-export const MpdCommand_Playback_ConsumeRequestSchema: GenMessage<MpdCommand_Playback_ConsumeRequest> =
-	/*@__PURE__*/
-	messageDesc(file_mpd_mpd_command, 0, 2, 0);
+export const MpdCommand_Playback_ConsumeRequestSchema: GenMessage<MpdCommand_Playback_ConsumeRequest> = /*@__PURE__*/
+  messageDesc(file_mpd_mpd_command, 0, 2, 0);
 
 /**
  * @generated from message MpdCommand.Playback.ConsumeResponse
  */
-export type MpdCommand_Playback_ConsumeResponse =
-	Message<"MpdCommand.Playback.ConsumeResponse"> & {};
+export type MpdCommand_Playback_ConsumeResponse = Message<"MpdCommand.Playback.ConsumeResponse"> & {
+};
 
 /**
  * Describes the message MpdCommand.Playback.ConsumeResponse.
  * Use `create(MpdCommand_Playback_ConsumeResponseSchema)` to create a new message.
  */
-export const MpdCommand_Playback_ConsumeResponseSchema: GenMessage<MpdCommand_Playback_ConsumeResponse> =
-	/*@__PURE__*/
-	messageDesc(file_mpd_mpd_command, 0, 2, 1);
+export const MpdCommand_Playback_ConsumeResponseSchema: GenMessage<MpdCommand_Playback_ConsumeResponse> = /*@__PURE__*/
+  messageDesc(file_mpd_mpd_command, 0, 2, 1);
 
 /**
  * @generated from message MpdCommand.Playback.RandomRequest
  */
-export type MpdCommand_Playback_RandomRequest =
-	Message<"MpdCommand.Playback.RandomRequest"> & {
-		/**
-		 * @generated from field: bool enable = 1;
-		 */
-		enable: boolean;
-	};
+export type MpdCommand_Playback_RandomRequest = Message<"MpdCommand.Playback.RandomRequest"> & {
+  /**
+   * @generated from field: bool enable = 1;
+   */
+  enable: boolean;
+};
 
 /**
  * Describes the message MpdCommand.Playback.RandomRequest.
  * Use `create(MpdCommand_Playback_RandomRequestSchema)` to create a new message.
  */
-export const MpdCommand_Playback_RandomRequestSchema: GenMessage<MpdCommand_Playback_RandomRequest> =
-	/*@__PURE__*/
-	messageDesc(file_mpd_mpd_command, 0, 2, 2);
+export const MpdCommand_Playback_RandomRequestSchema: GenMessage<MpdCommand_Playback_RandomRequest> = /*@__PURE__*/
+  messageDesc(file_mpd_mpd_command, 0, 2, 2);
 
 /**
  * @generated from message MpdCommand.Playback.RandomResponse
  */
-export type MpdCommand_Playback_RandomResponse =
-	Message<"MpdCommand.Playback.RandomResponse"> & {};
+export type MpdCommand_Playback_RandomResponse = Message<"MpdCommand.Playback.RandomResponse"> & {
+};
 
 /**
  * Describes the message MpdCommand.Playback.RandomResponse.
  * Use `create(MpdCommand_Playback_RandomResponseSchema)` to create a new message.
  */
-export const MpdCommand_Playback_RandomResponseSchema: GenMessage<MpdCommand_Playback_RandomResponse> =
-	/*@__PURE__*/
-	messageDesc(file_mpd_mpd_command, 0, 2, 3);
+export const MpdCommand_Playback_RandomResponseSchema: GenMessage<MpdCommand_Playback_RandomResponse> = /*@__PURE__*/
+  messageDesc(file_mpd_mpd_command, 0, 2, 3);
 
 /**
  * @generated from message MpdCommand.Playback.RepeatRequest
  */
-export type MpdCommand_Playback_RepeatRequest =
-	Message<"MpdCommand.Playback.RepeatRequest"> & {
-		/**
-		 * @generated from field: bool enable = 1;
-		 */
-		enable: boolean;
-	};
+export type MpdCommand_Playback_RepeatRequest = Message<"MpdCommand.Playback.RepeatRequest"> & {
+  /**
+   * @generated from field: bool enable = 1;
+   */
+  enable: boolean;
+};
 
 /**
  * Describes the message MpdCommand.Playback.RepeatRequest.
  * Use `create(MpdCommand_Playback_RepeatRequestSchema)` to create a new message.
  */
-export const MpdCommand_Playback_RepeatRequestSchema: GenMessage<MpdCommand_Playback_RepeatRequest> =
-	/*@__PURE__*/
-	messageDesc(file_mpd_mpd_command, 0, 2, 4);
+export const MpdCommand_Playback_RepeatRequestSchema: GenMessage<MpdCommand_Playback_RepeatRequest> = /*@__PURE__*/
+  messageDesc(file_mpd_mpd_command, 0, 2, 4);
 
 /**
  * @generated from message MpdCommand.Playback.RepeatResponse
  */
-export type MpdCommand_Playback_RepeatResponse =
-	Message<"MpdCommand.Playback.RepeatResponse"> & {};
+export type MpdCommand_Playback_RepeatResponse = Message<"MpdCommand.Playback.RepeatResponse"> & {
+};
 
 /**
  * Describes the message MpdCommand.Playback.RepeatResponse.
  * Use `create(MpdCommand_Playback_RepeatResponseSchema)` to create a new message.
  */
-export const MpdCommand_Playback_RepeatResponseSchema: GenMessage<MpdCommand_Playback_RepeatResponse> =
-	/*@__PURE__*/
-	messageDesc(file_mpd_mpd_command, 0, 2, 5);
+export const MpdCommand_Playback_RepeatResponseSchema: GenMessage<MpdCommand_Playback_RepeatResponse> = /*@__PURE__*/
+  messageDesc(file_mpd_mpd_command, 0, 2, 5);
 
 /**
  * @generated from message MpdCommand.Playback.SetVolRequest
  */
-export type MpdCommand_Playback_SetVolRequest =
-	Message<"MpdCommand.Playback.SetVolRequest"> & {
-		/**
-		 * @generated from field: int32 vol = 1;
-		 */
-		vol: number;
-	};
+export type MpdCommand_Playback_SetVolRequest = Message<"MpdCommand.Playback.SetVolRequest"> & {
+  /**
+   * @generated from field: int32 vol = 1;
+   */
+  vol: number;
+};
 
 /**
  * Describes the message MpdCommand.Playback.SetVolRequest.
  * Use `create(MpdCommand_Playback_SetVolRequestSchema)` to create a new message.
  */
-export const MpdCommand_Playback_SetVolRequestSchema: GenMessage<MpdCommand_Playback_SetVolRequest> =
-	/*@__PURE__*/
-	messageDesc(file_mpd_mpd_command, 0, 2, 6);
+export const MpdCommand_Playback_SetVolRequestSchema: GenMessage<MpdCommand_Playback_SetVolRequest> = /*@__PURE__*/
+  messageDesc(file_mpd_mpd_command, 0, 2, 6);
 
 /**
  * @generated from message MpdCommand.Playback.SetVolResponse
  */
-export type MpdCommand_Playback_SetVolResponse =
-	Message<"MpdCommand.Playback.SetVolResponse"> & {};
+export type MpdCommand_Playback_SetVolResponse = Message<"MpdCommand.Playback.SetVolResponse"> & {
+};
 
 /**
  * Describes the message MpdCommand.Playback.SetVolResponse.
  * Use `create(MpdCommand_Playback_SetVolResponseSchema)` to create a new message.
  */
-export const MpdCommand_Playback_SetVolResponseSchema: GenMessage<MpdCommand_Playback_SetVolResponse> =
-	/*@__PURE__*/
-	messageDesc(file_mpd_mpd_command, 0, 2, 7);
+export const MpdCommand_Playback_SetVolResponseSchema: GenMessage<MpdCommand_Playback_SetVolResponse> = /*@__PURE__*/
+  messageDesc(file_mpd_mpd_command, 0, 2, 7);
 
 /**
  * @generated from message MpdCommand.Playback.GetVolRequest
  */
-export type MpdCommand_Playback_GetVolRequest =
-	Message<"MpdCommand.Playback.GetVolRequest"> & {};
+export type MpdCommand_Playback_GetVolRequest = Message<"MpdCommand.Playback.GetVolRequest"> & {
+};
 
 /**
  * Describes the message MpdCommand.Playback.GetVolRequest.
  * Use `create(MpdCommand_Playback_GetVolRequestSchema)` to create a new message.
  */
-export const MpdCommand_Playback_GetVolRequestSchema: GenMessage<MpdCommand_Playback_GetVolRequest> =
-	/*@__PURE__*/
-	messageDesc(file_mpd_mpd_command, 0, 2, 8);
+export const MpdCommand_Playback_GetVolRequestSchema: GenMessage<MpdCommand_Playback_GetVolRequest> = /*@__PURE__*/
+  messageDesc(file_mpd_mpd_command, 0, 2, 8);
 
 /**
  * @generated from message MpdCommand.Playback.GetVolResponse
  */
-export type MpdCommand_Playback_GetVolResponse =
-	Message<"MpdCommand.Playback.GetVolResponse"> & {
-		/**
-		 * @generated from field: MpdPlayerVolume vol = 1;
-		 */
-		vol?: MpdPlayerVolume;
-	};
+export type MpdCommand_Playback_GetVolResponse = Message<"MpdCommand.Playback.GetVolResponse"> & {
+  /**
+   * @generated from field: MpdPlayerVolume vol = 1;
+   */
+  vol?: MpdPlayerVolume;
+};
 
 /**
  * Describes the message MpdCommand.Playback.GetVolResponse.
  * Use `create(MpdCommand_Playback_GetVolResponseSchema)` to create a new message.
  */
-export const MpdCommand_Playback_GetVolResponseSchema: GenMessage<MpdCommand_Playback_GetVolResponse> =
-	/*@__PURE__*/
-	messageDesc(file_mpd_mpd_command, 0, 2, 9);
+export const MpdCommand_Playback_GetVolResponseSchema: GenMessage<MpdCommand_Playback_GetVolResponse> = /*@__PURE__*/
+  messageDesc(file_mpd_mpd_command, 0, 2, 9);
 
 /**
  * @generated from message MpdCommand.Playback.SingleRequest
  */
-export type MpdCommand_Playback_SingleRequest =
-	Message<"MpdCommand.Playback.SingleRequest"> & {
-		/**
-		 * @generated from field: bool enable = 1;
-		 */
-		enable: boolean;
-	};
+export type MpdCommand_Playback_SingleRequest = Message<"MpdCommand.Playback.SingleRequest"> & {
+  /**
+   * @generated from field: bool enable = 1;
+   */
+  enable: boolean;
+};
 
 /**
  * Describes the message MpdCommand.Playback.SingleRequest.
  * Use `create(MpdCommand_Playback_SingleRequestSchema)` to create a new message.
  */
-export const MpdCommand_Playback_SingleRequestSchema: GenMessage<MpdCommand_Playback_SingleRequest> =
-	/*@__PURE__*/
-	messageDesc(file_mpd_mpd_command, 0, 2, 10);
+export const MpdCommand_Playback_SingleRequestSchema: GenMessage<MpdCommand_Playback_SingleRequest> = /*@__PURE__*/
+  messageDesc(file_mpd_mpd_command, 0, 2, 10);
 
 /**
  * @generated from message MpdCommand.Playback.SingleResponse
  */
-export type MpdCommand_Playback_SingleResponse =
-	Message<"MpdCommand.Playback.SingleResponse"> & {};
+export type MpdCommand_Playback_SingleResponse = Message<"MpdCommand.Playback.SingleResponse"> & {
+};
 
 /**
  * Describes the message MpdCommand.Playback.SingleResponse.
  * Use `create(MpdCommand_Playback_SingleResponseSchema)` to create a new message.
  */
-export const MpdCommand_Playback_SingleResponseSchema: GenMessage<MpdCommand_Playback_SingleResponse> =
-	/*@__PURE__*/
-	messageDesc(file_mpd_mpd_command, 0, 2, 11);
+export const MpdCommand_Playback_SingleResponseSchema: GenMessage<MpdCommand_Playback_SingleResponse> = /*@__PURE__*/
+  messageDesc(file_mpd_mpd_command, 0, 2, 11);
 
 /**
  * @generated from message MpdCommand.Status
  */
-export type MpdCommand_Status = Message<"MpdCommand.Status"> & {};
+export type MpdCommand_Status = Message<"MpdCommand.Status"> & {
+};
 
 /**
  * Describes the message MpdCommand.Status.
  * Use `create(MpdCommand_StatusSchema)` to create a new message.
  */
-export const MpdCommand_StatusSchema: GenMessage<MpdCommand_Status> =
-	/*@__PURE__*/
-	messageDesc(file_mpd_mpd_command, 0, 3);
+export const MpdCommand_StatusSchema: GenMessage<MpdCommand_Status> = /*@__PURE__*/
+  messageDesc(file_mpd_mpd_command, 0, 3);
 
 /**
  * @generated from message MpdCommand.Status.CurrentSongRequest
  */
-export type MpdCommand_Status_CurrentSongRequest =
-	Message<"MpdCommand.Status.CurrentSongRequest"> & {};
+export type MpdCommand_Status_CurrentSongRequest = Message<"MpdCommand.Status.CurrentSongRequest"> & {
+};
 
 /**
  * Describes the message MpdCommand.Status.CurrentSongRequest.
  * Use `create(MpdCommand_Status_CurrentSongRequestSchema)` to create a new message.
  */
-export const MpdCommand_Status_CurrentSongRequestSchema: GenMessage<MpdCommand_Status_CurrentSongRequest> =
-	/*@__PURE__*/
-	messageDesc(file_mpd_mpd_command, 0, 3, 0);
+export const MpdCommand_Status_CurrentSongRequestSchema: GenMessage<MpdCommand_Status_CurrentSongRequest> = /*@__PURE__*/
+  messageDesc(file_mpd_mpd_command, 0, 3, 0);
 
 /**
  * @generated from message MpdCommand.Status.CurrentSongResponse
  */
-export type MpdCommand_Status_CurrentSongResponse =
-	Message<"MpdCommand.Status.CurrentSongResponse"> & {
-		/**
-		 * @generated from field: Song song = 1;
-		 */
-		song?: Song;
-	};
+export type MpdCommand_Status_CurrentSongResponse = Message<"MpdCommand.Status.CurrentSongResponse"> & {
+  /**
+   * @generated from field: Song song = 1;
+   */
+  song?: Song;
+};
 
 /**
  * Describes the message MpdCommand.Status.CurrentSongResponse.
  * Use `create(MpdCommand_Status_CurrentSongResponseSchema)` to create a new message.
  */
-export const MpdCommand_Status_CurrentSongResponseSchema: GenMessage<MpdCommand_Status_CurrentSongResponse> =
-	/*@__PURE__*/
-	messageDesc(file_mpd_mpd_command, 0, 3, 1);
+export const MpdCommand_Status_CurrentSongResponseSchema: GenMessage<MpdCommand_Status_CurrentSongResponse> = /*@__PURE__*/
+  messageDesc(file_mpd_mpd_command, 0, 3, 1);
 
 /**
  * @generated from message MpdCommand.Status.StatusRequest
  */
-export type MpdCommand_Status_StatusRequest =
-	Message<"MpdCommand.Status.StatusRequest"> & {};
+export type MpdCommand_Status_StatusRequest = Message<"MpdCommand.Status.StatusRequest"> & {
+};
 
 /**
  * Describes the message MpdCommand.Status.StatusRequest.
  * Use `create(MpdCommand_Status_StatusRequestSchema)` to create a new message.
  */
-export const MpdCommand_Status_StatusRequestSchema: GenMessage<MpdCommand_Status_StatusRequest> =
-	/*@__PURE__*/
-	messageDesc(file_mpd_mpd_command, 0, 3, 2);
+export const MpdCommand_Status_StatusRequestSchema: GenMessage<MpdCommand_Status_StatusRequest> = /*@__PURE__*/
+  messageDesc(file_mpd_mpd_command, 0, 3, 2);
 
 /**
  * @generated from message MpdCommand.Status.StatusResponse
  */
-export type MpdCommand_Status_StatusResponse =
-	Message<"MpdCommand.Status.StatusResponse"> & {
-		/**
-		 * @generated from field: MpdPlayerStatus status = 1;
-		 */
-		status?: MpdPlayerStatus;
-	};
+export type MpdCommand_Status_StatusResponse = Message<"MpdCommand.Status.StatusResponse"> & {
+  /**
+   * @generated from field: MpdPlayerStatus status = 1;
+   */
+  status?: MpdPlayerStatus;
+};
 
 /**
  * Describes the message MpdCommand.Status.StatusResponse.
  * Use `create(MpdCommand_Status_StatusResponseSchema)` to create a new message.
  */
-export const MpdCommand_Status_StatusResponseSchema: GenMessage<MpdCommand_Status_StatusResponse> =
-	/*@__PURE__*/
-	messageDesc(file_mpd_mpd_command, 0, 3, 3);
+export const MpdCommand_Status_StatusResponseSchema: GenMessage<MpdCommand_Status_StatusResponse> = /*@__PURE__*/
+  messageDesc(file_mpd_mpd_command, 0, 3, 3);
 
 /**
  * @generated from message MpdCommand.Status.StatsRequest
  */
-export type MpdCommand_Status_StatsRequest =
-	Message<"MpdCommand.Status.StatsRequest"> & {};
+export type MpdCommand_Status_StatsRequest = Message<"MpdCommand.Status.StatsRequest"> & {
+};
 
 /**
  * Describes the message MpdCommand.Status.StatsRequest.
  * Use `create(MpdCommand_Status_StatsRequestSchema)` to create a new message.
  */
-export const MpdCommand_Status_StatsRequestSchema: GenMessage<MpdCommand_Status_StatsRequest> =
-	/*@__PURE__*/
-	messageDesc(file_mpd_mpd_command, 0, 3, 4);
+export const MpdCommand_Status_StatsRequestSchema: GenMessage<MpdCommand_Status_StatsRequest> = /*@__PURE__*/
+  messageDesc(file_mpd_mpd_command, 0, 3, 4);
 
 /**
  * @generated from message MpdCommand.Status.StatsResponse
  */
-export type MpdCommand_Status_StatsResponse =
-	Message<"MpdCommand.Status.StatsResponse"> & {
-		/**
-		 * @generated from field: MpdStats stats = 1;
-		 */
-		stats?: MpdStats;
-	};
+export type MpdCommand_Status_StatsResponse = Message<"MpdCommand.Status.StatsResponse"> & {
+  /**
+   * @generated from field: MpdStats stats = 1;
+   */
+  stats?: MpdStats;
+};
 
 /**
  * Describes the message MpdCommand.Status.StatsResponse.
  * Use `create(MpdCommand_Status_StatsResponseSchema)` to create a new message.
  */
-export const MpdCommand_Status_StatsResponseSchema: GenMessage<MpdCommand_Status_StatsResponse> =
-	/*@__PURE__*/
-	messageDesc(file_mpd_mpd_command, 0, 3, 5);
+export const MpdCommand_Status_StatsResponseSchema: GenMessage<MpdCommand_Status_StatsResponse> = /*@__PURE__*/
+  messageDesc(file_mpd_mpd_command, 0, 3, 5);
 
 /**
  * @generated from message MpdCommand.Queue
  */
-export type MpdCommand_Queue = Message<"MpdCommand.Queue"> & {};
+export type MpdCommand_Queue = Message<"MpdCommand.Queue"> & {
+};
 
 /**
  * Describes the message MpdCommand.Queue.
  * Use `create(MpdCommand_QueueSchema)` to create a new message.
  */
-export const MpdCommand_QueueSchema: GenMessage<MpdCommand_Queue> =
-	/*@__PURE__*/
-	messageDesc(file_mpd_mpd_command, 0, 4);
+export const MpdCommand_QueueSchema: GenMessage<MpdCommand_Queue> = /*@__PURE__*/
+  messageDesc(file_mpd_mpd_command, 0, 4);
 
 /**
  * @generated from message MpdCommand.Queue.AddRequest
  */
-export type MpdCommand_Queue_AddRequest =
-	Message<"MpdCommand.Queue.AddRequest"> & {
-		/**
-		 * @generated from field: string uri = 1;
-		 */
-		uri: string;
-	};
+export type MpdCommand_Queue_AddRequest = Message<"MpdCommand.Queue.AddRequest"> & {
+  /**
+   * @generated from field: string uri = 1;
+   */
+  uri: string;
+};
 
 /**
  * Describes the message MpdCommand.Queue.AddRequest.
  * Use `create(MpdCommand_Queue_AddRequestSchema)` to create a new message.
  */
-export const MpdCommand_Queue_AddRequestSchema: GenMessage<MpdCommand_Queue_AddRequest> =
-	/*@__PURE__*/
-	messageDesc(file_mpd_mpd_command, 0, 4, 0);
+export const MpdCommand_Queue_AddRequestSchema: GenMessage<MpdCommand_Queue_AddRequest> = /*@__PURE__*/
+  messageDesc(file_mpd_mpd_command, 0, 4, 0);
 
 /**
  * @generated from message MpdCommand.Queue.AddResponse
  */
-export type MpdCommand_Queue_AddResponse =
-	Message<"MpdCommand.Queue.AddResponse"> & {};
+export type MpdCommand_Queue_AddResponse = Message<"MpdCommand.Queue.AddResponse"> & {
+};
 
 /**
  * Describes the message MpdCommand.Queue.AddResponse.
  * Use `create(MpdCommand_Queue_AddResponseSchema)` to create a new message.
  */
-export const MpdCommand_Queue_AddResponseSchema: GenMessage<MpdCommand_Queue_AddResponse> =
-	/*@__PURE__*/
-	messageDesc(file_mpd_mpd_command, 0, 4, 1);
+export const MpdCommand_Queue_AddResponseSchema: GenMessage<MpdCommand_Queue_AddResponse> = /*@__PURE__*/
+  messageDesc(file_mpd_mpd_command, 0, 4, 1);
 
 /**
  * @generated from message MpdCommand.Queue.ClearRequest
  */
-export type MpdCommand_Queue_ClearRequest =
-	Message<"MpdCommand.Queue.ClearRequest"> & {};
+export type MpdCommand_Queue_ClearRequest = Message<"MpdCommand.Queue.ClearRequest"> & {
+};
 
 /**
  * Describes the message MpdCommand.Queue.ClearRequest.
  * Use `create(MpdCommand_Queue_ClearRequestSchema)` to create a new message.
  */
-export const MpdCommand_Queue_ClearRequestSchema: GenMessage<MpdCommand_Queue_ClearRequest> =
-	/*@__PURE__*/
-	messageDesc(file_mpd_mpd_command, 0, 4, 2);
+export const MpdCommand_Queue_ClearRequestSchema: GenMessage<MpdCommand_Queue_ClearRequest> = /*@__PURE__*/
+  messageDesc(file_mpd_mpd_command, 0, 4, 2);
 
 /**
  * @generated from message MpdCommand.Queue.ClearResponse
  */
-export type MpdCommand_Queue_ClearResponse =
-	Message<"MpdCommand.Queue.ClearResponse"> & {};
+export type MpdCommand_Queue_ClearResponse = Message<"MpdCommand.Queue.ClearResponse"> & {
+};
 
 /**
  * Describes the message MpdCommand.Queue.ClearResponse.
  * Use `create(MpdCommand_Queue_ClearResponseSchema)` to create a new message.
  */
-export const MpdCommand_Queue_ClearResponseSchema: GenMessage<MpdCommand_Queue_ClearResponse> =
-	/*@__PURE__*/
-	messageDesc(file_mpd_mpd_command, 0, 4, 3);
+export const MpdCommand_Queue_ClearResponseSchema: GenMessage<MpdCommand_Queue_ClearResponse> = /*@__PURE__*/
+  messageDesc(file_mpd_mpd_command, 0, 4, 3);
 
 /**
  * @generated from message MpdCommand.Queue.DeleteRequest
  */
-export type MpdCommand_Queue_DeleteRequest =
-	Message<"MpdCommand.Queue.DeleteRequest"> & {
-		/**
-		 * @generated from oneof MpdCommand.Queue.DeleteRequest.target
-		 */
-		target:
-			| {
-					/**
-					 * @generated from field: string pos = 1;
-					 */
-					value: string;
-					case: "pos";
-			  }
-			| {
-					/**
-					 * @generated from field: string id = 2;
-					 */
-					value: string;
-					case: "id";
-			  }
-			| { case: undefined; value?: undefined };
-	};
+export type MpdCommand_Queue_DeleteRequest = Message<"MpdCommand.Queue.DeleteRequest"> & {
+  /**
+   * @generated from oneof MpdCommand.Queue.DeleteRequest.target
+   */
+  target: {
+    /**
+     * @generated from field: string pos = 1;
+     */
+    value: string;
+    case: "pos";
+  } | {
+    /**
+     * @generated from field: string id = 2;
+     */
+    value: string;
+    case: "id";
+  } | { case: undefined; value?: undefined };
+};
 
 /**
  * Describes the message MpdCommand.Queue.DeleteRequest.
  * Use `create(MpdCommand_Queue_DeleteRequestSchema)` to create a new message.
  */
-export const MpdCommand_Queue_DeleteRequestSchema: GenMessage<MpdCommand_Queue_DeleteRequest> =
-	/*@__PURE__*/
-	messageDesc(file_mpd_mpd_command, 0, 4, 4);
+export const MpdCommand_Queue_DeleteRequestSchema: GenMessage<MpdCommand_Queue_DeleteRequest> = /*@__PURE__*/
+  messageDesc(file_mpd_mpd_command, 0, 4, 4);
 
 /**
  * @generated from message MpdCommand.Queue.DeleteResponse
  */
-export type MpdCommand_Queue_DeleteResponse =
-	Message<"MpdCommand.Queue.DeleteResponse"> & {};
+export type MpdCommand_Queue_DeleteResponse = Message<"MpdCommand.Queue.DeleteResponse"> & {
+};
 
 /**
  * Describes the message MpdCommand.Queue.DeleteResponse.
  * Use `create(MpdCommand_Queue_DeleteResponseSchema)` to create a new message.
  */
-export const MpdCommand_Queue_DeleteResponseSchema: GenMessage<MpdCommand_Queue_DeleteResponse> =
-	/*@__PURE__*/
-	messageDesc(file_mpd_mpd_command, 0, 4, 5);
+export const MpdCommand_Queue_DeleteResponseSchema: GenMessage<MpdCommand_Queue_DeleteResponse> = /*@__PURE__*/
+  messageDesc(file_mpd_mpd_command, 0, 4, 5);
 
 /**
  * @generated from message MpdCommand.Queue.MoveRequest
  */
-export type MpdCommand_Queue_MoveRequest =
-	Message<"MpdCommand.Queue.MoveRequest"> & {
-		/**
-		 * @generated from oneof MpdCommand.Queue.MoveRequest.from
-		 */
-		from:
-			| {
-					/**
-					 * @generated from field: string from_pos = 1;
-					 */
-					value: string;
-					case: "fromPos";
-			  }
-			| {
-					/**
-					 * @generated from field: string from_id = 2;
-					 */
-					value: string;
-					case: "fromId";
-			  }
-			| { case: undefined; value?: undefined };
+export type MpdCommand_Queue_MoveRequest = Message<"MpdCommand.Queue.MoveRequest"> & {
+  /**
+   * @generated from oneof MpdCommand.Queue.MoveRequest.from
+   */
+  from: {
+    /**
+     * @generated from field: string from_pos = 1;
+     */
+    value: string;
+    case: "fromPos";
+  } | {
+    /**
+     * @generated from field: string from_id = 2;
+     */
+    value: string;
+    case: "fromId";
+  } | { case: undefined; value?: undefined };
 
-		/**
-		 * @generated from field: string to = 3;
-		 */
-		to: string;
-	};
+  /**
+   * @generated from field: string to = 3;
+   */
+  to: string;
+};
 
 /**
  * Describes the message MpdCommand.Queue.MoveRequest.
  * Use `create(MpdCommand_Queue_MoveRequestSchema)` to create a new message.
  */
-export const MpdCommand_Queue_MoveRequestSchema: GenMessage<MpdCommand_Queue_MoveRequest> =
-	/*@__PURE__*/
-	messageDesc(file_mpd_mpd_command, 0, 4, 6);
+export const MpdCommand_Queue_MoveRequestSchema: GenMessage<MpdCommand_Queue_MoveRequest> = /*@__PURE__*/
+  messageDesc(file_mpd_mpd_command, 0, 4, 6);
 
 /**
  * @generated from message MpdCommand.Queue.MoveResponse
  */
-export type MpdCommand_Queue_MoveResponse =
-	Message<"MpdCommand.Queue.MoveResponse"> & {};
+export type MpdCommand_Queue_MoveResponse = Message<"MpdCommand.Queue.MoveResponse"> & {
+};
 
 /**
  * Describes the message MpdCommand.Queue.MoveResponse.
  * Use `create(MpdCommand_Queue_MoveResponseSchema)` to create a new message.
  */
-export const MpdCommand_Queue_MoveResponseSchema: GenMessage<MpdCommand_Queue_MoveResponse> =
-	/*@__PURE__*/
-	messageDesc(file_mpd_mpd_command, 0, 4, 7);
+export const MpdCommand_Queue_MoveResponseSchema: GenMessage<MpdCommand_Queue_MoveResponse> = /*@__PURE__*/
+  messageDesc(file_mpd_mpd_command, 0, 4, 7);
 
 /**
  * @generated from message MpdCommand.Queue.PlaylistInfoRequest
  */
-export type MpdCommand_Queue_PlaylistInfoRequest =
-	Message<"MpdCommand.Queue.PlaylistInfoRequest"> & {};
+export type MpdCommand_Queue_PlaylistInfoRequest = Message<"MpdCommand.Queue.PlaylistInfoRequest"> & {
+};
 
 /**
  * Describes the message MpdCommand.Queue.PlaylistInfoRequest.
  * Use `create(MpdCommand_Queue_PlaylistInfoRequestSchema)` to create a new message.
  */
-export const MpdCommand_Queue_PlaylistInfoRequestSchema: GenMessage<MpdCommand_Queue_PlaylistInfoRequest> =
-	/*@__PURE__*/
-	messageDesc(file_mpd_mpd_command, 0, 4, 8);
+export const MpdCommand_Queue_PlaylistInfoRequestSchema: GenMessage<MpdCommand_Queue_PlaylistInfoRequest> = /*@__PURE__*/
+  messageDesc(file_mpd_mpd_command, 0, 4, 8);
 
 /**
  * @generated from message MpdCommand.Queue.PlaylistInfoResponse
  */
-export type MpdCommand_Queue_PlaylistInfoResponse =
-	Message<"MpdCommand.Queue.PlaylistInfoResponse"> & {
-		/**
-		 * @generated from field: repeated Song songs = 1;
-		 */
-		songs: Song[];
-	};
+export type MpdCommand_Queue_PlaylistInfoResponse = Message<"MpdCommand.Queue.PlaylistInfoResponse"> & {
+  /**
+   * @generated from field: repeated Song songs = 1;
+   */
+  songs: Song[];
+};
 
 /**
  * Describes the message MpdCommand.Queue.PlaylistInfoResponse.
  * Use `create(MpdCommand_Queue_PlaylistInfoResponseSchema)` to create a new message.
  */
-export const MpdCommand_Queue_PlaylistInfoResponseSchema: GenMessage<MpdCommand_Queue_PlaylistInfoResponse> =
-	/*@__PURE__*/
-	messageDesc(file_mpd_mpd_command, 0, 4, 9);
+export const MpdCommand_Queue_PlaylistInfoResponseSchema: GenMessage<MpdCommand_Queue_PlaylistInfoResponse> = /*@__PURE__*/
+  messageDesc(file_mpd_mpd_command, 0, 4, 9);
 
 /**
  * @generated from message MpdCommand.Queue.ShuffleRequest
  */
-export type MpdCommand_Queue_ShuffleRequest =
-	Message<"MpdCommand.Queue.ShuffleRequest"> & {};
+export type MpdCommand_Queue_ShuffleRequest = Message<"MpdCommand.Queue.ShuffleRequest"> & {
+};
 
 /**
  * Describes the message MpdCommand.Queue.ShuffleRequest.
  * Use `create(MpdCommand_Queue_ShuffleRequestSchema)` to create a new message.
  */
-export const MpdCommand_Queue_ShuffleRequestSchema: GenMessage<MpdCommand_Queue_ShuffleRequest> =
-	/*@__PURE__*/
-	messageDesc(file_mpd_mpd_command, 0, 4, 10);
+export const MpdCommand_Queue_ShuffleRequestSchema: GenMessage<MpdCommand_Queue_ShuffleRequest> = /*@__PURE__*/
+  messageDesc(file_mpd_mpd_command, 0, 4, 10);
 
 /**
  * @generated from message MpdCommand.Queue.ShuffleResponse
  */
-export type MpdCommand_Queue_ShuffleResponse =
-	Message<"MpdCommand.Queue.ShuffleResponse"> & {};
+export type MpdCommand_Queue_ShuffleResponse = Message<"MpdCommand.Queue.ShuffleResponse"> & {
+};
 
 /**
  * Describes the message MpdCommand.Queue.ShuffleResponse.
  * Use `create(MpdCommand_Queue_ShuffleResponseSchema)` to create a new message.
  */
-export const MpdCommand_Queue_ShuffleResponseSchema: GenMessage<MpdCommand_Queue_ShuffleResponse> =
-	/*@__PURE__*/
-	messageDesc(file_mpd_mpd_command, 0, 4, 11);
+export const MpdCommand_Queue_ShuffleResponseSchema: GenMessage<MpdCommand_Queue_ShuffleResponse> = /*@__PURE__*/
+  messageDesc(file_mpd_mpd_command, 0, 4, 11);
 
 /**
  * @generated from message MpdCommand.StoredPlaylist
  */
-export type MpdCommand_StoredPlaylist =
-	Message<"MpdCommand.StoredPlaylist"> & {};
+export type MpdCommand_StoredPlaylist = Message<"MpdCommand.StoredPlaylist"> & {
+};
 
 /**
  * Describes the message MpdCommand.StoredPlaylist.
  * Use `create(MpdCommand_StoredPlaylistSchema)` to create a new message.
  */
-export const MpdCommand_StoredPlaylistSchema: GenMessage<MpdCommand_StoredPlaylist> =
-	/*@__PURE__*/
-	messageDesc(file_mpd_mpd_command, 0, 5);
+export const MpdCommand_StoredPlaylistSchema: GenMessage<MpdCommand_StoredPlaylist> = /*@__PURE__*/
+  messageDesc(file_mpd_mpd_command, 0, 5);
 
 /**
  * @generated from message MpdCommand.StoredPlaylist.ListPlaylistInfoRequest
  */
-export type MpdCommand_StoredPlaylist_ListPlaylistInfoRequest =
-	Message<"MpdCommand.StoredPlaylist.ListPlaylistInfoRequest"> & {
-		/**
-		 * @generated from field: string name = 1;
-		 */
-		name: string;
-	};
+export type MpdCommand_StoredPlaylist_ListPlaylistInfoRequest = Message<"MpdCommand.StoredPlaylist.ListPlaylistInfoRequest"> & {
+  /**
+   * @generated from field: string name = 1;
+   */
+  name: string;
+};
 
 /**
  * Describes the message MpdCommand.StoredPlaylist.ListPlaylistInfoRequest.
  * Use `create(MpdCommand_StoredPlaylist_ListPlaylistInfoRequestSchema)` to create a new message.
  */
-export const MpdCommand_StoredPlaylist_ListPlaylistInfoRequestSchema: GenMessage<MpdCommand_StoredPlaylist_ListPlaylistInfoRequest> =
-	/*@__PURE__*/
-	messageDesc(file_mpd_mpd_command, 0, 5, 0);
+export const MpdCommand_StoredPlaylist_ListPlaylistInfoRequestSchema: GenMessage<MpdCommand_StoredPlaylist_ListPlaylistInfoRequest> = /*@__PURE__*/
+  messageDesc(file_mpd_mpd_command, 0, 5, 0);
 
 /**
  * @generated from message MpdCommand.StoredPlaylist.ListPlaylistInfoResponse
  */
-export type MpdCommand_StoredPlaylist_ListPlaylistInfoResponse =
-	Message<"MpdCommand.StoredPlaylist.ListPlaylistInfoResponse"> & {
-		/**
-		 * @generated from field: repeated Song songs = 1;
-		 */
-		songs: Song[];
-	};
+export type MpdCommand_StoredPlaylist_ListPlaylistInfoResponse = Message<"MpdCommand.StoredPlaylist.ListPlaylistInfoResponse"> & {
+  /**
+   * @generated from field: repeated Song songs = 1;
+   */
+  songs: Song[];
+};
 
 /**
  * Describes the message MpdCommand.StoredPlaylist.ListPlaylistInfoResponse.
  * Use `create(MpdCommand_StoredPlaylist_ListPlaylistInfoResponseSchema)` to create a new message.
  */
-export const MpdCommand_StoredPlaylist_ListPlaylistInfoResponseSchema: GenMessage<MpdCommand_StoredPlaylist_ListPlaylistInfoResponse> =
-	/*@__PURE__*/
-	messageDesc(file_mpd_mpd_command, 0, 5, 1);
+export const MpdCommand_StoredPlaylist_ListPlaylistInfoResponseSchema: GenMessage<MpdCommand_StoredPlaylist_ListPlaylistInfoResponse> = /*@__PURE__*/
+  messageDesc(file_mpd_mpd_command, 0, 5, 1);
 
 /**
  * @generated from message MpdCommand.StoredPlaylist.ListPlaylistsRequest
  */
-export type MpdCommand_StoredPlaylist_ListPlaylistsRequest =
-	Message<"MpdCommand.StoredPlaylist.ListPlaylistsRequest"> & {};
+export type MpdCommand_StoredPlaylist_ListPlaylistsRequest = Message<"MpdCommand.StoredPlaylist.ListPlaylistsRequest"> & {
+};
 
 /**
  * Describes the message MpdCommand.StoredPlaylist.ListPlaylistsRequest.
  * Use `create(MpdCommand_StoredPlaylist_ListPlaylistsRequestSchema)` to create a new message.
  */
-export const MpdCommand_StoredPlaylist_ListPlaylistsRequestSchema: GenMessage<MpdCommand_StoredPlaylist_ListPlaylistsRequest> =
-	/*@__PURE__*/
-	messageDesc(file_mpd_mpd_command, 0, 5, 2);
+export const MpdCommand_StoredPlaylist_ListPlaylistsRequestSchema: GenMessage<MpdCommand_StoredPlaylist_ListPlaylistsRequest> = /*@__PURE__*/
+  messageDesc(file_mpd_mpd_command, 0, 5, 2);
 
 /**
  * @generated from message MpdCommand.StoredPlaylist.ListPlaylistsResponse
  */
-export type MpdCommand_StoredPlaylist_ListPlaylistsResponse =
-	Message<"MpdCommand.StoredPlaylist.ListPlaylistsResponse"> & {
-		/**
-		 * @generated from field: repeated Playlist playlists = 1;
-		 */
-		playlists: Playlist[];
-	};
+export type MpdCommand_StoredPlaylist_ListPlaylistsResponse = Message<"MpdCommand.StoredPlaylist.ListPlaylistsResponse"> & {
+  /**
+   * @generated from field: repeated Playlist playlists = 1;
+   */
+  playlists: Playlist[];
+};
 
 /**
  * Describes the message MpdCommand.StoredPlaylist.ListPlaylistsResponse.
  * Use `create(MpdCommand_StoredPlaylist_ListPlaylistsResponseSchema)` to create a new message.
  */
-export const MpdCommand_StoredPlaylist_ListPlaylistsResponseSchema: GenMessage<MpdCommand_StoredPlaylist_ListPlaylistsResponse> =
-	/*@__PURE__*/
-	messageDesc(file_mpd_mpd_command, 0, 5, 3);
+export const MpdCommand_StoredPlaylist_ListPlaylistsResponseSchema: GenMessage<MpdCommand_StoredPlaylist_ListPlaylistsResponse> = /*@__PURE__*/
+  messageDesc(file_mpd_mpd_command, 0, 5, 3);
 
 /**
  * @generated from message MpdCommand.StoredPlaylist.PlaylistAddRequest
  */
-export type MpdCommand_StoredPlaylist_PlaylistAddRequest =
-	Message<"MpdCommand.StoredPlaylist.PlaylistAddRequest"> & {
-		/**
-		 * @generated from field: string name = 1;
-		 */
-		name: string;
+export type MpdCommand_StoredPlaylist_PlaylistAddRequest = Message<"MpdCommand.StoredPlaylist.PlaylistAddRequest"> & {
+  /**
+   * @generated from field: string name = 1;
+   */
+  name: string;
 
-		/**
-		 * @generated from field: string uri = 2;
-		 */
-		uri: string;
-	};
+  /**
+   * @generated from field: string uri = 2;
+   */
+  uri: string;
+};
 
 /**
  * Describes the message MpdCommand.StoredPlaylist.PlaylistAddRequest.
  * Use `create(MpdCommand_StoredPlaylist_PlaylistAddRequestSchema)` to create a new message.
  */
-export const MpdCommand_StoredPlaylist_PlaylistAddRequestSchema: GenMessage<MpdCommand_StoredPlaylist_PlaylistAddRequest> =
-	/*@__PURE__*/
-	messageDesc(file_mpd_mpd_command, 0, 5, 4);
+export const MpdCommand_StoredPlaylist_PlaylistAddRequestSchema: GenMessage<MpdCommand_StoredPlaylist_PlaylistAddRequest> = /*@__PURE__*/
+  messageDesc(file_mpd_mpd_command, 0, 5, 4);
 
 /**
  * @generated from message MpdCommand.StoredPlaylist.PlaylistAddResponse
  */
-export type MpdCommand_StoredPlaylist_PlaylistAddResponse =
-	Message<"MpdCommand.StoredPlaylist.PlaylistAddResponse"> & {};
+export type MpdCommand_StoredPlaylist_PlaylistAddResponse = Message<"MpdCommand.StoredPlaylist.PlaylistAddResponse"> & {
+};
 
 /**
  * Describes the message MpdCommand.StoredPlaylist.PlaylistAddResponse.
  * Use `create(MpdCommand_StoredPlaylist_PlaylistAddResponseSchema)` to create a new message.
  */
-export const MpdCommand_StoredPlaylist_PlaylistAddResponseSchema: GenMessage<MpdCommand_StoredPlaylist_PlaylistAddResponse> =
-	/*@__PURE__*/
-	messageDesc(file_mpd_mpd_command, 0, 5, 5);
+export const MpdCommand_StoredPlaylist_PlaylistAddResponseSchema: GenMessage<MpdCommand_StoredPlaylist_PlaylistAddResponse> = /*@__PURE__*/
+  messageDesc(file_mpd_mpd_command, 0, 5, 5);
 
 /**
  * @generated from message MpdCommand.StoredPlaylist.PlaylistClearRequest
  */
-export type MpdCommand_StoredPlaylist_PlaylistClearRequest =
-	Message<"MpdCommand.StoredPlaylist.PlaylistClearRequest"> & {
-		/**
-		 * @generated from field: string name = 1;
-		 */
-		name: string;
-	};
+export type MpdCommand_StoredPlaylist_PlaylistClearRequest = Message<"MpdCommand.StoredPlaylist.PlaylistClearRequest"> & {
+  /**
+   * @generated from field: string name = 1;
+   */
+  name: string;
+};
 
 /**
  * Describes the message MpdCommand.StoredPlaylist.PlaylistClearRequest.
  * Use `create(MpdCommand_StoredPlaylist_PlaylistClearRequestSchema)` to create a new message.
  */
-export const MpdCommand_StoredPlaylist_PlaylistClearRequestSchema: GenMessage<MpdCommand_StoredPlaylist_PlaylistClearRequest> =
-	/*@__PURE__*/
-	messageDesc(file_mpd_mpd_command, 0, 5, 6);
+export const MpdCommand_StoredPlaylist_PlaylistClearRequestSchema: GenMessage<MpdCommand_StoredPlaylist_PlaylistClearRequest> = /*@__PURE__*/
+  messageDesc(file_mpd_mpd_command, 0, 5, 6);
 
 /**
  * @generated from message MpdCommand.StoredPlaylist.PlaylistClearResponse
  */
-export type MpdCommand_StoredPlaylist_PlaylistClearResponse =
-	Message<"MpdCommand.StoredPlaylist.PlaylistClearResponse"> & {};
+export type MpdCommand_StoredPlaylist_PlaylistClearResponse = Message<"MpdCommand.StoredPlaylist.PlaylistClearResponse"> & {
+};
 
 /**
  * Describes the message MpdCommand.StoredPlaylist.PlaylistClearResponse.
  * Use `create(MpdCommand_StoredPlaylist_PlaylistClearResponseSchema)` to create a new message.
  */
-export const MpdCommand_StoredPlaylist_PlaylistClearResponseSchema: GenMessage<MpdCommand_StoredPlaylist_PlaylistClearResponse> =
-	/*@__PURE__*/
-	messageDesc(file_mpd_mpd_command, 0, 5, 7);
+export const MpdCommand_StoredPlaylist_PlaylistClearResponseSchema: GenMessage<MpdCommand_StoredPlaylist_PlaylistClearResponse> = /*@__PURE__*/
+  messageDesc(file_mpd_mpd_command, 0, 5, 7);
 
 /**
  * @generated from message MpdCommand.StoredPlaylist.PlaylistDeleteRequest
  */
-export type MpdCommand_StoredPlaylist_PlaylistDeleteRequest =
-	Message<"MpdCommand.StoredPlaylist.PlaylistDeleteRequest"> & {
-		/**
-		 * @generated from field: string name = 1;
-		 */
-		name: string;
+export type MpdCommand_StoredPlaylist_PlaylistDeleteRequest = Message<"MpdCommand.StoredPlaylist.PlaylistDeleteRequest"> & {
+  /**
+   * @generated from field: string name = 1;
+   */
+  name: string;
 
-		/**
-		 * @generated from field: string pos = 2;
-		 */
-		pos: string;
-	};
+  /**
+   * @generated from field: string pos = 2;
+   */
+  pos: string;
+};
 
 /**
  * Describes the message MpdCommand.StoredPlaylist.PlaylistDeleteRequest.
  * Use `create(MpdCommand_StoredPlaylist_PlaylistDeleteRequestSchema)` to create a new message.
  */
-export const MpdCommand_StoredPlaylist_PlaylistDeleteRequestSchema: GenMessage<MpdCommand_StoredPlaylist_PlaylistDeleteRequest> =
-	/*@__PURE__*/
-	messageDesc(file_mpd_mpd_command, 0, 5, 8);
+export const MpdCommand_StoredPlaylist_PlaylistDeleteRequestSchema: GenMessage<MpdCommand_StoredPlaylist_PlaylistDeleteRequest> = /*@__PURE__*/
+  messageDesc(file_mpd_mpd_command, 0, 5, 8);
 
 /**
  * @generated from message MpdCommand.StoredPlaylist.PlaylistDeleteResponse
  */
-export type MpdCommand_StoredPlaylist_PlaylistDeleteResponse =
-	Message<"MpdCommand.StoredPlaylist.PlaylistDeleteResponse"> & {};
+export type MpdCommand_StoredPlaylist_PlaylistDeleteResponse = Message<"MpdCommand.StoredPlaylist.PlaylistDeleteResponse"> & {
+};
 
 /**
  * Describes the message MpdCommand.StoredPlaylist.PlaylistDeleteResponse.
  * Use `create(MpdCommand_StoredPlaylist_PlaylistDeleteResponseSchema)` to create a new message.
  */
-export const MpdCommand_StoredPlaylist_PlaylistDeleteResponseSchema: GenMessage<MpdCommand_StoredPlaylist_PlaylistDeleteResponse> =
-	/*@__PURE__*/
-	messageDesc(file_mpd_mpd_command, 0, 5, 9);
+export const MpdCommand_StoredPlaylist_PlaylistDeleteResponseSchema: GenMessage<MpdCommand_StoredPlaylist_PlaylistDeleteResponse> = /*@__PURE__*/
+  messageDesc(file_mpd_mpd_command, 0, 5, 9);
 
 /**
  * @generated from message MpdCommand.StoredPlaylist.PlaylistMoveRequest
  */
-export type MpdCommand_StoredPlaylist_PlaylistMoveRequest =
-	Message<"MpdCommand.StoredPlaylist.PlaylistMoveRequest"> & {
-		/**
-		 * @generated from field: string name = 1;
-		 */
-		name: string;
+export type MpdCommand_StoredPlaylist_PlaylistMoveRequest = Message<"MpdCommand.StoredPlaylist.PlaylistMoveRequest"> & {
+  /**
+   * @generated from field: string name = 1;
+   */
+  name: string;
 
-		/**
-		 * @generated from field: string from = 2;
-		 */
-		from: string;
+  /**
+   * @generated from field: string from = 2;
+   */
+  from: string;
 
-		/**
-		 * @generated from field: string to = 3;
-		 */
-		to: string;
-	};
+  /**
+   * @generated from field: string to = 3;
+   */
+  to: string;
+};
 
 /**
  * Describes the message MpdCommand.StoredPlaylist.PlaylistMoveRequest.
  * Use `create(MpdCommand_StoredPlaylist_PlaylistMoveRequestSchema)` to create a new message.
  */
-export const MpdCommand_StoredPlaylist_PlaylistMoveRequestSchema: GenMessage<MpdCommand_StoredPlaylist_PlaylistMoveRequest> =
-	/*@__PURE__*/
-	messageDesc(file_mpd_mpd_command, 0, 5, 10);
+export const MpdCommand_StoredPlaylist_PlaylistMoveRequestSchema: GenMessage<MpdCommand_StoredPlaylist_PlaylistMoveRequest> = /*@__PURE__*/
+  messageDesc(file_mpd_mpd_command, 0, 5, 10);
 
 /**
  * @generated from message MpdCommand.StoredPlaylist.PlaylistMoveResponse
  */
-export type MpdCommand_StoredPlaylist_PlaylistMoveResponse =
-	Message<"MpdCommand.StoredPlaylist.PlaylistMoveResponse"> & {};
+export type MpdCommand_StoredPlaylist_PlaylistMoveResponse = Message<"MpdCommand.StoredPlaylist.PlaylistMoveResponse"> & {
+};
 
 /**
  * Describes the message MpdCommand.StoredPlaylist.PlaylistMoveResponse.
  * Use `create(MpdCommand_StoredPlaylist_PlaylistMoveResponseSchema)` to create a new message.
  */
-export const MpdCommand_StoredPlaylist_PlaylistMoveResponseSchema: GenMessage<MpdCommand_StoredPlaylist_PlaylistMoveResponse> =
-	/*@__PURE__*/
-	messageDesc(file_mpd_mpd_command, 0, 5, 11);
+export const MpdCommand_StoredPlaylist_PlaylistMoveResponseSchema: GenMessage<MpdCommand_StoredPlaylist_PlaylistMoveResponse> = /*@__PURE__*/
+  messageDesc(file_mpd_mpd_command, 0, 5, 11);
 
 /**
  * @generated from message MpdCommand.StoredPlaylist.RenameRequest
  */
-export type MpdCommand_StoredPlaylist_RenameRequest =
-	Message<"MpdCommand.StoredPlaylist.RenameRequest"> & {
-		/**
-		 * @generated from field: string name = 1;
-		 */
-		name: string;
+export type MpdCommand_StoredPlaylist_RenameRequest = Message<"MpdCommand.StoredPlaylist.RenameRequest"> & {
+  /**
+   * @generated from field: string name = 1;
+   */
+  name: string;
 
-		/**
-		 * @generated from field: string new_name = 2;
-		 */
-		newName: string;
-	};
+  /**
+   * @generated from field: string new_name = 2;
+   */
+  newName: string;
+};
 
 /**
  * Describes the message MpdCommand.StoredPlaylist.RenameRequest.
  * Use `create(MpdCommand_StoredPlaylist_RenameRequestSchema)` to create a new message.
  */
-export const MpdCommand_StoredPlaylist_RenameRequestSchema: GenMessage<MpdCommand_StoredPlaylist_RenameRequest> =
-	/*@__PURE__*/
-	messageDesc(file_mpd_mpd_command, 0, 5, 12);
+export const MpdCommand_StoredPlaylist_RenameRequestSchema: GenMessage<MpdCommand_StoredPlaylist_RenameRequest> = /*@__PURE__*/
+  messageDesc(file_mpd_mpd_command, 0, 5, 12);
 
 /**
  * @generated from message MpdCommand.StoredPlaylist.RenameResponse
  */
-export type MpdCommand_StoredPlaylist_RenameResponse =
-	Message<"MpdCommand.StoredPlaylist.RenameResponse"> & {};
+export type MpdCommand_StoredPlaylist_RenameResponse = Message<"MpdCommand.StoredPlaylist.RenameResponse"> & {
+};
 
 /**
  * Describes the message MpdCommand.StoredPlaylist.RenameResponse.
  * Use `create(MpdCommand_StoredPlaylist_RenameResponseSchema)` to create a new message.
  */
-export const MpdCommand_StoredPlaylist_RenameResponseSchema: GenMessage<MpdCommand_StoredPlaylist_RenameResponse> =
-	/*@__PURE__*/
-	messageDesc(file_mpd_mpd_command, 0, 5, 13);
+export const MpdCommand_StoredPlaylist_RenameResponseSchema: GenMessage<MpdCommand_StoredPlaylist_RenameResponse> = /*@__PURE__*/
+  messageDesc(file_mpd_mpd_command, 0, 5, 13);
 
 /**
  * @generated from message MpdCommand.StoredPlaylist.RemoveRequest
  */
-export type MpdCommand_StoredPlaylist_RemoveRequest =
-	Message<"MpdCommand.StoredPlaylist.RemoveRequest"> & {
-		/**
-		 * @generated from field: string name = 1;
-		 */
-		name: string;
-	};
+export type MpdCommand_StoredPlaylist_RemoveRequest = Message<"MpdCommand.StoredPlaylist.RemoveRequest"> & {
+  /**
+   * @generated from field: string name = 1;
+   */
+  name: string;
+};
 
 /**
  * Describes the message MpdCommand.StoredPlaylist.RemoveRequest.
  * Use `create(MpdCommand_StoredPlaylist_RemoveRequestSchema)` to create a new message.
  */
-export const MpdCommand_StoredPlaylist_RemoveRequestSchema: GenMessage<MpdCommand_StoredPlaylist_RemoveRequest> =
-	/*@__PURE__*/
-	messageDesc(file_mpd_mpd_command, 0, 5, 14);
+export const MpdCommand_StoredPlaylist_RemoveRequestSchema: GenMessage<MpdCommand_StoredPlaylist_RemoveRequest> = /*@__PURE__*/
+  messageDesc(file_mpd_mpd_command, 0, 5, 14);
 
 /**
  * @generated from message MpdCommand.StoredPlaylist.RemoveResponse
  */
-export type MpdCommand_StoredPlaylist_RemoveResponse =
-	Message<"MpdCommand.StoredPlaylist.RemoveResponse"> & {};
+export type MpdCommand_StoredPlaylist_RemoveResponse = Message<"MpdCommand.StoredPlaylist.RemoveResponse"> & {
+};
 
 /**
  * Describes the message MpdCommand.StoredPlaylist.RemoveResponse.
  * Use `create(MpdCommand_StoredPlaylist_RemoveResponseSchema)` to create a new message.
  */
-export const MpdCommand_StoredPlaylist_RemoveResponseSchema: GenMessage<MpdCommand_StoredPlaylist_RemoveResponse> =
-	/*@__PURE__*/
-	messageDesc(file_mpd_mpd_command, 0, 5, 15);
+export const MpdCommand_StoredPlaylist_RemoveResponseSchema: GenMessage<MpdCommand_StoredPlaylist_RemoveResponse> = /*@__PURE__*/
+  messageDesc(file_mpd_mpd_command, 0, 5, 15);
 
 /**
  * @generated from message MpdCommand.StoredPlaylist.SaveRequest
  */
-export type MpdCommand_StoredPlaylist_SaveRequest =
-	Message<"MpdCommand.StoredPlaylist.SaveRequest"> & {
-		/**
-		 * @generated from field: string name = 1;
-		 */
-		name: string;
-	};
+export type MpdCommand_StoredPlaylist_SaveRequest = Message<"MpdCommand.StoredPlaylist.SaveRequest"> & {
+  /**
+   * @generated from field: string name = 1;
+   */
+  name: string;
+};
 
 /**
  * Describes the message MpdCommand.StoredPlaylist.SaveRequest.
  * Use `create(MpdCommand_StoredPlaylist_SaveRequestSchema)` to create a new message.
  */
-export const MpdCommand_StoredPlaylist_SaveRequestSchema: GenMessage<MpdCommand_StoredPlaylist_SaveRequest> =
-	/*@__PURE__*/
-	messageDesc(file_mpd_mpd_command, 0, 5, 16);
+export const MpdCommand_StoredPlaylist_SaveRequestSchema: GenMessage<MpdCommand_StoredPlaylist_SaveRequest> = /*@__PURE__*/
+  messageDesc(file_mpd_mpd_command, 0, 5, 16);
 
 /**
  * @generated from message MpdCommand.StoredPlaylist.SaveResponse
  */
-export type MpdCommand_StoredPlaylist_SaveResponse =
-	Message<"MpdCommand.StoredPlaylist.SaveResponse"> & {};
+export type MpdCommand_StoredPlaylist_SaveResponse = Message<"MpdCommand.StoredPlaylist.SaveResponse"> & {
+};
 
 /**
  * Describes the message MpdCommand.StoredPlaylist.SaveResponse.
  * Use `create(MpdCommand_StoredPlaylist_SaveResponseSchema)` to create a new message.
  */
-export const MpdCommand_StoredPlaylist_SaveResponseSchema: GenMessage<MpdCommand_StoredPlaylist_SaveResponse> =
-	/*@__PURE__*/
-	messageDesc(file_mpd_mpd_command, 0, 5, 17);
+export const MpdCommand_StoredPlaylist_SaveResponseSchema: GenMessage<MpdCommand_StoredPlaylist_SaveResponse> = /*@__PURE__*/
+  messageDesc(file_mpd_mpd_command, 0, 5, 17);
 
 /**
  * @generated from message MpdCommand.Database
  */
-export type MpdCommand_Database = Message<"MpdCommand.Database"> & {};
+export type MpdCommand_Database = Message<"MpdCommand.Database"> & {
+};
 
 /**
  * Describes the message MpdCommand.Database.
  * Use `create(MpdCommand_DatabaseSchema)` to create a new message.
  */
-export const MpdCommand_DatabaseSchema: GenMessage<MpdCommand_Database> =
-	/*@__PURE__*/
-	messageDesc(file_mpd_mpd_command, 0, 6);
+export const MpdCommand_DatabaseSchema: GenMessage<MpdCommand_Database> = /*@__PURE__*/
+  messageDesc(file_mpd_mpd_command, 0, 6);
 
 /**
  * @generated from message MpdCommand.Database.ListRequest
  */
-export type MpdCommand_Database_ListRequest =
-	Message<"MpdCommand.Database.ListRequest"> & {
-		/**
-		 * @generated from field: Song.MetadataTag tag = 1;
-		 */
-		tag: Song_MetadataTag;
+export type MpdCommand_Database_ListRequest = Message<"MpdCommand.Database.ListRequest"> & {
+  /**
+   * @generated from field: Song.MetadataTag tag = 1;
+   */
+  tag: Song_MetadataTag;
 
-		/**
-		 * @generated from field: repeated FilterCondition conditions = 2;
-		 */
-		conditions: FilterCondition[];
-	};
+  /**
+   * @generated from field: repeated FilterCondition conditions = 2;
+   */
+  conditions: FilterCondition[];
+};
 
 /**
  * Describes the message MpdCommand.Database.ListRequest.
  * Use `create(MpdCommand_Database_ListRequestSchema)` to create a new message.
  */
-export const MpdCommand_Database_ListRequestSchema: GenMessage<MpdCommand_Database_ListRequest> =
-	/*@__PURE__*/
-	messageDesc(file_mpd_mpd_command, 0, 6, 0);
+export const MpdCommand_Database_ListRequestSchema: GenMessage<MpdCommand_Database_ListRequest> = /*@__PURE__*/
+  messageDesc(file_mpd_mpd_command, 0, 6, 0);
 
 /**
  * @generated from message MpdCommand.Database.ListResponse
  */
-export type MpdCommand_Database_ListResponse =
-	Message<"MpdCommand.Database.ListResponse"> & {
-		/**
-		 * @generated from field: repeated string values = 1;
-		 */
-		values: string[];
-	};
+export type MpdCommand_Database_ListResponse = Message<"MpdCommand.Database.ListResponse"> & {
+  /**
+   * @generated from field: repeated string values = 1;
+   */
+  values: string[];
+};
 
 /**
  * Describes the message MpdCommand.Database.ListResponse.
  * Use `create(MpdCommand_Database_ListResponseSchema)` to create a new message.
  */
-export const MpdCommand_Database_ListResponseSchema: GenMessage<MpdCommand_Database_ListResponse> =
-	/*@__PURE__*/
-	messageDesc(file_mpd_mpd_command, 0, 6, 1);
+export const MpdCommand_Database_ListResponseSchema: GenMessage<MpdCommand_Database_ListResponse> = /*@__PURE__*/
+  messageDesc(file_mpd_mpd_command, 0, 6, 1);
 
 /**
  * @generated from message MpdCommand.Database.SearchRequest
  */
-export type MpdCommand_Database_SearchRequest =
-	Message<"MpdCommand.Database.SearchRequest"> & {
-		/**
-		 * @generated from field: repeated FilterCondition conditions = 1;
-		 */
-		conditions: FilterCondition[];
-	};
+export type MpdCommand_Database_SearchRequest = Message<"MpdCommand.Database.SearchRequest"> & {
+  /**
+   * @generated from field: repeated FilterCondition conditions = 1;
+   */
+  conditions: FilterCondition[];
+};
 
 /**
  * Describes the message MpdCommand.Database.SearchRequest.
  * Use `create(MpdCommand_Database_SearchRequestSchema)` to create a new message.
  */
-export const MpdCommand_Database_SearchRequestSchema: GenMessage<MpdCommand_Database_SearchRequest> =
-	/*@__PURE__*/
-	messageDesc(file_mpd_mpd_command, 0, 6, 2);
+export const MpdCommand_Database_SearchRequestSchema: GenMessage<MpdCommand_Database_SearchRequest> = /*@__PURE__*/
+  messageDesc(file_mpd_mpd_command, 0, 6, 2);
 
 /**
  * @generated from message MpdCommand.Database.SearchResponse
  */
-export type MpdCommand_Database_SearchResponse =
-	Message<"MpdCommand.Database.SearchResponse"> & {
-		/**
-		 * @generated from field: repeated Song songs = 1;
-		 */
-		songs: Song[];
-	};
+export type MpdCommand_Database_SearchResponse = Message<"MpdCommand.Database.SearchResponse"> & {
+  /**
+   * @generated from field: repeated Song songs = 1;
+   */
+  songs: Song[];
+};
 
 /**
  * Describes the message MpdCommand.Database.SearchResponse.
  * Use `create(MpdCommand_Database_SearchResponseSchema)` to create a new message.
  */
-export const MpdCommand_Database_SearchResponseSchema: GenMessage<MpdCommand_Database_SearchResponse> =
-	/*@__PURE__*/
-	messageDesc(file_mpd_mpd_command, 0, 6, 3);
+export const MpdCommand_Database_SearchResponseSchema: GenMessage<MpdCommand_Database_SearchResponse> = /*@__PURE__*/
+  messageDesc(file_mpd_mpd_command, 0, 6, 3);
 
 /**
  * @generated from message MpdCommand.Database.UpdateRequest
  */
-export type MpdCommand_Database_UpdateRequest =
-	Message<"MpdCommand.Database.UpdateRequest"> & {};
+export type MpdCommand_Database_UpdateRequest = Message<"MpdCommand.Database.UpdateRequest"> & {
+};
 
 /**
  * Describes the message MpdCommand.Database.UpdateRequest.
  * Use `create(MpdCommand_Database_UpdateRequestSchema)` to create a new message.
  */
-export const MpdCommand_Database_UpdateRequestSchema: GenMessage<MpdCommand_Database_UpdateRequest> =
-	/*@__PURE__*/
-	messageDesc(file_mpd_mpd_command, 0, 6, 4);
+export const MpdCommand_Database_UpdateRequestSchema: GenMessage<MpdCommand_Database_UpdateRequest> = /*@__PURE__*/
+  messageDesc(file_mpd_mpd_command, 0, 6, 4);
 
 /**
  * @generated from message MpdCommand.Database.UpdateResponse
  */
-export type MpdCommand_Database_UpdateResponse =
-	Message<"MpdCommand.Database.UpdateResponse"> & {};
+export type MpdCommand_Database_UpdateResponse = Message<"MpdCommand.Database.UpdateResponse"> & {
+};
 
 /**
  * Describes the message MpdCommand.Database.UpdateResponse.
  * Use `create(MpdCommand_Database_UpdateResponseSchema)` to create a new message.
  */
-export const MpdCommand_Database_UpdateResponseSchema: GenMessage<MpdCommand_Database_UpdateResponse> =
-	/*@__PURE__*/
-	messageDesc(file_mpd_mpd_command, 0, 6, 5);
+export const MpdCommand_Database_UpdateResponseSchema: GenMessage<MpdCommand_Database_UpdateResponse> = /*@__PURE__*/
+  messageDesc(file_mpd_mpd_command, 0, 6, 5);
 
 /**
  * @generated from message MpdCommand.Audio
  */
-export type MpdCommand_Audio = Message<"MpdCommand.Audio"> & {};
+export type MpdCommand_Audio = Message<"MpdCommand.Audio"> & {
+};
 
 /**
  * Describes the message MpdCommand.Audio.
  * Use `create(MpdCommand_AudioSchema)` to create a new message.
  */
-export const MpdCommand_AudioSchema: GenMessage<MpdCommand_Audio> =
-	/*@__PURE__*/
-	messageDesc(file_mpd_mpd_command, 0, 7);
+export const MpdCommand_AudioSchema: GenMessage<MpdCommand_Audio> = /*@__PURE__*/
+  messageDesc(file_mpd_mpd_command, 0, 7);
 
 /**
  * @generated from message MpdCommand.Audio.OutputsRequest
  */
-export type MpdCommand_Audio_OutputsRequest =
-	Message<"MpdCommand.Audio.OutputsRequest"> & {};
+export type MpdCommand_Audio_OutputsRequest = Message<"MpdCommand.Audio.OutputsRequest"> & {
+};
 
 /**
  * Describes the message MpdCommand.Audio.OutputsRequest.
  * Use `create(MpdCommand_Audio_OutputsRequestSchema)` to create a new message.
  */
-export const MpdCommand_Audio_OutputsRequestSchema: GenMessage<MpdCommand_Audio_OutputsRequest> =
-	/*@__PURE__*/
-	messageDesc(file_mpd_mpd_command, 0, 7, 0);
+export const MpdCommand_Audio_OutputsRequestSchema: GenMessage<MpdCommand_Audio_OutputsRequest> = /*@__PURE__*/
+  messageDesc(file_mpd_mpd_command, 0, 7, 0);
 
 /**
  * @generated from message MpdCommand.Audio.OutputsResponse
  */
-export type MpdCommand_Audio_OutputsResponse =
-	Message<"MpdCommand.Audio.OutputsResponse"> & {
-		/**
-		 * @generated from field: repeated MpdOutputDevice devices = 1;
-		 */
-		devices: MpdOutputDevice[];
-	};
+export type MpdCommand_Audio_OutputsResponse = Message<"MpdCommand.Audio.OutputsResponse"> & {
+  /**
+   * @generated from field: repeated MpdOutputDevice devices = 1;
+   */
+  devices: MpdOutputDevice[];
+};
 
 /**
  * Describes the message MpdCommand.Audio.OutputsResponse.
  * Use `create(MpdCommand_Audio_OutputsResponseSchema)` to create a new message.
  */
-export const MpdCommand_Audio_OutputsResponseSchema: GenMessage<MpdCommand_Audio_OutputsResponse> =
-	/*@__PURE__*/
-	messageDesc(file_mpd_mpd_command, 0, 7, 1);
+export const MpdCommand_Audio_OutputsResponseSchema: GenMessage<MpdCommand_Audio_OutputsResponse> = /*@__PURE__*/
+  messageDesc(file_mpd_mpd_command, 0, 7, 1);
 
 /**
  * @generated from message MpdCommand.Utility
  */
-export type MpdCommand_Utility = Message<"MpdCommand.Utility"> & {};
+export type MpdCommand_Utility = Message<"MpdCommand.Utility"> & {
+};
 
 /**
  * Describes the message MpdCommand.Utility.
  * Use `create(MpdCommand_UtilitySchema)` to create a new message.
  */
-export const MpdCommand_UtilitySchema: GenMessage<MpdCommand_Utility> =
-	/*@__PURE__*/
-	messageDesc(file_mpd_mpd_command, 0, 8);
+export const MpdCommand_UtilitySchema: GenMessage<MpdCommand_Utility> = /*@__PURE__*/
+  messageDesc(file_mpd_mpd_command, 0, 8);
 
 /**
  * @generated from message MpdCommand.Utility.ListAllSongsRequest
  */
-export type MpdCommand_Utility_ListAllSongsRequest =
-	Message<"MpdCommand.Utility.ListAllSongsRequest"> & {};
+export type MpdCommand_Utility_ListAllSongsRequest = Message<"MpdCommand.Utility.ListAllSongsRequest"> & {
+};
 
 /**
  * Describes the message MpdCommand.Utility.ListAllSongsRequest.
  * Use `create(MpdCommand_Utility_ListAllSongsRequestSchema)` to create a new message.
  */
-export const MpdCommand_Utility_ListAllSongsRequestSchema: GenMessage<MpdCommand_Utility_ListAllSongsRequest> =
-	/*@__PURE__*/
-	messageDesc(file_mpd_mpd_command, 0, 8, 0);
+export const MpdCommand_Utility_ListAllSongsRequestSchema: GenMessage<MpdCommand_Utility_ListAllSongsRequest> = /*@__PURE__*/
+  messageDesc(file_mpd_mpd_command, 0, 8, 0);
 
 /**
  * @generated from message MpdCommand.Utility.ListAllSongsResponse
  */
-export type MpdCommand_Utility_ListAllSongsResponse =
-	Message<"MpdCommand.Utility.ListAllSongsResponse"> & {
-		/**
-		 * @generated from field: repeated Song songs = 1;
-		 */
-		songs: Song[];
-	};
+export type MpdCommand_Utility_ListAllSongsResponse = Message<"MpdCommand.Utility.ListAllSongsResponse"> & {
+  /**
+   * @generated from field: repeated Song songs = 1;
+   */
+  songs: Song[];
+};
 
 /**
  * Describes the message MpdCommand.Utility.ListAllSongsResponse.
  * Use `create(MpdCommand_Utility_ListAllSongsResponseSchema)` to create a new message.
  */
-export const MpdCommand_Utility_ListAllSongsResponseSchema: GenMessage<MpdCommand_Utility_ListAllSongsResponse> =
-	/*@__PURE__*/
-	messageDesc(file_mpd_mpd_command, 0, 8, 1);
+export const MpdCommand_Utility_ListAllSongsResponseSchema: GenMessage<MpdCommand_Utility_ListAllSongsResponse> = /*@__PURE__*/
+  messageDesc(file_mpd_mpd_command, 0, 8, 1);
 
 /**
  * @generated from message MpdCommand.Utility.ListAllFoldersRequest
  */
-export type MpdCommand_Utility_ListAllFoldersRequest =
-	Message<"MpdCommand.Utility.ListAllFoldersRequest"> & {};
+export type MpdCommand_Utility_ListAllFoldersRequest = Message<"MpdCommand.Utility.ListAllFoldersRequest"> & {
+};
 
 /**
  * Describes the message MpdCommand.Utility.ListAllFoldersRequest.
  * Use `create(MpdCommand_Utility_ListAllFoldersRequestSchema)` to create a new message.
  */
-export const MpdCommand_Utility_ListAllFoldersRequestSchema: GenMessage<MpdCommand_Utility_ListAllFoldersRequest> =
-	/*@__PURE__*/
-	messageDesc(file_mpd_mpd_command, 0, 8, 2);
+export const MpdCommand_Utility_ListAllFoldersRequestSchema: GenMessage<MpdCommand_Utility_ListAllFoldersRequest> = /*@__PURE__*/
+  messageDesc(file_mpd_mpd_command, 0, 8, 2);
 
 /**
  * @generated from message MpdCommand.Utility.ListAllFoldersResponse
  */
-export type MpdCommand_Utility_ListAllFoldersResponse =
-	Message<"MpdCommand.Utility.ListAllFoldersResponse"> & {
-		/**
-		 * @generated from field: repeated Folder folders = 1;
-		 */
-		folders: Folder[];
-	};
+export type MpdCommand_Utility_ListAllFoldersResponse = Message<"MpdCommand.Utility.ListAllFoldersResponse"> & {
+  /**
+   * @generated from field: repeated Folder folders = 1;
+   */
+  folders: Folder[];
+};
 
 /**
  * Describes the message MpdCommand.Utility.ListAllFoldersResponse.
  * Use `create(MpdCommand_Utility_ListAllFoldersResponseSchema)` to create a new message.
  */
-export const MpdCommand_Utility_ListAllFoldersResponseSchema: GenMessage<MpdCommand_Utility_ListAllFoldersResponse> =
-	/*@__PURE__*/
-	messageDesc(file_mpd_mpd_command, 0, 8, 3);
+export const MpdCommand_Utility_ListAllFoldersResponseSchema: GenMessage<MpdCommand_Utility_ListAllFoldersResponse> = /*@__PURE__*/
+  messageDesc(file_mpd_mpd_command, 0, 8, 3);
 
 /**
  * @generated from message MpdCommand.Utility.ListSongsInFolderRequest
  */
-export type MpdCommand_Utility_ListSongsInFolderRequest =
-	Message<"MpdCommand.Utility.ListSongsInFolderRequest"> & {
-		/**
-		 * @generated from field: Folder folder = 1;
-		 */
-		folder?: Folder;
-	};
+export type MpdCommand_Utility_ListSongsInFolderRequest = Message<"MpdCommand.Utility.ListSongsInFolderRequest"> & {
+  /**
+   * @generated from field: Folder folder = 1;
+   */
+  folder?: Folder;
+};
 
 /**
  * Describes the message MpdCommand.Utility.ListSongsInFolderRequest.
  * Use `create(MpdCommand_Utility_ListSongsInFolderRequestSchema)` to create a new message.
  */
-export const MpdCommand_Utility_ListSongsInFolderRequestSchema: GenMessage<MpdCommand_Utility_ListSongsInFolderRequest> =
-	/*@__PURE__*/
-	messageDesc(file_mpd_mpd_command, 0, 8, 4);
+export const MpdCommand_Utility_ListSongsInFolderRequestSchema: GenMessage<MpdCommand_Utility_ListSongsInFolderRequest> = /*@__PURE__*/
+  messageDesc(file_mpd_mpd_command, 0, 8, 4);
 
 /**
  * @generated from message MpdCommand.Utility.ListSongsInFolderResponse
  */
-export type MpdCommand_Utility_ListSongsInFolderResponse =
-	Message<"MpdCommand.Utility.ListSongsInFolderResponse"> & {
-		/**
-		 * @generated from field: repeated Song songs = 1;
-		 */
-		songs: Song[];
-	};
+export type MpdCommand_Utility_ListSongsInFolderResponse = Message<"MpdCommand.Utility.ListSongsInFolderResponse"> & {
+  /**
+   * @generated from field: repeated Song songs = 1;
+   */
+  songs: Song[];
+};
 
 /**
  * Describes the message MpdCommand.Utility.ListSongsInFolderResponse.
  * Use `create(MpdCommand_Utility_ListSongsInFolderResponseSchema)` to create a new message.
  */
-export const MpdCommand_Utility_ListSongsInFolderResponseSchema: GenMessage<MpdCommand_Utility_ListSongsInFolderResponse> =
-	/*@__PURE__*/
-	messageDesc(file_mpd_mpd_command, 0, 8, 5);
+export const MpdCommand_Utility_ListSongsInFolderResponseSchema: GenMessage<MpdCommand_Utility_ListSongsInFolderResponse> = /*@__PURE__*/
+  messageDesc(file_mpd_mpd_command, 0, 8, 5);
 
 /**
  * @generated from message MpdRequest
  */
 export type MpdRequest = Message<"MpdRequest"> & {
-	/**
-	 * @generated from field: MpdProfile profile = 1;
-	 */
-	profile?: MpdProfile;
+  /**
+   * @generated from field: MpdProfile profile = 1;
+   */
+  profile?: MpdProfile;
 
-	/**
-	 * @generated from oneof MpdRequest.command
-	 */
-	command:
-		| {
-				/**
-				 * @generated from field: MpdCommand.Connection.PingRequest ping = 2;
-				 */
-				value: MpdCommand_Connection_PingRequest;
-				case: "ping";
-		  }
-		| {
-				/**
-				 * @generated from field: MpdCommand.Control.NextRequest next = 3;
-				 */
-				value: MpdCommand_Control_NextRequest;
-				case: "next";
-		  }
-		| {
-				/**
-				 * @generated from field: MpdCommand.Control.PauseRequest pause = 4;
-				 */
-				value: MpdCommand_Control_PauseRequest;
-				case: "pause";
-		  }
-		| {
-				/**
-				 * @generated from field: MpdCommand.Control.PlayRequest play = 5;
-				 */
-				value: MpdCommand_Control_PlayRequest;
-				case: "play";
-		  }
-		| {
-				/**
-				 * @generated from field: MpdCommand.Control.PreviousRequest previous = 6;
-				 */
-				value: MpdCommand_Control_PreviousRequest;
-				case: "previous";
-		  }
-		| {
-				/**
-				 * @generated from field: MpdCommand.Control.SeekRequest seek = 7;
-				 */
-				value: MpdCommand_Control_SeekRequest;
-				case: "seek";
-		  }
-		| {
-				/**
-				 * @generated from field: MpdCommand.Control.StopRequest stop = 8;
-				 */
-				value: MpdCommand_Control_StopRequest;
-				case: "stop";
-		  }
-		| {
-				/**
-				 * @generated from field: MpdCommand.Playback.ConsumeRequest consume = 9;
-				 */
-				value: MpdCommand_Playback_ConsumeRequest;
-				case: "consume";
-		  }
-		| {
-				/**
-				 * @generated from field: MpdCommand.Playback.RandomRequest random = 10;
-				 */
-				value: MpdCommand_Playback_RandomRequest;
-				case: "random";
-		  }
-		| {
-				/**
-				 * @generated from field: MpdCommand.Playback.RepeatRequest repeat = 11;
-				 */
-				value: MpdCommand_Playback_RepeatRequest;
-				case: "repeat";
-		  }
-		| {
-				/**
-				 * @generated from field: MpdCommand.Playback.SetVolRequest setvol = 12;
-				 */
-				value: MpdCommand_Playback_SetVolRequest;
-				case: "setvol";
-		  }
-		| {
-				/**
-				 * @generated from field: MpdCommand.Playback.GetVolRequest getvol = 13;
-				 */
-				value: MpdCommand_Playback_GetVolRequest;
-				case: "getvol";
-		  }
-		| {
-				/**
-				 * @generated from field: MpdCommand.Playback.SingleRequest single = 14;
-				 */
-				value: MpdCommand_Playback_SingleRequest;
-				case: "single";
-		  }
-		| {
-				/**
-				 * @generated from field: MpdCommand.Status.CurrentSongRequest currentsong = 15;
-				 */
-				value: MpdCommand_Status_CurrentSongRequest;
-				case: "currentsong";
-		  }
-		| {
-				/**
-				 * @generated from field: MpdCommand.Status.StatusRequest status = 16;
-				 */
-				value: MpdCommand_Status_StatusRequest;
-				case: "status";
-		  }
-		| {
-				/**
-				 * @generated from field: MpdCommand.Status.StatsRequest stats = 17;
-				 */
-				value: MpdCommand_Status_StatsRequest;
-				case: "stats";
-		  }
-		| {
-				/**
-				 * @generated from field: MpdCommand.Queue.AddRequest add = 18;
-				 */
-				value: MpdCommand_Queue_AddRequest;
-				case: "add";
-		  }
-		| {
-				/**
-				 * @generated from field: MpdCommand.Queue.ClearRequest clear = 19;
-				 */
-				value: MpdCommand_Queue_ClearRequest;
-				case: "clear";
-		  }
-		| {
-				/**
-				 * @generated from field: MpdCommand.Queue.DeleteRequest delete = 20;
-				 */
-				value: MpdCommand_Queue_DeleteRequest;
-				case: "delete";
-		  }
-		| {
-				/**
-				 * @generated from field: MpdCommand.Queue.MoveRequest move = 21;
-				 */
-				value: MpdCommand_Queue_MoveRequest;
-				case: "move";
-		  }
-		| {
-				/**
-				 * @generated from field: MpdCommand.Queue.PlaylistInfoRequest playlistinfo = 22;
-				 */
-				value: MpdCommand_Queue_PlaylistInfoRequest;
-				case: "playlistinfo";
-		  }
-		| {
-				/**
-				 * @generated from field: MpdCommand.Queue.ShuffleRequest shuffle = 23;
-				 */
-				value: MpdCommand_Queue_ShuffleRequest;
-				case: "shuffle";
-		  }
-		| {
-				/**
-				 * @generated from field: MpdCommand.StoredPlaylist.ListPlaylistInfoRequest listplaylistinfo = 24;
-				 */
-				value: MpdCommand_StoredPlaylist_ListPlaylistInfoRequest;
-				case: "listplaylistinfo";
-		  }
-		| {
-				/**
-				 * @generated from field: MpdCommand.StoredPlaylist.ListPlaylistsRequest listplaylists = 25;
-				 */
-				value: MpdCommand_StoredPlaylist_ListPlaylistsRequest;
-				case: "listplaylists";
-		  }
-		| {
-				/**
-				 * @generated from field: MpdCommand.StoredPlaylist.PlaylistAddRequest playlistadd = 26;
-				 */
-				value: MpdCommand_StoredPlaylist_PlaylistAddRequest;
-				case: "playlistadd";
-		  }
-		| {
-				/**
-				 * @generated from field: MpdCommand.StoredPlaylist.PlaylistClearRequest playlistclear = 27;
-				 */
-				value: MpdCommand_StoredPlaylist_PlaylistClearRequest;
-				case: "playlistclear";
-		  }
-		| {
-				/**
-				 * @generated from field: MpdCommand.StoredPlaylist.PlaylistDeleteRequest playlistdelete = 28;
-				 */
-				value: MpdCommand_StoredPlaylist_PlaylistDeleteRequest;
-				case: "playlistdelete";
-		  }
-		| {
-				/**
-				 * @generated from field: MpdCommand.StoredPlaylist.PlaylistMoveRequest playlistmove = 29;
-				 */
-				value: MpdCommand_StoredPlaylist_PlaylistMoveRequest;
-				case: "playlistmove";
-		  }
-		| {
-				/**
-				 * @generated from field: MpdCommand.StoredPlaylist.RenameRequest rename = 30;
-				 */
-				value: MpdCommand_StoredPlaylist_RenameRequest;
-				case: "rename";
-		  }
-		| {
-				/**
-				 * @generated from field: MpdCommand.StoredPlaylist.RemoveRequest rm = 31;
-				 */
-				value: MpdCommand_StoredPlaylist_RemoveRequest;
-				case: "rm";
-		  }
-		| {
-				/**
-				 * @generated from field: MpdCommand.StoredPlaylist.SaveRequest save = 32;
-				 */
-				value: MpdCommand_StoredPlaylist_SaveRequest;
-				case: "save";
-		  }
-		| {
-				/**
-				 * @generated from field: MpdCommand.Database.ListRequest list = 33;
-				 */
-				value: MpdCommand_Database_ListRequest;
-				case: "list";
-		  }
-		| {
-				/**
-				 * @generated from field: MpdCommand.Database.SearchRequest search = 34;
-				 */
-				value: MpdCommand_Database_SearchRequest;
-				case: "search";
-		  }
-		| {
-				/**
-				 * @generated from field: MpdCommand.Database.UpdateRequest update = 35;
-				 */
-				value: MpdCommand_Database_UpdateRequest;
-				case: "update";
-		  }
-		| {
-				/**
-				 * @generated from field: MpdCommand.Audio.OutputsRequest outputs = 36;
-				 */
-				value: MpdCommand_Audio_OutputsRequest;
-				case: "outputs";
-		  }
-		| {
-				/**
-				 * @generated from field: MpdCommand.Utility.ListAllSongsRequest list_all_songs = 37;
-				 */
-				value: MpdCommand_Utility_ListAllSongsRequest;
-				case: "listAllSongs";
-		  }
-		| {
-				/**
-				 * @generated from field: MpdCommand.Utility.ListAllFoldersRequest list_all_folders = 38;
-				 */
-				value: MpdCommand_Utility_ListAllFoldersRequest;
-				case: "listAllFolders";
-		  }
-		| {
-				/**
-				 * @generated from field: MpdCommand.Utility.ListSongsInFolderRequest list_songs_in_folder = 39;
-				 */
-				value: MpdCommand_Utility_ListSongsInFolderRequest;
-				case: "listSongsInFolder";
-		  }
-		| { case: undefined; value?: undefined };
+  /**
+   * @generated from oneof MpdRequest.command
+   */
+  command: {
+    /**
+     * @generated from field: MpdCommand.Connection.PingRequest ping = 2;
+     */
+    value: MpdCommand_Connection_PingRequest;
+    case: "ping";
+  } | {
+    /**
+     * @generated from field: MpdCommand.Control.NextRequest next = 3;
+     */
+    value: MpdCommand_Control_NextRequest;
+    case: "next";
+  } | {
+    /**
+     * @generated from field: MpdCommand.Control.PauseRequest pause = 4;
+     */
+    value: MpdCommand_Control_PauseRequest;
+    case: "pause";
+  } | {
+    /**
+     * @generated from field: MpdCommand.Control.PlayRequest play = 5;
+     */
+    value: MpdCommand_Control_PlayRequest;
+    case: "play";
+  } | {
+    /**
+     * @generated from field: MpdCommand.Control.PreviousRequest previous = 6;
+     */
+    value: MpdCommand_Control_PreviousRequest;
+    case: "previous";
+  } | {
+    /**
+     * @generated from field: MpdCommand.Control.SeekRequest seek = 7;
+     */
+    value: MpdCommand_Control_SeekRequest;
+    case: "seek";
+  } | {
+    /**
+     * @generated from field: MpdCommand.Control.StopRequest stop = 8;
+     */
+    value: MpdCommand_Control_StopRequest;
+    case: "stop";
+  } | {
+    /**
+     * @generated from field: MpdCommand.Playback.ConsumeRequest consume = 9;
+     */
+    value: MpdCommand_Playback_ConsumeRequest;
+    case: "consume";
+  } | {
+    /**
+     * @generated from field: MpdCommand.Playback.RandomRequest random = 10;
+     */
+    value: MpdCommand_Playback_RandomRequest;
+    case: "random";
+  } | {
+    /**
+     * @generated from field: MpdCommand.Playback.RepeatRequest repeat = 11;
+     */
+    value: MpdCommand_Playback_RepeatRequest;
+    case: "repeat";
+  } | {
+    /**
+     * @generated from field: MpdCommand.Playback.SetVolRequest setvol = 12;
+     */
+    value: MpdCommand_Playback_SetVolRequest;
+    case: "setvol";
+  } | {
+    /**
+     * @generated from field: MpdCommand.Playback.GetVolRequest getvol = 13;
+     */
+    value: MpdCommand_Playback_GetVolRequest;
+    case: "getvol";
+  } | {
+    /**
+     * @generated from field: MpdCommand.Playback.SingleRequest single = 14;
+     */
+    value: MpdCommand_Playback_SingleRequest;
+    case: "single";
+  } | {
+    /**
+     * @generated from field: MpdCommand.Status.CurrentSongRequest currentsong = 15;
+     */
+    value: MpdCommand_Status_CurrentSongRequest;
+    case: "currentsong";
+  } | {
+    /**
+     * @generated from field: MpdCommand.Status.StatusRequest status = 16;
+     */
+    value: MpdCommand_Status_StatusRequest;
+    case: "status";
+  } | {
+    /**
+     * @generated from field: MpdCommand.Status.StatsRequest stats = 17;
+     */
+    value: MpdCommand_Status_StatsRequest;
+    case: "stats";
+  } | {
+    /**
+     * @generated from field: MpdCommand.Queue.AddRequest add = 18;
+     */
+    value: MpdCommand_Queue_AddRequest;
+    case: "add";
+  } | {
+    /**
+     * @generated from field: MpdCommand.Queue.ClearRequest clear = 19;
+     */
+    value: MpdCommand_Queue_ClearRequest;
+    case: "clear";
+  } | {
+    /**
+     * @generated from field: MpdCommand.Queue.DeleteRequest delete = 20;
+     */
+    value: MpdCommand_Queue_DeleteRequest;
+    case: "delete";
+  } | {
+    /**
+     * @generated from field: MpdCommand.Queue.MoveRequest move = 21;
+     */
+    value: MpdCommand_Queue_MoveRequest;
+    case: "move";
+  } | {
+    /**
+     * @generated from field: MpdCommand.Queue.PlaylistInfoRequest playlistinfo = 22;
+     */
+    value: MpdCommand_Queue_PlaylistInfoRequest;
+    case: "playlistinfo";
+  } | {
+    /**
+     * @generated from field: MpdCommand.Queue.ShuffleRequest shuffle = 23;
+     */
+    value: MpdCommand_Queue_ShuffleRequest;
+    case: "shuffle";
+  } | {
+    /**
+     * @generated from field: MpdCommand.StoredPlaylist.ListPlaylistInfoRequest listplaylistinfo = 24;
+     */
+    value: MpdCommand_StoredPlaylist_ListPlaylistInfoRequest;
+    case: "listplaylistinfo";
+  } | {
+    /**
+     * @generated from field: MpdCommand.StoredPlaylist.ListPlaylistsRequest listplaylists = 25;
+     */
+    value: MpdCommand_StoredPlaylist_ListPlaylistsRequest;
+    case: "listplaylists";
+  } | {
+    /**
+     * @generated from field: MpdCommand.StoredPlaylist.PlaylistAddRequest playlistadd = 26;
+     */
+    value: MpdCommand_StoredPlaylist_PlaylistAddRequest;
+    case: "playlistadd";
+  } | {
+    /**
+     * @generated from field: MpdCommand.StoredPlaylist.PlaylistClearRequest playlistclear = 27;
+     */
+    value: MpdCommand_StoredPlaylist_PlaylistClearRequest;
+    case: "playlistclear";
+  } | {
+    /**
+     * @generated from field: MpdCommand.StoredPlaylist.PlaylistDeleteRequest playlistdelete = 28;
+     */
+    value: MpdCommand_StoredPlaylist_PlaylistDeleteRequest;
+    case: "playlistdelete";
+  } | {
+    /**
+     * @generated from field: MpdCommand.StoredPlaylist.PlaylistMoveRequest playlistmove = 29;
+     */
+    value: MpdCommand_StoredPlaylist_PlaylistMoveRequest;
+    case: "playlistmove";
+  } | {
+    /**
+     * @generated from field: MpdCommand.StoredPlaylist.RenameRequest rename = 30;
+     */
+    value: MpdCommand_StoredPlaylist_RenameRequest;
+    case: "rename";
+  } | {
+    /**
+     * @generated from field: MpdCommand.StoredPlaylist.RemoveRequest rm = 31;
+     */
+    value: MpdCommand_StoredPlaylist_RemoveRequest;
+    case: "rm";
+  } | {
+    /**
+     * @generated from field: MpdCommand.StoredPlaylist.SaveRequest save = 32;
+     */
+    value: MpdCommand_StoredPlaylist_SaveRequest;
+    case: "save";
+  } | {
+    /**
+     * @generated from field: MpdCommand.Database.ListRequest list = 33;
+     */
+    value: MpdCommand_Database_ListRequest;
+    case: "list";
+  } | {
+    /**
+     * @generated from field: MpdCommand.Database.SearchRequest search = 34;
+     */
+    value: MpdCommand_Database_SearchRequest;
+    case: "search";
+  } | {
+    /**
+     * @generated from field: MpdCommand.Database.UpdateRequest update = 35;
+     */
+    value: MpdCommand_Database_UpdateRequest;
+    case: "update";
+  } | {
+    /**
+     * @generated from field: MpdCommand.Audio.OutputsRequest outputs = 36;
+     */
+    value: MpdCommand_Audio_OutputsRequest;
+    case: "outputs";
+  } | {
+    /**
+     * @generated from field: MpdCommand.Utility.ListAllSongsRequest list_all_songs = 37;
+     */
+    value: MpdCommand_Utility_ListAllSongsRequest;
+    case: "listAllSongs";
+  } | {
+    /**
+     * @generated from field: MpdCommand.Utility.ListAllFoldersRequest list_all_folders = 38;
+     */
+    value: MpdCommand_Utility_ListAllFoldersRequest;
+    case: "listAllFolders";
+  } | {
+    /**
+     * @generated from field: MpdCommand.Utility.ListSongsInFolderRequest list_songs_in_folder = 39;
+     */
+    value: MpdCommand_Utility_ListSongsInFolderRequest;
+    case: "listSongsInFolder";
+  } | { case: undefined; value?: undefined };
 };
 
 /**
  * Describes the message MpdRequest.
  * Use `create(MpdRequestSchema)` to create a new message.
  */
-export const MpdRequestSchema: GenMessage<MpdRequest> =
-	/*@__PURE__*/
-	messageDesc(file_mpd_mpd_command, 1);
+export const MpdRequestSchema: GenMessage<MpdRequest> = /*@__PURE__*/
+  messageDesc(file_mpd_mpd_command, 1);
 
 /**
  * @generated from message MpdRequestBulk
  */
 export type MpdRequestBulk = Message<"MpdRequestBulk"> & {
-	/**
-	 * @generated from field: repeated MpdRequest requests = 1;
-	 */
-	requests: MpdRequest[];
+  /**
+   * @generated from field: repeated MpdRequest requests = 1;
+   */
+  requests: MpdRequest[];
 };
 
 /**
  * Describes the message MpdRequestBulk.
  * Use `create(MpdRequestBulkSchema)` to create a new message.
  */
-export const MpdRequestBulkSchema: GenMessage<MpdRequestBulk> =
-	/*@__PURE__*/
-	messageDesc(file_mpd_mpd_command, 2);
+export const MpdRequestBulkSchema: GenMessage<MpdRequestBulk> = /*@__PURE__*/
+  messageDesc(file_mpd_mpd_command, 2);
 
 /**
  * @generated from message MpdCommandError
  */
 export type MpdCommandError = Message<"MpdCommandError"> & {
-	/**
-	 * @generated from field: string message = 1;
-	 */
-	message: string;
+  /**
+   * @generated from field: string message = 1;
+   */
+  message: string;
 };
 
 /**
  * Describes the message MpdCommandError.
  * Use `create(MpdCommandErrorSchema)` to create a new message.
  */
-export const MpdCommandErrorSchema: GenMessage<MpdCommandError> =
-	/*@__PURE__*/
-	messageDesc(file_mpd_mpd_command, 3);
+export const MpdCommandErrorSchema: GenMessage<MpdCommandError> = /*@__PURE__*/
+  messageDesc(file_mpd_mpd_command, 3);
 
 /**
  * @generated from message MpdResponse
  */
 export type MpdResponse = Message<"MpdResponse"> & {
-	/**
-	 * @generated from oneof MpdResponse.command
-	 */
-	command:
-		| {
-				/**
-				 * @generated from field: MpdCommand.Connection.PingResponse ping = 2;
-				 */
-				value: MpdCommand_Connection_PingResponse;
-				case: "ping";
-		  }
-		| {
-				/**
-				 * @generated from field: MpdCommand.Control.NextResponse next = 3;
-				 */
-				value: MpdCommand_Control_NextResponse;
-				case: "next";
-		  }
-		| {
-				/**
-				 * @generated from field: MpdCommand.Control.PauseResponse pause = 4;
-				 */
-				value: MpdCommand_Control_PauseResponse;
-				case: "pause";
-		  }
-		| {
-				/**
-				 * @generated from field: MpdCommand.Control.PlayResponse play = 5;
-				 */
-				value: MpdCommand_Control_PlayResponse;
-				case: "play";
-		  }
-		| {
-				/**
-				 * @generated from field: MpdCommand.Control.PreviousResponse previous = 6;
-				 */
-				value: MpdCommand_Control_PreviousResponse;
-				case: "previous";
-		  }
-		| {
-				/**
-				 * @generated from field: MpdCommand.Control.SeekResponse seek = 7;
-				 */
-				value: MpdCommand_Control_SeekResponse;
-				case: "seek";
-		  }
-		| {
-				/**
-				 * @generated from field: MpdCommand.Control.StopResponse stop = 8;
-				 */
-				value: MpdCommand_Control_StopResponse;
-				case: "stop";
-		  }
-		| {
-				/**
-				 * @generated from field: MpdCommand.Playback.ConsumeResponse consume = 9;
-				 */
-				value: MpdCommand_Playback_ConsumeResponse;
-				case: "consume";
-		  }
-		| {
-				/**
-				 * @generated from field: MpdCommand.Playback.RandomResponse random = 10;
-				 */
-				value: MpdCommand_Playback_RandomResponse;
-				case: "random";
-		  }
-		| {
-				/**
-				 * @generated from field: MpdCommand.Playback.RepeatResponse repeat = 11;
-				 */
-				value: MpdCommand_Playback_RepeatResponse;
-				case: "repeat";
-		  }
-		| {
-				/**
-				 * @generated from field: MpdCommand.Playback.SetVolResponse setvol = 12;
-				 */
-				value: MpdCommand_Playback_SetVolResponse;
-				case: "setvol";
-		  }
-		| {
-				/**
-				 * @generated from field: MpdCommand.Playback.GetVolResponse getvol = 13;
-				 */
-				value: MpdCommand_Playback_GetVolResponse;
-				case: "getvol";
-		  }
-		| {
-				/**
-				 * @generated from field: MpdCommand.Playback.SingleResponse single = 14;
-				 */
-				value: MpdCommand_Playback_SingleResponse;
-				case: "single";
-		  }
-		| {
-				/**
-				 * @generated from field: MpdCommand.Status.CurrentSongResponse currentsong = 15;
-				 */
-				value: MpdCommand_Status_CurrentSongResponse;
-				case: "currentsong";
-		  }
-		| {
-				/**
-				 * @generated from field: MpdCommand.Status.StatusResponse status = 16;
-				 */
-				value: MpdCommand_Status_StatusResponse;
-				case: "status";
-		  }
-		| {
-				/**
-				 * @generated from field: MpdCommand.Status.StatsResponse stats = 17;
-				 */
-				value: MpdCommand_Status_StatsResponse;
-				case: "stats";
-		  }
-		| {
-				/**
-				 * @generated from field: MpdCommand.Queue.AddResponse add = 18;
-				 */
-				value: MpdCommand_Queue_AddResponse;
-				case: "add";
-		  }
-		| {
-				/**
-				 * @generated from field: MpdCommand.Queue.ClearResponse clear = 19;
-				 */
-				value: MpdCommand_Queue_ClearResponse;
-				case: "clear";
-		  }
-		| {
-				/**
-				 * @generated from field: MpdCommand.Queue.DeleteResponse delete = 20;
-				 */
-				value: MpdCommand_Queue_DeleteResponse;
-				case: "delete";
-		  }
-		| {
-				/**
-				 * @generated from field: MpdCommand.Queue.MoveResponse move = 21;
-				 */
-				value: MpdCommand_Queue_MoveResponse;
-				case: "move";
-		  }
-		| {
-				/**
-				 * @generated from field: MpdCommand.Queue.PlaylistInfoResponse playlistinfo = 22;
-				 */
-				value: MpdCommand_Queue_PlaylistInfoResponse;
-				case: "playlistinfo";
-		  }
-		| {
-				/**
-				 * @generated from field: MpdCommand.Queue.ShuffleResponse shuffle = 23;
-				 */
-				value: MpdCommand_Queue_ShuffleResponse;
-				case: "shuffle";
-		  }
-		| {
-				/**
-				 * @generated from field: MpdCommand.StoredPlaylist.ListPlaylistInfoResponse listplaylistinfo = 24;
-				 */
-				value: MpdCommand_StoredPlaylist_ListPlaylistInfoResponse;
-				case: "listplaylistinfo";
-		  }
-		| {
-				/**
-				 * @generated from field: MpdCommand.StoredPlaylist.ListPlaylistsResponse listplaylists = 25;
-				 */
-				value: MpdCommand_StoredPlaylist_ListPlaylistsResponse;
-				case: "listplaylists";
-		  }
-		| {
-				/**
-				 * @generated from field: MpdCommand.StoredPlaylist.PlaylistAddResponse playlistadd = 26;
-				 */
-				value: MpdCommand_StoredPlaylist_PlaylistAddResponse;
-				case: "playlistadd";
-		  }
-		| {
-				/**
-				 * @generated from field: MpdCommand.StoredPlaylist.PlaylistClearResponse playlistclear = 27;
-				 */
-				value: MpdCommand_StoredPlaylist_PlaylistClearResponse;
-				case: "playlistclear";
-		  }
-		| {
-				/**
-				 * @generated from field: MpdCommand.StoredPlaylist.PlaylistDeleteResponse playlistdelete = 28;
-				 */
-				value: MpdCommand_StoredPlaylist_PlaylistDeleteResponse;
-				case: "playlistdelete";
-		  }
-		| {
-				/**
-				 * @generated from field: MpdCommand.StoredPlaylist.PlaylistMoveResponse playlistmove = 29;
-				 */
-				value: MpdCommand_StoredPlaylist_PlaylistMoveResponse;
-				case: "playlistmove";
-		  }
-		| {
-				/**
-				 * @generated from field: MpdCommand.StoredPlaylist.RenameResponse rename = 30;
-				 */
-				value: MpdCommand_StoredPlaylist_RenameResponse;
-				case: "rename";
-		  }
-		| {
-				/**
-				 * @generated from field: MpdCommand.StoredPlaylist.RemoveResponse rm = 31;
-				 */
-				value: MpdCommand_StoredPlaylist_RemoveResponse;
-				case: "rm";
-		  }
-		| {
-				/**
-				 * @generated from field: MpdCommand.StoredPlaylist.SaveResponse save = 32;
-				 */
-				value: MpdCommand_StoredPlaylist_SaveResponse;
-				case: "save";
-		  }
-		| {
-				/**
-				 * @generated from field: MpdCommand.Database.ListResponse list = 33;
-				 */
-				value: MpdCommand_Database_ListResponse;
-				case: "list";
-		  }
-		| {
-				/**
-				 * @generated from field: MpdCommand.Database.SearchResponse search = 34;
-				 */
-				value: MpdCommand_Database_SearchResponse;
-				case: "search";
-		  }
-		| {
-				/**
-				 * @generated from field: MpdCommand.Database.UpdateResponse update = 35;
-				 */
-				value: MpdCommand_Database_UpdateResponse;
-				case: "update";
-		  }
-		| {
-				/**
-				 * @generated from field: MpdCommand.Audio.OutputsResponse outputs = 36;
-				 */
-				value: MpdCommand_Audio_OutputsResponse;
-				case: "outputs";
-		  }
-		| {
-				/**
-				 * @generated from field: MpdCommand.Utility.ListAllSongsResponse list_all_songs = 37;
-				 */
-				value: MpdCommand_Utility_ListAllSongsResponse;
-				case: "listAllSongs";
-		  }
-		| {
-				/**
-				 * @generated from field: MpdCommand.Utility.ListAllFoldersResponse list_all_folders = 38;
-				 */
-				value: MpdCommand_Utility_ListAllFoldersResponse;
-				case: "listAllFolders";
-		  }
-		| {
-				/**
-				 * @generated from field: MpdCommand.Utility.ListSongsInFolderResponse list_songs_in_folder = 39;
-				 */
-				value: MpdCommand_Utility_ListSongsInFolderResponse;
-				case: "listSongsInFolder";
-		  }
-		| {
-				/**
-				 * @generated from field: MpdCommandError error = 40;
-				 */
-				value: MpdCommandError;
-				case: "error";
-		  }
-		| { case: undefined; value?: undefined };
+  /**
+   * @generated from oneof MpdResponse.command
+   */
+  command: {
+    /**
+     * @generated from field: MpdCommand.Connection.PingResponse ping = 2;
+     */
+    value: MpdCommand_Connection_PingResponse;
+    case: "ping";
+  } | {
+    /**
+     * @generated from field: MpdCommand.Control.NextResponse next = 3;
+     */
+    value: MpdCommand_Control_NextResponse;
+    case: "next";
+  } | {
+    /**
+     * @generated from field: MpdCommand.Control.PauseResponse pause = 4;
+     */
+    value: MpdCommand_Control_PauseResponse;
+    case: "pause";
+  } | {
+    /**
+     * @generated from field: MpdCommand.Control.PlayResponse play = 5;
+     */
+    value: MpdCommand_Control_PlayResponse;
+    case: "play";
+  } | {
+    /**
+     * @generated from field: MpdCommand.Control.PreviousResponse previous = 6;
+     */
+    value: MpdCommand_Control_PreviousResponse;
+    case: "previous";
+  } | {
+    /**
+     * @generated from field: MpdCommand.Control.SeekResponse seek = 7;
+     */
+    value: MpdCommand_Control_SeekResponse;
+    case: "seek";
+  } | {
+    /**
+     * @generated from field: MpdCommand.Control.StopResponse stop = 8;
+     */
+    value: MpdCommand_Control_StopResponse;
+    case: "stop";
+  } | {
+    /**
+     * @generated from field: MpdCommand.Playback.ConsumeResponse consume = 9;
+     */
+    value: MpdCommand_Playback_ConsumeResponse;
+    case: "consume";
+  } | {
+    /**
+     * @generated from field: MpdCommand.Playback.RandomResponse random = 10;
+     */
+    value: MpdCommand_Playback_RandomResponse;
+    case: "random";
+  } | {
+    /**
+     * @generated from field: MpdCommand.Playback.RepeatResponse repeat = 11;
+     */
+    value: MpdCommand_Playback_RepeatResponse;
+    case: "repeat";
+  } | {
+    /**
+     * @generated from field: MpdCommand.Playback.SetVolResponse setvol = 12;
+     */
+    value: MpdCommand_Playback_SetVolResponse;
+    case: "setvol";
+  } | {
+    /**
+     * @generated from field: MpdCommand.Playback.GetVolResponse getvol = 13;
+     */
+    value: MpdCommand_Playback_GetVolResponse;
+    case: "getvol";
+  } | {
+    /**
+     * @generated from field: MpdCommand.Playback.SingleResponse single = 14;
+     */
+    value: MpdCommand_Playback_SingleResponse;
+    case: "single";
+  } | {
+    /**
+     * @generated from field: MpdCommand.Status.CurrentSongResponse currentsong = 15;
+     */
+    value: MpdCommand_Status_CurrentSongResponse;
+    case: "currentsong";
+  } | {
+    /**
+     * @generated from field: MpdCommand.Status.StatusResponse status = 16;
+     */
+    value: MpdCommand_Status_StatusResponse;
+    case: "status";
+  } | {
+    /**
+     * @generated from field: MpdCommand.Status.StatsResponse stats = 17;
+     */
+    value: MpdCommand_Status_StatsResponse;
+    case: "stats";
+  } | {
+    /**
+     * @generated from field: MpdCommand.Queue.AddResponse add = 18;
+     */
+    value: MpdCommand_Queue_AddResponse;
+    case: "add";
+  } | {
+    /**
+     * @generated from field: MpdCommand.Queue.ClearResponse clear = 19;
+     */
+    value: MpdCommand_Queue_ClearResponse;
+    case: "clear";
+  } | {
+    /**
+     * @generated from field: MpdCommand.Queue.DeleteResponse delete = 20;
+     */
+    value: MpdCommand_Queue_DeleteResponse;
+    case: "delete";
+  } | {
+    /**
+     * @generated from field: MpdCommand.Queue.MoveResponse move = 21;
+     */
+    value: MpdCommand_Queue_MoveResponse;
+    case: "move";
+  } | {
+    /**
+     * @generated from field: MpdCommand.Queue.PlaylistInfoResponse playlistinfo = 22;
+     */
+    value: MpdCommand_Queue_PlaylistInfoResponse;
+    case: "playlistinfo";
+  } | {
+    /**
+     * @generated from field: MpdCommand.Queue.ShuffleResponse shuffle = 23;
+     */
+    value: MpdCommand_Queue_ShuffleResponse;
+    case: "shuffle";
+  } | {
+    /**
+     * @generated from field: MpdCommand.StoredPlaylist.ListPlaylistInfoResponse listplaylistinfo = 24;
+     */
+    value: MpdCommand_StoredPlaylist_ListPlaylistInfoResponse;
+    case: "listplaylistinfo";
+  } | {
+    /**
+     * @generated from field: MpdCommand.StoredPlaylist.ListPlaylistsResponse listplaylists = 25;
+     */
+    value: MpdCommand_StoredPlaylist_ListPlaylistsResponse;
+    case: "listplaylists";
+  } | {
+    /**
+     * @generated from field: MpdCommand.StoredPlaylist.PlaylistAddResponse playlistadd = 26;
+     */
+    value: MpdCommand_StoredPlaylist_PlaylistAddResponse;
+    case: "playlistadd";
+  } | {
+    /**
+     * @generated from field: MpdCommand.StoredPlaylist.PlaylistClearResponse playlistclear = 27;
+     */
+    value: MpdCommand_StoredPlaylist_PlaylistClearResponse;
+    case: "playlistclear";
+  } | {
+    /**
+     * @generated from field: MpdCommand.StoredPlaylist.PlaylistDeleteResponse playlistdelete = 28;
+     */
+    value: MpdCommand_StoredPlaylist_PlaylistDeleteResponse;
+    case: "playlistdelete";
+  } | {
+    /**
+     * @generated from field: MpdCommand.StoredPlaylist.PlaylistMoveResponse playlistmove = 29;
+     */
+    value: MpdCommand_StoredPlaylist_PlaylistMoveResponse;
+    case: "playlistmove";
+  } | {
+    /**
+     * @generated from field: MpdCommand.StoredPlaylist.RenameResponse rename = 30;
+     */
+    value: MpdCommand_StoredPlaylist_RenameResponse;
+    case: "rename";
+  } | {
+    /**
+     * @generated from field: MpdCommand.StoredPlaylist.RemoveResponse rm = 31;
+     */
+    value: MpdCommand_StoredPlaylist_RemoveResponse;
+    case: "rm";
+  } | {
+    /**
+     * @generated from field: MpdCommand.StoredPlaylist.SaveResponse save = 32;
+     */
+    value: MpdCommand_StoredPlaylist_SaveResponse;
+    case: "save";
+  } | {
+    /**
+     * @generated from field: MpdCommand.Database.ListResponse list = 33;
+     */
+    value: MpdCommand_Database_ListResponse;
+    case: "list";
+  } | {
+    /**
+     * @generated from field: MpdCommand.Database.SearchResponse search = 34;
+     */
+    value: MpdCommand_Database_SearchResponse;
+    case: "search";
+  } | {
+    /**
+     * @generated from field: MpdCommand.Database.UpdateResponse update = 35;
+     */
+    value: MpdCommand_Database_UpdateResponse;
+    case: "update";
+  } | {
+    /**
+     * @generated from field: MpdCommand.Audio.OutputsResponse outputs = 36;
+     */
+    value: MpdCommand_Audio_OutputsResponse;
+    case: "outputs";
+  } | {
+    /**
+     * @generated from field: MpdCommand.Utility.ListAllSongsResponse list_all_songs = 37;
+     */
+    value: MpdCommand_Utility_ListAllSongsResponse;
+    case: "listAllSongs";
+  } | {
+    /**
+     * @generated from field: MpdCommand.Utility.ListAllFoldersResponse list_all_folders = 38;
+     */
+    value: MpdCommand_Utility_ListAllFoldersResponse;
+    case: "listAllFolders";
+  } | {
+    /**
+     * @generated from field: MpdCommand.Utility.ListSongsInFolderResponse list_songs_in_folder = 39;
+     */
+    value: MpdCommand_Utility_ListSongsInFolderResponse;
+    case: "listSongsInFolder";
+  } | {
+    /**
+     * @generated from field: MpdCommandError error = 40;
+     */
+    value: MpdCommandError;
+    case: "error";
+  } | { case: undefined; value?: undefined };
 };
 
 /**
  * Describes the message MpdResponse.
  * Use `create(MpdResponseSchema)` to create a new message.
  */
-export const MpdResponseSchema: GenMessage<MpdResponse> =
-	/*@__PURE__*/
-	messageDesc(file_mpd_mpd_command, 4);
+export const MpdResponseSchema: GenMessage<MpdResponse> = /*@__PURE__*/
+  messageDesc(file_mpd_mpd_command, 4);
+

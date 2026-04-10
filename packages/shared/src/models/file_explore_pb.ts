@@ -2,33 +2,30 @@
 // @generated from file file_explore.proto (syntax proto3)
 /* eslint-disable */
 
-import type { Message } from "@bufbuild/protobuf";
 import type { GenFile, GenMessage } from "@bufbuild/protobuf/codegenv2";
 import { fileDesc, messageDesc } from "@bufbuild/protobuf/codegenv2";
+import type { Message } from "@bufbuild/protobuf";
 
 /**
  * Describes the file file_explore.proto.
  */
-export const file_file_explore: GenFile =
-	/*@__PURE__*/
-	fileDesc(
-		"ChJmaWxlX2V4cGxvcmUucHJvdG8iFgoGRm9sZGVyEgwKBHBhdGgYASABKAliBnByb3RvMw",
-	);
+export const file_file_explore: GenFile = /*@__PURE__*/
+  fileDesc("ChJmaWxlX2V4cGxvcmUucHJvdG8iFgoGRm9sZGVyEgwKBHBhdGgYASABKAliBnByb3RvMw");
 
 /**
  * @generated from message Folder
  */
 export type Folder = Message<"Folder"> & {
-	/**
-	 * @generated from field: string path = 1;
-	 */
-	path: string;
+  /**
+   * @generated from field: string path = 1;
+   */
+  path: string;
 };
 
 /**
  * Describes the message Folder.
  * Use `create(FolderSchema)` to create a new message.
  */
-export const FolderSchema: GenMessage<Folder> =
-	/*@__PURE__*/
-	messageDesc(file_file_explore, 0);
+export const FolderSchema: GenMessage<Folder> = /*@__PURE__*/
+  messageDesc(file_file_explore, 0);
+

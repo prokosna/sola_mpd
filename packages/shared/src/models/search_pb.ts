@@ -2,84 +2,78 @@
 // @generated from file search.proto (syntax proto3)
 /* eslint-disable */
 
-import type { Message } from "@bufbuild/protobuf";
 import type { GenFile, GenMessage } from "@bufbuild/protobuf/codegenv2";
 import { fileDesc, messageDesc } from "@bufbuild/protobuf/codegenv2";
 import type { FilterCondition } from "./filter_pb.js";
 import { file_filter } from "./filter_pb.js";
 import type { SongTableColumn } from "./song_table_pb.js";
 import { file_song_table } from "./song_table_pb.js";
+import type { Message } from "@bufbuild/protobuf";
 
 /**
  * Describes the file search.proto.
  */
-export const file_search: GenFile =
-	/*@__PURE__*/
-	fileDesc(
-		"CgxzZWFyY2gucHJvdG8iLQoFUXVlcnkSJAoKY29uZGl0aW9ucxgBIAMoCzIQLkZpbHRlckNvbmRpdGlvbiJSCgZTZWFyY2gSDAoEbmFtZRgBIAEoCRIXCgdxdWVyaWVzGAIgAygLMgYuUXVlcnkSIQoHY29sdW1ucxgDIAMoCzIQLlNvbmdUYWJsZUNvbHVtbiIqCg1TYXZlZFNlYXJjaGVzEhkKCHNlYXJjaGVzGAEgAygLMgcuU2VhcmNoYgZwcm90bzM",
-		[file_filter, file_song_table],
-	);
+export const file_search: GenFile = /*@__PURE__*/
+  fileDesc("CgxzZWFyY2gucHJvdG8iLQoFUXVlcnkSJAoKY29uZGl0aW9ucxgBIAMoCzIQLkZpbHRlckNvbmRpdGlvbiJSCgZTZWFyY2gSDAoEbmFtZRgBIAEoCRIXCgdxdWVyaWVzGAIgAygLMgYuUXVlcnkSIQoHY29sdW1ucxgDIAMoCzIQLlNvbmdUYWJsZUNvbHVtbiIqCg1TYXZlZFNlYXJjaGVzEhkKCHNlYXJjaGVzGAEgAygLMgcuU2VhcmNoYgZwcm90bzM", [file_filter, file_song_table]);
 
 /**
  * @generated from message Query
  */
 export type Query = Message<"Query"> & {
-	/**
-	 * @generated from field: repeated FilterCondition conditions = 1;
-	 */
-	conditions: FilterCondition[];
+  /**
+   * @generated from field: repeated FilterCondition conditions = 1;
+   */
+  conditions: FilterCondition[];
 };
 
 /**
  * Describes the message Query.
  * Use `create(QuerySchema)` to create a new message.
  */
-export const QuerySchema: GenMessage<Query> =
-	/*@__PURE__*/
-	messageDesc(file_search, 0);
+export const QuerySchema: GenMessage<Query> = /*@__PURE__*/
+  messageDesc(file_search, 0);
 
 /**
  * @generated from message Search
  */
 export type Search = Message<"Search"> & {
-	/**
-	 * @generated from field: string name = 1;
-	 */
-	name: string;
+  /**
+   * @generated from field: string name = 1;
+   */
+  name: string;
 
-	/**
-	 * @generated from field: repeated Query queries = 2;
-	 */
-	queries: Query[];
+  /**
+   * @generated from field: repeated Query queries = 2;
+   */
+  queries: Query[];
 
-	/**
-	 * @generated from field: repeated SongTableColumn columns = 3;
-	 */
-	columns: SongTableColumn[];
+  /**
+   * @generated from field: repeated SongTableColumn columns = 3;
+   */
+  columns: SongTableColumn[];
 };
 
 /**
  * Describes the message Search.
  * Use `create(SearchSchema)` to create a new message.
  */
-export const SearchSchema: GenMessage<Search> =
-	/*@__PURE__*/
-	messageDesc(file_search, 1);
+export const SearchSchema: GenMessage<Search> = /*@__PURE__*/
+  messageDesc(file_search, 1);
 
 /**
  * @generated from message SavedSearches
  */
 export type SavedSearches = Message<"SavedSearches"> & {
-	/**
-	 * @generated from field: repeated Search searches = 1;
-	 */
-	searches: Search[];
+  /**
+   * @generated from field: repeated Search searches = 1;
+   */
+  searches: Search[];
 };
 
 /**
  * Describes the message SavedSearches.
  * Use `create(SavedSearchesSchema)` to create a new message.
  */
-export const SavedSearchesSchema: GenMessage<SavedSearches> =
-	/*@__PURE__*/
-	messageDesc(file_search, 2);
+export const SavedSearchesSchema: GenMessage<SavedSearches> = /*@__PURE__*/
+  messageDesc(file_search, 2);
+

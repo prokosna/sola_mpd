@@ -2,70 +2,65 @@
 // @generated from file song_table.proto (syntax proto3)
 /* eslint-disable */
 
-import type { Message } from "@bufbuild/protobuf";
 import type { GenFile, GenMessage } from "@bufbuild/protobuf/codegenv2";
 import { fileDesc, messageDesc } from "@bufbuild/protobuf/codegenv2";
-import { file_google_protobuf_wrappers } from "@bufbuild/protobuf/wkt";
 import type { Song_MetadataTag } from "./song_pb.js";
 import { file_song } from "./song_pb.js";
+import { file_google_protobuf_wrappers } from "@bufbuild/protobuf/wkt";
+import type { Message } from "@bufbuild/protobuf";
 
 /**
  * Describes the file song_table.proto.
  */
-export const file_song_table: GenFile =
-	/*@__PURE__*/
-	fileDesc(
-		"ChBzb25nX3RhYmxlLnByb3RvIoMBCg9Tb25nVGFibGVDb2x1bW4SHgoDdGFnGAEgASgOMhEuU29uZy5NZXRhZGF0YVRhZxIXCgpzb3J0X29yZGVyGAIgASgFSACIAQESFAoMaXNfc29ydF9kZXNjGAMgASgIEhIKCndpZHRoX2ZsZXgYBCABKAVCDQoLX3NvcnRfb3JkZXIiMwoOU29uZ1RhYmxlU3RhdGUSIQoHY29sdW1ucxgBIAMoCzIQLlNvbmdUYWJsZUNvbHVtbmIGcHJvdG8z",
-		[file_song, file_google_protobuf_wrappers],
-	);
+export const file_song_table: GenFile = /*@__PURE__*/
+  fileDesc("ChBzb25nX3RhYmxlLnByb3RvIoMBCg9Tb25nVGFibGVDb2x1bW4SHgoDdGFnGAEgASgOMhEuU29uZy5NZXRhZGF0YVRhZxIXCgpzb3J0X29yZGVyGAIgASgFSACIAQESFAoMaXNfc29ydF9kZXNjGAMgASgIEhIKCndpZHRoX2ZsZXgYBCABKAVCDQoLX3NvcnRfb3JkZXIiMwoOU29uZ1RhYmxlU3RhdGUSIQoHY29sdW1ucxgBIAMoCzIQLlNvbmdUYWJsZUNvbHVtbmIGcHJvdG8z", [file_song, file_google_protobuf_wrappers]);
 
 /**
  * @generated from message SongTableColumn
  */
 export type SongTableColumn = Message<"SongTableColumn"> & {
-	/**
-	 * @generated from field: Song.MetadataTag tag = 1;
-	 */
-	tag: Song_MetadataTag;
+  /**
+   * @generated from field: Song.MetadataTag tag = 1;
+   */
+  tag: Song_MetadataTag;
 
-	/**
-	 * @generated from field: optional int32 sort_order = 2;
-	 */
-	sortOrder?: number;
+  /**
+   * @generated from field: optional int32 sort_order = 2;
+   */
+  sortOrder?: number;
 
-	/**
-	 * @generated from field: bool is_sort_desc = 3;
-	 */
-	isSortDesc: boolean;
+  /**
+   * @generated from field: bool is_sort_desc = 3;
+   */
+  isSortDesc: boolean;
 
-	/**
-	 * @generated from field: int32 width_flex = 4;
-	 */
-	widthFlex: number;
+  /**
+   * @generated from field: int32 width_flex = 4;
+   */
+  widthFlex: number;
 };
 
 /**
  * Describes the message SongTableColumn.
  * Use `create(SongTableColumnSchema)` to create a new message.
  */
-export const SongTableColumnSchema: GenMessage<SongTableColumn> =
-	/*@__PURE__*/
-	messageDesc(file_song_table, 0);
+export const SongTableColumnSchema: GenMessage<SongTableColumn> = /*@__PURE__*/
+  messageDesc(file_song_table, 0);
 
 /**
  * @generated from message SongTableState
  */
 export type SongTableState = Message<"SongTableState"> & {
-	/**
-	 * @generated from field: repeated SongTableColumn columns = 1;
-	 */
-	columns: SongTableColumn[];
+  /**
+   * @generated from field: repeated SongTableColumn columns = 1;
+   */
+  columns: SongTableColumn[];
 };
 
 /**
  * Describes the message SongTableState.
  * Use `create(SongTableStateSchema)` to create a new message.
  */
-export const SongTableStateSchema: GenMessage<SongTableState> =
-	/*@__PURE__*/
-	messageDesc(file_song_table, 1);
+export const SongTableStateSchema: GenMessage<SongTableState> = /*@__PURE__*/
+  messageDesc(file_song_table, 1);
+

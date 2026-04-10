@@ -2,120 +2,111 @@
 // @generated from file filter.proto (syntax proto3)
 /* eslint-disable */
 
-import type { Message } from "@bufbuild/protobuf";
-import type {
-	GenEnum,
-	GenFile,
-	GenMessage,
-} from "@bufbuild/protobuf/codegenv2";
+import type { GenEnum, GenFile, GenMessage } from "@bufbuild/protobuf/codegenv2";
 import { enumDesc, fileDesc, messageDesc } from "@bufbuild/protobuf/codegenv2";
 import type { Song_MetadataTag, Song_MetadataValue } from "./song_pb.js";
 import { file_song } from "./song_pb.js";
+import type { Message } from "@bufbuild/protobuf";
 
 /**
  * Describes the file filter.proto.
  */
-export const file_filter: GenFile =
-	/*@__PURE__*/
-	fileDesc(
-		"CgxmaWx0ZXIucHJvdG8iwQIKD0ZpbHRlckNvbmRpdGlvbhIMCgR1dWlkGAEgASgJEh4KA3RhZxgCIAEoDjIRLlNvbmcuTWV0YWRhdGFUYWcSIgoFdmFsdWUYAyABKAsyEy5Tb25nLk1ldGFkYXRhVmFsdWUSKwoIb3BlcmF0b3IYBCABKA4yGS5GaWx0ZXJDb25kaXRpb24uT3BlcmF0b3IirgEKCE9wZXJhdG9yEgsKB1VOS05PV04QABIJCgVFUVVBTBABEg0KCU5PVF9FUVVBTBACEgsKB0NPTlRBSU4QAxIPCgtOT1RfQ09OVEFJThAEEgkKBVJFR0VYEAUSDQoJTEVTU19USEFOEAYSFgoSTEVTU19USEFOX09SX0VRVUFMEAcSEAoMR1JFQVRFUl9USEFOEAgSGQoVR1JFQVRFUl9USEFOX09SX0VRVUFMEAliBnByb3RvMw",
-		[file_song],
-	);
+export const file_filter: GenFile = /*@__PURE__*/
+  fileDesc("CgxmaWx0ZXIucHJvdG8iwQIKD0ZpbHRlckNvbmRpdGlvbhIMCgR1dWlkGAEgASgJEh4KA3RhZxgCIAEoDjIRLlNvbmcuTWV0YWRhdGFUYWcSIgoFdmFsdWUYAyABKAsyEy5Tb25nLk1ldGFkYXRhVmFsdWUSKwoIb3BlcmF0b3IYBCABKA4yGS5GaWx0ZXJDb25kaXRpb24uT3BlcmF0b3IirgEKCE9wZXJhdG9yEgsKB1VOS05PV04QABIJCgVFUVVBTBABEg0KCU5PVF9FUVVBTBACEgsKB0NPTlRBSU4QAxIPCgtOT1RfQ09OVEFJThAEEgkKBVJFR0VYEAUSDQoJTEVTU19USEFOEAYSFgoSTEVTU19USEFOX09SX0VRVUFMEAcSEAoMR1JFQVRFUl9USEFOEAgSGQoVR1JFQVRFUl9USEFOX09SX0VRVUFMEAliBnByb3RvMw", [file_song]);
 
 /**
  * @generated from message FilterCondition
  */
 export type FilterCondition = Message<"FilterCondition"> & {
-	/**
-	 * @generated from field: string uuid = 1;
-	 */
-	uuid: string;
+  /**
+   * @generated from field: string uuid = 1;
+   */
+  uuid: string;
 
-	/**
-	 * @generated from field: Song.MetadataTag tag = 2;
-	 */
-	tag: Song_MetadataTag;
+  /**
+   * @generated from field: Song.MetadataTag tag = 2;
+   */
+  tag: Song_MetadataTag;
 
-	/**
-	 * @generated from field: Song.MetadataValue value = 3;
-	 */
-	value?: Song_MetadataValue;
+  /**
+   * @generated from field: Song.MetadataValue value = 3;
+   */
+  value?: Song_MetadataValue;
 
-	/**
-	 * @generated from field: FilterCondition.Operator operator = 4;
-	 */
-	operator: FilterCondition_Operator;
+  /**
+   * @generated from field: FilterCondition.Operator operator = 4;
+   */
+  operator: FilterCondition_Operator;
 };
 
 /**
  * Describes the message FilterCondition.
  * Use `create(FilterConditionSchema)` to create a new message.
  */
-export const FilterConditionSchema: GenMessage<FilterCondition> =
-	/*@__PURE__*/
-	messageDesc(file_filter, 0);
+export const FilterConditionSchema: GenMessage<FilterCondition> = /*@__PURE__*/
+  messageDesc(file_filter, 0);
 
 /**
  * @generated from enum FilterCondition.Operator
  */
 export enum FilterCondition_Operator {
-	/**
-	 * @generated from enum value: UNKNOWN = 0;
-	 */
-	UNKNOWN = 0,
+  /**
+   * @generated from enum value: UNKNOWN = 0;
+   */
+  UNKNOWN = 0,
 
-	/**
-	 * @generated from enum value: EQUAL = 1;
-	 */
-	EQUAL = 1,
+  /**
+   * @generated from enum value: EQUAL = 1;
+   */
+  EQUAL = 1,
 
-	/**
-	 * @generated from enum value: NOT_EQUAL = 2;
-	 */
-	NOT_EQUAL = 2,
+  /**
+   * @generated from enum value: NOT_EQUAL = 2;
+   */
+  NOT_EQUAL = 2,
 
-	/**
-	 * @generated from enum value: CONTAIN = 3;
-	 */
-	CONTAIN = 3,
+  /**
+   * @generated from enum value: CONTAIN = 3;
+   */
+  CONTAIN = 3,
 
-	/**
-	 * @generated from enum value: NOT_CONTAIN = 4;
-	 */
-	NOT_CONTAIN = 4,
+  /**
+   * @generated from enum value: NOT_CONTAIN = 4;
+   */
+  NOT_CONTAIN = 4,
 
-	/**
-	 * @generated from enum value: REGEX = 5;
-	 */
-	REGEX = 5,
+  /**
+   * @generated from enum value: REGEX = 5;
+   */
+  REGEX = 5,
 
-	/**
-	 * Following operators are not supported by MPD
-	 * Need filtering on the client side.
-	 *
-	 * @generated from enum value: LESS_THAN = 6;
-	 */
-	LESS_THAN = 6,
+  /**
+   * Following operators are not supported by MPD
+   * Need filtering on the client side.
+   *
+   * @generated from enum value: LESS_THAN = 6;
+   */
+  LESS_THAN = 6,
 
-	/**
-	 * @generated from enum value: LESS_THAN_OR_EQUAL = 7;
-	 */
-	LESS_THAN_OR_EQUAL = 7,
+  /**
+   * @generated from enum value: LESS_THAN_OR_EQUAL = 7;
+   */
+  LESS_THAN_OR_EQUAL = 7,
 
-	/**
-	 * @generated from enum value: GREATER_THAN = 8;
-	 */
-	GREATER_THAN = 8,
+  /**
+   * @generated from enum value: GREATER_THAN = 8;
+   */
+  GREATER_THAN = 8,
 
-	/**
-	 * @generated from enum value: GREATER_THAN_OR_EQUAL = 9;
-	 */
-	GREATER_THAN_OR_EQUAL = 9,
+  /**
+   * @generated from enum value: GREATER_THAN_OR_EQUAL = 9;
+   */
+  GREATER_THAN_OR_EQUAL = 9,
 }
 
 /**
  * Describes the enum FilterCondition.Operator.
  */
-export const FilterCondition_OperatorSchema: GenEnum<FilterCondition_Operator> =
-	/*@__PURE__*/
-	enumDesc(file_filter, 0, 0);
+export const FilterCondition_OperatorSchema: GenEnum<FilterCondition_Operator> = /*@__PURE__*/
+  enumDesc(file_filter, 0, 0);
+

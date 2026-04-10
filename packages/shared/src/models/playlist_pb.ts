@@ -2,41 +2,37 @@
 // @generated from file playlist.proto (syntax proto3)
 /* eslint-disable */
 
-import type { Message } from "@bufbuild/protobuf";
 import type { GenFile, GenMessage } from "@bufbuild/protobuf/codegenv2";
 import { fileDesc, messageDesc } from "@bufbuild/protobuf/codegenv2";
 import type { Timestamp } from "@bufbuild/protobuf/wkt";
 import { file_google_protobuf_timestamp } from "@bufbuild/protobuf/wkt";
+import type { Message } from "@bufbuild/protobuf";
 
 /**
  * Describes the file playlist.proto.
  */
-export const file_playlist: GenFile =
-	/*@__PURE__*/
-	fileDesc(
-		"Cg5wbGF5bGlzdC5wcm90byJICghQbGF5bGlzdBIMCgRuYW1lGAEgASgJEi4KCnVwZGF0ZWRfYXQYAiABKAsyGi5nb29nbGUucHJvdG9idWYuVGltZXN0YW1wYgZwcm90bzM",
-		[file_google_protobuf_timestamp],
-	);
+export const file_playlist: GenFile = /*@__PURE__*/
+  fileDesc("Cg5wbGF5bGlzdC5wcm90byJICghQbGF5bGlzdBIMCgRuYW1lGAEgASgJEi4KCnVwZGF0ZWRfYXQYAiABKAsyGi5nb29nbGUucHJvdG9idWYuVGltZXN0YW1wYgZwcm90bzM", [file_google_protobuf_timestamp]);
 
 /**
  * @generated from message Playlist
  */
 export type Playlist = Message<"Playlist"> & {
-	/**
-	 * @generated from field: string name = 1;
-	 */
-	name: string;
+  /**
+   * @generated from field: string name = 1;
+   */
+  name: string;
 
-	/**
-	 * @generated from field: google.protobuf.Timestamp updated_at = 2;
-	 */
-	updatedAt?: Timestamp;
+  /**
+   * @generated from field: google.protobuf.Timestamp updated_at = 2;
+   */
+  updatedAt?: Timestamp;
 };
 
 /**
  * Describes the message Playlist.
  * Use `create(PlaylistSchema)` to create a new message.
  */
-export const PlaylistSchema: GenMessage<Playlist> =
-	/*@__PURE__*/
-	messageDesc(file_playlist, 0);
+export const PlaylistSchema: GenMessage<Playlist> = /*@__PURE__*/
+  messageDesc(file_playlist, 0);
+
