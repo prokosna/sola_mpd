@@ -1,21 +1,21 @@
-import { useAdvancedSearchStatsState } from "../states/advancedSearchState";
-import {
-	useRefreshSimilaritySearchSongsState,
-	useSetSimilaritySearchTargetSongState,
-} from "../states/similaritySearchState";
-import { useSetIsSimilaritySearchModalOpenState } from "../states/similaritySearchUiState";
+import { useAtomValue, useSetAtom } from "jotai";
 
-/**
- * Hook for similarity search context menu props.
- *
- * @returns Similarity search context menu props
- */
+import { refreshSimilaritySearchSongsActionAtom } from "../states/actions/refreshSimilaritySearchSongsActionAtom";
+import { setIsSimilaritySearchModalOpenActionAtom } from "../states/actions/setIsSimilaritySearchModalOpenActionAtom";
+import { setSimilaritySearchTargetSongActionAtom } from "../states/actions/setSimilaritySearchTargetSongActionAtom";
+import { advancedSearchStatsAtom } from "../states/atoms/advancedSearchAtom";
+
 export function useSimilaritySearchContextMenuProps() {
-	const advancedSearchStats = useAdvancedSearchStatsState();
-	const setSimilaritySearchTargetSong = useSetSimilaritySearchTargetSongState();
-	const refreshSimilaritySearchSongs = useRefreshSimilaritySearchSongsState();
-	const setIsSimilaritySearchModalOpen =
-		useSetIsSimilaritySearchModalOpenState();
+	const advancedSearchStats = useAtomValue(advancedSearchStatsAtom);
+	const setSimilaritySearchTargetSong = useSetAtom(
+		setSimilaritySearchTargetSongActionAtom,
+	);
+	const refreshSimilaritySearchSongs = useSetAtom(
+		refreshSimilaritySearchSongsActionAtom,
+	);
+	const setIsSimilaritySearchModalOpen = useSetAtom(
+		setIsSimilaritySearchModalOpenActionAtom,
+	);
 
 	return {
 		isAdvancedSearchAvailable: advancedSearchStats !== undefined,

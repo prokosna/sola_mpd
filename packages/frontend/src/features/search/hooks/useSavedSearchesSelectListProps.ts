@@ -1,29 +1,21 @@
 import { clone } from "@bufbuild/protobuf";
 import type { UseFormReturnType } from "@mantine/form";
-import { SavedSearchesSchema } from "@sola_mpd/domain/src/models/search_pb.js";
+import { SavedSearchesSchema } from "@sola_mpd/shared/src/models/search_pb.js";
+import { useAtomValue, useSetAtom } from "jotai";
 import { useCallback } from "react";
 import { COMPONENT_ID_SEARCH_SIDE_PANE } from "../../../const/component";
 import { useNotification } from "../../../lib/mantine/hooks/useNotification";
 import { UpdateMode } from "../../../types/stateTypes";
 import type { ContextMenuSection } from "../../context_menu";
-import { useMpdClientState } from "../../mpd";
-import { useCurrentMpdProfileState } from "../../profile";
+import { mpdClientAtom } from "../../mpd";
+import { currentMpdProfileAtom } from "../../profile";
 import type { SelectListContextMenuItemParams } from "../../select_list";
-import {
-	useSavedSearchesState,
-	useUpdateSavedSearchesState,
-} from "../states/savedSearchesState";
-import { useSetTargetSearchState } from "../states/searchSongsState";
+import { convertSearchToFormValues } from "../functions/search";
+import { setTargetSearchActionAtom } from "../states/actions/setTargetSearchActionAtom";
+import { updateSavedSearchesActionAtom } from "../states/actions/updateSavedSearchesActionAtom";
+import { savedSearchesAtom } from "../states/atoms/savedSearchesAtom";
 import type { SearchFormValues } from "../types/searchTypes";
-import { convertSearchToFormValues } from "../utils/searchUtils";
 
-/**
- * Hook for saved searches SelectList props.
- *
- * Handles selection, context menu, and data loading.
- *
- * @returns SelectList props or undefined
- */
 export function useSavedSearchesSelectListProps({
 	form,
 }: {
@@ -31,11 +23,11 @@ export function useSavedSearchesSelectListProps({
 }) {
 	const notify = useNotification();
 
-	const mpdClient = useMpdClientState();
-	const profile = useCurrentMpdProfileState();
-	const savedSearches = useSavedSearchesState();
-	const updateSavedSearches = useUpdateSavedSearchesState();
-	const setTargetSearch = useSetTargetSearchState();
+	const mpdClient = useAtomValue(mpdClientAtom);
+	const profile = useAtomValue(currentMpdProfileAtom);
+	const savedSearches = useAtomValue(savedSearchesAtom);
+	const updateSavedSearchesAction = useSetAtom(updateSavedSearchesActionAtom);
+	const setTargetSearch = useSetAtom(setTargetSearchActionAtom);
 
 	const contextMenuSections: ContextMenuSection<SelectListContextMenuItemParams>[] =
 		[
@@ -65,10 +57,10 @@ export function useSavedSearchesSelectListProps({
 								savedSearches,
 							);
 							newSavedSearches.searches.splice(index, 1);
-							updateSavedSearches(
-								newSavedSearches,
-								UpdateMode.LOCAL_STATE | UpdateMode.PERSIST,
-							);
+							updateSavedSearchesAction({
+								savedSearches: newSavedSearches,
+								mode: UpdateMode.LOCAL_STATE | UpdateMode.PERSIST,
+							});
 
 							notify({
 								status: "success",

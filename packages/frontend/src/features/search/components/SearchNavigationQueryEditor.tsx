@@ -1,4 +1,3 @@
-import { clone } from "@bufbuild/protobuf";
 import {
 	ActionIcon,
 	Badge,
@@ -18,11 +17,9 @@ import {
 } from "@mantine/core";
 import { DateInput } from "@mantine/dates";
 import type { UseFormReturnType } from "@mantine/form";
-import { SavedSearchesSchema } from "@sola_mpd/domain/src/models/search_pb.js";
-import { Song_MetadataTag } from "@sola_mpd/domain/src/models/song_pb.js";
+import { Song_MetadataTag } from "@sola_mpd/shared/src/models/song_pb.js";
 import { IconPlus, IconTrash } from "@tabler/icons-react";
-import { useCallback } from "react";
-import { UpdateMode } from "../../../types/stateTypes";
+import { useAtomValue } from "jotai";
 import { FullWidthSkeleton } from "../../loading";
 import {
 	convertOperatorToDisplayName,
@@ -33,37 +30,16 @@ import {
 	convertSongMetadataTagToDisplayName,
 } from "../../song_table";
 import {
-	useSavedSearchesState,
-	useUpdateSavedSearchesState,
-} from "../states/savedSearchesState";
-import {
-	useSearchSongTableColumnsState,
-	useSetEditingSearchState,
-} from "../states/searchEditState";
-import { useSetTargetSearchState } from "../states/searchSongsState";
-import {
-	useIsSearchLoadingState,
-	useSetIsSearchLoadingState,
-} from "../states/searchUiState";
+	isValidOperatorWithMetadataTag,
+	listSearchSongMetadataTags,
+} from "../functions/search";
+import { useSearchQueryEditorHandlers } from "../hooks/useSearchQueryEditorHandlers";
+import { isSearchLoadingAtom } from "../states/atoms/searchUiAtom";
 import {
 	EditingSearchStatus,
 	type SearchFormValues,
 } from "../types/searchTypes";
-import {
-	convertConditionToFormValues,
-	convertFormValuesToSearch,
-	getDefaultCondition,
-	isValidOperatorWithMetadataTag,
-	listSearchSongMetadataTags,
-} from "../utils/searchUtils";
 
-/**
- * Query editor for search navigation.
- *
- * Handles query creation, editing, and execution.
- *
- * @returns Query editor component
- */
 export function SearchNavigationQueryEditor({
 	form,
 	editingSearchStatus,
@@ -73,93 +49,18 @@ export function SearchNavigationQueryEditor({
 }) {
 	const scheme = useComputedColorScheme();
 	const theme = useMantineTheme();
+	const isSearchLoading = useAtomValue(isSearchLoadingAtom);
 
-	const savedSearches = useSavedSearchesState();
-	const updateSavedSearches = useUpdateSavedSearchesState();
-	const isSearchLoading = useIsSearchLoadingState();
-	const setIsSearchLoading = useSetIsSearchLoadingState();
-	const setTargetSearch = useSetTargetSearchState();
-	const searchSongTableColumns = useSearchSongTableColumnsState();
-	const setEditingSearchStatus = useSetEditingSearchState();
-
-	const existingSearchNames = savedSearches?.searches.map(
-		(search) => search.name,
-	);
-	const isNewSearch =
-		existingSearchNames === undefined
-			? true
-			: !existingSearchNames.includes(form.getValues().name);
-
-	// ------ Button handlers -----
-	const handleSave = useCallback(
-		(values: typeof form.values) => {
-			if (savedSearches === undefined) {
-				return;
-			}
-			const editingSearch = convertFormValuesToSearch(values);
-			editingSearch.columns = searchSongTableColumns;
-			const index = savedSearches.searches.findIndex(
-				(search) => search.name === editingSearch.name,
-			);
-			if (index >= 0) {
-				savedSearches.searches[index] = editingSearch;
-			} else {
-				savedSearches.searches.push(editingSearch);
-			}
-
-			updateSavedSearches(
-				clone(SavedSearchesSchema, savedSearches),
-				UpdateMode.LOCAL_STATE | UpdateMode.PERSIST,
-			);
-			setEditingSearchStatus(EditingSearchStatus.SAVED);
-		},
-		[
-			savedSearches,
-			updateSavedSearches,
-			searchSongTableColumns,
-			setEditingSearchStatus,
-		],
-	);
-
-	const handleReset = useCallback(() => {
-		form.reset();
-	}, [form]);
-
-	const handleSearch = useCallback(() => {
-		if (savedSearches === undefined) {
-			return;
-		}
-		const editingSearch = convertFormValuesToSearch(form.getValues());
-		setIsSearchLoading(true);
-		setTargetSearch(editingSearch);
-	}, [savedSearches, setIsSearchLoading, setTargetSearch, form]);
-
-	// ----- Form query handlers -----
-	const handleAddCondition = useCallback(
-		(queryIndex: number) => {
-			form.insertListItem(
-				`queries.${queryIndex}.conditions`,
-				convertConditionToFormValues(getDefaultCondition()),
-			);
-		},
-		[form],
-	);
-
-	const handleDeleteCondition = useCallback(
-		(queryIndex: number, conditionIndex: number) => {
-			form.removeListItem(`queries.${queryIndex}.conditions`, conditionIndex);
-			if (form.getValues().queries[queryIndex].conditions.length === 0) {
-				form.removeListItem("queries", queryIndex);
-			}
-		},
-		[form],
-	);
-
-	const handleAddQuery = useCallback(() => {
-		form.insertListItem("queries", {
-			conditions: [convertConditionToFormValues(getDefaultCondition())],
-		});
-	}, [form]);
+	const {
+		handleSave,
+		handleReset,
+		handleSearch,
+		handleAddCondition,
+		handleDeleteCondition,
+		handleAddQuery,
+		isNewSearch,
+		savedSearches,
+	} = useSearchQueryEditorHandlers(form);
 
 	if (savedSearches === undefined) {
 		return <FullWidthSkeleton />;

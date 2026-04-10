@@ -3,14 +3,6 @@ import { useCurrentSongInformationLines } from "../hooks/useCurrentSongInformati
 
 import { PlayerSongInformationTag } from "./PlayerSongInformationTag";
 
-/**
- * Song information display component.
- *
- * Shows current song details including title, album, and
- * artist information in a stacked layout.
- *
- * @returns Song information component
- */
 export function PlayerSongInformation() {
 	const { firstLine, secondLine, thirdLine } = useCurrentSongInformationLines();
 

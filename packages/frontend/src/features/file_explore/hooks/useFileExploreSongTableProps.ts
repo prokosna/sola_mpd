@@ -1,54 +1,41 @@
 import { clone } from "@bufbuild/protobuf";
-import { Plugin_PluginType } from "@sola_mpd/domain/src/models/plugin/plugin_pb.js";
-import type { Song } from "@sola_mpd/domain/src/models/song_pb.js";
+import { Plugin_PluginType } from "@sola_mpd/shared/src/models/plugin/plugin_pb.js";
+import type { Song } from "@sola_mpd/shared/src/models/song_pb.js";
 import {
 	type SongTableColumn,
 	SongTableStateSchema,
-} from "@sola_mpd/domain/src/models/song_table_pb.js";
+} from "@sola_mpd/shared/src/models/song_table_pb.js";
+import { useAtom, useAtomValue, useSetAtom } from "jotai";
 import { type MutableRefObject, useCallback } from "react";
 import { COMPONENT_ID_FILE_EXPLORE_MAIN_PANE } from "../../../const/component";
 import { useNotification } from "../../../lib/mantine/hooks/useNotification";
 import { UpdateMode } from "../../../types/stateTypes";
 import { useSimilaritySearchContextMenuProps } from "../../advanced_search";
 import type { ContextMenuSection } from "../../context_menu";
-import { useMpdClientState } from "../../mpd";
 import { usePluginContextMenuItems } from "../../plugin";
-import { useCurrentMpdProfileState } from "../../profile";
 import {
+	addSongsToQueueActionAtom,
 	getSongTableContextMenuAdd,
 	getSongTableContextMenuAddToPlaylist,
 	getSongTableContextMenuEditColumns,
 	getSongTableContextMenuReplace,
 	getSongTableContextMenuSimilarSongs,
+	replaceQueueWithSongsActionAtom,
 	type SongTableContextMenuItemParams,
 	SongTableKeyType,
 	type SongTableProps,
+	selectedSongsAtom,
+	songTableStateAtom,
+	updateSongTableStateActionAtom,
 	useHandleSongDoubleClick,
-	useSetSelectedSongsState,
-	useSongTableState,
-	useUpdateSongTableState,
 } from "../../song_table";
-import { useFileExploreSongsState } from "../states/fileExploreSongsState";
+import { setIsFileExploreLoadingActionAtom } from "../states/actions/setIsFileExploreLoadingActionAtom";
+import { fileExploreVisibleSongsAtom } from "../states/atoms/fileExploreSongsAtom";
 import {
-	useIsFileExploreLoadingState,
-	useSetIsFileExploreLoadingState,
-} from "../states/fileExploreUiState";
+	isFileExploreLoadingAtom,
+	syncFileExploreLoadingEffectAtom,
+} from "../states/atoms/fileExploreUiAtom";
 
-/**
- * Hook for managing file explorer song table functionality.
- *
- * Features:
- * - Queue and playlist management
- * - Plugin integration
- * - Column customization
- * - Selection and interaction handling
- * - Loading state management
- *
- * @param songsToAddToPlaylistRef - Reference for playlist operations
- * @param setIsOpenPlaylistSelectModal - Playlist modal control
- * @param setIsOpenColumnEditModal - Column edit modal control
- * @returns Song table properties or undefined if data not ready
- */
 export function useFileExploreSongTableProps(
 	songsToAddToPlaylistRef: MutableRefObject<Song[]>,
 	setIsOpenPlaylistSelectModal: (open: boolean) => void,
@@ -58,14 +45,15 @@ export function useFileExploreSongTableProps(
 
 	const notify = useNotification();
 
-	const profile = useCurrentMpdProfileState();
-	const mpdClient = useMpdClientState();
-	const isLoading = useIsFileExploreLoadingState();
-	const songs = useFileExploreSongsState();
-	const songTableState = useSongTableState();
-	const setIsFileExploreLoading = useSetIsFileExploreLoadingState();
-	const updateSongTableState = useUpdateSongTableState();
-	const setSelectedSongs = useSetSelectedSongsState();
+	useAtom(syncFileExploreLoadingEffectAtom);
+	const isLoading = useAtomValue(isFileExploreLoadingAtom);
+	const songs = useAtomValue(fileExploreVisibleSongsAtom);
+	const songTableState = useAtomValue(songTableStateAtom);
+	const setIsFileExploreLoading = useSetAtom(setIsFileExploreLoadingActionAtom);
+	const updateSongTableState = useSetAtom(updateSongTableStateActionAtom);
+	const setSelectedSongs = useSetAtom(selectedSongsAtom);
+	const addSongsToQueue = useSetAtom(addSongsToQueueActionAtom);
+	const replaceQueueWithSongs = useSetAtom(replaceQueueWithSongsActionAtom);
 
 	// Plugin context menu items
 	const pluginContextMenuItems = usePluginContextMenuItems(
@@ -85,17 +73,11 @@ export function useFileExploreSongTableProps(
 		[
 			{
 				items: [
-					getSongTableContextMenuAdd(
-						songTableKeyType,
-						notify,
-						profile,
-						mpdClient,
-					),
+					getSongTableContextMenuAdd(songTableKeyType, notify, addSongsToQueue),
 					getSongTableContextMenuReplace(
 						songTableKeyType,
 						notify,
-						profile,
-						mpdClient,
+						replaceQueueWithSongs,
 					),
 				],
 			},
@@ -141,7 +123,10 @@ export function useFileExploreSongTableProps(
 			}
 			const newSongTableState = clone(SongTableStateSchema, songTableState);
 			newSongTableState.columns = updatedColumns;
-			updateSongTableState(newSongTableState, UpdateMode.PERSIST);
+			updateSongTableState({
+				state: newSongTableState,
+				mode: UpdateMode.PERSIST,
+			});
 		},
 		[songTableState, updateSongTableState],
 	);
@@ -153,7 +138,7 @@ export function useFileExploreSongTableProps(
 		[setSelectedSongs],
 	);
 
-	const onSongDoubleClick = useHandleSongDoubleClick(mpdClient, profile);
+	const onSongDoubleClick = useHandleSongDoubleClick();
 
 	const onLoadingCompleted = useCallback(async () => {
 		setIsFileExploreLoading(false);

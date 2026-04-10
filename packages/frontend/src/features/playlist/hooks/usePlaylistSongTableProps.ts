@@ -1,11 +1,11 @@
-import { clone, create } from "@bufbuild/protobuf";
-import { MpdRequestSchema } from "@sola_mpd/domain/src/models/mpd/mpd_command_pb.js";
-import { Plugin_PluginType } from "@sola_mpd/domain/src/models/plugin/plugin_pb.js";
-import type { Song } from "@sola_mpd/domain/src/models/song_pb.js";
+import { clone } from "@bufbuild/protobuf";
+import { Plugin_PluginType } from "@sola_mpd/shared/src/models/plugin/plugin_pb.js";
+import type { Song } from "@sola_mpd/shared/src/models/song_pb.js";
 import {
 	type SongTableColumn,
 	SongTableStateSchema,
-} from "@sola_mpd/domain/src/models/song_table_pb.js";
+} from "@sola_mpd/shared/src/models/song_table_pb.js";
+import { useAtomValue, useSetAtom } from "jotai";
 import { type MutableRefObject, useCallback } from "react";
 
 import { COMPONENT_ID_PLAYLIST_MAIN_PANE } from "../../../const/component";
@@ -13,43 +13,40 @@ import { useNotification } from "../../../lib/mantine/hooks/useNotification";
 import { UpdateMode } from "../../../types/stateTypes";
 import { useSimilaritySearchContextMenuProps } from "../../advanced_search";
 import type { ContextMenuSection } from "../../context_menu";
-import { useMpdClientState } from "../../mpd";
 import { usePluginContextMenuItems } from "../../plugin";
-import { useCurrentMpdProfileState } from "../../profile";
 import {
+	addSongsToQueueActionAtom,
 	getSongTableContextMenuAdd,
 	getSongTableContextMenuAddToPlaylist,
 	getSongTableContextMenuEditColumns,
 	getSongTableContextMenuReplace,
 	getSongTableContextMenuSimilarSongs,
-	getSongTableKey,
-	getTargetSongsForContextMenu,
+	replaceQueueWithSongsActionAtom,
 	type SongTableContextMenuItemParams,
 	SongTableKeyType,
 	type SongTableProps,
+	selectedSongsAtom,
+	songTableStateAtom,
+	updateSongTableStateActionAtom,
 	useHandleSongDoubleClick,
-	useSetSelectedSongsState,
-	useSongTableState,
-	useUpdateSongTableState,
 } from "../../song_table";
-import { usePlaylistSongsState } from "../states/playlistSongsState";
-import { useSelectedPlaylistState } from "../states/playlistState";
 import {
-	useIsPlaylistLoadingState,
-	useSetIsPlaylistLoadingState,
-} from "../states/playlistUiState";
+	getSongTableContextMenuClear,
+	getSongTableContextMenuDropDuplicates,
+	getSongTableContextMenuRemove,
+} from "../functions/playlistContextMenuItems";
+import { clearPlaylistActionAtom } from "../states/actions/clearPlaylistActionAtom";
+import { dropDuplicatePlaylistSongsActionAtom } from "../states/actions/dropDuplicatePlaylistSongsActionAtom";
+import { removePlaylistSongsActionAtom } from "../states/actions/removePlaylistSongsActionAtom";
+import { reorderPlaylistActionAtom } from "../states/actions/reorderPlaylistActionAtom";
+import { setIsPlaylistLoadingActionAtom } from "../states/actions/setIsPlaylistLoadingActionAtom";
+import { selectedPlaylistAtom } from "../states/atoms/playlistAtom";
+import { playlistVisibleSongsAtom } from "../states/atoms/playlistSongsAtom";
+import {
+	isPlaylistLoadingAtom,
+	syncPlaylistLoadingEffectAtom,
+} from "../states/atoms/playlistUiAtom";
 
-/**
- * Hook for playlist song table props.
- *
- * Manages table state, context menus, and song selection
- * for playlist content display.
- *
- * @param songsToAddToPlaylistRef Songs for playlist addition
- * @param setIsPlaylistSelectModalOpen Playlist modal control
- * @param setIsColumnEditModalOpen Column modal control
- * @returns Table props or undefined
- */
 export function usePlaylistSongTableProps(
 	songsToAddToPlaylistRef: MutableRefObject<Song[]>,
 	setIsPlaylistSelectModalOpen: (open: boolean) => void,
@@ -59,15 +56,22 @@ export function usePlaylistSongTableProps(
 
 	const notify = useNotification();
 
-	const profile = useCurrentMpdProfileState();
-	const mpdClient = useMpdClientState();
-	const isLoading = useIsPlaylistLoadingState();
-	const songs = usePlaylistSongsState();
-	const songTableState = useSongTableState();
-	const selectedPlaylist = useSelectedPlaylistState();
-	const setIsPlaylistLoading = useSetIsPlaylistLoadingState();
-	const updateSongTableState = useUpdateSongTableState();
-	const setSelectedSongs = useSetSelectedSongsState();
+	useAtomValue(syncPlaylistLoadingEffectAtom);
+	const isLoading = useAtomValue(isPlaylistLoadingAtom);
+	const songs = useAtomValue(playlistVisibleSongsAtom);
+	const songTableState = useAtomValue(songTableStateAtom);
+	const selectedPlaylist = useAtomValue(selectedPlaylistAtom);
+	const setIsPlaylistLoading = useSetAtom(setIsPlaylistLoadingActionAtom);
+	const updateSongTableState = useSetAtom(updateSongTableStateActionAtom);
+	const setSelectedSongs = useSetAtom(selectedSongsAtom);
+	const addSongsToQueue = useSetAtom(addSongsToQueueActionAtom);
+	const replaceQueueWithSongs = useSetAtom(replaceQueueWithSongsActionAtom);
+	const removePlaylistSongs = useSetAtom(removePlaylistSongsActionAtom);
+	const clearPlaylist = useSetAtom(clearPlaylistActionAtom);
+	const dropDuplicatePlaylistSongs = useSetAtom(
+		dropDuplicatePlaylistSongsActionAtom,
+	);
+	const reorderPlaylist = useSetAtom(reorderPlaylistActionAtom);
 
 	// Plugin context menu items
 	const pluginContextMenuItems = usePluginContextMenuItems(
@@ -84,195 +88,58 @@ export function usePlaylistSongTableProps(
 	} = useSimilaritySearchContextMenuProps();
 
 	const contextMenuSections: ContextMenuSection<SongTableContextMenuItemParams>[] =
-		[
-			{
-				items: [
-					getSongTableContextMenuAdd(
-						songTableKeyType,
-						notify,
-						profile,
-						mpdClient,
-					),
-					getSongTableContextMenuReplace(
-						songTableKeyType,
-						notify,
-						profile,
-						mpdClient,
-					),
-				],
-			},
-			{
-				items: [
+		selectedPlaylist === undefined
+			? []
+			: [
 					{
-						name: "Remove",
-						onClick: async (params?: SongTableContextMenuItemParams) => {
-							if (
-								params === undefined ||
-								mpdClient === undefined ||
-								profile === undefined ||
-								selectedPlaylist === undefined
-							) {
-								return;
-							}
-							const targetSongs = getTargetSongsForContextMenu(
-								params,
+						items: [
+							getSongTableContextMenuAdd(
 								songTableKeyType,
-							);
-							if (targetSongs.length === 0) {
-								return;
-							}
-
-							// Playlist doesn't support delete by id but only pos.
-							// To effectively remove songs from the playlist,
-							// clear the playlist and then add remaining songs again.
-							const targetKeys = targetSongs.map((song) =>
-								getSongTableKey(song, songTableKeyType),
-							);
-							const remainingSongs = params.sortedSongs.filter(
-								(song) =>
-									!targetKeys.includes(getSongTableKey(song, songTableKeyType)),
-							);
-
-							const commands = [
-								create(MpdRequestSchema, {
-									profile,
-									command: {
-										case: "playlistclear",
-										value: { name: selectedPlaylist.name },
-									},
-								}),
-							];
-							commands.push(
-								...remainingSongs.map((song) =>
-									create(MpdRequestSchema, {
-										profile,
-										command: {
-											case: "playlistadd",
-											value: {
-												name: selectedPlaylist.name,
-												uri: song.path,
-											},
-										},
-									}),
-								),
-							);
-							await mpdClient.commandBulk(commands);
-							notify({
-								status: "success",
-								title: "Songs successfully removed",
-								description: `${targetSongs.length} songs have been removed from the playlist "${selectedPlaylist.name}".`,
-							});
-						},
+								notify,
+								addSongsToQueue,
+							),
+							getSongTableContextMenuReplace(
+								songTableKeyType,
+								notify,
+								replaceQueueWithSongs,
+							),
+						],
 					},
 					{
-						name: "Clear",
-						onClick: async (params?: SongTableContextMenuItemParams) => {
-							if (
-								params === undefined ||
-								mpdClient === undefined ||
-								profile === undefined ||
-								selectedPlaylist === undefined
-							) {
-								return;
-							}
-							await mpdClient.command(
-								create(MpdRequestSchema, {
-									profile,
-									command: {
-										case: "playlistclear",
-										value: { name: selectedPlaylist.name },
-									},
-								}),
-							);
-							notify({
-								status: "success",
-								title: "Songs successfully cleared",
-								description: `All songs have been removed from the playlist "${selectedPlaylist.name}".`,
-							});
-						},
+						items: [
+							getSongTableContextMenuRemove(
+								songTableKeyType,
+								selectedPlaylist.name,
+								notify,
+								removePlaylistSongs,
+							),
+							getSongTableContextMenuClear(
+								selectedPlaylist.name,
+								notify,
+								clearPlaylist,
+							),
+							getSongTableContextMenuDropDuplicates(
+								selectedPlaylist.name,
+								notify,
+								dropDuplicatePlaylistSongs,
+							),
+						],
 					},
 					{
-						name: "Drop Duplicates",
-						onClick: async (params?: SongTableContextMenuItemParams) => {
-							if (
-								params === undefined ||
-								mpdClient === undefined ||
-								profile === undefined ||
-								selectedPlaylist === undefined
-							) {
-								return;
-							}
-							if (params.sortedSongs.length === 0) {
-								return;
-							}
-
-							const uniqueSongs = params.sortedSongs.reduce(
-								(uniqueList: Song[], song) =>
-									uniqueList.some((v) => v.path === song.path)
-										? uniqueList
-										: uniqueList.concat([song]),
-								[],
-							);
-
-							if (params.sortedSongs.length === uniqueSongs.length) {
-								notify({
-									status: "info",
-									title: "No duplicated songs",
-									description: "There are no duplicated songs to remove.",
-								});
-								return;
-							}
-
-							const commands = [
-								create(MpdRequestSchema, {
-									profile,
-									command: {
-										case: "playlistclear",
-										value: { name: selectedPlaylist.name },
-									},
-								}),
-							];
-							commands.push(
-								...uniqueSongs.map((song) =>
-									create(MpdRequestSchema, {
-										profile,
-										command: {
-											case: "playlistadd",
-											value: {
-												name: selectedPlaylist.name,
-												uri: song.path,
-											},
-										},
-									}),
-								),
-							);
-							await mpdClient.commandBulk(commands);
-							notify({
-								status: "success",
-								title: "Songs successfully removed",
-								description: `${
-									params.sortedSongs.length - uniqueSongs.length
-								} duplicated songs have been removed from the playlist "${
-									selectedPlaylist.name
-								}".`,
-							});
-						},
+						items: [
+							getSongTableContextMenuAddToPlaylist(
+								songTableKeyType,
+								songsToAddToPlaylistRef,
+								setIsPlaylistSelectModalOpen,
+							),
+						],
 					},
-				],
-			},
-			{
-				items: [
-					getSongTableContextMenuAddToPlaylist(
-						songTableKeyType,
-						songsToAddToPlaylistRef,
-						setIsPlaylistSelectModalOpen,
-					),
-				],
-			},
-			{
-				items: [getSongTableContextMenuEditColumns(setIsColumnEditModalOpen)],
-			},
-		];
+					{
+						items: [
+							getSongTableContextMenuEditColumns(setIsColumnEditModalOpen),
+						],
+					},
+				];
 	if (isAdvancedSearchAvailable) {
 		contextMenuSections.push({
 			items: [
@@ -292,41 +159,15 @@ export function usePlaylistSongTableProps(
 
 	const onSongsReordered = useCallback(
 		async (orderedSongs: Song[]) => {
-			if (
-				profile === undefined ||
-				songs === undefined ||
-				mpdClient === undefined ||
-				selectedPlaylist === undefined
-			) {
+			if (selectedPlaylist === undefined) {
 				return;
 			}
-
-			const commands = [
-				create(MpdRequestSchema, {
-					profile,
-					command: {
-						case: "playlistclear",
-						value: { name: selectedPlaylist.name },
-					},
-				}),
-			];
-			commands.push(
-				...orderedSongs.map((song) =>
-					create(MpdRequestSchema, {
-						profile,
-						command: {
-							case: "playlistadd",
-							value: {
-								name: selectedPlaylist.name,
-								uri: song.path,
-							},
-						},
-					}),
-				),
-			);
-			await mpdClient.commandBulk(commands);
+			await reorderPlaylist({
+				orderedSongs,
+				playlistName: selectedPlaylist.name,
+			});
 		},
-		[mpdClient, profile, selectedPlaylist, songs],
+		[reorderPlaylist, selectedPlaylist],
 	);
 
 	const onColumnsUpdated = useCallback(
@@ -336,7 +177,10 @@ export function usePlaylistSongTableProps(
 			}
 			const newSongTableState = clone(SongTableStateSchema, songTableState);
 			newSongTableState.columns = updatedColumns;
-			updateSongTableState(newSongTableState, UpdateMode.PERSIST);
+			updateSongTableState({
+				state: newSongTableState,
+				mode: UpdateMode.PERSIST,
+			});
 		},
 		[songTableState, updateSongTableState],
 	);
@@ -348,7 +192,7 @@ export function usePlaylistSongTableProps(
 		[setSelectedSongs],
 	);
 
-	const onSongDoubleClick = useHandleSongDoubleClick(mpdClient, profile);
+	const onSongDoubleClick = useHandleSongDoubleClick();
 
 	const onLoadingCompleted = useCallback(async () => {
 		setIsPlaylistLoading(false);

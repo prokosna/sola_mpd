@@ -1,41 +1,32 @@
 import { isNotEmpty, useForm } from "@mantine/form";
 import clsx from "clsx";
 import equal from "fast-deep-equal";
+import { useAtomValue, useSetAtom } from "jotai";
 import {
 	Panel,
 	Group as PanelGroup,
 	Separator,
 	useDefaultLayout,
 } from "react-resizable-panels";
-
 import styles from "../../../ResizeHandle.module.css";
-import { useSavedSearchesState } from "../states/savedSearchesState";
 import {
-	useEditingSearchStatusState,
-	useSetEditingSearchState,
-} from "../states/searchEditState";
+	convertSearchToFormValues,
+	getDefaultSearch,
+} from "../functions/search";
+import { setEditingSearchStatusActionAtom } from "../states/actions/setEditingSearchStatusActionAtom";
+import { savedSearchesAtom } from "../states/atoms/savedSearchesAtom";
+import { editingSearchStatusAtom } from "../states/atoms/searchEditAtom";
 import {
 	EditingSearchStatus,
 	type SearchFormValues,
 } from "../types/searchTypes";
-import {
-	convertSearchToFormValues,
-	getDefaultSearch,
-} from "../utils/searchUtils";
 import { SearchNavigationQueryEditor } from "./SearchNavigationQueryEditor";
 import { SearchNavigationSavedQueries } from "./SearchNavigationSavedQueries";
 
-/**
- * Search navigation section.
- *
- * Contains query editor and saved queries.
- *
- * @returns Navigation component
- */
 export function SearchNavigation() {
-	const savedSearches = useSavedSearchesState();
-	const editingSearchStatus = useEditingSearchStatusState();
-	const setEditingSearchStatus = useSetEditingSearchState();
+	const savedSearches = useAtomValue(savedSearchesAtom);
+	const editingSearchStatus = useAtomValue(editingSearchStatusAtom);
+	const setEditingSearchStatus = useSetAtom(setEditingSearchStatusActionAtom);
 	const { defaultLayout, onLayoutChanged } = useDefaultLayout({
 		id: "search-navigation",
 		storage: globalThis.localStorage,

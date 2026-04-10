@@ -1,41 +1,34 @@
-import { clone } from "@bufbuild/protobuf";
-import {
-	type Plugin,
-	PluginStateSchema,
-} from "@sola_mpd/domain/src/models/plugin/plugin_pb.js";
+import type { Plugin } from "@sola_mpd/shared/src/models/plugin/plugin_pb.js";
+import { useAtomValue, useSetAtom } from "jotai";
 import { useCallback } from "react";
 import { useNotification } from "../../../lib/mantine/hooks/useNotification";
 import { UpdateMode } from "../../../types/stateTypes";
-import { usePluginState, useUpdatePluginState } from "../states/pluginState";
+import { removePluginFromState } from "../functions/pluginRegistration";
+import { updatePluginActionAtom } from "../states/actions/updatePluginActionAtom";
+import { pluginAtom } from "../states/atoms/pluginAtom";
 
-/**
- * Handle plugin removal.
- *
- * @param plugin Plugin to remove
- * @returns Remove handler
- */
 export function useHandlePluginRemoved(plugin: Plugin) {
 	const notify = useNotification();
 
-	const pluginState = usePluginState();
-	const updatePluginState = useUpdatePluginState();
+	const pluginState = useAtomValue(pluginAtom);
+	const updatePlugin = useSetAtom(updatePluginActionAtom);
 
 	return useCallback(async () => {
 		if (pluginState === undefined) {
 			return;
 		}
-		const index = pluginState.plugins.findIndex(
-			(v) => `${v.host}:${v.port}` === `${plugin.host}:${plugin.port}`,
+		const newState = removePluginFromState(
+			pluginState,
+			plugin.host,
+			plugin.port,
 		);
-		if (index < 0) {
+		if (newState === undefined) {
 			return;
 		}
-		const newState = clone(PluginStateSchema, pluginState);
-		newState.plugins.splice(index, 1);
-		await updatePluginState(
-			newState,
-			UpdateMode.LOCAL_STATE | UpdateMode.PERSIST,
-		);
+		await updatePlugin({
+			pluginState: newState,
+			mode: UpdateMode.LOCAL_STATE | UpdateMode.PERSIST,
+		});
 		notify({
 			status: "success",
 			title: "Plugin successfully removed",
@@ -47,6 +40,6 @@ export function useHandlePluginRemoved(plugin: Plugin) {
 		plugin.info?.name,
 		plugin.port,
 		pluginState,
-		updatePluginState,
+		updatePlugin,
 	]);
 }

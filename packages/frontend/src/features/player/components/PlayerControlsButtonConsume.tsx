@@ -1,42 +1,17 @@
-import { create } from "@bufbuild/protobuf";
-import { MpdRequestSchema } from "@sola_mpd/domain/src/models/mpd/mpd_command_pb.js";
 import { IconEraser, IconEraserOff } from "@tabler/icons-react";
+import { useAtomValue, useSetAtom } from "jotai";
 import { useCallback } from "react";
-import { useMpdClientState } from "../../mpd";
-import { useCurrentMpdProfileState } from "../../profile";
-import { usePlayerStatusIsConsumeState } from "../states/playerStatusState";
+import { toggleConsumeActionAtom } from "../states/actions/toggleConsumeActionAtom";
+import { playerStatusIsConsumeAtom } from "../states/atoms/playerStatusAtom";
 import { PlayerControlsButton } from "./PlayerControlsButton";
 
-/**
- * Button for toggling MPD's consume mode.
- *
- * Controls whether played songs are automatically removed from
- * the playlist. Updates button state based on current consume
- * mode status.
- *
- * @returns Consume mode toggle button
- */
 export function PlayerControlsButtonConsume() {
-	const profile = useCurrentMpdProfileState();
-	const mpdClient = useMpdClientState();
-	const playerStatusIsConsume = usePlayerStatusIsConsumeState();
+	const playerStatusIsConsume = useAtomValue(playerStatusIsConsumeAtom);
+	const toggleConsume = useSetAtom(toggleConsumeActionAtom);
 
-	const onButtonClicked = useCallback(async () => {
-		if (profile === undefined || mpdClient === undefined) {
-			return;
-		}
-		mpdClient.command(
-			create(MpdRequestSchema, {
-				profile,
-				command: {
-					case: "consume",
-					value: {
-						enable: !playerStatusIsConsume,
-					},
-				},
-			}),
-		);
-	}, [mpdClient, playerStatusIsConsume, profile]);
+	const onButtonClicked = useCallback(() => {
+		toggleConsume();
+	}, [toggleConsume]);
 
 	const props = {
 		label: playerStatusIsConsume ? "Consume enabled" : "Consume disabled",

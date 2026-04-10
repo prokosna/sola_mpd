@@ -1,22 +1,14 @@
-import { displayDuration } from "@sola_mpd/domain/src/utils/stringUtils.js";
-
 import { Group, Text } from "@mantine/core";
+import { displayDuration } from "@sola_mpd/shared/src/utils/stringUtils.js";
+import { useAtomValue } from "jotai";
 import {
-	usePlayerStatusDurationState,
-	usePlayerStatusElapsedState,
-} from "../states/playerStatusState";
+	playerStatusDurationAtom,
+	playerStatusElapsedAtom,
+} from "../states/atoms/playerStatusAtom";
 
-/**
- * Duration display component.
- *
- * Shows elapsed time and total duration of the current track.
- * Positioned absolutely and right-aligned in its container.
- *
- * @returns Duration display component
- */
 export function PlayerDuration() {
-	const playerStatusElapsed = usePlayerStatusElapsedState();
-	const playerStatusDuration = usePlayerStatusDurationState();
+	const playerStatusElapsed = useAtomValue(playerStatusElapsedAtom);
+	const playerStatusDuration = useAtomValue(playerStatusDurationAtom);
 
 	const elapsed =
 		playerStatusElapsed === undefined

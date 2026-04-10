@@ -1,11 +1,7 @@
 // Components
 export { Search } from "./components/Search";
-
+// Repositories
+export type { SavedSearchesRepository } from "./repositories/SavedSearchesRepository";
+export { updateSavedSearchesActionAtom } from "./states/actions/updateSavedSearchesActionAtom";
 // States
-export {
-	useSavedSearchesState,
-	useUpdateSavedSearchesState,
-} from "./states/savedSearchesState";
-
-// Services
-export type { SavedSearchesRepository } from "./services/SavedSearchesRepository";
+export { savedSearchesAtom } from "./states/atoms/savedSearchesAtom";

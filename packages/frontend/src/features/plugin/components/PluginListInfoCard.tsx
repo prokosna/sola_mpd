@@ -8,19 +8,13 @@ import {
 	Text,
 	Title,
 } from "@mantine/core";
-import type { Plugin } from "@sola_mpd/domain/src/models/plugin/plugin_pb.js";
+import type { Plugin } from "@sola_mpd/shared/src/models/plugin/plugin_pb.js";
 import { useHandlePluginRemoved } from "../hooks/useHandlePluginRemoved";
 
 export type PluginListInfoCardProps = {
 	plugin: Plugin;
 };
 
-/**
- * Single plugin info card.
- *
- * @param props.plugin Plugin to display
- * @returns Info card
- */
 export function PluginListInfoCard(props: PluginListInfoCardProps) {
 	const { plugin } = props;
 

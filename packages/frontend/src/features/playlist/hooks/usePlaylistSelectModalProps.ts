@@ -1,21 +1,11 @@
-import { create } from "@bufbuild/protobuf";
-import { MpdRequestSchema } from "@sola_mpd/domain/src/models/mpd/mpd_command_pb.js";
-import type { Playlist } from "@sola_mpd/domain/src/models/playlist_pb.js";
-import type { Song } from "@sola_mpd/domain/src/models/song_pb.js";
+import type { Playlist } from "@sola_mpd/shared/src/models/playlist_pb.js";
+import type { Song } from "@sola_mpd/shared/src/models/song_pb.js";
+import { useSetAtom } from "jotai";
 import { useCallback, useRef, useState } from "react";
 
 import { useNotification } from "../../../lib/mantine/hooks/useNotification";
-import { useMpdClientState } from "../../mpd";
-import { useCurrentMpdProfileState } from "../../profile";
+import { addSongsToPlaylistActionAtom } from "../states/actions/addSongsToPlaylistActionAtom";
 
-/**
- * Hook for playlist selection modal.
- *
- * Manages modal state and song selection for adding
- * songs to playlists.
- *
- * @returns Modal state and handlers
- */
 export function usePlaylistSelectModal() {
 	const notify = useNotification();
 
@@ -23,40 +13,27 @@ export function usePlaylistSelectModal() {
 	const [isPlaylistSelectModalOpen, setIsPlaylistSelectModalOpen] =
 		useState(false);
 
-	const profile = useCurrentMpdProfileState();
-	const mpdClient = useMpdClientState();
+	const addSongsToPlaylist = useSetAtom(addSongsToPlaylistActionAtom);
 
 	const onOk = useCallback(
 		async (playlist: Playlist) => {
-			if (profile === undefined || mpdClient === undefined) {
+			const songs = songsToAddToPlaylistRef.current;
+			if (songs.length === 0) {
 				return;
 			}
 
-			const commands = songsToAddToPlaylistRef.current.map((song) =>
-				create(MpdRequestSchema, {
-					profile,
-					command: {
-						case: "playlistadd",
-						value: {
-							name: playlist.name,
-							uri: song.path,
-						},
-					},
-				}),
-			);
-			if (commands.length === 0) {
-				return;
-			}
-
-			await mpdClient.commandBulk(commands);
+			await addSongsToPlaylist({
+				songs,
+				playlistName: playlist.name,
+			});
 			setIsPlaylistSelectModalOpen(false);
 			notify({
 				status: "success",
 				title: "Songs successfully added",
-				description: `${songsToAddToPlaylistRef.current.length} songs have been added to ${playlist.name}.`,
+				description: `${songs.length} songs have been added to ${playlist.name}.`,
 			});
 		},
-		[mpdClient, notify, profile],
+		[addSongsToPlaylist, notify],
 	);
 
 	const onCancel = useCallback(async () => {

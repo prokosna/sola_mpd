@@ -1,16 +1,12 @@
-import { fromBinary, toBinary } from "@bufbuild/protobuf";
+import express, { type Request, type Response, Router } from "express";
+
 import {
-	MpdRequestBulkSchema,
-	MpdRequestSchema,
-	MpdResponseSchema,
-} from "@sola_mpd/domain/src/models/mpd/mpd_command_pb.js";
-import express, { type Request, type Response } from "express";
+	executeMpdCommandBulkUseCase,
+	executeMpdCommandUseCase,
+} from "./application/mpdUseCases.js";
+import { mpdClientMpd3 } from "./services/MpdClientMpd3.js";
 
-import { wrap } from "../utils/wrap.js";
-
-import { mpdClient } from "./mpdClient.js";
-
-const mpdRouter = express.Router();
+const mpdRouter: ReturnType<typeof Router> = Router();
 
 mpdRouter.use(
 	express.raw({
@@ -23,33 +19,20 @@ mpdRouter.use((_req, res, next) => {
 	next();
 });
 
-async function executeCommand(req: Request): Promise<Uint8Array> {
-	const body = req.body as Buffer;
-	const request = fromBinary(MpdRequestSchema, new Uint8Array(body));
-	const res = await mpdClient.execute(request);
-	return toBinary(MpdResponseSchema, res);
-}
+mpdRouter.use("/command", async (req: Request, res: Response) => {
+	const data = await executeMpdCommandUseCase(
+		new Uint8Array(req.body as Buffer),
+		mpdClientMpd3,
+	);
+	res.send(data);
+});
 
-async function executeCommandBulk(req: Request): Promise<void> {
-	const body = req.body as Buffer;
-	const request = fromBinary(MpdRequestBulkSchema, new Uint8Array(body));
-	return mpdClient.executeBulk(request.requests);
-}
-
-mpdRouter.use(
-	"/command",
-	wrap(async (req: Request, res: Response, _next) => {
-		const data = await executeCommand(req);
-		res.send(data);
-	}),
-);
-
-mpdRouter.use(
-	"/command_bulk",
-	wrap(async (req: Request, res: Response, _next) => {
-		await executeCommandBulk(req);
-		res.end();
-	}),
-);
+mpdRouter.use("/command_bulk", async (req: Request, res: Response) => {
+	await executeMpdCommandBulkUseCase(
+		new Uint8Array(req.body as Buffer),
+		mpdClientMpd3,
+	);
+	res.end();
+});
 
 export default mpdRouter;

@@ -8,13 +8,14 @@ import {
 	Title,
 } from "@mantine/core";
 import { useForm } from "@mantine/form";
-import type { AdvancedSearchStats } from "@sola_mpd/domain/src/models/advanced_search_pb.js";
+import type { AdvancedSearchStats } from "@sola_mpd/shared/src/models/advanced_search_pb.js";
+import { useAtomValue, useSetAtom } from "jotai";
 import {
-	useAdvancedSearchQueryLimitState,
-	useAnalyze,
-	useScanLibrary,
-	useSetAdvancedSearchQueryLimitState,
-	useVacuumLibrary,
+	advancedSearchQueryLimitAtom,
+	analyzeActionAtom,
+	scanLibraryActionAtom,
+	setAdvancedSearchQueryLimitActionAtom,
+	vacuumLibraryActionAtom,
 } from "../../advanced_search";
 
 export function AdvancedSearchSettings({
@@ -22,11 +23,13 @@ export function AdvancedSearchSettings({
 }: {
 	stats: AdvancedSearchStats;
 }) {
-	const setAdvancedSearchQueryLimit = useSetAdvancedSearchQueryLimitState();
-	const advancedSearchQueryLimit = useAdvancedSearchQueryLimitState();
-	const scanLibrary = useScanLibrary();
-	const vacuumLibrary = useVacuumLibrary();
-	const analyze = useAnalyze();
+	const setAdvancedSearchQueryLimit = useSetAtom(
+		setAdvancedSearchQueryLimitActionAtom,
+	);
+	const advancedSearchQueryLimit = useAtomValue(advancedSearchQueryLimitAtom);
+	const scanLibrary = useSetAtom(scanLibraryActionAtom);
+	const vacuumLibrary = useSetAtom(vacuumLibraryActionAtom);
+	const analyze = useSetAtom(analyzeActionAtom);
 
 	const form = useForm({
 		mode: "uncontrolled",

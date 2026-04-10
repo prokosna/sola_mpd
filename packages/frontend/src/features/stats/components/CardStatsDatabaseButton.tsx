@@ -1,46 +1,26 @@
-import { create } from "@bufbuild/protobuf";
 import { Button } from "@mantine/core";
-import { MpdRequestSchema } from "@sola_mpd/domain/src/models/mpd/mpd_command_pb.js";
+import { useAtomValue, useSetAtom } from "jotai";
 import { useCallback } from "react";
 import { useNotification } from "../../../lib/mantine/hooks/useNotification";
-import { useMpdClientState } from "../../mpd";
-import { usePlayerStatusIsDatabaseUpdatingState } from "../../player";
-import { useCurrentMpdProfileState } from "../../profile";
+import { playerStatusIsDatabaseUpdatingAtom } from "../../player";
+import { updateDatabaseActionAtom } from "../states/actions/updateDatabaseActionAtom";
 
-/**
- * CardStatsDatabaseButton component renders a button that triggers an update of the MPD database.
- * It uses MPD client, current profile, and player status to manage the update process.
- * The component also provides user feedback through notifications.
- *
- * @returns {JSX.Element} A button component for updating the MPD database
- */
 export function CardStatsDatabaseButton() {
 	const notify = useNotification();
 
-	const profile = useCurrentMpdProfileState();
-	const mpdClient = useMpdClientState();
-	const playerStatusIsDatabaseUpdating =
-		usePlayerStatusIsDatabaseUpdatingState();
+	const playerStatusIsDatabaseUpdating = useAtomValue(
+		playerStatusIsDatabaseUpdatingAtom,
+	);
+	const updateDatabase = useSetAtom(updateDatabaseActionAtom);
 
 	const handleDatabaseUpdateButtonClick = useCallback(async () => {
-		if (profile === undefined || mpdClient === undefined) {
-			return;
-		}
-		await mpdClient.command(
-			create(MpdRequestSchema, {
-				profile,
-				command: {
-					case: "update",
-					value: {},
-				},
-			}),
-		);
+		await updateDatabase();
 		notify({
 			status: "info",
 			title: "Update MPD Database",
 			description: "Database is now updating...",
 		});
-	}, [mpdClient, profile, notify]);
+	}, [updateDatabase, notify]);
 
 	return (
 		<Button

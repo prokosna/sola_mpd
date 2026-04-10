@@ -8,32 +8,27 @@ import {
 	Textarea,
 	Title,
 } from "@mantine/core";
-import type { Plugin } from "@sola_mpd/domain/src/models/plugin/plugin_pb.js";
+import type { Plugin } from "@sola_mpd/shared/src/models/plugin/plugin_pb.js";
+import { useAtomValue, useSetAtom } from "jotai";
 import {
-	usePluginExecutionLatestResponseState,
-	usePluginExecutionWarningLogsState,
-	useSetIsPluginExecutionModalOpenState,
-} from "../states/executionState";
+	pluginExecutionLatestResponseAtom,
+	pluginExecutionModalOpenAtom,
+	pluginExecutionWarningLogsAtom,
+} from "../states/atoms/pluginExecutionAtom";
 
 type PluginExecutionModalProgressProps = {
 	plugin: Plugin;
 };
 
-/**
- * Plugin execution progress view.
- *
- * Shows status, progress, and warnings.
- *
- * @param props.plugin Plugin being executed
- * @returns Progress view
- */
 export function PluginExecutionModalProgress(
 	props: PluginExecutionModalProgressProps,
 ) {
 	const { plugin } = props;
-	const latestResponse = usePluginExecutionLatestResponseState();
-	const warningLogs = usePluginExecutionWarningLogsState();
-	const setIsPluginExecutionModalOpen = useSetIsPluginExecutionModalOpenState();
+	const latestResponse = useAtomValue(pluginExecutionLatestResponseAtom);
+	const warningLogs = useAtomValue(pluginExecutionWarningLogsAtom);
+	const setIsPluginExecutionModalOpen = useSetAtom(
+		pluginExecutionModalOpenAtom,
+	);
 
 	if (plugin.info === undefined) {
 		return <Text>Invalid plugin: No information</Text>;

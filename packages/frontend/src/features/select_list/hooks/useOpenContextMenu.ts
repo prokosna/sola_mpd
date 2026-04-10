@@ -7,12 +7,6 @@ import type {
 	SelectListRowValue,
 } from "../types/selectListTypes";
 
-/**
- * Create context menu handler.
- *
- * @param id Menu ID
- * @returns Context menu handler
- */
 export function useOpenContextMenu(id: string) {
 	const contextMenu = useContextMenu({ id });
 	return useCallback(

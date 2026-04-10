@@ -1,15 +1,13 @@
 import { Box, Tabs } from "@mantine/core";
-import { useAdvancedSearchStatsState } from "../../advanced_search";
+import { useAtomValue } from "jotai";
+import { advancedSearchStatsAtom } from "../../advanced_search";
 import { AdvancedSearchSettings } from "./AdvancedSearchSettings";
 import { Locale } from "./Locale";
 import { Profiles } from "./Profiles";
 import { SettingsStates } from "./SettingsStates";
 
-/**
- * Settings interface with profiles and preferences tabs.
- */
 export function Settings() {
-	const advancedSearchStats = useAdvancedSearchStatsState();
+	const advancedSearchStats = useAtomValue(advancedSearchStatsAtom);
 
 	return (
 		<Box w="100%" h="100%">

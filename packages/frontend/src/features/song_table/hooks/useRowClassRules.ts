@@ -1,30 +1,21 @@
-import type { Song } from "@sola_mpd/domain/src/models/song_pb.js";
+import type { Song } from "@sola_mpd/shared/src/models/song_pb.js";
 import type { RowClassRules } from "ag-grid-community";
+import { useAtomValue } from "jotai";
 import { useMemo } from "react";
 
-import { useCurrentSongState } from "../../player";
+import { currentSongAtom } from "../../player";
+import { getSongTableKey } from "../functions/songTableKey";
 import type {
 	SongTableKey,
 	SongTableKeyType,
 	SongTableRowData,
 } from "../types/songTableTypes";
-import { getSongTableKey } from "../utils/songTableTableUtils";
 
-/**
- * Creates row class rules for highlighting currently playing song.
- * Applies 'ag-font-weight-bold' class to the row
- * containing the currently playing song. Uses song key matching
- * for identification.
- *
- * @param keyType Song key type
- * @param songsMap Song lookup map
- * @returns Row class rules object
- */
 export function useRowClassRules(
 	keyType: SongTableKeyType,
 	songsMap: Map<SongTableKey, Song>,
 ): RowClassRules<SongTableRowData> {
-	const currentSong = useCurrentSongState();
+	const currentSong = useAtomValue(currentSongAtom);
 
 	return useMemo(() => {
 		const currentSongKey = currentSong

@@ -1,47 +1,41 @@
 import { clone } from "@bufbuild/protobuf";
-import { Plugin_PluginType } from "@sola_mpd/domain/src/models/plugin/plugin_pb.js";
-import type { Song } from "@sola_mpd/domain/src/models/song_pb.js";
+import { Plugin_PluginType } from "@sola_mpd/shared/src/models/plugin/plugin_pb.js";
+import type { Song } from "@sola_mpd/shared/src/models/song_pb.js";
 import {
 	type SongTableColumn,
 	SongTableStateSchema,
-} from "@sola_mpd/domain/src/models/song_table_pb.js";
+} from "@sola_mpd/shared/src/models/song_table_pb.js";
+import { useAtom, useAtomValue, useSetAtom } from "jotai";
 import { type MutableRefObject, useCallback } from "react";
 import { COMPONENT_ID_RECENTLY_ADDED } from "../../../../const/component";
 import { useNotification } from "../../../../lib/mantine/hooks/useNotification";
 import { UpdateMode } from "../../../../types/stateTypes";
 import { useSimilaritySearchContextMenuProps } from "../../../advanced_search";
 import type { ContextMenuSection } from "../../../context_menu";
-import { useMpdClientState } from "../../../mpd";
 import { usePluginContextMenuItems } from "../../../plugin";
-import { useCurrentMpdProfileState } from "../../../profile";
 import {
+	addSongsToQueueActionAtom,
 	getSongTableContextMenuAdd,
 	getSongTableContextMenuAddToPlaylist,
 	getSongTableContextMenuEditColumns,
 	getSongTableContextMenuReplace,
 	getSongTableContextMenuSimilarSongs,
+	replaceQueueWithSongsActionAtom,
 	type SongTableContextMenuItemParams,
 	SongTableKeyType,
 	type SongTableProps,
+	selectedSongsAtom,
+	songTableStateAtom,
+	updateSongTableStateActionAtom,
 	useHandleSongDoubleClick,
-	useSetSelectedSongsState,
-	useSongTableState,
-	useUpdateSongTableState,
 } from "../../../song_table";
-import { useRecentlyAddedSongsState } from "../states/recentlyAddedSongsState";
+import { setIsRecentlyAddedLoadingActionAtom } from "../states/actions/setIsRecentlyAddedLoadingActionAtom";
+import { recentlyAddedVisibleSongsAtom } from "../states/atoms/recentlyAddedSongsAtom";
 import {
-	useIsRecentlyAddedLoadingState,
-	useSetIsRecentlyAddedLoadingState,
-} from "../states/recentlyAddedUiState";
+	isRecentlyAddedLoadingAtom,
+	syncRecentlyAddedLoadingEffectAtom,
+} from "../states/atoms/recentlyAddedUiAtom";
 
-/**
- * Get props for recently added song table.
- *
- * @param songsToAddToPlaylistRef Songs ref
- * @param setIsPlaylistSelectModalOpen Modal open setter
- * @param setIsColumnEditModalOpen Column edit setter
- * @returns Table props
- */
 export function useRecentlyAddedSongTableProps(
 	songsToAddToPlaylistRef: MutableRefObject<Song[]>,
 	setIsPlaylistSelectModalOpen: (open: boolean) => void,
@@ -51,14 +45,17 @@ export function useRecentlyAddedSongTableProps(
 
 	const notify = useNotification();
 
-	const profile = useCurrentMpdProfileState();
-	const mpdClient = useMpdClientState();
-	const isLoading = useIsRecentlyAddedLoadingState();
-	const songs = useRecentlyAddedSongsState();
-	const songTableState = useSongTableState();
-	const setIsRecentlyAddedLoading = useSetIsRecentlyAddedLoadingState();
-	const updateSongTableState = useUpdateSongTableState();
-	const setSelectedSongs = useSetSelectedSongsState();
+	useAtom(syncRecentlyAddedLoadingEffectAtom);
+	const isLoading = useAtomValue(isRecentlyAddedLoadingAtom);
+	const songs = useAtomValue(recentlyAddedVisibleSongsAtom);
+	const songTableState = useAtomValue(songTableStateAtom);
+	const setIsRecentlyAddedLoading = useSetAtom(
+		setIsRecentlyAddedLoadingActionAtom,
+	);
+	const updateSongTableState = useSetAtom(updateSongTableStateActionAtom);
+	const setSelectedSongs = useSetAtom(selectedSongsAtom);
+	const addSongsToQueue = useSetAtom(addSongsToQueueActionAtom);
+	const replaceQueueWithSongs = useSetAtom(replaceQueueWithSongsActionAtom);
 
 	// Plugin context menu items
 	const pluginContextMenuItems = usePluginContextMenuItems(
@@ -79,17 +76,11 @@ export function useRecentlyAddedSongTableProps(
 		[
 			{
 				items: [
-					getSongTableContextMenuAdd(
-						songTableKeyType,
-						notify,
-						profile,
-						mpdClient,
-					),
+					getSongTableContextMenuAdd(songTableKeyType, notify, addSongsToQueue),
 					getSongTableContextMenuReplace(
 						songTableKeyType,
 						notify,
-						profile,
-						mpdClient,
+						replaceQueueWithSongs,
 					),
 				],
 			},
@@ -135,7 +126,10 @@ export function useRecentlyAddedSongTableProps(
 			}
 			const newSongTableState = clone(SongTableStateSchema, songTableState);
 			newSongTableState.columns = updatedColumns;
-			await updateSongTableState(newSongTableState, UpdateMode.PERSIST);
+			await updateSongTableState({
+				state: newSongTableState,
+				mode: UpdateMode.PERSIST,
+			});
 		},
 		[songTableState, updateSongTableState],
 	);
@@ -147,7 +141,7 @@ export function useRecentlyAddedSongTableProps(
 		[setSelectedSongs],
 	);
 
-	const onSongDoubleClick = useHandleSongDoubleClick(mpdClient, profile);
+	const onSongDoubleClick = useHandleSongDoubleClick();
 
 	const onLoadingCompleted = useCallback(async () => {
 		setIsRecentlyAddedLoading(false);

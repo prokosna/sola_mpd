@@ -8,14 +8,6 @@ import { PlayerControlsButtonResume } from "./PlayerControlsButtonResume";
 import { PlayerControlsButtonStop } from "./PlayerControlsButtonStop";
 import { PlayerControlsButtonVolume } from "./PlayerControlsButtonVolume";
 
-/**
- * Compact version of player controls.
- *
- * Arranges playback, mode, and volume controls in a compact
- * layout, separated by vertical dividers for visual organization.
- *
- * @returns Compact player controls component
- */
 export function PlayerControlsCompact() {
 	return (
 		<>

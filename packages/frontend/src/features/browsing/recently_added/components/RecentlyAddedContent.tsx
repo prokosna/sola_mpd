@@ -2,26 +2,22 @@ import { clone } from "@bufbuild/protobuf";
 import {
 	type SongTableColumn,
 	SongTableStateSchema,
-} from "@sola_mpd/domain/src/models/song_table_pb.js";
+} from "@sola_mpd/shared/src/models/song_table_pb.js";
+import { useAtomValue, useSetAtom } from "jotai";
 import { useCallback, useState } from "react";
 import { UpdateMode } from "../../../../types/stateTypes";
 import { usePlaylistSelectModal } from "../../../playlist";
 import {
+	songTableStateAtom,
+	updateSongTableStateActionAtom,
 	useColumnEditModalProps,
-	useSongTableState,
-	useUpdateSongTableState,
 } from "../../../song_table";
 import { BrowserContentView } from "../../common/components/BrowserContentView";
 import { useRecentlyAddedSongTableProps } from "../hooks/useRecentlyAddedSongTableProps";
 
-/**
- * Renders the content for recently added items.
- * This component handles the display of recently added songs in a table format,
- * including functionality for playlist selection and column editing.
- */
 export function RecentlyAddedContent() {
-	const songTableState = useSongTableState();
-	const updateSongTableState = useUpdateSongTableState();
+	const songTableState = useAtomValue(songTableStateAtom);
+	const updateSongTableState = useSetAtom(updateSongTableStateActionAtom);
 
 	const [isColumnEditModalOpen, setIsColumnEditModalOpen] = useState(false);
 
@@ -44,10 +40,10 @@ export function RecentlyAddedContent() {
 			}
 			const newSongTableState = clone(SongTableStateSchema, songTableState);
 			newSongTableState.columns = columns;
-			await updateSongTableState(
-				newSongTableState,
-				UpdateMode.LOCAL_STATE | UpdateMode.PERSIST,
-			);
+			await updateSongTableState({
+				state: newSongTableState,
+				mode: UpdateMode.LOCAL_STATE | UpdateMode.PERSIST,
+			});
 		},
 		[songTableState, updateSongTableState],
 	);

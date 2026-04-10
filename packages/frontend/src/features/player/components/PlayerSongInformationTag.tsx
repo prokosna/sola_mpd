@@ -1,14 +1,6 @@
 import { Badge, Tooltip } from "@mantine/core";
 import { useCurrentSongFormat } from "../hooks/useCurrentSongFormat";
 
-/**
- * Audio format indicator tag.
- *
- * Displays DSD, Hi-Res, or PCM tag based on current song's
- * audio format. Shows detailed format info in tooltip.
- *
- * @returns Audio format tag with tooltip
- */
 export function PlayerSongInformationTag() {
 	const { isHiRes, isDsd, formatString } = useCurrentSongFormat();
 

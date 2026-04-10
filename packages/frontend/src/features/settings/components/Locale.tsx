@@ -1,14 +1,11 @@
 import { Select, Stack, Title } from "@mantine/core";
-import {
-	useLocaleState,
-	useSetLocaleState,
-	useSupportedLocalesState,
-} from "../states/settingsLocale";
+import { useAtomValue, useSetAtom } from "jotai";
+import { localeAtom, supportedLocalesAtom } from "../states/atoms/localeAtom";
 
 export function Locale() {
-	const localeState = useLocaleState();
-	const supportedLocalesState = useSupportedLocalesState();
-	const setLocaleState = useSetLocaleState();
+	const localeState = useAtomValue(localeAtom);
+	const supportedLocalesState = useAtomValue(supportedLocalesAtom);
+	const setLocaleState = useSetAtom(localeAtom);
 
 	return (
 		<Stack gap={16}>

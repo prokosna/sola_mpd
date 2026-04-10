@@ -1,19 +1,13 @@
+import { useAtomValue, useSetAtom } from "jotai";
 import { useCallback } from "react";
 
 import { UpdateMode } from "../../../types/stateTypes";
-import {
-	useMpdProfileState,
-	useUpdateCurrentMpdProfile,
-} from "../states/mpdProfileState";
+import { updateCurrentMpdProfileActionAtom } from "../states/actions/updateCurrentMpdProfileActionAtom";
+import { mpdProfileStateAtom } from "../states/atoms/mpdProfileAtom";
 
-/**
- * Hook for switching active MPD profile.
- *
- * @returns Profile update function
- */
 export function useChangeCurrentMpdProfile() {
-	const mpdProfileState = useMpdProfileState();
-	const updateCurrentMpdProfile = useUpdateCurrentMpdProfile();
+	const mpdProfileState = useAtomValue(mpdProfileStateAtom);
+	const updateCurrentMpdProfile = useSetAtom(updateCurrentMpdProfileActionAtom);
 
 	return useCallback(
 		async (name: string) => {
@@ -28,10 +22,10 @@ export function useChangeCurrentMpdProfile() {
 				return;
 			}
 
-			return updateCurrentMpdProfile(
+			return updateCurrentMpdProfile({
 				profile,
-				UpdateMode.LOCAL_STATE | UpdateMode.PERSIST,
-			);
+				mode: UpdateMode.LOCAL_STATE | UpdateMode.PERSIST,
+			});
 		},
 		[mpdProfileState, updateCurrentMpdProfile],
 	);

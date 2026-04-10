@@ -1,26 +1,20 @@
+import { getSongMetadataAsNumber } from "@sola_mpd/shared/src/functions/songMetadata.js";
 import {
 	type Song,
 	Song_MetadataTag,
-} from "@sola_mpd/domain/src/models/song_pb.js";
-import { getSongMetadataAsNumber } from "@sola_mpd/domain/src/utils/songUtils.js";
-import { displayDuration } from "@sola_mpd/domain/src/utils/stringUtils.js";
+} from "@sola_mpd/shared/src/models/song_pb.js";
+import { displayDuration } from "@sola_mpd/shared/src/utils/stringUtils.js";
+import { useAtomValue } from "jotai";
 import { useMemo } from "react";
 
 import type { CardStatsNumberProps } from "../components/CardStatsNumber";
-import { useStatsState } from "../states/statsState";
+import { statsAtom } from "../states/atoms/statsAtom";
 
-/**
- * Custom hook to generate props for duration statistics.
- *
- * @param showSelectedStats - Boolean flag to determine if stats for selected songs should be shown.
- * @param selectedSongs - Array of selected Song objects.
- * @returns CardStatsNumberProps object containing duration statistics.
- */
 export function useDurationStatsProps(
 	showSelectedStats: boolean,
 	selectedSongs: Song[],
 ): CardStatsNumberProps {
-	const stats = useStatsState();
+	const stats = useAtomValue(statsAtom);
 
 	const count = useMemo(() => {
 		if (stats === undefined) {

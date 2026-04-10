@@ -1,15 +1,11 @@
-import { clone, create } from "@bufbuild/protobuf";
-import { MpdRequestSchema } from "@sola_mpd/domain/src/models/mpd/mpd_command_pb.js";
-import { Plugin_PluginType } from "@sola_mpd/domain/src/models/plugin/plugin_pb.js";
-import {
-	type Song,
-	Song_MetadataTag,
-} from "@sola_mpd/domain/src/models/song_pb.js";
+import { clone } from "@bufbuild/protobuf";
+import { Plugin_PluginType } from "@sola_mpd/shared/src/models/plugin/plugin_pb.js";
+import type { Song } from "@sola_mpd/shared/src/models/song_pb.js";
 import {
 	type SongTableColumn,
 	SongTableStateSchema,
-} from "@sola_mpd/domain/src/models/song_table_pb.js";
-import { getSongMetadataAsString } from "@sola_mpd/domain/src/utils/songUtils.js";
+} from "@sola_mpd/shared/src/models/song_table_pb.js";
+import { useAtomValue, useSetAtom } from "jotai";
 import { type MutableRefObject, useCallback } from "react";
 
 import { COMPONENT_ID_PLAY_QUEUE } from "../../../const/component";
@@ -17,11 +13,8 @@ import { useNotification } from "../../../lib/mantine/hooks/useNotification";
 import { UpdateMode } from "../../../types/stateTypes";
 import { useSimilaritySearchContextMenuProps } from "../../advanced_search";
 import type { ContextMenuSection } from "../../context_menu";
-import { useMpdClientState } from "../../mpd";
 import { usePluginContextMenuItems } from "../../plugin";
-import { useCurrentMpdProfileState } from "../../profile";
 import {
-	convertOrderingToOperations,
 	getSongTableContextMenuAddToPlaylist,
 	getSongTableContextMenuEditColumns,
 	getSongTableContextMenuSimilarSongs,
@@ -29,26 +22,21 @@ import {
 	type SongTableContextMenuItemParams,
 	SongTableKeyType,
 	type SongTableProps,
-	useSetSelectedSongsState,
-	useSongTableState,
-	useUpdateSongTableState,
+	selectedSongsAtom,
+	songTableStateAtom,
+	updateSongTableStateActionAtom,
 } from "../../song_table";
-import { usePlayQueueSongsState } from "../states/playQueueSongsState";
+import { clearQueueActionAtom } from "../states/actions/clearQueueActionAtom";
+import { playSongByIdActionAtom } from "../states/actions/playSongByIdActionAtom";
+import { removeQueueSongsActionAtom } from "../states/actions/removeQueueSongsActionAtom";
+import { reorderQueueActionAtom } from "../states/actions/reorderQueueActionAtom";
+import { setIsPlayQueueLoadingActionAtom } from "../states/actions/setIsPlayQueueLoadingActionAtom";
+import { playQueueVisibleSongsAtom } from "../states/atoms/playQueueSongsAtom";
 import {
-	useIsPlayQueueLoadingState,
-	useSetIsPlayQueueLoadingState,
-} from "../states/playQueueUiState";
+	isPlayQueueLoadingAtom,
+	syncPlayQueueLoadingEffectAtom,
+} from "../states/atoms/playQueueUiAtom";
 
-/**
- * Provides configuration and handlers for the play queue song table.
- *
- * Manages context menu actions for queue manipulation, playlist
- * integration, and column customization. Handles song selection,
- * loading states, and plugin-specific features through MPD client
- * and table state coordination.
- *
- * Requires MPD client and profile setup for proper operation.
- */
 export function usePlayQueueSongTableProps(
 	songsToAddToPlaylistRef: MutableRefObject<Song[]>,
 	setIsPlaylistSelectModalOpen: (open: boolean) => void,
@@ -58,14 +46,17 @@ export function usePlayQueueSongTableProps(
 
 	const notify = useNotification();
 
-	const profile = useCurrentMpdProfileState();
-	const mpdClient = useMpdClientState();
-	const isLoading = useIsPlayQueueLoadingState();
-	const songs = usePlayQueueSongsState();
-	const songTableState = useSongTableState();
-	const setIsPlayQueueLoading = useSetIsPlayQueueLoadingState();
-	const updateSongTableState = useUpdateSongTableState();
-	const setSelectedSongs = useSetSelectedSongsState();
+	useAtomValue(syncPlayQueueLoadingEffectAtom);
+	const isLoading = useAtomValue(isPlayQueueLoadingAtom);
+	const songs = useAtomValue(playQueueVisibleSongsAtom);
+	const songTableState = useAtomValue(songTableStateAtom);
+	const setIsPlayQueueLoading = useSetAtom(setIsPlayQueueLoadingActionAtom);
+	const updateSongTableState = useSetAtom(updateSongTableStateActionAtom);
+	const setSelectedSongs = useSetAtom(selectedSongsAtom);
+	const removeQueueSongs = useSetAtom(removeQueueSongsActionAtom);
+	const clearQueue = useSetAtom(clearQueueActionAtom);
+	const reorderQueue = useSetAtom(reorderQueueActionAtom);
+	const playSongById = useSetAtom(playSongByIdActionAtom);
 
 	// Plugin context menu items
 	const pluginContextMenuItems = usePluginContextMenuItems(
@@ -88,11 +79,7 @@ export function usePlayQueueSongTableProps(
 					{
 						name: "Remove",
 						onClick: async (params?: SongTableContextMenuItemParams) => {
-							if (
-								params === undefined ||
-								mpdClient === undefined ||
-								profile === undefined
-							) {
+							if (params === undefined) {
 								return;
 							}
 							const targetSongs = getTargetSongsForContextMenu(
@@ -102,24 +89,7 @@ export function usePlayQueueSongTableProps(
 							if (targetSongs.length === 0) {
 								return;
 							}
-							const commands = targetSongs.map((song) =>
-								create(MpdRequestSchema, {
-									profile,
-									command: {
-										case: "delete",
-										value: {
-											target: {
-												case: "id",
-												value: getSongMetadataAsString(
-													song,
-													Song_MetadataTag.ID,
-												),
-											},
-										},
-									},
-								}),
-							);
-							await mpdClient.commandBulk(commands);
+							await removeQueueSongs(targetSongs);
 							notify({
 								status: "success",
 								title: "Songs successfully removed",
@@ -130,22 +100,10 @@ export function usePlayQueueSongTableProps(
 					{
 						name: "Clear",
 						onClick: async (params?: SongTableContextMenuItemParams) => {
-							if (
-								params === undefined ||
-								mpdClient === undefined ||
-								profile === undefined
-							) {
+							if (params === undefined) {
 								return;
 							}
-							await mpdClient.command(
-								create(MpdRequestSchema, {
-									profile,
-									command: {
-										case: "clear",
-										value: {},
-									},
-								}),
-							);
+							await clearQueue();
 							notify({
 								status: "success",
 								title: "Songs successfully cleared",
@@ -188,33 +146,9 @@ export function usePlayQueueSongTableProps(
 	// Handlers
 	const onSongsReordered = useCallback(
 		async (orderedSongs: Song[]) => {
-			if (
-				profile === undefined ||
-				songs === undefined ||
-				mpdClient === undefined
-			) {
-				return;
-			}
-			const ops = convertOrderingToOperations(
-				songs,
-				orderedSongs,
-				songTableKeyType,
-			);
-			const commands = ops.map((op) =>
-				create(MpdRequestSchema, {
-					profile,
-					command: {
-						case: "move",
-						value: {
-							from: { case: "fromId", value: op.id },
-							to: String(op.to),
-						},
-					},
-				}),
-			);
-			await mpdClient.commandBulk(commands);
+			await reorderQueue(orderedSongs);
 		},
-		[mpdClient, profile, songs],
+		[reorderQueue],
 	);
 
 	const onColumnsUpdated = useCallback(
@@ -224,7 +158,10 @@ export function usePlayQueueSongTableProps(
 			}
 			const newSongTableState = clone(SongTableStateSchema, songTableState);
 			newSongTableState.columns = updatedColumns;
-			updateSongTableState(newSongTableState, UpdateMode.PERSIST);
+			updateSongTableState({
+				state: newSongTableState,
+				mode: UpdateMode.PERSIST,
+			});
 		},
 		[songTableState, updateSongTableState],
 	);
@@ -238,28 +175,9 @@ export function usePlayQueueSongTableProps(
 
 	const onSongDoubleClick = useCallback(
 		async (clickedSong: Song) => {
-			if (profile === undefined || mpdClient === undefined) {
-				return;
-			}
-			await mpdClient.command(
-				create(MpdRequestSchema, {
-					profile,
-					command: {
-						case: "play",
-						value: {
-							target: {
-								case: "id",
-								value: getSongMetadataAsString(
-									clickedSong,
-									Song_MetadataTag.ID,
-								),
-							},
-						},
-					},
-				}),
-			);
+			await playSongById(clickedSong);
 		},
-		[mpdClient, profile],
+		[playSongById],
 	);
 
 	const onLoadingCompleted = useCallback(async () => {

@@ -6,15 +6,15 @@ import {
 	Tooltip,
 	useComputedColorScheme,
 } from "@mantine/core";
-import type { BrowserFilter } from "@sola_mpd/domain/src/models/browser_pb.js";
-import { convertSongMetadataValueToString } from "@sola_mpd/domain/src/utils/songUtils.js";
+import { convertSongMetadataValueToString } from "@sola_mpd/shared/src/functions/songMetadata.js";
+import type { BrowserFilter } from "@sola_mpd/shared/src/models/browser_pb.js";
 import { IconX } from "@tabler/icons-react";
 import { useCallback, useMemo } from "react";
 import { UpdateMode } from "../../../../types/stateTypes";
 import {
 	resetAllBrowserFilters,
 	selectBrowserFilterValues,
-} from "../utils/browserFilterUtils";
+} from "../functions/browserFilter";
 
 type BrowserNavigationBreadcrumbsViewProps = {
 	browserFilters?: BrowserFilter[];
@@ -24,16 +24,6 @@ type BrowserNavigationBreadcrumbsViewProps = {
 	) => Promise<void>;
 };
 
-/**
- * Renders navigation breadcrumbs for the browser view.
- *
- * This component displays the selected filters as breadcrumbs and provides
- * functionality to reset or modify the current filter selection.
- *
- * @param props.browserFilters - The current set of browser filters
- * @param props.updateBrowserFilters - Function to update the browser filters
- * @returns A React component displaying the browser navigation breadcrumbs
- */
 export function BrowserNavigationBreadcrumbsView(
 	props: BrowserNavigationBreadcrumbsViewProps,
 ) {

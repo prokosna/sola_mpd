@@ -11,10 +11,11 @@ import { useForm } from "@mantine/form";
 import {
 	type Playlist,
 	PlaylistSchema,
-} from "@sola_mpd/domain/src/models/playlist_pb.js";
+} from "@sola_mpd/shared/src/models/playlist_pb.js";
+import { useAtomValue } from "jotai";
 import { useCallback } from "react";
 import { useAddPlaylist } from "../hooks/useAddPlaylist";
-import { usePlaylistsState } from "../states/playlistState";
+import { playlistsAtom } from "../states/atoms/playlistAtom";
 
 export type PlaylistSelectModalProps = {
 	isOpen: boolean;
@@ -22,17 +23,8 @@ export type PlaylistSelectModalProps = {
 	onCancel: () => Promise<void>;
 };
 
-/**
- * Modal for playlist selection or creation.
- *
- * @param props Modal control props
- * @param props.isOpen Visibility state
- * @param props.onOk Selection callback
- * @param props.onCancel Cancel callback
- * @returns Modal component
- */
 export function PlaylistSelectModal(props: PlaylistSelectModalProps) {
-	const playlists = usePlaylistsState();
+	const playlists = useAtomValue(playlistsAtom);
 	const addPlaylist = useAddPlaylist();
 
 	const form = useForm({

@@ -1,15 +1,13 @@
 import { Card, Center, Title, useComputedColorScheme } from "@mantine/core";
+import { useAtomValue } from "jotai";
 import { useCallback, useEffect } from "react";
 import { useNavigate } from "react-router";
 import { ROUTE_HOME_PLAY_QUEUE } from "../../const/routes";
-import {
-	MpdProfileForm,
-	useCurrentMpdProfileState,
-} from "../../features/profile";
+import { currentMpdProfileAtom, MpdProfileForm } from "../../features/profile";
 
 export function LandingPage() {
 	const navigate = useNavigate();
-	const profile = useCurrentMpdProfileState();
+	const profile = useAtomValue(currentMpdProfileAtom);
 	const scheme = useComputedColorScheme();
 
 	useEffect(() => {

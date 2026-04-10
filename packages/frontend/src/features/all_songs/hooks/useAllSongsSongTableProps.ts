@@ -1,53 +1,41 @@
 import { clone } from "@bufbuild/protobuf";
-import { Plugin_PluginType } from "@sola_mpd/domain/src/models/plugin/plugin_pb.js";
-import type { Song } from "@sola_mpd/domain/src/models/song_pb.js";
+import { Plugin_PluginType } from "@sola_mpd/shared/src/models/plugin/plugin_pb.js";
+import type { Song } from "@sola_mpd/shared/src/models/song_pb.js";
 import {
 	type SongTableColumn,
 	SongTableStateSchema,
-} from "@sola_mpd/domain/src/models/song_table_pb.js";
+} from "@sola_mpd/shared/src/models/song_table_pb.js";
+import { useAtom, useAtomValue, useSetAtom } from "jotai";
 import { type MutableRefObject, useCallback } from "react";
 import { COMPONENT_ID_ALL_SONGS } from "../../../const/component";
 import { useNotification } from "../../../lib/mantine/hooks/useNotification";
 import { UpdateMode } from "../../../types/stateTypes";
 import { useSimilaritySearchContextMenuProps } from "../../advanced_search";
 import type { ContextMenuSection } from "../../context_menu";
-import { useMpdClientState } from "../../mpd";
 import { usePluginContextMenuItems } from "../../plugin";
-import { useCurrentMpdProfileState } from "../../profile";
 import {
+	addSongsToQueueActionAtom,
 	getSongTableContextMenuAdd,
 	getSongTableContextMenuAddToPlaylist,
 	getSongTableContextMenuEditColumns,
 	getSongTableContextMenuReplace,
 	getSongTableContextMenuSimilarSongs,
+	replaceQueueWithSongsActionAtom,
 	type SongTableContextMenuItemParams,
 	SongTableKeyType,
 	type SongTableProps,
+	selectedSongsAtom,
+	songTableStateAtom,
+	updateSongTableStateActionAtom,
 	useHandleSongDoubleClick,
-	useSetSelectedSongsState,
-	useSongTableState,
-	useUpdateSongTableState,
 } from "../../song_table";
-import { useAllSongsState } from "../states/allSongsState";
+import { setIsAllSongsLoadingActionAtom } from "../states/actions/setIsAllSongsLoadingActionAtom";
+import { allVisibleSongsAtom } from "../states/atoms/allSongsAtom";
 import {
-	useIsAllSongsLoadingState,
-	useSetIsAllSongsLoadingState,
-} from "../states/allSongsUiState";
+	isAllSongsLoadingAtom,
+	syncAllSongsLoadingEffectAtom,
+} from "../states/atoms/allSongsUiAtom";
 
-/**
- * Custom hook for managing All Songs Table properties and interactions.
- *
- * Features:
- * - Context menu integration (queue and playlist management)
- * - Column customization
- * - Song selection handling
- * - Loading state management
- *
- * @param songsToAddToPlaylistRef - Reference for playlist addition
- * @param setIsPlaylistSelectModalOpen - Playlist modal control
- * @param setIsColumnEditModalOpen - Column edit modal control
- * @returns Table properties or undefined if data not ready
- */
 export function useAllSongsSongTableProps(
 	songsToAddToPlaylistRef: MutableRefObject<Song[]>,
 	setIsPlaylistSelectModalOpen: (open: boolean) => void,
@@ -57,14 +45,15 @@ export function useAllSongsSongTableProps(
 
 	const notify = useNotification();
 
-	const profile = useCurrentMpdProfileState();
-	const mpdClient = useMpdClientState();
-	const isLoading = useIsAllSongsLoadingState();
-	const songs = useAllSongsState();
-	const songTableState = useSongTableState();
-	const setIsAllSongsLoading = useSetIsAllSongsLoadingState();
-	const updateSongTableState = useUpdateSongTableState();
-	const setSelectedSongs = useSetSelectedSongsState();
+	useAtom(syncAllSongsLoadingEffectAtom);
+	const isLoading = useAtomValue(isAllSongsLoadingAtom);
+	const songs = useAtomValue(allVisibleSongsAtom);
+	const songTableState = useAtomValue(songTableStateAtom);
+	const setIsAllSongsLoading = useSetAtom(setIsAllSongsLoadingActionAtom);
+	const updateSongTableState = useSetAtom(updateSongTableStateActionAtom);
+	const setSelectedSongs = useSetAtom(selectedSongsAtom);
+	const addSongsToQueue = useSetAtom(addSongsToQueueActionAtom);
+	const replaceQueueWithSongs = useSetAtom(replaceQueueWithSongsActionAtom);
 
 	// Plugin context menu items
 	const pluginContextMenuItems = usePluginContextMenuItems(
@@ -84,17 +73,11 @@ export function useAllSongsSongTableProps(
 		[
 			{
 				items: [
-					getSongTableContextMenuAdd(
-						songTableKeyType,
-						notify,
-						profile,
-						mpdClient,
-					),
+					getSongTableContextMenuAdd(songTableKeyType, notify, addSongsToQueue),
 					getSongTableContextMenuReplace(
 						songTableKeyType,
 						notify,
-						profile,
-						mpdClient,
+						replaceQueueWithSongs,
 					),
 				],
 			},
@@ -140,7 +123,10 @@ export function useAllSongsSongTableProps(
 			}
 			const newSongTableState = clone(SongTableStateSchema, songTableState);
 			newSongTableState.columns = updatedColumns;
-			await updateSongTableState(newSongTableState, UpdateMode.PERSIST);
+			await updateSongTableState({
+				state: newSongTableState,
+				mode: UpdateMode.PERSIST,
+			});
 		},
 		[songTableState, updateSongTableState],
 	);
@@ -152,7 +138,7 @@ export function useAllSongsSongTableProps(
 		[setSelectedSongs],
 	);
 
-	const onSongDoubleClick = useHandleSongDoubleClick(mpdClient, profile);
+	const onSongDoubleClick = useHandleSongDoubleClick();
 
 	const onLoadingCompleted = useCallback(async () => {
 		setIsAllSongsLoading(false);

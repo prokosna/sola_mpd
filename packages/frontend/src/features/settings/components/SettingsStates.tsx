@@ -2,84 +2,88 @@ import { Button, Stack, Table, Text, Title } from "@mantine/core";
 import {
 	type BrowserState,
 	BrowserStateSchema,
-} from "@sola_mpd/domain/src/models/browser_pb.js";
+} from "@sola_mpd/shared/src/models/browser_pb.js";
 import {
 	type MpdProfileState,
 	MpdProfileStateSchema,
-} from "@sola_mpd/domain/src/models/mpd/mpd_profile_pb.js";
+} from "@sola_mpd/shared/src/models/mpd/mpd_profile_pb.js";
 import {
 	type PluginState,
 	PluginStateSchema,
-} from "@sola_mpd/domain/src/models/plugin/plugin_pb.js";
+} from "@sola_mpd/shared/src/models/plugin/plugin_pb.js";
 import {
 	type RecentlyAddedState,
 	RecentlyAddedStateSchema,
-} from "@sola_mpd/domain/src/models/recently_added_pb.js";
+} from "@sola_mpd/shared/src/models/recently_added_pb.js";
 import {
 	type SavedSearches,
 	SavedSearchesSchema,
-} from "@sola_mpd/domain/src/models/search_pb.js";
+} from "@sola_mpd/shared/src/models/search_pb.js";
 import {
 	type SongTableState,
 	SongTableStateSchema,
-} from "@sola_mpd/domain/src/models/song_table_pb.js";
+} from "@sola_mpd/shared/src/models/song_table_pb.js";
+import { useAtomValue, useSetAtom } from "jotai";
+import { useCallback } from "react";
 import { UpdateMode } from "../../../types/stateTypes";
 import {
-	useRecentlyAddedState,
-	useUpdateRecentlyAddedState,
+	browserStateAtom,
+	recentlyAddedStateAtom,
+	updateBrowserStateActionAtom,
+	updateRecentlyAddedStateActionAtom,
 } from "../../browsing";
-import {
-	useBrowserState,
-	useUpdateBrowserState,
-} from "../../browsing/browser/states/browserState";
 import { CenterSpinner } from "../../loading";
-import { usePluginState, useUpdatePluginState } from "../../plugin";
-import { useMpdProfileState, useUpdateMpdProfileState } from "../../profile";
+import { pluginAtom, updatePluginActionAtom } from "../../plugin";
 import {
-	useSavedSearchesState,
-	useUpdateSavedSearchesState,
-} from "../../search";
-import { useSongTableState, useUpdateSongTableState } from "../../song_table";
+	mpdProfileStateAtom,
+	updateMpdProfileStateActionAtom,
+} from "../../profile";
+import { savedSearchesAtom, updateSavedSearchesActionAtom } from "../../search";
+import {
+	songTableStateAtom,
+	updateSongTableStateActionAtom,
+} from "../../song_table";
 import { useSettingsStateEditorProps } from "../hooks/useSettingsStateEditorProps";
 import { SettingsStatesEditor } from "./SettingsStatesEditor";
 
-/**
- * Application state management interface.
- *
- * Provides a table for viewing and editing various application
- * states like profiles, layout, browser, and search history.
- */
 export function SettingsStates() {
-	const mpdProfileState = useMpdProfileState();
-	const updateMpdProfileState = useUpdateMpdProfileState();
+	const mpdProfileState = useAtomValue(mpdProfileStateAtom);
+	const updateMpdProfileStateAction = useSetAtom(
+		updateMpdProfileStateActionAtom,
+	);
 	const [onOpenProfileState, profileStateProps] =
 		useSettingsStateEditorProps<MpdProfileState>(
 			MpdProfileStateSchema,
 			mpdProfileState,
 			async (newState: MpdProfileState) => {
-				updateMpdProfileState(
-					newState,
-					UpdateMode.LOCAL_STATE | UpdateMode.PERSIST,
-				);
+				updateMpdProfileStateAction({
+					state: newState,
+					mode: UpdateMode.LOCAL_STATE | UpdateMode.PERSIST,
+				});
 			},
 		);
 
-	const songTableState = useSongTableState();
-	const updateSongTableState = useUpdateSongTableState();
+	const songTableState = useAtomValue(songTableStateAtom);
+	const updateSongTableStateAction = useSetAtom(updateSongTableStateActionAtom);
 	const [onOpenSongTableState, songTableStateProps] =
 		useSettingsStateEditorProps<SongTableState>(
 			SongTableStateSchema,
 			songTableState,
 			async (newState: SongTableState) => {
-				updateSongTableState(
-					newState,
-					UpdateMode.LOCAL_STATE | UpdateMode.PERSIST,
-				);
+				updateSongTableStateAction({
+					state: newState,
+					mode: UpdateMode.LOCAL_STATE | UpdateMode.PERSIST,
+				});
 			},
 		);
 
-	const browserState = useBrowserState();
-	const updateBrowserState = useUpdateBrowserState();
+	const browserState = useAtomValue(browserStateAtom);
+	const updateBrowserStateAction = useSetAtom(updateBrowserStateActionAtom);
+	const updateBrowserState = useCallback(
+		(state: BrowserState, mode: UpdateMode) =>
+			updateBrowserStateAction({ state, mode }),
+		[updateBrowserStateAction],
+	);
 	const [onOpenBrowserState, browserStateProps] =
 		useSettingsStateEditorProps<BrowserState>(
 			BrowserStateSchema,
@@ -92,8 +96,13 @@ export function SettingsStates() {
 			},
 		);
 
-	const savedSearches = useSavedSearchesState();
-	const updateSavedSearches = useUpdateSavedSearchesState();
+	const savedSearches = useAtomValue(savedSearchesAtom);
+	const updateSavedSearchesAction = useSetAtom(updateSavedSearchesActionAtom);
+	const updateSavedSearches = useCallback(
+		(savedSearches: SavedSearches, mode: UpdateMode) =>
+			updateSavedSearchesAction({ savedSearches, mode }),
+		[updateSavedSearchesAction],
+	);
 	const [onOpenSavedSearches, savedSearchesProps] =
 		useSettingsStateEditorProps<SavedSearches>(
 			SavedSearchesSchema,
@@ -106,22 +115,29 @@ export function SettingsStates() {
 			},
 		);
 
-	const pluginState = usePluginState();
-	const updatePluginState = useUpdatePluginState();
+	const pluginState = useAtomValue(pluginAtom);
+	const updatePluginAction = useSetAtom(updatePluginActionAtom);
 	const [onOpenPluginState, pluginStateProps] =
 		useSettingsStateEditorProps<PluginState>(
 			PluginStateSchema,
 			pluginState,
 			async (pluginState: PluginState) => {
-				updatePluginState(
+				updatePluginAction({
 					pluginState,
-					UpdateMode.LOCAL_STATE | UpdateMode.PERSIST,
-				);
+					mode: UpdateMode.LOCAL_STATE | UpdateMode.PERSIST,
+				});
 			},
 		);
 
-	const recentlyAddedState = useRecentlyAddedState();
-	const updateRecentlyAddedState = useUpdateRecentlyAddedState();
+	const recentlyAddedState = useAtomValue(recentlyAddedStateAtom);
+	const updateRecentlyAddedStateAction = useSetAtom(
+		updateRecentlyAddedStateActionAtom,
+	);
+	const updateRecentlyAddedState = useCallback(
+		(state: RecentlyAddedState, mode: UpdateMode) =>
+			updateRecentlyAddedStateAction({ state, mode }),
+		[updateRecentlyAddedStateAction],
+	);
 	const [onOpenRecentlyAddedState, recentlyAddedStateProps] =
 		useSettingsStateEditorProps<RecentlyAddedState>(
 			RecentlyAddedStateSchema,

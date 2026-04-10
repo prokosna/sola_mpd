@@ -1,42 +1,17 @@
-import { create } from "@bufbuild/protobuf";
-import { MpdRequestSchema } from "@sola_mpd/domain/src/models/mpd/mpd_command_pb.js";
 import { IconArrowsRight, IconArrowsShuffle } from "@tabler/icons-react";
+import { useAtomValue, useSetAtom } from "jotai";
 import { useCallback } from "react";
-import { useMpdClientState } from "../../mpd";
-import { useCurrentMpdProfileState } from "../../profile";
-import { usePlayerStatusIsRandomState } from "../states/playerStatusState";
+import { toggleRandomActionAtom } from "../states/actions/toggleRandomActionAtom";
+import { playerStatusIsRandomAtom } from "../states/atoms/playerStatusAtom";
 import { PlayerControlsButton } from "./PlayerControlsButton";
 
-/**
- * Button for toggling random playback mode.
- *
- * Controls whether songs are played in random order. Updates
- * button state based on current random mode status.
- *
- * @returns Random mode toggle button
- */
 export function PlayerControlsButtonRandom() {
-	const profile = useCurrentMpdProfileState();
-	const mpdClient = useMpdClientState();
-	const playerStatusIsRandom = usePlayerStatusIsRandomState();
+	const playerStatusIsRandom = useAtomValue(playerStatusIsRandomAtom);
+	const toggleRandom = useSetAtom(toggleRandomActionAtom);
 
-	const onButtonClicked = useCallback(async () => {
-		if (profile === undefined || mpdClient === undefined) {
-			return;
-		}
-
-		mpdClient.command(
-			create(MpdRequestSchema, {
-				profile,
-				command: {
-					case: "random",
-					value: {
-						enable: !playerStatusIsRandom,
-					},
-				},
-			}),
-		);
-	}, [mpdClient, playerStatusIsRandom, profile]);
+	const onButtonClicked = useCallback(() => {
+		toggleRandom();
+	}, [toggleRandom]);
 
 	const props = {
 		label: playerStatusIsRandom ? "Random enabled" : "Random disabled",

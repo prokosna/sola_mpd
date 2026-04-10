@@ -1,18 +1,22 @@
-import { BrowserNavigationBreadcrumbsView } from "../../common/components/BrowserNavigationBreadcrumbsView";
-import {
-	useBrowserFiltersState,
-	useUpdateBrowserFiltersState,
-} from "../states/browserFiltersState";
+import type { BrowserFilter } from "@sola_mpd/shared/src/models/browser_pb.js";
+import { useAtomValue, useSetAtom } from "jotai";
+import { useCallback } from "react";
 
-/**
- * Renders the navigation breadcrumbs for the browser.
- * This component fetches the current browser filters and update function,
- * then passes them to the BrowserNavigationBreadcrumbsView component.
- * @returns A React component displaying the browser navigation breadcrumbs
- */
+import type { UpdateMode } from "../../../../types/stateTypes";
+import { BrowserNavigationBreadcrumbsView } from "../../common/components/BrowserNavigationBreadcrumbsView";
+import { updateBrowserFiltersActionAtom } from "../states/actions/updateBrowserFiltersActionAtom";
+import { browserFiltersAtom } from "../states/atoms/browserFiltersAtom";
+
 export function BrowserNavigationBreadcrumbs() {
-	const browserFilters = useBrowserFiltersState();
-	const updateBrowserFilters = useUpdateBrowserFiltersState();
+	const browserFilters = useAtomValue(browserFiltersAtom);
+	const updateBrowserFiltersAction = useSetAtom(updateBrowserFiltersActionAtom);
+
+	const updateBrowserFilters = useCallback(
+		async (filters: BrowserFilter[], mode: UpdateMode) => {
+			await updateBrowserFiltersAction({ filters, mode });
+		},
+		[updateBrowserFiltersAction],
+	);
 
 	return (
 		<BrowserNavigationBreadcrumbsView

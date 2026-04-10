@@ -1,47 +1,20 @@
-import { create } from "@bufbuild/protobuf";
-import { MpdRequestSchema } from "@sola_mpd/domain/src/models/mpd/mpd_command_pb.js";
-import { MpdPlayerStatus_PlaybackState } from "@sola_mpd/domain/src/models/mpd/mpd_player_pb.js";
+import { MpdPlayerStatus_PlaybackState } from "@sola_mpd/shared/src/models/mpd/mpd_player_pb.js";
 import { IconPlayerPause, IconPlayerPlay } from "@tabler/icons-react";
+import { useAtomValue, useSetAtom } from "jotai";
 import { useCallback } from "react";
-import { useMpdClientState } from "../../mpd";
-import { useCurrentMpdProfileState } from "../../profile";
-import { useCurrentSongState } from "../states/playerSongState";
-import { usePlayerStatusPlaybackState } from "../states/playerStatusState";
+import { togglePauseActionAtom } from "../states/actions/togglePauseActionAtom";
+import { currentSongAtom } from "../states/atoms/currentSongAtom";
+import { playerStatusPlaybackStateAtom } from "../states/atoms/playerStatusAtom";
 import { PlayerControlsButton } from "./PlayerControlsButton";
 
-/**
- * Button for toggling play/pause state.
- *
- * Controls playback of the current track, switching between
- * play and pause states. Updates icon and label based on
- * current playback status.
- *
- * @returns Play/pause toggle button
- */
 export function PlayerControlsButtonResume() {
-	const profile = useCurrentMpdProfileState();
-	const mpdClient = useMpdClientState();
-	const currentSong = useCurrentSongState();
-	const playerStatusPlaybackState = usePlayerStatusPlaybackState();
+	const currentSong = useAtomValue(currentSongAtom);
+	const playerStatusPlaybackState = useAtomValue(playerStatusPlaybackStateAtom);
+	const togglePause = useSetAtom(togglePauseActionAtom);
 
-	const onButtonClicked = useCallback(async () => {
-		if (profile === undefined || mpdClient === undefined) {
-			return;
-		}
-
-		mpdClient.command(
-			create(MpdRequestSchema, {
-				profile,
-				command: {
-					case: "pause",
-					value: {
-						pause:
-							playerStatusPlaybackState === MpdPlayerStatus_PlaybackState.PLAY,
-					},
-				},
-			}),
-		);
-	}, [mpdClient, playerStatusPlaybackState, profile]);
+	const onButtonClicked = useCallback(() => {
+		togglePause();
+	}, [togglePause]);
 
 	const props = {
 		label:

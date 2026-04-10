@@ -7,11 +7,12 @@ import {
 	TextInput,
 } from "@mantine/core";
 import { isInRange, isNotEmpty, useForm } from "@mantine/form";
+import { useAtomValue } from "jotai";
 import { useCallback, useState } from "react";
 import { useNotification } from "../../../lib/mantine/hooks/useNotification";
 import { useAddMpdProfile } from "../hooks/useAddMpdProfile";
 import { useValidateMpdProfile } from "../hooks/useValidateMpdProfile";
-import { useMpdProfileState } from "../states/mpdProfileState";
+import { mpdProfileStateAtom } from "../states/atoms/mpdProfileAtom";
 import type { ProfileInput } from "../types/profileTypes";
 
 type MpdProfileFormProps = {
@@ -20,17 +21,11 @@ type MpdProfileFormProps = {
 	disableCancelButton?: boolean;
 };
 
-/**
- * Form for MPD profile creation and validation.
- *
- * @param props Component props
- * @param props.onProfileCreated Success callback
- */
 export function MpdProfileForm(props: MpdProfileFormProps) {
 	const notify = useNotification();
 	const validateMpdProfile = useValidateMpdProfile();
 	const addMpdProfile = useAddMpdProfile();
-	const mpdProfiles = useMpdProfileState()?.profiles;
+	const mpdProfiles = useAtomValue(mpdProfileStateAtom)?.profiles;
 
 	const [isValidated, setIsValidated] = useState(false);
 	const [validationErrorMessage, setValidationErrorMessage] = useState<

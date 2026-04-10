@@ -1,4 +1,4 @@
-import { convertSongMetadataValueToString } from "@sola_mpd/domain/src/utils/songUtils.js";
+import { convertSongMetadataValueToString } from "@sola_mpd/shared/src/functions/songMetadata.js";
 import { useCallback } from "react";
 
 import { COMPONENT_ID_BROWSER_FILTER_LIST_PREFIX } from "../../../../const/component";
@@ -15,18 +15,8 @@ import {
 	changeBrowserFilterToTheOtherTag,
 	removeBrowserFilter,
 	selectBrowserFilterValues,
-} from "../utils/browserFilterUtils";
+} from "../functions/browserFilter";
 
-/**
- * Custom hook for generating SelectList props for browser navigation filter.
- *
- * This hook processes the input props and returns the necessary properties
- * for rendering a SelectList component in the context of browser navigation.
- * It handles item selection, context menu generation, and other interactions.
- *
- * @param props Input properties for the browser navigation filter view
- * @returns SelectList props or undefined if data is not ready
- */
 export function useBrowserNavigationFilterSelectListProps(
 	props: BrowserNavigationFilterViewProps,
 ): SelectListProps | undefined {

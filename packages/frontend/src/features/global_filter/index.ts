@@ -1,8 +1,8 @@
 // Components
 export { GlobalFilterBox } from "./components/GlobalFilterBox";
 
-// Utils
+// Functions
 export {
 	filterSongsByGlobalFilter,
 	filterStringsByGlobalFilter,
-} from "./utils/globalFilterUtils";
+} from "./functions/globalFilterFiltering";

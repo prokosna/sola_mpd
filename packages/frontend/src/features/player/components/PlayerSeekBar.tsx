@@ -1,30 +1,18 @@
-import { create } from "@bufbuild/protobuf";
 import { Slider } from "@mantine/core";
-import { MpdRequestSchema } from "@sola_mpd/domain/src/models/mpd/mpd_command_pb.js";
-import { displayDuration } from "@sola_mpd/domain/src/utils/stringUtils.js";
+import { displayDuration } from "@sola_mpd/shared/src/utils/stringUtils.js";
+import { useAtomValue, useSetAtom } from "jotai";
 import { useCallback, useRef } from "react";
-import { useMpdClientState } from "../../mpd";
-import { useCurrentMpdProfileState } from "../../profile";
+import { getElapsedTimePercentage } from "../functions/playerDisplay";
+import { seekActionAtom } from "../states/actions/seekActionAtom";
 import {
-	usePlayerStatusDurationState,
-	usePlayerStatusElapsedState,
-} from "../states/playerStatusState";
-import { getElapsedTimePercentage } from "../utils/playerDisplayUtils";
+	playerStatusDurationAtom,
+	playerStatusElapsedAtom,
+} from "../states/atoms/playerStatusAtom";
 
-/**
- * Seek bar for track navigation.
- *
- * Displays playback progress and allows position changes via
- * slider interaction. Throttles seek commands to prevent
- * overwhelming the MPD server.
- *
- * @returns Seek bar slider component
- */
 export function PlayerSeekBar() {
-	const profile = useCurrentMpdProfileState();
-	const mpdClient = useMpdClientState();
-	const playerStatusElapsed = usePlayerStatusElapsedState();
-	const playerStatusDuration = usePlayerStatusDurationState();
+	const playerStatusElapsed = useAtomValue(playerStatusElapsedAtom);
+	const playerStatusDuration = useAtomValue(playerStatusDurationAtom);
+	const seek = useSetAtom(seekActionAtom);
 
 	const elapsedTimePercentage = getElapsedTimePercentage(
 		playerStatusElapsed,
@@ -33,19 +21,7 @@ export function PlayerSeekBar() {
 
 	const lastSeekClicked = useRef(new Date());
 	const handleSeekBarClick = useCallback(
-		async (value: number) => {
-			if (profile === undefined || mpdClient === undefined) {
-				return;
-			}
-
-			if (value < 0 || value > 100) {
-				return;
-			}
-
-			if (playerStatusDuration === undefined) {
-				return;
-			}
-
+		(value: number) => {
 			// It is possible that onChange() is fired frequently.
 			const now = new Date();
 			const last = lastSeekClicked.current;
@@ -55,24 +31,9 @@ export function PlayerSeekBar() {
 			}
 			lastSeekClicked.current = now;
 
-			const seekTo = (value / 100) * playerStatusDuration;
-			mpdClient.command(
-				create(MpdRequestSchema, {
-					profile,
-					command: {
-						case: "seek",
-						value: {
-							target: {
-								case: "current",
-								value: true,
-							},
-							time: seekTo,
-						},
-					},
-				}),
-			);
+			seek(value);
 		},
-		[mpdClient, playerStatusDuration, profile],
+		[seek],
 	);
 
 	return (

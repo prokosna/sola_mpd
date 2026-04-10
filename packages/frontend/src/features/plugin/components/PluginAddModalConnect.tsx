@@ -1,5 +1,5 @@
 import { Button, Group, Stack, Text, TextInput } from "@mantine/core";
-import type { Plugin } from "@sola_mpd/domain/src/models/plugin/plugin_pb.js";
+import type { Plugin } from "@sola_mpd/shared/src/models/plugin/plugin_pb.js";
 import { useRef } from "react";
 import { useHandlePluginConnected } from "../hooks/useHandlePluginConnected";
 
@@ -7,14 +7,6 @@ export type PluginAddModalConnectProps = {
 	setPluginToAdd: (plugin: Plugin | undefined) => void;
 };
 
-/**
- * Plugin connection form.
- *
- * Handles endpoint input and connection.
- *
- * @param props.setPluginToAdd Plugin setter
- * @returns Connection form
- */
 export function PluginAddModalConnect(props: PluginAddModalConnectProps) {
 	const { setPluginToAdd } = props;
 

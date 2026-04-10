@@ -1,5 +1,5 @@
-import type { BrowserFilter } from "@sola_mpd/domain/src/models/browser_pb.js";
-import type { Song_MetadataTag } from "@sola_mpd/domain/src/models/song_pb.js";
+import type { BrowserFilter } from "@sola_mpd/shared/src/models/browser_pb.js";
+import type { Song_MetadataTag } from "@sola_mpd/shared/src/models/song_pb.js";
 import clsx from "clsx";
 import * as React from "react";
 import {
@@ -12,7 +12,7 @@ import styles from "../../../../ResizeHandle.module.css";
 import type { UpdateMode } from "../../../../types/stateTypes";
 import { FullWidthSkeleton } from "../../../loading";
 import { convertSongMetadataTagToDisplayName } from "../../../song_table";
-import { listBrowserSongMetadataTags } from "../utils/browserFilterUtils";
+import { listBrowserSongMetadataTags } from "../functions/browserFilter";
 import { BrowserNavigationFilterView } from "./BrowserNavigationFilterView";
 
 type BrowserNavigationViewProps = {
@@ -24,15 +24,6 @@ type BrowserNavigationViewProps = {
 	) => Promise<void>;
 };
 
-/**
- * Renders the navigation view for the browser component.
- *
- * This component displays a list of filters and their corresponding values,
- * allowing users to navigate and filter content in the browser.
- *
- * @param props The properties passed to the component
- * @returns A React component representing the browser navigation view
- */
 export function BrowserNavigationView(props: BrowserNavigationViewProps) {
 	const { browserFilters, browserFilterValues, updateBrowserFilters } = props;
 	const resolvedBrowserFilters = browserFilters ?? [];

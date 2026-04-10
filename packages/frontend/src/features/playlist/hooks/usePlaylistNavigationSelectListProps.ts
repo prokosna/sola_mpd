@@ -1,35 +1,24 @@
-import { create } from "@bufbuild/protobuf";
-import { MpdRequestSchema } from "@sola_mpd/domain/src/models/mpd/mpd_command_pb.js";
+import { useAtomValue, useSetAtom } from "jotai";
 import { useCallback } from "react";
 
 import { COMPONENT_ID_PLAYLIST_SIDE_PANE } from "../../../const/component";
 import { useNotification } from "../../../lib/mantine/hooks/useNotification";
 import type { ContextMenuSection } from "../../context_menu";
-import { useMpdClientState } from "../../mpd";
-import { useCurrentMpdProfileState } from "../../profile";
 import type { SelectListContextMenuItemParams } from "../../select_list";
+import { deletePlaylistActionAtom } from "../states/actions/deletePlaylistActionAtom";
+import { setSelectedPlaylistActionAtom } from "../states/actions/setSelectedPlaylistActionAtom";
 import {
-	usePlaylistsState,
-	useSelectedPlaylistState,
-	useSetSelectedPlaylistState,
-} from "../states/playlistState";
+	playlistsAtom,
+	selectedPlaylistAtom,
+} from "../states/atoms/playlistAtom";
 
-/**
- * Hook for playlist navigation list props.
- *
- * Provides selection and context menu functionality
- * for playlist management.
- *
- * @returns SelectList props or undefined
- */
 export function usePlaylistNavigationSelectListProps() {
 	const notify = useNotification();
 
-	const profile = useCurrentMpdProfileState();
-	const mpdClient = useMpdClientState();
-	const playlists = usePlaylistsState();
-	const selectedPlaylist = useSelectedPlaylistState();
-	const setSelectedPlaylist = useSetSelectedPlaylistState();
+	const playlists = useAtomValue(playlistsAtom);
+	const selectedPlaylist = useAtomValue(selectedPlaylistAtom);
+	const setSelectedPlaylist = useSetAtom(setSelectedPlaylistActionAtom);
+	const deletePlaylist = useSetAtom(deletePlaylistActionAtom);
 
 	const contextMenuSections: ContextMenuSection<SelectListContextMenuItemParams>[] =
 		[
@@ -38,12 +27,7 @@ export function usePlaylistNavigationSelectListProps() {
 					{
 						name: "Delete",
 						onClick: async (params?: SelectListContextMenuItemParams) => {
-							if (
-								params === undefined ||
-								profile === undefined ||
-								mpdClient === undefined ||
-								playlists === undefined
-							) {
+							if (params === undefined || playlists === undefined) {
 								return;
 							}
 
@@ -58,17 +42,7 @@ export function usePlaylistNavigationSelectListProps() {
 								setSelectedPlaylist(undefined);
 							}
 
-							await mpdClient.command(
-								create(MpdRequestSchema, {
-									profile,
-									command: {
-										case: "rm",
-										value: {
-											name: params.clickedValue,
-										},
-									},
-								}),
-							);
+							await deletePlaylist(params.clickedValue);
 							notify({
 								status: "success",
 								title: "Playlist successfully deleted",

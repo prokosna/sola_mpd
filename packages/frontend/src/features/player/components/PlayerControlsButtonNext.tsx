@@ -1,40 +1,17 @@
-import { create } from "@bufbuild/protobuf";
-import { MpdRequestSchema } from "@sola_mpd/domain/src/models/mpd/mpd_command_pb.js";
 import { IconPlayerSkipForward } from "@tabler/icons-react";
+import { useAtomValue, useSetAtom } from "jotai";
 import { useCallback } from "react";
-import { useMpdClientState } from "../../mpd";
-import { useCurrentMpdProfileState } from "../../profile";
-import { useCurrentSongState } from "../states/playerSongState";
+import { nextActionAtom } from "../states/actions/nextActionAtom";
+import { currentSongAtom } from "../states/atoms/currentSongAtom";
 import { PlayerControlsButton } from "./PlayerControlsButton";
 
-/**
- * Button for playing the next track.
- *
- * Sends the 'next' command to MPD when clicked. Disabled when
- * no song is currently playing.
- *
- * @returns Next track button
- */
 export function PlayerControlsButtonNext() {
-	const profile = useCurrentMpdProfileState();
-	const mpdClient = useMpdClientState();
-	const currentSong = useCurrentSongState();
+	const currentSong = useAtomValue(currentSongAtom);
+	const next = useSetAtom(nextActionAtom);
 
-	const onButtonClicked = useCallback(async () => {
-		if (profile === undefined || mpdClient === undefined) {
-			return;
-		}
-
-		mpdClient.command(
-			create(MpdRequestSchema, {
-				profile,
-				command: {
-					case: "next",
-					value: {},
-				},
-			}),
-		);
-	}, [mpdClient, profile]);
+	const onButtonClicked = useCallback(() => {
+		next();
+	}, [next]);
 
 	const props = {
 		label: "Play next",

@@ -6,9 +6,9 @@ import {
 	Modal,
 	Stack,
 } from "@mantine/core";
-import type { Song_MetadataTag } from "@sola_mpd/domain/src/models/song_pb.js";
-import type { SongTableColumn } from "@sola_mpd/domain/src/models/song_table_pb.js";
-import { listAllSongMetadataTags } from "@sola_mpd/domain/src/utils/songUtils.js";
+import { listAllSongMetadataTags } from "@sola_mpd/shared/src/functions/songMetadata.js";
+import type { Song_MetadataTag } from "@sola_mpd/shared/src/models/song_pb.js";
+import type { SongTableColumn } from "@sola_mpd/shared/src/models/song_table_pb.js";
 import { IconArrowLeft, IconArrowRight } from "@tabler/icons-react";
 import { type JSX, useCallback, useEffect, useState } from "react";
 import {
@@ -16,7 +16,7 @@ import {
 	ensureTagsContainedInColumns,
 	getAverageWidthFlex,
 	normalizeSongTableColumns,
-} from "../utils/songTableColumnUtils";
+} from "../functions/songTableColumn";
 import { ColumnEditModalTagListBox } from "./ColumnEditModalTagListBox";
 
 export type ColumnEditModalProps = {
@@ -26,18 +26,6 @@ export type ColumnEditModalProps = {
 	handleModalDisposed: () => Promise<void>;
 };
 
-/**
- * Modal interface for customizing song table columns.
- *
- * Provides drag-and-drop functionality for reordering columns and
- * managing which metadata tags are displayed. Maintains column
- * widths and sorting configurations during updates.
- *
- * @param props.columns Current columns configuration
- * @param props.isOpen Modal visibility state
- * @param props.handleColumnsUpdated Column update callback
- * @param props.handleModalDisposed Modal close callback
- */
 export function ColumnEditModal(props: ColumnEditModalProps): JSX.Element {
 	// Available tags in use
 	const [activeTagsState, setActiveTagsState] = useState<Song_MetadataTag[]>(

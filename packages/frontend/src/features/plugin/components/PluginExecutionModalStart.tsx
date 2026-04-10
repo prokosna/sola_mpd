@@ -7,37 +7,33 @@ import {
 	TextInput,
 	Title,
 } from "@mantine/core";
-import type { Plugin } from "@sola_mpd/domain/src/models/plugin/plugin_pb.js";
-import type { Song } from "@sola_mpd/domain/src/models/song_pb.js";
+import type { Plugin } from "@sola_mpd/shared/src/models/plugin/plugin_pb.js";
+import type { Song } from "@sola_mpd/shared/src/models/song_pb.js";
+import { useAtomValue, useSetAtom } from "jotai";
 import { useCallback, useState } from "react";
 import { useHandlePluginExecuted } from "../hooks/useHandlePluginExecuted";
 import {
-	useIsPreviousPluginStillRunningState,
-	useSetIsPluginExecutionModalOpenState,
-} from "../states/executionState";
+	isPreviousPluginStillRunningAtom,
+	pluginExecutionModalOpenAtom,
+} from "../states/atoms/pluginExecutionAtom";
 
 type PluginExecutionModalStartProps = {
 	plugin: Plugin;
 	songs: Song[];
 };
 
-/**
- * Plugin execution start view.
- *
- * Handles parameter input and execution.
- *
- * @param props.plugin Target plugin
- * @param props.songs Songs to process
- * @returns Start view
- */
 export function PluginExecutionModalStart(
 	props: PluginExecutionModalStartProps,
 ) {
 	const { plugin, songs } = props;
 
-	const isPreviousPluginStillRunning = useIsPreviousPluginStillRunningState();
+	const isPreviousPluginStillRunning = useAtomValue(
+		isPreviousPluginStillRunningAtom,
+	);
 	const handlePluginExecuted = useHandlePluginExecuted();
-	const setIsPluginExecutionModalOpen = useSetIsPluginExecutionModalOpenState();
+	const setIsPluginExecutionModalOpen = useSetAtom(
+		pluginExecutionModalOpenAtom,
+	);
 
 	const [parameterValues, setParameterValues] = useState<Map<string, string>>(
 		new Map(),

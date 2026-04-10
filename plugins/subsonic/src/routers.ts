@@ -9,11 +9,12 @@ import {
 	type PluginRegisterRequest,
 	type PluginRegisterResponse,
 	PluginRegisterResponseSchema,
-} from "@sola_mpd/domain/src/models/plugin/plugin_pb.js";
+} from "@sola_mpd/shared/src/models/plugin/plugin_pb.js";
 
-import { PluginService } from "@sola_mpd/domain/src/models/plugin/plugin_service_pb.js";
+import { PluginService } from "@sola_mpd/shared/src/models/plugin/plugin_service_pb.js";
 
-import { syncWithSubsonic } from "./service.js";
+import { syncWithSubsonic } from "./application/subsonicUseCases.js";
+import { SubsonicApiHttp } from "./services/SubsonicApiHttp.js";
 
 export function routes(router: ConnectRouter) {
 	router.service(PluginService, {
@@ -42,10 +43,9 @@ export function routes(router: ConnectRouter) {
 				const password = req.pluginParameters.Password;
 				const playlistName = req.requestParameters["Playlist Name"];
 				const songs = req.songs;
+				const client = new SubsonicApiHttp(url, user, password);
 				for await (const resp of syncWithSubsonic(
-					url,
-					user,
-					password,
+					client,
 					playlistName,
 					songs,
 				)) {

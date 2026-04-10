@@ -1,23 +1,11 @@
-import type { Song } from "@sola_mpd/domain/src/models/song_pb.js";
+import type { Song } from "@sola_mpd/shared/src/models/song_pb.js";
 import type { AgGridReact } from "ag-grid-react";
 import type { RefObject } from "react";
 
 import { useInputKeyCombination } from "../../keyboard_shortcut";
+import { convertNodeToSong } from "../functions/songTableKey";
 import type { SongTableKey } from "../types/songTableTypes";
-import { convertNodeToSong } from "../utils/songTableTableUtils";
 
-/**
- * Sets up Ctrl+A keyboard shortcut for song selection.
- *
- * Binds the shortcut to a component, allowing users to select
- * all visible songs in the grid. Handles grid state and song
- * list synchronization.
- *
- * @param ref Target component ref
- * @param gridRef AG Grid instance ref
- * @param songsMap Song lookup map
- * @param selectSongs Selection callback
- */
 export function useKeyboardShortcutSelectAll(
 	ref: RefObject<HTMLDivElement | null>,
 	gridRef: RefObject<AgGridReact | null>,

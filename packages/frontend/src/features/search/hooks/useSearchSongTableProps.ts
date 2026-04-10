@@ -1,46 +1,35 @@
-import { Plugin_PluginType } from "@sola_mpd/domain/src/models/plugin/plugin_pb.js";
-import type { Song } from "@sola_mpd/domain/src/models/song_pb.js";
-import type { SongTableColumn } from "@sola_mpd/domain/src/models/song_table_pb.js";
+import { Plugin_PluginType } from "@sola_mpd/shared/src/models/plugin/plugin_pb.js";
+import type { Song } from "@sola_mpd/shared/src/models/song_pb.js";
+import type { SongTableColumn } from "@sola_mpd/shared/src/models/song_table_pb.js";
+import { useAtomValue, useSetAtom } from "jotai";
 import { type MutableRefObject, useCallback } from "react";
 
 import { COMPONENT_ID_SEARCH_MAIN_PANE } from "../../../const/component";
 import { useNotification } from "../../../lib/mantine/hooks/useNotification";
 import { useSimilaritySearchContextMenuProps } from "../../advanced_search";
 import type { ContextMenuSection } from "../../context_menu";
-import { useMpdClientState } from "../../mpd";
 import { usePluginContextMenuItems } from "../../plugin";
-import { useCurrentMpdProfileState } from "../../profile";
 import {
+	addSongsToQueueActionAtom,
 	getSongTableContextMenuAdd,
 	getSongTableContextMenuAddToPlaylist,
 	getSongTableContextMenuEditColumns,
 	getSongTableContextMenuReplace,
 	getSongTableContextMenuSimilarSongs,
+	replaceQueueWithSongsActionAtom,
 	type SongTableContextMenuItemParams,
 	SongTableKeyType,
 	type SongTableProps,
+	selectedSongsAtom,
+	songTableStateAtom,
 	useHandleSongDoubleClick,
-	useSetSelectedSongsState,
-	useSongTableState,
 } from "../../song_table";
-import { useSearchSongTableColumnsState } from "../states/searchEditState";
-import { useSearchSongsState } from "../states/searchSongsState";
-import {
-	useIsSearchLoadingState,
-	useSetIsSearchLoadingState,
-} from "../states/searchUiState";
+import { setIsSearchLoadingActionAtom } from "../states/actions/setIsSearchLoadingActionAtom";
+import { searchSongTableColumnsAtom } from "../states/atoms/searchEditAtom";
+import { searchVisibleSongsAtom } from "../states/atoms/searchSongsAtom";
+import { isSearchLoadingAtom } from "../states/atoms/searchUiAtom";
 import { useHandleSearchColumnsUpdated } from "./useHandleSearchColumnsUpdated";
 
-/**
- * Hook for search song table props.
- *
- * Manages state and callbacks for search table.
- *
- * @param songsToAddToPlaylistRef Ref for playlist songs
- * @param setIsPlaylistSelectModalOpen Playlist modal control
- * @param setIsColumnEditModalOpen Column modal control
- * @returns Table props or undefined
- */
 export function useSearchSongTableProps(
 	songsToAddToPlaylistRef: MutableRefObject<Song[]>,
 	setIsPlaylistSelectModalOpen: (open: boolean) => void,
@@ -50,14 +39,14 @@ export function useSearchSongTableProps(
 
 	const notify = useNotification();
 
-	const profile = useCurrentMpdProfileState();
-	const mpdClient = useMpdClientState();
-	const isLoading = useIsSearchLoadingState();
-	const songs = useSearchSongsState();
-	const searchSongTableColumns = useSearchSongTableColumnsState();
-	const songTableState = useSongTableState();
-	const setIsSearchLoading = useSetIsSearchLoadingState();
-	const setSelectedSongs = useSetSelectedSongsState();
+	const isLoading = useAtomValue(isSearchLoadingAtom);
+	const songs = useAtomValue(searchVisibleSongsAtom);
+	const searchSongTableColumns = useAtomValue(searchSongTableColumnsAtom);
+	const songTableState = useAtomValue(songTableStateAtom);
+	const setIsSearchLoading = useSetAtom(setIsSearchLoadingActionAtom);
+	const setSelectedSongs = useSetAtom(selectedSongsAtom);
+	const addSongsToQueue = useSetAtom(addSongsToQueueActionAtom);
+	const replaceQueueWithSongs = useSetAtom(replaceQueueWithSongsActionAtom);
 	const handleSearchColumnsUpdated = useHandleSearchColumnsUpdated();
 
 	// Plugin context menu items
@@ -78,17 +67,11 @@ export function useSearchSongTableProps(
 		[
 			{
 				items: [
-					getSongTableContextMenuAdd(
-						songTableKeyType,
-						notify,
-						profile,
-						mpdClient,
-					),
+					getSongTableContextMenuAdd(songTableKeyType, notify, addSongsToQueue),
 					getSongTableContextMenuReplace(
 						songTableKeyType,
 						notify,
-						profile,
-						mpdClient,
+						replaceQueueWithSongs,
 					),
 				],
 			},
@@ -141,7 +124,7 @@ export function useSearchSongTableProps(
 		[setSelectedSongs],
 	);
 
-	const onSongDoubleClick = useHandleSongDoubleClick(mpdClient, profile);
+	const onSongDoubleClick = useHandleSongDoubleClick();
 
 	const onLoadingCompleted = useCallback(async () => {
 		setIsSearchLoading(false);

@@ -1,24 +1,19 @@
 import { Modal } from "@mantine/core";
+import { useAtomValue, useSetAtom } from "jotai";
 import {
-	useIsPluginExecutionModalOpenState,
-	usePluginExecutionPropsState,
-	useSetIsPluginExecutionModalOpenState,
-} from "../states/executionState";
+	pluginExecutionModalOpenAtom,
+	pluginExecutionPropsAtom,
+} from "../states/atoms/pluginExecutionAtom";
 
 import { PluginExecutionModalProgress } from "./PluginExecutionModalProgress";
 import { PluginExecutionModalStart } from "./PluginExecutionModalStart";
 
-/**
- * Plugin execution modal.
- *
- * Shows start or progress view.
- *
- * @returns Modal or null
- */
 export function PluginExecutionModal() {
-	const { plugin, songs } = usePluginExecutionPropsState();
-	const isPluginExecutionModalOpen = useIsPluginExecutionModalOpenState();
-	const setIsPluginExecutionModalOpen = useSetIsPluginExecutionModalOpenState();
+	const { plugin, songs } = useAtomValue(pluginExecutionPropsAtom);
+	const isPluginExecutionModalOpen = useAtomValue(pluginExecutionModalOpenAtom);
+	const setIsPluginExecutionModalOpen = useSetAtom(
+		pluginExecutionModalOpenAtom,
+	);
 
 	if (plugin === undefined) {
 		return null;

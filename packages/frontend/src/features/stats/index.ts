@@ -2,4 +2,5 @@
 export { CardStats } from "./components/CardStats";
 
 // States
-export { useRefreshStatsState } from "./states/statsState";
+export { refreshStatsActionAtom } from "./states/actions/refreshStatsActionAtom";
+export { updateDatabaseActionAtom } from "./states/actions/updateDatabaseActionAtom";

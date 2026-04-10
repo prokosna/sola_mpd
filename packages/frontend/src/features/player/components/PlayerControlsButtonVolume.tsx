@@ -1,4 +1,3 @@
-import { create } from "@bufbuild/protobuf";
 import {
 	ActionIcon,
 	Box,
@@ -6,57 +5,20 @@ import {
 	Tooltip,
 	useMantineTheme,
 } from "@mantine/core";
-import { MpdRequestSchema } from "@sola_mpd/domain/src/models/mpd/mpd_command_pb.js";
 import { IconVolumeOff } from "@tabler/icons-react";
-import { useCallback } from "react";
-import { useMpdClientState } from "../../mpd";
-import { useCurrentMpdProfileState } from "../../profile";
+import { useAtomValue, useSetAtom } from "jotai";
 import { useIsCompactMode } from "../../user_device";
-import { usePlayerVolumeState } from "../states/playerVolumeState";
+import { setVolumeActionAtom } from "../states/actions/setVolumeActionAtom";
+import { playerVolumeAtom } from "../states/atoms/playerVolumeAtom";
 
-/**
- * Volume control component with button and slider.
- *
- * Provides volume adjustment and mute/unmute functionality.
- * Adapts layout based on compact mode setting and updates
- * appearance based on current volume level.
- *
- * @returns Volume control component
- */
 export function PlayerControlsButtonVolume() {
-	const profile = useCurrentMpdProfileState();
-	const mpdClient = useMpdClientState();
-	const playerVolume = usePlayerVolumeState();
+	const playerVolume = useAtomValue(playerVolumeAtom);
+	const setVolume = useSetAtom(setVolumeActionAtom);
 	const isCompact = useIsCompactMode();
 
 	const volume = playerVolume?.volume !== undefined ? playerVolume.volume : -1;
 
 	const theme = useMantineTheme();
-
-	const onVolumeChanged = useCallback(
-		async (volume: number) => {
-			if (profile === undefined || mpdClient === undefined) {
-				return;
-			}
-
-			if (volume < 0 || volume > 100) {
-				return;
-			}
-
-			mpdClient.command(
-				create(MpdRequestSchema, {
-					profile,
-					command: {
-						case: "setvol",
-						value: {
-							vol: volume,
-						},
-					},
-				}),
-			);
-		},
-		[mpdClient, profile],
-	);
 
 	return (
 		<>
@@ -76,7 +38,7 @@ export function PlayerControlsButtonVolume() {
 						defaultValue={playerVolume?.volume}
 						min={0}
 						max={100}
-						onChangeEnd={(v) => onVolumeChanged(v)}
+						onChangeEnd={(v) => setVolume(v)}
 					/>
 				</Box>
 			)}

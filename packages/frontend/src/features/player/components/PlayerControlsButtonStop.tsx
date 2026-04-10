@@ -1,40 +1,17 @@
-import { create } from "@bufbuild/protobuf";
-import { MpdRequestSchema } from "@sola_mpd/domain/src/models/mpd/mpd_command_pb.js";
 import { IconPlayerStop } from "@tabler/icons-react";
+import { useAtomValue, useSetAtom } from "jotai";
 import { useCallback } from "react";
-import { useMpdClientState } from "../../mpd";
-import { useCurrentMpdProfileState } from "../../profile";
-import { useCurrentSongState } from "../states/playerSongState";
+import { stopActionAtom } from "../states/actions/stopActionAtom";
+import { currentSongAtom } from "../states/atoms/currentSongAtom";
 import { PlayerControlsButton } from "./PlayerControlsButton";
 
-/**
- * Button for stopping playback.
- *
- * Sends the 'stop' command to MPD when clicked. Disabled
- * when no song is currently playing.
- *
- * @returns Stop button
- */
 export function PlayerControlsButtonStop() {
-	const profile = useCurrentMpdProfileState();
-	const mpdClient = useMpdClientState();
-	const currentSong = useCurrentSongState();
+	const currentSong = useAtomValue(currentSongAtom);
+	const stop = useSetAtom(stopActionAtom);
 
-	const onButtonClicked = useCallback(async () => {
-		if (profile === undefined || mpdClient === undefined) {
-			return;
-		}
-
-		mpdClient.command(
-			create(MpdRequestSchema, {
-				profile,
-				command: {
-					case: "stop",
-					value: {},
-				},
-			}),
-		);
-	}, [mpdClient, profile]);
+	const onButtonClicked = useCallback(() => {
+		stop();
+	}, [stop]);
 
 	const props = {
 		label: "Stop",

@@ -1,5 +1,5 @@
-import type { Song } from "@sola_mpd/domain/src/models/song_pb.js";
-import type { SongTableColumn } from "@sola_mpd/domain/src/models/song_table_pb.js";
+import type { Song } from "@sola_mpd/shared/src/models/song_pb.js";
+import type { SongTableColumn } from "@sola_mpd/shared/src/models/song_table_pb.js";
 import type { GetRowIdParams } from "ag-grid-community";
 import { AgGridReact } from "ag-grid-react";
 import { type JSX, type RefObject, useCallback, useRef } from "react";
@@ -46,29 +46,6 @@ export type SongTableProps = {
 	onLoadingCompleted: () => Promise<void>;
 };
 
-/**
- * AG Grid-based song table with extensive functionality.
- *
- * Provides sorting, filtering, reordering, and context menu support.
- * Adapts to compact/touch modes and handles keyboard shortcuts.
- * Manages song selection and custom column configurations.
- *
- * @param props.id Table identifier
- * @param props.songTableKeyType Key type for row identification
- * @param props.songs Song data to display
- * @param props.columns Column configuration
- * @param props.isSortingEnabled Enable sorting
- * @param props.isReorderingEnabled Enable row reordering
- * @param props.isGlobalFilterEnabled Enable global filter
- * @param props.contextMenuSections Context menu configuration
- * @param props.isLoading Loading state
- * @param props.scrollToPlayingSong Scroll to playing song
- * @param props.onSongsReordered Reorder callback
- * @param props.onColumnsUpdated Column update callback
- * @param props.onSongsSelected Selection callback
- * @param props.onSongDoubleClick Double click callback
- * @param props.onLoadingCompleted Loading complete callback
- */
 export function SongTable(props: SongTableProps): JSX.Element {
 	const isCompact = useIsCompactMode();
 	const isTouchDevice = useIsTouchDevice();

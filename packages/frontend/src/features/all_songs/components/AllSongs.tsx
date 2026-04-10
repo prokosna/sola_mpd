@@ -3,7 +3,8 @@ import { Group } from "@mantine/core";
 import {
 	type SongTableColumn,
 	SongTableStateSchema,
-} from "@sola_mpd/domain/src/models/song_table_pb.js";
+} from "@sola_mpd/shared/src/models/song_table_pb.js";
+import { useAtomValue, useSetAtom } from "jotai";
 import { useCallback, useState } from "react";
 import { UpdateMode } from "../../../types/stateTypes";
 import { CenterSpinner } from "../../loading";
@@ -11,27 +12,15 @@ import { PlaylistSelectModal, usePlaylistSelectModal } from "../../playlist";
 import {
 	ColumnEditModal,
 	SongTable,
+	songTableStateAtom,
+	updateSongTableStateActionAtom,
 	useColumnEditModalProps,
-	useSongTableState,
-	useUpdateSongTableState,
 } from "../../song_table";
 import { useAllSongsSongTableProps } from "../hooks/useAllSongsSongTableProps";
 
-/**
- * AllSongs component for displaying and managing the complete song library.
- *
- * Features:
- * - Customizable song table with sortable columns
- * - Playlist management integration
- * - Column editing capabilities
- * - State persistence
- * - Loading state handling
- *
- * @component
- */
 export function AllSongs() {
-	const songTableState = useSongTableState();
-	const updateSongTableState = useUpdateSongTableState();
+	const songTableState = useAtomValue(songTableStateAtom);
+	const updateSongTableState = useSetAtom(updateSongTableStateActionAtom);
 
 	const [isColumnEditModalOpen, setIsColumnEditModalOpen] = useState(false);
 
@@ -54,10 +43,10 @@ export function AllSongs() {
 			}
 			const newSongTableState = clone(SongTableStateSchema, songTableState);
 			newSongTableState.columns = columns;
-			await updateSongTableState(
-				newSongTableState,
-				UpdateMode.LOCAL_STATE | UpdateMode.PERSIST,
-			);
+			await updateSongTableState({
+				state: newSongTableState,
+				mode: UpdateMode.LOCAL_STATE | UpdateMode.PERSIST,
+			});
 		},
 		[songTableState, updateSongTableState],
 	);

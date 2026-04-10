@@ -1,43 +1,27 @@
-import type { Song } from "@sola_mpd/domain/src/models/song_pb.js";
-import type { SongTableColumn } from "@sola_mpd/domain/src/models/song_table_pb.js";
+import type { Song } from "@sola_mpd/shared/src/models/song_pb.js";
+import type { SongTableColumn } from "@sola_mpd/shared/src/models/song_table_pb.js";
 import type {
 	SelectionColumnDef,
 	SuppressKeyboardEventParams,
 } from "ag-grid-community";
+import { useAtomValue } from "jotai";
 import { useMemo } from "react";
-
-import { useLocaleCollatorState } from "../../settings";
+import { localeCollatorAtom } from "../../settings";
 import { CustomCellCompact } from "../components/CustomCellCompact";
+import {
+	convertSongForGridRowValueCompact,
+	convertSongMetadataForGridRowValue,
+	convertSongMetadataTagToDisplayName,
+} from "../functions/songTableConversion";
+import { getSongTableKey } from "../functions/songTableKey";
+import { sortSongsByColumns } from "../functions/songTableSorting";
 import {
 	SONGS_TAG_COMPACT,
 	type SongTableColumnDefinition,
 	type SongTableKeyType,
 	type SongTableRowData,
 } from "../types/songTableTypes";
-import {
-	convertSongForGridRowValueCompact,
-	convertSongMetadataForGridRowValue,
-	convertSongMetadataTagToDisplayName,
-	getSongTableKey,
-	sortSongsByColumns,
-} from "../utils/songTableTableUtils";
 
-/**
- * Prepares data for AG Grid song table display.
- *
- * Transforms song data into AG Grid compatible format, handling
- * both compact and standard view modes. Manages sorting,
- * reordering, and touch device adaptations.
- *
- * @param songs Song list
- * @param keyType Row key type
- * @param columns Column config
- * @param isSortingEnabled Enable sorting
- * @param isReorderingEnabled Enable reordering
- * @param isCompact Compact mode flag
- * @param isTouchDevice Touch device flag
- * @returns Row data and column definitions
- */
 export function useAgGridReactData(
 	songs: Song[],
 	keyType: SongTableKeyType,
@@ -50,7 +34,7 @@ export function useAgGridReactData(
 	columnDefs: SongTableColumnDefinition[];
 	selectionColumnDef: SelectionColumnDef;
 } {
-	const localeCollator = useLocaleCollatorState();
+	const localeCollator = useAtomValue(localeCollatorAtom);
 
 	// Convert Song to AdGrid item format (Column -> Value).
 	const rowData = useMemo(() => {

@@ -1,6 +1,6 @@
+export { filterSongsByAndConditions } from "./functions/songFilter";
 export {
 	convertDisplayNameToOperator,
 	convertOperatorToDisplayName,
-	filterSongsByAndConditions,
 	listAllFilterConditionOperators,
-} from "./utils/songFilterUtils";
+} from "./functions/songFilterConversion";

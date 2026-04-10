@@ -8,25 +8,6 @@ import {
 } from "react-contexify";
 import type { ContextMenuProps } from "../types/contextMenuTypes";
 
-/**
- * A flexible context menu component with support for nested sections and items.
- *
- * Features:
- * - Multiple menu sections with separators
- * - Nested submenu support
- * - Custom click handlers per item
- * - Theme-aware styling
- * - Generic data type support
- *
- * @template T - Type of data passed to click handlers
- * @param props - Component properties
- * @param props.sections - Array of menu sections
- * @param props.sections[].items - Array of menu items in each section
- * @param props.sections[].items[].name - Display name of the menu item
- * @param props.sections[].items[].onClick - Click handler for the menu item
- * @param props.sections[].items[].subItems - Optional nested menu items
- * @returns Rendered context menu component
- */
 export function ContextMenu<T>(props: ContextMenuProps<T>) {
 	const scheme = useComputedColorScheme();
 

@@ -1,28 +1,16 @@
 import type { FirstDataRenderedEvent } from "ag-grid-community";
+import { useAtomValue } from "jotai";
 import { useCallback } from "react";
-import { useCurrentSongState } from "../../player";
+import { currentSongAtom } from "../../player";
+import { getSongTableKey } from "../functions/songTableKey";
+import { getTableIndexOfSong } from "../functions/songTableState";
 import type { SongTableKeyType } from "../types/songTableTypes";
-import {
-	getSongTableKey,
-	getTableIndexOfSong,
-} from "../utils/songTableTableUtils";
 
-/**
- * Custom hook to handle the first data rendered event in a song table.
- *
- * This hook returns a callback function that can be used to handle the
- * FirstDataRenderedEvent from ag-grid. It optionally scrolls to the
- * currently playing song when the data is first rendered.
- *
- * @param keyType - The type of key used for identifying songs in the table
- * @param scrollToPlayingSong - Whether to scroll to the currently playing song
- * @returns A callback function to handle the FirstDataRenderedEvent
- */
 export function useHandleFirstDataRendered(
 	keyType: SongTableKeyType,
 	scrollToPlayingSong: boolean,
 ): (event: FirstDataRenderedEvent) => void {
-	const currentSong = useCurrentSongState();
+	const currentSong = useAtomValue(currentSongAtom);
 
 	return useCallback(
 		(event: FirstDataRenderedEvent) => {
