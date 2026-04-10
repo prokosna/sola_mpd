@@ -7,14 +7,6 @@ export type PluginAddModalConnectProps = {
 	setPluginToAdd: (plugin: Plugin | undefined) => void;
 };
 
-/**
- * Plugin connection form.
- *
- * Handles endpoint input and connection.
- *
- * @param props.setPluginToAdd Plugin setter
- * @returns Connection form
- */
 export function PluginAddModalConnect(props: PluginAddModalConnectProps) {
 	const { setPluginToAdd } = props;
 

@@ -7,13 +7,6 @@ import { setSearchSongTableColumnsActionAtom } from "../states/actions/setSearch
 import { searchSongTableColumnsAtom } from "../states/atoms/searchEditAtom";
 import { EditingSearchStatus } from "../types/searchTypes";
 
-/**
- * Hook for handling search column updates.
- *
- * Updates editing search with new columns.
- *
- * @returns Column update handler
- */
 export function useHandleSearchColumnsUpdated() {
 	const searchSongTableColumns = useAtomValue(searchSongTableColumnsAtom);
 	const setSearchSongTableColumns = useSetAtom(

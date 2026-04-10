@@ -1,7 +1,7 @@
 import { create, fromBinary, toBinary } from "@bufbuild/protobuf";
 import {
-	SIO_MPD_COMMAND,
-	SIO_MPD_COMMAND_BULK,
+	SOCKETIO_MPD_COMMAND,
+	SOCKETIO_MPD_COMMAND_BULK,
 } from "@sola_mpd/shared/src/const/socketio.js";
 import {
 	type MpdRequest,
@@ -19,7 +19,7 @@ export class MpdClientSocketIo implements MpdClient {
 
 	command = async (req: MpdRequest): Promise<MpdResponse> => {
 		const res = await this.client.fetch(
-			SIO_MPD_COMMAND,
+			SOCKETIO_MPD_COMMAND,
 			toBinary(MpdRequestSchema, req),
 			(bytes) => fromBinary(MpdResponseSchema, bytes),
 		);
@@ -33,7 +33,7 @@ export class MpdClientSocketIo implements MpdClient {
 
 	commandBulk = async (reqs: MpdRequest[]): Promise<void> => {
 		await this.client.emit(
-			SIO_MPD_COMMAND_BULK,
+			SOCKETIO_MPD_COMMAND_BULK,
 			toBinary(
 				MpdRequestBulkSchema,
 				create(MpdRequestBulkSchema, { requests: reqs }),

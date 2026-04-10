@@ -1,8 +1,8 @@
 import { fromBinary, toBinary } from "@bufbuild/protobuf";
 import {
-	SIO_MPD_EVENT,
-	SIO_MPD_SUBSCRIBE,
-	SIO_MPD_UNSUBSCRIBE,
+	SOCKETIO_MPD_EVENT,
+	SOCKETIO_MPD_SUBSCRIBE,
+	SOCKETIO_MPD_UNSUBSCRIBE,
 } from "@sola_mpd/shared/src/const/socketio.js";
 import {
 	MpdEvent_EventType,
@@ -26,17 +26,23 @@ export class MpdListenerSocketIo implements MpdListener {
 	}
 
 	subscribe = (profile: MpdProfile): void => {
-		this.socket.on(SIO_MPD_EVENT, (msg: Uint8Array) => {
+		this.socket.on(SOCKETIO_MPD_EVENT, (msg: Uint8Array) => {
 			const event = fromBinary(MpdEventSchema, msg);
 			console.info(`MPD event: ${MpdEvent_EventType[event.eventType]}`);
 			this.callbacks.get(event.eventType)?.();
 		});
-		this.socket.emit(SIO_MPD_SUBSCRIBE, toBinary(MpdProfileSchema, profile));
+		this.socket.emit(
+			SOCKETIO_MPD_SUBSCRIBE,
+			toBinary(MpdProfileSchema, profile),
+		);
 	};
 
 	unsubscribe = (profile: MpdProfile): void => {
-		this.socket.off(SIO_MPD_EVENT);
-		this.socket.emit(SIO_MPD_UNSUBSCRIBE, toBinary(MpdProfileSchema, profile));
+		this.socket.off(SOCKETIO_MPD_EVENT);
+		this.socket.emit(
+			SOCKETIO_MPD_UNSUBSCRIBE,
+			toBinary(MpdProfileSchema, profile),
+		);
 	};
 
 	on = (event: MpdEvent_EventType, callback: () => void): void => {

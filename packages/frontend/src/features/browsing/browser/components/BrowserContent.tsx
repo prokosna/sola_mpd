@@ -15,18 +15,6 @@ import {
 import { BrowserContentView } from "../../common/components/BrowserContentView";
 import { useBrowserSongTableProps } from "../hooks/useBrowserSongTableProps";
 
-/**
- * Content component for the browser feature displaying song lists.
- *
- * Features:
- * - Song table with customizable columns
- * - Playlist management integration
- * - Column editing capabilities
- * - State persistence for table configuration
- * - Loading state handling
- *
- * @component
- */
 export function BrowserContent() {
 	const songTableState = useAtomValue(songTableStateAtom);
 	const updateSongTableState = useSetAtom(updateSongTableStateActionAtom);

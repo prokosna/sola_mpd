@@ -36,21 +36,6 @@ import {
 	syncFileExploreLoadingEffectAtom,
 } from "../states/atoms/fileExploreUiAtom";
 
-/**
- * Hook for managing file explorer song table functionality.
- *
- * Features:
- * - Queue and playlist management
- * - Plugin integration
- * - Column customization
- * - Selection and interaction handling
- * - Loading state management
- *
- * @param songsToAddToPlaylistRef - Reference for playlist operations
- * @param setIsOpenPlaylistSelectModal - Playlist modal control
- * @param setIsOpenColumnEditModal - Column edit modal control
- * @returns Song table properties or undefined if data not ready
- */
 export function useFileExploreSongTableProps(
 	songsToAddToPlaylistRef: MutableRefObject<Song[]>,
 	setIsOpenPlaylistSelectModal: (open: boolean) => void,

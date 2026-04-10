@@ -10,18 +10,6 @@ export type ColumnEditModalTagListBoxProps = {
 	handleTagSelected: (tag: Song_MetadataTag) => void;
 };
 
-/**
- * Scrollable list box for selecting song metadata tags.
- *
- * Displays available metadata tags with visual selection state
- * and hover effects. Used within the column edit modal for
- * configuring table columns.
- *
- * @param props.title List box title
- * @param props.selectedTag Currently selected tag
- * @param props.tags Available tags
- * @param props.handleTagSelected Selection callback
- */
 export function ColumnEditModalTagListBox(
 	props: ColumnEditModalTagListBoxProps,
 ): JSX.Element {

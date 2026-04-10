@@ -4,17 +4,6 @@ import { useCallback } from "react";
 import { getSongsInTableFromGrid } from "../functions/songTableState";
 import type { SongTableKey } from "../types/songTableTypes";
 
-/**
- * Creates handler for song row double-click events.
- *
- * Processes double-click events on table rows, retrieving the
- * clicked song and current song list order. Maintains grid
- * state synchronization during interactions.
- *
- * @param songsMap Song lookup map
- * @param onDoubleClick Double-click callback
- * @returns Double-click event handler
- */
 export function useHandleRowDoubleClick(
 	songsMap: Map<SongTableKey, Song>,
 	onDoubleClick: (clickedSong: Song, songs: Song[]) => Promise<void>,

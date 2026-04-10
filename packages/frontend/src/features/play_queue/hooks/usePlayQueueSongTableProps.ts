@@ -37,16 +37,6 @@ import {
 	syncPlayQueueLoadingEffectAtom,
 } from "../states/atoms/playQueueUiAtom";
 
-/**
- * Provides configuration and handlers for the play queue song table.
- *
- * Manages context menu actions for queue manipulation, playlist
- * integration, and column customization. Handles song selection,
- * loading states, and plugin-specific features through MPD client
- * and table state coordination.
- *
- * Requires MPD client and profile setup for proper operation.
- */
 export function usePlayQueueSongTableProps(
 	songsToAddToPlaylistRef: MutableRefObject<Song[]>,
 	setIsPlaylistSelectModalOpen: (open: boolean) => void,

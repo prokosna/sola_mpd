@@ -5,12 +5,6 @@ import { CenterSpinner } from "../../loading";
 import { MpdProfileForm, mpdProfileStateAtom } from "../../profile";
 import { ProfilesProfile } from "./ProfilesProfile";
 
-/**
- * MPD profiles management interface.
- *
- * Displays a table of MPD connection profiles with options
- * to add, edit, and delete profiles.
- */
 export function Profiles() {
 	const mpdProfileState = useAtomValue(mpdProfileStateAtom);
 

@@ -24,15 +24,6 @@ export type PluginAddModalRegisterProps = {
 	handleModalClosed: () => void;
 };
 
-/**
- * Plugin registration form.
- *
- * Shows info and handles registration.
- *
- * @param props.pluginToAdd Plugin to register
- * @param props.handleModalClosed Close handler
- * @returns Registration form
- */
 export function PluginAddModalRegister(props: PluginAddModalRegisterProps) {
 	const { pluginToAdd, handleModalClosed } = props;
 

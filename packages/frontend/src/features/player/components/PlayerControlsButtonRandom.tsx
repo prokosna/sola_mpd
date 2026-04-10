@@ -5,14 +5,6 @@ import { toggleRandomActionAtom } from "../states/actions/toggleRandomActionAtom
 import { playerStatusIsRandomAtom } from "../states/atoms/playerStatusAtom";
 import { PlayerControlsButton } from "./PlayerControlsButton";
 
-/**
- * Button for toggling random playback mode.
- *
- * Controls whether songs are played in random order. Updates
- * button state based on current random mode status.
- *
- * @returns Random mode toggle button
- */
 export function PlayerControlsButtonRandom() {
 	const playerStatusIsRandom = useAtomValue(playerStatusIsRandomAtom);
 	const toggleRandom = useSetAtom(toggleRandomActionAtom);

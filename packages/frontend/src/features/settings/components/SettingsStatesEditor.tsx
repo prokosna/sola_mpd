@@ -3,16 +3,6 @@ import type { GenMessage } from "@bufbuild/protobuf/codegenv2";
 import { Button, Group, Modal, Stack, Text, Textarea } from "@mantine/core";
 import { useCallback, useEffect, useRef, useState } from "react";
 
-/**
- * Props for state editor modal.
- *
- * @template T State type extending Protobuf Message
- * @property state Current state
- * @property onSave Save callback
- * @property isOpen Modal visibility
- * @property onClose Close callback
- * @property fromJson JSON parser
- */
 export type SettingsStatesEditorProps<T extends Message> = {
 	schema: GenMessage<T>;
 	state: T;
@@ -21,11 +11,6 @@ export type SettingsStatesEditorProps<T extends Message> = {
 	onClose: () => void;
 };
 
-/**
- * JSON editor modal for application state.
- *
- * @template T State type extending Protobuf Message
- */
 export function SettingsStatesEditor<T extends Message>(
 	props: SettingsStatesEditorProps<T>,
 ) {

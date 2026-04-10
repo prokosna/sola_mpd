@@ -18,18 +18,6 @@ import {
 } from "../../song_table";
 import { usePlayQueueSongTableProps } from "../hooks/usePlayQueueSongTableProps";
 
-/**
- * Displays and manages the MPD play queue.
- *
- * Renders a customizable song table with support for selection,
- * context menu actions, column editing, and playlist integration.
- * Includes loading states and modals for user interactions.
- *
- * Supports drag-and-drop reordering and multi-song operations
- * through an interactive table interface.
- *
- * @returns Play queue component with table and modals
- */
 export function PlayQueue() {
 	const songTableState = useAtomValue(songTableStateAtom);
 	const updateSongTableState = useSetAtom(updateSongTableStateActionAtom);

@@ -6,13 +6,6 @@ import {
 	pluginExecutionPropsAtom,
 } from "../states/atoms/pluginExecutionAtom";
 
-/**
- * Plugin execution progress indicator.
- *
- * Shows circular progress or error state.
- *
- * @returns Progress indicator or null
- */
 export function PluginExecutionIndicator() {
 	const { plugin } = useAtomValue(pluginExecutionPropsAtom);
 	const latestResponse = useAtomValue(pluginExecutionLatestResponseAtom);

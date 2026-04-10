@@ -6,14 +6,6 @@ import {
 	playerStatusElapsedAtom,
 } from "../states/atoms/playerStatusAtom";
 
-/**
- * Duration display component.
- *
- * Shows elapsed time and total duration of the current track.
- * Positioned absolutely and right-aligned in its container.
- *
- * @returns Duration display component
- */
 export function PlayerDuration() {
 	const playerStatusElapsed = useAtomValue(playerStatusElapsedAtom);
 	const playerStatusDuration = useAtomValue(playerStatusDurationAtom);

@@ -1,5 +1,5 @@
 import { fromBinary, toBinary } from "@bufbuild/protobuf";
-import { SIO_ADVANCED_SEARCH } from "@sola_mpd/shared/src/const/socketio.js";
+import { SOCKETIO_ADVANCED_SEARCH } from "@sola_mpd/shared/src/const/socketio.js";
 import {
 	type AdvancedSearchRequest,
 	AdvancedSearchRequestSchema,
@@ -16,7 +16,7 @@ export class AdvancedSearchClientSocketIo implements AdvancedSearchClient {
 		req: AdvancedSearchRequest,
 	): Promise<AdvancedSearchResponse> => {
 		const res = await this.client.fetch(
-			SIO_ADVANCED_SEARCH,
+			SOCKETIO_ADVANCED_SEARCH,
 			toBinary(AdvancedSearchRequestSchema, req),
 			(bytes) => fromBinary(AdvancedSearchResponseSchema, bytes),
 		);

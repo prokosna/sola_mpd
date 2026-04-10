@@ -9,15 +9,6 @@ import {
 	playerStatusElapsedAtom,
 } from "../states/atoms/playerStatusAtom";
 
-/**
- * Seek bar for track navigation.
- *
- * Displays playback progress and allows position changes via
- * slider interaction. Throttles seek commands to prevent
- * overwhelming the MPD server.
- *
- * @returns Seek bar slider component
- */
 export function PlayerSeekBar() {
 	const playerStatusElapsed = useAtomValue(playerStatusElapsedAtom);
 	const playerStatusDuration = useAtomValue(playerStatusDurationAtom);

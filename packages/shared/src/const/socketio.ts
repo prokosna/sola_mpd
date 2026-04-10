@@ -1,16 +1,16 @@
 // Socket IO
-export const SIO_MESSAGE = "sio_message";
+export const SOCKETIO_MESSAGE = "socketio_message";
 
 // Socket IO - MPD
-export const SIO_MPD_SUBSCRIBE = "sio_mpd_subscribe";
-export const SIO_MPD_UNSUBSCRIBE = "sio_mpd_unsubscribe";
-export const SIO_MPD_EVENT = "sio_mpd_event";
-export const SIO_MPD_COMMAND = "sio_mpd_command";
-export const SIO_MPD_COMMAND_BULK = "sio_mpd_command_bulk";
+export const SOCKETIO_MPD_SUBSCRIBE = "socketio_mpd_subscribe";
+export const SOCKETIO_MPD_UNSUBSCRIBE = "socketio_mpd_unsubscribe";
+export const SOCKETIO_MPD_EVENT = "socketio_mpd_event";
+export const SOCKETIO_MPD_COMMAND = "socketio_mpd_command";
+export const SOCKETIO_MPD_COMMAND_BULK = "socketio_mpd_command_bulk";
 
 // Socket IO - plugin
-export const SIO_PLUGIN_REGISTER = "sio_plugin_register";
-export const SIO_PLUGIN_EXECUTE = "sio_plugin_execute";
+export const SOCKETIO_PLUGIN_REGISTER = "socketio_plugin_register";
+export const SOCKETIO_PLUGIN_EXECUTE = "socketio_plugin_execute";
 
 // Socket IO - Advanced Search
-export const SIO_ADVANCED_SEARCH = "sio_advanced_search";
+export const SOCKETIO_ADVANCED_SEARCH = "socketio_advanced_search";

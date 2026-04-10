@@ -15,12 +15,6 @@ export type PluginListInfoCardProps = {
 	plugin: Plugin;
 };
 
-/**
- * Single plugin info card.
- *
- * @param props.plugin Plugin to display
- * @returns Info card
- */
 export function PluginListInfoCard(props: PluginListInfoCardProps) {
 	const { plugin } = props;
 

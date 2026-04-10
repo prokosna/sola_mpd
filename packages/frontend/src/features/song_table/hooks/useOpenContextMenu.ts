@@ -15,20 +15,6 @@ import type {
 	SongTableKeyType,
 } from "../types/songTableTypes";
 
-/**
- * Creates handler for song table context menu.
- *
- * Opens a context menu with song-specific actions, managing grid
- * state and column configurations. Provides access to selected
- * songs and current table state.
- *
- * @param id Context menu identifier
- * @param keyType Row key type
- * @param songsMap Song lookup map
- * @param columns Column config
- * @param isSortingEnabled Enable sorting
- * @returns Context menu handler
- */
 export function useOpenContextMenu(
 	id: string,
 	keyType: SongTableKeyType,

@@ -3,12 +3,6 @@ import { useCallback } from "react";
 
 import type { SelectListRowValue } from "../types/selectListTypes";
 
-/**
- * Handle AG Grid selection changes.
- *
- * @param onItemsSelected Selection callback
- * @returns Selection change handler
- */
 export function useHandleSelectionChange(
 	onItemsSelected: (selectedValues: SelectListRowValue[]) => Promise<void>,
 ) {

@@ -5,11 +5,6 @@ import { setIsSimilaritySearchModalOpenActionAtom } from "../states/actions/setI
 import { setSimilaritySearchTargetSongActionAtom } from "../states/actions/setSimilaritySearchTargetSongActionAtom";
 import { advancedSearchStatsAtom } from "../states/atoms/advancedSearchAtom";
 
-/**
- * Hook for similarity search context menu props.
- *
- * @returns Similarity search context menu props
- */
 export function useSimilaritySearchContextMenuProps() {
 	const advancedSearchStats = useAtomValue(advancedSearchStatsAtom);
 	const setSimilaritySearchTargetSong = useSetAtom(

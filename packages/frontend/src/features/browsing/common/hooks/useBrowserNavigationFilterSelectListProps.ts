@@ -17,16 +17,6 @@ import {
 	selectBrowserFilterValues,
 } from "../functions/browserFilter";
 
-/**
- * Custom hook for generating SelectList props for browser navigation filter.
- *
- * This hook processes the input props and returns the necessary properties
- * for rendering a SelectList component in the context of browser navigation.
- * It handles item selection, context menu generation, and other interactions.
- *
- * @param props Input properties for the browser navigation filter view
- * @returns SelectList props or undefined if data is not ready
- */
 export function useBrowserNavigationFilterSelectListProps(
 	props: BrowserNavigationFilterViewProps,
 ): SelectListProps | undefined {

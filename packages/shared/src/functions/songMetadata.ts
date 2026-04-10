@@ -17,12 +17,6 @@ import {
 	Song_MetadataValueSchema,
 } from "../models/song_pb.js";
 
-/**
- * Retrieves a song's metadata value as a string.
- * @param song - Song object containing metadata
- * @param tag - Metadata tag to retrieve
- * @returns String representation of the metadata value
- */
 export function getSongMetadataAsString(
 	song: Song,
 	tag: Song_MetadataTag,
@@ -31,12 +25,6 @@ export function getSongMetadataAsString(
 	return convertSongMetadataValueToString(metadata);
 }
 
-/**
- * Retrieves a song's metadata value as a number.
- * @param song - Song object containing metadata
- * @param tag - Metadata tag to retrieve
- * @returns Number value of the metadata, or undefined if not a number
- */
 export function getSongMetadataAsNumber(
 	song: Song,
 	tag: Song_MetadataTag,
@@ -57,18 +45,6 @@ export function getSongMetadataAsNumber(
 	return undefined;
 }
 
-/**
- * Converts a string value to a Song_MetadataValue object.
- * Automatically detects and converts to appropriate type:
- * - Empty string -> StringValue
- * - Date string -> Timestamp
- * - Integer -> Int32Value
- * - Float -> FloatValue
- * - Other -> StringValue
- *
- * @param value - String value to convert
- * @returns Song_MetadataValue object with appropriate type
- */
 export function convertStringToSongMetadataValue(
 	value: string,
 ): Song_MetadataValue {
@@ -120,18 +96,6 @@ export function convertStringToSongMetadataValue(
 	});
 }
 
-/**
- * Converts a Song_MetadataValue to its string representation.
- * Handles all possible value types:
- * - FloatValue -> number string
- * - IntValue -> number string
- * - Timestamp -> YYYY-MM-DD format
- * - StringValue -> string value or empty string
- * - AudioFormat -> formatted string
- *
- * @param value - Song_MetadataValue to convert
- * @returns String representation of the value
- */
 export function convertSongMetadataValueToString(
 	value: Song_MetadataValue,
 ): string {
@@ -151,21 +115,12 @@ export function convertSongMetadataValueToString(
 	}
 }
 
-/**
- * Converts an AudioFormat object to a human-readable string.
- * @param format - AudioFormat object to convert
- * @returns Formatted string in the format "ENCODING: CHANNELSch BITSbit SAMPLERATEHz"
- */
 export function convertAudioFormatToString(format: AudioFormat): string {
 	return `${AudioFormat_Encoding[format.encoding]}: ${format.channels}ch ${
 		format.bits
 	}bit ${format.samplingRate}Hz`;
 }
 
-/**
- * Lists all available Song_MetadataTag values except UNKNOWN.
- * @returns Array of Song_MetadataTag values
- */
 export function listAllSongMetadataTags(): Song_MetadataTag[] {
 	return Object.keys(Song_MetadataTag)
 		.filter((v) => Number.isNaN(Number(v)))
@@ -173,20 +128,6 @@ export function listAllSongMetadataTags(): Song_MetadataTag[] {
 		.filter((v) => v !== Song_MetadataTag.UNKNOWN);
 }
 
-/**
- * Compares two songs based on a specified metadata tag.
- * Handles comparison for all metadata value types:
- * - FloatValue/IntValue: numeric comparison
- * - StringValue: locale-aware string comparison
- * - Timestamp: date comparison
- * - AudioFormat: string comparison of formatted values
- *
- * @param songA - First song to compare
- * @param songB - Second song to compare
- * @param tag - Metadata tag to use for comparison
- * @param collator - Intl.Collator object for locale-aware string comparison
- * @returns -1 if songA < songB, 0 if equal, 1 if songA > songB
- */
 export function compareSongsByMetadataValue(
 	songA: Song,
 	songB: Song,
@@ -223,12 +164,6 @@ export function compareSongsByMetadataValue(
 	return 0;
 }
 
-/**
- * Compares two numbers and returns their relative order.
- * @param numA - First number to compare
- * @param numB - Second number to compare
- * @returns -1 if numA < numB, 0 if equal, 1 if numA > numB
- */
 function compareNumbers(numA: number, numB: number): number {
 	if (numA === numB) {
 		return 0;

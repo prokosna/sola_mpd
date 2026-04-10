@@ -21,12 +21,6 @@ type MpdProfileFormProps = {
 	disableCancelButton?: boolean;
 };
 
-/**
- * Form for MPD profile creation and validation.
- *
- * @param props Component props
- * @param props.onProfileCreated Success callback
- */
 export function MpdProfileForm(props: MpdProfileFormProps) {
 	const notify = useNotification();
 	const validateMpdProfile = useValidateMpdProfile();

@@ -22,22 +22,6 @@ import {
 	type SongTableRowData,
 } from "../types/songTableTypes";
 
-/**
- * Prepares data for AG Grid song table display.
- *
- * Transforms song data into AG Grid compatible format, handling
- * both compact and standard view modes. Manages sorting,
- * reordering, and touch device adaptations.
- *
- * @param songs Song list
- * @param keyType Row key type
- * @param columns Column config
- * @param isSortingEnabled Enable sorting
- * @param isReorderingEnabled Enable reordering
- * @param isCompact Compact mode flag
- * @param isTouchDevice Touch device flag
- * @returns Row data and column definitions
- */
 export function useAgGridReactData(
 	songs: Song[],
 	keyType: SongTableKeyType,

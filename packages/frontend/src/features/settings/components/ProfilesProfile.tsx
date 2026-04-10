@@ -16,11 +16,6 @@ export type ProfilesProfileProps = {
 	mpdProfileState: MpdProfileState;
 };
 
-/**
- * Single MPD profile row.
- *
- * @param props.index Profile index
- */
 export function ProfilesProfile(props: ProfilesProfileProps) {
 	const { index, profile, mpdProfileState } = props;
 

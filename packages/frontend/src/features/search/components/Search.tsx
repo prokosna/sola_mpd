@@ -10,13 +10,6 @@ import styles from "../../../ResizeHandle.module.css";
 import { SearchContent } from "./SearchContent";
 import { SearchNavigation } from "./SearchNavigation";
 
-/**
- * Main search interface component.
- *
- * Manages layout and pane resizing.
- *
- * @returns Search component
- */
 export function Search() {
 	const { defaultLayout, onLayoutChanged } = useDefaultLayout({
 		id: "search",

@@ -6,14 +6,6 @@ import {
 	playerStatusElapsedAtom,
 } from "../states/atoms/playerStatusAtom";
 
-/**
- * Compact duration display component.
- *
- * Shows elapsed and total duration in a space-efficient layout,
- * with times aligned to opposite sides of the container.
- *
- * @returns Compact duration display component
- */
 export function PlayerDurationCompact() {
 	const playerStatusElapsed = useAtomValue(playerStatusElapsedAtom);
 	const playerStatusDuration = useAtomValue(playerStatusDurationAtom);

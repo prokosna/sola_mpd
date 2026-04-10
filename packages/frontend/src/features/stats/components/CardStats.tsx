@@ -8,14 +8,6 @@ import { useSongStatsProps } from "../hooks/useSongStatsProps";
 import { CardStatsDatabaseButton } from "./CardStatsDatabaseButton";
 import { CardStatsNumber } from "./CardStatsNumber";
 
-/**
- * CardStats component displays various statistics about the music library.
- * It shows information such as total songs, artists, albums, and duration.
- * When multiple songs are selected, it switches to display stats for the selection.
- * It also includes a button to update the MPD database.
- *
- * @returns {JSX.Element} The rendered CardStats component
- */
 export function CardStats() {
 	const selectedSongs = useAtomValue(selectedSongsAtom);
 	const showSelectedStats = selectedSongs.length >= 2;

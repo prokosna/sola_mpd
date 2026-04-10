@@ -5,13 +5,6 @@ import { useCallback } from "react";
 import type { MpdClient } from "../../mpd";
 import { addPlaylist } from "../functions/playlistOperations";
 
-/**
- * Hook for adding playlists to MPD server.
- *
- * @param mpdClient Optional client instance
- * @param mpdProfile Optional connection details
- * @returns Callback for adding playlist
- */
 export function useAddPlaylist(mpdClient?: MpdClient, mpdProfile?: MpdProfile) {
 	return useCallback(
 		(playlist: Playlist) => {

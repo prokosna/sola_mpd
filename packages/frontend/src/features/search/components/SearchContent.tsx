@@ -12,13 +12,6 @@ import { useHandleSearchColumnsUpdated } from "../hooks/useHandleSearchColumnsUp
 import { useSearchSongTableProps } from "../hooks/useSearchSongTableProps";
 import { searchSongTableColumnsAtom } from "../states/atoms/searchEditAtom";
 
-/**
- * Search content area component.
- *
- * Manages song table, column editing, and playlist selection.
- *
- * @returns Content component
- */
 export function SearchContent() {
 	const columns = useAtomValue(searchSongTableColumnsAtom);
 	const handleSearchColumnsUpdated = useHandleSearchColumnsUpdated();

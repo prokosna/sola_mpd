@@ -19,14 +19,6 @@ import { usePlaylistSelectModal } from "../hooks/usePlaylistSelectModalProps";
 import { usePlaylistSongTableProps } from "../hooks/usePlaylistSongTableProps";
 import { PlaylistSelectModal } from "./PlaylistSelectModal";
 
-/**
- * Content area of the playlist view.
- *
- * Displays song table with column customization and
- * playlist selection capabilities.
- *
- * @returns Content component
- */
 export function PlaylistContent() {
 	const songTableState = useAtomValue(songTableStateAtom);
 	const updateSongTableState = useSetAtom(updateSongTableStateActionAtom);

@@ -10,13 +10,6 @@ import { useMemo } from "react";
 import type { CardStatsNumberProps } from "../components/CardStatsNumber";
 import { statsAtom } from "../states/atoms/statsAtom";
 
-/**
- * Custom hook to generate props for duration statistics.
- *
- * @param showSelectedStats - Boolean flag to determine if stats for selected songs should be shown.
- * @param selectedSongs - Array of selected Song objects.
- * @returns CardStatsNumberProps object containing duration statistics.
- */
 export function useDurationStatsProps(
 	showSelectedStats: boolean,
 	selectedSongs: Song[],

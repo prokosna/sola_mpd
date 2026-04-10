@@ -4,12 +4,6 @@ import { useMemo } from "react";
 import { pathnameAtom } from "../../location/states/atoms/locationAtom";
 import type { SideNavigationItemProps } from "../components/SideNavigationItem";
 
-/**
- * Update navigation items' selection state based on URL.
- *
- * @param baseItems Navigation items
- * @returns Items with updated selection states
- */
 export function useSideNavigationItems(
 	baseItems: SideNavigationItemProps[],
 ): SideNavigationItemProps[] {

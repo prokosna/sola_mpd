@@ -1,7 +1,7 @@
 import { fromBinary, toBinary } from "@bufbuild/protobuf";
 import {
-	SIO_MESSAGE,
-	SIO_MPD_EVENT,
+	SOCKETIO_MESSAGE,
+	SOCKETIO_MPD_EVENT,
 } from "@sola_mpd/shared/src/const/socketio.js";
 import { MpdEventSchema } from "@sola_mpd/shared/src/models/mpd/mpd_event_pb.js";
 import type { MpdProfile } from "@sola_mpd/shared/src/models/mpd/mpd_profile_pb.js";
@@ -51,7 +51,9 @@ export class MpdMessageHandlerSocketIo implements MpdMessageHandler {
 				msg,
 				onEvent: (event) => {
 					const room = `${profile.host}:${profile.port}`;
-					this.io.to(room).emit(SIO_MPD_EVENT, toBinary(MpdEventSchema, event));
+					this.io
+						.to(room)
+						.emit(SOCKETIO_MPD_EVENT, toBinary(MpdEventSchema, event));
 				},
 				mpdClient: mpdClientMpd3,
 			});
@@ -63,7 +65,7 @@ export class MpdMessageHandlerSocketIo implements MpdMessageHandler {
 			console.info(`New client registered: ${id} for ${room}`);
 		} catch (err) {
 			console.error(err);
-			connection.emit(SIO_MESSAGE, err);
+			connection.emit(SOCKETIO_MESSAGE, err);
 		}
 	}
 
@@ -94,7 +96,7 @@ export class MpdMessageHandlerSocketIo implements MpdMessageHandler {
 			}
 		} catch (err) {
 			console.error(err);
-			connection.emit(SIO_MESSAGE, err);
+			connection.emit(SOCKETIO_MESSAGE, err);
 		}
 	}
 

@@ -16,13 +16,6 @@ import { updateSavedSearchesActionAtom } from "../states/actions/updateSavedSear
 import { savedSearchesAtom } from "../states/atoms/savedSearchesAtom";
 import type { SearchFormValues } from "../types/searchTypes";
 
-/**
- * Hook for saved searches SelectList props.
- *
- * Handles selection, context menu, and data loading.
- *
- * @returns SelectList props or undefined
- */
 export function useSavedSearchesSelectListProps({
 	form,
 }: {

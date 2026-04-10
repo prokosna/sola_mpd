@@ -10,9 +10,6 @@ import {
 	filteredBrowserFilterValuesMapAtom,
 } from "../states/atoms/browserFiltersAtom";
 
-/**
- * Component for rendering the browser navigation.
- */
 export function BrowserNavigation() {
 	const browserFilters = useAtomValue(browserFiltersAtom);
 	const browserFilterValues = useAtomValue(filteredBrowserFilterValuesMapAtom);

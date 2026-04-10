@@ -47,17 +47,6 @@ import {
 	syncPlaylistLoadingEffectAtom,
 } from "../states/atoms/playlistUiAtom";
 
-/**
- * Hook for playlist song table props.
- *
- * Manages table state, context menus, and song selection
- * for playlist content display.
- *
- * @param songsToAddToPlaylistRef Songs for playlist addition
- * @param setIsPlaylistSelectModalOpen Playlist modal control
- * @param setIsColumnEditModalOpen Column modal control
- * @returns Table props or undefined
- */
 export function usePlaylistSongTableProps(
 	songsToAddToPlaylistRef: MutableRefObject<Song[]>,
 	setIsPlaylistSelectModalOpen: (open: boolean) => void,

@@ -5,13 +5,6 @@ import { SelectList } from "../../select_list";
 import { useSavedSearchesSelectListProps } from "../hooks/useSavedSearchesSelectListProps";
 import type { SearchFormValues } from "../types/searchTypes";
 
-/**
- * List of saved searches.
- *
- * Uses SelectList for display and loading states.
- *
- * @returns Saved queries component
- */
 export function SearchNavigationSavedQueries({
 	form,
 }: {

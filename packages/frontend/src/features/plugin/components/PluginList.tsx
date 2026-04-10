@@ -9,12 +9,6 @@ type PluginListProps = {
 	onOpen: () => void;
 };
 
-/**
- * Plugin list with add button.
- *
- * @param props.onOpen Add button click handler
- * @returns Plugin list view
- */
 export function PluginList(props: PluginListProps) {
 	const pluginState = useAtomValue(pluginAtom);
 

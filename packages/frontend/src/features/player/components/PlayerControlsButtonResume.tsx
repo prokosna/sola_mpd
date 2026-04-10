@@ -7,15 +7,6 @@ import { currentSongAtom } from "../states/atoms/currentSongAtom";
 import { playerStatusPlaybackStateAtom } from "../states/atoms/playerStatusAtom";
 import { PlayerControlsButton } from "./PlayerControlsButton";
 
-/**
- * Button for toggling play/pause state.
- *
- * Controls playback of the current track, switching between
- * play and pause states. Updates icon and label based on
- * current playback status.
- *
- * @returns Play/pause toggle button
- */
 export function PlayerControlsButtonResume() {
 	const currentSong = useAtomValue(currentSongAtom);
 	const playerStatusPlaybackState = useAtomValue(playerStatusPlaybackStateAtom);

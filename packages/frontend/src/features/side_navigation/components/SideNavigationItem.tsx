@@ -4,15 +4,6 @@ import type { ReactNode } from "react";
 import { useNavigate } from "react-router";
 import { incrementTransitionCounterActionAtom } from "../../location/states/actions/incrementTransitionCounterActionAtom";
 
-/**
- * Navigation item props.
- *
- * @property name Item text
- * @property icon Item icon
- * @property link Target path
- * @property isSelected Selection state
- * @property isCompact Compact mode flag
- */
 export type SideNavigationItemProps = {
 	name: string;
 	icon: ReactNode;
@@ -21,11 +12,6 @@ export type SideNavigationItemProps = {
 	isCompact: boolean;
 };
 
-/**
- * Navigation item with icon and optional text.
- *
- * @param props See SideNavigationItemProps
- */
 export function SideNavigationItem(props: SideNavigationItemProps) {
 	const navigate = useNavigate();
 	const incrementTransitionCounter = useSetAtom(

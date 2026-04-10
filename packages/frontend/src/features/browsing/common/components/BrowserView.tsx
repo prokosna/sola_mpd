@@ -15,15 +15,6 @@ type BrowserViewProps = {
 	browserContent: JSX.Element;
 };
 
-/**
- * Renders the browser view component.
- *
- * This component displays the main browser interface, including navigation breadcrumbs,
- * navigation panel, and content area. It handles layout adjustments and updates.
- *
- * @param props The properties passed to the BrowserView component
- * @returns A React component representing the browser view
- */
 export function BrowserView(props: BrowserViewProps) {
 	const scheme = useComputedColorScheme();
 	const { defaultLayout, onLayoutChanged } = useDefaultLayout({

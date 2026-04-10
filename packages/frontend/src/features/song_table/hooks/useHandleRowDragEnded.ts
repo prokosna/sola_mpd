@@ -4,17 +4,6 @@ import { useCallback } from "react";
 import { getSongsInTableFromGrid } from "../functions/songTableState";
 import type { SongTableKey } from "../types/songTableTypes";
 
-/**
- * Creates handler for song row drag-and-drop events.
- *
- * Processes row reordering events, retrieving the updated song
- * order from the grid. Ensures song list state stays synchronized
- * with visual row order.
- *
- * @param songsMap Song lookup map
- * @param onSongsReordered Reorder callback
- * @returns Drag end event handler
- */
 export function useHandleRowDragEnded(
 	songsMap: Map<SongTableKey, Song>,
 	onSongsReordered: (orderedSongs: Song[]) => Promise<void>,

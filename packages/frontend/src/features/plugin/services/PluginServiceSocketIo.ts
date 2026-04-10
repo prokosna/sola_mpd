@@ -1,7 +1,7 @@
 import { create, fromBinary, toBinary } from "@bufbuild/protobuf";
 import {
-	SIO_PLUGIN_EXECUTE,
-	SIO_PLUGIN_REGISTER,
+	SOCKETIO_PLUGIN_EXECUTE,
+	SOCKETIO_PLUGIN_REGISTER,
 } from "@sola_mpd/shared/src/const/socketio.js";
 import type {
 	PluginExecuteRequest,
@@ -32,7 +32,7 @@ export class PluginServiceSocketIo implements PluginService {
 			request: req,
 		});
 		const bytes = toBinary(PluginRegisterRequestWrapperSchema, reqWrapper);
-		const data = await this.client.emit(SIO_PLUGIN_REGISTER, bytes);
+		const data = await this.client.emit(SOCKETIO_PLUGIN_REGISTER, bytes);
 		const resp = fromBinary(PluginRegisterResponseWrapperSchema, data);
 		switch (resp.result.case) {
 			case "response":
@@ -78,7 +78,7 @@ export class PluginServiceSocketIo implements PluginService {
 			}
 		});
 
-		this.client.emit(SIO_PLUGIN_EXECUTE, bytes);
+		this.client.emit(SOCKETIO_PLUGIN_EXECUTE, bytes);
 
 		return subject;
 	};

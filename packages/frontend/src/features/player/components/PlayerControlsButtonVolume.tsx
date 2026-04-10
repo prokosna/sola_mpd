@@ -11,15 +11,6 @@ import { useIsCompactMode } from "../../user_device";
 import { setVolumeActionAtom } from "../states/actions/setVolumeActionAtom";
 import { playerVolumeAtom } from "../states/atoms/playerVolumeAtom";
 
-/**
- * Volume control component with button and slider.
- *
- * Provides volume adjustment and mute/unmute functionality.
- * Adapts layout based on compact mode setting and updates
- * appearance based on current volume level.
- *
- * @returns Volume control component
- */
 export function PlayerControlsButtonVolume() {
 	const playerVolume = useAtomValue(playerVolumeAtom);
 	const setVolume = useSetAtom(setVolumeActionAtom);

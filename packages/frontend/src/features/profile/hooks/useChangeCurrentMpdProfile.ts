@@ -5,11 +5,6 @@ import { UpdateMode } from "../../../types/stateTypes";
 import { updateCurrentMpdProfileActionAtom } from "../states/actions/updateCurrentMpdProfileActionAtom";
 import { mpdProfileStateAtom } from "../states/atoms/mpdProfileAtom";
 
-/**
- * Hook for switching active MPD profile.
- *
- * @returns Profile update function
- */
 export function useChangeCurrentMpdProfile() {
 	const mpdProfileState = useAtomValue(mpdProfileStateAtom);
 	const updateCurrentMpdProfile = useSetAtom(updateCurrentMpdProfileActionAtom);

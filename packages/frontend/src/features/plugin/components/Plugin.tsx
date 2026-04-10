@@ -3,13 +3,6 @@ import { useDisclosure } from "@mantine/hooks";
 import { PluginAddModal } from "./PluginAddModal";
 import { PluginList } from "./PluginList";
 
-/**
- * Main plugin management component.
- *
- * Shows plugin list and add modal.
- *
- * @returns Plugin component
- */
 export function Plugin() {
 	const [isOpen, { open, close }] = useDisclosure();
 

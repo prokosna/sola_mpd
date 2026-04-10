@@ -18,18 +18,6 @@ import {
 } from "../../song_table";
 import { useAllSongsSongTableProps } from "../hooks/useAllSongsSongTableProps";
 
-/**
- * AllSongs component for displaying and managing the complete song library.
- *
- * Features:
- * - Customizable song table with sortable columns
- * - Playlist management integration
- * - Column editing capabilities
- * - State persistence
- * - Loading state handling
- *
- * @component
- */
 export function AllSongs() {
 	const songTableState = useAtomValue(songTableStateAtom);
 	const updateSongTableState = useSetAtom(updateSongTableStateActionAtom);

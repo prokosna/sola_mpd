@@ -3,27 +3,6 @@ import { IconSearch, IconX } from "@tabler/icons-react";
 import { useRef } from "react";
 import { useHandleGlobalFilterTextChangeWithDebounce } from "../hooks/useHandleGlobalFilterTextChangeWithDebounce";
 
-/**
- * Search input component for global song filtering.
- *
- * Features:
- * - Debounced text input handling
- * - Clear button functionality
- * - Search icon indication
- * - Responsive width constraints
- * - Theme-aware styling
- *
- * Layout:
- * - Left: Search icon
- * - Center: Text input field
- * - Right: Clear button
- *
- * Performance:
- * - Debounced input handling to prevent excessive updates
- * - Ref-based input value management
- *
- * @returns Rendered search input component
- */
 export function GlobalFilterBox() {
 	const handleGlobalFilterTextChange =
 		useHandleGlobalFilterTextChangeWithDebounce();

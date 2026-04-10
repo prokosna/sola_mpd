@@ -6,15 +6,6 @@ import { useCallback } from "react";
 import { useNotification } from "../../../lib/mantine/hooks/useNotification";
 import type { SettingsStatesEditorProps } from "../components/SettingsStatesEditor";
 
-/**
- * Manage settings state editor.
- *
- * @template T State type extending Protobuf Message
- * @param state Current state
- * @param update Update callback
- * @param fromJson JSON parser
- * @returns [Modal opener, Editor props]
- */
 export function useSettingsStateEditorProps<T extends Message>(
 	schema: GenMessage<T>,
 	state: T | undefined,

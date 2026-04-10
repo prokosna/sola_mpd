@@ -30,11 +30,6 @@ import {
 	type SideNavigationItemProps,
 } from "./SideNavigationItem";
 
-/**
- * Navigation sidebar with app sections.
- *
- * @param props.isCompact Compact mode flag
- */
 export function SideNavigation({ isCompact }: { isCompact: boolean }) {
 	const advancedSearchStats = useAtomValue(advancedSearchStatsAtom);
 

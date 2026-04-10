@@ -23,15 +23,6 @@ export type PlaylistSelectModalProps = {
 	onCancel: () => Promise<void>;
 };
 
-/**
- * Modal for playlist selection or creation.
- *
- * @param props Modal control props
- * @param props.isOpen Visibility state
- * @param props.onOk Selection callback
- * @param props.onCancel Cancel callback
- * @returns Modal component
- */
 export function PlaylistSelectModal(props: PlaylistSelectModalProps) {
 	const playlists = useAtomValue(playlistsAtom);
 	const addPlaylist = useAddPlaylist();

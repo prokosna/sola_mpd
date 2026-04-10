@@ -36,14 +36,6 @@ import {
 	syncRecentlyAddedLoadingEffectAtom,
 } from "../states/atoms/recentlyAddedUiAtom";
 
-/**
- * Get props for recently added song table.
- *
- * @param songsToAddToPlaylistRef Songs ref
- * @param setIsPlaylistSelectModalOpen Modal open setter
- * @param setIsColumnEditModalOpen Column edit setter
- * @returns Table props
- */
 export function useRecentlyAddedSongTableProps(
 	songsToAddToPlaylistRef: MutableRefObject<Song[]>,
 	setIsPlaylistSelectModalOpen: (open: boolean) => void,

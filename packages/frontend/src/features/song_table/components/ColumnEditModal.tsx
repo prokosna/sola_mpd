@@ -26,18 +26,6 @@ export type ColumnEditModalProps = {
 	handleModalDisposed: () => Promise<void>;
 };
 
-/**
- * Modal interface for customizing song table columns.
- *
- * Provides drag-and-drop functionality for reordering columns and
- * managing which metadata tags are displayed. Maintains column
- * widths and sorting configurations during updates.
- *
- * @param props.columns Current columns configuration
- * @param props.isOpen Modal visibility state
- * @param props.handleColumnsUpdated Column update callback
- * @param props.handleModalDisposed Modal close callback
- */
 export function ColumnEditModal(props: ColumnEditModalProps): JSX.Element {
 	// Available tags in use
 	const [activeTagsState, setActiveTagsState] = useState<Song_MetadataTag[]>(

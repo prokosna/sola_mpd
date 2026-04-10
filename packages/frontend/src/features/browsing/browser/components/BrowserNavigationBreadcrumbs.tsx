@@ -7,9 +7,6 @@ import { BrowserNavigationBreadcrumbsView } from "../../common/components/Browse
 import { updateBrowserFiltersActionAtom } from "../states/actions/updateBrowserFiltersActionAtom";
 import { browserFiltersAtom } from "../states/atoms/browserFiltersAtom";
 
-/**
- * Renders the navigation breadcrumbs for the browser.
- */
 export function BrowserNavigationBreadcrumbs() {
 	const browserFilters = useAtomValue(browserFiltersAtom);
 	const updateBrowserFiltersAction = useSetAtom(updateBrowserFiltersActionAtom);

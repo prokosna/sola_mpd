@@ -7,12 +7,6 @@ import { removePluginFromState } from "../functions/pluginRegistration";
 import { updatePluginActionAtom } from "../states/actions/updatePluginActionAtom";
 import { pluginAtom } from "../states/atoms/pluginAtom";
 
-/**
- * Handle plugin removal.
- *
- * @param plugin Plugin to remove
- * @returns Remove handler
- */
 export function useHandlePluginRemoved(plugin: Plugin) {
 	const notify = useNotification();
 

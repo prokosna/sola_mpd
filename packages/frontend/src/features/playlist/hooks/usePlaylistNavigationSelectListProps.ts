@@ -12,14 +12,6 @@ import {
 	selectedPlaylistAtom,
 } from "../states/atoms/playlistAtom";
 
-/**
- * Hook for playlist navigation list props.
- *
- * Provides selection and context menu functionality
- * for playlist management.
- *
- * @returns SelectList props or undefined
- */
 export function usePlaylistNavigationSelectListProps() {
 	const notify = useNotification();
 

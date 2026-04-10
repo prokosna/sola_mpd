@@ -10,14 +10,6 @@ import styles from "../../../ResizeHandle.module.css";
 import { PlaylistContent } from "./PlaylistContent";
 import { PlaylistNavigation } from "./PlaylistNavigation";
 
-/**
- * Main playlist component with resizable split pane layout.
- *
- * Provides navigation sidebar and content area for playlist
- * management. Persists layout state and pane widths.
- *
- * @returns Playlist view component
- */
 export function Playlist() {
 	const { defaultLayout, onLayoutChanged } = useDefaultLayout({
 		id: "playlist",

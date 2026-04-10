@@ -22,15 +22,6 @@ type PluginExecutionModalStartProps = {
 	songs: Song[];
 };
 
-/**
- * Plugin execution start view.
- *
- * Handles parameter input and execution.
- *
- * @param props.plugin Target plugin
- * @param props.songs Songs to process
- * @returns Start view
- */
 export function PluginExecutionModalStart(
 	props: PluginExecutionModalStartProps,
 ) {

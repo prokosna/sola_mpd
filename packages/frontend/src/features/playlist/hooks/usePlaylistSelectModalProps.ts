@@ -6,14 +6,6 @@ import { useCallback, useRef, useState } from "react";
 import { useNotification } from "../../../lib/mantine/hooks/useNotification";
 import { addSongsToPlaylistActionAtom } from "../states/actions/addSongsToPlaylistActionAtom";
 
-/**
- * Hook for playlist selection modal.
- *
- * Manages modal state and song selection for adding
- * songs to playlists.
- *
- * @returns Modal state and handlers
- */
 export function usePlaylistSelectModal() {
 	const notify = useNotification();
 

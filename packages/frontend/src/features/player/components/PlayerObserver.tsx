@@ -4,15 +4,6 @@ import { useEffect, useRef } from "react";
 import { refreshCurrentSongActionAtom } from "../states/actions/refreshCurrentSongActionAtom";
 import { refreshPlayerStatusActionAtom } from "../states/actions/refreshPlayerStatusActionAtom";
 
-/**
- * Player state update manager.
- *
- * Polls MPD server every second to refresh current song and
- * player status. Uses interval-based polling with cleanup
- * on unmount to prevent memory leaks.
- *
- * @returns null - Non-rendering component
- */
 export function PlayerObserver() {
 	const refreshCurrentSong = useSetAtom(refreshCurrentSongActionAtom);
 	const refreshPlayerStatus = useSetAtom(refreshPlayerStatusActionAtom);

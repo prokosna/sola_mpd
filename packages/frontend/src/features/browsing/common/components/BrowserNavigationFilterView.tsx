@@ -17,16 +17,6 @@ export type BrowserNavigationFilterViewProps = {
 	) => Promise<void>;
 };
 
-/**
- * Renders a filter view for browser navigation.
- *
- * This component displays a list of selectable items for a specific browser filter.
- * It uses the SelectList component to render the filter options and handles
- * the loading state with a skeleton placeholder.
- *
- * @param props Contains the necessary data and functions for the filter view
- * @returns A React component displaying the browser navigation filter
- */
 export function BrowserNavigationFilterView(
 	props: BrowserNavigationFilterViewProps,
 ) {

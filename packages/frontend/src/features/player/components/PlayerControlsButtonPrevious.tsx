@@ -5,14 +5,6 @@ import { previousActionAtom } from "../states/actions/previousActionAtom";
 import { currentSongAtom } from "../states/atoms/currentSongAtom";
 import { PlayerControlsButton } from "./PlayerControlsButton";
 
-/**
- * Button for playing the previous track.
- *
- * Sends the 'previous' command to MPD when clicked. Disabled
- * when no song is currently playing.
- *
- * @returns Previous track button
- */
 export function PlayerControlsButtonPrevious() {
 	const currentSong = useAtomValue(currentSongAtom);
 	const previous = useSetAtom(previousActionAtom);

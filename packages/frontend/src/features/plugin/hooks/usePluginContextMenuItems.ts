@@ -15,13 +15,6 @@ import {
 	pluginExecutionPropsAtom,
 } from "../states/atoms/pluginExecutionAtom";
 
-/**
- * Get plugin context menu items.
- *
- * @param pluginType Target plugin type
- * @param songTableKeyType Table key type
- * @returns Menu items array
- */
 export function usePluginContextMenuItems(
 	pluginType: Plugin_PluginType,
 	songTableKeyType: SongTableKeyType,

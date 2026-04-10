@@ -20,14 +20,6 @@ type PluginExecutionModalProgressProps = {
 	plugin: Plugin;
 };
 
-/**
- * Plugin execution progress view.
- *
- * Shows status, progress, and warnings.
- *
- * @param props.plugin Plugin being executed
- * @returns Progress view
- */
 export function PluginExecutionModalProgress(
 	props: PluginExecutionModalProgressProps,
 ) {

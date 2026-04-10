@@ -6,9 +6,6 @@ import { Locale } from "./Locale";
 import { Profiles } from "./Profiles";
 import { SettingsStates } from "./SettingsStates";
 
-/**
- * Settings interface with profiles and preferences tabs.
- */
 export function Settings() {
 	const advancedSearchStats = useAtomValue(advancedSearchStatsAtom);
 

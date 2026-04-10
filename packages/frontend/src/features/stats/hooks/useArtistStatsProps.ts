@@ -9,13 +9,6 @@ import type { CardStatsNumberProps } from "../components/CardStatsNumber";
 import { getMetadataValueCountDistinct } from "../functions/statsCalculation";
 import { statsAtom } from "../states/atoms/statsAtom";
 
-/**
- * Custom hook to generate props for artist statistics.
- *
- * @param showSelectedStats - Boolean flag to determine if stats for selected songs should be shown.
- * @param selectedSongs - Array of selected Song objects.
- * @returns CardStatsNumberProps object containing artist statistics.
- */
 export function useArtistStatsProps(
 	showSelectedStats: boolean,
 	selectedSongs: Song[],

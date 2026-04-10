@@ -30,16 +30,6 @@ import { searchVisibleSongsAtom } from "../states/atoms/searchSongsAtom";
 import { isSearchLoadingAtom } from "../states/atoms/searchUiAtom";
 import { useHandleSearchColumnsUpdated } from "./useHandleSearchColumnsUpdated";
 
-/**
- * Hook for search song table props.
- *
- * Manages state and callbacks for search table.
- *
- * @param songsToAddToPlaylistRef Ref for playlist songs
- * @param setIsPlaylistSelectModalOpen Playlist modal control
- * @param setIsColumnEditModalOpen Column modal control
- * @returns Table props or undefined
- */
 export function useSearchSongTableProps(
 	songsToAddToPlaylistRef: MutableRefObject<Song[]>,
 	setIsPlaylistSelectModalOpen: (open: boolean) => void,

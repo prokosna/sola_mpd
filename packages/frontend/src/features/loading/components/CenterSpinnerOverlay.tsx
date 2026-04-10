@@ -9,21 +9,6 @@ export interface CenterSpinnerOverlayProps {
 	type?: "bars" | "dots";
 }
 
-/**
- * A component that displays a large, centered loading spinner.
- *
- * Features:
- * - Fixed size (24px) spinner with thick lines (6px)
- * - Uses brand color for consistency
- * - Centered both horizontally and vertically
- * - Takes up full width and height of container
- *
- * @component
- * @param props.children The child component to display
- * @param props.color The color of the spinner
- * @param props.size The size of the spinner
- * @param props.type The type of the spinner
- */
 export function CenterSpinnerOverlay(props: CenterSpinnerOverlayProps) {
 	const params = Object.assign(
 		{

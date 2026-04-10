@@ -36,20 +36,6 @@ import {
 	syncAllSongsLoadingEffectAtom,
 } from "../states/atoms/allSongsUiAtom";
 
-/**
- * Custom hook for managing All Songs Table properties and interactions.
- *
- * Features:
- * - Context menu integration (queue and playlist management)
- * - Column customization
- * - Song selection handling
- * - Loading state management
- *
- * @param songsToAddToPlaylistRef - Reference for playlist addition
- * @param setIsPlaylistSelectModalOpen - Playlist modal control
- * @param setIsColumnEditModalOpen - Column edit modal control
- * @returns Table properties or undefined if data not ready
- */
 export function useAllSongsSongTableProps(
 	songsToAddToPlaylistRef: MutableRefObject<Song[]>,
 	setIsPlaylistSelectModalOpen: (open: boolean) => void,

@@ -3,20 +3,6 @@ import { useCallback } from "react";
 
 import type { ColumnEditModalProps } from "../components/ColumnEditModal";
 
-/**
- * Creates props for column edit modal component.
- *
- * Manages modal state and column updates, ensuring proper cleanup
- * and state synchronization when changes are made or modal is
- * closed.
- *
- * @param isOpen Modal visibility
- * @param columns Current columns
- * @param setIsOpenColumnEditModal Modal state setter
- * @param onColumnsUpdated Column update handler
- * @param onModalDisposed Modal cleanup handler
- * @returns Modal component props
- */
 export function useColumnEditModalProps(
 	isOpen: boolean,
 	columns: SongTableColumn[],

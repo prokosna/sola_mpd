@@ -17,14 +17,6 @@ type BrowserContentViewProps = {
 	columnEditModalProps?: ColumnEditModalProps;
 };
 
-/**
- * Renders the content view for the browser, including a song table, playlist selection modal, and column edit modal.
- *
- * This component handles the display of songs in a table format, allows for playlist management,
- * and provides column editing capabilities. It also manages loading states.
- *
- * @param props The properties passed to the BrowserContentView component
- */
 export function BrowserContentView(props: BrowserContentViewProps) {
 	const { songTableProps, playlistSelectModalProps, columnEditModalProps } =
 		props;

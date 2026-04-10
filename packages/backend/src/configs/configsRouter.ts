@@ -1,7 +1,5 @@
 import express, { type Request, type Response, Router } from "express";
 
-import { wrap } from "../utils/wrap.js";
-
 import {
 	readBrowserState,
 	readCommonSongTableState,
@@ -30,94 +28,76 @@ configsRouter.use((_req, res, next) => {
 	next();
 });
 
-configsRouter.get(
-	"/browser_state",
-	wrap(async (_req: Request, res: Response) => {
-		res.send(readBrowserState());
-	}),
-);
+configsRouter.get("/browser_state", async (_req: Request, res: Response) => {
+	res.send(readBrowserState());
+});
 
-configsRouter.post(
-	"/browser_state",
-	wrap(async (req: Request, res: Response) => {
-		updateBrowserState(req.body as Buffer);
-		res.end();
-	}),
-);
+configsRouter.post("/browser_state", async (req: Request, res: Response) => {
+	updateBrowserState(req.body as Buffer);
+	res.end();
+});
 
 configsRouter.get(
 	"/common_song_table_state",
-	wrap(async (_req: Request, res: Response) => {
+	async (_req: Request, res: Response) => {
 		res.send(readCommonSongTableState());
-	}),
+	},
 );
 
 configsRouter.post(
 	"/common_song_table_state",
-	wrap(async (req: Request, res: Response) => {
+	async (req: Request, res: Response) => {
 		updateCommonSongTableState(req.body as Buffer);
 		res.end();
-	}),
+	},
 );
 
 configsRouter.get(
 	"/mpd_profile_state",
-	wrap(async (_req: Request, res: Response) => {
+	async (_req: Request, res: Response) => {
 		res.send(readMpdProfileState());
-	}),
+	},
 );
 
 configsRouter.post(
 	"/mpd_profile_state",
-	wrap(async (req: Request, res: Response) => {
+	async (req: Request, res: Response) => {
 		updateMpdProfileState(req.body as Buffer);
 		res.end();
-	}),
+	},
 );
 
-configsRouter.get(
-	"/plugin_state",
-	wrap(async (_req: Request, res: Response) => {
-		res.send(readPluginState());
-	}),
-);
+configsRouter.get("/plugin_state", async (_req: Request, res: Response) => {
+	res.send(readPluginState());
+});
 
-configsRouter.post(
-	"/plugin_state",
-	wrap(async (req: Request, res: Response) => {
-		updatePluginState(req.body as Buffer);
-		res.end();
-	}),
-);
+configsRouter.post("/plugin_state", async (req: Request, res: Response) => {
+	updatePluginState(req.body as Buffer);
+	res.end();
+});
 
-configsRouter.get(
-	"/saved_searches",
-	wrap(async (_req: Request, res: Response) => {
-		res.send(readSavedSearches());
-	}),
-);
+configsRouter.get("/saved_searches", async (_req: Request, res: Response) => {
+	res.send(readSavedSearches());
+});
 
-configsRouter.post(
-	"/saved_searches",
-	wrap(async (req: Request, res: Response) => {
-		updateSavedSearches(req.body as Buffer);
-		res.end();
-	}),
-);
+configsRouter.post("/saved_searches", async (req: Request, res: Response) => {
+	updateSavedSearches(req.body as Buffer);
+	res.end();
+});
 
 configsRouter.get(
 	"/recently_added_state",
-	wrap(async (_req: Request, res: Response) => {
+	async (_req: Request, res: Response) => {
 		res.send(readRecentlyAddedState());
-	}),
+	},
 );
 
 configsRouter.post(
 	"/recently_added_state",
-	wrap(async (req: Request, res: Response) => {
+	async (req: Request, res: Response) => {
 		updateRecentlyAddedState(req.body as Buffer);
 		res.end();
-	}),
+	},
 );
 
 export default configsRouter;

@@ -5,14 +5,6 @@ import { toggleRepeatActionAtom } from "../states/actions/toggleRepeatActionAtom
 import { playerStatusIsRepeatAtom } from "../states/atoms/playerStatusAtom";
 import { PlayerControlsButton } from "./PlayerControlsButton";
 
-/**
- * Button for toggling repeat mode.
- *
- * Controls whether the playlist repeats after reaching the end.
- * Updates button state based on current repeat mode status.
- *
- * @returns Repeat mode toggle button
- */
 export function PlayerControlsButtonRepeat() {
 	const playerStatusIsRepeat = useAtomValue(playerStatusIsRepeatAtom);
 	const toggleRepeat = useSetAtom(toggleRepeatActionAtom);

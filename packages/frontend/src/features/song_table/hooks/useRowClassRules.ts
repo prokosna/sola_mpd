@@ -11,16 +11,6 @@ import type {
 	SongTableRowData,
 } from "../types/songTableTypes";
 
-/**
- * Creates row class rules for highlighting currently playing song.
- * Applies 'ag-font-weight-bold' class to the row
- * containing the currently playing song. Uses song key matching
- * for identification.
- *
- * @param keyType Song key type
- * @param songsMap Song lookup map
- * @returns Row class rules object
- */
 export function useRowClassRules(
 	keyType: SongTableKeyType,
 	songsMap: Map<SongTableKey, Song>,

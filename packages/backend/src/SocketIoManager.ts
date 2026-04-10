@@ -1,12 +1,12 @@
 import { create, toBinary } from "@bufbuild/protobuf";
 import {
-	SIO_ADVANCED_SEARCH,
-	SIO_MPD_COMMAND,
-	SIO_MPD_COMMAND_BULK,
-	SIO_MPD_SUBSCRIBE,
-	SIO_MPD_UNSUBSCRIBE,
-	SIO_PLUGIN_EXECUTE,
-	SIO_PLUGIN_REGISTER,
+	SOCKETIO_ADVANCED_SEARCH,
+	SOCKETIO_MPD_COMMAND,
+	SOCKETIO_MPD_COMMAND_BULK,
+	SOCKETIO_MPD_SUBSCRIBE,
+	SOCKETIO_MPD_UNSUBSCRIBE,
+	SOCKETIO_PLUGIN_EXECUTE,
+	SOCKETIO_PLUGIN_REGISTER,
 } from "@sola_mpd/shared/src/const/socketio.js";
 import { AdvancedSearchResponseSchema } from "@sola_mpd/shared/src/models/advanced_search_pb.js";
 import { MpdResponseSchema } from "@sola_mpd/shared/src/models/mpd/mpd_command_pb.js";
@@ -39,7 +39,7 @@ export class SocketIoManager {
 			console.info(`Socket.io is connected: ${id}`);
 
 			// Subscribe MPD events for the given profile.
-			socket.on(SIO_MPD_SUBSCRIBE, async (msg: ArrayBuffer) => {
+			socket.on(SOCKETIO_MPD_SUBSCRIBE, async (msg: ArrayBuffer) => {
 				try {
 					await mpdHandler.subscribeEvents(id, new Uint8Array(msg), socket);
 				} catch (err) {
@@ -48,7 +48,7 @@ export class SocketIoManager {
 			});
 
 			// Unsubscribe MPD events for the given profile.
-			socket.on(SIO_MPD_UNSUBSCRIBE, async (msg: ArrayBuffer) => {
+			socket.on(SOCKETIO_MPD_UNSUBSCRIBE, async (msg: ArrayBuffer) => {
 				try {
 					await mpdHandler.unsubscribeEvents(id, new Uint8Array(msg), socket);
 				} catch (err) {
@@ -57,7 +57,7 @@ export class SocketIoManager {
 			});
 
 			// Execute the given command.
-			socket.on(SIO_MPD_COMMAND, async (msg: ArrayBuffer, callback) => {
+			socket.on(SOCKETIO_MPD_COMMAND, async (msg: ArrayBuffer, callback) => {
 				try {
 					const res = await mpdHandler.command(new Uint8Array(msg));
 					callback(Buffer.from(res));
@@ -68,29 +68,35 @@ export class SocketIoManager {
 			});
 
 			// Execute the given commands in bulk.
-			socket.on(SIO_MPD_COMMAND_BULK, async (msg: ArrayBuffer, callback) => {
-				try {
-					await mpdHandler.commandBulk(new Uint8Array(msg));
-					callback();
-				} catch (err) {
-					console.error(err);
-					callback(createMpdErrorBuffer(err));
-				}
-			});
+			socket.on(
+				SOCKETIO_MPD_COMMAND_BULK,
+				async (msg: ArrayBuffer, callback) => {
+					try {
+						await mpdHandler.commandBulk(new Uint8Array(msg));
+						callback();
+					} catch (err) {
+						console.error(err);
+						callback(createMpdErrorBuffer(err));
+					}
+				},
+			);
 
 			// Register a plugin.
-			socket.on(SIO_PLUGIN_REGISTER, async (msg: ArrayBuffer, callback) => {
-				try {
-					const resp = await pluginHandler.register(new Uint8Array(msg));
-					callback(Buffer.from(resp));
-				} catch (err) {
-					console.error(err);
-					callback(createPluginRegisterErrorBuffer(err));
-				}
-			});
+			socket.on(
+				SOCKETIO_PLUGIN_REGISTER,
+				async (msg: ArrayBuffer, callback) => {
+					try {
+						const resp = await pluginHandler.register(new Uint8Array(msg));
+						callback(Buffer.from(resp));
+					} catch (err) {
+						console.error(err);
+						callback(createPluginRegisterErrorBuffer(err));
+					}
+				},
+			);
 
 			// Execute a plugin command.
-			socket.on(SIO_PLUGIN_EXECUTE, async (msg: ArrayBuffer) => {
+			socket.on(SOCKETIO_PLUGIN_EXECUTE, async (msg: ArrayBuffer) => {
 				try {
 					for await (const [callbackEvent, resp] of pluginHandler.execute(
 						new Uint8Array(msg),
@@ -103,15 +109,20 @@ export class SocketIoManager {
 			});
 
 			// Execute an advanced search command.
-			socket.on(SIO_ADVANCED_SEARCH, async (msg: ArrayBuffer, callback) => {
-				try {
-					const resp = await advancedSearchHandler.command(new Uint8Array(msg));
-					callback(Buffer.from(resp));
-				} catch (err) {
-					console.error(err);
-					callback(createAdvancedSearchErrorBuffer(err));
-				}
-			});
+			socket.on(
+				SOCKETIO_ADVANCED_SEARCH,
+				async (msg: ArrayBuffer, callback) => {
+					try {
+						const resp = await advancedSearchHandler.command(
+							new Uint8Array(msg),
+						);
+						callback(Buffer.from(resp));
+					} catch (err) {
+						console.error(err);
+						callback(createAdvancedSearchErrorBuffer(err));
+					}
+				},
+			);
 
 			// Disconnect.
 			socket.on("disconnect", async () => {

@@ -5,13 +5,6 @@ import { enabledOutputDeviceAtom } from "../../output_devices";
 import { useChangeCurrentMpdProfile } from "../hooks/useChangeCurrentMpdProfile";
 import { mpdProfileStateAtom } from "../states/atoms/mpdProfileAtom";
 
-/**
- * Dropdown for MPD profile selection.
- *
- * Shows available profiles with current output device.
- *
- * @returns Selection component
- */
 export function MpdProfileSelector() {
 	const notify = useNotification();
 

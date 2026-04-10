@@ -5,15 +5,6 @@ import { toggleConsumeActionAtom } from "../states/actions/toggleConsumeActionAt
 import { playerStatusIsConsumeAtom } from "../states/atoms/playerStatusAtom";
 import { PlayerControlsButton } from "./PlayerControlsButton";
 
-/**
- * Button for toggling MPD's consume mode.
- *
- * Controls whether played songs are automatically removed from
- * the playlist. Updates button state based on current consume
- * mode status.
- *
- * @returns Consume mode toggle button
- */
 export function PlayerControlsButtonConsume() {
 	const playerStatusIsConsume = useAtomValue(playerStatusIsConsumeAtom);
 	const toggleConsume = useSetAtom(toggleConsumeActionAtom);

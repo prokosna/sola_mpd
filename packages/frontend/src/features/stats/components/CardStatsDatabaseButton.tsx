@@ -5,13 +5,6 @@ import { useNotification } from "../../../lib/mantine/hooks/useNotification";
 import { playerStatusIsDatabaseUpdatingAtom } from "../../player";
 import { updateDatabaseActionAtom } from "../states/actions/updateDatabaseActionAtom";
 
-/**
- * CardStatsDatabaseButton component renders a button that triggers an update of the MPD database.
- * It uses MPD client, current profile, and player status to manage the update process.
- * The component also provides user feedback through notifications.
- *
- * @returns {JSX.Element} A button component for updating the MPD database
- */
 export function CardStatsDatabaseButton() {
 	const notify = useNotification();
 

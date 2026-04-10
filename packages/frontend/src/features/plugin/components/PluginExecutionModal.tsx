@@ -8,13 +8,6 @@ import {
 import { PluginExecutionModalProgress } from "./PluginExecutionModalProgress";
 import { PluginExecutionModalStart } from "./PluginExecutionModalStart";
 
-/**
- * Plugin execution modal.
- *
- * Shows start or progress view.
- *
- * @returns Modal or null
- */
 export function PluginExecutionModal() {
 	const { plugin, songs } = useAtomValue(pluginExecutionPropsAtom);
 	const isPluginExecutionModalOpen = useAtomValue(pluginExecutionModalOpenAtom);

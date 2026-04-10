@@ -24,15 +24,6 @@ type BrowserNavigationViewProps = {
 	) => Promise<void>;
 };
 
-/**
- * Renders the navigation view for the browser component.
- *
- * This component displays a list of filters and their corresponding values,
- * allowing users to navigate and filter content in the browser.
- *
- * @param props The properties passed to the component
- * @returns A React component representing the browser navigation view
- */
 export function BrowserNavigationView(props: BrowserNavigationViewProps) {
 	const { browserFilters, browserFilterValues, updateBrowserFilters } = props;
 	const resolvedBrowserFilters = browserFilters ?? [];

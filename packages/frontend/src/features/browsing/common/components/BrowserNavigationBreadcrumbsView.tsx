@@ -24,16 +24,6 @@ type BrowserNavigationBreadcrumbsViewProps = {
 	) => Promise<void>;
 };
 
-/**
- * Renders navigation breadcrumbs for the browser view.
- *
- * This component displays the selected filters as breadcrumbs and provides
- * functionality to reset or modify the current filter selection.
- *
- * @param props.browserFilters - The current set of browser filters
- * @param props.updateBrowserFilters - Function to update the browser filters
- * @returns A React component displaying the browser navigation breadcrumbs
- */
 export function BrowserNavigationBreadcrumbsView(
 	props: BrowserNavigationBreadcrumbsViewProps,
 ) {

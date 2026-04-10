@@ -10,9 +10,6 @@ import {
 	recentlyAddedBrowserFiltersAtom,
 } from "../states/atoms/recentlyAddedFiltersAtom";
 
-/**
- * Component for rendering the navigation for recently added items.
- */
 export function RecentlyAddedNavigation() {
 	const browserFilters = useAtomValue(recentlyAddedBrowserFiltersAtom);
 	const browserFilterValues = useAtomValue(

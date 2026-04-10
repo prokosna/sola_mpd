@@ -22,11 +22,6 @@ import { setIsSimilaritySearchModalOpenActionAtom } from "../states/actions/setI
 import { setSimilaritySearchTargetSongActionAtom } from "../states/actions/setSimilaritySearchTargetSongActionAtom";
 import { isSimilaritySearchModalOpenAtom } from "../states/atoms/similaritySearchUiAtom";
 
-/**
- * Renders the similarity search modal.
- *
- * @returns The similarity search modal component
- */
 export function SimilaritySearchModal() {
 	const songTableState = useAtomValue(songTableStateAtom);
 	const updateSongTableState = useSetAtom(updateSongTableStateActionAtom);

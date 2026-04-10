@@ -23,13 +23,6 @@ import {
 import { SearchNavigationQueryEditor } from "./SearchNavigationQueryEditor";
 import { SearchNavigationSavedQueries } from "./SearchNavigationSavedQueries";
 
-/**
- * Search navigation section.
- *
- * Contains query editor and saved queries.
- *
- * @returns Navigation component
- */
 export function SearchNavigation() {
 	const savedSearches = useAtomValue(savedSearchesAtom);
 	const editingSearchStatus = useAtomValue(editingSearchStatusAtom);

@@ -46,12 +46,6 @@ import {
 import { useSettingsStateEditorProps } from "../hooks/useSettingsStateEditorProps";
 import { SettingsStatesEditor } from "./SettingsStatesEditor";
 
-/**
- * Application state management interface.
- *
- * Provides a table for viewing and editing various application
- * states like profiles, layout, browser, and search history.
- */
 export function SettingsStates() {
 	const mpdProfileState = useAtomValue(mpdProfileStateAtom);
 	const updateMpdProfileStateAction = useSetAtom(

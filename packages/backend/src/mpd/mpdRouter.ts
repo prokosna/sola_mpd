@@ -1,7 +1,5 @@
 import express, { type Request, type Response, Router } from "express";
 
-import { wrap } from "../utils/wrap.js";
-
 import {
 	executeMpdCommandBulkUseCase,
 	executeMpdCommandUseCase,
@@ -21,26 +19,20 @@ mpdRouter.use((_req, res, next) => {
 	next();
 });
 
-mpdRouter.use(
-	"/command",
-	wrap(async (req: Request, res: Response, _next) => {
-		const data = await executeMpdCommandUseCase(
-			new Uint8Array(req.body as Buffer),
-			mpdClientMpd3,
-		);
-		res.send(data);
-	}),
-);
+mpdRouter.use("/command", async (req: Request, res: Response) => {
+	const data = await executeMpdCommandUseCase(
+		new Uint8Array(req.body as Buffer),
+		mpdClientMpd3,
+	);
+	res.send(data);
+});
 
-mpdRouter.use(
-	"/command_bulk",
-	wrap(async (req: Request, res: Response, _next) => {
-		await executeMpdCommandBulkUseCase(
-			new Uint8Array(req.body as Buffer),
-			mpdClientMpd3,
-		);
-		res.end();
-	}),
-);
+mpdRouter.use("/command_bulk", async (req: Request, res: Response) => {
+	await executeMpdCommandBulkUseCase(
+		new Uint8Array(req.body as Buffer),
+		mpdClientMpd3,
+	);
+	res.end();
+});
 
 export default mpdRouter;

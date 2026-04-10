@@ -7,9 +7,6 @@ import { BrowserNavigationBreadcrumbsView } from "../../common/components/Browse
 import { updateRecentlyAddedBrowserFiltersActionAtom } from "../states/actions/updateRecentlyAddedBrowserFiltersActionAtom";
 import { recentlyAddedBrowserFiltersAtom } from "../states/atoms/recentlyAddedFiltersAtom";
 
-/**
- * Renders the navigation breadcrumbs for recently added items.
- */
 export function RecentlyAddedNavigationBreadcrumbs() {
 	const browserFilters = useAtomValue(recentlyAddedBrowserFiltersAtom);
 	const updateFiltersAction = useSetAtom(
