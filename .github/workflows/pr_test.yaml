@@ -40,7 +40,7 @@ jobs:
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
-      - name: Build shared package
+      - name: Build packages
         run: pnpm build
       - name: Run unit tests
         run: pnpm test
