@@ -20,7 +20,6 @@
 		"@bufbuild/protobuf": "^2.11.0",
 		"@connectrpc/connect": "^2.1.1",
 		"@connectrpc/connect-express": "^2.1.1",
-		"@connectrpc/connect-node": "^2.1.1",
 		"@sola_mpd/shared": "workspace:*",
 		"express": "^5.2.1",
 		"lru-cache": "^11.2.6",

@@ -40,7 +40,6 @@
 		"clang-format": "^1.8.0",
 		"husky": "^9.1.7",
 		"lint-staged": "^16.2.7",
-		"supertest": "^7.2.2",
 		"typescript": "^5.9.3",
 		"vitest": "^4.0.18"
 	}
