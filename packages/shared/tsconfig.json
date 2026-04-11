@@ -1,7 +1,7 @@
 {
 	"compilerOptions": {
 		"module": "ESNext",
-		"moduleResolution": "node",
+		"moduleResolution": "bundler",
 		"declaration": true,
 		"removeComments": true,
 		"target": "ESNext",
