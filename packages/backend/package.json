@@ -4,10 +4,10 @@
 	"private": true,
 	"type": "module",
 	"scripts": {
-		"build": "swc src -d dist --strip-leading-paths",
-		"build:no_types": "pnpm build",
-		"start": "node dist/index.js",
-		"dev": "nodemon --watch src --ext ts --exec 'pnpm build && pnpm start'",
+		"build": "tsdown",
+		"build:no_types": "tsdown",
+		"start": "node dist/index.mjs",
+		"dev": "tsdown --watch --onSuccess 'node dist/index.mjs'",
 		"test": "vitest run --passWithNoTests"
 	},
 	"dependencies": {
@@ -22,8 +22,6 @@
 	"devDependencies": {
 		"@types/express": "^5.0.6",
 		"@types/node": "^24.0.0",
-		"nodemon": "^3.1.11",
-		"ts-node": "^10.9.2",
-		"tsconfig-paths": "^4.2.0"
+		"tsdown": "^0.21.7"
 	}
 }
