@@ -43,11 +43,5 @@
 		"supertest": "^7.2.2",
 		"typescript": "^5.9.3",
 		"vitest": "^4.0.18"
-	},
-	"dependencies": {
-		"@bufbuild/protobuf": "^2.11.0",
-		"@connectrpc/connect": "^2.1.1",
-		"dayjs": "^1.11.19",
-		"uuid": "^13.0.0"
 	}
 }
