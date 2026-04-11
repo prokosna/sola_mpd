@@ -3,21 +3,20 @@
 	"version": "0.0.0",
 	"type": "module",
 	"scripts": {
-		"build": "pnpm --parallel /^build_/",
-		"build:no_types": "pnpm build_ts",
-		"build_types": "tsc",
-		"build_ts": "swc src -d dist --strip-leading-paths",
-		"dev": "pnpm --parallel /^dev_/",
-		"dev_types": "tsc --watch",
-		"dev_ts": "swc src -d dist --watch --strip-leading-paths",
+		"build": "tsdown",
+		"build:no_types": "tsdown --no-dts",
+		"dev": "tsdown --watch",
 		"proto": "rm -rf ./src/models/* && buf generate --template buf.gen.yaml ./proto",
 		"test": "vitest run --passWithNoTests"
 	},
 	"devDependencies": {
-		"@bufbuild/buf": "^1.65.0",
-		"@bufbuild/protoc-gen-es": "^2.11.0"
+		"@bufbuild/buf": "^1.67.0",
+		"@bufbuild/protoc-gen-es": "^2.11.0",
+		"tsdown": "^0.21.7"
 	},
 	"dependencies": {
+		"@bufbuild/protobuf": "^2.11.0",
+		"dayjs": "^1.11.20",
 		"fast-deep-equal": "^3.1.3"
 	},
 	"exports": {
