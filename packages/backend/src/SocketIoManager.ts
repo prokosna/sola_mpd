@@ -1,6 +1,14 @@
 import { create, toBinary } from "@bufbuild/protobuf";
 import {
+	CONFIG_KEY_BROWSER_STATE,
+	CONFIG_KEY_COMMON_SONG_TABLE_STATE,
+	CONFIG_KEY_MPD_PROFILE_STATE,
+	CONFIG_KEY_PLUGIN_STATE,
+	CONFIG_KEY_RECENTLY_ADDED_STATE,
+	CONFIG_KEY_SAVED_SEARCHES,
 	SOCKETIO_ADVANCED_SEARCH,
+	SOCKETIO_CONFIG_FETCH,
+	SOCKETIO_CONFIG_SAVE,
 	SOCKETIO_MPD_COMMAND,
 	SOCKETIO_MPD_COMMAND_BULK,
 	SOCKETIO_MPD_SUBSCRIBE,
@@ -14,6 +22,8 @@ import { PluginRegisterResponseWrapperSchema } from "@sola_mpd/shared/src/models
 import type { Server as IOServer } from "socket.io";
 import type { AdvancedSearchMessageHandler } from "./advanced_search/transports/AdvancedSearchMessageHandler.js";
 import { AdvancedSearchMessageHandlerSocketIo } from "./advanced_search/transports/AdvancedSearchMessageHandlerSocketIo.js";
+import type { ConfigMessageHandler } from "./configs/transports/ConfigMessageHandler.js";
+import { ConfigMessageHandlerSocketIo } from "./configs/transports/ConfigMessageHandlerSocketIo.js";
 import type { MpdMessageHandler } from "./mpd/transports/MpdMessageHandler.js";
 import { MpdMessageHandlerSocketIo } from "./mpd/transports/MpdMessageHandlerSocketIo.js";
 import type { PluginMessageHandler } from "./plugins/transports/PluginMessageHandler.js";
@@ -33,6 +43,17 @@ export class SocketIoManager {
 			new PluginMessageHandlerSocketIo();
 		const advancedSearchHandler: AdvancedSearchMessageHandler =
 			AdvancedSearchMessageHandlerSocketIo.initialize();
+		const configHandler: ConfigMessageHandler =
+			new ConfigMessageHandlerSocketIo();
+
+		const configKeys = [
+			CONFIG_KEY_BROWSER_STATE,
+			CONFIG_KEY_COMMON_SONG_TABLE_STATE,
+			CONFIG_KEY_MPD_PROFILE_STATE,
+			CONFIG_KEY_PLUGIN_STATE,
+			CONFIG_KEY_SAVED_SEARCHES,
+			CONFIG_KEY_RECENTLY_ADDED_STATE,
+		];
 
 		io.on("connection", (socket) => {
 			const id = socket.id;
@@ -123,6 +144,35 @@ export class SocketIoManager {
 					}
 				},
 			);
+
+			// Config state fetch/save.
+			for (const key of configKeys) {
+				socket.on(
+					`${SOCKETIO_CONFIG_FETCH}_${key}`,
+					(_msg: ArrayBuffer, callback) => {
+						try {
+							const data = configHandler.fetch(key);
+							callback(data);
+						} catch (err) {
+							console.error(err);
+							callback(Buffer.alloc(0));
+						}
+					},
+				);
+
+				socket.on(
+					`${SOCKETIO_CONFIG_SAVE}_${key}`,
+					(msg: ArrayBuffer, callback) => {
+						try {
+							configHandler.save(key, Buffer.from(new Uint8Array(msg)));
+							callback();
+						} catch (err) {
+							console.error(err);
+							callback();
+						}
+					},
+				);
+			}
 
 			// Disconnect.
 			socket.on("disconnect", async () => {
