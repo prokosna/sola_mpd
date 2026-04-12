@@ -6,4 +6,5 @@ export default defineConfig({
 	dts: true,
 	external: [/^[^./]/],
 	outExtensions: () => ({ js: ".js" }),
+	clean: false,
 });
