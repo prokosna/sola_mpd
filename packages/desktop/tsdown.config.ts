@@ -13,6 +13,7 @@ export default defineConfig([
 		platform: "node",
 		dts: false,
 		external: ["electron", "../ipc/index.mjs"],
+		noExternal: [/^(?!electron$).*/],
 		alias: {
 			"#backend": path.resolve(__dirname, "../backend/src"),
 		},

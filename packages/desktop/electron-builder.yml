@@ -11,13 +11,13 @@ extraResources:
 asar: true
 win:
   target: nsis
-  icon: ../frontend/public/favicon.ico
+  icon: build/icon.png
 nsis:
   oneClick: false
   allowToChangeInstallationDirectory: true
 mac:
   target: dmg
-  icon: ../frontend/public/favicon.ico
+  icon: build/icon.png
   category: public.app-category.music
 dmg:
   contents:
@@ -29,5 +29,5 @@ dmg:
       path: /Applications
 linux:
   target: AppImage
-  icon: ../frontend/public/favicon.ico
+  icon: build/icon.png
   category: Audio

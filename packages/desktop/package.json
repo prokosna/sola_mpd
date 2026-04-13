@@ -7,8 +7,8 @@
 	"scripts": {
 		"build": "tsdown",
 		"build:no_types": "tsdown",
-		"dev": "tsdown && electron dist/main/index.mjs --no-sandbox",
-		"start": "electron dist/main/index.mjs",
+		"dev": "tsdown && ELECTRON_RUN_AS_NODE= electron dist/main/index.mjs --no-sandbox",
+		"start": "ELECTRON_RUN_AS_NODE= electron dist/main/index.mjs",
 		"pack": "electron-builder --dir",
 		"dist": "electron-builder",
 		"test": "vitest run --passWithNoTests",
