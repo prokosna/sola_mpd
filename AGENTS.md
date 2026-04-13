@@ -2,12 +2,13 @@
 
 # 1. Project Overview
 
-`sola_mpd` is a TypeScript-based monorepo. It is a web-based MPD client using React, Vite, Protocol Buffers, Jotai, and more.
+`sola_mpd` is a TypeScript-based monorepo. It is an MPD client available as a web application and a desktop application, using React, Vite, Electron, Protocol Buffers, Jotai, and more.
 
 Current major structure:
 
 - `packages/frontend`: React + Vite + Socket.IO frontend
 - `packages/backend`: Express + Socket.IO backend
+- `packages/desktop`: Electron desktop application (IPC transport adapters for frontend/backend, experimental)
 - `packages/shared`: Shared models, constants, protobuf-generated artifacts defining models between frontend and backend, and utilities
 - `plugins/subsonic`: Subsonic integration plugin
 

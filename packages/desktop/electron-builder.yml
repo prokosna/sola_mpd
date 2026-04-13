@@ -1,0 +1,33 @@
+appId: io.github.prokosna.solampd
+productName: Sola MPD
+directories:
+  output: release
+files:
+  - dist/**/*
+  - "!node_modules"
+extraResources:
+  - from: ../frontend/dist
+    to: renderer
+asar: true
+win:
+  target: nsis
+  icon: ../frontend/public/favicon.ico
+nsis:
+  oneClick: false
+  allowToChangeInstallationDirectory: true
+mac:
+  target: dmg
+  icon: ../frontend/public/favicon.ico
+  category: public.app-category.music
+dmg:
+  contents:
+    - x: 130
+      y: 220
+    - x: 410
+      y: 220
+      type: link
+      path: /Applications
+linux:
+  target: AppImage
+  icon: ../frontend/public/favicon.ico
+  category: Audio

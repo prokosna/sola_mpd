@@ -56,6 +56,10 @@ export class DeepMap<K, V> implements Iterable<[K, V]> {
 		return false;
 	}
 
+	clear(): void {
+		this.map.clear();
+	}
+
 	[Symbol.iterator](): Iterator<[K, V], unknown, undefined> {
 		return this.map[Symbol.iterator]();
 	}

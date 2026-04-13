@@ -1,4 +1,3 @@
-import { create, toBinary } from "@bufbuild/protobuf";
 import {
 	CONFIG_KEY_BROWSER_STATE,
 	CONFIG_KEY_COMMON_SONG_TABLE_STATE,
@@ -16,9 +15,6 @@ import {
 	SOCKETIO_PLUGIN_EXECUTE,
 	SOCKETIO_PLUGIN_REGISTER,
 } from "@sola_mpd/shared/src/const/socketio.js";
-import { AdvancedSearchResponseSchema } from "@sola_mpd/shared/src/models/advanced_search_pb.js";
-import { MpdResponseSchema } from "@sola_mpd/shared/src/models/mpd/mpd_command_pb.js";
-import { PluginRegisterResponseWrapperSchema } from "@sola_mpd/shared/src/models/plugin/plugin_wrapper_pb.js";
 import type { Server as IOServer } from "socket.io";
 import type { AdvancedSearchMessageHandler } from "./advanced_search/transports/AdvancedSearchMessageHandler.js";
 import { AdvancedSearchMessageHandlerSocketIo } from "./advanced_search/transports/AdvancedSearchMessageHandlerSocketIo.js";
@@ -28,7 +24,11 @@ import type { MpdMessageHandler } from "./mpd/transports/MpdMessageHandler.js";
 import { MpdMessageHandlerSocketIo } from "./mpd/transports/MpdMessageHandlerSocketIo.js";
 import type { PluginMessageHandler } from "./plugins/transports/PluginMessageHandler.js";
 import { PluginMessageHandlerSocketIo } from "./plugins/transports/PluginMessageHandlerSocketIo.js";
-import { toErrorMessage } from "./utils/errorUtils.js";
+import {
+	createAdvancedSearchErrorBuffer,
+	createMpdErrorBuffer,
+	createPluginRegisterErrorBuffer,
+} from "./utils/errorBufferUtils.js";
 
 export class SocketIoManager {
 	private constructor(_io: IOServer) {}
@@ -84,7 +84,7 @@ export class SocketIoManager {
 					callback(Buffer.from(res));
 				} catch (err) {
 					console.error(err);
-					callback(createMpdErrorBuffer(err));
+					callback(Buffer.from(createMpdErrorBuffer(err)));
 				}
 			});
 
@@ -97,7 +97,7 @@ export class SocketIoManager {
 						callback();
 					} catch (err) {
 						console.error(err);
-						callback(createMpdErrorBuffer(err));
+						callback(Buffer.from(createMpdErrorBuffer(err)));
 					}
 				},
 			);
@@ -111,7 +111,7 @@ export class SocketIoManager {
 						callback(Buffer.from(resp));
 					} catch (err) {
 						console.error(err);
-						callback(createPluginRegisterErrorBuffer(err));
+						callback(Buffer.from(createPluginRegisterErrorBuffer(err)));
 					}
 				},
 			);
@@ -140,7 +140,7 @@ export class SocketIoManager {
 						callback(Buffer.from(resp));
 					} catch (err) {
 						console.error(err);
-						callback(createAdvancedSearchErrorBuffer(err));
+						callback(Buffer.from(createAdvancedSearchErrorBuffer(err)));
 					}
 				},
 			);
@@ -187,45 +187,3 @@ export class SocketIoManager {
 		return socketIoManager;
 	}
 }
-
-const createMpdErrorBuffer = (err: unknown): Buffer => {
-	return Buffer.from(
-		toBinary(
-			MpdResponseSchema,
-			create(MpdResponseSchema, {
-				command: {
-					case: "error",
-					value: { message: toErrorMessage(err) },
-				},
-			}),
-		),
-	);
-};
-
-const createPluginRegisterErrorBuffer = (err: unknown): Buffer => {
-	return Buffer.from(
-		toBinary(
-			PluginRegisterResponseWrapperSchema,
-			create(PluginRegisterResponseWrapperSchema, {
-				result: {
-					case: "error",
-					value: toErrorMessage(err),
-				},
-			}),
-		),
-	);
-};
-
-const createAdvancedSearchErrorBuffer = (err: unknown): Buffer => {
-	return Buffer.from(
-		toBinary(
-			AdvancedSearchResponseSchema,
-			create(AdvancedSearchResponseSchema, {
-				command: {
-					case: "error",
-					value: toErrorMessage(err),
-				},
-			}),
-		),
-	);
-};
