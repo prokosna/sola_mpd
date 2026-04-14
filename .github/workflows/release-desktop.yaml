@@ -25,13 +25,19 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+
       - name: Use Node.js 24.x
         uses: actions/setup-node@v4
         with:
           node-version: 24.x
+          cache: pnpm
 
-      - name: Install pnpm
-        uses: pnpm/action-setup@v4
+      - name: Resolve release version
+        id: version
+        shell: bash
+        run: echo "value=${GITHUB_REF_NAME#v}" >> "$GITHUB_OUTPUT"
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
@@ -46,13 +52,14 @@ jobs:
         run: pnpm --filter @sola_mpd/desktop build
 
       - name: Package desktop app
-        run: pnpm --filter @sola_mpd/desktop dist
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: pnpm --filter @sola_mpd/desktop exec electron-builder --config.extraMetadata.version=${{ steps.version.outputs.value }}
 
       - name: Upload release assets
         uses: softprops/action-gh-release@v2
         with:
-          files: packages/desktop/release/*.*
+          files: |
+            packages/desktop/release/*.AppImage
+            packages/desktop/release/*.dmg
+            packages/desktop/release/*.exe
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
