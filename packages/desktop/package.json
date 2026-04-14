@@ -1,5 +1,6 @@
 {
 	"name": "@sola_mpd/desktop",
+	"productName": "sola_mpd",
 	"version": "0.0.0",
 	"private": true,
 	"type": "module",
@@ -8,9 +9,7 @@
 		"build": "tsdown",
 		"build:no_types": "tsdown",
 		"dev": "tsdown && ELECTRON_RUN_AS_NODE= electron dist/main/index.mjs --no-sandbox",
-		"start": "ELECTRON_RUN_AS_NODE= electron dist/main/index.mjs",
-		"pack": "electron-builder --dir",
-		"dist": "electron-builder",
+		"dist": "node scripts/dist.mjs",
 		"test": "vitest run --passWithNoTests",
 		"test:e2e": "xvfb-run --auto-servernum playwright test"
 	},

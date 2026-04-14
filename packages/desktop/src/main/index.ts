@@ -70,16 +70,78 @@ app.on("window-all-closed", () => {
 	}
 });
 
+type WindowState = {
+	width: number;
+	height: number;
+	x?: number;
+	y?: number;
+	isMaximized?: boolean;
+};
+
+const DEFAULT_WINDOW_STATE: WindowState = { width: 1280, height: 800 };
+
+function getWindowStatePath(): string {
+	return path.join(app.getPath("userData"), "window-state.json");
+}
+
+function loadWindowState(): WindowState {
+	try {
+		const raw = fs.readFileSync(getWindowStatePath(), "utf-8");
+		const parsed = JSON.parse(raw) as Partial<WindowState>;
+		if (typeof parsed.width === "number" && typeof parsed.height === "number") {
+			return {
+				width: parsed.width,
+				height: parsed.height,
+				x: typeof parsed.x === "number" ? parsed.x : undefined,
+				y: typeof parsed.y === "number" ? parsed.y : undefined,
+				isMaximized: parsed.isMaximized === true,
+			};
+		}
+	} catch {
+		// Fall through to default.
+	}
+	return DEFAULT_WINDOW_STATE;
+}
+
+function saveWindowState(window: BrowserWindow): void {
+	const isMaximized = window.isMaximized();
+	// getNormalBounds() returns pre-maximize bounds so restore size is preserved.
+	const bounds = window.getNormalBounds();
+	const state: WindowState = {
+		width: bounds.width,
+		height: bounds.height,
+		x: bounds.x,
+		y: bounds.y,
+		isMaximized,
+	};
+	try {
+		fs.writeFileSync(getWindowStatePath(), JSON.stringify(state));
+	} catch {
+		// Ignore persistence failures; not critical.
+	}
+}
+
 function createWindow(): BrowserWindow {
+	const state = loadWindowState();
 	const mainWindow = new BrowserWindow({
-		width: 1280,
-		height: 800,
+		width: state.width,
+		height: state.height,
+		x: state.x,
+		y: state.y,
 		autoHideMenuBar: true,
 		webPreferences: {
 			preload: path.join(__dirname, "..", "preload", "index.cjs"),
 			contextIsolation: true,
 			nodeIntegration: false,
 		},
+	});
+
+	if (state.isMaximized) {
+		mainWindow.maximize();
+	}
+
+	mainWindow.on("close", () => {
+		saveWindowState(mainWindow);
 	});
 
 	mainWindow.loadURL("sola://app/");
