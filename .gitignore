@@ -31,3 +31,9 @@ dist-ssr
 
 # tsc
 /dist
+
+# playwright
+test-results
+
+# desktop
+release

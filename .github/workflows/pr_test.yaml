@@ -33,6 +33,8 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
 
+      - name: Install xvfb
+        run: sudo apt-get update && sudo apt-get install -y xvfb
       - name: Install pnpm
         uses: pnpm/action-setup@v4
 
@@ -42,5 +44,7 @@ jobs:
         run: pnpm build
       - name: Run unit tests
         run: pnpm test
+      - name: Run desktop smoke test
+        run: pnpm --filter @sola_mpd/desktop test:e2e
       - name: Test building docker container
         run: docker compose create

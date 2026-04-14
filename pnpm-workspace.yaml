@@ -3,4 +3,5 @@ packages:
   - plugins/*
 
 onlyBuiltDependencies:
+  - "electron"
   - "mpd3"

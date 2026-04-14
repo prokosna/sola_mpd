@@ -19,6 +19,8 @@ import { SavedSearchesRepositorySocketIo } from "./features/search/repositories/
 import { savedSearchesRepositoryAtom } from "./features/search/states/atoms/savedSearchesRepositoryAtom";
 import { SongTableStateRepositorySocketIo } from "./features/song_table/repositories/SongTableStateRepositorySocketIo";
 import { songTableStateRepositoryAtom } from "./features/song_table/states/atoms/songTableStateRepositoryAtom";
+import { SocketIoClientElectronIpc } from "./lib/ipc/SocketIoClientElectronIpc";
+import type { SocketIoClient } from "./lib/socket_io/SocketIoClient";
 import { SocketIoClientDefault } from "./lib/socket_io/SocketIoClientDefault";
 
 let globalStore: ReturnType<typeof createStore> | undefined;
@@ -30,7 +32,14 @@ export function useJotaiStore() {
 		const store = createStore();
 
 		// DI
-		const socketIoClient = new SocketIoClientDefault();
+		let socketIoClient: SocketIoClient;
+		if (window.__SOLA_IPC_BRIDGE__ != null) {
+			socketIoClient = new SocketIoClientElectronIpc(
+				window.__SOLA_IPC_BRIDGE__,
+			);
+		} else {
+			socketIoClient = new SocketIoClientDefault();
+		}
 		await socketIoClient.isReady();
 
 		store.set(setMpdClientActionAtom, new MpdClientSocketIo(socketIoClient));
