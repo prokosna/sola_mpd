@@ -5,6 +5,19 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [4.5.0](https://github.com/prokosna/sola_mpd/compare/v4.4.0...v4.5.0) (2026-04-14)
+
+
+### Features
+
+* add experimental desktop versions ([#339](https://github.com/prokosna/sola_mpd/issues/339)) ([227af3a](https://github.com/prokosna/sola_mpd/commit/227af3ad2bdf6ca46d7e2bb39886ebfcd447e16c))
+
+
+### Bug Fixes
+
+* not clean shared package to enable dev mode ([b0b4df8](https://github.com/prokosna/sola_mpd/commit/b0b4df8d085432154c24a90637e6c4725dafffc3))
+* subsonic Dockerfile ([#336](https://github.com/prokosna/sola_mpd/issues/336)) ([d7a37dc](https://github.com/prokosna/sola_mpd/commit/d7a37dc393ac0ec116330c47e410b8210af57197))
+
 ## [4.4.0](https://github.com/prokosna/sola_mpd/compare/v4.3.0...v4.4.0) (2026-03-09)
 
 
