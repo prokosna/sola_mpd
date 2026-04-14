@@ -5,6 +5,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [4.5.1](https://github.com/prokosna/sola_mpd/compare/v4.5.0...v4.5.1) (2026-04-14)
+
+
+### Build System
+
+* release desktop artifacts ([#341](https://github.com/prokosna/sola_mpd/issues/341)) ([7d00928](https://github.com/prokosna/sola_mpd/commit/7d0092802d96e85ce9e39c1009a196d1c89657eb))
+
 ## [4.5.0](https://github.com/prokosna/sola_mpd/compare/v4.4.0...v4.5.0) (2026-04-14)
 
 
