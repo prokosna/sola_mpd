@@ -5,6 +5,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [4.5.2](https://github.com/prokosna/sola_mpd/compare/v4.5.1...v4.5.2) (2026-04-14)
+
+
+### Bug Fixes
+
+* upscale icon file for Mac desktop ([#343](https://github.com/prokosna/sola_mpd/issues/343)) ([f31b8c7](https://github.com/prokosna/sola_mpd/commit/f31b8c7387d8906274744890eb0517f66f169f80))
+
 ## [4.5.1](https://github.com/prokosna/sola_mpd/compare/v4.5.0...v4.5.1) (2026-04-14)
 
 
