@@ -1,7 +1,9 @@
 import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
-import { app, BrowserWindow, net, protocol } from "electron";
+import { app, BrowserWindow, Menu, net, protocol } from "electron";
+
+Menu.setApplicationMenu(null);
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
@@ -72,6 +74,7 @@ function createWindow(): BrowserWindow {
 	const mainWindow = new BrowserWindow({
 		width: 1280,
 		height: 800,
+		autoHideMenuBar: true,
 		webPreferences: {
 			preload: path.join(__dirname, "..", "preload", "index.cjs"),
 			contextIsolation: true,
