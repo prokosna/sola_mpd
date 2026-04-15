@@ -1,0 +1,130 @@
+---
+import type { Locale } from "../i18n/strings";
+import { strings } from "../i18n/strings";
+import { fetchLatestRelease } from "../i18n/release";
+
+export type Props = {
+	locale: Locale;
+};
+
+const { locale } = Astro.props;
+const t = strings[locale];
+const base = import.meta.env.BASE_URL.replace(/\/$/, "");
+const githubUrl = "https://github.com/prokosna/sola_mpd";
+const releasesUrl = `${githubUrl}/releases`;
+const readmeDockerAnchor = `${githubUrl}#web-application-docker`;
+const screenshotPath = (file: string) => `${base}/screenshots/${file}`;
+
+const release = await fetchLatestRelease();
+---
+
+<section class="hero">
+	<div class="container">
+		<div class="hero-inner">
+			{release.version && (
+				<a class="version-pill" href={release.url} target="_blank" rel="noopener">
+					<span>{t.hero.versionLabel}</span>
+					<strong>{release.version}</strong>
+				</a>
+			)}
+			<h1>Sola MPD</h1>
+			<p class="hero-tagline">{t.hero.tagline}</p>
+			<div class="hero-ctas">
+				<a class="btn btn-primary" href="#install">
+					{t.hero.ctaDocker}
+				</a>
+				<a class="btn btn-secondary" href={releasesUrl} target="_blank" rel="noopener">
+					{t.hero.ctaDesktop}
+					<span class="badge badge-warn">{t.hero.desktopExperimental}</span>
+				</a>
+				<a class="btn btn-secondary" href={githubUrl} target="_blank" rel="noopener">
+					{t.hero.ctaGithub}
+				</a>
+			</div>
+		</div>
+	</div>
+</section>
+
+<section id="features">
+	<div class="container">
+		<h2>{t.sections.featuresTitle}</h2>
+		<div class="feature-grid">
+			{t.features.map((f) => (
+				<div class="card feature-card">
+					<h3>{f.title}</h3>
+					<p>{f.description}</p>
+				</div>
+			))}
+		</div>
+	</div>
+</section>
+
+<section id="screenshots">
+	<div class="container">
+		<h2>{t.sections.screenshotsTitle}</h2>
+		<div class="screenshots">
+			{t.screenshots.map((s) => (
+				<figure class="screenshot">
+					<a href={screenshotPath(s.src)} target="_blank" rel="noopener">
+						<img src={screenshotPath(s.src)} alt={s.caption} loading="lazy" />
+					</a>
+					<figcaption class="screenshot-caption">
+						<span class="screenshot-title">
+							{s.caption}
+							{s.note && <span class="badge badge-warn">Beta</span>}
+						</span>
+						{s.note && <span class="screenshot-note">{s.note}</span>}
+					</figcaption>
+				</figure>
+			))}
+		</div>
+	</div>
+</section>
+
+<section id="install">
+	<div class="container">
+		<h2>{t.sections.installTitle}</h2>
+		<div class="install-grid">
+			<div class="card install-card primary">
+				<h3>
+					{t.install.primaryTitle}
+					<span class="badge">{t.install.primaryBadge}</span>
+				</h3>
+				<p>{t.install.primaryLead}</p>
+				<ol class="install-steps">
+					{t.install.primarySteps.map((step) => (
+						<li>
+							<span>{step.title}</span>
+							{step.code && <pre><code>{step.code}</code></pre>}
+							{step.note && <p class="step-note">{step.note}</p>}
+						</li>
+					))}
+				</ol>
+				<p class="muted-note">{t.install.primaryNote}</p>
+				<p style="margin-top:1rem; margin-bottom:0">
+					<a href={readmeDockerAnchor} target="_blank" rel="noopener">
+						{t.install.primaryDocsLink} ↗
+					</a>
+				</p>
+			</div>
+			<div class="card install-card">
+				<h3>
+					{t.install.secondaryTitle}
+					<span class="badge badge-warn">{t.hero.desktopExperimental}</span>
+				</h3>
+				<p>{t.install.secondaryLead}</p>
+				<ol class="install-steps">
+					{t.install.secondarySteps.map((step) => (
+						<li><span>{step.title}</span></li>
+					))}
+				</ol>
+				<p style="margin-top:1rem">
+					<a class="btn btn-secondary" href={releasesUrl} target="_blank" rel="noopener">
+						{t.install.secondaryDownload} ↗
+					</a>
+				</p>
+				<p class="muted-note">{t.install.secondaryNote}</p>
+			</div>
+		</div>
+	</div>
+</section>

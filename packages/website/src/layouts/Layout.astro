@@ -1,0 +1,116 @@
+---
+import "../styles/global.css";
+import type { Locale } from "../i18n/strings";
+import { strings } from "../i18n/strings";
+
+export type Props = {
+	locale: Locale;
+};
+
+const { locale } = Astro.props;
+const t = strings[locale];
+const site = Astro.site?.toString().replace(/\/$/, "") ?? "";
+const base = import.meta.env.BASE_URL.replace(/\/$/, "");
+const homeEn = `${base}/`;
+const homeJa = `${base}/ja/`;
+const iconPath = `${base}/icon.png`;
+const githubUrl = "https://github.com/prokosna/sola_mpd";
+const canonicalEn = `${site}${homeEn}`;
+const canonicalJa = `${site}${homeJa}`;
+const canonical = locale === "ja" ? canonicalJa : canonicalEn;
+---
+
+<!doctype html>
+<html lang={locale}>
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<meta name="description" content={t.meta.description} />
+		<link rel="icon" type="image/png" href={iconPath} />
+		<link rel="canonical" href={canonical} />
+		<link rel="alternate" hreflang="en" href={canonicalEn} />
+		<link rel="alternate" hreflang="ja" href={canonicalJa} />
+		<link rel="alternate" hreflang="x-default" href={canonicalEn} />
+		<title>{t.meta.title}</title>
+		<meta property="og:type" content="website" />
+		<meta property="og:site_name" content="Sola MPD" />
+		<meta property="og:title" content={t.meta.title} />
+		<meta property="og:description" content={t.meta.description} />
+		<meta property="og:url" content={canonical} />
+		<meta property="og:image" content={`${site}${iconPath}`} />
+		<meta property="og:locale" content={locale === "ja" ? "ja_JP" : "en_US"} />
+		<meta
+			property="og:locale:alternate"
+			content={locale === "ja" ? "en_US" : "ja_JP"}
+		/>
+		<meta name="twitter:card" content="summary" />
+		<meta name="twitter:title" content={t.meta.title} />
+		<meta name="twitter:description" content={t.meta.description} />
+		<meta name="twitter:image" content={`${site}${iconPath}`} />
+		{locale === "en" && (
+			<script is:inline define:vars={{ homeJa }}>
+				try {
+					const pref = localStorage.getItem("sola-lang");
+					if (!pref) {
+						const lang = (navigator.language || "").toLowerCase();
+						if (lang.startsWith("ja")) {
+							location.replace(homeJa);
+						}
+					}
+				} catch (_) {}
+			</script>
+		)}
+	</head>
+	<body>
+		<header class="site-header">
+			<div class="container site-header-inner">
+				<a class="site-brand" href={locale === "ja" ? homeJa : homeEn}>
+					<img src={iconPath} alt="Sola MPD" />
+					<span>Sola MPD</span>
+				</a>
+				<nav class="site-nav">
+					<a href="#features">{t.nav.features}</a>
+					<a href="#screenshots">{t.nav.screenshots}</a>
+					<a href="#install">{t.nav.install}</a>
+					<a href={githubUrl} target="_blank" rel="noopener">
+						{t.nav.github}
+					</a>
+					<span class="lang-switch">
+						<a
+							href={homeEn}
+							class={locale === "en" ? "active" : ""}
+							data-lang="en"
+						>
+							EN
+						</a>
+						<a
+							href={homeJa}
+							class={locale === "ja" ? "active" : ""}
+							data-lang="ja"
+						>
+							JA
+						</a>
+					</span>
+				</nav>
+			</div>
+		</header>
+		<slot />
+		<footer class="site-footer">
+			<div class="container site-footer-inner">
+				<span>© {new Date().getFullYear()} prokosna · {t.footer.license}</span>
+				<a href={githubUrl} target="_blank" rel="noopener">
+					{t.footer.viewOnGithub} ↗
+				</a>
+			</div>
+		</footer>
+		<script is:inline>
+			document.querySelectorAll(".lang-switch a[data-lang]").forEach((el) => {
+				el.addEventListener("click", () => {
+					try {
+						localStorage.setItem("sola-lang", el.dataset.lang);
+					} catch (_) {}
+				});
+			});
+		</script>
+	</body>
+</html>
