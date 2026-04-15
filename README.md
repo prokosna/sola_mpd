@@ -1,5 +1,7 @@
 # Sola MPD
 
+Website: https://prokosna.github.io/sola_mpd/
+
 Sola MPD is an MPD client focused on usability with flexible browsing and search. It runs as a web application (Docker) or a desktop application (Experimental: supporting Windows, macOS and Linux).
 
 The primary goal of this client is to help users efficiently find specific songs within large music libraries and freely organize them into a queue and playlists. If you're looking for a table-oriented UI for better music management, this client might be a good fit. However, if you're seeking a player with fancy visual design, this may not be what you're looking for.

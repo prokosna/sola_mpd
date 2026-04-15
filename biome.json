@@ -10,7 +10,8 @@
 		"includes": [
 			"**",
 			"!**/packages/shared/src/models/**/*",
-			"!**/plugins/subsonic/src/models/**/*"
+			"!**/plugins/subsonic/src/models/**/*",
+			"!**/*.astro"
 		]
 	},
 	"formatter": {
