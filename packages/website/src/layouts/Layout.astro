@@ -68,6 +68,9 @@ const canonical = locale === "ja" ? canonicalJa : canonicalEn;
 					<img src={iconPath} alt="Sola MPD" />
 					<span>Sola MPD</span>
 				</a>
+				<button class="nav-toggle" aria-label="Menu" aria-expanded="false">
+					<span></span><span></span><span></span>
+				</button>
 				<nav class="site-nav">
 					<a href="#features">{t.nav.features}</a>
 					<a href="#screenshots">{t.nav.screenshots}</a>
@@ -111,6 +114,23 @@ const canonical = locale === "ja" ? canonicalJa : canonicalEn;
 					} catch (_) {}
 				});
 			});
+			(function () {
+				const btn = document.querySelector(".nav-toggle");
+				const nav = document.querySelector(".site-nav");
+				if (!btn || !nav) return;
+				btn.addEventListener("click", () => {
+					const open = nav.classList.toggle("open");
+					btn.classList.toggle("open", open);
+					btn.setAttribute("aria-expanded", String(open));
+				});
+				nav.querySelectorAll("a[href^='#']").forEach((a) => {
+					a.addEventListener("click", () => {
+						nav.classList.remove("open");
+						btn.classList.remove("open");
+						btn.setAttribute("aria-expanded", "false");
+					});
+				});
+			})();
 		</script>
 	</body>
 </html>
