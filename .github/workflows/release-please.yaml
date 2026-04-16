@@ -31,3 +31,12 @@ jobs:
       contents: write
     with:
       tag_name: ${{ needs.release-please.outputs.tag_name }}
+
+  deploy-website:
+    needs: release-please
+    if: needs.release-please.outputs.release_created == 'true'
+    uses: ./.github/workflows/deploy-website.yaml
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
