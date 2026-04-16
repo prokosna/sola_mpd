@@ -7,8 +7,7 @@ on:
     paths:
       - "packages/website/**"
       - ".github/workflows/deploy-website.yaml"
-  release:
-    types: [published]
+  workflow_call:
   workflow_dispatch:
 
 permissions:
