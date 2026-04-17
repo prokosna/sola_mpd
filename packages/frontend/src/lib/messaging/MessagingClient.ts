@@ -1,4 +1,4 @@
-export interface SocketIoClient {
+export interface MessagingClient {
 	isReady: () => Promise<boolean>;
 
 	fetch: <R>(

@@ -11,11 +11,11 @@ import {
 	MpdResponseSchema,
 } from "@sola_mpd/shared/src/models/mpd/mpd_command_pb.js";
 
-import type { SocketIoClient } from "../../../lib/socket_io/SocketIoClient";
+import type { MessagingClient } from "../../../lib/messaging/MessagingClient";
 import type { MpdClient } from "./MpdClient";
 
 export class MpdClientSocketIo implements MpdClient {
-	constructor(private client: SocketIoClient) {}
+	constructor(private client: MessagingClient) {}
 
 	command = async (req: MpdRequest): Promise<MpdResponse> => {
 		const res = await this.client.fetch(
