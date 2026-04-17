@@ -1,8 +1,8 @@
 import { io, type Socket } from "socket.io-client";
 
-import type { SocketIoClient } from "./SocketIoClient";
+import type { MessagingClient } from "./MessagingClient";
 
-export class SocketIoClientDefault implements SocketIoClient {
+export class MessagingClientSocketIo implements MessagingClient {
 	private socket: Promise<Socket>;
 
 	constructor() {

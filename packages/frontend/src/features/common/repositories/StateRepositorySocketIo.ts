@@ -4,7 +4,7 @@ import {
 	SOCKETIO_CONFIG_FETCH,
 	SOCKETIO_CONFIG_SAVE,
 } from "@sola_mpd/shared/src/const/socketio.js";
-import type { SocketIoClient } from "../../../lib/socket_io/SocketIoClient";
+import type { MessagingClient } from "../../../lib/messaging/MessagingClient";
 import type { StateRepository } from "./StateRepository";
 
 export class StateRepositorySocketIo<T extends Message>
@@ -14,7 +14,7 @@ export class StateRepositorySocketIo<T extends Message>
 	private readonly saveEvent: string;
 
 	constructor(
-		private readonly client: SocketIoClient,
+		private readonly client: MessagingClient,
 		configKey: string,
 		private readonly schema: GenMessage<T>,
 	) {

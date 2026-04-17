@@ -1,8 +1,8 @@
-import type { SocketIoClient } from "../socket_io/SocketIoClient";
+import type { IpcBridge } from "../ipc/IpcBridge";
 
-import type { IpcBridge } from "./IpcBridge";
+import type { MessagingClient } from "./MessagingClient";
 
-export class SocketIoClientElectronIpc implements SocketIoClient {
+export class MessagingClientElectronIpc implements MessagingClient {
 	constructor(private bridge: IpcBridge) {}
 
 	isReady = async (): Promise<boolean> => {

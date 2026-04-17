@@ -19,9 +19,9 @@ import { SavedSearchesRepositorySocketIo } from "./features/search/repositories/
 import { savedSearchesRepositoryAtom } from "./features/search/states/atoms/savedSearchesRepositoryAtom";
 import { SongTableStateRepositorySocketIo } from "./features/song_table/repositories/SongTableStateRepositorySocketIo";
 import { songTableStateRepositoryAtom } from "./features/song_table/states/atoms/songTableStateRepositoryAtom";
-import { SocketIoClientElectronIpc } from "./lib/ipc/SocketIoClientElectronIpc";
-import type { SocketIoClient } from "./lib/socket_io/SocketIoClient";
-import { SocketIoClientDefault } from "./lib/socket_io/SocketIoClientDefault";
+import type { MessagingClient } from "./lib/messaging/MessagingClient";
+import { MessagingClientElectronIpc } from "./lib/messaging/MessagingClientElectronIpc";
+import { MessagingClientSocketIo } from "./lib/messaging/MessagingClientSocketIo";
 
 let globalStore: ReturnType<typeof createStore> | undefined;
 
@@ -32,49 +32,49 @@ export function useJotaiStore() {
 		const store = createStore();
 
 		// DI
-		let socketIoClient: SocketIoClient;
+		let messagingClient: MessagingClient;
 		if (window.__SOLA_IPC_BRIDGE__ != null) {
-			socketIoClient = new SocketIoClientElectronIpc(
+			messagingClient = new MessagingClientElectronIpc(
 				window.__SOLA_IPC_BRIDGE__,
 			);
 		} else {
-			socketIoClient = new SocketIoClientDefault();
+			messagingClient = new MessagingClientSocketIo();
 		}
-		await socketIoClient.isReady();
+		await messagingClient.isReady();
 
-		store.set(setMpdClientActionAtom, new MpdClientSocketIo(socketIoClient));
+		store.set(setMpdClientActionAtom, new MpdClientSocketIo(messagingClient));
 		store.set(
 			setMpdListenerActionAtom,
-			new MpdListenerSocketIo(socketIoClient),
+			new MpdListenerSocketIo(messagingClient),
 		);
 		store.set(
 			songTableStateRepositoryAtom,
-			new SongTableStateRepositorySocketIo(socketIoClient),
+			new SongTableStateRepositorySocketIo(messagingClient),
 		);
 		store.set(
 			browserStateRepositoryAtom,
-			new BrowserStateRepositorySocketIo(socketIoClient),
+			new BrowserStateRepositorySocketIo(messagingClient),
 		);
 		store.set(
 			pluginStateRepositoryAtom,
-			new PluginStateRepositorySocketIo(socketIoClient),
+			new PluginStateRepositorySocketIo(messagingClient),
 		);
-		store.set(pluginServiceAtom, new PluginServiceSocketIo(socketIoClient));
+		store.set(pluginServiceAtom, new PluginServiceSocketIo(messagingClient));
 		store.set(
 			mpdProfileStateRepositoryAtom,
-			new MpdProfileStateRepositorySocketIo(socketIoClient),
+			new MpdProfileStateRepositorySocketIo(messagingClient),
 		);
 		store.set(
 			savedSearchesRepositoryAtom,
-			new SavedSearchesRepositorySocketIo(socketIoClient),
+			new SavedSearchesRepositorySocketIo(messagingClient),
 		);
 		store.set(
 			recentlyAddedStateRepositoryAtom,
-			new RecentlyAddedStateRepositorySocketIo(socketIoClient),
+			new RecentlyAddedStateRepositorySocketIo(messagingClient),
 		);
 		store.set(
 			advancedSearchClientAtom,
-			new AdvancedSearchClientSocketIo(socketIoClient),
+			new AdvancedSearchClientSocketIo(messagingClient),
 		);
 
 		globalStore = store;

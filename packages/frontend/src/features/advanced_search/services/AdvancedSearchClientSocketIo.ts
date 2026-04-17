@@ -6,11 +6,11 @@ import {
 	type AdvancedSearchResponse,
 	AdvancedSearchResponseSchema,
 } from "@sola_mpd/shared/src/models/advanced_search_pb.js";
-import type { SocketIoClient } from "../../../lib/socket_io/SocketIoClient";
+import type { MessagingClient } from "../../../lib/messaging/MessagingClient";
 import type { AdvancedSearchClient } from "./AdvancedSearchClient";
 
 export class AdvancedSearchClientSocketIo implements AdvancedSearchClient {
-	constructor(private client: SocketIoClient) {}
+	constructor(private client: MessagingClient) {}
 
 	command = async (
 		req: AdvancedSearchRequest,

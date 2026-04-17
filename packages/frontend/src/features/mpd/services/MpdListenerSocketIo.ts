@@ -13,15 +13,15 @@ import {
 	MpdProfileSchema,
 } from "@sola_mpd/shared/src/models/mpd/mpd_profile_pb.js";
 
-import type { SocketIoClient } from "../../../lib/socket_io/SocketIoClient";
+import type { MessagingClient } from "../../../lib/messaging/MessagingClient";
 import type { MpdListener } from "./MpdListener";
 
 export class MpdListenerSocketIo implements MpdListener {
-	private socket: SocketIoClient;
+	private socket: MessagingClient;
 	private callbacks: Map<MpdEvent_EventType, () => void>;
 
-	constructor(socketIoClient: SocketIoClient) {
-		this.socket = socketIoClient;
+	constructor(messagingClient: MessagingClient) {
+		this.socket = messagingClient;
 		this.callbacks = new Map();
 	}
 
