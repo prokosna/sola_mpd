@@ -1,5 +1,6 @@
 import { type ReadableStream, TransformStream } from "node:stream/web";
 import { create, toJsonString } from "@bufbuild/protobuf";
+import { Client, Command, Parsers } from "@prokosna/mpd3";
 import {
 	convertConditionsToString,
 	convertSongMetadataTagToMpdTag,
@@ -18,7 +19,6 @@ import {
 import type { MpdProfile } from "@sola_mpd/shared/src/models/mpd/mpd_profile_pb.js";
 import type { Song } from "@sola_mpd/shared/src/models/song_pb.js";
 import { DeepMap } from "@sola_mpd/shared/src/utils/DeepMap.js";
-import { Client, Command, Parsers } from "mpd3";
 import {
 	parseFolder,
 	parseMpdOutputDevice,
