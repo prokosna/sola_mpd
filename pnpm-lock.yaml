@@ -38,6 +38,9 @@ importers:
       '@connectrpc/connect-node':
         specifier: ^2.1.1
         version: 2.1.1(@bufbuild/protobuf@2.11.0)(@connectrpc/connect@2.1.1(@bufbuild/protobuf@2.11.0))
+      '@prokosna/mpd3':
+        specifier: ^2.0.0
+        version: 2.0.0
       '@sola_mpd/shared':
         specifier: workspace:*
         version: link:../shared
@@ -47,9 +50,6 @@ importers:
       express:
         specifier: ^5.2.1
         version: 5.2.1
-      mpd3:
-        specifier: github:prokosna/mpd.js#1.1.1
-        version: https://codeload.github.com/prokosna/mpd.js/tar.gz/bc36e23714b8cf9c7784ae93f6fe15b235a67244
       socket.io:
         specifier: ^4.8.3
         version: 4.8.3
@@ -981,6 +981,10 @@ packages:
     resolution: {integrity: sha512-PG6q63nQg5c9rIi4/Z5lR5IVF7yU5MqmKaPOe0HSc0O2cX1fPi96sUQu5j7eo4gKCkB2AnNGoWt7y4/Xx3Kcqg==}
     engines: {node: '>=18'}
     hasBin: true
+
+  '@prokosna/mpd3@2.0.0':
+    resolution: {integrity: sha512-BcbyZBSVRYmt0sCXSqKhEN4bDPD5CNuUreeUo/8JJMpho4irTL1992EfkzOBAidAC0+oJT6LzajN8Ge5YA2/SQ==}
+    engines: {node: '>=18'}
 
   '@quansync/fs@1.0.0':
     resolution: {integrity: sha512-4TJ3DFtlf1L5LDMaM6CanJ/0lckGNtJcMjQ1NAV6zDmA0tEHKZtxNKin8EgPaVX1YzljbxckyT2tJrpQKAtngQ==}
@@ -5139,6 +5143,12 @@ snapshots:
   '@playwright/test@1.59.1':
     dependencies:
       playwright: 1.59.1
+
+  '@prokosna/mpd3@2.0.0':
+    dependencies:
+      debug: 4.4.3
+    transitivePeerDependencies:
+      - supports-color
 
   '@quansync/fs@1.0.0':
     dependencies:
