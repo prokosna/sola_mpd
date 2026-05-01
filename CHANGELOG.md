@@ -5,6 +5,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [4.5.5](https://github.com/prokosna/sola_mpd/compare/v4.5.4...v4.5.5) (2026-05-01)
+
+
+### Features
+
+* **mpd3:** upgrade mpd3 version to 2.0.0 ([#352](https://github.com/prokosna/sola_mpd/issues/352)) ([cb07604](https://github.com/prokosna/sola_mpd/commit/cb07604c76ed86110cb9e5b48908694a1ddb32c9))
+
 ## [4.5.4](https://github.com/prokosna/sola_mpd/compare/v4.5.3...v4.5.4) (2026-04-16)
 
 
