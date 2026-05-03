@@ -5,6 +5,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [4.5.6](https://github.com/prokosna/sola_mpd/compare/v4.5.5...v4.5.6) (2026-05-03)
+
+
+### Bug Fixes
+
+* expand clickable area of seek bar ([#354](https://github.com/prokosna/sola_mpd/issues/354)) ([c15aab0](https://github.com/prokosna/sola_mpd/commit/c15aab0929909f45a456a029eefa8b073f792ae4))
+
 ## [4.5.5](https://github.com/prokosna/sola_mpd/compare/v4.5.4...v4.5.5) (2026-05-01)
 
 
