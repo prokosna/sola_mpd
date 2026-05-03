@@ -48,6 +48,11 @@ export function PlayerSeekBar() {
 			onChangeEnd={(v) => {
 				handleSeekBarClick(v);
 			}}
+			styles={{
+				// Lift above sibling absolute groups (PlayerDuration / controls)
+				// that would otherwise intercept clicks below the visible bar.
+				root: { zIndex: 1 },
+			}}
 		/>
 	);
 }
