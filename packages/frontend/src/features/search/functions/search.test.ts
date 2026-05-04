@@ -99,7 +99,8 @@ describe("search", () => {
 			expect(tags).toContain(Song_MetadataTag.TITLE);
 			expect(tags).toContain(Song_MetadataTag.ALBUM);
 			expect(tags).toContain(Song_MetadataTag.DURATION);
-			expect(tags.length).toBe(12);
+			expect(tags).toContain(Song_MetadataTag.ADDED_AT);
+			expect(tags.length).toBe(13);
 		});
 	});
 
@@ -134,7 +135,7 @@ describe("search", () => {
 			const query = createQuery([mpdCond, nonMpdCond]);
 			const search = createSearch([query]);
 
-			const result = convertSearchToConditions(search);
+			const result = convertSearchToConditions(search, true);
 			expect(result).toHaveLength(1);
 			expect(result[0].mpdConditions).toHaveLength(1);
 			expect(result[0].nonMpdConditions).toHaveLength(1);
@@ -149,7 +150,7 @@ describe("search", () => {
 			const query = createQuery([condNoValue]);
 			const search = createSearch([query]);
 
-			const result = convertSearchToConditions(search);
+			const result = convertSearchToConditions(search, true);
 			expect(result).toHaveLength(0);
 		});
 
@@ -166,8 +167,41 @@ describe("search", () => {
 			);
 			const search = createSearch([createQuery([c1]), createQuery([c2])]);
 
-			const result = convertSearchToConditions(search);
+			const result = convertSearchToConditions(search, true);
 			expect(result).toHaveLength(2);
+		});
+
+		it("routes ADDED_SINCE to mpdConditions when supported", () => {
+			const addedSince = createCondition(
+				Song_MetadataTag.ADDED_AT,
+				FilterCondition_Operator.ADDED_SINCE,
+				"2024-03-15",
+			);
+			const search = createSearch([createQuery([addedSince])]);
+
+			const result = convertSearchToConditions(search, true);
+			expect(result).toHaveLength(1);
+			expect(result[0].mpdConditions).toHaveLength(1);
+			expect(result[0].nonMpdConditions).toHaveLength(0);
+		});
+
+		it("drops ADDED_SINCE silently when the server does not support it", () => {
+			const addedSince = createCondition(
+				Song_MetadataTag.ADDED_AT,
+				FilterCondition_Operator.ADDED_SINCE,
+				"2024-03-15",
+			);
+			const other = createCondition(
+				Song_MetadataTag.TITLE,
+				FilterCondition_Operator.EQUAL,
+				"keep",
+			);
+			const search = createSearch([createQuery([addedSince, other])]);
+
+			const result = convertSearchToConditions(search, false);
+			expect(result).toHaveLength(1);
+			expect(result[0].mpdConditions).toHaveLength(1);
+			expect(result[0].mpdConditions[0].tag).toBe(Song_MetadataTag.TITLE);
 		});
 	});
 
@@ -357,6 +391,42 @@ describe("search", () => {
 					FilterCondition_Operator.LESS_THAN_OR_EQUAL,
 				),
 			).toBe(true);
+		});
+
+		it("allows ADDED_SINCE only when paired with ADDED_AT", () => {
+			expect(
+				isValidOperatorWithMetadataTag(
+					Song_MetadataTag.ADDED_AT,
+					FilterCondition_Operator.ADDED_SINCE,
+				),
+			).toBe(true);
+			expect(
+				isValidOperatorWithMetadataTag(
+					Song_MetadataTag.TITLE,
+					FilterCondition_Operator.ADDED_SINCE,
+				),
+			).toBe(false);
+			expect(
+				isValidOperatorWithMetadataTag(
+					Song_MetadataTag.UPDATED_AT,
+					FilterCondition_Operator.ADDED_SINCE,
+				),
+			).toBe(false);
+		});
+
+		it("rejects all non-ADDED_SINCE operators on ADDED_AT", () => {
+			expect(
+				isValidOperatorWithMetadataTag(
+					Song_MetadataTag.ADDED_AT,
+					FilterCondition_Operator.EQUAL,
+				),
+			).toBe(false);
+			expect(
+				isValidOperatorWithMetadataTag(
+					Song_MetadataTag.ADDED_AT,
+					FilterCondition_Operator.GREATER_THAN,
+				),
+			).toBe(false);
 		});
 	});
 
