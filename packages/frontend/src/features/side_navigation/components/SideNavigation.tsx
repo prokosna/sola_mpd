@@ -23,6 +23,7 @@ import {
 	ROUTE_HOME_TEXT_TO_MUSIC_SEARCH,
 } from "../../../const/routes";
 import { advancedSearchStatsAtom } from "../../advanced_search";
+import { RecentlyAddedSlowModeIndicator } from "../../browsing/recently_added/components/RecentlyAddedSlowModeIndicator";
 import { CardStats } from "../../stats";
 import { useSideNavigationItems } from "../hooks/useSideNavigationItems";
 import {
@@ -57,6 +58,7 @@ export function SideNavigation({ isCompact }: { isCompact: boolean }) {
 			icon: <IconComet />,
 			link: ROUTE_HOME_RECENTLY_ADDED,
 			isCompact,
+			rightSection: <RecentlyAddedSlowModeIndicator />,
 		},
 		{
 			name: "Search",
