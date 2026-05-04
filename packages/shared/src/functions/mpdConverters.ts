@@ -1,7 +1,13 @@
+import { timestampDate } from "@bufbuild/protobuf/wkt";
+
 import {
 	type FilterCondition,
 	FilterCondition_Operator,
 } from "../models/filter_pb.js";
+import type {
+	MpdCommand_Database_SearchSort,
+	MpdCommand_Database_SearchWindow,
+} from "../models/mpd/mpd_command_pb.js";
 import { Song_MetadataTag } from "../models/song_pb.js";
 
 import { convertSongMetadataValueToString } from "./songMetadata.js";
@@ -87,6 +93,16 @@ export function convertConditionToString(condition: FilterCondition): string {
 	if (condition.value === undefined) {
 		throw new Error("Condition value is undefined");
 	}
+	if (condition.operator === FilterCondition_Operator.ADDED_SINCE) {
+		if (condition.value.value.case !== "timestamp") {
+			throw new Error("ADDED_SINCE operator requires a timestamp value");
+		}
+		const date = timestampDate(condition.value.value.value);
+		// MPD's ParseISO8601 uses strptime("%S") and rejects fractional seconds
+		// ("Garbage at end of time stamp"); emit second-precision UTC instead.
+		const iso = date.toISOString().replace(/\.\d{3}Z$/, "Z");
+		return `added-since "${iso}"`;
+	}
 	const left = Song_MetadataTag[condition.tag]
 		.replaceAll("_", "")
 		.toLowerCase();
@@ -119,4 +135,43 @@ export function convertConditionToString(condition: FilterCondition): string {
  */
 export function convertSongMetadataTagToMpdTag(tag: Song_MetadataTag): string {
 	return Song_MetadataTag[tag].toLowerCase().replaceAll("_", "");
+}
+
+/**
+ * MPD's `sort` clause accepts either a tag name or one of the special keys
+ * "Last-Modified" / "Added". Map our enum to those forms; fall back to the
+ * lowercase tag form for other tags (MPD's tag parser is case-insensitive).
+ */
+export function convertSongMetadataTagToMpdSortTag(
+	tag: Song_MetadataTag,
+): string {
+	switch (tag) {
+		case Song_MetadataTag.UPDATED_AT:
+			return "Last-Modified";
+		case Song_MetadataTag.ADDED_AT:
+			return "Added";
+		default:
+			return convertSongMetadataTagToMpdTag(tag);
+	}
+}
+
+export function buildSearchSortTokens(
+	sort: MpdCommand_Database_SearchSort | undefined,
+): string[] {
+	if (sort === undefined || sort.tag === Song_MetadataTag.UNKNOWN) {
+		return [];
+	}
+	const sortTag = convertSongMetadataTagToMpdSortTag(sort.tag);
+	return ["sort", sort.descending ? `-${sortTag}` : sortTag];
+}
+
+export function buildSearchWindowTokens(
+	window: MpdCommand_Database_SearchWindow | undefined,
+): string[] {
+	if (window === undefined || (window.start === 0 && window.end === 0)) {
+		return [];
+	}
+	const windowStr =
+		window.end > 0 ? `${window.start}:${window.end}` : `${window.start}:`;
+	return ["window", windowStr];
 }

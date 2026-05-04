@@ -18,7 +18,7 @@ The following commands must be run after code changes to verify the code:
 - `pnpm fmt`
 - `pnpm lint`
 - `pnpm test`
-- `pnpm build:no_types`
+- `pnpm build`
 
 # 3. Architecture and Coding Conventions
 

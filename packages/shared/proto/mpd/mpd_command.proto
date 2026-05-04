@@ -174,9 +174,25 @@ message MpdCommand {
     }
     message SearchRequest {
       repeated FilterCondition conditions = 1;
+      SearchSort sort = 2;
+      SearchWindow window = 3;
     }
     message SearchResponse {
       repeated Song songs = 1;
+    }
+    // Server-side sort for search/find. `tag` defaults to UNKNOWN which means
+    // "no sort". MetadataTag covers MPD's sort keys including UPDATED_AT
+    // ("Last-Modified") and ADDED_AT ("Added"). Requires MPD >= 0.24 for
+    // ADDED_AT.
+    message SearchSort {
+      Song.MetadataTag tag = 1;
+      bool descending = 2;
+    }
+    // Pagination window for search/find. `end` is exclusive; 0 means unbounded.
+    // Requires MPD >= 0.24.
+    message SearchWindow {
+      uint32 start = 1;
+      uint32 end = 2;
     }
     message UpdateRequest {}
     message UpdateResponse {}

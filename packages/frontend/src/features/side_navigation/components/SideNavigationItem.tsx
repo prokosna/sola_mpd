@@ -10,6 +10,7 @@ export type SideNavigationItemProps = {
 	link: string;
 	isSelected?: boolean;
 	isCompact: boolean;
+	rightSection?: ReactNode;
 };
 
 export function SideNavigationItem(props: SideNavigationItemProps) {
@@ -31,6 +32,7 @@ export function SideNavigationItem(props: SideNavigationItemProps) {
 			}}
 			label={props.isCompact ? null : props.name}
 			leftSection={props.icon}
+			rightSection={props.rightSection}
 			variant="fill"
 			active={props.isSelected}
 		/>

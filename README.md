@@ -101,12 +101,15 @@ If you are using the latest version of Docker, the `compose` command is already 
 
     If you have any issues, please confirm if you installed Docker correctly.
 
-1. Clone this repository on your server
+1. Clone this repository on your server and check out the latest release tag
 
     ```bash
     git clone https://github.com/prokosna/sola_mpd.git
     cd sola_mpd
+    git checkout $(git tag --sort=-v:refname | head -n 1)
     ```
+
+    The `main` branch may contain unreleased changes; running from a release tag is recommended.
 
 1. [Optional] Edit the docker-compose.yaml file if you want to change the port or other configurations
 
@@ -137,16 +140,17 @@ If you are using the latest version of Docker, the `compose` command is already 
 
 ## How to update
 
-The main branch should be always the latest working branch.
-
-You just need to stop the running container, pull the latest main branch and run the latest container.
+Stop the running container, fetch the latest release tag and rebuild the container.
 
 ```bash
 $ cd sola_mpd
 $ docker compose down
-$ git pull origin main
+$ git fetch --tags
+$ git checkout $(git tag --sort=-v:refname | head -n 1)
 $ docker compose up --build -d
 ```
+
+Released tags are listed on the [Releases](https://github.com/prokosna/sola_mpd/releases) page. The `main` branch may contain unreleased changes; running from a release tag is recommended.
 
 ## Usage tips (operations & shortcut keys)
 

@@ -84,7 +84,12 @@ describe("listAllFilterConditionOperators", () => {
 		expect(operators).not.toContain(FilterCondition_Operator.UNKNOWN);
 	});
 
-	it("should contain all non-UNKNOWN operators", () => {
+	it("should exclude ADDED_SINCE because it is a server-side-only operator", () => {
+		const operators = listAllFilterConditionOperators();
+		expect(operators).not.toContain(FilterCondition_Operator.ADDED_SINCE);
+	});
+
+	it("should contain all user-facing operators", () => {
 		const operators = listAllFilterConditionOperators();
 		expect(operators).toContain(FilterCondition_Operator.EQUAL);
 		expect(operators).toContain(FilterCondition_Operator.NOT_EQUAL);

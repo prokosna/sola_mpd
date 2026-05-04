@@ -24,6 +24,8 @@ export function convertOperatorToDisplayName(
 			return ">";
 		case FilterCondition_Operator.GREATER_THAN_OR_EQUAL:
 			return ">=";
+		case FilterCondition_Operator.ADDED_SINCE:
+			return "since";
 	}
 }
 
@@ -51,17 +53,27 @@ export function convertDisplayNameToOperator(
 			return FilterCondition_Operator.GREATER_THAN;
 		case ">=":
 			return FilterCondition_Operator.GREATER_THAN_OR_EQUAL;
+		case "since":
+			return FilterCondition_Operator.ADDED_SINCE;
 		default:
 			throw new Error(`Not supported operator: ${str}`);
 	}
 }
 
 export function listAllFilterConditionOperators(): FilterCondition_Operator[] {
+	// ADDED_SINCE is a server-side-only filter (MPD's "(added-since 'T')") used
+	// by Recently Added's fast path. It is not exposed in user-facing filter
+	// builders because its value must be a timestamp paired with tag=ADDED_AT,
+	// which the Search UI does not surface today.
 	return Object.keys(FilterCondition_Operator)
 		.filter((v) => Number.isNaN(Number(v)))
 		.map(
 			(v) =>
 				FilterCondition_Operator[v as keyof typeof FilterCondition_Operator],
 		)
-		.filter((v) => v !== FilterCondition_Operator.UNKNOWN);
+		.filter(
+			(v) =>
+				v !== FilterCondition_Operator.UNKNOWN &&
+				v !== FilterCondition_Operator.ADDED_SINCE,
+		);
 }

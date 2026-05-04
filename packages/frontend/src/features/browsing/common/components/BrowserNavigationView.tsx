@@ -22,10 +22,16 @@ type BrowserNavigationViewProps = {
 		browserFilters: BrowserFilter[],
 		mode: UpdateMode,
 	) => Promise<void>;
+	onScrolledNearBottom?: () => void;
 };
 
 export function BrowserNavigationView(props: BrowserNavigationViewProps) {
-	const { browserFilters, browserFilterValues, updateBrowserFilters } = props;
+	const {
+		browserFilters,
+		browserFilterValues,
+		updateBrowserFilters,
+		onScrolledNearBottom,
+	} = props;
 	const resolvedBrowserFilters = browserFilters ?? [];
 
 	const usedTags = resolvedBrowserFilters.map((filter) => filter.tag);
@@ -67,6 +73,7 @@ export function BrowserNavigationView(props: BrowserNavigationViewProps) {
 								browserFilters: sortedBrowserFilters,
 								availableTags,
 								updateBrowserFilters,
+								onScrolledNearBottom,
 							}}
 						/>
 					</Panel>

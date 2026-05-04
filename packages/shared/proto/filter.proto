@@ -15,11 +15,14 @@ message FilterCondition {
     CONTAIN = 3;
     NOT_CONTAIN = 4;
     REGEX = 5;
-    // Following operators are not supported by MPD
-    // Need filtering on the client side.
+    // Operators below have no general MPD support and need client-side
+    // filtering.
     LESS_THAN = 6;
     LESS_THAN_OR_EQUAL = 7;
     GREATER_THAN = 8;
     GREATER_THAN_OR_EQUAL = 9;
+    // MPD time-range filter. Use with tag=ADDED_AT and value.timestamp.
+    // Maps to "(added-since '<ISO-8601>')". Requires MPD >= 0.24.
+    ADDED_SINCE = 10;
   }
 }

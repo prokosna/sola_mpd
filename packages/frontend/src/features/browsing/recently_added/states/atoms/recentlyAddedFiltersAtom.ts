@@ -11,14 +11,17 @@ import { allSongsAtom } from "../../../../all_songs/states/atoms/allSongsAtom";
 import { filterStringsByGlobalFilter } from "../../../../global_filter";
 import { globalFilterTokensAtom } from "../../../../global_filter/states/atoms/globalFilterAtom";
 import { pathnameAtom } from "../../../../location/states/atoms/locationAtom";
+import { mpdCapabilitiesAtom } from "../../../../mpd/states/atoms/mpdCapabilitiesAtom";
 import { mpdClientAtom } from "../../../../mpd/states/atoms/mpdClientAtom";
 import { currentMpdProfileAtom } from "../../../../profile/states/atoms/mpdProfileAtom";
 import { localeCollatorAtom } from "../../../../settings/states/atoms/localeAtom";
 import { fetchBrowserFilterValues } from "../../../common/functions/browserFilter";
 import {
+	extractRecentlyAddedFastFilterValues,
 	extractRecentlyAddedFilterValues,
 	sortRecentlyAddedFilterValues,
 } from "../../functions/recentlyAddedFiltering";
+import { recentlyAddedFastStateAtom } from "./recentlyAddedFastStateAtom";
 import { recentlyAddedStateAtom } from "./recentlyAddedStateAtom";
 
 const recentlyAddedFiltersAtom = atom((get) => {
@@ -84,9 +87,22 @@ const recentlyAddedSortedBrowserFilterValuesMapAsyncAtom = atom(async (get) => {
 	);
 });
 
-const recentlyAddedSortedBrowserFilterValuesMapAtom = atomWithSync(
+const recentlyAddedSlowSortedBrowserFilterValuesMapAtom = atomWithSync(
 	recentlyAddedSortedBrowserFilterValuesMapAsyncAtom,
 );
+
+const recentlyAddedFastSortedBrowserFilterValuesMapAtom = atom((get) => {
+	const fastState = get(recentlyAddedFastStateAtom);
+	return extractRecentlyAddedFastFilterValues(fastState.songs);
+});
+
+const recentlyAddedSortedBrowserFilterValuesMapAtom = atom((get) => {
+	const capabilities = get(mpdCapabilitiesAtom);
+	if (capabilities.supportsAddedSince) {
+		return get(recentlyAddedFastSortedBrowserFilterValuesMapAtom);
+	}
+	return get(recentlyAddedSlowSortedBrowserFilterValuesMapAtom);
+});
 
 export const filteredRecentlyAddedBrowserFilterValuesMapAtom = atom((get) => {
 	const browserFilters = get(recentlyAddedBrowserFiltersAtom);

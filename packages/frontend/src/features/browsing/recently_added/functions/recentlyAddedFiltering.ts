@@ -50,6 +50,40 @@ export function extractRecentlyAddedFilterValues(
 	return filterValuesMap;
 }
 
+/**
+ * Fast-path counterpart to extractRecentlyAddedFilterValues. Expects a song
+ * list that is already sorted by recency (ADDED_AT descending) and emits
+ * per-tag values in first-seen order, which preserves the recency order
+ * without an additional sort step.
+ */
+export function extractRecentlyAddedFastFilterValues(
+	sortedSongs: Song[],
+): Map<Song_MetadataTag, string[]> {
+	const tags = listBrowserSongMetadataTags();
+	const seen = new Map<Song_MetadataTag, Set<string>>();
+	const result = new Map<Song_MetadataTag, string[]>();
+	for (const tag of tags) {
+		seen.set(tag, new Set());
+		result.set(tag, []);
+	}
+	for (const song of sortedSongs) {
+		for (const tag of tags) {
+			const value = getSongMetadataAsString(song, tag);
+			if (value === undefined || value === "") {
+				continue;
+			}
+			const seenSet = seen.get(tag);
+			const values = result.get(tag);
+			if (seenSet === undefined || values === undefined || seenSet.has(value)) {
+				continue;
+			}
+			seenSet.add(value);
+			values.push(value);
+		}
+	}
+	return result;
+}
+
 export function sortRecentlyAddedFilterValues(
 	filterValues: Map<Song_MetadataTag, string[]>,
 	allSortedFilterValues: Map<Song_MetadataTag, string[]>,
