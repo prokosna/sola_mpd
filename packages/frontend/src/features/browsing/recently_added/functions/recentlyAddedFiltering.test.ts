@@ -8,6 +8,7 @@ import {
 import { describe, expect, it } from "vitest";
 
 import {
+	extractRecentlyAddedFastFilterValues,
 	extractRecentlyAddedFilterValues,
 	sortRecentlyAddedFilterValues,
 } from "./recentlyAddedFiltering";
@@ -76,6 +77,37 @@ describe("extractRecentlyAddedFilterValues", () => {
 	it("should return empty map for empty songs", () => {
 		const result = extractRecentlyAddedFilterValues([]);
 		expect(result.size).toBe(0);
+	});
+});
+
+describe("extractRecentlyAddedFastFilterValues", () => {
+	it("emits values in first-seen order from a recency-sorted song list", () => {
+		const songs = [
+			createBrowsingSong("/0.mp3", 300n, "Artist B"),
+			createBrowsingSong("/1.mp3", 200n, "Artist A"),
+			createBrowsingSong("/2.mp3", 100n, "Artist B"),
+		];
+		const result = extractRecentlyAddedFastFilterValues(songs);
+		expect(result.get(Song_MetadataTag.ARTIST)).toEqual([
+			"Artist B",
+			"Artist A",
+		]);
+	});
+
+	it("skips empty values and dedupes per tag", () => {
+		const songs = [
+			createBrowsingSong("/a.mp3", 100n, ""),
+			createBrowsingSong("/b.mp3", 200n, "Artist A"),
+			createBrowsingSong("/c.mp3", 300n, "Artist A"),
+		];
+		const result = extractRecentlyAddedFastFilterValues(songs);
+		expect(result.get(Song_MetadataTag.ARTIST)).toEqual(["Artist A"]);
+	});
+
+	it("returns a map seeded with all browser tags even when empty", () => {
+		const result = extractRecentlyAddedFastFilterValues([]);
+		expect(result.get(Song_MetadataTag.ARTIST)).toEqual([]);
+		expect(result.get(Song_MetadataTag.ALBUM)).toEqual([]);
 	});
 });
 

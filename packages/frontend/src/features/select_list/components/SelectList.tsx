@@ -1,4 +1,4 @@
-import type { GetRowIdParams } from "ag-grid-community";
+import type { BodyScrollEvent, GetRowIdParams } from "ag-grid-community";
 import { AgGridReact } from "ag-grid-react";
 import { useCallback, useEffect, useRef } from "react";
 
@@ -14,6 +14,8 @@ import type {
 	SelectListRowValue,
 } from "../types/selectListTypes";
 
+const DEFAULT_NEAR_BOTTOM_THRESHOLD = 5;
+
 export type SelectListProps = {
 	id: string;
 	values: SelectListRowValue[];
@@ -24,6 +26,11 @@ export type SelectListProps = {
 	allowMultipleSelection: boolean;
 	onItemsSelected: (selectedValues: SelectListRowValue[]) => Promise<void>;
 	onLoadingCompleted: () => Promise<void>;
+	// Fires when the user has scrolled within `nearBottomThreshold` rows of the
+	// last row. Callers may use this to trigger progressive loading. Only fired
+	// for vertical scroll events.
+	onScrolledNearBottom?: () => void;
+	nearBottomThreshold?: number;
 };
 
 export function SelectList(props: SelectListProps) {
@@ -48,6 +55,26 @@ export function SelectList(props: SelectListProps) {
 	const handleSelectionChange = useHandleSelectionChange(props.onItemsSelected);
 	const handleRowDataUpdated = useHandleRowDataUpdated(
 		props.onLoadingCompleted,
+	);
+
+	const onScrolledNearBottom = props.onScrolledNearBottom;
+	const nearBottomThreshold =
+		props.nearBottomThreshold ?? DEFAULT_NEAR_BOTTOM_THRESHOLD;
+	const handleBodyScroll = useCallback(
+		(event: BodyScrollEvent) => {
+			if (
+				onScrolledNearBottom === undefined ||
+				event.direction !== "vertical"
+			) {
+				return;
+			}
+			const total = event.api.getDisplayedRowCount();
+			const lastIndex = event.api.getLastDisplayedRowIndex();
+			if (total > 0 && lastIndex >= total - nearBottomThreshold) {
+				onScrolledNearBottom();
+			}
+		},
+		[onScrolledNearBottom, nearBottomThreshold],
 	);
 
 	// Color mode
@@ -90,6 +117,7 @@ export function SelectList(props: SelectListProps) {
 						onCellContextMenu={openContextMenu}
 						onSelectionChanged={handleSelectionChange}
 						onRowDataUpdated={handleRowDataUpdated}
+						onBodyScroll={handleBodyScroll}
 						animateRows={false}
 						rowSelection={{
 							mode: props.allowMultipleSelection ? "multiRow" : "singleRow",

@@ -98,7 +98,10 @@ export function convertConditionToString(condition: FilterCondition): string {
 			throw new Error("ADDED_SINCE operator requires a timestamp value");
 		}
 		const date = timestampDate(condition.value.value.value);
-		return `added-since "${date.toISOString()}"`;
+		// MPD's ParseISO8601 uses strptime("%S") and rejects fractional seconds
+		// ("Garbage at end of time stamp"); emit second-precision UTC instead.
+		const iso = date.toISOString().replace(/\.\d{3}Z$/, "Z");
+		return `added-since "${iso}"`;
 	}
 	const left = Song_MetadataTag[condition.tag]
 		.replaceAll("_", "")

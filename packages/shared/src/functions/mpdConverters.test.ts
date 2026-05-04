@@ -183,7 +183,7 @@ describe("mpdConverters", () => {
 			operator: FilterCondition_Operator.ADDED_SINCE,
 		});
 		expect(convertConditionToString(condition)).toBe(
-			'added-since "2024-03-15T10:30:00.000Z"',
+			'added-since "2024-03-15T10:30:00Z"',
 		);
 	});
 
@@ -201,7 +201,7 @@ describe("mpdConverters", () => {
 			operator: FilterCondition_Operator.ADDED_SINCE,
 		});
 		expect(convertConditionToString(condition)).toBe(
-			'added-since "2024-03-15T10:30:00.000Z"',
+			'added-since "2024-03-15T10:30:00Z"',
 		);
 	});
 
@@ -236,7 +236,7 @@ describe("mpdConverters", () => {
 			}),
 		];
 		expect(convertConditionsToString(conditions)).toBe(
-			'((added-since "2024-03-15T10:30:00.000Z"))',
+			'((added-since "2024-03-15T10:30:00Z"))',
 		);
 	});
 

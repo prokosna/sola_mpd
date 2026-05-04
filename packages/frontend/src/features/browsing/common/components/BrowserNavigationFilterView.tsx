@@ -15,6 +15,7 @@ export type BrowserNavigationFilterViewProps = {
 		browserFilters: BrowserFilter[],
 		mode: UpdateMode,
 	) => Promise<void>;
+	onScrolledNearBottom?: () => void;
 };
 
 export function BrowserNavigationFilterView(

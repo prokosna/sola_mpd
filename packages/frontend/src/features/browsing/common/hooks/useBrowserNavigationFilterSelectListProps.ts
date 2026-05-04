@@ -26,6 +26,7 @@ export function useBrowserNavigationFilterSelectListProps(
 		browserFilters,
 		availableTags,
 		updateBrowserFilters,
+		onScrolledNearBottom,
 	} = props;
 
 	// Handlers
@@ -144,5 +145,6 @@ export function useBrowserNavigationFilterSelectListProps(
 		allowMultipleSelection: true,
 		onItemsSelected,
 		onLoadingCompleted,
+		onScrolledNearBottom,
 	};
 }
