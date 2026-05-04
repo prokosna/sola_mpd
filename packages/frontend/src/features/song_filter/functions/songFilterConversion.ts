@@ -24,6 +24,8 @@ export function convertOperatorToDisplayName(
 			return ">";
 		case FilterCondition_Operator.GREATER_THAN_OR_EQUAL:
 			return ">=";
+		case FilterCondition_Operator.ADDED_SINCE:
+			return "since";
 	}
 }
 
@@ -51,6 +53,8 @@ export function convertDisplayNameToOperator(
 			return FilterCondition_Operator.GREATER_THAN;
 		case ">=":
 			return FilterCondition_Operator.GREATER_THAN_OR_EQUAL;
+		case "since":
+			return FilterCondition_Operator.ADDED_SINCE;
 		default:
 			throw new Error(`Not supported operator: ${str}`);
 	}

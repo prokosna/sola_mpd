@@ -41,6 +41,7 @@ message Song {
     POSITION = 14;
     COMMENT = 15;
     LABEL = 16;
+    ADDED_AT = 17;
   }
 
   message MetadataValue {

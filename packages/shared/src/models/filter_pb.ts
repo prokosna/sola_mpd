@@ -12,7 +12,7 @@ import type { Message } from "@bufbuild/protobuf";
  * Describes the file filter.proto.
  */
 export const file_filter: GenFile = /*@__PURE__*/
-  fileDesc("CgxmaWx0ZXIucHJvdG8iwQIKD0ZpbHRlckNvbmRpdGlvbhIMCgR1dWlkGAEgASgJEh4KA3RhZxgCIAEoDjIRLlNvbmcuTWV0YWRhdGFUYWcSIgoFdmFsdWUYAyABKAsyEy5Tb25nLk1ldGFkYXRhVmFsdWUSKwoIb3BlcmF0b3IYBCABKA4yGS5GaWx0ZXJDb25kaXRpb24uT3BlcmF0b3IirgEKCE9wZXJhdG9yEgsKB1VOS05PV04QABIJCgVFUVVBTBABEg0KCU5PVF9FUVVBTBACEgsKB0NPTlRBSU4QAxIPCgtOT1RfQ09OVEFJThAEEgkKBVJFR0VYEAUSDQoJTEVTU19USEFOEAYSFgoSTEVTU19USEFOX09SX0VRVUFMEAcSEAoMR1JFQVRFUl9USEFOEAgSGQoVR1JFQVRFUl9USEFOX09SX0VRVUFMEAliBnByb3RvMw", [file_song]);
+  fileDesc("CgxmaWx0ZXIucHJvdG8i0gIKD0ZpbHRlckNvbmRpdGlvbhIMCgR1dWlkGAEgASgJEh4KA3RhZxgCIAEoDjIRLlNvbmcuTWV0YWRhdGFUYWcSIgoFdmFsdWUYAyABKAsyEy5Tb25nLk1ldGFkYXRhVmFsdWUSKwoIb3BlcmF0b3IYBCABKA4yGS5GaWx0ZXJDb25kaXRpb24uT3BlcmF0b3IivwEKCE9wZXJhdG9yEgsKB1VOS05PV04QABIJCgVFUVVBTBABEg0KCU5PVF9FUVVBTBACEgsKB0NPTlRBSU4QAxIPCgtOT1RfQ09OVEFJThAEEgkKBVJFR0VYEAUSDQoJTEVTU19USEFOEAYSFgoSTEVTU19USEFOX09SX0VRVUFMEAcSEAoMR1JFQVRFUl9USEFOEAgSGQoVR1JFQVRFUl9USEFOX09SX0VRVUFMEAkSDwoLQURERURfU0lOQ0UQCmIGcHJvdG8z", [file_song]);
 
 /**
  * @generated from message FilterCondition
@@ -81,8 +81,7 @@ export enum FilterCondition_Operator {
   REGEX = 5,
 
   /**
-   * Following operators are not supported by MPD
-   * Need filtering on the client side.
+   * Operators below have no general MPD support and need client-side filtering.
    *
    * @generated from enum value: LESS_THAN = 6;
    */
@@ -102,6 +101,14 @@ export enum FilterCondition_Operator {
    * @generated from enum value: GREATER_THAN_OR_EQUAL = 9;
    */
   GREATER_THAN_OR_EQUAL = 9,
+
+  /**
+   * MPD time-range filter. Use with tag=ADDED_AT and value.timestamp.
+   * Maps to "(added-since '<ISO-8601>')". Requires MPD >= 0.24.
+   *
+   * @generated from enum value: ADDED_SINCE = 10;
+   */
+  ADDED_SINCE = 10,
 }
 
 /**
