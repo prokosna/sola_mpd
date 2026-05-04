@@ -2,6 +2,8 @@ import { type ReadableStream, TransformStream } from "node:stream/web";
 import { create, toJsonString } from "@bufbuild/protobuf";
 import { Client, Command, Parsers } from "@prokosna/mpd3";
 import {
+	buildSearchSortTokens,
+	buildSearchWindowTokens,
 	convertConditionsToString,
 	convertSongMetadataTagToMpdTag,
 } from "@sola_mpd/shared/src/functions/mpdConverters.js";
@@ -796,7 +798,14 @@ class MpdClientMpd3 implements MpdClient {
 			case "search": {
 				const conditions = req.command.value.conditions;
 				const expression = convertConditionsToString(conditions);
-				return Command.cmd("search", expression);
+				const sortTokens = buildSearchSortTokens(req.command.value.sort);
+				const windowTokens = buildSearchWindowTokens(req.command.value.window);
+				return Command.cmd(
+					"search",
+					expression,
+					...sortTokens,
+					...windowTokens,
+				);
 			}
 			case "update":
 				return Command.cmd("update");

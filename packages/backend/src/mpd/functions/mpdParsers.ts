@@ -197,6 +197,24 @@ export function parseSong(v?: Record<string, unknown>): Song | undefined {
 		);
 	}
 
+	if (raw.added && /^\d{4}-\d{2}-\d{2}/.test(raw.added)) {
+		// MPD emits a negative timestamp for "added time unknown". Require an
+		// ISO-8601 prefix here since both Date.parse and dayjs are lenient
+		// enough to map strings like "-1" onto unrelated dates.
+		const ms = Date.parse(raw.added);
+		if (!Number.isNaN(ms) && ms >= 0) {
+			song.metadata[Song_MetadataTag.ADDED_AT] = create(
+				Song_MetadataValueSchema,
+				{
+					value: {
+						case: "timestamp",
+						value: timestampFromDate(new Date(ms)),
+					},
+				},
+			);
+		}
+	}
+
 	const id = raw.id && !Number.isNaN(+raw.id) ? +raw.id : undefined;
 	song.metadata[Song_MetadataTag.ID] = create(Song_MetadataValueSchema, {
 		value: {

@@ -1,5 +1,5 @@
 import { create } from "@bufbuild/protobuf";
-import { StringValueSchema } from "@bufbuild/protobuf/wkt";
+import { StringValueSchema, timestampFromDate } from "@bufbuild/protobuf/wkt";
 import { describe, expect, it } from "vitest";
 
 import {
@@ -8,13 +8,20 @@ import {
 	FilterConditionSchema,
 } from "../models/filter_pb.js";
 import {
+	MpdCommand_Database_SearchSortSchema,
+	MpdCommand_Database_SearchWindowSchema,
+} from "../models/mpd/mpd_command_pb.js";
+import {
 	Song_MetadataTag,
 	Song_MetadataValueSchema,
 } from "../models/song_pb.js";
 
 import {
+	buildSearchSortTokens,
+	buildSearchWindowTokens,
 	convertConditionsToString,
 	convertConditionToString,
+	convertSongMetadataTagToMpdSortTag,
 	convertSongMetadataTagToMpdTag,
 	escapeConditionArg,
 	escapeExpression,
@@ -160,5 +167,152 @@ describe("mpdConverters", () => {
 
 	it("escapeRegexString should handle special regex characters", () => {
 		expect(escapeRegexString("test-value")).toBe("test\\\\\\\\x2dvalue");
+	});
+
+	it("convertConditionToString should emit added-since for ADDED_SINCE operator", () => {
+		const date = new Date("2024-03-15T10:30:00.000Z");
+		const condition = create(FilterConditionSchema, {
+			uuid: "1",
+			tag: Song_MetadataTag.ADDED_AT,
+			value: create(Song_MetadataValueSchema, {
+				value: {
+					case: "timestamp",
+					value: timestampFromDate(date),
+				},
+			}),
+			operator: FilterCondition_Operator.ADDED_SINCE,
+		});
+		expect(convertConditionToString(condition)).toBe(
+			'added-since "2024-03-15T10:30:00.000Z"',
+		);
+	});
+
+	it("convertConditionToString should format added-since timestamps as UTC Z", () => {
+		// Non-UTC input must still be emitted in UTC.
+		const date = new Date("2024-03-15T19:30:00+09:00");
+		const condition = create(FilterConditionSchema, {
+			tag: Song_MetadataTag.ADDED_AT,
+			value: create(Song_MetadataValueSchema, {
+				value: {
+					case: "timestamp",
+					value: timestampFromDate(date),
+				},
+			}),
+			operator: FilterCondition_Operator.ADDED_SINCE,
+		});
+		expect(convertConditionToString(condition)).toBe(
+			'added-since "2024-03-15T10:30:00.000Z"',
+		);
+	});
+
+	it("convertConditionToString should throw if ADDED_SINCE has non-timestamp value", () => {
+		const condition = create(FilterConditionSchema, {
+			tag: Song_MetadataTag.ADDED_AT,
+			value: create(Song_MetadataValueSchema, {
+				value: {
+					case: "stringValue",
+					value: create(StringValueSchema, { value: "foo" }),
+				},
+			}),
+			operator: FilterCondition_Operator.ADDED_SINCE,
+		});
+		expect(() => convertConditionToString(condition)).toThrow(
+			"ADDED_SINCE operator requires a timestamp value",
+		);
+	});
+
+	it("convertConditionsToString should wrap added-since condition", () => {
+		const date = new Date("2024-03-15T10:30:00.000Z");
+		const conditions: FilterCondition[] = [
+			create(FilterConditionSchema, {
+				tag: Song_MetadataTag.ADDED_AT,
+				value: create(Song_MetadataValueSchema, {
+					value: {
+						case: "timestamp",
+						value: timestampFromDate(date),
+					},
+				}),
+				operator: FilterCondition_Operator.ADDED_SINCE,
+			}),
+		];
+		expect(convertConditionsToString(conditions)).toBe(
+			'((added-since "2024-03-15T10:30:00.000Z"))',
+		);
+	});
+
+	it("convertSongMetadataTagToMpdSortTag should map special sort keys", () => {
+		expect(
+			convertSongMetadataTagToMpdSortTag(Song_MetadataTag.UPDATED_AT),
+		).toBe("Last-Modified");
+		expect(convertSongMetadataTagToMpdSortTag(Song_MetadataTag.ADDED_AT)).toBe(
+			"Added",
+		);
+		expect(convertSongMetadataTagToMpdSortTag(Song_MetadataTag.ARTIST)).toBe(
+			"artist",
+		);
+		expect(
+			convertSongMetadataTagToMpdSortTag(Song_MetadataTag.ALBUM_ARTIST),
+		).toBe("albumartist");
+	});
+
+	it("buildSearchSortTokens emits ascending or descending tokens", () => {
+		expect(
+			buildSearchSortTokens(
+				create(MpdCommand_Database_SearchSortSchema, {
+					tag: Song_MetadataTag.ADDED_AT,
+					descending: true,
+				}),
+			),
+		).toEqual(["sort", "-Added"]);
+		expect(
+			buildSearchSortTokens(
+				create(MpdCommand_Database_SearchSortSchema, {
+					tag: Song_MetadataTag.UPDATED_AT,
+					descending: false,
+				}),
+			),
+		).toEqual(["sort", "Last-Modified"]);
+	});
+
+	it("buildSearchSortTokens returns empty when sort is unset or UNKNOWN", () => {
+		expect(buildSearchSortTokens(undefined)).toEqual([]);
+		expect(
+			buildSearchSortTokens(
+				create(MpdCommand_Database_SearchSortSchema, {
+					tag: Song_MetadataTag.UNKNOWN,
+				}),
+			),
+		).toEqual([]);
+	});
+
+	it("buildSearchWindowTokens emits bounded and unbounded windows", () => {
+		expect(
+			buildSearchWindowTokens(
+				create(MpdCommand_Database_SearchWindowSchema, {
+					start: 100,
+					end: 200,
+				}),
+			),
+		).toEqual(["window", "100:200"]);
+		expect(
+			buildSearchWindowTokens(
+				create(MpdCommand_Database_SearchWindowSchema, {
+					start: 100,
+					end: 0,
+				}),
+			),
+		).toEqual(["window", "100:"]);
+	});
+
+	it("buildSearchWindowTokens returns empty when window is unset or zero", () => {
+		expect(buildSearchWindowTokens(undefined)).toEqual([]);
+		expect(
+			buildSearchWindowTokens(
+				create(MpdCommand_Database_SearchWindowSchema, {
+					start: 0,
+					end: 0,
+				}),
+			),
+		).toEqual([]);
 	});
 });

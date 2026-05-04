@@ -149,6 +149,35 @@ describe("parseSong", () => {
 			"Artist A; Artist B",
 		);
 	});
+
+	it("parses Added attribute into ADDED_AT timestamp", () => {
+		const raw = {
+			file: "path/to/song.mp3",
+			Added: "2024-03-15T10:30:00Z",
+		};
+		const song = parseSong(raw);
+		const addedAt = song?.metadata[Song_MetadataTag.ADDED_AT];
+		expect(addedAt?.value.case).toBe("timestamp");
+		const seconds = (addedAt?.value as { value: { seconds: bigint } }).value
+			.seconds;
+		expect(Number(seconds)).toBe(
+			Math.floor(new Date("2024-03-15T10:30:00Z").getTime() / 1000),
+		);
+	});
+
+	it("leaves ADDED_AT unset when Added is absent", () => {
+		const raw = { file: "path/to/song.mp3" };
+		const song = parseSong(raw);
+		expect(song?.metadata[Song_MetadataTag.ADDED_AT]).toBeUndefined();
+	});
+
+	it("leaves ADDED_AT unset when Added is unparseable or negative", () => {
+		const songNeg = parseSong({ file: "path/to/song.mp3", Added: "-1" });
+		expect(songNeg?.metadata[Song_MetadataTag.ADDED_AT]).toBeUndefined();
+
+		const songJunk = parseSong({ file: "path/to/song.mp3", Added: "garbage" });
+		expect(songJunk?.metadata[Song_MetadataTag.ADDED_AT]).toBeUndefined();
+	});
 });
 
 describe("parseMpdStats", () => {
