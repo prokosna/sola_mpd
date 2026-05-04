@@ -1,12 +1,12 @@
 import { Tooltip } from "@mantine/core";
-import { IconAlertTriangle } from "@tabler/icons-react";
+import { IconAlertCircle } from "@tabler/icons-react";
 import { useAtomValue } from "jotai";
 
 import { mpdCapabilitiesAtom } from "../../../mpd/states/atoms/mpdCapabilitiesAtom";
 import { statsAtom } from "../../../stats/states/atoms/statsAtom";
 
 const SLOW_MODE_TOOLTIP_LABEL =
-	"Slow mode; Upgrade MPD to 0.24+ for instant loading";
+	"Slow mode; upgrade MPD to 0.24+ for instant loading";
 
 export function RecentlyAddedSlowModeIndicator() {
 	const stats = useAtomValue(statsAtom);
@@ -23,7 +23,7 @@ export function RecentlyAddedSlowModeIndicator() {
 
 	return (
 		<Tooltip label={SLOW_MODE_TOOLTIP_LABEL}>
-			<IconAlertTriangle size={16} aria-label="Slow compatibility mode" />
+			<IconAlertCircle size={16} aria-label="Slow compatibility mode" />
 		</Tooltip>
 	);
 }

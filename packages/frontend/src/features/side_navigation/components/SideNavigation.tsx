@@ -23,6 +23,7 @@ import {
 	ROUTE_HOME_TEXT_TO_MUSIC_SEARCH,
 } from "../../../const/routes";
 import { advancedSearchStatsAtom } from "../../advanced_search";
+import { AllSongsLoadWarningIndicator } from "../../all_songs/components/AllSongsLoadWarningIndicator";
 import { RecentlyAddedSlowModeIndicator } from "../../browsing/recently_added/components/RecentlyAddedSlowModeIndicator";
 import { CardStats } from "../../stats";
 import { useSideNavigationItems } from "../hooks/useSideNavigationItems";
@@ -77,6 +78,7 @@ export function SideNavigation({ isCompact }: { isCompact: boolean }) {
 			icon: <IconDatabase />,
 			link: ROUTE_HOME_ALL_SONGS,
 			isCompact,
+			rightSection: <AllSongsLoadWarningIndicator />,
 		},
 		{
 			name: "Plugins",
