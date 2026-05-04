@@ -118,7 +118,7 @@ export function SearchNavigationQueryEditor({
 									key={condition.uuid}
 									align="center"
 									justify="space-between"
-									gutter={1}
+									gap={1}
 								>
 									<Grid.Col span={1}>
 										<Center>
