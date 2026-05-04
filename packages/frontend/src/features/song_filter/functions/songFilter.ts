@@ -71,6 +71,10 @@ function matchesFilteringCondition(
 				return songMetadataValue >= conditionValue;
 			}
 			return String(songMetadataValue) >= String(conditionValue);
+		case FilterCondition_Operator.ADDED_SINCE:
+			// Server-side filter; should not reach client-side filtering. Treat as
+			// a no-op so future drift cannot silently regress search results.
+			return true;
 		default:
 			return true;
 	}

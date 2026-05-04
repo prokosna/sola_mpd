@@ -7,6 +7,7 @@ import { atomWithSync } from "../../../../lib/jotai/atomWithSync";
 import { filterSongsByGlobalFilter } from "../../../global_filter";
 import { globalFilterTokensAtom } from "../../../global_filter/states/atoms/globalFilterAtom";
 import { pathnameAtom } from "../../../location/states/atoms/locationAtom";
+import { mpdCapabilitiesAtom } from "../../../mpd/states/atoms/mpdCapabilitiesAtom";
 import { mpdClientAtom } from "../../../mpd/states/atoms/mpdClientAtom";
 import { currentMpdProfileAtom } from "../../../profile/states/atoms/mpdProfileAtom";
 import { fetchSearchSongs } from "../../functions/search";
@@ -18,6 +19,7 @@ export const searchSongsAsyncAtom = atomWithRefresh(async (get) => {
 	const mpdClient = get(mpdClientAtom);
 	const profile = get(currentMpdProfileAtom);
 	const search = get(targetSearchAtom);
+	const capabilities = get(mpdCapabilitiesAtom);
 
 	if (profile === undefined) {
 		return undefined;
@@ -26,7 +28,12 @@ export const searchSongsAsyncAtom = atomWithRefresh(async (get) => {
 		return [];
 	}
 
-	return await fetchSearchSongs(mpdClient, profile, search);
+	return await fetchSearchSongs(
+		mpdClient,
+		profile,
+		search,
+		capabilities.supportsAddedSince,
+	);
 });
 
 const searchSongsAtom = atomWithSync(searchSongsAsyncAtom);

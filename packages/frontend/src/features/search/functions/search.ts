@@ -83,6 +83,7 @@ export function listSearchSongMetadataTags(): Song_MetadataTag[] {
 		Song_MetadataTag.TRACK,
 		Song_MetadataTag.DISC,
 		Song_MetadataTag.UPDATED_AT,
+		Song_MetadataTag.ADDED_AT,
 	];
 }
 
@@ -94,13 +95,25 @@ export function mergeSongsList(songsList: Song[][]): Song[] {
 	return unique;
 }
 
-export function convertSearchToConditions(search: Search): SearchConditions[] {
+export function convertSearchToConditions(
+	search: Search,
+	supportsAddedSince: boolean,
+): SearchConditions[] {
 	return search.queries
 		.map((query): SearchConditions => {
 			const mpdConditions: FilterCondition[] = [];
 			const nonMpdConditions: FilterCondition[] = [];
 			for (const condition of query.conditions) {
 				if (condition.value === undefined) {
+					continue;
+				}
+				// ADDED_SINCE has no client-side counterpart on legacy MPDs (songs
+				// from MPD < 0.24 carry no `added` timestamp). Skip the condition
+				// silently rather than route it to a path that cannot evaluate it.
+				if (
+					condition.operator === FilterCondition_Operator.ADDED_SINCE &&
+					!supportsAddedSince
+				) {
 					continue;
 				}
 				if (
@@ -110,6 +123,7 @@ export function convertSearchToConditions(search: Search): SearchConditions[] {
 						FilterCondition_Operator.NOT_CONTAIN,
 						FilterCondition_Operator.NOT_EQUAL,
 						FilterCondition_Operator.REGEX,
+						FilterCondition_Operator.ADDED_SINCE,
 					].includes(condition.operator)
 				) {
 					mpdConditions.push(condition);
@@ -208,6 +222,18 @@ export function isValidOperatorWithMetadataTag(
 	tag: Song_MetadataTag,
 	operator: FilterCondition_Operator,
 ): boolean {
+	// ADDED_SINCE maps to MPD's "(added-since 'T')" filter; it only takes a
+	// timestamp and is meaningful only when paired with ADDED_AT.
+	if (operator === FilterCondition_Operator.ADDED_SINCE) {
+		return tag === Song_MetadataTag.ADDED_AT;
+	}
+	// ADDED_AT has no native MPD operator other than added-since, and no
+	// client-side fallback (songs from MPD < 0.24 have no `added` timestamp).
+	// Restrict it to ADDED_SINCE so users cannot construct queries that quietly
+	// match nothing.
+	if (tag === Song_MetadataTag.ADDED_AT) {
+		return false;
+	}
 	if (![Song_MetadataTag.DURATION, Song_MetadataTag.UPDATED_AT].includes(tag)) {
 		return true;
 	}
@@ -268,8 +294,12 @@ export async function fetchSearchSongs(
 	mpdClient: MpdClient,
 	profile: MpdProfile,
 	search: Search,
+	supportsAddedSince: boolean,
 ): Promise<Song[]> {
-	const searchConditions = convertSearchToConditions(search);
+	const searchConditions = convertSearchToConditions(
+		search,
+		supportsAddedSince,
+	);
 
 	if (searchConditions.length === 0) {
 		return [];

@@ -12,15 +12,18 @@ import {
 	Stack,
 	Text,
 	TextInput,
+	Tooltip,
 	useComputedColorScheme,
 	useMantineTheme,
 } from "@mantine/core";
 import { DateInput } from "@mantine/dates";
 import type { UseFormReturnType } from "@mantine/form";
+import { FilterCondition_Operator } from "@sola_mpd/shared/src/models/filter_pb.js";
 import { Song_MetadataTag } from "@sola_mpd/shared/src/models/song_pb.js";
-import { IconPlus, IconTrash } from "@tabler/icons-react";
+import { IconAlertTriangle, IconPlus, IconTrash } from "@tabler/icons-react";
 import { useAtomValue } from "jotai";
 import { FullWidthSkeleton } from "../../loading";
+import { mpdCapabilitiesAtom } from "../../mpd/states/atoms/mpdCapabilitiesAtom";
 import {
 	convertOperatorToDisplayName,
 	listAllFilterConditionOperators,
@@ -36,9 +39,38 @@ import {
 import { useSearchQueryEditorHandlers } from "../hooks/useSearchQueryEditorHandlers";
 import { isSearchLoadingAtom } from "../states/atoms/searchUiAtom";
 import {
+	type ConditionFormValues,
 	EditingSearchStatus,
 	type SearchFormValues,
 } from "../types/searchTypes";
+
+const DATE_INPUT_TAGS: readonly Song_MetadataTag[] = [
+	Song_MetadataTag.UPDATED_AT,
+	Song_MetadataTag.ADDED_AT,
+];
+
+const UNSUPPORTED_CONDITION_TOOLTIP =
+	"Ignored when searching; requires MPD 0.24+";
+
+function isDateInputTag(tagDisplayName: string): boolean {
+	const tag = convertSongMetadataTagFromDisplayName(tagDisplayName);
+	return tag !== undefined && DATE_INPUT_TAGS.includes(tag);
+}
+
+function isConditionUnsupportedOnCurrentServer(
+	condition: ConditionFormValues,
+	supportsAddedSince: boolean,
+): boolean {
+	if (supportsAddedSince) {
+		return false;
+	}
+	return (
+		condition.tag ===
+			convertSongMetadataTagToDisplayName(Song_MetadataTag.ADDED_AT) ||
+		condition.operator ===
+			convertOperatorToDisplayName(FilterCondition_Operator.ADDED_SINCE)
+	);
+}
 
 export function SearchNavigationQueryEditor({
 	form,
@@ -50,6 +82,7 @@ export function SearchNavigationQueryEditor({
 	const scheme = useComputedColorScheme();
 	const theme = useMantineTheme();
 	const isSearchLoading = useAtomValue(isSearchLoadingAtom);
+	const { supportsAddedSince } = useAtomValue(mpdCapabilitiesAtom);
 
 	const {
 		handleSave,
@@ -61,6 +94,16 @@ export function SearchNavigationQueryEditor({
 		isNewSearch,
 		savedSearches,
 	} = useSearchQueryEditorHandlers(form);
+
+	// Hide ADDED_AT tag and the matching ADDED_SINCE operator on legacy MPDs
+	// so users cannot author queries the server cannot evaluate.
+	const availableTags = listSearchSongMetadataTags().filter(
+		(tag) => supportsAddedSince || tag !== Song_MetadataTag.ADDED_AT,
+	);
+	const availableOperators = listAllFilterConditionOperators().filter(
+		(operator) =>
+			supportsAddedSince || operator !== FilterCondition_Operator.ADDED_SINCE,
+	);
 
 	if (savedSearches === undefined) {
 		return <FullWidthSkeleton />;
@@ -112,109 +155,122 @@ export function SearchNavigationQueryEditor({
 					{queries.map((query, queryIndex) => (
 						// biome-ignore lint/suspicious/noArrayIndexKey: Order is fixed.
 						<Stack key={queryIndex} gap={8} mt={4} mb={8}>
-							{query.conditions.map((condition, conditionIndex) => (
-								<Grid
-									w="100%"
-									key={condition.uuid}
-									align="center"
-									justify="space-between"
-									gap={1}
-								>
-									<Grid.Col span={1}>
-										<Center>
-											<ActionIcon
-												size="sm"
-												variant="outline"
-												onClick={() => handleAddCondition(queryIndex)}
-												disabled={conditionIndex < query.conditions.length - 1}
-											>
-												<IconPlus />
-											</ActionIcon>
-										</Center>
-									</Grid.Col>
-									<Grid.Col span={3}>
-										<Select
-											size="xs"
-											data={listSearchSongMetadataTags().map((tag) =>
-												convertSongMetadataTagToDisplayName(tag),
-											)}
-											key={form.key(
-												`queries.${queryIndex}.conditions.${conditionIndex}.tag`,
-											)}
-											{...form.getInputProps(
-												`queries.${queryIndex}.conditions.${conditionIndex}.tag`,
-											)}
-										/>
-									</Grid.Col>
-									<Grid.Col span={2}>
-										<Select
-											size="xs"
-											data={listAllFilterConditionOperators()
-												.filter((operator) => {
-													const tag = convertSongMetadataTagFromDisplayName(
-														condition.tag,
-													);
-													if (tag === undefined) {
-														return false;
+							{query.conditions.map((condition, conditionIndex) => {
+								const isUnsupported = isConditionUnsupportedOnCurrentServer(
+									condition,
+									supportsAddedSince,
+								);
+								const tagPath = `queries.${queryIndex}.conditions.${conditionIndex}.tag`;
+								const operatorPath = `queries.${queryIndex}.conditions.${conditionIndex}.operator`;
+								const valuePath = `queries.${queryIndex}.conditions.${conditionIndex}.value`;
+								const tagInputProps = form.getInputProps(tagPath);
+								return (
+									<Grid
+										w="100%"
+										key={condition.uuid}
+										align="center"
+										justify="space-between"
+										gap={1}
+									>
+										<Grid.Col span={1}>
+											<Center>
+												<ActionIcon
+													size="sm"
+													variant="outline"
+													onClick={() => handleAddCondition(queryIndex)}
+													disabled={
+														conditionIndex < query.conditions.length - 1
 													}
-													return isValidOperatorWithMetadataTag(tag, operator);
-												})
-												.map((operator) =>
-													convertOperatorToDisplayName(operator),
-												)}
-											key={form.key(
-												`queries.${queryIndex}.conditions.${conditionIndex}.operator`,
-											)}
-											{...form.getInputProps(
-												`queries.${queryIndex}.conditions.${conditionIndex}.operator`,
-											)}
-										/>
-									</Grid.Col>
-									<Grid.Col span={5}>
-										{condition.tag ===
-										convertSongMetadataTagToDisplayName(
-											Song_MetadataTag.UPDATED_AT,
-										) ? (
-											<DateInput
+												>
+													<IconPlus />
+												</ActionIcon>
+											</Center>
+										</Grid.Col>
+										<Grid.Col span={3}>
+											<Select
 												size="xs"
-												valueFormat="YYYY-MM-DD"
-												key={form.key(
-													`queries.${queryIndex}.conditions.${conditionIndex}.value`,
+												data={availableTags.map((tag) =>
+													convertSongMetadataTagToDisplayName(tag),
 												)}
-												{...form.getInputProps(
-													`queries.${queryIndex}.conditions.${conditionIndex}.value`,
-												)}
+												key={form.key(tagPath)}
+												{...tagInputProps}
+												onChange={(value) => {
+													tagInputProps.onChange?.(value);
+													form.setFieldValue(operatorPath, "");
+													form.setFieldValue(valuePath, "");
+												}}
 											/>
-										) : (
-											<TextInput
+										</Grid.Col>
+										<Grid.Col span={2}>
+											<Select
 												size="xs"
-												key={form.key(
-													`queries.${queryIndex}.conditions.${conditionIndex}.value`,
-												)}
-												{...form.getInputProps(
-													`queries.${queryIndex}.conditions.${conditionIndex}.value`,
-												)}
+												data={availableOperators
+													.filter((operator) => {
+														const tag = convertSongMetadataTagFromDisplayName(
+															condition.tag,
+														);
+														if (tag === undefined) {
+															return false;
+														}
+														return isValidOperatorWithMetadataTag(
+															tag,
+															operator,
+														);
+													})
+													.map((operator) =>
+														convertOperatorToDisplayName(operator),
+													)}
+												key={form.key(operatorPath)}
+												{...form.getInputProps(operatorPath)}
 											/>
+										</Grid.Col>
+										<Grid.Col span={isUnsupported ? 4 : 5}>
+											{isDateInputTag(condition.tag) ? (
+												<DateInput
+													size="xs"
+													valueFormat="YYYY-MM-DD"
+													key={form.key(valuePath)}
+													{...form.getInputProps(valuePath)}
+												/>
+											) : (
+												<TextInput
+													size="xs"
+													key={form.key(valuePath)}
+													{...form.getInputProps(valuePath)}
+												/>
+											)}
+										</Grid.Col>
+										{isUnsupported && (
+											<Grid.Col span={1}>
+												<Center>
+													<Tooltip label={UNSUPPORTED_CONDITION_TOOLTIP}>
+														<IconAlertTriangle
+															size={16}
+															aria-label="Unsupported condition"
+														/>
+													</Tooltip>
+												</Center>
+											</Grid.Col>
 										)}
-									</Grid.Col>
-									<Grid.Col span={1}>
-										<Center>
-											<ActionIcon
-												size="sm"
-												variant="outline"
-												onClick={() =>
-													handleDeleteCondition(queryIndex, conditionIndex)
-												}
-												disabled={
-													query.conditions.length === 1 && queryIndex === 0
-												}
-											>
-												<IconTrash />
-											</ActionIcon>
-										</Center>
-									</Grid.Col>
-								</Grid>
-							))}
+										<Grid.Col span={1}>
+											<Center>
+												<ActionIcon
+													size="sm"
+													variant="outline"
+													onClick={() =>
+														handleDeleteCondition(queryIndex, conditionIndex)
+													}
+													disabled={
+														query.conditions.length === 1 && queryIndex === 0
+													}
+												>
+													<IconTrash />
+												</ActionIcon>
+											</Center>
+										</Grid.Col>
+									</Grid>
+								);
+							})}
 							{
 								<Center>
 									<Button
