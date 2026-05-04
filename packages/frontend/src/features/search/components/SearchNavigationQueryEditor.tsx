@@ -51,7 +51,7 @@ const DATE_INPUT_TAGS: readonly Song_MetadataTag[] = [
 ];
 
 const UNSUPPORTED_CONDITION_TOOLTIP =
-	"Ignored when searching; requires MPD 0.24+.";
+	"Ignored when searching; requires MPD 0.24+";
 
 function isDateInputTag(tagDisplayName: string): boolean {
 	const tag = convertSongMetadataTagFromDisplayName(tagDisplayName);
