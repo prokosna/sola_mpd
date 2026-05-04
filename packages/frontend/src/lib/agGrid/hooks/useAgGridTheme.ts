@@ -1,12 +1,11 @@
+import { rgba, useComputedColorScheme, useMantineTheme } from "@mantine/core";
 import {
-	type Theme,
 	colorSchemeDarkBlue,
 	colorSchemeLightWarm,
+	type Theme,
 	themeAlpine,
 } from "ag-grid-community";
 import { useMemo } from "react";
-
-import { rgba, useComputedColorScheme, useMantineTheme } from "@mantine/core";
 
 export function useAgGridTheme(): Theme {
 	const schema = useComputedColorScheme();

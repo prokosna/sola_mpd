@@ -1,4 +1,4 @@
-import { DEFAULT_THEME, createTheme, mergeMantineTheme } from "@mantine/core";
+import { createTheme, DEFAULT_THEME, mergeMantineTheme } from "@mantine/core";
 import "@mantine/core/styles.css";
 import "@mantine/notifications/styles.css";
 import "@mantine/dates/styles.css";

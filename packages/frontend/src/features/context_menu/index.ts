@@ -3,6 +3,6 @@ export { ContextMenu } from "./components/ContextMenu";
 
 // Types
 export type {
-	ContextMenuSection,
 	ContextMenuItem,
+	ContextMenuSection,
 } from "./types/contextMenuTypes";

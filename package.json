@@ -15,9 +15,9 @@
 		"dev_desktop": "pnpm --filter @sola_mpd/frontend build:no_types && pnpm --filter @sola_mpd/desktop dev",
 		"build_desktop": "pnpm --filter @sola_mpd/frontend build:no_types && pnpm --filter @sola_mpd/desktop build && pnpm --filter @sola_mpd/desktop dist",
 		"proto": "pnpm --filter @sola_mpd/shared proto",
-		"lint": "biome lint packages/**/src --write --unsafe && biome lint plugins/**/src --write --unsafe",
+		"lint": "biome check packages/**/src && biome check plugins/**/src",
 		"fmt": "pnpm fmt_biome && pnpm fmt_clang",
-		"fmt_biome": "biome format packages/**/src --write && biome format plugins/**/src --write",
+		"fmt_biome": "biome check packages/**/src --write && biome check plugins/**/src --write",
 		"fmt_clang": "find . -name '*.proto' | xargs clang-format --style '{ BasedOnStyle: Google }' -i",
 		"prepare": "husky",
 		"lint-staged": "lint-staged",
@@ -31,18 +31,18 @@
 			"clang-format --style '{ BasedOnStyle: Google }' -i"
 		]
 	},
-	"packageManager": "pnpm@10.33.0",
+	"packageManager": "pnpm@10.33.2",
 	"pnpm": {
 		"executionEnv": {
 			"nodeVersion": "24.13.0"
 		}
 	},
 	"devDependencies": {
-		"@biomejs/biome": "2.4.11",
+		"@biomejs/biome": "2.4.14",
 		"clang-format": "^1.8.0",
 		"husky": "^9.1.7",
 		"lint-staged": "^16.4.0",
-		"typescript": "^6.0.2",
-		"vitest": "^4.1.4"
+		"typescript": "^6.0.3",
+		"vitest": "^4.1.5"
 	}
 }
