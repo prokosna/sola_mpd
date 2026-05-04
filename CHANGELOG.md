@@ -5,6 +5,15 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [4.7.0](https://github.com/prokosna/sola_mpd/compare/v4.6.0...v4.7.0) (2026-05-04)
+
+
+### Features
+
+* add warning indicator on All Songs ([#362](https://github.com/prokosna/sola_mpd/issues/362)) ([eccd5b3](https://github.com/prokosna/sola_mpd/commit/eccd5b3fa098254539ce72bd6748ff38f66b0826))
+* faster Recently Added for MPD 0.24+ ([#360](https://github.com/prokosna/sola_mpd/issues/360)) ([30c5719](https://github.com/prokosna/sola_mpd/commit/30c5719fb945264dec50e744f318d1b04325d15c))
+* support Added At in Search for MPD 0.24+ ([#363](https://github.com/prokosna/sola_mpd/issues/363)) ([e777957](https://github.com/prokosna/sola_mpd/commit/e7779578150544c43b6154b2821f582b2e7d0b86))
+
 ## [4.6.0](https://github.com/prokosna/sola_mpd/compare/v4.5.6...v4.6.0) (2026-05-04)
 
 
