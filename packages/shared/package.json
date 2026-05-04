@@ -10,12 +10,12 @@
 		"test": "vitest run --passWithNoTests"
 	},
 	"devDependencies": {
-		"@bufbuild/buf": "^1.67.0",
-		"@bufbuild/protoc-gen-es": "^2.11.0",
-		"tsdown": "^0.21.7"
+		"@bufbuild/buf": "^1.69.0",
+		"@bufbuild/protoc-gen-es": "^2.12.0",
+		"tsdown": "^0.21.10"
 	},
 	"dependencies": {
-		"@bufbuild/protobuf": "^2.11.0",
+		"@bufbuild/protobuf": "^2.12.0",
 		"dayjs": "^1.11.20",
 		"fast-deep-equal": "^3.1.3"
 	},
