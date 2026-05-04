@@ -25,7 +25,6 @@ import { useAtomValue } from "jotai";
 import { FullWidthSkeleton } from "../../loading";
 import { mpdCapabilitiesAtom } from "../../mpd/states/atoms/mpdCapabilitiesAtom";
 import {
-	convertDisplayNameToOperator,
 	convertOperatorToDisplayName,
 	listAllFilterConditionOperators,
 } from "../../song_filter";
@@ -65,17 +64,12 @@ function isConditionUnsupportedOnCurrentServer(
 	if (supportsAddedSince) {
 		return false;
 	}
-	let operator: FilterCondition_Operator | undefined;
-	try {
-		operator = convertDisplayNameToOperator(condition.operator);
-	} catch {
-		operator = undefined;
-	}
-	if (operator === FilterCondition_Operator.ADDED_SINCE) {
-		return true;
-	}
-	const tag = convertSongMetadataTagFromDisplayName(condition.tag);
-	return tag === Song_MetadataTag.ADDED_AT;
+	return (
+		condition.tag ===
+			convertSongMetadataTagToDisplayName(Song_MetadataTag.ADDED_AT) ||
+		condition.operator ===
+			convertOperatorToDisplayName(FilterCondition_Operator.ADDED_SINCE)
+	);
 }
 
 export function SearchNavigationQueryEditor({
