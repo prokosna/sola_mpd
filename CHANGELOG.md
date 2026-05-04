@@ -5,6 +5,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [4.6.0](https://github.com/prokosna/sola_mpd/compare/v4.5.6...v4.6.0) (2026-05-04)
+
+
+### Features
+
+* **frontend:** upgrade mantine to v9 ([#357](https://github.com/prokosna/sola_mpd/issues/357)) ([eed1663](https://github.com/prokosna/sola_mpd/commit/eed1663fcde7ad53c5d3c399745c238de142a72d))
+
 ## [4.5.6](https://github.com/prokosna/sola_mpd/compare/v4.5.5...v4.5.6) (2026-05-03)
 
 
