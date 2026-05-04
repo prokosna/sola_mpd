@@ -193,8 +193,9 @@ export const strings: Record<Locale, Strings> = {
 					code: "docker ps",
 				},
 				{
-					title: "Clone the repository",
-					code: "git clone https://github.com/prokosna/sola_mpd.git\ncd sola_mpd",
+					title:
+						"Clone the repository and check out the latest release tag (the main branch may contain unreleased changes)",
+					code: "git clone https://github.com/prokosna/sola_mpd.git\ncd sola_mpd\ngit checkout $(git tag --sort=-v:refname | head -n 1)",
 				},
 				{
 					title:
@@ -314,8 +315,9 @@ export const strings: Record<Locale, Strings> = {
 					code: "docker ps",
 				},
 				{
-					title: "リポジトリをクローン",
-					code: "git clone https://github.com/prokosna/sola_mpd.git\ncd sola_mpd",
+					title:
+						"リポジトリをクローンし、最新のリリースタグをチェックアウト (main ブランチには未リリースの変更が含まれる場合があります)",
+					code: "git clone https://github.com/prokosna/sola_mpd.git\ncd sola_mpd\ngit checkout $(git tag --sort=-v:refname | head -n 1)",
 				},
 				{
 					title:
