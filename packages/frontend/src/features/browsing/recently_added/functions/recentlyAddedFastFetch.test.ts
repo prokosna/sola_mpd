@@ -25,7 +25,7 @@ function captureMpdClient(): {
 } {
 	const requests: MpdRequest[] = [];
 	const client: MpdClient = {
-		async command(req) {
+		async command(req: MpdRequest) {
 			requests.push(req);
 			return create(MpdResponseSchema, {
 				command: { case: "search", value: { songs: [] } },
