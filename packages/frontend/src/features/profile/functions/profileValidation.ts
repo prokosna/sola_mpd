@@ -1,9 +1,8 @@
 import { create } from "@bufbuild/protobuf";
 import { MpdRequestSchema } from "@sola_mpd/shared/src/models/mpd/mpd_command_pb.js";
 import { MpdProfileSchema } from "@sola_mpd/shared/src/models/mpd/mpd_profile_pb.js";
-import { compareVersions } from "compare-versions";
 
-import type { MpdClient } from "../../mpd";
+import { isMpdVersionAtLeast, type MpdClient } from "../../mpd";
 import type { ProfileInput } from "../types/profileTypes";
 import type { ValidationResult } from "../types/validationTypes";
 
@@ -58,7 +57,7 @@ export async function validateMpdProfile(
 		}
 
 		const version = res.command.value.version;
-		if (compareVersions(version, "0.21") < 0) {
+		if (!isMpdVersionAtLeast(version, "0.21")) {
 			return createValidationResult(
 				false,
 				`MPD version is ${version}: Please use 0.21 or later.`,
