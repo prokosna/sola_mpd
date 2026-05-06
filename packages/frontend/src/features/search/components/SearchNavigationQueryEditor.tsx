@@ -59,9 +59,9 @@ function isDateInputTag(tagDisplayName: string): boolean {
 
 function isConditionUnsupportedOnCurrentServer(
 	condition: ConditionFormValues,
-	supportsAddedSince: boolean,
+	isMpd024OrLater: boolean,
 ): boolean {
-	if (supportsAddedSince) {
+	if (isMpd024OrLater) {
 		return false;
 	}
 	return (
@@ -82,7 +82,7 @@ export function SearchNavigationQueryEditor({
 	const scheme = useComputedColorScheme();
 	const theme = useMantineTheme();
 	const isSearchLoading = useAtomValue(isSearchLoadingAtom);
-	const { supportsAddedSince } = useAtomValue(mpdCapabilitiesAtom);
+	const { isMpd024OrLater } = useAtomValue(mpdCapabilitiesAtom);
 
 	const {
 		handleSave,
@@ -98,11 +98,11 @@ export function SearchNavigationQueryEditor({
 	// Hide ADDED_AT tag and the matching ADDED_SINCE operator on legacy MPDs
 	// so users cannot author queries the server cannot evaluate.
 	const availableTags = listSearchSongMetadataTags().filter(
-		(tag) => supportsAddedSince || tag !== Song_MetadataTag.ADDED_AT,
+		(tag) => isMpd024OrLater || tag !== Song_MetadataTag.ADDED_AT,
 	);
 	const availableOperators = listAllFilterConditionOperators().filter(
 		(operator) =>
-			supportsAddedSince || operator !== FilterCondition_Operator.ADDED_SINCE,
+			isMpd024OrLater || operator !== FilterCondition_Operator.ADDED_SINCE,
 	);
 
 	if (savedSearches === undefined) {
@@ -158,7 +158,7 @@ export function SearchNavigationQueryEditor({
 							{query.conditions.map((condition, conditionIndex) => {
 								const isUnsupported = isConditionUnsupportedOnCurrentServer(
 									condition,
-									supportsAddedSince,
+									isMpd024OrLater,
 								);
 								const tagPath = `queries.${queryIndex}.conditions.${conditionIndex}.tag`;
 								const operatorPath = `queries.${queryIndex}.conditions.${conditionIndex}.operator`;

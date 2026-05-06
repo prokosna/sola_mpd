@@ -6,10 +6,12 @@ import { atomWithSync } from "../../../../lib/jotai/atomWithSync";
 import { filterSongsByGlobalFilter } from "../../../global_filter";
 import { globalFilterTokensAtom } from "../../../global_filter/states/atoms/globalFilterAtom";
 import { pathnameAtom } from "../../../location/states/atoms/locationAtom";
+import { mpdCapabilitiesAtom } from "../../../mpd/states/atoms/mpdCapabilitiesAtom";
 import { mpdClientAtom } from "../../../mpd/states/atoms/mpdClientAtom";
 import { currentMpdProfileAtom } from "../../../profile/states/atoms/mpdProfileAtom";
 import { songTableStateAtom } from "../../../song_table/states/atoms/songTableAtom";
 import { fetchAllSongs } from "../../functions/allSongsFetching";
+import { allSongsFastStateAtom } from "./allSongsFastStateAtom";
 
 export const allSongsAsyncAtom = atomWithRefresh(async (get) => {
 	const mpdClient = get(mpdClientAtom);
@@ -22,7 +24,19 @@ export const allSongsAsyncAtom = atomWithRefresh(async (get) => {
 	return await fetchAllSongs(mpdClient, profile);
 });
 
-export const allSongsAtom = atomWithSync(allSongsAsyncAtom);
+const allSongsSlowAtom = atomWithSync(allSongsAsyncAtom);
+
+const allSongsFastAtom = atom((get) => {
+	return get(allSongsFastStateAtom).songs;
+});
+
+export const allSongsAtom = atom((get) => {
+	const capabilities = get(mpdCapabilitiesAtom);
+	if (capabilities.isMpd024OrLater) {
+		return get(allSongsFastAtom);
+	}
+	return get(allSongsSlowAtom);
+});
 
 export const allVisibleSongsAtom = atom((get) => {
 	const allSongs = get(allSongsAtom);

@@ -3,8 +3,8 @@ export { MpdEventObserver } from "./components/MpdEventObserver";
 
 // Functions
 export {
+	isMpd024OrLater,
 	isMpdVersionAtLeast,
-	supportsAddedSince,
 } from "./functions/mpdVersion";
 // Services
 export type { MpdClient } from "./services/MpdClient";

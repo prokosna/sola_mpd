@@ -98,7 +98,7 @@ const recentlyAddedFastSortedBrowserFilterValuesMapAtom = atom((get) => {
 
 const recentlyAddedSortedBrowserFilterValuesMapAtom = atom((get) => {
 	const capabilities = get(mpdCapabilitiesAtom);
-	if (capabilities.supportsAddedSince) {
+	if (capabilities.isMpd024OrLater) {
 		return get(recentlyAddedFastSortedBrowserFilterValuesMapAtom);
 	}
 	return get(recentlyAddedSlowSortedBrowserFilterValuesMapAtom);

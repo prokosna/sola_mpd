@@ -797,7 +797,11 @@ class MpdClientMpd3 implements MpdClient {
 			}
 			case "search": {
 				const conditions = req.command.value.conditions;
-				const expression = convertConditionsToString(conditions);
+				// MPD's `search` requires an expression. An empty conditions list
+				// expresses "match everything", encoded as `(base "")` — the
+				// canonical MPD tautology since every URI starts with the empty
+				// string.
+				const expression = convertConditionsToString(conditions) || '(base "")';
 				const sortTokens = buildSearchSortTokens(req.command.value.sort);
 				const windowTokens = buildSearchWindowTokens(req.command.value.window);
 				return Command.cmd(
