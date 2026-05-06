@@ -42,7 +42,7 @@ export function useRecentlyAddedNavigationProps(): RecentlyAddedNavigationProps 
 	const loadMore = useSetAtom(loadMoreRecentlyAddedFastStateActionAtom);
 
 	// Kick off the initial load when entering the page on a capable server.
-	const isFast = capabilities.supportsAddedSince;
+	const isFast = capabilities.isMpd024OrLater;
 	const fastEmpty = fastState.songs.length === 0;
 	const fastIdle = !fastState.isLoading && fastState.hasMore;
 	useEffect(() => {

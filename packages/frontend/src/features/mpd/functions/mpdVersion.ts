@@ -1,6 +1,6 @@
 import { compare, validate } from "compare-versions";
 
-const MIN_VERSION_FOR_ADDED_SINCE = "0.24";
+const MIN_VERSION_MPD_024 = "0.24";
 
 // MPD git builds may append suffixes like "~git" that compare-versions does not
 // accept; strip them before delegating.
@@ -27,6 +27,6 @@ export function isMpdVersionAtLeast(
 	return compare(v, minimum, ">=");
 }
 
-export function supportsAddedSince(rawVersion: string | undefined): boolean {
-	return isMpdVersionAtLeast(rawVersion, MIN_VERSION_FOR_ADDED_SINCE);
+export function isMpd024OrLater(rawVersion: string | undefined): boolean {
+	return isMpdVersionAtLeast(rawVersion, MIN_VERSION_MPD_024);
 }

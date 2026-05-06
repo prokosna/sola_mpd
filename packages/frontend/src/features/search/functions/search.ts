@@ -97,7 +97,7 @@ export function mergeSongsList(songsList: Song[][]): Song[] {
 
 export function convertSearchToConditions(
 	search: Search,
-	supportsAddedSince: boolean,
+	isMpd024OrLater: boolean,
 ): SearchConditions[] {
 	return search.queries
 		.map((query): SearchConditions => {
@@ -112,7 +112,7 @@ export function convertSearchToConditions(
 				// silently rather than route it to a path that cannot evaluate it.
 				if (
 					condition.operator === FilterCondition_Operator.ADDED_SINCE &&
-					!supportsAddedSince
+					!isMpd024OrLater
 				) {
 					continue;
 				}
@@ -294,12 +294,9 @@ export async function fetchSearchSongs(
 	mpdClient: MpdClient,
 	profile: MpdProfile,
 	search: Search,
-	supportsAddedSince: boolean,
+	isMpd024OrLater: boolean,
 ): Promise<Song[]> {
-	const searchConditions = convertSearchToConditions(
-		search,
-		supportsAddedSince,
-	);
+	const searchConditions = convertSearchToConditions(search, isMpd024OrLater);
 
 	if (searchConditions.length === 0) {
 		return [];

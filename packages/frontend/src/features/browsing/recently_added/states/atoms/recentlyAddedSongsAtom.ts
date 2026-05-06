@@ -59,7 +59,7 @@ const recentlyAddedFastSongsAtom = atom((get) => {
 
 const recentlyAddedSongsAtom = atom((get) => {
 	const capabilities = get(mpdCapabilitiesAtom);
-	if (capabilities.supportsAddedSince) {
+	if (capabilities.isMpd024OrLater) {
 		return get(recentlyAddedFastSongsAtom);
 	}
 	return get(recentlyAddedSlowSongsAtom);

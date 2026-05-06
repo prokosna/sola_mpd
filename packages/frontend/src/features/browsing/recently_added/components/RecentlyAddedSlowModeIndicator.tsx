@@ -17,7 +17,7 @@ export function RecentlyAddedSlowModeIndicator() {
 	if (stats === undefined) {
 		return null;
 	}
-	if (capabilities.supportsAddedSince) {
+	if (capabilities.isMpd024OrLater) {
 		return null;
 	}
 

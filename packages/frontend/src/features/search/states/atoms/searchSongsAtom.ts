@@ -32,7 +32,7 @@ export const searchSongsAsyncAtom = atomWithRefresh(async (get) => {
 		mpdClient,
 		profile,
 		search,
-		capabilities.supportsAddedSince,
+		capabilities.isMpd024OrLater,
 	);
 });
 
