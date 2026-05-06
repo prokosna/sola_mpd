@@ -54,10 +54,8 @@ export const loadAllSongsFastActionAtom = atom(null, async (get, set) => {
 			});
 		}
 
-		// We rely on MPD's natural traversal order rather than an explicit sort,
-		// which means a buggy or non-deterministic server iteration could drop or
-		// duplicate rows across windows. Cross-check against `stats songs_count`
-		// so the discrepancy is visible even in production.
+		// Relying on MPD's natural traversal order rather than an explicit sort.
+		// Cross-check against `stats songs_count` so the discrepancy is visible in case.
 		const stats = get(statsAtom);
 		if (stats !== undefined && songs.length !== stats.songsCount) {
 			console.warn(
