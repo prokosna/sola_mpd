@@ -15,6 +15,7 @@ import { mpdClientAtom } from "../../../../mpd/states/atoms/mpdClientAtom";
 import { currentMpdProfileAtom } from "../../../../profile/states/atoms/mpdProfileAtom";
 import { songTableStateAtom } from "../../../../song_table/states/atoms/songTableAtom";
 import { fetchBrowserSongs } from "../../../common/functions/browserSongs";
+import { sortSongsByPath } from "../../functions/sortSongsByPath";
 import { recentlyAddedFastStateAtom } from "./recentlyAddedFastStateAtom";
 import { recentlyAddedBrowserFiltersAtom } from "./recentlyAddedFiltersAtom";
 
@@ -59,10 +60,13 @@ const recentlyAddedFastSongsAtom = atom((get) => {
 
 const recentlyAddedSongsAtom = atom((get) => {
 	const capabilities = get(mpdCapabilitiesAtom);
-	if (capabilities.isMpd024OrLater) {
-		return get(recentlyAddedFastSongsAtom);
+	const songs = capabilities.isMpd024OrLater
+		? get(recentlyAddedFastSongsAtom)
+		: get(recentlyAddedSlowSongsAtom);
+	if (songs === undefined) {
+		return undefined;
 	}
-	return get(recentlyAddedSlowSongsAtom);
+	return sortSongsByPath(songs);
 });
 
 export const recentlyAddedVisibleSongsAtom = atom((get) => {
