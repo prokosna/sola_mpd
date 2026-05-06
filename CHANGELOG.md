@@ -5,6 +5,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [4.8.1](https://github.com/prokosna/sola_mpd/compare/v4.8.0...v4.8.1) (2026-05-06)
+
+
+### Bug Fixes
+
+* ordering in Recently Added ([#366](https://github.com/prokosna/sola_mpd/issues/366)) ([4fa6468](https://github.com/prokosna/sola_mpd/commit/4fa64680ddbfa421ef849ea5d5778b34ba4d709c))
+
 ## [4.8.0](https://github.com/prokosna/sola_mpd/compare/v4.7.0...v4.8.0) (2026-05-06)
 
 
