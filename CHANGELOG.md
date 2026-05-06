@@ -5,6 +5,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [4.8.0](https://github.com/prokosna/sola_mpd/compare/v4.7.0...v4.8.0) (2026-05-06)
+
+
+### Features
+
+* progressive loading in All Songs ([#364](https://github.com/prokosna/sola_mpd/issues/364)) ([66a6c53](https://github.com/prokosna/sola_mpd/commit/66a6c53fc25b8e7a212acfd706afa31aba39d7f2))
+
 ## [4.7.0](https://github.com/prokosna/sola_mpd/compare/v4.6.0...v4.7.0) (2026-05-04)
 
 
