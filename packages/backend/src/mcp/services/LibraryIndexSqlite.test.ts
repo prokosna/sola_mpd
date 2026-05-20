@@ -102,20 +102,31 @@ describe("LibraryIndexSqlite", () => {
 		expect(libraryIndexSqlite.stats().song_count).toBe(4);
 
 		const topArtists = libraryIndexSqlite.topByTag("artist", "count", 10);
-		expect(topArtists[0]).toMatchObject({ value: "Aphex Twin", song_count: 2 });
+		expect(topArtists.rows[0]).toMatchObject({
+			value: "Aphex Twin",
+			song_count: 2,
+		});
+		expect(topArtists.distinct_values_seen).toBe(3);
 
 		const genres = libraryIndexSqlite.breakdown("genre");
-		expect(genres.find((g) => g.value === "Electronic")?.song_count).toBe(3);
-		expect(genres.find((g) => g.value === "Classical")?.song_count).toBe(1);
+		expect(genres.rows.find((g) => g.value === "Electronic")?.song_count).toBe(
+			3,
+		);
+		expect(genres.rows.find((g) => g.value === "Classical")?.song_count).toBe(
+			1,
+		);
+		expect(genres.distinct_values_seen).toBe(2);
 
 		const decades = libraryIndexSqlite.decadeBreakdown();
-		expect(decades.find((d) => d.decade === "1990s")?.song_count).toBe(2);
-		expect(decades.find((d) => d.decade === "2020s")?.song_count).toBe(1);
-		expect(decades.find((d) => d.decade === "1840s")?.song_count).toBe(1);
+		expect(decades.rows.find((d) => d.decade === "1990s")?.song_count).toBe(2);
+		expect(decades.rows.find((d) => d.decade === "2020s")?.song_count).toBe(1);
+		expect(decades.rows.find((d) => d.decade === "1840s")?.song_count).toBe(1);
+		expect(decades.distinct_values_seen).toBe(decades.rows.length);
 
 		const recent = libraryIndexSqlite.recentlyAddedByArtist({ limit: 10 });
-		expect(recent[0].artist).toBe("Squarepusher");
-		expect(recent[0].song_count).toBe(1);
+		expect(recent.rows[0].artist).toBe("Squarepusher");
+		expect(recent.rows[0].song_count).toBe(1);
+		expect(recent.distinct_values_seen).toBe(recent.rows.length);
 
 		const summary = libraryIndexSqlite.artistSummary("Aphex Twin");
 		expect(summary).not.toBeNull();
@@ -159,10 +170,12 @@ describe("LibraryIndexSqlite", () => {
 		libraryIndexSqlite.refreshIfNeeded(songs);
 
 		const decades = libraryIndexSqlite.decadeBreakdown();
-		expect(decades.find((d) => d.decade === "9990s")).toBeUndefined();
-		expect(decades.find((d) => d.decade === "0s")).toBeUndefined();
-		expect(decades.find((d) => d.decade === "1970s")?.song_count).toBe(1);
-		expect(decades.find((d) => d.decade === "(unknown)")?.song_count).toBe(2);
+		expect(decades.rows.find((d) => d.decade === "9990s")).toBeUndefined();
+		expect(decades.rows.find((d) => d.decade === "0s")).toBeUndefined();
+		expect(decades.rows.find((d) => d.decade === "1970s")?.song_count).toBe(1);
+		expect(decades.rows.find((d) => d.decade === "(unknown)")?.song_count).toBe(
+			2,
+		);
 
 		const summary = libraryIndexSqlite.artistSummary("Sentinel");
 		expect(summary?.earliest_release).toBe("1975");
@@ -195,10 +208,28 @@ describe("LibraryIndexSqlite", () => {
 		];
 		libraryIndexSqlite.refreshIfNeeded(songs);
 
-		const rows = libraryIndexSqlite.recentlyAddedByArtist({ limit: 10 });
-		const variousRows = rows.filter((r) => r.artist === "Various Artists");
+		const result = libraryIndexSqlite.recentlyAddedByArtist({ limit: 10 });
+		const variousRows = result.rows.filter(
+			(r) => r.artist === "Various Artists",
+		);
 		expect(variousRows).toHaveLength(1);
 		expect(variousRows[0].song_count).toBe(3);
+		expect(result.distinct_values_seen).toBe(1);
+	});
+
+	it("reports distinct_values_seen separately from rows when LIMIT truncates", () => {
+		const songs: Song[] = Array.from({ length: 25 }, (_, i) =>
+			makeSong({ path: `t/${i}.flac`, artist: `Artist ${i}`, duration: 60 }),
+		);
+		libraryIndexSqlite.refreshIfNeeded(songs);
+
+		const top = libraryIndexSqlite.topByTag("artist", "count", 10);
+		expect(top.rows).toHaveLength(10);
+		expect(top.distinct_values_seen).toBe(25);
+
+		const breakdown = libraryIndexSqlite.breakdown("artist", 5);
+		expect(breakdown.rows).toHaveLength(5);
+		expect(breakdown.distinct_values_seen).toBe(25);
 	});
 
 	it("findArtistCandidates falls back to the longest token when direct substring misses", () => {
