@@ -5,6 +5,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [4.9.1](https://github.com/prokosna/sola_mpd/compare/v4.9.0...v4.9.1) (2026-05-20)
+
+
+### Bug Fixes
+
+* **mcp:** robustness fixes to library analytics tools, add distinct_values_seen ([#372](https://github.com/prokosna/sola_mpd/issues/372)) ([1fc62c5](https://github.com/prokosna/sola_mpd/commit/1fc62c56f4788af68f1d3c89d2f83ad4b24fdbd8))
+
 ## [4.9.0](https://github.com/prokosna/sola_mpd/compare/v4.8.2...v4.9.0) (2026-05-20)
 
 
