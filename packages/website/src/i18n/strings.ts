@@ -164,6 +164,11 @@ export const strings: Record<Locale, Strings> = {
 					"Text-to-Music and similarity search powered by MuQ / MuQ-MuLan via lainbow. Additional setup, an NVIDIA GPU, and some engineering skill are required.",
 			},
 			{
+				title: "MCP server (Beta)",
+				description:
+					"Drive playback and analyze your library from LLM clients (Claude Code, Claude Desktop, etc.) over the Model Context Protocol. Includes structured analytics tools and a read-only SQL view of the library for multi-angle questions.",
+			},
+			{
 				title: "Multiple MPD servers",
 				description:
 					"Register and switch between multiple MPD servers from a single client — ideal for managing different libraries or rooms.",
@@ -284,6 +289,11 @@ export const strings: Record<Locale, Strings> = {
 				title: "アドバンスド検索 (Beta)",
 				description:
 					"lainbow 連携により、MuQ / MuQ-MuLan を用いたテキストからの楽曲検索と類似検索が可能です。追加セットアップ、NVIDIA GPU、ある程度のエンジニアリングスキルが必要です。",
+			},
+			{
+				title: "MCP サーバー (Beta)",
+				description:
+					"Model Context Protocol 経由で、Claude Code や Claude Desktop などの LLM クライアントから再生制御やライブラリ分析が可能。構造化された分析ツールに加え、ライブラリを読み取り専用 SQL でクエリできるビューも提供し、多角的な分析に応えます。",
 			},
 			{
 				title: "複数 MPD サーバー対応",
