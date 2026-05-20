@@ -204,7 +204,7 @@ export function registerMcpTools(
 		{
 			title: "Get MPD library stats",
 			description:
-				"Returns library-wide counts (artists, albums, songs), accumulated playtime, MPD version, and the last database update timestamp.",
+				"Returns library-wide counts (artists, albums, songs), MPD version, and the last database update timestamp. `total_playtime_seconds` is the lifetime sum of song durations played by MPD; `uptime_seconds` is how long the current MPD process has been running (not playback duration).",
 			inputSchema: {},
 		},
 		async () => {
@@ -688,7 +688,7 @@ export function registerMcpTools(
 		{
 			title: "Top values for a metadata tag",
 			description:
-				"Ranks the top N values of a tag (artist / album / genre / etc.) by song count or total duration across the entire library. Backed by the in-memory analytical mirror.",
+				"Ranks the top N values of a tag (artist / album / genre / etc.) by song count or total duration across the entire library. Backed by the in-memory analytical mirror. Returns `{ tag, by, rows, distinct_values_seen }`; `distinct_values_seen` is the total distinct non-empty values of the tag before the limit, so `distinct_values_seen=0` means the tag is genuinely absent in the library.",
 			inputSchema: {
 				tag: groupableTagSchema,
 				by: z
@@ -709,12 +709,16 @@ export function registerMcpTools(
 			try {
 				const profile = profileOrError();
 				await ensureIndex(profile);
-				const rows = libraryIndex.topByTag(
+				const result = libraryIndex.topByTag(
 					args.tag,
 					args.by ?? "count",
 					args.limit ?? 25,
 				);
-				return toolResultJson({ tag: args.tag, by: args.by ?? "count", rows });
+				return toolResultJson({
+					tag: args.tag,
+					by: args.by ?? "count",
+					...result,
+				});
 			} catch (err) {
 				return errorToResult(err);
 			}
@@ -726,7 +730,7 @@ export function registerMcpTools(
 		{
 			title: "Full breakdown for a tag",
 			description:
-				"Returns the song count and total duration for every distinct value of the given tag. Useful for full-library composition analysis.",
+				"Returns the song count and total duration for every distinct value of the given tag. Useful for full-library composition analysis. Returns `{ tag, rows, distinct_values_seen }`; `distinct_values_seen` is the total distinct values of the tag in the library (use it to detect truncation when `limit` is set).",
 			inputSchema: {
 				tag: groupableTagSchema,
 				limit: z
@@ -743,10 +747,8 @@ export function registerMcpTools(
 			try {
 				const profile = profileOrError();
 				await ensureIndex(profile);
-				return toolResultJson({
-					tag: args.tag,
-					rows: libraryIndex.breakdown(args.tag, args.limit),
-				});
+				const result = libraryIndex.breakdown(args.tag, args.limit);
+				return toolResultJson({ tag: args.tag, ...result });
 			} catch (err) {
 				return errorToResult(err);
 			}
@@ -758,16 +760,14 @@ export function registerMcpTools(
 		{
 			title: "Audio format distribution",
 			description:
-				"Returns song count and total duration grouped by audio format string (encoding/channels/bits/sample-rate).",
+				"Returns song count and total duration grouped by audio format string (encoding/channels/bits/sample-rate). Returns `{ rows, distinct_values_seen }` — `distinct_values_seen` equals `rows.length` here (full enumeration, no limit applied) and confirms how many distinct formats exist in the library.",
 			inputSchema: {},
 		},
 		async () => {
 			try {
 				const profile = profileOrError();
 				await ensureIndex(profile);
-				return toolResultJson({
-					rows: libraryIndex.formatDistribution(),
-				});
+				return toolResultJson(libraryIndex.formatDistribution());
 			} catch (err) {
 				return errorToResult(err);
 			}
@@ -779,14 +779,14 @@ export function registerMcpTools(
 		{
 			title: "Release decade breakdown",
 			description:
-				"Buckets songs by the decade derived from the DATE tag (parses leading 4-digit year). Songs without a parseable year fall into '(unknown)'.",
+				"Buckets songs by the decade derived from the DATE tag (parses leading 4-digit year). Years outside 1000-2100 and songs without a parseable year fall into '(unknown)'. Returns `{ rows, distinct_values_seen }` — `distinct_values_seen` equals `rows.length` here (full enumeration).",
 			inputSchema: {},
 		},
 		async () => {
 			try {
 				const profile = profileOrError();
 				await ensureIndex(profile);
-				return toolResultJson({ rows: libraryIndex.decadeBreakdown() });
+				return toolResultJson(libraryIndex.decadeBreakdown());
 			} catch (err) {
 				return errorToResult(err);
 			}
@@ -798,7 +798,7 @@ export function registerMcpTools(
 		{
 			title: "Recently added artists",
 			description:
-				"For each artist, returns the most recent file-added timestamp and song count. Use `since_days` to limit to recent activity, or omit it to find which artists have been quiet for a long time (sort by last_added ASC client-side if needed).",
+				"For each artist, returns the most recent file-added timestamp and song count. Use `since_days` to limit to recent activity, or omit it to find which artists have been quiet for a long time (sort by last_added ASC client-side if needed). Returns `{ rows, distinct_values_seen }`; `distinct_values_seen` is the total distinct artists matching the since filter before the row limit, so you can tell when the limit truncated.",
 			inputSchema: {
 				limit: z
 					.number()
@@ -824,12 +824,12 @@ export function registerMcpTools(
 					args.since_days !== undefined
 						? new Date(Date.now() - args.since_days * 24 * 3600 * 1000)
 						: undefined;
-				return toolResultJson({
-					rows: libraryIndex.recentlyAddedByArtist({
+				return toolResultJson(
+					libraryIndex.recentlyAddedByArtist({
 						limit: args.limit ?? 50,
 						since,
 					}),
-				});
+				);
 			} catch (err) {
 				return errorToResult(err);
 			}
@@ -841,7 +841,7 @@ export function registerMcpTools(
 		{
 			title: "Artist summary",
 			description:
-				"Aggregates one artist's songs across artist and album_artist tags: counts, total duration, year range, genres, formats, first/last added.",
+				"Aggregates one artist's songs across artist and album_artist tags: counts, total duration, year range, genres, formats, first/last added. On a miss returns `{ found: false, suggestions: [...] }` with loosely matching names so callers can recover from typos or HTML-escaped input.",
 			inputSchema: {
 				name: z.string().min(1),
 			},
@@ -852,9 +852,14 @@ export function registerMcpTools(
 				await ensureIndex(profile);
 				const summary = libraryIndex.artistSummary(args.name);
 				if (summary === undefined) {
-					return toolError(`No songs found for artist: ${args.name}`);
+					const suggestions = libraryIndex.findArtistCandidates(args.name, 10);
+					return toolResultJson({
+						found: false,
+						name_searched: args.name,
+						suggestions,
+					});
 				}
-				return toolResultJson(summary);
+				return toolResultJson({ found: true, ...summary });
 			} catch (err) {
 				return errorToResult(err);
 			}

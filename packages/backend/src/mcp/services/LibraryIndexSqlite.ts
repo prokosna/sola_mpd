@@ -3,6 +3,7 @@ import Database from "better-sqlite3";
 
 import { songToRow } from "../functions/songToRow.js";
 import type {
+	LibraryAggregated,
 	LibraryAggregationRow,
 	LibraryArtistSummary,
 	LibraryDecadeRow,
@@ -112,24 +113,36 @@ class LibraryIndexSqlite implements LibraryIndex {
 		tag: LibraryGroupableTag,
 		by: "count" | "duration",
 		limit: number,
-	): LibraryAggregationRow[] {
+	): LibraryAggregated<LibraryAggregationRow> {
 		const column = TAG_COLUMN[tag];
 		const orderBy =
 			by === "duration"
 				? "duration_seconds DESC, song_count DESC"
 				: "song_count DESC, duration_seconds DESC";
-		const sql = `SELECT ${column} AS value,
+		const rows = this.db
+			.prepare(
+				`SELECT ${column} AS value,
                 COUNT(*) AS song_count,
                 COALESCE(SUM(duration_seconds), 0) AS duration_seconds
        FROM songs
        WHERE ${column} <> ''
        GROUP BY ${column}
        ORDER BY ${orderBy}
-       LIMIT ?`;
-		return this.db.prepare(sql).all(limit) as LibraryAggregationRow[];
+       LIMIT ?`,
+			)
+			.all(limit) as LibraryAggregationRow[];
+		const distinct = this.db
+			.prepare(
+				`SELECT COUNT(DISTINCT ${column}) AS n FROM songs WHERE ${column} <> ''`,
+			)
+			.get() as { n: number };
+		return { rows, distinct_values_seen: distinct.n };
 	}
 
-	breakdown(tag: LibraryGroupableTag, limit?: number): LibraryAggregationRow[] {
+	breakdown(
+		tag: LibraryGroupableTag,
+		limit?: number,
+	): LibraryAggregated<LibraryAggregationRow> {
 		const column = TAG_COLUMN[tag];
 		const sql = `SELECT ${column} AS value,
                 COUNT(*) AS song_count,
@@ -139,12 +152,16 @@ class LibraryIndexSqlite implements LibraryIndex {
        ORDER BY song_count DESC, value ASC
        ${limit !== undefined ? "LIMIT ?" : ""}`;
 		const stmt = this.db.prepare(sql);
-		return (
+		const rows = (
 			limit !== undefined ? stmt.all(limit) : stmt.all()
 		) as LibraryAggregationRow[];
+		const distinct = this.db
+			.prepare(`SELECT COUNT(DISTINCT ${column}) AS n FROM songs`)
+			.get() as { n: number };
+		return { rows, distinct_values_seen: distinct.n };
 	}
 
-	formatDistribution(): LibraryFormatRow[] {
+	formatDistribution(): LibraryAggregated<LibraryFormatRow> {
 		const sql = `SELECT
        CASE WHEN format = '' THEN '(unknown)' ELSE format END AS format,
        COUNT(*) AS song_count,
@@ -152,12 +169,18 @@ class LibraryIndexSqlite implements LibraryIndex {
        FROM songs
        GROUP BY format
        ORDER BY song_count DESC`;
-		return this.db.prepare(sql).all() as LibraryFormatRow[];
+		const rows = this.db.prepare(sql).all() as LibraryFormatRow[];
+		// Full enumeration: distinct count is exactly rows.length. The field is
+		// reported anyway so the agent can pattern-match the same envelope shape
+		// across every aggregation tool.
+		return { rows, distinct_values_seen: rows.length };
 	}
 
-	decadeBreakdown(): LibraryDecadeRow[] {
+	decadeBreakdown(): LibraryAggregated<LibraryDecadeRow> {
+		// Treat clearly bogus years (sentinel values like "9999", typos) as
+		// unknown rather than letting them create spurious decade buckets.
 		const sql = `SELECT
-         CASE WHEN year IS NULL THEN '(unknown)'
+         CASE WHEN year IS NULL OR year < 1000 OR year > 2100 THEN '(unknown)'
               ELSE printf('%ds', (year / 10) * 10)
          END AS decade,
          COUNT(*) AS song_count,
@@ -165,31 +188,45 @@ class LibraryIndexSqlite implements LibraryIndex {
        FROM songs
        GROUP BY decade
        ORDER BY CASE WHEN decade = '(unknown)' THEN 1 ELSE 0 END, decade ASC`;
-		return this.db.prepare(sql).all() as LibraryDecadeRow[];
+		const rows = this.db.prepare(sql).all() as LibraryDecadeRow[];
+		return { rows, distinct_values_seen: rows.length };
 	}
 
 	recentlyAddedByArtist(opts: {
 		limit: number;
 		since?: Date;
-	}): LibraryRecentlyAddedRow[] {
+	}): LibraryAggregated<LibraryRecentlyAddedRow> {
 		const sinceMs = opts.since?.getTime() ?? null;
 		const whereClause =
 			sinceMs === null
 				? "added_at_ms IS NOT NULL"
 				: "added_at_ms IS NOT NULL AND added_at_ms >= ?";
-		const sql = `SELECT
-         CASE WHEN album_artist = '' THEN artist ELSE album_artist END AS artist,
+		// GROUP BY must reference the same expression used in SELECT — a bare
+		// `GROUP BY artist` would group by the `artist` *column* (per SQLite's
+		// resolution rules) and yield duplicate rows whose alias value collides
+		// (e.g. multiple "Various Artists" entries).
+		const rowsSql = `SELECT
+         COALESCE(NULLIF(album_artist, ''), artist) AS artist,
          datetime(MAX(added_at_ms)/1000, 'unixepoch') AS last_added,
          datetime(MIN(added_at_ms)/1000, 'unixepoch') AS first_added,
          COUNT(*) AS song_count
        FROM songs
-       WHERE ${whereClause} AND artist <> ''
-       GROUP BY artist
+       WHERE ${whereClause} AND (artist <> '' OR album_artist <> '')
+       GROUP BY COALESCE(NULLIF(album_artist, ''), artist)
        ORDER BY MAX(added_at_ms) DESC
        LIMIT ?`;
-		const stmt = this.db.prepare(sql);
-		const params = sinceMs === null ? [opts.limit] : [sinceMs, opts.limit];
-		return stmt.all(...params) as LibraryRecentlyAddedRow[];
+		const distinctSql = `SELECT COUNT(DISTINCT COALESCE(NULLIF(album_artist, ''), artist)) AS n
+       FROM songs
+       WHERE ${whereClause} AND (artist <> '' OR album_artist <> '')`;
+		const rowsParams = sinceMs === null ? [opts.limit] : [sinceMs, opts.limit];
+		const distinctParams = sinceMs === null ? [] : [sinceMs];
+		const rows = this.db
+			.prepare(rowsSql)
+			.all(...rowsParams) as LibraryRecentlyAddedRow[];
+		const distinct = this.db.prepare(distinctSql).get(...distinctParams) as {
+			n: number;
+		};
+		return { rows, distinct_values_seen: distinct.n };
 	}
 
 	artistSummary(name: string): LibraryArtistSummary | undefined {
@@ -204,8 +241,8 @@ class LibraryIndexSqlite implements LibraryIndex {
            COALESCE(SUM(duration_seconds), 0) AS duration_seconds,
            MIN(NULLIF(added_at_ms, 0)) AS first_added_ms,
            MAX(NULLIF(added_at_ms, 0)) AS last_added_ms,
-           MIN(year) AS earliest_year,
-           MAX(year) AS latest_year
+           MIN(CASE WHEN year BETWEEN 1000 AND 2100 THEN year END) AS earliest_year,
+           MAX(CASE WHEN year BETWEEN 1000 AND 2100 THEN year END) AS latest_year
          FROM songs
          WHERE artist = ? OR album_artist = ?`,
 			)
@@ -257,6 +294,41 @@ class LibraryIndexSqlite implements LibraryIndex {
 			genres,
 			formats,
 		};
+	}
+
+	findArtistCandidates(name: string, limit: number): string[] {
+		const direct = this.searchArtistLike(`%${name}%`, limit);
+		if (direct.length > 0) {
+			return direct;
+		}
+		// Fallback: take the longest alphanumeric token from the input and try
+		// again. Handles cases like an HTML-escaped "Above &amp; Beyond" where
+		// the entity breaks an exact substring match.
+		const tokens = (name.match(/[\p{L}\p{N}]+/gu) ?? [])
+			.filter((t) => t.length >= 3)
+			.sort((a, b) => b.length - a.length);
+		const longest = tokens[0];
+		if (longest === undefined) {
+			return [];
+		}
+		return this.searchArtistLike(`%${longest}%`, limit);
+	}
+
+	private searchArtistLike(pattern: string, limit: number): string[] {
+		const rows = this.db
+			.prepare(
+				`WITH unified AS (
+           SELECT DISTINCT artist AS name FROM songs WHERE artist <> ''
+           UNION
+           SELECT DISTINCT album_artist AS name FROM songs WHERE album_artist <> ''
+         )
+         SELECT name FROM unified
+         WHERE name LIKE ? COLLATE NOCASE
+         ORDER BY length(name) ASC, name ASC
+         LIMIT ?`,
+			)
+			.all(pattern, limit) as { name: string }[];
+		return rows.map((r) => r.name);
 	}
 
 	querySql(sql: string, params: unknown[], rowLimit: number): LibrarySqlResult {

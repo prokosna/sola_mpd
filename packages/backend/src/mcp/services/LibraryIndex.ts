@@ -53,6 +53,17 @@ export type LibrarySqlResult = {
 	truncated: boolean;
 };
 
+/**
+ * Envelope used by every aggregation method. `distinct_values_seen` is the
+ * total number of distinct group keys observed in the library *before* any
+ * limit was applied, letting callers distinguish "no data" from "truncated"
+ * and cross-check the mirror's coverage against `mpd_stats`.
+ */
+export type LibraryAggregated<Row> = {
+	rows: Row[];
+	distinct_values_seen: number;
+};
+
 export type LibraryIndexStats = {
 	song_count: number;
 	last_built_at: string | undefined;
@@ -74,20 +85,30 @@ export interface LibraryIndex {
 		tag: LibraryGroupableTag,
 		by: "count" | "duration",
 		limit: number,
-	): LibraryAggregationRow[];
+	): LibraryAggregated<LibraryAggregationRow>;
 
-	breakdown(tag: LibraryGroupableTag, limit?: number): LibraryAggregationRow[];
+	breakdown(
+		tag: LibraryGroupableTag,
+		limit?: number,
+	): LibraryAggregated<LibraryAggregationRow>;
 
-	formatDistribution(): LibraryFormatRow[];
+	formatDistribution(): LibraryAggregated<LibraryFormatRow>;
 
-	decadeBreakdown(): LibraryDecadeRow[];
+	decadeBreakdown(): LibraryAggregated<LibraryDecadeRow>;
 
 	recentlyAddedByArtist(opts: {
 		limit: number;
 		since?: Date;
-	}): LibraryRecentlyAddedRow[];
+	}): LibraryAggregated<LibraryRecentlyAddedRow>;
 
 	artistSummary(name: string): LibraryArtistSummary | undefined;
+
+	/**
+	 * Returns artist / album_artist names that loosely match the query. Used by
+	 * the artist_summary tool to suggest alternatives when an exact lookup misses
+	 * (e.g. caller passed an HTML-escaped name).
+	 */
+	findArtistCandidates(name: string, limit: number): string[];
 
 	querySql(sql: string, params: unknown[], rowLimit: number): LibrarySqlResult;
 
