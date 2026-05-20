@@ -22,8 +22,11 @@ import {
 	convertAudioFormatToString,
 	convertSongMetadataValueToString,
 	convertStringToSongMetadataValue,
+	getSongMetadataAsAudioFormat,
 	getSongMetadataAsNumber,
 	getSongMetadataAsString,
+	getSongMetadataAsStringOrEmpty,
+	getSongMetadataAsTimestampMs,
 	listAllSongMetadataTags,
 } from "./songMetadata.js";
 
@@ -229,5 +232,96 @@ describe("songMetadata", () => {
 		expect(tags).toBeInstanceOf(Array);
 		expect(tags).not.toContain(Song_MetadataTag.UNKNOWN);
 		expect(tags).toContain(Song_MetadataTag.ALBUM_ARTIST);
+	});
+
+	it("getSongMetadataAsStringOrEmpty returns '' for absent tag, value otherwise", () => {
+		const song = create(SongSchema, {
+			metadata: {
+				[Song_MetadataTag.TITLE]: create(Song_MetadataValueSchema, {
+					value: {
+						case: "stringValue",
+						value: create(StringValueSchema, { value: "Hello" }),
+					},
+				}),
+			},
+		});
+		expect(getSongMetadataAsStringOrEmpty(song, Song_MetadataTag.TITLE)).toBe(
+			"Hello",
+		);
+		expect(getSongMetadataAsStringOrEmpty(song, Song_MetadataTag.ALBUM)).toBe(
+			"",
+		);
+	});
+
+	it("getSongMetadataAsTimestampMs returns ms or undefined", () => {
+		const validSong = create(SongSchema, {
+			metadata: {
+				[Song_MetadataTag.ADDED_AT]: create(Song_MetadataValueSchema, {
+					value: {
+						case: "timestamp",
+						value: timestampFromDate(new Date("2025-01-02T03:04:05Z")),
+					},
+				}),
+			},
+		});
+		expect(
+			getSongMetadataAsTimestampMs(validSong, Song_MetadataTag.ADDED_AT),
+		).toBe(new Date("2025-01-02T03:04:05Z").getTime());
+
+		const negativeSong = create(SongSchema, {
+			metadata: {
+				[Song_MetadataTag.ADDED_AT]: create(Song_MetadataValueSchema, {
+					value: { case: "timestamp", value: timestampFromDate(new Date(-1)) },
+				}),
+			},
+		});
+		expect(
+			getSongMetadataAsTimestampMs(negativeSong, Song_MetadataTag.ADDED_AT),
+		).toBeUndefined();
+
+		const missingSong = create(SongSchema);
+		expect(
+			getSongMetadataAsTimestampMs(missingSong, Song_MetadataTag.ADDED_AT),
+		).toBeUndefined();
+	});
+
+	it("getSongMetadataAsAudioFormat returns format or undefined", () => {
+		const formatSong = create(SongSchema, {
+			metadata: {
+				[Song_MetadataTag.FORMAT]: create(Song_MetadataValueSchema, {
+					value: {
+						case: "format",
+						value: create(AudioFormatSchema, {
+							encoding: AudioFormat_Encoding.PCM,
+							samplingRate: 44100,
+							bits: 16,
+							channels: 2,
+						}),
+					},
+				}),
+			},
+		});
+		const format = getSongMetadataAsAudioFormat(
+			formatSong,
+			Song_MetadataTag.FORMAT,
+		);
+		expect(format).not.toBeUndefined();
+		expect(format?.samplingRate).toBe(44100);
+
+		const emptyFormatSong = create(SongSchema, {
+			metadata: {
+				[Song_MetadataTag.FORMAT]: create(Song_MetadataValueSchema, {
+					value: { case: "format", value: create(AudioFormatSchema) },
+				}),
+			},
+		});
+		expect(
+			getSongMetadataAsAudioFormat(emptyFormatSong, Song_MetadataTag.FORMAT),
+		).toBeUndefined();
+
+		const missingSong = create(SongSchema);
+		expect(
+			getSongMetadataAsAudioFormat(missingSong, Song_MetadataTag.FORMAT),
+		).toBeUndefined();
 	});
 });

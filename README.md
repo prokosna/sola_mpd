@@ -28,6 +28,10 @@ This client has the following features:
 - [x] Advanced search (Beta, requires [lainbow](https://github.com/prokosna/lainbow) integration)
   - Text-to-Music search (MuQ-MuLan)
   - Similarity search (MuQ)
+- [x] MCP server (Beta) for LLM-driven library analysis and control
+  - Playback / queue / playlist control tools
+  - Structured analytics (top artists, decade breakdown, recently-added per artist, etc.)
+  - Read-only SQL queries against an in-memory mirror of the library
 
 On the other hand, the following features are out of scope for now:
 
@@ -195,6 +199,30 @@ If you use Settings > Advanced Search > Scan Library and Analyze buttons to prep
 Please note that lainbow requires a NVIDIA GPU to generate embeddings. It works with CPU but it takes much longer time to generate embeddings.
 
 **This feature may require some engineering skill to set up. Feel free to let me know if you are interested in this feature but having some trouble setting it up.**
+
+## MCP server (Beta)
+
+Sola MPD exposes a [Model Context Protocol](https://modelcontextprotocol.io/) server so LLM clients (Claude Code, Claude Desktop, etc.) can browse and analyze your library, drive playback, and run read-only SQL queries against an in-memory mirror of all songs. The intent is not to wrap MPD commands one-for-one but to support multi-angle questions such as "which artists have I not added music from in two years?" or "break down my library by decade and format."
+
+The server runs on the same Express process as the web UI, listening at `POST /mcp` over the [Streamable HTTP](https://modelcontextprotocol.io/docs/concepts/transports#streamable-http) transport in stateless mode. It uses the MPD profile currently selected in the Sola MPD UI. **There is no authentication — only expose Sola MPD inside a trusted LAN.**
+
+### Connecting
+
+Point any MCP client at `http://[Your Server IP]:[Sola MPD port]/mcp` (the same port as the web UI — `3000` by default, see `docker-compose.yaml` if you changed it).
+
+### Available tool categories
+
+| Category | Tools |
+| --- | --- |
+| Status | `mpd_profiles`, `mpd_status`, `mpd_stats` |
+| Playback | `playback_control`, `playback_set_volume`, `playback_set_mode` |
+| Queue | `queue_get`, `queue_add`, `queue_clear` |
+| Playlists | `playlist_list`, `playlist_get` |
+| Library search | `library_list_tag_values`, `library_search` |
+| Library analytics | `library_top_by_tag`, `library_breakdown`, `library_format_distribution`, `library_decade_breakdown`, `library_recently_added_by_artist`, `library_artist_summary` |
+| Free-form analytics | `library_query_sql`, `library_index_stats` |
+
+`library_query_sql` accepts a single `SELECT` / `WITH` / `EXPLAIN` statement and runs it against an in-memory SQLite mirror of `MPD.listallinfo`. The schema is embedded in the tool description so the LLM can construct queries directly. The mirror is rebuilt only when MPD's database changes, so analytical queries are fast even on large libraries.
 
 ## Plugin
 

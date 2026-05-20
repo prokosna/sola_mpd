@@ -5,6 +5,7 @@ import { fileURLToPath } from "node:url";
 import express, { type ErrorRequestHandler } from "express";
 import { Server as SocketIOServer } from "socket.io";
 import configsRouter from "./configs/configsRouter.js";
+import mcpRouter from "./mcp/mcpRouter.js";
 import mpdRouter from "./mpd/mpdRouter.js";
 import { SocketIoManager } from "./SocketIoManager.js";
 
@@ -17,6 +18,7 @@ const server = http.createServer(app);
 // APIs
 app.use("/api/configs", configsRouter);
 app.use("/api/mpd", mpdRouter);
+app.use("/mcp", mcpRouter);
 const errorHandler: ErrorRequestHandler = (err, _req, res, _next) => {
 	console.error(err);
 	res.status(500);

@@ -45,6 +45,60 @@ export function getSongMetadataAsNumber(
 	return undefined;
 }
 
+/**
+ * Like `getSongMetadataAsString` but returns an empty string when the tag is
+ * absent from `song.metadata` instead of crashing on an undefined value.
+ */
+export function getSongMetadataAsStringOrEmpty(
+	song: Song,
+	tag: Song_MetadataTag,
+): string {
+	if (song.metadata[tag] === undefined) {
+		return "";
+	}
+	return getSongMetadataAsString(song, tag);
+}
+
+/**
+ * Reads a timestamp tag as epoch milliseconds. Returns undefined when the tag
+ * is absent, holds a non-timestamp value, or carries a non-positive epoch
+ * (MPD emits -1 for "added time unknown").
+ */
+export function getSongMetadataAsTimestampMs(
+	song: Song,
+	tag: Song_MetadataTag,
+): number | undefined {
+	const value = song.metadata[tag];
+	if (value === undefined || value.value.case !== "timestamp") {
+		return undefined;
+	}
+	const ms = timestampDate(value.value.value).getTime();
+	if (!Number.isFinite(ms) || ms <= 0) {
+		return undefined;
+	}
+	return ms;
+}
+
+/**
+ * Returns the `AudioFormat` for a tag, or undefined when the tag is absent,
+ * holds a non-format value, or carries an all-zero format (which MPD writes
+ * when the field is unset).
+ */
+export function getSongMetadataAsAudioFormat(
+	song: Song,
+	tag: Song_MetadataTag,
+): AudioFormat | undefined {
+	const value = song.metadata[tag];
+	if (value === undefined || value.value.case !== "format") {
+		return undefined;
+	}
+	const format = value.value.value;
+	if (format.samplingRate === 0 && format.bits === 0 && format.channels === 0) {
+		return undefined;
+	}
+	return format;
+}
+
 export function convertStringToSongMetadataValue(
 	value: string,
 ): Song_MetadataValue {
