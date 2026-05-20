@@ -204,7 +204,7 @@ export function registerMcpTools(
 		{
 			title: "Get MPD library stats",
 			description:
-				"Returns library-wide counts (artists, albums, songs), accumulated playtime, MPD version, and the last database update timestamp.",
+				"Returns library-wide counts (artists, albums, songs), MPD version, and the last database update timestamp. `total_playtime_seconds` is the lifetime sum of song durations played by MPD; `uptime_seconds` is how long the current MPD process has been running (not playback duration).",
 			inputSchema: {},
 		},
 		async () => {
@@ -841,7 +841,7 @@ export function registerMcpTools(
 		{
 			title: "Artist summary",
 			description:
-				"Aggregates one artist's songs across artist and album_artist tags: counts, total duration, year range, genres, formats, first/last added.",
+				"Aggregates one artist's songs across artist and album_artist tags: counts, total duration, year range, genres, formats, first/last added. On a miss returns `{ found: false, suggestions: [...] }` with loosely matching names so callers can recover from typos or HTML-escaped input.",
 			inputSchema: {
 				name: z.string().min(1),
 			},
@@ -852,9 +852,14 @@ export function registerMcpTools(
 				await ensureIndex(profile);
 				const summary = libraryIndex.artistSummary(args.name);
 				if (summary === undefined) {
-					return toolError(`No songs found for artist: ${args.name}`);
+					const suggestions = libraryIndex.findArtistCandidates(args.name, 10);
+					return toolResultJson({
+						found: false,
+						name_searched: args.name,
+						suggestions,
+					});
 				}
-				return toolResultJson(summary);
+				return toolResultJson({ found: true, ...summary });
 			} catch (err) {
 				return errorToResult(err);
 			}

@@ -49,6 +49,7 @@ function makeIndex(refreshReturn = true): LibraryIndex {
 		decadeBreakdown: vi.fn(() => []),
 		recentlyAddedByArtist: vi.fn(() => []),
 		artistSummary: vi.fn(() => undefined),
+		findArtistCandidates: vi.fn(() => []),
 		querySql: vi.fn(() => ({
 			columns: [],
 			rows: [],

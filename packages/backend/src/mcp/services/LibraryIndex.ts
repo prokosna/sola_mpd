@@ -89,6 +89,13 @@ export interface LibraryIndex {
 
 	artistSummary(name: string): LibraryArtistSummary | undefined;
 
+	/**
+	 * Returns artist / album_artist names that loosely match the query. Used by
+	 * the artist_summary tool to suggest alternatives when an exact lookup misses
+	 * (e.g. caller passed an HTML-escaped name).
+	 */
+	findArtistCandidates(name: string, limit: number): string[];
+
 	querySql(sql: string, params: unknown[], rowLimit: number): LibrarySqlResult;
 
 	/** Human-readable schema for use in tool descriptions. */
