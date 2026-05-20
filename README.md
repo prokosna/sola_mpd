@@ -204,7 +204,7 @@ Please note that lainbow requires a NVIDIA GPU to generate embeddings. It works 
 
 Sola MPD exposes a [Model Context Protocol](https://modelcontextprotocol.io/) server so LLM clients (Claude Code, Claude Desktop, etc.) can browse and analyze your library, drive playback, and run read-only SQL queries against an in-memory mirror of all songs. The intent is not to wrap MPD commands one-for-one but to support multi-angle questions such as "which artists have I not added music from in two years?" or "break down my library by decade and format."
 
-The server runs on the same Express process as the web UI, listening at `POST /mcp` over the [Streamable HTTP](https://modelcontextprotocol.io/docs/concepts/transports#streamable-http) transport in stateless mode. It uses the MPD profile currently selected in the Sola MPD UI. **There is no authentication — only expose Sola MPD inside a trusted LAN.**
+The server runs on the same Express process as the web UI, listening at `POST /mcp` over the [Streamable HTTP](https://modelcontextprotocol.io/docs/concepts/transports#streamable-http) transport in stateless mode. It uses the MPD profile currently selected in the Sola MPD UI.
 
 ### Connecting
 
