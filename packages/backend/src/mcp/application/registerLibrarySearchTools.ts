@@ -16,8 +16,7 @@ import {
 	type RegisterMcpToolsDeps,
 } from "./mcpToolHelpers.js";
 
-// Defaults applied when the caller omits `limit`; oversized responses may blow
-// the client's context window, which is the caller's risk to take.
+// Defaults applied when the caller omits `limit`.
 const DEFAULT_SEARCH_RESULTS = 500;
 const DEFAULT_TAG_VALUES = 5000;
 

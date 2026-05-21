@@ -14,7 +14,7 @@ describe("buildMpdStatsResponse", () => {
 			songs_count: 0,
 			total_playtime_seconds: 0,
 			uptime_seconds: 0,
-			last_updated: undefined,
+			last_updated: null,
 		});
 	});
 
@@ -40,11 +40,11 @@ describe("buildMpdStatsResponse", () => {
 		});
 	});
 
-	it("returns undefined last_updated when timestamp is missing", () => {
+	it("returns null last_updated when timestamp is missing", () => {
 		const stats = create(MpdStatsSchema, {
 			version: "0.23.0",
 			songsCount: 1,
 		});
-		expect(buildMpdStatsResponse(stats).last_updated).toBeUndefined();
+		expect(buildMpdStatsResponse(stats).last_updated).toBeNull();
 	});
 });

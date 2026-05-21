@@ -40,7 +40,7 @@ export function registerPlaylistTools(
 						updated_at:
 							p.updatedAt !== undefined
 								? new Date(Number(p.updatedAt.seconds) * 1000).toISOString()
-								: undefined,
+								: null,
 					})),
 				});
 			} catch (err) {

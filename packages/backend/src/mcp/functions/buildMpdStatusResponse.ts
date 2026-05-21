@@ -4,7 +4,7 @@ import type { Song } from "@sola_mpd/shared/src/models/song_pb.js";
 import { type SongOutput, songToOutput } from "./songToOutput.js";
 
 export type MpdStatusResponse = {
-	playback_state: string;
+	playback_state: string | undefined;
 	queue_length: number;
 	song_position: number;
 	song_id: number;
@@ -29,7 +29,7 @@ export function buildMpdStatusResponse(
 	return {
 		playback_state:
 			status?.playbackState !== undefined
-				? (PLAYBACK_STATE_NAMES[status.playbackState] ?? "UNKNOWN")
+				? PLAYBACK_STATE_NAMES[status.playbackState]
 				: "UNKNOWN",
 		queue_length: status?.playQueueLength ?? 0,
 		song_position: status?.song ?? -1,

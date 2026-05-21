@@ -38,10 +38,10 @@ export type LibraryArtistSummary = {
 	song_count: number;
 	album_count: number;
 	duration_seconds: number;
-	first_added: string | undefined;
-	last_added: string | undefined;
-	earliest_release: string | undefined;
-	latest_release: string | undefined;
+	first_added: string | null;
+	last_added: string | null;
+	earliest_release: string | null;
+	latest_release: string | null;
 	genres: string[];
 	formats: string[];
 };
@@ -66,8 +66,8 @@ export type LibraryAggregated<Row> = {
 
 export type LibraryIndexStats = {
 	song_count: number;
-	last_built_at: string | undefined;
-	last_source_signature: string | undefined;
+	last_built_at: string | null;
+	last_source_signature: string | null;
 };
 
 /**

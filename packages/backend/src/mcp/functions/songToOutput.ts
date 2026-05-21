@@ -18,31 +18,31 @@ export type SongOutput = {
 	album: string;
 	genre: string;
 	composer: string;
-	track: number | undefined;
-	disc: number | undefined;
+	track: number | null;
+	disc: number | null;
 	date: string;
-	duration_seconds: number | undefined;
+	duration_seconds: number | null;
 	format: string;
-	added_at: string | undefined;
-	updated_at: string | undefined;
+	added_at: string | null;
+	updated_at: string | null;
 	label: string;
 	comment: string;
 };
 
-function metadataNumber(song: Song, tag: Song_MetadataTag): number | undefined {
+function metadataNumber(song: Song, tag: Song_MetadataTag): number | null {
 	if (song.metadata[tag] === undefined) {
-		return undefined;
+		return null;
 	}
 	const parsed = getSongMetadataAsNumber(song, tag);
-	return parsed === undefined || Number.isNaN(parsed) ? undefined : parsed;
+	return parsed === undefined || Number.isNaN(parsed) ? null : parsed;
 }
 
 function metadataTimestampIso(
 	song: Song,
 	tag: Song_MetadataTag,
-): string | undefined {
+): string | null {
 	const ms = getSongMetadataAsTimestampMs(song, tag);
-	return ms === undefined ? undefined : new Date(ms).toISOString();
+	return ms === undefined ? null : new Date(ms).toISOString();
 }
 
 function metadataFormatString(song: Song, tag: Song_MetadataTag): string {

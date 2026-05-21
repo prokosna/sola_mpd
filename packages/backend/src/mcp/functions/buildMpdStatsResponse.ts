@@ -7,7 +7,7 @@ export type MpdStatsResponse = {
 	songs_count: number;
 	total_playtime_seconds: number;
 	uptime_seconds: number;
-	last_updated: string | undefined;
+	last_updated: string | null;
 };
 
 export function buildMpdStatsResponse(
@@ -23,6 +23,6 @@ export function buildMpdStatsResponse(
 		last_updated:
 			stats?.lastUpdated !== undefined
 				? new Date(Number(stats.lastUpdated.seconds) * 1000).toISOString()
-				: undefined,
+				: null,
 	};
 }

@@ -27,6 +27,7 @@ The following commands must be run after code changes to verify the code:
 - Do not directly edit generated code, build artifacts, or external library code.
 - Do not write user-facing code comments. Following human coding best practices, write concise comments only where an explanation of "why this implementation is needed" is necessary. Comments must be written in English.
 - Tests are created in the same folder as `{file_name}.test.ts`.
+- Prefer `undefined` over `null` everywhere. The only exception is MCP tool response payloads under `packages/backend/src/mcp/`: scalar fields that the tool description promises to return but may have no current value (e.g. `elapsed_seconds` when playback is stopped, `last_updated` before the first DB update) must use `null` so the JSON shape stays stable for LLM consumers. Optional nested objects (e.g. `current_song`, `current`) remain `undefined` to keep payloads compact.
 
 ## Folder Structure
 
