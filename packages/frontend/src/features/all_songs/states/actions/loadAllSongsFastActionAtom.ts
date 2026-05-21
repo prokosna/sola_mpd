@@ -4,15 +4,9 @@ import { mpdClientAtom } from "../../../mpd/states/atoms/mpdClientAtom";
 import { currentMpdProfileAtom } from "../../../profile/states/atoms/mpdProfileAtom";
 import { statsAtom } from "../../../stats/states/atoms/statsAtom";
 import { ALL_SONGS_CHUNK_SIZE } from "../../const/allSongsDefaults";
-import { fetchAllSongsFastChunk } from "../../functions/allSongsFastFetch";
+import { loadAllSongsFast } from "../../functions/allSongsFastLoading";
 import { allSongsFastStateAtom } from "../atoms/allSongsFastStateAtom";
 
-/**
- * Drive the chunk loop until the library is fully loaded. Each chunk is
- * appended in-place so the song table can render a growing list while the
- * remaining pages are still in flight. A short chunk (fewer rows than
- * requested) marks the natural end of the result set.
- */
 export const loadAllSongsFastActionAtom = atom(null, async (get, set) => {
 	const state = get(allSongsFastStateAtom);
 	if (state.isLoading || !state.hasMore) {
@@ -27,45 +21,42 @@ export const loadAllSongsFastActionAtom = atom(null, async (get, set) => {
 
 	set(allSongsFastStateAtom, { ...state, isLoading: true });
 
-	let songs = state.songs;
-	let offset = state.offset;
-	let hasMore = true;
+	let lastProgress = {
+		songs: state.songs,
+		offset: state.offset,
+		hasMore: true,
+	};
 
 	try {
-		while (hasMore) {
-			const chunk = await fetchAllSongsFastChunk(
-				mpdClient,
-				profile,
-				offset,
-				ALL_SONGS_CHUNK_SIZE,
-			);
-			songs = songs.concat(chunk);
-			offset += chunk.length;
-			if (chunk.length < ALL_SONGS_CHUNK_SIZE) {
-				hasMore = false;
-			}
-			// Publish the partial accumulator so the table renders progressively
-			// instead of waiting for the final chunk.
-			set(allSongsFastStateAtom, {
-				songs,
-				offset,
-				isLoading: hasMore,
-				hasMore,
-			});
-		}
+		const result = await loadAllSongsFast({
+			mpdClient,
+			profile,
+			initialSongs: state.songs,
+			initialOffset: state.offset,
+			chunkSize: ALL_SONGS_CHUNK_SIZE,
+			onProgress: (progress) => {
+				lastProgress = progress;
+				set(allSongsFastStateAtom, {
+					songs: progress.songs,
+					offset: progress.offset,
+					isLoading: progress.hasMore,
+					hasMore: progress.hasMore,
+				});
+			},
+		});
 
 		// Relying on MPD's natural traversal order rather than an explicit sort.
-		// Cross-check against `stats songs_count` so the discrepancy is visible in case.
+		// Cross-check against `stats songs_count` so the discrepancy is visible.
 		const stats = get(statsAtom);
-		if (stats !== undefined && songs.length !== stats.songsCount) {
+		if (stats !== undefined && result.songs.length !== stats.songsCount) {
 			console.warn(
-				`All Songs progressive load count mismatch: loaded ${songs.length}, stats reports ${stats.songsCount}`,
+				`All Songs progressive load count mismatch: loaded ${result.songs.length}, stats reports ${stats.songsCount}`,
 			);
 		}
 	} catch (e) {
 		set(allSongsFastStateAtom, {
-			songs,
-			offset,
+			songs: lastProgress.songs,
+			offset: lastProgress.offset,
 			isLoading: false,
 			hasMore: true,
 		});

@@ -18,59 +18,31 @@ import {
 } from "@mantine/core";
 import { DateInput } from "@mantine/dates";
 import type { UseFormReturnType } from "@mantine/form";
-import { FilterCondition_Operator } from "@sola_mpd/shared/src/models/filter_pb.js";
-import { Song_MetadataTag } from "@sola_mpd/shared/src/models/song_pb.js";
 import { IconAlertTriangle, IconPlus, IconTrash } from "@tabler/icons-react";
 import { useAtomValue } from "jotai";
 import { FullWidthSkeleton } from "../../loading";
 import { mpdCapabilitiesAtom } from "../../mpd/states/atoms/mpdCapabilitiesAtom";
-import {
-	convertOperatorToDisplayName,
-	listAllFilterConditionOperators,
-} from "../../song_filter";
+import { convertOperatorToDisplayName } from "../../song_filter";
 import {
 	convertSongMetadataTagFromDisplayName,
 	convertSongMetadataTagToDisplayName,
 } from "../../song_table";
+import { isValidOperatorWithMetadataTag } from "../functions/search";
 import {
-	isValidOperatorWithMetadataTag,
-	listSearchSongMetadataTags,
-} from "../functions/search";
+	isConditionUnsupportedOnCurrentServer,
+	isDateInputTag,
+	listAvailableSearchOperators,
+	listAvailableSearchTags,
+} from "../functions/searchEditor";
 import { useSearchQueryEditorHandlers } from "../hooks/useSearchQueryEditorHandlers";
 import { isSearchLoadingAtom } from "../states/atoms/searchUiAtom";
 import {
-	type ConditionFormValues,
 	EditingSearchStatus,
 	type SearchFormValues,
 } from "../types/searchTypes";
 
-const DATE_INPUT_TAGS: readonly Song_MetadataTag[] = [
-	Song_MetadataTag.UPDATED_AT,
-	Song_MetadataTag.ADDED_AT,
-];
-
 const UNSUPPORTED_CONDITION_TOOLTIP =
 	"Ignored when searching; requires MPD 0.24+";
-
-function isDateInputTag(tagDisplayName: string): boolean {
-	const tag = convertSongMetadataTagFromDisplayName(tagDisplayName);
-	return tag !== undefined && DATE_INPUT_TAGS.includes(tag);
-}
-
-function isConditionUnsupportedOnCurrentServer(
-	condition: ConditionFormValues,
-	isMpd024OrLater: boolean,
-): boolean {
-	if (isMpd024OrLater) {
-		return false;
-	}
-	return (
-		condition.tag ===
-			convertSongMetadataTagToDisplayName(Song_MetadataTag.ADDED_AT) ||
-		condition.operator ===
-			convertOperatorToDisplayName(FilterCondition_Operator.ADDED_SINCE)
-	);
-}
 
 export function SearchNavigationQueryEditor({
 	form,
@@ -95,15 +67,8 @@ export function SearchNavigationQueryEditor({
 		savedSearches,
 	} = useSearchQueryEditorHandlers(form);
 
-	// Hide ADDED_AT tag and the matching ADDED_SINCE operator on legacy MPDs
-	// so users cannot author queries the server cannot evaluate.
-	const availableTags = listSearchSongMetadataTags().filter(
-		(tag) => isMpd024OrLater || tag !== Song_MetadataTag.ADDED_AT,
-	);
-	const availableOperators = listAllFilterConditionOperators().filter(
-		(operator) =>
-			isMpd024OrLater || operator !== FilterCondition_Operator.ADDED_SINCE,
-	);
+	const availableTags = listAvailableSearchTags(isMpd024OrLater);
+	const availableOperators = listAvailableSearchOperators(isMpd024OrLater);
 
 	if (savedSearches === undefined) {
 		return <FullWidthSkeleton />;

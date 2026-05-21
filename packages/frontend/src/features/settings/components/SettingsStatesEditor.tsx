@@ -1,7 +1,8 @@
-import { fromJson, type Message, toJson } from "@bufbuild/protobuf";
+import { type Message, toJson } from "@bufbuild/protobuf";
 import type { GenMessage } from "@bufbuild/protobuf/codegenv2";
 import { Button, Group, Modal, Stack, Text, Textarea } from "@mantine/core";
 import { useCallback, useEffect, useRef, useState } from "react";
+import { parseSettingsStateJson } from "../functions/parseSettingsStateJson";
 
 export type SettingsStatesEditorProps<T extends Message> = {
 	schema: GenMessage<T>;
@@ -28,22 +29,12 @@ export function SettingsStatesEditor<T extends Message>(
 	const handleInput = useCallback(
 		(value: string) => {
 			setStateJsonText(value);
-			try {
-				JSON.parse(value);
-			} catch (_) {
-				setErrorMessage("Invalid JSON string");
-				return;
-			}
-			setErrorMessage("");
-			try {
-				const newState = fromJson(schema, JSON.parse(value));
-				newStateRef.current = newState;
-			} catch (e) {
-				if (e instanceof Error) {
-					setErrorMessage(e.message);
-				} else {
-					setErrorMessage("Failed to parse the text as a state.");
-				}
+			const result = parseSettingsStateJson(schema, value);
+			if (result.ok) {
+				newStateRef.current = result.state;
+				setErrorMessage("");
+			} else {
+				setErrorMessage(result.errorMessage);
 			}
 		},
 		[schema],
