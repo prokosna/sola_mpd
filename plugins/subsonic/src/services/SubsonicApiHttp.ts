@@ -5,8 +5,8 @@ import {
 	Song_MetadataTag,
 } from "@sola_mpd/shared/src/models/song_pb.js";
 import { LRUCache } from "lru-cache";
+import pRetry from "p-retry";
 
-import { retryWithBackoff } from "../functions/retry.js";
 import {
 	SubsonicCreatePlaylistResponseSchema,
 	SubsonicGetPlaylistResponseSchema,
@@ -17,31 +17,36 @@ import {
 } from "../types.js";
 import type { SubsonicApi } from "./SubsonicApi.js";
 
-const DEFAULT_FETCH_ATTEMPTS = 3;
-const DEFAULT_SEARCH_ATTEMPTS = 10;
-const DEFAULT_BASE_BACKOFF_MS = 100;
+const DEFAULT_FETCH_RETRIES = 2;
+const DEFAULT_SEARCH_RETRIES = 9;
+const DEFAULT_MIN_BACKOFF_MS = 100;
 const DEFAULT_MAX_BACKOFF_MS = 2000;
 const SEARCH_CACHE_MAX_ENTRIES = 500;
 
 export interface SubsonicApiHttpOptions {
-	/** Total fetch attempts on network errors. */
-	fetchAttempts?: number;
+	/** Retry attempts after the initial fetch call on network errors. */
+	fetchRetries?: number;
 	/**
-	 * Total search attempts when Subsonic returns an empty result set. Subsonic
-	 * intermittently returns an empty result for queries that should match, so
-	 * we retry as a workaround.
+	 * Retry attempts after the initial search call when Subsonic returns an
+	 * empty result. Subsonic's /search3 endpoint intermittently returns an
+	 * empty result set for queries that should match, so we retry as a
+	 * workaround.
 	 */
-	searchAttempts?: number;
-	baseBackoffMs?: number;
+	searchRetries?: number;
+	minBackoffMs?: number;
 	maxBackoffMs?: number;
+}
+
+class EmptySearchResultError extends Error {
+	override readonly name = "EmptySearchResultError";
 }
 
 export class SubsonicApiHttp implements SubsonicApi {
 	private cache: LRUCache<string, SubsonicSong[]>;
 	private url: string;
-	private fetchAttempts: number;
-	private searchAttempts: number;
-	private baseBackoffMs: number;
+	private fetchRetries: number;
+	private searchRetries: number;
+	private minBackoffMs: number;
 	private maxBackoffMs: number;
 
 	constructor(
@@ -52,9 +57,9 @@ export class SubsonicApiHttp implements SubsonicApi {
 	) {
 		this.url = url.replace(/\/+$/, "");
 		this.cache = new LRUCache({ max: SEARCH_CACHE_MAX_ENTRIES });
-		this.fetchAttempts = options.fetchAttempts ?? DEFAULT_FETCH_ATTEMPTS;
-		this.searchAttempts = options.searchAttempts ?? DEFAULT_SEARCH_ATTEMPTS;
-		this.baseBackoffMs = options.baseBackoffMs ?? DEFAULT_BASE_BACKOFF_MS;
+		this.fetchRetries = options.fetchRetries ?? DEFAULT_FETCH_RETRIES;
+		this.searchRetries = options.searchRetries ?? DEFAULT_SEARCH_RETRIES;
+		this.minBackoffMs = options.minBackoffMs ?? DEFAULT_MIN_BACKOFF_MS;
 		this.maxBackoffMs = options.maxBackoffMs ?? DEFAULT_MAX_BACKOFF_MS;
 	}
 
@@ -137,24 +142,41 @@ export class SubsonicApiHttp implements SubsonicApi {
 	}
 
 	private fetchWithRetry(url: string, options: RequestInit): Promise<Response> {
-		return retryWithBackoff(() => fetch(url, options), {
-			attempts: this.fetchAttempts,
-			baseDelayMs: this.baseBackoffMs,
-			maxDelayMs: this.maxBackoffMs,
+		return pRetry(() => fetch(url, options), {
+			retries: this.fetchRetries,
+			minTimeout: this.minBackoffMs,
+			maxTimeout: this.maxBackoffMs,
+			randomize: true,
 		});
 	}
 
-	// Subsonic's /search3 endpoint occasionally returns an empty result set for
-	// queries that should match. Retry with backoff and keep the last result —
-	// the LRU cache stores the final outcome so a confirmed-empty query stays
-	// empty without further retries.
-	private searchWithRetry(query: string): Promise<SubsonicSong[]> {
-		return retryWithBackoff(() => this.search(query), {
-			attempts: this.searchAttempts,
-			baseDelayMs: this.baseBackoffMs,
-			maxDelayMs: this.maxBackoffMs,
-			retryOnValue: (songs) => songs.length === 0,
-		});
+	// Subsonic's /search3 occasionally returns an empty result set for queries
+	// that should match. Treat empty as a retryable failure via a sentinel
+	// error, then convert the exhausted sentinel back into an empty array so
+	// genuinely-empty queries don't surface as exceptions.
+	private async searchWithRetry(query: string): Promise<SubsonicSong[]> {
+		try {
+			return await pRetry(
+				async () => {
+					const songs = await this.search(query);
+					if (songs.length === 0) {
+						throw new EmptySearchResultError();
+					}
+					return songs;
+				},
+				{
+					retries: this.searchRetries,
+					minTimeout: this.minBackoffMs,
+					maxTimeout: this.maxBackoffMs,
+					randomize: true,
+				},
+			);
+		} catch (err) {
+			if (err instanceof EmptySearchResultError) {
+				return [];
+			}
+			throw err;
+		}
 	}
 
 	private async search(query: string): Promise<SubsonicSong[]> {
