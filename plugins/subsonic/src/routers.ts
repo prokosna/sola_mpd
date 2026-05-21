@@ -14,6 +14,12 @@ import {
 import { PluginService } from "@sola_mpd/shared/src/models/plugin/plugin_service_pb.js";
 
 import { syncWithSubsonic } from "./application/subsonicUseCases.js";
+import {
+	SUBSONIC_PLUGIN_PARAMETER_KEYS,
+	SUBSONIC_REQUEST_PARAMETER_KEYS,
+	SUBSONIC_REQUIRED_PLUGIN_PARAMETERS,
+	SUBSONIC_REQUIRED_REQUEST_PARAMETERS,
+} from "./const/parameters.js";
 import { SubsonicApiHttp } from "./services/SubsonicApiHttp.js";
 
 export function routes(router: ConnectRouter) {
@@ -28,8 +34,8 @@ export function routes(router: ConnectRouter) {
 					contextMenuDescription:
 						"Start synchronization with the Subsonic playlist.",
 					supportedTypes: [Plugin_PluginType.ON_ALL],
-					requiredPluginParameters: ["Url", "User", "Password"],
-					requiredRequestParameters: ["Playlist Name"],
+					requiredPluginParameters: [...SUBSONIC_REQUIRED_PLUGIN_PARAMETERS],
+					requiredRequestParameters: [...SUBSONIC_REQUIRED_REQUEST_PARAMETERS],
 				}),
 			});
 		},
@@ -38,10 +44,12 @@ export function routes(router: ConnectRouter) {
 			req: PluginExecuteRequest,
 		): AsyncGenerator<PluginExecuteResponse, void, unknown> {
 			try {
-				const url = req.pluginParameters.Url;
-				const user = req.pluginParameters.User;
-				const password = req.pluginParameters.Password;
-				const playlistName = req.requestParameters["Playlist Name"];
+				const url = req.pluginParameters[SUBSONIC_PLUGIN_PARAMETER_KEYS.url];
+				const user = req.pluginParameters[SUBSONIC_PLUGIN_PARAMETER_KEYS.user];
+				const password =
+					req.pluginParameters[SUBSONIC_PLUGIN_PARAMETER_KEYS.password];
+				const playlistName =
+					req.requestParameters[SUBSONIC_REQUEST_PARAMETER_KEYS.playlistName];
 				const songs = req.songs;
 				const client = new SubsonicApiHttp(url, user, password);
 				for await (const resp of syncWithSubsonic(
