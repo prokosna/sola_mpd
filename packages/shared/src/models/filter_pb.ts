@@ -81,7 +81,8 @@ export enum FilterCondition_Operator {
   REGEX = 5,
 
   /**
-   * Operators below have no general MPD support and need client-side filtering.
+   * Operators below have no general MPD support and need client-side
+   * filtering.
    *
    * @generated from enum value: LESS_THAN = 6;
    */
