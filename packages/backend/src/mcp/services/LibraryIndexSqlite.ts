@@ -104,8 +104,8 @@ class LibraryIndexSqlite implements LibraryIndex {
 	stats(): LibraryIndexStats {
 		return {
 			song_count: this.lastSongCount,
-			last_built_at: this.lastBuiltAt?.toISOString(),
-			last_source_signature: this.lastSignature,
+			last_built_at: this.lastBuiltAt?.toISOString() ?? null,
+			last_source_signature: this.lastSignature ?? null,
 		};
 	}
 
@@ -286,11 +286,9 @@ class LibraryIndexSqlite implements LibraryIndex {
 			first_added: msToIso(baseRow.first_added_ms),
 			last_added: msToIso(baseRow.last_added_ms),
 			earliest_release:
-				baseRow.earliest_year !== null
-					? String(baseRow.earliest_year)
-					: undefined,
+				baseRow.earliest_year !== null ? String(baseRow.earliest_year) : null,
 			latest_release:
-				baseRow.latest_year !== null ? String(baseRow.latest_year) : undefined,
+				baseRow.latest_year !== null ? String(baseRow.latest_year) : null,
 			genres,
 			formats,
 		};
@@ -374,9 +372,9 @@ class LibraryIndexSqlite implements LibraryIndex {
 	}
 }
 
-function msToIso(ms: number | null): string | undefined {
+function msToIso(ms: number | null): string | null {
 	if (ms === null || !Number.isFinite(ms) || ms <= 0) {
-		return undefined;
+		return null;
 	}
 	return new Date(ms).toISOString();
 }

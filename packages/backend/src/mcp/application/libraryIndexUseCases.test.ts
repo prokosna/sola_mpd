@@ -40,8 +40,8 @@ function makeIndex(refreshReturn = true): LibraryIndex {
 		refreshIfNeeded: vi.fn(() => refreshReturn),
 		stats: vi.fn(() => ({
 			song_count: 0,
-			last_built_at: undefined,
-			last_source_signature: undefined,
+			last_built_at: null,
+			last_source_signature: null,
 		})),
 		topByTag: vi.fn(() => ({ rows: [], distinct_values_seen: 0 })),
 		breakdown: vi.fn(() => ({ rows: [], distinct_values_seen: 0 })),
