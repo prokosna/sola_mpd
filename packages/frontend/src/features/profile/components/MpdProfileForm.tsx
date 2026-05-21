@@ -10,10 +10,13 @@ import { isInRange, isNotEmpty, useForm } from "@mantine/form";
 import { useAtomValue } from "jotai";
 import { useCallback, useState } from "react";
 import { useNotification } from "../../../lib/mantine/hooks/useNotification";
+import {
+	buildProfileInputFromForm,
+	validateProfileName,
+} from "../functions/mpdProfileFormValidation";
 import { useAddMpdProfile } from "../hooks/useAddMpdProfile";
 import { useValidateMpdProfile } from "../hooks/useValidateMpdProfile";
 import { mpdProfileStateAtom } from "../states/atoms/mpdProfileAtom";
-import type { ProfileInput } from "../types/profileTypes";
 
 type MpdProfileFormProps = {
 	onProfileCreated: () => Promise<void>;
@@ -37,18 +40,15 @@ export function MpdProfileForm(props: MpdProfileFormProps) {
 		initialValues: {
 			name: "",
 			host: "",
-			port: undefined,
+			port: undefined as number | undefined,
 			password: "",
 		},
 		validate: {
-			name: (value) => {
-				if (value === "") {
-					return "Name is required";
-				}
-				if (mpdProfiles?.find((profile) => profile.name === value)) {
-					return "Name already exists";
-				}
-			},
+			name: (value) =>
+				validateProfileName(
+					value,
+					mpdProfiles?.map((profile) => profile.name) ?? [],
+				),
 			host: isNotEmpty("Host is required"),
 			port: isInRange(
 				{ min: 1, max: 65535 },
@@ -59,12 +59,7 @@ export function MpdProfileForm(props: MpdProfileFormProps) {
 
 	const handleTest = useCallback(
 		async (values: typeof form.values) => {
-			const profileInput: ProfileInput = {
-				name: values.name,
-				host: values.host,
-				port: values.port ?? 6600,
-				password: values.password || undefined,
-			};
+			const profileInput = buildProfileInputFromForm(values);
 			const result = await validateMpdProfile(profileInput);
 			if (result.isValid) {
 				setValidationErrorMessage(undefined);
@@ -79,12 +74,7 @@ export function MpdProfileForm(props: MpdProfileFormProps) {
 
 	const handleSubmit = useCallback(
 		async (values: typeof form.values) => {
-			const profileInput: ProfileInput = {
-				name: values.name,
-				host: values.host,
-				port: values.port ?? 6600,
-				password: values.password || undefined,
-			};
+			const profileInput = buildProfileInputFromForm(values);
 			await addMpdProfile(profileInput);
 			notify({
 				status: "success",
