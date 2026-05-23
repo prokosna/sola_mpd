@@ -1,6 +1,6 @@
 import type { Song } from "@sola_mpd/shared/src/models/song_pb.js";
 
-import type { NotificationParams } from "../../../lib/mantine/hooks/useNotification";
+import type { NotificationParams } from "../../../lib/mantine/showNotification";
 import type { ContextMenuItem } from "../../context_menu";
 import { getTargetSongsForContextMenu } from "../../song_table/functions/songTableKey";
 import type {

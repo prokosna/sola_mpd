@@ -1,4 +1,4 @@
-import { fromBinary, toBinary } from "@bufbuild/protobuf";
+import { create, fromBinary, toBinary } from "@bufbuild/protobuf";
 import {
 	CONFIG_KEY_BROWSER_STATE,
 	CONFIG_KEY_COMMON_SONG_TABLE_STATE,
@@ -20,6 +20,7 @@ import {
 import { MpdEventSchema } from "@sola_mpd/shared/src/models/mpd/mpd_event_pb.js";
 import type { MpdProfile } from "@sola_mpd/shared/src/models/mpd/mpd_profile_pb.js";
 import { MpdProfileSchema } from "@sola_mpd/shared/src/models/mpd/mpd_profile_pb.js";
+import { PluginExecuteResponseWrapperSchema } from "@sola_mpd/shared/src/models/plugin/plugin_wrapper_pb.js";
 import { DeepMap } from "@sola_mpd/shared/src/utils/DeepMap.js";
 import type { BrowserWindow } from "electron";
 import { ipcMain } from "electron";
@@ -88,20 +89,12 @@ const writeUseCases: Record<string, (data: Buffer) => void> = {
 	[CONFIG_KEY_RECENTLY_ADDED_STATE]: updateRecentlyAddedState,
 };
 
-let currentWindow: BrowserWindow | undefined;
 let handlersRegistered = false;
 
 const idEventHandlerMap = new DeepMap<
 	[string, MpdProfile],
 	Promise<MpdSubscriptionHandler>
 >();
-
-function getWindow(): BrowserWindow | undefined {
-	if (currentWindow !== undefined && !currentWindow.isDestroyed()) {
-		return currentWindow;
-	}
-	return undefined;
-}
 
 async function cleanupSubscriptions(): Promise<void> {
 	for (const [key, handlerPromise] of idEventHandlerMap) {
@@ -150,22 +143,19 @@ function registerIpcHandlers(): void {
 	// MPD subscribe
 	ipcMain.handle(
 		SOCKETIO_MPD_SUBSCRIBE,
-		async (_event, msg: Uint8Array): Promise<Uint8Array> => {
+		async (event, msg: Uint8Array): Promise<Uint8Array> => {
 			try {
 				const targetProfile = fromBinary(MpdProfileSchema, msg);
 				if (idEventHandlerMap.has([CLIENT_ID, targetProfile])) {
 					return new Uint8Array(0);
 				}
 
+				const sender = event.sender;
 				const { profile, handlerPromise } = await subscribeMpdEventsUseCase({
 					msg,
 					onEvent: (event) => {
-						const win = getWindow();
-						if (win !== undefined) {
-							win.webContents.send(
-								SOCKETIO_MPD_EVENT,
-								toBinary(MpdEventSchema, event),
-							);
+						if (!sender.isDestroyed()) {
+							sender.send(SOCKETIO_MPD_EVENT, toBinary(MpdEventSchema, event));
 						}
 					},
 					mpdClient: mpdClientMpd3,
@@ -175,10 +165,11 @@ function registerIpcHandlers(): void {
 				await handlerPromise;
 				const room = `${profile.host}:${profile.port}`;
 				console.info(`Desktop client subscribed to ${room}`);
+				return new Uint8Array(0);
 			} catch (err) {
 				console.error(err);
+				return createMpdErrorBuffer(err);
 			}
-			return new Uint8Array(0);
 		},
 	);
 
@@ -203,10 +194,11 @@ function registerIpcHandlers(): void {
 					const room = `${unsubscribedProfile.host}:${unsubscribedProfile.port}`;
 					console.info(`Desktop client unsubscribed from ${room}`);
 				}
+				return new Uint8Array(0);
 			} catch (err) {
 				console.error(err);
+				return createMpdErrorBuffer(err);
 			}
-			return new Uint8Array(0);
 		},
 	);
 
@@ -223,22 +215,38 @@ function registerIpcHandlers(): void {
 		},
 	);
 
-	// Plugin execute (streaming via dynamic callback events)
+	// Plugin execute (streaming via dynamic callback events).
+	// The invoke return value is unused — responses (including errors) reach the
+	// caller via the dynamic callback event pushed to the invoking renderer.
 	ipcMain.handle(
 		SOCKETIO_PLUGIN_EXECUTE,
-		async (_event, msg: Uint8Array): Promise<Uint8Array> => {
+		async (event, msg: Uint8Array): Promise<Uint8Array> => {
+			const sender = event.sender;
+			let lastCallbackEvent: string | undefined;
 			try {
 				for await (const [callbackEvent, resp] of executePluginUseCase(
 					msg,
 					pluginClientConnect,
 				)) {
-					const win = getWindow();
-					if (win !== undefined) {
-						win.webContents.send(callbackEvent, resp);
+					lastCallbackEvent = callbackEvent;
+					if (!sender.isDestroyed()) {
+						sender.send(callbackEvent, resp);
 					}
 				}
 			} catch (err) {
 				console.error(err);
+				if (lastCallbackEvent !== undefined && !sender.isDestroyed()) {
+					const errorWrapper = create(PluginExecuteResponseWrapperSchema, {
+						result: {
+							case: "error",
+							value: err instanceof Error ? err.message : String(err),
+						},
+					});
+					sender.send(
+						lastCallbackEvent,
+						toBinary(PluginExecuteResponseWrapperSchema, errorWrapper),
+					);
+				}
 			}
 			return new Uint8Array(0);
 		},
@@ -261,7 +269,8 @@ function registerIpcHandlers(): void {
 		},
 	);
 
-	// Config state fetch/save
+	// Config state fetch/save. Failures rethrow so ipcRenderer.invoke rejects
+	// in the renderer instead of receiving an indistinguishable empty success.
 	for (const key of configKeys) {
 		ipcMain.handle(`${SOCKETIO_CONFIG_FETCH}_${key}`, (): Uint8Array => {
 			try {
@@ -269,7 +278,7 @@ function registerIpcHandlers(): void {
 				return new Uint8Array(data);
 			} catch (err) {
 				console.error(err);
-				return new Uint8Array(0);
+				throw err;
 			}
 		});
 
@@ -278,25 +287,23 @@ function registerIpcHandlers(): void {
 			(_event, msg: Uint8Array): Uint8Array => {
 				try {
 					writeUseCases[key](Buffer.from(msg));
+					return new Uint8Array(0);
 				} catch (err) {
 					console.error(err);
+					throw err;
 				}
-				return new Uint8Array(0);
 			},
 		);
 	}
 }
 
 export function initializeIpcManager(mainWindow: BrowserWindow): void {
-	currentWindow = mainWindow;
-
 	if (!handlersRegistered) {
 		registerIpcHandlers();
 		handlersRegistered = true;
 	}
 
 	mainWindow.on("closed", async () => {
-		currentWindow = undefined;
 		await cleanupSubscriptions();
 	});
 }

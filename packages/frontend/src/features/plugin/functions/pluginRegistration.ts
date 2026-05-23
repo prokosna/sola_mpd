@@ -11,9 +11,16 @@ import {
 
 import type { PluginService } from "../services/PluginService";
 
+export type PluginRegistrationFailure = {
+	host: string;
+	port: number;
+	error: unknown;
+};
+
 export async function registerPluginAndCheckAvailability(
 	plugin: Plugin,
 	pluginService: PluginService,
+	onFailure?: (failure: PluginRegistrationFailure) => void,
 ): Promise<Plugin> {
 	const newPlugin = clone(PluginSchema, plugin);
 	newPlugin.isAvailable = false;
@@ -31,6 +38,7 @@ export async function registerPluginAndCheckAvailability(
 		}
 	} catch (e) {
 		console.error(e);
+		onFailure?.({ host: plugin.host, port: plugin.port, error: e });
 	}
 
 	return newPlugin;
@@ -39,10 +47,11 @@ export async function registerPluginAndCheckAvailability(
 export async function registerAllPluginsAndCheckAvailability(
 	plugins: readonly Plugin[],
 	pluginService: PluginService,
+	onFailure?: (failure: PluginRegistrationFailure) => void,
 ): Promise<Plugin[]> {
 	return Promise.all(
 		plugins.map((plugin) =>
-			registerPluginAndCheckAvailability(plugin, pluginService),
+			registerPluginAndCheckAvailability(plugin, pluginService, onFailure),
 		),
 	);
 }

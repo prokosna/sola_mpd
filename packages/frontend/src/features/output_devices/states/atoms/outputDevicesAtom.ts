@@ -2,6 +2,7 @@ import { atom } from "jotai";
 import { atomWithRefresh } from "jotai/utils";
 
 import { atomWithSync } from "../../../../lib/jotai/atomWithSync";
+import { showNotification } from "../../../../lib/mantine/showNotification";
 import { mpdClientAtom } from "../../../mpd/states/atoms/mpdClientAtom";
 import { currentMpdProfileAtom } from "../../../profile/states/atoms/mpdProfileAtom";
 import { fetchOutputDevices } from "../../functions/outputDeviceFetching";
@@ -22,6 +23,11 @@ const outputDevicesSafeAsyncAtom = atom(async (get) => {
 		return await get(outputDevicesAsyncAtom);
 	} catch (error) {
 		console.error(error);
+		showNotification({
+			title: "Could not load output devices",
+			description: error instanceof Error ? error.message : String(error),
+			status: "error",
+		});
 		return undefined;
 	}
 });
