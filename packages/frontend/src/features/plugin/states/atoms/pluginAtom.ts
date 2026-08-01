@@ -4,6 +4,7 @@ import { PluginStateSchema } from "@sola_mpd/shared/src/models/plugin/plugin_pb.
 import { atomWithDefault } from "jotai/utils";
 
 import { atomWithSync } from "../../../../lib/jotai/atomWithSync";
+import { showNotification } from "../../../../lib/mantine/showNotification";
 import { registerAllPluginsAndCheckAvailability } from "../../functions/pluginRegistration";
 
 import { pluginServiceAtom } from "./pluginServiceAtom";
@@ -19,6 +20,13 @@ export const pluginAsyncAtom = atomWithDefault<
 	const newPlugins = await registerAllPluginsAndCheckAvailability(
 		pluginState.plugins,
 		pluginService,
+		({ host, port, error }) => {
+			showNotification({
+				title: "Plugin unavailable",
+				description: `Could not reach plugin ${host}:${port}: ${error instanceof Error ? error.message : String(error)}`,
+				status: "error",
+			});
+		},
 	);
 
 	return create(PluginStateSchema, {

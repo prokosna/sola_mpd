@@ -6,6 +6,7 @@ import {
 } from "@sola_mpd/shared/src/models/mpd/mpd_profile_pb.js";
 import { atom } from "jotai";
 
+import { showNotification } from "../../../../lib/mantine/showNotification";
 import { UpdateMode } from "../../../../types/stateTypes";
 import { mpdProfileStateAsyncAtom } from "../atoms/mpdProfileAtom";
 import { mpdProfileStateRepositoryAtom } from "../atoms/mpdProfileStateRepositoryAtom";
@@ -21,12 +22,21 @@ export const updateCurrentMpdProfileActionAtom = atom(
 		}
 		const newMpdProfileState = clone(MpdProfileStateSchema, mpdProfileState);
 		newMpdProfileState.currentProfile = params.profile;
+		if (params.mode & UpdateMode.PERSIST) {
+			try {
+				await get(mpdProfileStateRepositoryAtom).save(newMpdProfileState);
+			} catch (e) {
+				console.error(e);
+				showNotification({
+					title: "Could not switch MPD profile",
+					description: e instanceof Error ? e.message : String(e),
+					status: "error",
+				});
+				return;
+			}
+		}
 		if (params.mode & UpdateMode.LOCAL_STATE) {
 			set(mpdProfileStateAsyncAtom, Promise.resolve(newMpdProfileState));
-		}
-		if (params.mode & UpdateMode.PERSIST) {
-			const repository = get(mpdProfileStateRepositoryAtom);
-			await repository.save(newMpdProfileState);
 		}
 	},
 );

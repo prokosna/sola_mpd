@@ -69,6 +69,37 @@ describe("pluginRegistration", () => {
 
 			expect(result.isAvailable).toBe(false);
 		});
+
+		it("invokes onFailure with the host/port/error when registration throws", async () => {
+			const err = new Error("Connection refused");
+			const service = createMockPluginService(async () => {
+				throw err;
+			});
+			const plugin = createPlugin("plug.local", 9999);
+			const onFailure = vi.fn();
+
+			await registerPluginAndCheckAvailability(plugin, service, onFailure);
+
+			expect(onFailure).toHaveBeenCalledTimes(1);
+			expect(onFailure).toHaveBeenCalledWith({
+				host: "plug.local",
+				port: 9999,
+				error: err,
+			});
+		});
+
+		it("does not invoke onFailure when registration succeeds with no info", async () => {
+			const service = createMockPluginService(async () =>
+				create(PluginRegisterResponseSchema, {}),
+			);
+			const onFailure = vi.fn();
+			await registerPluginAndCheckAvailability(
+				createPlugin("a", 1),
+				service,
+				onFailure,
+			);
+			expect(onFailure).not.toHaveBeenCalled();
+		});
 	});
 
 	describe("registerAllPluginsAndCheckAvailability", () => {
