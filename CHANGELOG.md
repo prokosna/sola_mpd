@@ -5,6 +5,15 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [4.9.3](https://github.com/prokosna/sola_mpd/compare/v4.9.2...v4.9.3) (2026-08-01)
+
+
+### Bug Fixes
+
+* **backend:** ACK one-way socket.io events to prevent client timeouts ([#385](https://github.com/prokosna/sola_mpd/issues/385)) ([a8efaa0](https://github.com/prokosna/sola_mpd/commit/a8efaa073bd868375487503ebb89f9650c6be019))
+* **frontend:** prevent MessagingClientSocketIo from hanging on failure ([#383](https://github.com/prokosna/sola_mpd/issues/383)) ([eaf2d6b](https://github.com/prokosna/sola_mpd/commit/eaf2d6bdc85b1fdb2ca5faf6cb9dcb08ea3254d9))
+* surface IPC and runtime errors that were previously swallowed ([#386](https://github.com/prokosna/sola_mpd/issues/386)) ([6e82461](https://github.com/prokosna/sola_mpd/commit/6e82461410744e8a8a613259cb6ee4e064515567))
+
 ## [4.9.2](https://github.com/prokosna/sola_mpd/compare/v4.9.1...v4.9.2) (2026-05-21)
 
 
