@@ -60,22 +60,29 @@ export class SocketIoManager {
 			console.info(`Socket.io is connected: ${id}`);
 
 			// Subscribe MPD events for the given profile.
-			socket.on(SOCKETIO_MPD_SUBSCRIBE, async (msg: ArrayBuffer) => {
+			socket.on(SOCKETIO_MPD_SUBSCRIBE, async (msg: ArrayBuffer, callback) => {
 				try {
 					await mpdHandler.subscribeEvents(id, new Uint8Array(msg), socket);
+					callback();
 				} catch (err) {
 					console.error(err);
+					callback(Buffer.from(createMpdErrorBuffer(err)));
 				}
 			});
 
 			// Unsubscribe MPD events for the given profile.
-			socket.on(SOCKETIO_MPD_UNSUBSCRIBE, async (msg: ArrayBuffer) => {
-				try {
-					await mpdHandler.unsubscribeEvents(id, new Uint8Array(msg), socket);
-				} catch (err) {
-					console.error(err);
-				}
-			});
+			socket.on(
+				SOCKETIO_MPD_UNSUBSCRIBE,
+				async (msg: ArrayBuffer, callback) => {
+					try {
+						await mpdHandler.unsubscribeEvents(id, new Uint8Array(msg), socket);
+						callback();
+					} catch (err) {
+						console.error(err);
+						callback(Buffer.from(createMpdErrorBuffer(err)));
+					}
+				},
+			);
 
 			// Execute the given command.
 			socket.on(SOCKETIO_MPD_COMMAND, async (msg: ArrayBuffer, callback) => {
@@ -117,7 +124,10 @@ export class SocketIoManager {
 			);
 
 			// Execute a plugin command.
-			socket.on(SOCKETIO_PLUGIN_EXECUTE, async (msg: ArrayBuffer) => {
+			// ACK on receipt, not completion: results stream via separate events
+			// and execution may outlast the client's ACK timeout.
+			socket.on(SOCKETIO_PLUGIN_EXECUTE, async (msg: ArrayBuffer, callback) => {
+				callback();
 				try {
 					for await (const [callbackEvent, resp] of pluginHandler.execute(
 						new Uint8Array(msg),
