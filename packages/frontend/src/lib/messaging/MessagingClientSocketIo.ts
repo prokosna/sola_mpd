@@ -2,6 +2,10 @@ import { io, type Socket } from "socket.io-client";
 
 import type { MessagingClient } from "./MessagingClient";
 
+// Fail fast when the server never ACKs (e.g. disconnect mid-flight) instead of
+// leaving the returned Promise pending forever.
+const ACK_TIMEOUT_MS = 30_000;
+
 export class MessagingClientSocketIo implements MessagingClient {
 	private socket: Promise<Socket>;
 
@@ -40,14 +44,20 @@ export class MessagingClientSocketIo implements MessagingClient {
 			payload.byteOffset,
 			payload.byteLength + payload.byteOffset,
 		);
-		return new Promise((resolve) => {
-			socket.emit(event, bytes, async (resp: ArrayBuffer) => {
-				try {
-					resolve(fromBinary(new Uint8Array(resp)));
-				} catch (e) {
-					console.error(e);
-				}
-			});
+		return new Promise<R>((resolve, reject) => {
+			socket
+				.timeout(ACK_TIMEOUT_MS)
+				.emit(event, bytes, (err: Error | null, resp: ArrayBuffer) => {
+					if (err) {
+						reject(err);
+						return;
+					}
+					try {
+						resolve(fromBinary(new Uint8Array(resp)));
+					} catch (e) {
+						reject(e);
+					}
+				});
 		});
 	};
 
@@ -57,10 +67,16 @@ export class MessagingClientSocketIo implements MessagingClient {
 			payload.byteOffset,
 			payload.byteLength + payload.byteOffset,
 		);
-		return new Promise((resolve) => {
-			socket.emit(event, bytes, async (data: ArrayBuffer) => {
-				resolve(new Uint8Array(data));
-			});
+		return new Promise<Uint8Array>((resolve, reject) => {
+			socket
+				.timeout(ACK_TIMEOUT_MS)
+				.emit(event, bytes, (err: Error | null, data: ArrayBuffer) => {
+					if (err) {
+						reject(err);
+						return;
+					}
+					resolve(new Uint8Array(data));
+				});
 		});
 	};
 
