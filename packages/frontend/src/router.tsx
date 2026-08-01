@@ -75,7 +75,7 @@ const router = createBrowserRouter([
 						element: <PluginsPage />,
 					},
 					{
-						path: ROUTE_HOME_SETTINGS.split("/").filter(Boolean).pop(),
+						path: `${ROUTE_HOME_SETTINGS.split("/").filter(Boolean).pop()}/:tab?`,
 						element: <SettingsPage />,
 					},
 					{
