@@ -23,12 +23,11 @@ export const songTableStateAsyncAtom = atomWithDefault<
 
 // The server's raw view. Only `columns[].tag` and its order are still
 // authoritative here — sort_order/is_sort_desc/width_flex are frozen legacy
-// values the server no longer receives meaningful writes for (see
-// docs/design/state-scoping.md §6.1/§14.3(c)). Every UI consumer must go
+// values the server no longer receives meaningful writes for. Every UI
+// consumer must go
 // through songTableStateAtom below, which overlays the device layer; this is
 // exported only for the Raw Data settings editor, which is required to show
-// and edit the genuine on-disk document rather than the composed view
-// (docs/design/state-scoping.md §7 item 4).
+// and edit the genuine on-disk document rather than the composed view.
 export const songTableServerStateAtom = atomWithSync(songTableStateAsyncAtom);
 
 // The composed, device-aware SongTableState every existing consumer reads.

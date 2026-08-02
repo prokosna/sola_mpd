@@ -17,8 +17,8 @@ export interface BrowserSelectionEntry {
  * mirrors `selectedOrder`/`selectedValues` on `BrowserFilter` without the
  * proto's "-1 means unselected" placeholder encoding.
  *
- * See docs/design/state-scoping.md §6.2: this is a navigation position, not a
- * setting, so it lives in the URL instead of `BrowserFilter.selected_values`.
+ * This is a navigation position, not a setting, so it lives in the URL
+ * instead of `BrowserFilter.selected_values`.
  */
 export type BrowserSelection = BrowserSelectionEntry[];
 

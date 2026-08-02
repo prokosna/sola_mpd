@@ -138,7 +138,7 @@ export function useSearchSongTableProps(
 	}
 
 	// Search.columns owns tag/sort (the saved search's definition); width_flex
-	// is always the device's, same as the common song table (§6.1 (ii)).
+	// is always the device's, same as the common song table.
 	const baseColumns =
 		searchSongTableColumns.length !== 0
 			? searchSongTableColumns

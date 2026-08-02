@@ -1,8 +1,9 @@
-import { Badge, Button, Group, Table } from "@mantine/core";
+import { Badge, Button, Group, Stack, Table, Tooltip } from "@mantine/core";
 import type {
 	MpdProfile,
 	MpdProfileState,
 } from "@sola_mpd/shared/src/models/mpd/mpd_profile_pb.js";
+import { IconCloud, IconDeviceDesktop } from "@tabler/icons-react";
 import { useSetAtom } from "jotai";
 import { useCallback } from "react";
 import { useNotification } from "../../../lib/mantine/hooks/useNotification";
@@ -66,18 +67,42 @@ export function ProfilesProfile(props: ProfilesProfileProps) {
 			<Table.Td>{profile.port}</Table.Td>
 			<Table.Td>{profile.password ? "••••" : ""}</Table.Td>
 			<Table.Td>
-				<Group gap={4} wrap="nowrap">
+				{/* A profile can hold both statuses at once, and the two labels are
+				    too wide to sit side by side in a table cell — laid out
+				    vertically so neither is clipped, with the full meaning in a
+				    tooltip rather than in the badge text. */}
+				<Stack gap={4} align="flex-start">
 					{isActiveOnThisDevice && (
-						<Badge size="xs" variant="outline" color="blue">
-							In use on this device
-						</Badge>
+						<Tooltip
+							withArrow
+							label="This device is connected to this profile. Every device picks its own."
+						>
+							<Badge
+								size="sm"
+								variant="light"
+								color="blue"
+								leftSection={<IconDeviceDesktop size={12} />}
+							>
+								This device
+							</Badge>
+						</Tooltip>
 					)}
 					{isDefaultProfile && (
-						<Badge size="xs" variant="outline" color="green">
-							Default for new devices
-						</Badge>
+						<Tooltip
+							withArrow
+							label="Devices that have not picked a profile yet start with this one."
+						>
+							<Badge
+								size="sm"
+								variant="light"
+								color="green"
+								leftSection={<IconCloud size={12} />}
+							>
+								Default
+							</Badge>
+						</Tooltip>
 					)}
-				</Group>
+				</Stack>
 			</Table.Td>
 			<Table.Td>
 				<Group gap={8} wrap="nowrap">

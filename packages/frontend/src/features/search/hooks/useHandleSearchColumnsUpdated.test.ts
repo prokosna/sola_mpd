@@ -137,7 +137,7 @@ describe("useHandleSearchColumnsUpdated", () => {
 		expect(store.get(songTableColumnLayoutAtom)).toEqual({});
 	});
 
-	// Regression test for §6.1 (ii): width and sort must not be treated alike.
+	// Regression test: width and sort must not be treated alike.
 	// A width-only drag must not mark the saved search as edited, and must not
 	// write into Search.columns — only the device layout changes.
 	it("routes a width-only change to the device layout and leaves the editing status untouched", async () => {

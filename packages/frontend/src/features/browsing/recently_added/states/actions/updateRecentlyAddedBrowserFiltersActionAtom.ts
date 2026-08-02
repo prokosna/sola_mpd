@@ -10,8 +10,8 @@ import { UpdateMode } from "../../../../../types/stateTypes";
 import { recentlyAddedStateAtom } from "../atoms/recentlyAddedStateAtom";
 import { updateRecentlyAddedStateActionAtom } from "./updateRecentlyAddedStateActionAtom";
 
-// Persists only the tag configuration to the server (docs/design/state-scoping.md
-// §6.2/§14.3(b)); selection is a navigation position and now lives in the URL
+// Persists only the tag configuration to the server; selection is a
+// navigation position and now lives in the URL
 // — see hooks/useUpdateRecentlyAddedFilters.ts, which handles that side and
 // calls this action for the structural half of every filter change.
 export const updateRecentlyAddedBrowserFiltersActionAtom = atom(

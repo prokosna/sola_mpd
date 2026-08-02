@@ -48,8 +48,8 @@ export function useJotaiStore() {
 		}
 		await messagingClient.isReady();
 
-		// Live sync (docs/design/state-scoping.md §9, §14.4): dispatch a
-		// server-broadcast config change to the refresh action for that key.
+		// Live sync: dispatch a server-broadcast config change to the refresh
+		// action for that key.
 		// Lives here, next to connection setup, rather than in a component,
 		// since it is a single session-wide subscription with no per-profile
 		// lifecycle to tie it to.

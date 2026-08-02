@@ -12,7 +12,7 @@ import { selectedProfileNameAtom } from "./selectedProfileNameAtom";
 // Phase 4 broadcast-triggered refetch — see that file for why it fetches and
 // assigns directly instead of using RESET). Sweeping here after every
 // successful fetch covers the "other devices learn about a deletion only
-// when they refetch the profile list" case from §8.1 in one place.
+// when they refetch the profile list" case in one place.
 export async function loadMpdProfileState(
 	get: Getter,
 ): Promise<MpdProfileState> {

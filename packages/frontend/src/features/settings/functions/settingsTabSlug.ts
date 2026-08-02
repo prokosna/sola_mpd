@@ -5,8 +5,8 @@
 // rendering the tab contents (each of which pulls in real app state).
 export const SETTINGS_TAB_SLUG_TO_VALUE: Record<string, string> = {
 	profiles: "Profiles",
-	library: "Library",
-	"this-device": "This device",
+	shared: "Shared Settings",
+	device: "Device Settings",
 	"raw-data": "Raw Data",
 };
 

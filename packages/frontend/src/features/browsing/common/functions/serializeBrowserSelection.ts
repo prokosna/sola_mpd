@@ -5,8 +5,8 @@ import type {
 	SerializedBrowserSelection,
 } from "../types/browserSelection";
 
-// Settled decision, not a tuning knob (docs/design/state-scoping.md §13 item 2
-// / §6.2): above this many characters the value moves from the URL to a
+// Settled decision, not a tuning knob: above this many characters the value
+// moves from the URL to a
 // server-side View State Blob, referenced by a short token instead.
 const INLINE_LENGTH_LIMIT = 2000;
 
@@ -55,8 +55,8 @@ export function decodeBrowserSelectionValue(value: string): BrowserSelection {
 
 /**
  * Pure, synchronous decision: does the selection fit inline in the URL, or
- * must the caller save it as a View State Blob first? Performs no I/O — see
- * docs/design/state-scoping.md §14.3(b), `functions` must stay pure.
+ * must the caller save it as a View State Blob first? Performs no I/O:
+ * `functions` must stay pure.
  */
 export function serializeBrowserSelection(
 	selection: BrowserSelection,

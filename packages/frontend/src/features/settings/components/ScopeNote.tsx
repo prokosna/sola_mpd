@@ -1,8 +1,8 @@
 import { Group, Text } from "@mantine/core";
 import { IconCloud, IconDeviceDesktop } from "@tabler/icons-react";
 
-// The one thing §11 requires every settings section to say: does this value
-// follow the user everywhere, or stay on this machine? Kept as a tiny
+// The one thing every settings section has to say: does this value follow
+// the user everywhere, or stay on this machine? Kept as a tiny
 // presentational component (not a framework) so the wording never drifts
 // between sections.
 export type SettingScope = "workspace" | "device";

@@ -18,10 +18,9 @@ import { setSearchSongTableColumnsActionAtom } from "../states/actions/setSearch
 import { searchSongTableColumnsAtom } from "../states/atoms/searchEditAtom";
 import { EditingSearchStatus } from "../types/searchTypes";
 
-// Saved-search column updates don't go through updateSongTableStateActionAtom
-// (see docs/design/state-scoping.md §14.3(c)): a saved search's `tag`/sort
-// are part of the search definition (Workspace), but `width_flex` is always
-// Device, same as the common song table.
+// Saved-search column updates don't go through updateSongTableStateActionAtom:
+// a saved search's `tag`/sort are part of the search definition (Workspace),
+// but `width_flex` is always Device, same as the common song table.
 export function useHandleSearchColumnsUpdated() {
 	const searchSongTableColumns = useAtomValue(searchSongTableColumnsAtom);
 	const songTableState = useAtomValue(songTableStateAtom);
@@ -45,9 +44,9 @@ export function useHandleSearchColumnsUpdated() {
 			const diff = diffSongTableColumns(currentColumns, columns);
 
 			if (diff.tagsChanged || diff.sortChanged) {
-				// Search.columns never carries a meaningful width_flex (§6.1
-				// (ii)): readers always overlay the device value, so a stale
-				// width here would just be ignored, but we keep it at 0 to be
+				// Search.columns never carries a meaningful width_flex:
+				// readers always overlay the device value, so a stale width
+				// here would just be ignored, but we keep it at 0 to be
 				// explicit that it isn't the source of truth.
 				const columnsForSearch = columns.map((column) => {
 					const withoutWidth = clone(SongTableColumnSchema, column);

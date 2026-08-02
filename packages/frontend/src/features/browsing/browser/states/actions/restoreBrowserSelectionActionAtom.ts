@@ -17,7 +17,7 @@ import type { BrowserSelectionQueryParam } from "./updateBrowserSelectionActionA
 
 // A token that fails to resolve — 404, offline, or minted by a different
 // machine's local server in the Desktop build — degrades to an empty
-// selection rather than raising. See docs/design/state-scoping.md §14.3(b).
+// selection rather than raising.
 async function resolveBrowserSelectionToken(
 	get: Getter,
 	token: string,
@@ -37,7 +37,7 @@ async function resolveBrowserSelectionToken(
 export type RestoreBrowserSelectionResult = {
 	// Set when the position was restored from the device's last-position
 	// cache rather than the live URL, so the caller can reflect it back into
-	// the address bar (docs/design/state-scoping.md §14.3(b): "redirect").
+	// the address bar.
 	redirectSearch?: string;
 };
 
@@ -46,8 +46,8 @@ export type RestoreBrowserSelectionResult = {
  * writes it to resolvedBrowserSelectionAtom. An explicit inline selection
  * resolves synchronously with no I/O. A `?vs=` token, or no selection query
  * at all (startup / a fresh tab), requires I/O and raises the existing
- * Browser loading state while it runs — see docs/design/state-scoping.md
- * §14.3(b); no new Suspense boundary is introduced.
+ * Browser loading state while it runs; no new Suspense boundary is
+ * introduced.
  */
 export const restoreBrowserSelectionActionAtom = atom(
 	null,
@@ -77,7 +77,7 @@ export const restoreBrowserSelectionActionAtom = atom(
 
 		// No explicit selection in the URL: fall back to the last position
 		// cached for the current profile (per-profile on purpose — a position
-		// belongs to a library, see docs/design/state-scoping.md §6.2).
+		// belongs to a library).
 		const profile = get(currentMpdProfileAtom);
 		if (profile === undefined) {
 			set(resolvedBrowserSelectionAtom, []);

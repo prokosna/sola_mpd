@@ -43,7 +43,7 @@ describe("useChangeCurrentMpdProfile", () => {
 	it(
 		"switches the device selection without writing the server-mirrored " +
 			"currentProfile (regression: switching must complete via " +
-			"selectedProfileName alone, per design §5)",
+			"selectedProfileName alone)",
 		async () => {
 			// No <Provider>, so the hook's useAtomValue/useSetAtom fall back to
 			// jotai's default store — get a handle on that same store to seed

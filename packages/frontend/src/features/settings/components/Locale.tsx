@@ -8,8 +8,8 @@ export function Locale() {
 	const setLocaleState = useSetAtom(localeAtom);
 
 	return (
-		<Stack gap={16}>
-			<Title order={1} size="lg">
+		<Stack gap={12}>
+			<Title order={2} size="md">
 				Locale (for language-aware sorting)
 			</Title>
 			<Select

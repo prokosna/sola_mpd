@@ -11,8 +11,8 @@ import { updateBrowserFiltersActionAtom } from "../states/actions/updateBrowserF
 import { updateBrowserSelectionActionAtom } from "../states/actions/updateBrowserSelectionActionAtom";
 
 /**
- * Splits a merged `BrowserFilter[]` update the way docs/design/state-scoping.md
- * §14.3(b) requires: the structural half (tag/order) is persisted to the
+ * Splits a merged `BrowserFilter[]` update in two: the structural half
+ * (tag/order) is persisted to the
  * server via updateBrowserFiltersActionAtom, while the navigation half
  * (selected values) is written to the URL. React Router's `useSearchParams`
  * can only be called from a component/hook, not from inside a Jotai atom —

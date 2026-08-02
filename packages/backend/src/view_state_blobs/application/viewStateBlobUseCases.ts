@@ -2,8 +2,8 @@ import { computeViewStateBlobToken } from "../functions/computeViewStateBlobToke
 import type { ViewStateBlobRepository } from "../repositories/ViewStateBlobRepository.js";
 import { viewStateBlobRepository } from "../repositories/ViewStateBlobRepositoryFile.js";
 
-// Operational parameter, not a design decision (docs/design/state-scoping.md
-// §6.2): blobs unused for this long are swept away on startup.
+// Operational parameter, not a design decision: blobs unused for this long
+// are swept away on startup.
 export const VIEW_STATE_BLOB_MAX_AGE_MS = 90 * 24 * 60 * 60 * 1000;
 
 export const createSaveViewStateBlobUseCase = (

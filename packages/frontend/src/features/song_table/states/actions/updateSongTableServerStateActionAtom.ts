@@ -9,8 +9,8 @@ import { songTableStateRepositoryAtom } from "../atoms/songTableStateRepositoryA
 // Unlike updateSongTableStateActionAtom, this always writes exactly what it
 // is given straight to the server document, with no tag-diff gate. It exists
 // for the Raw Data settings editor, whose whole purpose is to be an escape
-// hatch onto the genuine on-disk document (docs/design/state-scoping.md §7
-// item 4) — that only holds if a save here always reaches the server.
+// hatch onto the genuine on-disk document — that only holds if a save here
+// always reaches the server.
 export const updateSongTableServerStateActionAtom = atom(
 	null,
 	async (get, set, params: { state: SongTableState; mode: UpdateMode }) => {

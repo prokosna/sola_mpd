@@ -16,7 +16,7 @@ const songTableColumnLayoutKey = buildDeviceSettingKey(
 );
 
 // Not a per-profile key: column widths and sort order have nothing to do
-// with which music library is loaded (docs/design/state-scoping.md §14.3(c)).
+// with which music library is loaded.
 
 // atomWithDefault (async) is where the one-time migration lives. On the very
 // first read, if the device key is unset, fetch the SongTableState the

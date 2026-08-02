@@ -12,9 +12,9 @@ import {
 import { songTableColumnLayoutAtom } from "../atoms/songTableColumnLayoutAtom";
 import { songTableStateRepositoryAtom } from "../atoms/songTableStateRepositoryAtom";
 
-// Splits writes between Workspace (server) and Device per
-// docs/design/state-scoping.md §6.1/§14.3(c): `tag`/order is Workspace, while
-// sort_order/is_sort_desc/width_flex are Device. The ~19 AG Grid call sites
+// Splits writes between Workspace (server) and Device: `tag`/order is
+// Workspace, while sort_order/is_sort_desc/width_flex are Device. The ~19
+// AG Grid call sites
 // funnel through this one action unchanged, so this is the only place that
 // needs to know about the split.
 export const updateSongTableStateActionAtom = atom(

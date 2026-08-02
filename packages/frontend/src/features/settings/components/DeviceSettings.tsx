@@ -9,7 +9,7 @@ import { ColorModeSwitchButton } from "./ColorModeSwitchButton";
 import { Locale } from "./Locale";
 import { ScopeNote } from "./ScopeNote";
 
-export function ThisDevice() {
+export function DeviceSettings() {
 	const advancedSearchStats = useAtomValue(advancedSearchStatsAtom);
 	const resetSongTableColumnLayout = useSetAtom(
 		resetSongTableColumnLayoutActionAtom,
@@ -37,20 +37,34 @@ export function ThisDevice() {
 		});
 	};
 
+	// One scope statement for the whole tab rather than one per section: every
+	// section below is device-scoped, so repeating it just adds noise — and
+	// repeating it forced the note above section titles that render their own
+	// heading (Locale, Advanced Search).
 	return (
 		<Stack gap={32}>
-			<Stack gap={12}>
+			<Stack gap={4}>
+				<Title order={1} size="lg">
+					Device Settings
+				</Title>
 				<ScopeNote scope="device" />
-				<Locale />
+				<Text size="sm" c="dimmed" maw={720}>
+					These are stored in this browser only. Other devices connected to the
+					same server keep their own, and clearing this browser's site data
+					resets them.
+				</Text>
 			</Stack>
 
 			<Divider />
 
+			<Locale />
+
+			<Divider />
+
 			<Stack gap={12}>
-				<Title order={1} size="lg">
+				<Title order={2} size="md">
 					Theme
 				</Title>
-				<ScopeNote scope="device" />
 				<Group>
 					<ColorModeSwitchButton />
 				</Group>
@@ -59,10 +73,9 @@ export function ThisDevice() {
 			<Divider />
 
 			<Stack gap={12}>
-				<Title order={1} size="lg">
+				<Title order={2} size="md">
 					Layout
 				</Title>
-				<ScopeNote scope="device" />
 				<Text size="sm" c="dimmed">
 					Resets apply to this device only and take effect immediately.
 				</Text>
@@ -79,10 +92,7 @@ export function ThisDevice() {
 			{advancedSearchStats !== undefined && (
 				<>
 					<Divider />
-					<Stack gap={12}>
-						<ScopeNote scope="device" />
-						<AdvancedSearchSettings stats={advancedSearchStats} />
-					</Stack>
+					<AdvancedSearchSettings stats={advancedSearchStats} />
 				</>
 			)}
 		</Stack>

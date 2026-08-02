@@ -12,7 +12,7 @@ export function songTableColumnLayoutKeyForTag(tag: Song_MetadataTag): string {
  * Builds a device layout from a full column list, capturing each column's
  * sort_order/is_sort_desc/width_flex. Used both by the one-time server->device
  * migration and by the update paths that persist a fresh device layout after
- * an AG Grid column event (see docs/design/state-scoping.md §14.3(c)).
+ * an AG Grid column event.
  */
 export function buildSongTableColumnLayout(
 	columns: SongTableColumn[],

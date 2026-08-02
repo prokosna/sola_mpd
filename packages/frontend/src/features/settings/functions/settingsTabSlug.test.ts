@@ -13,12 +13,12 @@ describe("resolveSettingsTabValue / resolveSettingsTabSlug", () => {
 		}
 	});
 
-	it("has exactly the four tabs from the §11 restructure", () => {
+	it("has exactly the four tabs of the scope-based restructure", () => {
 		expect(Object.keys(SETTINGS_TAB_SLUG_TO_VALUE).sort()).toEqual([
-			"library",
+			"device",
 			"profiles",
 			"raw-data",
-			"this-device",
+			"shared",
 		]);
 	});
 

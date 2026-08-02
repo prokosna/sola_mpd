@@ -8,12 +8,12 @@ import {
 } from "../../../const/routes";
 import { ScopeNote } from "./ScopeNote";
 
-// These five settings are all Workspace-scoped (shared by every device and
-// profile — docs/design/state-scoping.md §11) but each already has a
-// dedicated editing surface elsewhere in the app. Rather than duplicate that
-// UI here, this tab names each concern, states its scope, and links to where
-// it's actually edited.
-const LIBRARY_SECTIONS: {
+// These five settings all live on the server and are shared by every device,
+// but each already has a dedicated editing surface elsewhere in the app.
+// Rather than duplicate that UI here, this tab exists to answer "which of my
+// settings do other devices see?" — it names each shared concern and links to
+// where it is actually edited.
+const SHARED_SECTIONS: {
 	title: string;
 	description: string;
 	route?: string;
@@ -27,15 +27,16 @@ const LIBRARY_SECTIONS: {
 		linkLabel: "Open Search",
 	},
 	{
-		title: "Browser filter structure",
+		title: "Browser filters",
 		description:
 			"Right-click a filter panel on the Browser page to add, remove, or " +
-			"change which tag it browses by.",
+			"change which tag it browses by. What you have selected in those " +
+			"filters is not shared — it lives in the page URL.",
 		route: ROUTE_HOME_BROWSER,
 		linkLabel: "Open Browser",
 	},
 	{
-		title: "Recently Added filter structure",
+		title: "Recently Added filters",
 		description:
 			"Right-click a filter panel on the Recently Added page to add, " +
 			"remove, or change which tag it browses by.",
@@ -46,33 +47,39 @@ const LIBRARY_SECTIONS: {
 		title: "Song table columns",
 		description:
 			"Right-click any song table's column header and choose \"Edit " +
-			'Columns" to change which columns show and their order.',
+			'Columns" to change which columns show and their order. How wide ' +
+			"each column is, and how the table is sorted, stay on each device.",
 	},
 	{
-		title: "Plugin registrations",
+		title: "Plugins",
 		description: "Register, connect, and remove plugins from the Plugins page.",
 		route: ROUTE_HOME_PLUGIN,
 		linkLabel: "Open Plugins",
 	},
 ];
 
-export function Library() {
+export function SharedSettings() {
 	const navigate = useNavigate();
 
 	return (
 		<Stack gap={16}>
-			<Title order={1} size="lg">
-				Library
-			</Title>
-			{LIBRARY_SECTIONS.map((section) => (
-				<Card key={section.title} withBorder maw="70%">
+			<Stack gap={4}>
+				<Title order={1} size="lg">
+					Shared Settings
+				</Title>
+				<ScopeNote scope="workspace" />
+			</Stack>
+			<Text size="sm" c="dimmed" maw={720}>
+				These are stored on the server, so changing one changes it for every
+				device and browser connected to it. MPD profiles are shared the same way
+				and have their own tab.
+			</Text>
+			{SHARED_SECTIONS.map((section) => (
+				<Card key={section.title} withBorder maw={720}>
 					<Stack gap={8}>
-						<Group justify="space-between">
-							<Title order={2} size="md">
-								{section.title}
-							</Title>
-							<ScopeNote scope="workspace" />
-						</Group>
+						<Title order={2} size="md">
+							{section.title}
+						</Title>
 						<Text size="sm">{section.description}</Text>
 						{section.route !== undefined && (
 							<Group>

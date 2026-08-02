@@ -5,10 +5,10 @@ import {
 	resolveSettingsTabSlug,
 	resolveSettingsTabValue,
 } from "../functions/settingsTabSlug";
-import { Library } from "./Library";
+import { DeviceSettings } from "./DeviceSettings";
 import { Profiles } from "./Profiles";
 import { SettingsStates } from "./SettingsStates";
-import { ThisDevice } from "./ThisDevice";
+import { SharedSettings } from "./SharedSettings";
 
 export function Settings() {
 	const { tab } = useParams<{ tab?: string }>();
@@ -27,8 +27,8 @@ export function Settings() {
 			<Tabs value={activeTab} onChange={handleTabChange}>
 				<Tabs.List>
 					<Tabs.Tab value="Profiles">Profiles</Tabs.Tab>
-					<Tabs.Tab value="Library">Library</Tabs.Tab>
-					<Tabs.Tab value="This device">This device</Tabs.Tab>
+					<Tabs.Tab value="Shared Settings">Shared Settings</Tabs.Tab>
+					<Tabs.Tab value="Device Settings">Device Settings</Tabs.Tab>
 					<Tabs.Tab value="Raw Data">Raw Data</Tabs.Tab>
 				</Tabs.List>
 				<Tabs.Panel value="Profiles">
@@ -36,14 +36,14 @@ export function Settings() {
 						<Profiles />
 					</Box>
 				</Tabs.Panel>
-				<Tabs.Panel value="Library">
+				<Tabs.Panel value="Shared Settings">
 					<Box p={16}>
-						<Library />
+						<SharedSettings />
 					</Box>
 				</Tabs.Panel>
-				<Tabs.Panel value="This device">
+				<Tabs.Panel value="Device Settings">
 					<Box p={16}>
-						<ThisDevice />
+						<DeviceSettings />
 					</Box>
 				</Tabs.Panel>
 				<Tabs.Panel value="Raw Data">

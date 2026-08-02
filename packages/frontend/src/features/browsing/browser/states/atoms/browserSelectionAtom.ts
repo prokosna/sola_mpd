@@ -18,7 +18,7 @@ export const resolvedBrowserSelectionAtom = atom<BrowserSelection>([]);
  * carries an explicit inline selection (the common case — pure and
  * synchronous, no I/O). Otherwise (a `?vs=` token still being resolved, or no
  * selection query at all) falls back to whatever restoreBrowserSelectionActionAtom
- * last resolved. See docs/design/state-scoping.md §14.3(b).
+ * last resolved.
  */
 export const browserSelectionAtom = atom((get) => {
 	const deserialized = deserializeBrowserSelection(

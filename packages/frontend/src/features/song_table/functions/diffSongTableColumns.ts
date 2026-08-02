@@ -8,7 +8,7 @@ export type SongTableColumnDiff = {
 
 /**
  * Classifies what changed between two column lists so callers can route the
- * write to the right layer (see docs/design/state-scoping.md §6.1/§14.3(c)):
+ * write to the right layer:
  * `tag` (and its order) is Workspace, `sort_order`/`is_sort_desc`/`width_flex`
  * are Device in the common song table context.
  *

@@ -1,4 +1,4 @@
-import { Button, Modal, Stack, Table, Title } from "@mantine/core";
+import { Button, Modal, Stack, Table, Text, Title } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import { useAtomValue } from "jotai";
 import { CenterSpinner } from "../../loading";
@@ -41,10 +41,15 @@ export function Profiles() {
 				<Title order={1} size="lg">
 					MPD Profiles
 				</Title>
+				<Text size="sm" c="dimmed" maw={720}>
+					The profile list is shared with every device connected to this server.
+					Which profile a device actually plays from is picked from the selector
+					in the header and stays on that device.
+				</Text>
 				<Button w={200} size="sm" onClick={open}>
 					New Profile
 				</Button>
-				<Table maw="50%">
+				<Table maw={900}>
 					<Table.Thead>
 						<Table.Tr>
 							<Table.Th>NAME</Table.Th>

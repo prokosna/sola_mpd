@@ -19,8 +19,8 @@ import { browserStateAtom } from "./browserStateAtom";
 
 // Private: the server's raw view. Only `tag`/`order` are still authoritative
 // here — `selectedValues`/`selectedOrder` are a navigation position, not a
-// setting, and now live in the URL instead (docs/design/state-scoping.md
-// §6.2/§14.3(b)). Not exported; every consumer must go through
+// setting, and now live in the URL instead. Not exported; every consumer
+// must go through
 // browserFiltersAtom below, which overlays the URL-derived selection.
 const browserFiltersServerAtom = atom((get) => {
 	const browserState = get(browserStateAtom);

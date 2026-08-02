@@ -33,8 +33,7 @@ const recentlyAddedFiltersAtom = atom((get) => {
 });
 
 // Private: the server's tag configuration only (Workspace). Selection is a
-// navigation position and now lives in the URL — see
-// docs/design/state-scoping.md §6.2/§14.3(b). Not exported; every consumer
+// navigation position and now lives in the URL. Not exported; every consumer
 // must go through recentlyAddedBrowserFiltersAtom below.
 const recentlyAddedStructuralFiltersAtom = atom((get) => {
 	const recentlyAddedFilters = get(recentlyAddedFiltersAtom);

@@ -20,8 +20,8 @@ export type BrowserSelectionQueryParam = { key: string; value: string };
 /**
  * Turns a navigation position into the query param the caller should apply
  * to the URL (`undefined` clears it), saving to a View State Blob when the
- * serialized selection is too long to inline (docs/design/state-scoping.md
- * §14.3(b)). Also refreshes the per-profile last-position cache so the
+ * serialized selection is too long to inline. Also refreshes the
+ * per-profile last-position cache so the
  * position can be restored on next startup — see restoreBrowserSelectionActionAtom.
  *
  * This is the only place that touches ViewStateBlobRepository for writes;

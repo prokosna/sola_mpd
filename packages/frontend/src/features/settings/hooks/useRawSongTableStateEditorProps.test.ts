@@ -53,8 +53,8 @@ async function flush() {
 describe("useRawSongTableStateEditorProps", () => {
 	it(
 		"feeds the editor from the genuine server document, not the device-" +
-			"composed songTableStateAtom (regression: §7 item 4 requires Raw " +
-			"Data to be a true escape hatch onto what's actually on disk)",
+			"composed songTableStateAtom (regression: Raw Data must be a true " +
+			"escape hatch onto what's actually on disk)",
 		async () => {
 			const store = getDefaultStore();
 			store.set(

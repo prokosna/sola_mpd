@@ -280,7 +280,7 @@ export async function fetchBrowserFilterValues(
  * Drops `selectedValues`/`selectedOrder`, keeping only the Workspace-owned
  * `tag`/`order` fields. Used before persisting `BrowserFilter`s to the
  * server: selection is a navigation position that now lives in the URL, not
- * a setting (docs/design/state-scoping.md §6.2) — nothing should write it.
+ * a setting — nothing should write it.
  */
 export function stripBrowserFilterSelection(
 	filter: BrowserFilter,

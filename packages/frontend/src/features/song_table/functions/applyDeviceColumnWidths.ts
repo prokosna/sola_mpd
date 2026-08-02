@@ -9,9 +9,9 @@ import { songTableColumnLayoutKeyForTag } from "./songTableColumnLayout";
 
 /**
  * Overlays the device layout's width_flex onto a column list. Column width is
- * Device-owned in both SongTableState.columns and Search.columns contexts
- * (docs/design/state-scoping.md §6.1), so this single function backs both
- * call sites — only the sort handling differs between them, and that
+ * Device-owned in both SongTableState.columns and Search.columns contexts,
+ * so this single function backs both call sites — only the sort handling
+ * differs between them, and that
  * difference is expressed at each call site rather than here.
  *
  * A column with no device entry keeps its existing width_flex so nothing
