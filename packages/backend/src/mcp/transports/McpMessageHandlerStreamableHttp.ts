@@ -1,7 +1,14 @@
 import type { IncomingMessage, ServerResponse } from "node:http";
 
-import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
-import { StreamableHTTPServerTransport } from "@modelcontextprotocol/sdk/server/streamableHttp.js";
+import {
+	type NodeMcpRequestHandler,
+	toNodeHandler,
+} from "@modelcontextprotocol/node";
+import {
+	createMcpHandler,
+	type McpHttpHandler,
+	McpServer,
+} from "@modelcontextprotocol/server";
 
 import { mpdClientMpd3 } from "../../mpd/services/MpdClientMpd3.js";
 import {
@@ -17,61 +24,49 @@ const SERVER_INFO = {
 	title: "sola_mpd MCP server",
 } as const;
 
+function reportMcpError(err: Error): void {
+	console.error("MCP request failed:", err);
+}
+
 /**
- * Stateless Streamable-HTTP transport. Every request gets a fresh
- * `McpServer` + transport pair: cheap (tool registration is in-process and
- * sub-millisecond) and avoids the session bookkeeping that stateful mode
- * requires. Deps (MpdClient, LibraryIndex) are shared so the analytical
+ * Streamable HTTP transport serving both protocol eras from one endpoint:
+ * `modern` (2026-07-28, per-request `_meta` envelope) and, through the
+ * default stateless fallback, the 2025-era revisions. Clients predating
+ * 2026-07-28 keep working unchanged; the era is classified per request.
+ *
+ * The factory builds a fresh `McpServer` per request: cheap (tool
+ * registration is in-process and sub-millisecond) and free of session
+ * bookkeeping. Deps (MpdClient, LibraryIndex) are shared so the analytical
  * mirror persists across requests.
  */
 export class McpMessageHandlerStreamableHttp implements McpMessageHandler {
-	constructor(private readonly deps: RegisterMcpToolsDeps) {}
+	private readonly handler: McpHttpHandler;
+	private readonly nodeHandler: NodeMcpRequestHandler;
+
+	constructor(deps: RegisterMcpToolsDeps) {
+		this.handler = createMcpHandler(
+			() => {
+				const server = new McpServer(SERVER_INFO);
+				registerMcpTools(server, deps);
+				return server;
+			},
+			{ onerror: reportMcpError },
+		);
+		this.nodeHandler = toNodeHandler(this.handler, {
+			onerror: reportMcpError,
+		});
+	}
 
 	async handleRequest(
 		req: IncomingMessage,
 		res: ServerResponse,
 		body?: unknown,
 	): Promise<void> {
-		const server = new McpServer(SERVER_INFO);
-		registerMcpTools(server, this.deps);
-		const transport = new StreamableHTTPServerTransport({
-			sessionIdGenerator: undefined,
-		});
-		res.on("close", () => {
-			void transport.close().catch((err) => {
-				console.warn("MCP transport close failed:", err);
-			});
-			void server.close().catch((err) => {
-				console.warn("MCP server close failed:", err);
-			});
-		});
-		try {
-			await server.connect(transport);
-			await transport.handleRequest(req, res, body);
-		} catch (err) {
-			console.error("MCP request failed:", err);
-			if (!res.headersSent) {
-				res.statusCode = 500;
-				res.setHeader("Content-Type", "application/json");
-				res.end(
-					JSON.stringify({
-						jsonrpc: "2.0",
-						error: {
-							code: -32603,
-							message: err instanceof Error ? err.message : String(err),
-						},
-						id: null,
-					}),
-				);
-			} else {
-				res.end();
-			}
-		}
+		await this.nodeHandler(req, res, body);
 	}
 
 	async close(): Promise<void> {
-		// No long-lived state to close in stateless mode. The shared library
-		// index is owned by the composition root.
+		await this.handler.close();
 	}
 }
 

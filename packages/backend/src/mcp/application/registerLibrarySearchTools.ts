@@ -1,4 +1,4 @@
-import type { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
+import type { McpServer } from "@modelcontextprotocol/server";
 import { z } from "zod";
 
 import {
@@ -55,7 +55,7 @@ export function registerLibrarySearchTools(
 			title: "List distinct tag values",
 			description:
 				"Lists the distinct values for a metadata tag (e.g. all artists, all albums, all genres). Server-side via MPD `list`; supports optional filter conditions.",
-			inputSchema: {
+			inputSchema: z.object({
 				tag: z.enum([
 					"artist",
 					"album_artist",
@@ -74,7 +74,7 @@ export function registerLibrarySearchTools(
 					.describe(
 						`Max values to return. Default ${DEFAULT_TAG_VALUES}. Very large values may exceed your context window.`,
 					),
-			},
+			}),
 		},
 		async (args) => {
 			try {
@@ -108,7 +108,7 @@ export function registerLibrarySearchTools(
 			title: "Search the library",
 			description:
 				"Server-side search via MPD `search`. Supports tag equality / contains, ADDED_SINCE for recently-added queries, and pagination via limit/offset. Returns flat song objects.",
-			inputSchema: {
+			inputSchema: z.object({
 				filter: simpleFilterSchema,
 				limit: z
 					.number()
@@ -123,7 +123,7 @@ export function registerLibrarySearchTools(
 					.enum(["title", "artist", "album", "date", "added", "updated"])
 					.optional(),
 				sort_descending: z.boolean().optional(),
-			},
+			}),
 		},
 		async (args) => {
 			try {

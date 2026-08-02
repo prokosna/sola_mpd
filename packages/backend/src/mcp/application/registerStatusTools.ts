@@ -1,4 +1,5 @@
-import type { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
+import type { McpServer } from "@modelcontextprotocol/server";
+import { z } from "zod";
 
 import { buildMpdStatsResponse } from "../functions/buildMpdStatsResponse.js";
 import { buildMpdStatusResponse } from "../functions/buildMpdStatusResponse.js";
@@ -22,7 +23,7 @@ export function registerStatusTools(
 			title: "Get MPD status & current song",
 			description:
 				"Returns playback state (play/pause/stop), queue position, elapsed/duration, playback modes, the active output format, and the currently playing song's metadata if any.",
-			inputSchema: {},
+			inputSchema: z.object({}),
 		},
 		async () => {
 			try {
@@ -55,7 +56,7 @@ export function registerStatusTools(
 			title: "Get MPD library stats",
 			description:
 				"Returns library-wide counts (artists, albums, songs), MPD version, and the last database update timestamp. `total_playtime_seconds` is the lifetime sum of song durations played by MPD; `uptime_seconds` is how long the current MPD process has been running (not playback duration).",
-			inputSchema: {},
+			inputSchema: z.object({}),
 		},
 		async () => {
 			try {

@@ -1,4 +1,4 @@
-import type { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
+import type { McpServer } from "@modelcontextprotocol/server";
 import { z } from "zod";
 
 import { toolResultJson } from "../functions/toolResult.js";
@@ -31,7 +31,7 @@ ${sql_schema}
 ${notes}
 
 Behaviour: rows beyond row_limit (default ${DEFAULT_SQL_ROWS}) are dropped and the response sets truncated=true. Use LIMIT in your SQL or raise row_limit when you really need more — large result sets may exceed your context window.`,
-			inputSchema: {
+			inputSchema: z.object({
 				sql: z
 					.string()
 					.min(1)
@@ -49,7 +49,7 @@ Behaviour: rows beyond row_limit (default ${DEFAULT_SQL_ROWS}) are dropped and t
 					.describe(
 						`Maximum rows to materialize. Default ${DEFAULT_SQL_ROWS}. Very large values may exhaust server memory or your context window.`,
 					),
-			},
+			}),
 		},
 		async (args) => {
 			try {
@@ -74,7 +74,7 @@ Behaviour: rows beyond row_limit (default ${DEFAULT_SQL_ROWS}) are dropped and t
 			title: "Library mirror stats",
 			description:
 				"Returns metadata about the analytical SQLite mirror: when it was last built and how many songs it currently holds.",
-			inputSchema: {},
+			inputSchema: z.object({}),
 		},
 		async () => {
 			try {

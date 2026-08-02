@@ -4,27 +4,14 @@ import { mcpMessageHandlerStreamableHttp } from "./transports/McpMessageHandlerS
 
 const mcpRouter: ReturnType<typeof Router> = Router();
 
-// Streamable HTTP transport expects a JSON-RPC body on POST and may issue
-// GET (server-initiated SSE) or DELETE (session shutdown). We only run in
-// stateless mode here, so GET and DELETE are rejected explicitly.
+// The body is parsed here and handed to the handler so it never re-reads the
+// already-drained Node stream. Method handling (405 for the 2025-era session
+// verbs GET/DELETE, which stateless serving has no use for) belongs to the
+// handler itself, so every method is routed to it.
 mcpRouter.use(express.json({ limit: "16mb" }));
 
-mcpRouter.post("/", async (req: Request, res: Response) => {
+mcpRouter.all("/", async (req: Request, res: Response) => {
 	await mcpMessageHandlerStreamableHttp.handleRequest(req, res, req.body);
-});
-
-mcpRouter.get("/", (_req: Request, res: Response) => {
-	res
-		.status(405)
-		.setHeader("Allow", "POST")
-		.send("Streamable HTTP is configured in stateless mode. Use POST /mcp.");
-});
-
-mcpRouter.delete("/", (_req: Request, res: Response) => {
-	res
-		.status(405)
-		.setHeader("Allow", "POST")
-		.send("Streamable HTTP is configured in stateless mode. Use POST /mcp.");
 });
 
 export default mcpRouter;

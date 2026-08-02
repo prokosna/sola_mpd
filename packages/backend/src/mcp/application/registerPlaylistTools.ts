@@ -1,4 +1,4 @@
-import type { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
+import type { McpServer } from "@modelcontextprotocol/server";
 import { z } from "zod";
 
 import { songToOutput } from "../functions/songToOutput.js";
@@ -22,7 +22,7 @@ export function registerPlaylistTools(
 			title: "List stored playlists",
 			description:
 				"Returns names of MPD stored playlists with their last-modified timestamp.",
-			inputSchema: {},
+			inputSchema: z.object({}),
 		},
 		async () => {
 			try {
@@ -54,9 +54,9 @@ export function registerPlaylistTools(
 		{
 			title: "Get songs in a stored playlist",
 			description: "Returns the songs of a stored playlist.",
-			inputSchema: {
+			inputSchema: z.object({
 				name: z.string().min(1),
-			},
+			}),
 		},
 		async (args) => {
 			try {
