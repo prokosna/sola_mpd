@@ -1,4 +1,4 @@
-import type { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
+import type { McpServer } from "@modelcontextprotocol/server";
 import { z } from "zod";
 
 import { songToOutput } from "../functions/songToOutput.js";
@@ -29,7 +29,7 @@ export function registerQueueTools(
 		{
 			title: "Get current play queue",
 			description: "Returns songs currently in the play queue.",
-			inputSchema: {
+			inputSchema: z.object({
 				limit: z
 					.number()
 					.int()
@@ -38,7 +38,7 @@ export function registerQueueTools(
 					.describe(
 						`Max rows to return. Default ${DEFAULT_QUEUE_RESULTS}. Very large values may exceed your context window.`,
 					),
-			},
+			}),
 		},
 		async (args) => {
 			try {
@@ -69,7 +69,7 @@ export function registerQueueTools(
 			title: "Add to play queue",
 			description:
 				"Appends a URI (file path returned by library_search / library_query_sql, or an MPD-recognized directory) to the play queue.",
-			inputSchema: { uri: z.string().min(1) },
+			inputSchema: z.object({ uri: z.string().min(1) }),
 		},
 		async (args) => {
 			try {
@@ -90,7 +90,7 @@ export function registerQueueTools(
 		{
 			title: "Clear play queue",
 			description: "Removes every song from the play queue.",
-			inputSchema: {},
+			inputSchema: z.object({}),
 		},
 		async () => {
 			try {

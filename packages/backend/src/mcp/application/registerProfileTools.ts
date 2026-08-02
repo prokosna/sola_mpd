@@ -1,5 +1,6 @@
-import type { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
+import type { McpServer } from "@modelcontextprotocol/server";
 import type { MpdProfile } from "@sola_mpd/shared/src/models/mpd/mpd_profile_pb.js";
+import { z } from "zod";
 
 import { toolResultJson } from "../functions/toolResult.js";
 import {
@@ -18,7 +19,7 @@ export function registerProfileTools(
 			title: "List MPD profiles",
 			description:
 				"Returns all MPD profiles configured in sola_mpd and indicates which one is currently active. Profile selection is controlled in the sola_mpd UI; this tool is read-only.",
-			inputSchema: {},
+			inputSchema: z.object({}),
 		},
 		async () => {
 			const profiles = listMpdProfiles();

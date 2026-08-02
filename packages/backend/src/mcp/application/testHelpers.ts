@@ -1,5 +1,5 @@
 import { create, type MessageInitShape } from "@bufbuild/protobuf";
-import type { CallToolResult } from "@modelcontextprotocol/sdk/types.js";
+import type { CallToolResult } from "@modelcontextprotocol/server";
 import {
 	type MpdRequest,
 	type MpdResponse,

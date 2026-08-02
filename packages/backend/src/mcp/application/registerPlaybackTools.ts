@@ -1,4 +1,4 @@
-import type { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
+import type { McpServer } from "@modelcontextprotocol/server";
 import { z } from "zod";
 
 import { toolError, toolResultText } from "../functions/toolResult.js";
@@ -21,7 +21,7 @@ export function registerPlaybackTools(
 			title: "Playback control",
 			description:
 				"Controls playback transport. action=play optionally takes queue_position. action=seek requires seek_seconds.",
-			inputSchema: {
+			inputSchema: z.object({
 				action: z.enum([
 					"play",
 					"pause",
@@ -45,7 +45,7 @@ export function registerPlaybackTools(
 					.describe(
 						"Time offset for seek (within the currently playing song). Used only when action=seek.",
 					),
-			},
+			}),
 		},
 		async (args) => {
 			try {
@@ -122,9 +122,9 @@ export function registerPlaybackTools(
 		{
 			title: "Set playback volume",
 			description: "Sets MPD output volume in the range 0-100.",
-			inputSchema: {
+			inputSchema: z.object({
 				volume: z.number().int().min(0).max(100),
-			},
+			}),
 		},
 		async (args) => {
 			try {
@@ -146,12 +146,12 @@ export function registerPlaybackTools(
 			title: "Set playback modes",
 			description:
 				"Sets playback modes. Only the keys you pass are changed; omitted keys are left alone.",
-			inputSchema: {
+			inputSchema: z.object({
 				repeat: z.boolean().optional(),
 				random: z.boolean().optional(),
 				single: z.boolean().optional(),
 				consume: z.boolean().optional(),
-			},
+			}),
 		},
 		async (args) => {
 			try {

@@ -206,6 +206,8 @@ Sola MPD exposes a [Model Context Protocol](https://modelcontextprotocol.io/) se
 
 The server runs on the same Express process as the web UI, listening at `POST /mcp` over the [Streamable HTTP](https://modelcontextprotocol.io/docs/concepts/transports#streamable-http) transport in stateless mode. It uses the MPD profile currently selected in the Sola MPD UI.
 
+Both protocol eras are served from that one endpoint: the `2026-07-28` revision and, for clients that have not adopted it yet, the earlier `2025-11-25` through `2024-10-07` revisions. The era is negotiated per request, so no client-side configuration is needed either way.
+
 ### Connecting
 
 Point any MCP client at `http://[Your Server IP]:[Sola MPD port]/mcp` (the same port as the web UI — `3000` by default, see `docker-compose.yaml` if you changed it).
