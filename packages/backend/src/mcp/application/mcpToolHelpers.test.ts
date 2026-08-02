@@ -1,6 +1,9 @@
 import { describe, expect, it } from "vitest";
 
-import { NoCurrentMpdProfileError } from "../utils/currentMpdProfile.js";
+import {
+	MpdProfileNotFoundError,
+	NoCurrentMpdProfileError,
+} from "../utils/currentMpdProfile.js";
 import { errorToToolResult, executeMpdCommand } from "./mcpToolHelpers.js";
 import { makeMpdClient, makeMpdResponse, makeProfile } from "./testHelpers.js";
 
@@ -33,7 +36,16 @@ describe("errorToToolResult", () => {
 		expect(result.isError).toBe(true);
 		const block = result.content?.[0];
 		if (block?.type !== "text") throw new Error("expected text block");
-		expect(block.text).toContain("No current MPD profile");
+		expect(block.text).toContain("No default MPD profile");
+	});
+
+	it("preserves the MpdProfileNotFoundError message as the tool error text", () => {
+		const result = errorToToolResult(new MpdProfileNotFoundError("bogus"));
+		expect(result.isError).toBe(true);
+		const block = result.content?.[0];
+		if (block?.type !== "text") throw new Error("expected text block");
+		expect(block.text).toContain("bogus");
+		expect(block.text).toContain("mpd_profiles");
 	});
 
 	it("uses Error.message for generic errors", () => {

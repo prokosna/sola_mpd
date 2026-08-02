@@ -10,12 +10,34 @@ import { pathnameAtom } from "../../../../location/states/atoms/locationAtom";
 import { mpdClientAtom } from "../../../../mpd/states/atoms/mpdClientAtom";
 import { currentMpdProfileAtom } from "../../../../profile/states/atoms/mpdProfileAtom";
 import { localeCollatorAtom } from "../../../../settings/states/atoms/localeAtom";
-import { fetchBrowserFilterValues } from "../../../common/functions/browserFilter";
+import {
+	applyBrowserSelectionToFilters,
+	fetchBrowserFilterValues,
+} from "../../../common/functions/browserFilter";
+import { browserSelectionAtom } from "./browserSelectionAtom";
 import { browserStateAtom } from "./browserStateAtom";
 
-export const browserFiltersAtom = atom((get) => {
+// Private: the server's raw view. Only `tag`/`order` are still authoritative
+// here — `selectedValues`/`selectedOrder` are a navigation position, not a
+// setting, and now live in the URL instead (docs/design/state-scoping.md
+// §6.2/§14.3(b)). Not exported; every consumer must go through
+// browserFiltersAtom below, which overlays the URL-derived selection.
+const browserFiltersServerAtom = atom((get) => {
 	const browserState = get(browserStateAtom);
 	return browserState?.filters;
+});
+
+// The composed atom every existing consumer reads. Exported name and shape
+// are unchanged from before the split, so downstream consumers needed no
+// changes beyond the two places that write selections back out (see
+// hooks/useUpdateBrowserFilters.ts).
+export const browserFiltersAtom = atom((get) => {
+	const serverFilters = get(browserFiltersServerAtom);
+	if (serverFilters === undefined) {
+		return undefined;
+	}
+	const selection = get(browserSelectionAtom);
+	return applyBrowserSelectionToFilters(serverFilters, selection);
 });
 
 const browserFilterValuesMapAsyncAtom = atom(async (get) => {

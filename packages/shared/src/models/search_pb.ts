@@ -14,7 +14,7 @@ import type { Message } from "@bufbuild/protobuf";
  * Describes the file search.proto.
  */
 export const file_search: GenFile = /*@__PURE__*/
-  fileDesc("CgxzZWFyY2gucHJvdG8iLQoFUXVlcnkSJAoKY29uZGl0aW9ucxgBIAMoCzIQLkZpbHRlckNvbmRpdGlvbiJSCgZTZWFyY2gSDAoEbmFtZRgBIAEoCRIXCgdxdWVyaWVzGAIgAygLMgYuUXVlcnkSIQoHY29sdW1ucxgDIAMoCzIQLlNvbmdUYWJsZUNvbHVtbiIqCg1TYXZlZFNlYXJjaGVzEhkKCHNlYXJjaGVzGAEgAygLMgcuU2VhcmNoYgZwcm90bzM", [file_filter, file_song_table]);
+  fileDesc("CgxzZWFyY2gucHJvdG8iLQoFUXVlcnkSJAoKY29uZGl0aW9ucxgBIAMoCzIQLkZpbHRlckNvbmRpdGlvbiJSCgZTZWFyY2gSDAoEbmFtZRgBIAEoCRIXCgdxdWVyaWVzGAIgAygLMgYuUXVlcnkSIQoHY29sdW1ucxgDIAMoCzIQLlNvbmdUYWJsZUNvbHVtbiJCCg1TYXZlZFNlYXJjaGVzEhkKCHNlYXJjaGVzGAEgAygLMgcuU2VhcmNoEhYKDnNjaGVtYV92ZXJzaW9uGAIgASgNYgZwcm90bzM", [file_filter, file_song_table]);
 
 /**
  * @generated from message Query
@@ -68,6 +68,11 @@ export type SavedSearches = Message<"SavedSearches"> & {
    * @generated from field: repeated Search searches = 1;
    */
   searches: Search[];
+
+  /**
+   * @generated from field: uint32 schema_version = 2;
+   */
+  schemaVersion: number;
 };
 
 /**

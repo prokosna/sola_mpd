@@ -6,6 +6,7 @@ import { resolveCurrentMpdProfile } from "../utils/currentMpdProfile.js";
 import {
 	errorToToolResult,
 	executeMpdCommand,
+	mcpProfileNameSchema,
 	type RegisterMcpToolsDeps,
 } from "./mcpToolHelpers.js";
 
@@ -20,7 +21,7 @@ export function registerPlaybackTools(
 		{
 			title: "Playback control",
 			description:
-				"Controls playback transport. action=play optionally takes queue_position. action=seek requires seek_seconds.",
+				"Controls playback transport. action=play optionally takes queue_position. action=seek requires seek_seconds. Omitting profile uses the workspace default profile.",
 			inputSchema: z.object({
 				action: z.enum([
 					"play",
@@ -31,6 +32,7 @@ export function registerPlaybackTools(
 					"previous",
 					"seek",
 				]),
+				profile: mcpProfileNameSchema,
 				queue_position: z
 					.number()
 					.int()
@@ -49,7 +51,7 @@ export function registerPlaybackTools(
 		},
 		async (args) => {
 			try {
-				const profile = resolveCurrentMpdProfile();
+				const profile = resolveCurrentMpdProfile(args.profile);
 				switch (args.action) {
 					case "play":
 						if (args.queue_position !== undefined) {
@@ -121,14 +123,16 @@ export function registerPlaybackTools(
 		"playback_set_volume",
 		{
 			title: "Set playback volume",
-			description: "Sets MPD output volume in the range 0-100.",
+			description:
+				"Sets MPD output volume in the range 0-100. Omitting profile uses the workspace default profile.",
 			inputSchema: z.object({
 				volume: z.number().int().min(0).max(100),
+				profile: mcpProfileNameSchema,
 			}),
 		},
 		async (args) => {
 			try {
-				const profile = resolveCurrentMpdProfile();
+				const profile = resolveCurrentMpdProfile(args.profile);
 				await executeMpdCommand(mpdClient, profile, {
 					case: "setvol",
 					value: { vol: args.volume },
@@ -145,17 +149,18 @@ export function registerPlaybackTools(
 		{
 			title: "Set playback modes",
 			description:
-				"Sets playback modes. Only the keys you pass are changed; omitted keys are left alone.",
+				"Sets playback modes. Only the keys you pass are changed; omitted keys are left alone. Omitting profile uses the workspace default profile.",
 			inputSchema: z.object({
 				repeat: z.boolean().optional(),
 				random: z.boolean().optional(),
 				single: z.boolean().optional(),
 				consume: z.boolean().optional(),
+				profile: mcpProfileNameSchema,
 			}),
 		},
 		async (args) => {
 			try {
-				const profile = resolveCurrentMpdProfile();
+				const profile = resolveCurrentMpdProfile(args.profile);
 				const changed: string[] = [];
 				if (args.repeat !== undefined) {
 					await executeMpdCommand(mpdClient, profile, {

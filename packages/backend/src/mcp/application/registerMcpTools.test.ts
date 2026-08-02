@@ -10,6 +10,7 @@ import {
 
 vi.mock("../utils/currentMpdProfile.js", () => ({
 	NoCurrentMpdProfileError: class extends Error {},
+	MpdProfileNotFoundError: class extends Error {},
 	resolveCurrentMpdProfile: vi.fn(),
 	listMpdProfiles: vi.fn(() => []),
 }));

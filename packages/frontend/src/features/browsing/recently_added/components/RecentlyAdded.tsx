@@ -4,6 +4,7 @@ import { BrowserView } from "../../common/components/BrowserView";
 import { RecentlyAddedContent } from "./RecentlyAddedContent";
 import { RecentlyAddedNavigation } from "./RecentlyAddedNavigation";
 import { RecentlyAddedNavigationBreadcrumbs } from "./RecentlyAddedNavigationBreadcrumbs";
+import { RecentlyAddedSelectionObserver } from "./RecentlyAddedSelectionObserver";
 
 export function RecentlyAdded() {
 	const browserNavigationBreadcrumbs = useMemo(() => {
@@ -17,12 +18,15 @@ export function RecentlyAdded() {
 	}, []);
 
 	return (
-		<BrowserView
-			{...{
-				browserNavigationBreadcrumbs,
-				browserNavigation,
-				browserContent,
-			}}
-		/>
+		<>
+			<RecentlyAddedSelectionObserver />
+			<BrowserView
+				{...{
+					browserNavigationBreadcrumbs,
+					browserNavigation,
+					browserContent,
+				}}
+			/>
+		</>
 	);
 }

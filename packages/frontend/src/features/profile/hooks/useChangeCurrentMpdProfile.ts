@@ -1,13 +1,12 @@
 import { useAtomValue, useSetAtom } from "jotai";
 import { useCallback } from "react";
 
-import { UpdateMode } from "../../../types/stateTypes";
-import { updateCurrentMpdProfileActionAtom } from "../states/actions/updateCurrentMpdProfileActionAtom";
 import { mpdProfileStateAtom } from "../states/atoms/mpdProfileAtom";
+import { selectedProfileNameAtom } from "../states/atoms/selectedProfileNameAtom";
 
 export function useChangeCurrentMpdProfile() {
 	const mpdProfileState = useAtomValue(mpdProfileStateAtom);
-	const updateCurrentMpdProfile = useSetAtom(updateCurrentMpdProfileActionAtom);
+	const setSelectedProfileName = useSetAtom(selectedProfileNameAtom);
 
 	return useCallback(
 		async (name: string) => {
@@ -22,11 +21,8 @@ export function useChangeCurrentMpdProfile() {
 				return;
 			}
 
-			return updateCurrentMpdProfile({
-				profile,
-				mode: UpdateMode.LOCAL_STATE | UpdateMode.PERSIST,
-			});
+			setSelectedProfileName(profile.name);
 		},
-		[mpdProfileState, updateCurrentMpdProfile],
+		[mpdProfileState, setSelectedProfileName],
 	);
 }

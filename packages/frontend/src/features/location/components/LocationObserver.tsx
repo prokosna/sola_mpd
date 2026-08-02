@@ -10,6 +10,7 @@ import { refreshPlayQueueSongsActionAtom } from "../../play_queue";
 import { refreshPlaylistsActionAtom } from "../../playlist";
 import { selectedSongsAtom } from "../../song_table";
 import { setPathnameActionAtom } from "../states/actions/setPathnameActionAtom";
+import { setSearchParamsActionAtom } from "../states/actions/setSearchParamsActionAtom";
 import { transitionCounterAtom } from "../states/atoms/locationAtom";
 
 export function LocationObserver() {
@@ -17,6 +18,7 @@ export function LocationObserver() {
 	const transitionCounter = useAtomValue(transitionCounterAtom);
 
 	const setPathname = useSetAtom(setPathnameActionAtom);
+	const setSearchParams = useSetAtom(setSearchParamsActionAtom);
 	const setSelectedSongs = useSetAtom(selectedSongsAtom);
 	const refreshPlaylistsState = useSetAtom(refreshPlaylistsActionAtom);
 	const refreshPlayQueueSongsState = useSetAtom(
@@ -28,6 +30,10 @@ export function LocationObserver() {
 		// When user moves to a different page, selected songs should be reset.
 		setSelectedSongs([]);
 	}, [location.pathname, setPathname, setSelectedSongs]);
+
+	useEffect(() => {
+		setSearchParams(location.search);
+	}, [location.search, setSearchParams]);
 
 	// biome-ignore lint/correctness/useExhaustiveDependencies: Transition counter is used to detect page transitions even without actual page transitions.
 	useEffect(() => {

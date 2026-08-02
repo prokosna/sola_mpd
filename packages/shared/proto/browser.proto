@@ -11,4 +11,5 @@ message BrowserFilter {
 
 message BrowserState {
   repeated BrowserFilter filters = 1;
+  uint32 schema_version = 2;
 }

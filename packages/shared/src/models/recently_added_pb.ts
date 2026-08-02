@@ -12,7 +12,7 @@ import type { Message } from "@bufbuild/protobuf";
  * Describes the file recently_added.proto.
  */
 export const file_recently_added: GenFile = /*@__PURE__*/
-  fileDesc("ChRyZWNlbnRseV9hZGRlZC5wcm90byI1ChNSZWNlbnRseUFkZGVkRmlsdGVyEh4KA3RhZxgBIAEoDjIRLlNvbmcuTWV0YWRhdGFUYWciOwoSUmVjZW50bHlBZGRlZFN0YXRlEiUKB2ZpbHRlcnMYASADKAsyFC5SZWNlbnRseUFkZGVkRmlsdGVyYgZwcm90bzM", [file_song]);
+  fileDesc("ChRyZWNlbnRseV9hZGRlZC5wcm90byI1ChNSZWNlbnRseUFkZGVkRmlsdGVyEh4KA3RhZxgBIAEoDjIRLlNvbmcuTWV0YWRhdGFUYWciUwoSUmVjZW50bHlBZGRlZFN0YXRlEiUKB2ZpbHRlcnMYASADKAsyFC5SZWNlbnRseUFkZGVkRmlsdGVyEhYKDnNjaGVtYV92ZXJzaW9uGAIgASgNYgZwcm90bzM", [file_song]);
 
 /**
  * @generated from message RecentlyAddedFilter
@@ -39,6 +39,11 @@ export type RecentlyAddedState = Message<"RecentlyAddedState"> & {
    * @generated from field: repeated RecentlyAddedFilter filters = 1;
    */
   filters: RecentlyAddedFilter[];
+
+  /**
+   * @generated from field: uint32 schema_version = 2;
+   */
+  schemaVersion: number;
 };
 
 /**

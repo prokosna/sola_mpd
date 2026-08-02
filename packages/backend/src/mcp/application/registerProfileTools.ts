@@ -18,20 +18,24 @@ export function registerProfileTools(
 		{
 			title: "List MPD profiles",
 			description:
-				"Returns all MPD profiles configured in sola_mpd and indicates which one is currently active. Profile selection is controlled in the sola_mpd UI; this tool is read-only.",
+				"Returns all MPD profiles configured in sola_mpd and the workspace default profile (`default_profile`). Per-device profile selection made in the sola_mpd UI is not visible here. Other tools accept an optional `profile` argument (a name from this list) to target a specific profile; omitting it uses `default_profile`.",
 			inputSchema: z.object({}),
 		},
 		async () => {
 			const profiles = listMpdProfiles();
-			let current: MpdProfile | undefined;
+			let defaultProfile: MpdProfile | undefined;
 			try {
-				current = resolveCurrentMpdProfile();
+				defaultProfile = resolveCurrentMpdProfile();
 			} catch {
-				current = undefined;
+				defaultProfile = undefined;
 			}
 			return toolResultJson({
-				current: current
-					? { name: current.name, host: current.host, port: current.port }
+				default_profile: defaultProfile
+					? {
+							name: defaultProfile.name,
+							host: defaultProfile.host,
+							port: defaultProfile.port,
+						}
 					: undefined,
 				profiles: profiles.map((p) => ({
 					name: p.name,

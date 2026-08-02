@@ -3,6 +3,7 @@ import { BrowserView } from "../../common/components/BrowserView";
 import { BrowserContent } from "./BrowserContent";
 import { BrowserNavigation } from "./BrowserNavigation";
 import { BrowserNavigationBreadcrumbs } from "./BrowserNavigationBreadcrumbs";
+import { BrowserSelectionObserver } from "./BrowserSelectionObserver";
 
 export function Browser() {
 	const browserNavigationBreadcrumbs = useMemo(() => {
@@ -16,12 +17,15 @@ export function Browser() {
 	}, []);
 
 	return (
-		<BrowserView
-			{...{
-				browserNavigationBreadcrumbs,
-				browserNavigation,
-				browserContent,
-			}}
-		/>
+		<>
+			<BrowserSelectionObserver />
+			<BrowserView
+				{...{
+					browserNavigationBreadcrumbs,
+					browserNavigation,
+					browserContent,
+				}}
+			/>
+		</>
 	);
 }

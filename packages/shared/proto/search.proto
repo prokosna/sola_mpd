@@ -15,4 +15,5 @@ message Search {
 
 message SavedSearches {
   repeated Search searches = 1;
+  uint32 schema_version = 2;
 }

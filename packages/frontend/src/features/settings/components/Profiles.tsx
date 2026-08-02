@@ -2,11 +2,16 @@ import { Button, Modal, Stack, Table, Title } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import { useAtomValue } from "jotai";
 import { CenterSpinner } from "../../loading";
-import { MpdProfileForm, mpdProfileStateAtom } from "../../profile";
+import {
+	currentMpdProfileAtom,
+	MpdProfileForm,
+	mpdProfileStateAtom,
+} from "../../profile";
 import { ProfilesProfile } from "./ProfilesProfile";
 
 export function Profiles() {
 	const mpdProfileState = useAtomValue(mpdProfileStateAtom);
+	const currentMpdProfile = useAtomValue(currentMpdProfileAtom);
 
 	const [opened, { open, close }] = useDisclosure(false);
 
@@ -46,6 +51,7 @@ export function Profiles() {
 							<Table.Th>HOST</Table.Th>
 							<Table.Th>PORT</Table.Th>
 							<Table.Th>PASSWORD</Table.Th>
+							<Table.Th>STATUS</Table.Th>
 							<Table.Th>ACTION</Table.Th>
 						</Table.Tr>
 					</Table.Thead>
@@ -56,6 +62,7 @@ export function Profiles() {
 								index={index}
 								profile={profile}
 								mpdProfileState={mpdProfileState}
+								isActiveOnThisDevice={profile.name === currentMpdProfile?.name}
 							/>
 						))}
 					</Table.Tbody>

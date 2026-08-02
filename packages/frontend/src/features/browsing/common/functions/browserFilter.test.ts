@@ -1,5 +1,6 @@
 import { create } from "@bufbuild/protobuf";
 import { StringValueSchema } from "@bufbuild/protobuf/wkt";
+import { convertSongMetadataValueToString } from "@sola_mpd/shared/src/functions/songMetadata.js";
 import {
 	type BrowserFilter,
 	BrowserFilterSchema,
@@ -13,12 +14,16 @@ import { describe, expect, it } from "vitest";
 
 import {
 	addBrowserFilterNext,
+	applyBrowserSelectionToFilters,
 	changeBrowserFilterToTheOtherTag,
 	convertBrowserFilterToCondition,
+	extractBrowserSelectionFromFilters,
+	haveBrowserFilterTagsChanged,
 	listBrowserSongMetadataTags,
 	removeBrowserFilter,
 	resetAllBrowserFilters,
 	selectBrowserFilterValues,
+	stripBrowserFilterSelection,
 } from "./browserFilter";
 
 function createMetadataValue(str: string) {
@@ -223,6 +228,114 @@ describe("browserFilter", () => {
 			const result = resetAllBrowserFilters(filters);
 			expect(result[0].order).toBe(0);
 			expect(result[1].order).toBe(1);
+		});
+	});
+
+	describe("stripBrowserFilterSelection", () => {
+		it("keeps tag/order but clears selection", () => {
+			const filter = createFilter(Song_MetadataTag.ARTIST, 2, 1, ["Beatles"]);
+			const result = stripBrowserFilterSelection(filter);
+			expect(result.tag).toBe(Song_MetadataTag.ARTIST);
+			expect(result.order).toBe(2);
+			expect(result.selectedOrder).toBe(-1);
+			expect(result.selectedValues).toHaveLength(0);
+		});
+	});
+
+	describe("haveBrowserFilterTagsChanged", () => {
+		it("returns false when only selection differs", () => {
+			const prev = [createFilter(Song_MetadataTag.ARTIST, 0, -1)];
+			const next = [createFilter(Song_MetadataTag.ARTIST, 0, 1, ["Beatles"])];
+			expect(haveBrowserFilterTagsChanged(prev, next)).toBe(false);
+		});
+
+		it("returns true when a tag changes", () => {
+			const prev = [createFilter(Song_MetadataTag.ARTIST, 0, -1)];
+			const next = [createFilter(Song_MetadataTag.GENRE, 0, -1)];
+			expect(haveBrowserFilterTagsChanged(prev, next)).toBe(true);
+		});
+
+		it("returns true when order changes", () => {
+			const prev = [
+				createFilter(Song_MetadataTag.ARTIST, 0, -1),
+				createFilter(Song_MetadataTag.ALBUM, 1, -1),
+			];
+			const next = [
+				createFilter(Song_MetadataTag.ALBUM, 0, -1),
+				createFilter(Song_MetadataTag.ARTIST, 1, -1),
+			];
+			expect(haveBrowserFilterTagsChanged(prev, next)).toBe(true);
+		});
+
+		it("returns true when the length differs", () => {
+			const prev = [createFilter(Song_MetadataTag.ARTIST, 0, -1)];
+			const next = [
+				createFilter(Song_MetadataTag.ARTIST, 0, -1),
+				createFilter(Song_MetadataTag.ALBUM, 1, -1),
+			];
+			expect(haveBrowserFilterTagsChanged(prev, next)).toBe(true);
+		});
+	});
+
+	describe("extractBrowserSelectionFromFilters / applyBrowserSelectionToFilters", () => {
+		it("extracts only selected tags, ordered by selectedOrder", () => {
+			const filters = [
+				createFilter(Song_MetadataTag.ARTIST, 0, 2, ["Beatles"]),
+				createFilter(Song_MetadataTag.ALBUM, 1, 1, ["Abbey Road"]),
+				createFilter(Song_MetadataTag.GENRE, 2, -1),
+			];
+			const selection = extractBrowserSelectionFromFilters(filters);
+			expect(selection).toEqual([
+				{ tag: Song_MetadataTag.ALBUM, values: ["Abbey Road"] },
+				{ tag: Song_MetadataTag.ARTIST, values: ["Beatles"] },
+			]);
+		});
+
+		it("round-trips through applyBrowserSelectionToFilters", () => {
+			const structuralFilters = [
+				createFilter(Song_MetadataTag.ARTIST, 0, -1),
+				createFilter(Song_MetadataTag.ALBUM, 1, -1),
+			];
+			const selection = [
+				{ tag: Song_MetadataTag.ALBUM, values: ["Abbey Road"] },
+				{ tag: Song_MetadataTag.ARTIST, values: ["Beatles"] },
+			];
+			const merged = applyBrowserSelectionToFilters(
+				structuralFilters,
+				selection,
+			);
+			expect(
+				merged.map((filter) => ({
+					tag: filter.tag,
+					order: filter.order,
+					selectedOrder: filter.selectedOrder,
+					selectedValues: filter.selectedValues.map((v) =>
+						convertSongMetadataValueToString(v),
+					),
+				})),
+			).toEqual([
+				{
+					tag: Song_MetadataTag.ARTIST,
+					order: 0,
+					selectedOrder: 2,
+					selectedValues: ["Beatles"],
+				},
+				{
+					tag: Song_MetadataTag.ALBUM,
+					order: 1,
+					selectedOrder: 1,
+					selectedValues: ["Abbey Road"],
+				},
+			]);
+
+			expect(extractBrowserSelectionFromFilters(merged)).toEqual(selection);
+		});
+
+		it("leaves unselected structural filters with an empty selection", () => {
+			const structuralFilters = [createFilter(Song_MetadataTag.GENRE, 0, -1)];
+			const merged = applyBrowserSelectionToFilters(structuralFilters, []);
+			expect(merged[0].selectedValues).toHaveLength(0);
+			expect(merged[0].selectedOrder).toBe(-1);
 		});
 	});
 });

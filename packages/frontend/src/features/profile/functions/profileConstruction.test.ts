@@ -136,4 +136,59 @@ describe("removeProfileFromState", () => {
 		removeProfileFromState(state, "A");
 		expect(state.profiles).toHaveLength(1);
 	});
+
+	it("should switch currentProfile to the first remaining profile when the current default is removed", () => {
+		const profileA = create(MpdProfileSchema, {
+			name: "A",
+			host: "localhost",
+			port: 6600,
+		});
+		const profileB = create(MpdProfileSchema, {
+			name: "B",
+			host: "localhost",
+			port: 6601,
+		});
+		const state = create(MpdProfileStateSchema, {
+			currentProfile: profileA,
+			profiles: [profileA, profileB],
+		});
+
+		const result = removeProfileFromState(state, "A");
+		expect(result?.currentProfile?.name).toBe("B");
+	});
+
+	it("should clear currentProfile to undefined when the current default is removed and none remain", () => {
+		const profileA = create(MpdProfileSchema, {
+			name: "A",
+			host: "localhost",
+			port: 6600,
+		});
+		const state = create(MpdProfileStateSchema, {
+			currentProfile: profileA,
+			profiles: [profileA],
+		});
+
+		const result = removeProfileFromState(state, "A");
+		expect(result?.currentProfile).toBeUndefined();
+	});
+
+	it("should leave currentProfile untouched when a different profile is removed", () => {
+		const profileA = create(MpdProfileSchema, {
+			name: "A",
+			host: "localhost",
+			port: 6600,
+		});
+		const profileB = create(MpdProfileSchema, {
+			name: "B",
+			host: "localhost",
+			port: 6601,
+		});
+		const state = create(MpdProfileStateSchema, {
+			currentProfile: profileA,
+			profiles: [profileA, profileB],
+		});
+
+		const result = removeProfileFromState(state, "B");
+		expect(result?.currentProfile?.name).toBe("A");
+	});
 });

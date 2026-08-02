@@ -3,7 +3,6 @@ import { convertSongMetadataValueToString } from "@sola_mpd/shared/src/functions
 import { BrowserFilterSchema } from "@sola_mpd/shared/src/models/browser_pb.js";
 import type { Song_MetadataTag } from "@sola_mpd/shared/src/models/song_pb.js";
 import { atom } from "jotai";
-import { atomWithDefault } from "jotai/utils";
 
 import { ROUTE_HOME_RECENTLY_ADDED } from "../../../../../const/routes";
 import { atomWithSync } from "../../../../../lib/jotai/atomWithSync";
@@ -15,13 +14,17 @@ import { mpdCapabilitiesAtom } from "../../../../mpd/states/atoms/mpdCapabilitie
 import { mpdClientAtom } from "../../../../mpd/states/atoms/mpdClientAtom";
 import { currentMpdProfileAtom } from "../../../../profile/states/atoms/mpdProfileAtom";
 import { localeCollatorAtom } from "../../../../settings/states/atoms/localeAtom";
-import { fetchBrowserFilterValues } from "../../../common/functions/browserFilter";
+import {
+	applyBrowserSelectionToFilters,
+	fetchBrowserFilterValues,
+} from "../../../common/functions/browserFilter";
 import {
 	extractRecentlyAddedFastFilterValues,
 	extractRecentlyAddedFilterValues,
 	sortRecentlyAddedFilterValues,
 } from "../../functions/recentlyAddedFiltering";
 import { recentlyAddedFastStateAtom } from "./recentlyAddedFastStateAtom";
+import { recentlyAddedSelectionAtom } from "./recentlyAddedSelectionAtom";
 import { recentlyAddedStateAtom } from "./recentlyAddedStateAtom";
 
 const recentlyAddedFiltersAtom = atom((get) => {
@@ -29,17 +32,31 @@ const recentlyAddedFiltersAtom = atom((get) => {
 	return recentlyAddedState?.filters;
 });
 
-export const recentlyAddedBrowserFiltersAtom = atomWithDefault((get) => {
+// Private: the server's tag configuration only (Workspace). Selection is a
+// navigation position and now lives in the URL — see
+// docs/design/state-scoping.md §6.2/§14.3(b). Not exported; every consumer
+// must go through recentlyAddedBrowserFiltersAtom below.
+const recentlyAddedStructuralFiltersAtom = atom((get) => {
 	const recentlyAddedFilters = get(recentlyAddedFiltersAtom);
-	const browserFilters = recentlyAddedFilters?.map((filter, index) => {
-		return create(BrowserFilterSchema, {
+	return recentlyAddedFilters?.map((filter, index) =>
+		create(BrowserFilterSchema, {
 			tag: filter.tag,
 			selectedValues: [],
 			order: index,
 			selectedOrder: -1,
-		});
-	});
-	return browserFilters;
+		}),
+	);
+});
+
+// The composed atom every existing consumer reads. Exported name and shape
+// are unchanged from before the split.
+export const recentlyAddedBrowserFiltersAtom = atom((get) => {
+	const structuralFilters = get(recentlyAddedStructuralFiltersAtom);
+	if (structuralFilters === undefined) {
+		return undefined;
+	}
+	const selection = get(recentlyAddedSelectionAtom);
+	return applyBrowserSelectionToFilters(structuralFilters, selection);
 });
 
 const allSongsSortedFilterValuesMapAtom = atom((get) => {

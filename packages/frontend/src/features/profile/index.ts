@@ -3,6 +3,7 @@ export { MpdProfileForm } from "./components/MpdProfileForm";
 export { MpdProfileSelector } from "./components/MpdProfileSelector";
 // Repositories
 export type { MpdProfileStateRepository } from "./repositories/MpdProfileStateRepository";
+export { deleteMpdProfileActionAtom } from "./states/actions/deleteMpdProfileActionAtom";
 export { refreshMpdProfileActionAtom } from "./states/actions/refreshMpdProfileActionAtom";
 export { updateCurrentMpdProfileActionAtom } from "./states/actions/updateCurrentMpdProfileActionAtom";
 export { updateMpdProfileStateActionAtom } from "./states/actions/updateMpdProfileStateActionAtom";

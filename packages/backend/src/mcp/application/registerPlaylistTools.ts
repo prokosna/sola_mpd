@@ -7,6 +7,7 @@ import { resolveCurrentMpdProfile } from "../utils/currentMpdProfile.js";
 import {
 	errorToToolResult,
 	executeMpdCommand,
+	mcpProfileNameSchema,
 	type RegisterMcpToolsDeps,
 } from "./mcpToolHelpers.js";
 
@@ -21,12 +22,12 @@ export function registerPlaylistTools(
 		{
 			title: "List stored playlists",
 			description:
-				"Returns names of MPD stored playlists with their last-modified timestamp.",
-			inputSchema: z.object({}),
+				"Returns names of MPD stored playlists with their last-modified timestamp. Omitting profile uses the workspace default profile.",
+			inputSchema: z.object({ profile: mcpProfileNameSchema }),
 		},
-		async () => {
+		async (args) => {
 			try {
-				const profile = resolveCurrentMpdProfile();
+				const profile = resolveCurrentMpdProfile(args.profile);
 				const res = await executeMpdCommand(mpdClient, profile, {
 					case: "listplaylists",
 					value: {},
@@ -53,14 +54,16 @@ export function registerPlaylistTools(
 		"playlist_get",
 		{
 			title: "Get songs in a stored playlist",
-			description: "Returns the songs of a stored playlist.",
+			description:
+				"Returns the songs of a stored playlist. Omitting profile uses the workspace default profile.",
 			inputSchema: z.object({
 				name: z.string().min(1),
+				profile: mcpProfileNameSchema,
 			}),
 		},
 		async (args) => {
 			try {
-				const profile = resolveCurrentMpdProfile();
+				const profile = resolveCurrentMpdProfile(args.profile);
 				const res = await executeMpdCommand(mpdClient, profile, {
 					case: "listplaylistinfo",
 					value: { name: args.name },

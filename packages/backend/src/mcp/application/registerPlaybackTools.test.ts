@@ -1,3 +1,5 @@
+import { create } from "@bufbuild/protobuf";
+import { MpdProfileSchema } from "@sola_mpd/shared/src/models/mpd/mpd_profile_pb.js";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
 import { registerPlaybackTools } from "./registerPlaybackTools.js";
@@ -11,6 +13,7 @@ import {
 
 vi.mock("../utils/currentMpdProfile.js", () => ({
 	NoCurrentMpdProfileError: class extends Error {},
+	MpdProfileNotFoundError: class extends Error {},
 	resolveCurrentMpdProfile: vi.fn(),
 	listMpdProfiles: vi.fn(),
 }));
@@ -92,6 +95,27 @@ describe("registerPlaybackTools / playback_control", () => {
 			{ case: "repeat", enable: true },
 			{ case: "random", enable: false },
 		]);
+	});
+
+	it("routes an explicit profile argument to resolveCurrentMpdProfile and the outgoing MPD command", async () => {
+		const office = create(MpdProfileSchema, {
+			name: "office",
+			host: "office.local",
+			port: 6600,
+		});
+		resolveMock.mockReturnValue(office);
+		const { server, client } = setupServer();
+
+		const result = await server.call("playback_control", {
+			action: "stop",
+			profile: "office",
+		});
+
+		expect(result.isError).toBeUndefined();
+		expect(resolveMock).toHaveBeenCalledWith("office");
+		const req = (client.execute as unknown as { mock: { calls: unknown[][] } })
+			.mock.calls[0]?.[0] as { profile: { name: string } };
+		expect(req.profile.name).toBe("office");
 	});
 
 	it("maps a thrown profile resolution error to a tool error", async () => {

@@ -13,6 +13,7 @@ import { resolveCurrentMpdProfile } from "../utils/currentMpdProfile.js";
 import {
 	errorToToolResult,
 	executeMpdCommand,
+	mcpProfileNameSchema,
 	type RegisterMcpToolsDeps,
 } from "./mcpToolHelpers.js";
 
@@ -54,7 +55,7 @@ export function registerLibrarySearchTools(
 		{
 			title: "List distinct tag values",
 			description:
-				"Lists the distinct values for a metadata tag (e.g. all artists, all albums, all genres). Server-side via MPD `list`; supports optional filter conditions.",
+				"Lists the distinct values for a metadata tag (e.g. all artists, all albums, all genres). Server-side via MPD `list`; supports optional filter conditions. Omitting profile uses the workspace default profile.",
 			inputSchema: z.object({
 				tag: z.enum([
 					"artist",
@@ -74,11 +75,12 @@ export function registerLibrarySearchTools(
 					.describe(
 						`Max values to return. Default ${DEFAULT_TAG_VALUES}. Very large values may exceed your context window.`,
 					),
+				profile: mcpProfileNameSchema,
 			}),
 		},
 		async (args) => {
 			try {
-				const profile = resolveCurrentMpdProfile();
+				const profile = resolveCurrentMpdProfile(args.profile);
 				const conditions = args.filter
 					? buildSearchConditions(args.filter as SimpleFilter)
 					: [];
@@ -107,7 +109,7 @@ export function registerLibrarySearchTools(
 		{
 			title: "Search the library",
 			description:
-				"Server-side search via MPD `search`. Supports tag equality / contains, ADDED_SINCE for recently-added queries, and pagination via limit/offset. Returns flat song objects.",
+				"Server-side search via MPD `search`. Supports tag equality / contains, ADDED_SINCE for recently-added queries, and pagination via limit/offset. Returns flat song objects. Omitting profile uses the workspace default profile.",
 			inputSchema: z.object({
 				filter: simpleFilterSchema,
 				limit: z
@@ -123,11 +125,12 @@ export function registerLibrarySearchTools(
 					.enum(["title", "artist", "album", "date", "added", "updated"])
 					.optional(),
 				sort_descending: z.boolean().optional(),
+				profile: mcpProfileNameSchema,
 			}),
 		},
 		async (args) => {
 			try {
-				const profile = resolveCurrentMpdProfile();
+				const profile = resolveCurrentMpdProfile(args.profile);
 				const conditions = buildSearchConditions(args.filter as SimpleFilter);
 				if (conditions.length === 0) {
 					return toolError(

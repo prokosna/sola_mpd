@@ -8,6 +8,7 @@ import { resolveCurrentMpdProfile } from "../utils/currentMpdProfile.js";
 import {
 	errorToToolResult,
 	executeMpdCommand,
+	mcpProfileNameSchema,
 	type RegisterMcpToolsDeps,
 } from "./mcpToolHelpers.js";
 
@@ -22,12 +23,12 @@ export function registerStatusTools(
 		{
 			title: "Get MPD status & current song",
 			description:
-				"Returns playback state (play/pause/stop), queue position, elapsed/duration, playback modes, the active output format, and the currently playing song's metadata if any.",
-			inputSchema: z.object({}),
+				"Returns playback state (play/pause/stop), queue position, elapsed/duration, playback modes, the active output format, and the currently playing song's metadata if any. Omitting profile uses the workspace default profile.",
+			inputSchema: z.object({ profile: mcpProfileNameSchema }),
 		},
-		async () => {
+		async (args) => {
 			try {
-				const profile = resolveCurrentMpdProfile();
+				const profile = resolveCurrentMpdProfile(args.profile);
 				const [statusRes, currentRes] = await Promise.all([
 					executeMpdCommand(mpdClient, profile, { case: "status", value: {} }),
 					executeMpdCommand(mpdClient, profile, {
@@ -55,12 +56,12 @@ export function registerStatusTools(
 		{
 			title: "Get MPD library stats",
 			description:
-				"Returns library-wide counts (artists, albums, songs), MPD version, and the last database update timestamp. `total_playtime_seconds` is the lifetime sum of song durations played by MPD; `uptime_seconds` is how long the current MPD process has been running (not playback duration).",
-			inputSchema: z.object({}),
+				"Returns library-wide counts (artists, albums, songs), MPD version, and the last database update timestamp. `total_playtime_seconds` is the lifetime sum of song durations played by MPD; `uptime_seconds` is how long the current MPD process has been running (not playback duration). Omitting profile uses the workspace default profile.",
+			inputSchema: z.object({ profile: mcpProfileNameSchema }),
 		},
-		async () => {
+		async (args) => {
 			try {
-				const profile = resolveCurrentMpdProfile();
+				const profile = resolveCurrentMpdProfile(args.profile);
 				const res = await executeMpdCommand(mpdClient, profile, {
 					case: "stats",
 					value: {},

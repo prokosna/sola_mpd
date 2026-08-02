@@ -18,6 +18,13 @@ export const SOCKETIO_ADVANCED_SEARCH = "socketio_advanced_search";
 // Socket IO - Config State
 export const SOCKETIO_CONFIG_FETCH = "socketio_config_fetch";
 export const SOCKETIO_CONFIG_SAVE = "socketio_config_save";
+// Server-initiated: broadcast to every other connected client after a
+// successful save so they can refetch the config key that changed.
+export const SOCKETIO_CONFIG_CHANGED = "socketio_config_changed";
+
+// Socket IO - View State Blob
+export const SOCKETIO_VIEW_STATE_BLOB_SAVE = "socketio_view_state_blob_save";
+export const SOCKETIO_VIEW_STATE_BLOB_FETCH = "socketio_view_state_blob_fetch";
 
 export const CONFIG_KEY_BROWSER_STATE = "browser_state";
 export const CONFIG_KEY_COMMON_SONG_TABLE_STATE = "common_song_table_state";

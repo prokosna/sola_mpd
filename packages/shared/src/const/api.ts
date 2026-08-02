@@ -9,3 +9,4 @@ export const API_CONFIGS_SAVED_SEARCHES = "/api/configs/saved_searches";
 export const API_CONFIGS_PLUGIN_STATE = "/api/configs/plugin_state";
 export const API_CONFIGS_RECENTLY_ADDED_STATE =
 	"/api/configs/recently_added_state";
+export const API_VIEW_STATE_BLOBS = "/api/view-state-blobs";

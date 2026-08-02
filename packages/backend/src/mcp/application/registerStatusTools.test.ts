@@ -21,6 +21,7 @@ vi.mock("../utils/currentMpdProfile.js", () => ({
 			this.name = "NoCurrentMpdProfileError";
 		}
 	},
+	MpdProfileNotFoundError: class extends Error {},
 	resolveCurrentMpdProfile: vi.fn(),
 	listMpdProfiles: vi.fn(),
 }));

@@ -7,7 +7,10 @@ message MpdProfile {
   string password = 4;
 }
 
+// current_profile is the workspace-wide default profile. Per-device selection
+// lives in device settings, not here.
 message MpdProfileState {
   MpdProfile current_profile = 1;
   repeated MpdProfile profiles = 2;
+  uint32 schema_version = 3;
 }

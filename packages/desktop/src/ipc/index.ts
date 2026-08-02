@@ -16,6 +16,8 @@ import {
 	SOCKETIO_MPD_UNSUBSCRIBE,
 	SOCKETIO_PLUGIN_EXECUTE,
 	SOCKETIO_PLUGIN_REGISTER,
+	SOCKETIO_VIEW_STATE_BLOB_FETCH,
+	SOCKETIO_VIEW_STATE_BLOB_SAVE,
 } from "@sola_mpd/shared/src/const/socketio.js";
 import { MpdEventSchema } from "@sola_mpd/shared/src/models/mpd/mpd_event_pb.js";
 import type { MpdProfile } from "@sola_mpd/shared/src/models/mpd/mpd_profile_pb.js";
@@ -59,6 +61,10 @@ import {
 	createMpdErrorBuffer,
 	createPluginRegisterErrorBuffer,
 } from "#backend/utils/errorBufferUtils.js";
+import {
+	readViewStateBlobUseCase,
+	saveViewStateBlobUseCase,
+} from "#backend/view_state_blobs/application/viewStateBlobUseCases.js";
 
 const CLIENT_ID = "desktop";
 
@@ -295,6 +301,42 @@ function registerIpcHandlers(): void {
 			},
 		);
 	}
+
+	// View state blob save (request-response): payload is the blob text,
+	// response is the token text.
+	ipcMain.handle(
+		SOCKETIO_VIEW_STATE_BLOB_SAVE,
+		(_event, msg: Uint8Array): Uint8Array => {
+			try {
+				const data = Buffer.from(msg).toString("utf-8");
+				const token = saveViewStateBlobUseCase(data);
+				return new Uint8Array(Buffer.from(token, "utf-8"));
+			} catch (err) {
+				console.error(err);
+				throw err;
+			}
+		},
+	);
+
+	// View state blob fetch (request-response): payload is the token text,
+	// response is the blob text, or an empty buffer when the token is unknown
+	// (mirrors the SocketIoManager convention: blob tokens always resolve to
+	// non-empty text, so this is unambiguous).
+	ipcMain.handle(
+		SOCKETIO_VIEW_STATE_BLOB_FETCH,
+		(_event, msg: Uint8Array): Uint8Array => {
+			try {
+				const token = Buffer.from(msg).toString("utf-8");
+				const data = readViewStateBlobUseCase(token);
+				return data === undefined
+					? new Uint8Array(0)
+					: new Uint8Array(Buffer.from(data, "utf-8"));
+			} catch (err) {
+				console.error(err);
+				throw err;
+			}
+		},
+	);
 }
 
 export function initializeIpcManager(mainWindow: BrowserWindow): void {

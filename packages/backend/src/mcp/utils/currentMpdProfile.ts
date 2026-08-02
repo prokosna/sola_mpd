@@ -5,19 +5,38 @@ import { mpdProfileStateRepository } from "../../configs/repositories/ConfigRepo
 export class NoCurrentMpdProfileError extends Error {
 	constructor() {
 		super(
-			"No current MPD profile is selected. Configure a profile in the sola_mpd UI first.",
+			"No default MPD profile is configured. Set one in the sola_mpd UI under Settings, or pass an explicit profile name (see the mpd_profiles tool).",
 		);
 		this.name = "NoCurrentMpdProfileError";
 	}
 }
 
+export class MpdProfileNotFoundError extends Error {
+	constructor(name: string) {
+		super(
+			`No MPD profile named "${name}" is configured. Call the mpd_profiles tool to list the valid profile names.`,
+		);
+		this.name = "MpdProfileNotFoundError";
+	}
+}
+
 /**
- * Resolves the active MPD profile from the persisted profile state.
- * The MCP layer reuses the same `MpdProfileState` the frontend writes,
- * so switching profiles in the UI is immediately visible to MCP tools.
+ * Resolves the MPD profile an MCP tool call should target.
+ *
+ * With `name` given, resolves that specific profile — this is how an MCP
+ * client (which has no device of its own) targets a non-default profile.
+ * Without it, falls back to the workspace default profile persisted in
+ * `MpdProfileState.currentProfile`.
  */
-export function resolveCurrentMpdProfile(): MpdProfile {
+export function resolveCurrentMpdProfile(name?: string): MpdProfile {
 	const state = mpdProfileStateRepository.get();
+	if (name !== undefined) {
+		const profile = state.profiles.find((p) => p.name === name);
+		if (profile === undefined) {
+			throw new MpdProfileNotFoundError(name);
+		}
+		return profile;
+	}
 	if (state.currentProfile === undefined) {
 		throw new NoCurrentMpdProfileError();
 	}

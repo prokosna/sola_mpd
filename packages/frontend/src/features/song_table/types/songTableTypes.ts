@@ -58,3 +58,14 @@ export type SongTableContextMenuItemParams = {
 	sortedSongs: Song[];
 	selectedSortedSongs: Song[];
 };
+
+// Device-owned layout for one SongTableColumn (see docs/design/state-scoping.md
+// §6.1/§14.3(c)). Keyed by `String(Song_MetadataTag)` since device settings are
+// persisted as JSON, which cannot use a numeric enum as an object key.
+export type SongTableColumnLayoutEntry = {
+	widthFlex: number;
+	sortOrder?: number;
+	isSortDesc: boolean;
+};
+
+export type SongTableColumnLayout = Record<string, SongTableColumnLayoutEntry>;

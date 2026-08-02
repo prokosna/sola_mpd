@@ -1,4 +1,4 @@
-import { Button, Table } from "@mantine/core";
+import { Badge, Button, Group, Table } from "@mantine/core";
 import type {
 	MpdProfile,
 	MpdProfileState,
@@ -7,37 +7,57 @@ import { useSetAtom } from "jotai";
 import { useCallback } from "react";
 import { useNotification } from "../../../lib/mantine/hooks/useNotification";
 import { UpdateMode } from "../../../types/stateTypes";
-import { updateMpdProfileStateActionAtom } from "../../profile";
-import { removeProfileFromState } from "../../profile/functions/profileConstruction";
+import {
+	deleteMpdProfileActionAtom,
+	updateCurrentMpdProfileActionAtom,
+} from "../../profile";
 
 export type ProfilesProfileProps = {
 	index: number;
 	profile: MpdProfile;
 	mpdProfileState: MpdProfileState;
+	isActiveOnThisDevice: boolean;
 };
 
 export function ProfilesProfile(props: ProfilesProfileProps) {
-	const { index, profile, mpdProfileState } = props;
+	const { index, profile, mpdProfileState, isActiveOnThisDevice } = props;
 
 	const notify = useNotification();
 
-	const updateMpdProfileState = useSetAtom(updateMpdProfileStateActionAtom);
+	const deleteMpdProfile = useSetAtom(deleteMpdProfileActionAtom);
+	const updateCurrentMpdProfile = useSetAtom(updateCurrentMpdProfileActionAtom);
+
+	const isDefaultProfile =
+		mpdProfileState.currentProfile?.name === profile.name;
 
 	const handleProfileDeleted = useCallback(() => {
-		const newState = removeProfileFromState(mpdProfileState, profile.name);
-		if (newState === undefined) {
-			return;
-		}
-		updateMpdProfileState({
-			state: newState,
-			mode: UpdateMode.LOCAL_STATE | UpdateMode.PERSIST,
-		});
+		deleteMpdProfile({ profileName: profile.name });
 		notify({
 			status: "success",
 			title: "Profile successfully deleted",
 			description: `${profile.name} profile has been deleted.`,
 		});
-	}, [mpdProfileState, notify, profile.name, updateMpdProfileState]);
+	}, [deleteMpdProfile, notify, profile.name]);
+
+	const handleSetAsDefault = useCallback(() => {
+		// This changes the workspace default for new devices, not what this
+		// device is currently using (that's a separate, per-device selection
+		// made by switching profiles in the header). LOCAL_STATE is still
+		// needed here so the local mirror of currentProfile — and therefore
+		// the "Default for new devices" badge — updates immediately instead
+		// of only on the next refetch.
+		updateCurrentMpdProfile({
+			profile,
+			mode: UpdateMode.LOCAL_STATE | UpdateMode.PERSIST,
+		});
+		notify({
+			status: "success",
+			title: "Default profile updated",
+			description: `${profile.name} is now the default profile for new devices.`,
+		});
+	}, [notify, profile, updateCurrentMpdProfile]);
+
+	const canRemove = !(index === 0 && mpdProfileState.profiles.length === 1);
 
 	return (
 		<Table.Tr>
@@ -45,20 +65,39 @@ export function ProfilesProfile(props: ProfilesProfileProps) {
 			<Table.Td>{profile.host}</Table.Td>
 			<Table.Td>{profile.port}</Table.Td>
 			<Table.Td>{profile.password ? "••••" : ""}</Table.Td>
-			{index === 0 && mpdProfileState.profiles.length === 1 ? (
-				<Table.Td />
-			) : (
-				<Table.Td>
-					<Button
-						color="red"
-						variant="outline"
-						size="xs"
-						onClick={handleProfileDeleted}
-					>
-						Remove
-					</Button>
-				</Table.Td>
-			)}
+			<Table.Td>
+				<Group gap={4} wrap="nowrap">
+					{isActiveOnThisDevice && (
+						<Badge size="xs" variant="outline" color="blue">
+							In use on this device
+						</Badge>
+					)}
+					{isDefaultProfile && (
+						<Badge size="xs" variant="outline" color="green">
+							Default for new devices
+						</Badge>
+					)}
+				</Group>
+			</Table.Td>
+			<Table.Td>
+				<Group gap={8} wrap="nowrap">
+					{!isDefaultProfile && (
+						<Button variant="outline" size="xs" onClick={handleSetAsDefault}>
+							Set as default
+						</Button>
+					)}
+					{canRemove && (
+						<Button
+							color="red"
+							variant="outline"
+							size="xs"
+							onClick={handleProfileDeleted}
+						>
+							Remove
+						</Button>
+					)}
+				</Group>
+			</Table.Td>
 		</Table.Tr>
 	);
 }

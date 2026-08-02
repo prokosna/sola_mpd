@@ -10,7 +10,7 @@ import type { Message } from "@bufbuild/protobuf";
  * Describes the file mpd/mpd_profile.proto.
  */
 export const file_mpd_mpd_profile: GenFile = /*@__PURE__*/
-  fileDesc("ChVtcGQvbXBkX3Byb2ZpbGUucHJvdG8iSAoKTXBkUHJvZmlsZRIMCgRuYW1lGAEgASgJEgwKBGhvc3QYAiABKAkSDAoEcG9ydBgDIAEoDRIQCghwYXNzd29yZBgEIAEoCSJWCg9NcGRQcm9maWxlU3RhdGUSJAoPY3VycmVudF9wcm9maWxlGAEgASgLMgsuTXBkUHJvZmlsZRIdCghwcm9maWxlcxgCIAMoCzILLk1wZFByb2ZpbGViBnByb3RvMw");
+  fileDesc("ChVtcGQvbXBkX3Byb2ZpbGUucHJvdG8iSAoKTXBkUHJvZmlsZRIMCgRuYW1lGAEgASgJEgwKBGhvc3QYAiABKAkSDAoEcG9ydBgDIAEoDRIQCghwYXNzd29yZBgEIAEoCSJuCg9NcGRQcm9maWxlU3RhdGUSJAoPY3VycmVudF9wcm9maWxlGAEgASgLMgsuTXBkUHJvZmlsZRIdCghwcm9maWxlcxgCIAMoCzILLk1wZFByb2ZpbGUSFgoOc2NoZW1hX3ZlcnNpb24YAyABKA1iBnByb3RvMw");
 
 /**
  * @generated from message MpdProfile
@@ -45,6 +45,9 @@ export const MpdProfileSchema: GenMessage<MpdProfile> = /*@__PURE__*/
   messageDesc(file_mpd_mpd_profile, 0);
 
 /**
+ * current_profile is the workspace-wide default profile. Per-device selection
+ * lives in device settings, not here.
+ *
  * @generated from message MpdProfileState
  */
 export type MpdProfileState = Message<"MpdProfileState"> & {
@@ -57,6 +60,11 @@ export type MpdProfileState = Message<"MpdProfileState"> & {
    * @generated from field: repeated MpdProfile profiles = 2;
    */
   profiles: MpdProfile[];
+
+  /**
+   * @generated from field: uint32 schema_version = 3;
+   */
+  schemaVersion: number;
 };
 
 /**
