@@ -3,7 +3,7 @@ import { atom, type Getter } from "jotai";
 import {
 	buildDeviceProfileSettingKey,
 	DEVICE_SETTING_KEY_BROWSER_LAST_POSITION,
-} from "../../../../../lib/deviceSettings/deviceSettingKeys";
+} from "../../../../common/const/deviceSettingKeys";
 import { deviceSettingsRepositoryAtom } from "../../../../common/states/atoms/deviceSettingsRepositoryAtom";
 import { currentMpdProfileAtom } from "../../../../profile/states/atoms/mpdProfileAtom";
 import { BROWSER_SELECTION_QUERY_PARAM } from "../../../common/const/browsingSelectionQueryParams";

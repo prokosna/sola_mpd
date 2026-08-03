@@ -6,9 +6,8 @@ import {
 } from "@sola_mpd/shared/src/models/song_table_pb.js";
 import { createStore } from "jotai";
 import { describe, expect, it, vi } from "vitest";
-
-import type { DeviceSettingsRepository } from "../../../../lib/deviceSettings/DeviceSettingsRepository";
 import { UpdateMode } from "../../../../types/stateTypes";
+import type { DeviceSettingsRepository } from "../../../common/repositories/DeviceSettingsRepository";
 import { deviceSettingsRepositoryAtom } from "../../../common/states/atoms/deviceSettingsRepositoryAtom";
 import { songTableColumnLayoutKeyForTag } from "../../functions/songTableColumnLayout";
 import type { SongTableStateRepository } from "../../repositories/SongTableStateRepository";

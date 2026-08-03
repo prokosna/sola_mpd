@@ -1,10 +1,9 @@
 import { atom } from "jotai";
-
+import { showNotification } from "../../../../../lib/mantine/showNotification";
 import {
 	buildDeviceProfileSettingKey,
 	DEVICE_SETTING_KEY_BROWSER_LAST_POSITION,
-} from "../../../../../lib/deviceSettings/deviceSettingKeys";
-import { showNotification } from "../../../../../lib/mantine/showNotification";
+} from "../../../../common/const/deviceSettingKeys";
 import { deviceSettingsRepositoryAtom } from "../../../../common/states/atoms/deviceSettingsRepositoryAtom";
 import { currentMpdProfileAtom } from "../../../../profile/states/atoms/mpdProfileAtom";
 import {

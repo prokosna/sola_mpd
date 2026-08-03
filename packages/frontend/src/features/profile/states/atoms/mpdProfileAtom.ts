@@ -1,9 +1,9 @@
 import type { MpdProfileState } from "@sola_mpd/shared/src/models/mpd/mpd_profile_pb.js";
 import { atom, type Getter } from "jotai";
 import { atomWithDefault } from "jotai/utils";
-import { sweepOrphanedProfileDeviceSettings } from "../../../../lib/deviceSettings/sweepOrphanedProfileDeviceSettings";
 import { atomWithSync } from "../../../../lib/jotai/atomWithSync";
 import { deviceSettingsRepositoryAtom } from "../../../common/states/atoms/deviceSettingsRepositoryAtom";
+import { sweepOrphanedProfileDeviceSettings } from "../../functions/sweepOrphanedProfileDeviceSettings";
 
 import { mpdProfileStateRepositoryAtom } from "./mpdProfileStateRepositoryAtom";
 import { selectedProfileNameAtom } from "./selectedProfileNameAtom";

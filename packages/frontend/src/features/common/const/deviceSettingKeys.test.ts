@@ -22,7 +22,7 @@ describe("buildDeviceProfileSettingKey", () => {
 				"Home",
 				DEVICE_SETTING_KEY_BROWSER_LAST_POSITION,
 			),
-		).toBe("sola:v1:device:profile:Home:browser-last-position");
+		).toBe("sola:v1:device:profile:Home:browserLastPosition");
 	});
 });
 

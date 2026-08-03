@@ -8,7 +8,7 @@ import { act, renderHook } from "@testing-library/react";
 import { getDefaultStore } from "jotai";
 import { describe, expect, it, vi } from "vitest";
 
-import type { DeviceSettingsRepository } from "../../../lib/deviceSettings/DeviceSettingsRepository";
+import type { DeviceSettingsRepository } from "../../common/repositories/DeviceSettingsRepository";
 import { deviceSettingsRepositoryAtom } from "../../common/states/atoms/deviceSettingsRepositoryAtom";
 import { songTableColumnLayoutKeyForTag } from "../../song_table/functions/songTableColumnLayout";
 import type { SongTableStateRepository } from "../../song_table/repositories/SongTableStateRepository";

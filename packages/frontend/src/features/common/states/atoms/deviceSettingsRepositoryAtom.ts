@@ -1,4 +1,4 @@
-import type { DeviceSettingsRepository } from "../../../../lib/deviceSettings/DeviceSettingsRepository";
+import type { DeviceSettingsRepository } from "../../repositories/DeviceSettingsRepository";
 
 import { createStateRepositoryAtom } from "./stateRepositoryAtom";
 

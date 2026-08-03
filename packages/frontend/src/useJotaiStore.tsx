@@ -8,6 +8,7 @@ import { ViewStateBlobRepositorySocketIo } from "./features/browsing/common/repo
 import { viewStateBlobRepositoryAtom } from "./features/browsing/common/states/atoms/viewStateBlobRepositoryAtom";
 import { RecentlyAddedStateRepositorySocketIo } from "./features/browsing/recently_added/repositories/RecentlyAddedStateRepositorySocketIo";
 import { recentlyAddedStateRepositoryAtom } from "./features/browsing/recently_added/states/atoms/recentlyAddedStateRepositoryAtom";
+import { DeviceSettingsRepositoryLocalStorage } from "./features/common/repositories/DeviceSettingsRepositoryLocalStorage";
 import { handleConfigChangedActionAtom } from "./features/common/states/actions/handleConfigChangedActionAtom";
 import { deviceSettingsRepositoryAtom } from "./features/common/states/atoms/deviceSettingsRepositoryAtom";
 import { MpdClientSocketIo } from "./features/mpd/services/MpdClientSocketIo";
@@ -24,7 +25,6 @@ import { SavedSearchesRepositorySocketIo } from "./features/search/repositories/
 import { savedSearchesRepositoryAtom } from "./features/search/states/atoms/savedSearchesRepositoryAtom";
 import { SongTableStateRepositorySocketIo } from "./features/song_table/repositories/SongTableStateRepositorySocketIo";
 import { songTableStateRepositoryAtom } from "./features/song_table/states/atoms/songTableStateRepositoryAtom";
-import { DeviceSettingsRepositoryLocalStorage } from "./lib/deviceSettings/DeviceSettingsRepositoryLocalStorage";
 import type { MessagingClient } from "./lib/messaging/MessagingClient";
 import { MessagingClientElectronIpc } from "./lib/messaging/MessagingClientElectronIpc";
 import { MessagingClientSocketIo } from "./lib/messaging/MessagingClientSocketIo";

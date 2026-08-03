@@ -5,9 +5,8 @@ import {
 } from "@sola_mpd/shared/src/models/mpd/mpd_profile_pb.js";
 import { createStore } from "jotai";
 import { describe, expect, it, vi } from "vitest";
-
-import type { DeviceSettingsRepository } from "../../../../lib/deviceSettings/DeviceSettingsRepository";
-import { buildDeviceProfileSettingKey } from "../../../../lib/deviceSettings/deviceSettingKeys";
+import { buildDeviceProfileSettingKey } from "../../../common/const/deviceSettingKeys";
+import type { DeviceSettingsRepository } from "../../../common/repositories/DeviceSettingsRepository";
 import { deviceSettingsRepositoryAtom } from "../../../common/states/atoms/deviceSettingsRepositoryAtom";
 import type { MpdProfileStateRepository } from "../../repositories/MpdProfileStateRepository";
 import {
@@ -52,11 +51,11 @@ describe("deleteMpdProfileActionAtom", () => {
 		store.set(mpdProfileStateRepositoryAtom, mpdProfileStateRepository);
 		const deletedKey = buildDeviceProfileSettingKey(
 			"Home",
-			"browser-last-position",
+			"browserLastPosition",
 		);
 		const keptKey = buildDeviceProfileSettingKey(
 			"Office",
-			"browser-last-position",
+			"browserLastPosition",
 		);
 		const deviceSettingsRepository = createFakeDeviceSettingsRepository([
 			deletedKey,
@@ -136,7 +135,7 @@ describe("deleteMpdProfileActionAtom", () => {
 		};
 		store.set(mpdProfileStateRepositoryAtom, mpdProfileStateRepository);
 		const deviceSettingsRepository = createFakeDeviceSettingsRepository([
-			buildDeviceProfileSettingKey("Home", "browser-last-position"),
+			buildDeviceProfileSettingKey("Home", "browserLastPosition"),
 		]);
 		store.set(deviceSettingsRepositoryAtom, deviceSettingsRepository);
 

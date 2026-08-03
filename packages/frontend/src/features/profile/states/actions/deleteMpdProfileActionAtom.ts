@@ -1,9 +1,8 @@
 import { atom } from "jotai";
-
-import { sweepOrphanedProfileDeviceSettings } from "../../../../lib/deviceSettings/sweepOrphanedProfileDeviceSettings";
 import { showNotification } from "../../../../lib/mantine/showNotification";
 import { deviceSettingsRepositoryAtom } from "../../../common/states/atoms/deviceSettingsRepositoryAtom";
 import { removeProfileFromState } from "../../functions/profileConstruction";
+import { sweepOrphanedProfileDeviceSettings } from "../../functions/sweepOrphanedProfileDeviceSettings";
 import { mpdProfileStateAsyncAtom } from "../atoms/mpdProfileAtom";
 import { mpdProfileStateRepositoryAtom } from "../atoms/mpdProfileStateRepositoryAtom";
 

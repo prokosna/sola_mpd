@@ -3,7 +3,7 @@ import { atomWithDefault } from "jotai/utils";
 import {
 	buildDeviceSettingKey,
 	DEVICE_SETTING_KEY_SELECTED_PROFILE_NAME,
-} from "../../../../lib/deviceSettings/deviceSettingKeys";
+} from "../../../common/const/deviceSettingKeys";
 import { deviceSettingsRepositoryAtom } from "../../../common/states/atoms/deviceSettingsRepositoryAtom";
 
 const selectedProfileNameKey = buildDeviceSettingKey(

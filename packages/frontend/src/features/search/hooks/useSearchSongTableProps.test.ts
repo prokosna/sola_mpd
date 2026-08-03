@@ -21,13 +21,13 @@ import { createElement } from "react";
 import { describe, expect, it, vi } from "vitest";
 
 import { ROUTE_HOME_SEARCH } from "../../../const/routes";
-import type { DeviceSettingsRepository } from "../../../lib/deviceSettings/DeviceSettingsRepository";
+import type { AdvancedSearchClient } from "../../advanced_search/services/AdvancedSearchClient";
+import { advancedSearchClientAtom } from "../../advanced_search/states/atoms/advancedSearchClientAtom";
 import {
 	buildDeviceSettingKey,
 	DEVICE_SETTING_KEY_SONG_TABLE_COLUMN_LAYOUT,
-} from "../../../lib/deviceSettings/deviceSettingKeys";
-import type { AdvancedSearchClient } from "../../advanced_search/services/AdvancedSearchClient";
-import { advancedSearchClientAtom } from "../../advanced_search/states/atoms/advancedSearchClientAtom";
+} from "../../common/const/deviceSettingKeys";
+import type { DeviceSettingsRepository } from "../../common/repositories/DeviceSettingsRepository";
 import { deviceSettingsRepositoryAtom } from "../../common/states/atoms/deviceSettingsRepositoryAtom";
 import { pathnameAtom } from "../../location/states/atoms/locationAtom";
 import { mpdClientAtom } from "../../mpd/states/atoms/mpdClientAtom";

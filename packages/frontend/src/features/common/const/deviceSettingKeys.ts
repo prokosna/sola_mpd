@@ -3,10 +3,10 @@
 export const DEVICE_SETTING_KEY_SELECTED_PROFILE_NAME = "selectedProfileName";
 export const DEVICE_SETTING_KEY_SONG_TABLE_COLUMN_LAYOUT =
 	"songTableColumnLayout";
-export const DEVICE_SETTING_KEY_BROWSER_LAST_POSITION = "browser-last-position";
+export const DEVICE_SETTING_KEY_BROWSER_LAST_POSITION = "browserLastPosition";
 export const DEVICE_SETTING_KEY_RECENTLY_ADDED_LAST_POSITION =
-	"recently-added-last-position";
-export const DEVICE_SETTING_KEY_VIEW_STATE_BLOB_TOKEN = "view-state-blob-token";
+	"recentlyAddedLastPosition";
+export const DEVICE_SETTING_KEY_VIEW_STATE_BLOB_TOKEN = "viewStateBlobToken";
 
 const DEVICE_KEY_PREFIX = "sola:v1:device:";
 /** Exported so callers (e.g. the profile-deletion sweep) can list per-profile keys without re-deriving the prefix. */
