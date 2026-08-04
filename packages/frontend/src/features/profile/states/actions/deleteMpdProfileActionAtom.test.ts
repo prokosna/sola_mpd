@@ -5,9 +5,11 @@ import {
 } from "@sola_mpd/shared/src/models/mpd/mpd_profile_pb.js";
 import { createStore } from "jotai";
 import { describe, expect, it, vi } from "vitest";
-import { buildDeviceProfileSettingKey } from "../../../common/const/deviceSettingKeys";
-import type { DeviceSettingsRepository } from "../../../common/repositories/DeviceSettingsRepository";
-import { deviceSettingsRepositoryAtom } from "../../../common/states/atoms/deviceSettingsRepositoryAtom";
+import type { DeviceSettingsRepository } from "../../../common";
+import {
+	buildDeviceProfileSettingKey,
+	deviceSettingsRepositoryAtom,
+} from "../../../common";
 import type { MpdProfileStateRepository } from "../../repositories/MpdProfileStateRepository";
 import {
 	mpdProfileStateAsyncAtom,

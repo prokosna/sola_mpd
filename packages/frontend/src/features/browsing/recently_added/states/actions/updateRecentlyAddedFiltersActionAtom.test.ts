@@ -15,7 +15,7 @@ import {
 } from "../atoms/recentlyAddedStateAtom";
 import { recentlyAddedStateRepositoryAtom } from "../atoms/recentlyAddedStateRepositoryAtom";
 
-import { updateRecentlyAddedBrowserFiltersActionAtom } from "./updateRecentlyAddedBrowserFiltersActionAtom";
+import { updateRecentlyAddedFiltersActionAtom } from "./updateRecentlyAddedFiltersActionAtom";
 
 function createFakeRecentlyAddedStateRepository(): RecentlyAddedStateRepository {
 	return {
@@ -55,7 +55,7 @@ async function createReadyStore(initial: RecentlyAddedState) {
 	return { store, recentlyAddedStateRepository };
 }
 
-describe("updateRecentlyAddedBrowserFiltersActionAtom", () => {
+describe("updateRecentlyAddedFiltersActionAtom", () => {
 	it("does not persist to the server when only the selection changes", async () => {
 		const initial = create(RecentlyAddedStateSchema, {
 			filters: [
@@ -66,7 +66,7 @@ describe("updateRecentlyAddedBrowserFiltersActionAtom", () => {
 		const { store, recentlyAddedStateRepository } =
 			await createReadyStore(initial);
 
-		await store.set(updateRecentlyAddedBrowserFiltersActionAtom, [
+		await store.set(updateRecentlyAddedFiltersActionAtom, [
 			createFilter(Song_MetadataTag.ARTIST, 0, ["Beatles"]),
 			createFilter(Song_MetadataTag.ALBUM, 1),
 		]);
@@ -84,7 +84,7 @@ describe("updateRecentlyAddedBrowserFiltersActionAtom", () => {
 		const { store, recentlyAddedStateRepository } =
 			await createReadyStore(initial);
 
-		await store.set(updateRecentlyAddedBrowserFiltersActionAtom, [
+		await store.set(updateRecentlyAddedFiltersActionAtom, [
 			createFilter(Song_MetadataTag.GENRE, 0, ["Rock"]),
 			createFilter(Song_MetadataTag.ALBUM, 1),
 		]);

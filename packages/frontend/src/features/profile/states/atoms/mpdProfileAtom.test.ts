@@ -7,12 +7,12 @@ import {
 } from "@sola_mpd/shared/src/models/mpd/mpd_profile_pb.js";
 import { createStore } from "jotai";
 import { describe, expect, it, vi } from "vitest";
+import type { DeviceSettingsRepository } from "../../../common";
 import {
 	buildDeviceSettingKey,
 	DEVICE_SETTING_KEY_SELECTED_PROFILE_NAME,
-} from "../../../common/const/deviceSettingKeys";
-import type { DeviceSettingsRepository } from "../../../common/repositories/DeviceSettingsRepository";
-import { deviceSettingsRepositoryAtom } from "../../../common/states/atoms/deviceSettingsRepositoryAtom";
+	deviceSettingsRepositoryAtom,
+} from "../../../common";
 
 import {
 	currentMpdProfileAtom,

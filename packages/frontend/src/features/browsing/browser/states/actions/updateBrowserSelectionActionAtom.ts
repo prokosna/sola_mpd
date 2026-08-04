@@ -1,4 +1,4 @@
-import { DEVICE_SETTING_KEY_BROWSER_LAST_POSITION } from "../../../../common/const/deviceSettingKeys";
+import { DEVICE_SETTING_KEY_BROWSER_LAST_POSITION } from "../../../../common";
 import { BROWSER_SELECTION_QUERY_PARAM } from "../../../common/const/browsingSelectionQueryParams";
 import { createUpdateSelectionActionAtom } from "../../../common/states/actions/createUpdateSelectionActionAtom";
 

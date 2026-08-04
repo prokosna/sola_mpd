@@ -6,7 +6,7 @@ import { useSearchParams } from "react-router";
 import { RECENTLY_ADDED_SELECTION_QUERY_PARAM } from "../../common/const/browsingSelectionQueryParams";
 import { applySelectionQueryParam } from "../../common/functions/applySelectionQueryParam";
 import { extractBrowserSelectionFromFilters } from "../../common/functions/browserFilter";
-import { updateRecentlyAddedBrowserFiltersActionAtom } from "../states/actions/updateRecentlyAddedBrowserFiltersActionAtom";
+import { updateRecentlyAddedFiltersActionAtom } from "../states/actions/updateRecentlyAddedFiltersActionAtom";
 import { updateRecentlyAddedSelectionActionAtom } from "../states/actions/updateRecentlyAddedSelectionActionAtom";
 
 /**
@@ -15,9 +15,7 @@ import { updateRecentlyAddedSelectionActionAtom } from "../states/actions/update
  */
 export function useUpdateRecentlyAddedFilters() {
 	const [, setSearchParams] = useSearchParams();
-	const updateFiltersAction = useSetAtom(
-		updateRecentlyAddedBrowserFiltersActionAtom,
-	);
+	const updateFiltersAction = useSetAtom(updateRecentlyAddedFiltersActionAtom);
 	const updateSelectionAction = useSetAtom(
 		updateRecentlyAddedSelectionActionAtom,
 	);

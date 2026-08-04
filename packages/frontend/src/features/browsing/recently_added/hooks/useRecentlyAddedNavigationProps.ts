@@ -11,8 +11,8 @@ import {
 	syncRecentlyAddedFastStateEffectAtom,
 } from "../states/atoms/recentlyAddedFastStateAtom";
 import {
-	filteredRecentlyAddedBrowserFilterValuesMapAtom,
-	recentlyAddedBrowserFiltersAtom,
+	filteredRecentlyAddedFilterValuesMapAtom,
+	recentlyAddedFiltersAtom,
 } from "../states/atoms/recentlyAddedFiltersAtom";
 import { useUpdateRecentlyAddedFilters } from "./useUpdateRecentlyAddedFilters";
 
@@ -30,9 +30,9 @@ export function useRecentlyAddedNavigationProps(): RecentlyAddedNavigationProps 
 	// Mount the profile-switch reset effect for the fast accumulator.
 	useAtom(syncRecentlyAddedFastStateEffectAtom);
 
-	const browserFilters = useAtomValue(recentlyAddedBrowserFiltersAtom);
+	const browserFilters = useAtomValue(recentlyAddedFiltersAtom);
 	const browserFilterValues = useAtomValue(
-		filteredRecentlyAddedBrowserFilterValuesMapAtom,
+		filteredRecentlyAddedFilterValuesMapAtom,
 	);
 	const updateRecentlyAddedFilters = useUpdateRecentlyAddedFilters();
 	const capabilities = useAtomValue(mpdCapabilitiesAtom);

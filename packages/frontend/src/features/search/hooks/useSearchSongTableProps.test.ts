@@ -23,12 +23,12 @@ import { describe, expect, it, vi } from "vitest";
 import { ROUTE_HOME_SEARCH } from "../../../const/routes";
 import type { AdvancedSearchClient } from "../../advanced_search/services/AdvancedSearchClient";
 import { advancedSearchClientAtom } from "../../advanced_search/states/atoms/advancedSearchClientAtom";
+import type { DeviceSettingsRepository } from "../../common";
 import {
 	buildDeviceSettingKey,
 	DEVICE_SETTING_KEY_SONG_TABLE_COLUMN_LAYOUT,
-} from "../../common/const/deviceSettingKeys";
-import type { DeviceSettingsRepository } from "../../common/repositories/DeviceSettingsRepository";
-import { deviceSettingsRepositoryAtom } from "../../common/states/atoms/deviceSettingsRepositoryAtom";
+	deviceSettingsRepositoryAtom,
+} from "../../common";
 import { pathnameAtom } from "../../location/states/atoms/locationAtom";
 import { mpdClientAtom } from "../../mpd/states/atoms/mpdClientAtom";
 import type { PluginService } from "../../plugin/services/PluginService";

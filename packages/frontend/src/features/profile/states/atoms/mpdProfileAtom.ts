@@ -2,7 +2,7 @@ import type { MpdProfileState } from "@sola_mpd/shared/src/models/mpd/mpd_profil
 import { atom, type Getter } from "jotai";
 import { atomWithDefault } from "jotai/utils";
 import { atomWithSync } from "../../../../lib/jotai/atomWithSync";
-import { deviceSettingsRepositoryAtom } from "../../../common/states/atoms/deviceSettingsRepositoryAtom";
+import { deviceSettingsRepositoryAtom } from "../../../common";
 import { sweepOrphanedProfileDeviceSettings } from "../../functions/sweepOrphanedProfileDeviceSettings";
 
 import { mpdProfileStateRepositoryAtom } from "./mpdProfileStateRepositoryAtom";

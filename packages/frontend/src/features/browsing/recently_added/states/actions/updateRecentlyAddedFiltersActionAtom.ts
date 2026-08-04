@@ -14,7 +14,7 @@ import { updateRecentlyAddedStateActionAtom } from "./updateRecentlyAddedStateAc
 // navigation position and now lives in the URL
 // — see hooks/useUpdateRecentlyAddedFilters.ts, which handles that side and
 // calls this action for the structural half of every filter change.
-export const updateRecentlyAddedBrowserFiltersActionAtom = atom(
+export const updateRecentlyAddedFiltersActionAtom = atom(
 	null,
 	async (get, set, filters: BrowserFilter[]) => {
 		const recentlyAddedState = get(recentlyAddedStateAtom);

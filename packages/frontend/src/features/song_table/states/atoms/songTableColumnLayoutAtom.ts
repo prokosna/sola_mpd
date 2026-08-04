@@ -4,8 +4,8 @@ import { atomWithSync } from "../../../../lib/jotai/atomWithSync";
 import {
 	buildDeviceSettingKey,
 	DEVICE_SETTING_KEY_SONG_TABLE_COLUMN_LAYOUT,
-} from "../../../common/const/deviceSettingKeys";
-import { deviceSettingsRepositoryAtom } from "../../../common/states/atoms/deviceSettingsRepositoryAtom";
+	deviceSettingsRepositoryAtom,
+} from "../../../common";
 import { buildSongTableColumnLayout } from "../../functions/songTableColumnLayout";
 import type { SongTableColumnLayout } from "../../types/songTableTypes";
 import { songTableStateRepositoryAtom } from "./songTableStateRepositoryAtom";

@@ -2,7 +2,7 @@ import { CONFIG_KEY_MPD_PROFILE_STATE } from "@sola_mpd/shared/src/const/socketi
 import type { MpdProfileState } from "@sola_mpd/shared/src/models/mpd/mpd_profile_pb.js";
 import { MpdProfileStateSchema } from "@sola_mpd/shared/src/models/mpd/mpd_profile_pb.js";
 import type { MessagingClient } from "../../../lib/messaging/MessagingClient";
-import { StateRepositorySocketIo } from "../../common/repositories/StateRepositorySocketIo";
+import { StateRepositorySocketIo } from "../../common";
 
 export class MpdProfileStateRepositorySocketIo extends StateRepositorySocketIo<MpdProfileState> {
 	constructor(client: MessagingClient) {

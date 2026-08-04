@@ -1,8 +1,8 @@
+import type { DeviceSettingsRepository } from "../../common";
 import {
 	DEVICE_PROFILE_KEY_PREFIX,
 	parseDeviceProfileSettingKey,
-} from "../../common/const/deviceSettingKeys";
-import type { DeviceSettingsRepository } from "../../common/repositories/DeviceSettingsRepository";
+} from "../../common";
 
 /**
  * Deletes per-profile device settings (`sola:v1:device:profile:<name>:*`)

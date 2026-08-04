@@ -5,10 +5,10 @@ import { useCallback } from "react";
 import type { UpdateMode } from "../../../../types/stateTypes";
 import { BrowserNavigationBreadcrumbsView } from "../../common/components/BrowserNavigationBreadcrumbsView";
 import { useUpdateRecentlyAddedFilters } from "../hooks/useUpdateRecentlyAddedFilters";
-import { recentlyAddedBrowserFiltersAtom } from "../states/atoms/recentlyAddedFiltersAtom";
+import { recentlyAddedFiltersAtom } from "../states/atoms/recentlyAddedFiltersAtom";
 
 export function RecentlyAddedNavigationBreadcrumbs() {
-	const browserFilters = useAtomValue(recentlyAddedBrowserFiltersAtom);
+	const browserFilters = useAtomValue(recentlyAddedFiltersAtom);
 	const updateRecentlyAddedFilters = useUpdateRecentlyAddedFilters();
 
 	const updateBrowserFilters = useCallback(

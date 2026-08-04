@@ -1,8 +1,10 @@
 import { atom } from "jotai";
 
 import { showNotification } from "../../../../../lib/mantine/showNotification";
-import { buildDeviceProfileSettingKey } from "../../../../common/const/deviceSettingKeys";
-import { deviceSettingsRepositoryAtom } from "../../../../common/states/atoms/deviceSettingsRepositoryAtom";
+import {
+	buildDeviceProfileSettingKey,
+	deviceSettingsRepositoryAtom,
+} from "../../../../common";
 import { currentMpdProfileAtom } from "../../../../profile/states/atoms/mpdProfileAtom";
 import { VIEW_STATE_BLOB_QUERY_PARAM } from "../../const/browsingSelectionQueryParams";
 import { serializeBrowserSelection } from "../../functions/serializeBrowserSelection";

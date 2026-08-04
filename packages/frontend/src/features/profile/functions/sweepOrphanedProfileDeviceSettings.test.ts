@@ -1,12 +1,12 @@
 import { describe, expect, it, vi } from "vitest";
+import type { DeviceSettingsRepository } from "../../common";
 import {
 	buildDeviceProfileSettingKey,
 	buildDeviceSettingKey,
 	DEVICE_SETTING_KEY_BROWSER_LAST_POSITION,
 	DEVICE_SETTING_KEY_SELECTED_PROFILE_NAME,
 	DEVICE_SETTING_KEY_SONG_TABLE_COLUMN_LAYOUT,
-} from "../../common/const/deviceSettingKeys";
-import type { DeviceSettingsRepository } from "../../common/repositories/DeviceSettingsRepository";
+} from "../../common";
 import { sweepOrphanedProfileDeviceSettings } from "./sweepOrphanedProfileDeviceSettings";
 
 function createFakeDeviceSettingsRepository(

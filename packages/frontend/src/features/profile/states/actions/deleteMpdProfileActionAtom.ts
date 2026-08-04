@@ -1,6 +1,6 @@
 import { atom } from "jotai";
 import { showNotification } from "../../../../lib/mantine/showNotification";
-import { deviceSettingsRepositoryAtom } from "../../../common/states/atoms/deviceSettingsRepositoryAtom";
+import { deviceSettingsRepositoryAtom } from "../../../common";
 import { removeProfileFromState } from "../../functions/profileConstruction";
 import { sweepOrphanedProfileDeviceSettings } from "../../functions/sweepOrphanedProfileDeviceSettings";
 import { mpdProfileStateAsyncAtom } from "../atoms/mpdProfileAtom";

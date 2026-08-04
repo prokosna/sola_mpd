@@ -1,4 +1,4 @@
-import { createStateRepositoryAtom } from "../../../common/states/atoms/stateRepositoryAtom";
+import { createStateRepositoryAtom } from "../../../common";
 import type { PluginStateRepository } from "../../repositories/PluginStateRepository";
 
 export const pluginStateRepositoryAtom =

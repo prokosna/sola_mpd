@@ -7,8 +7,8 @@ import {
 import { createStore } from "jotai";
 import { describe, expect, it, vi } from "vitest";
 import { UpdateMode } from "../../../../types/stateTypes";
-import type { DeviceSettingsRepository } from "../../../common/repositories/DeviceSettingsRepository";
-import { deviceSettingsRepositoryAtom } from "../../../common/states/atoms/deviceSettingsRepositoryAtom";
+import type { DeviceSettingsRepository } from "../../../common";
+import { deviceSettingsRepositoryAtom } from "../../../common";
 import { songTableColumnLayoutKeyForTag } from "../../functions/songTableColumnLayout";
 import type { SongTableStateRepository } from "../../repositories/SongTableStateRepository";
 import {

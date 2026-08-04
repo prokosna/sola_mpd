@@ -1,9 +1,11 @@
 import { Song_MetadataTag } from "@sola_mpd/shared/src/models/song_pb.js";
 import { createStore } from "jotai";
 import { describe, expect, it } from "vitest";
-import { buildDeviceSettingKey } from "../../../common/const/deviceSettingKeys";
-import type { DeviceSettingsRepository } from "../../../common/repositories/DeviceSettingsRepository";
-import { deviceSettingsRepositoryAtom } from "../../../common/states/atoms/deviceSettingsRepositoryAtom";
+import type { DeviceSettingsRepository } from "../../../common";
+import {
+	buildDeviceSettingKey,
+	deviceSettingsRepositoryAtom,
+} from "../../../common";
 import { songTableColumnLayoutKeyForTag } from "../../functions/songTableColumnLayout";
 import type { SongTableColumnLayout } from "../../types/songTableTypes";
 import { songTableColumnLayoutAtom } from "../atoms/songTableColumnLayoutAtom";

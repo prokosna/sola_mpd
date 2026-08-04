@@ -5,8 +5,10 @@ import {
 	type WritableAtom,
 } from "jotai";
 
-import { buildDeviceProfileSettingKey } from "../../../../common/const/deviceSettingKeys";
-import { deviceSettingsRepositoryAtom } from "../../../../common/states/atoms/deviceSettingsRepositoryAtom";
+import {
+	buildDeviceProfileSettingKey,
+	deviceSettingsRepositoryAtom,
+} from "../../../../common";
 import { currentMpdProfileAtom } from "../../../../profile/states/atoms/mpdProfileAtom";
 import { deserializeBrowserSelection } from "../../functions/deserializeBrowserSelection";
 import { decodeBrowserSelectionValue } from "../../functions/serializeBrowserSelection";

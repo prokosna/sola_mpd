@@ -9,12 +9,12 @@ import { createStore } from "jotai";
 import { Provider } from "jotai/react";
 import { createElement } from "react";
 import { describe, expect, it } from "vitest";
+import type { DeviceSettingsRepository } from "../../common";
 import {
 	buildDeviceSettingKey,
 	DEVICE_SETTING_KEY_SONG_TABLE_COLUMN_LAYOUT,
-} from "../../common/const/deviceSettingKeys";
-import type { DeviceSettingsRepository } from "../../common/repositories/DeviceSettingsRepository";
-import { deviceSettingsRepositoryAtom } from "../../common/states/atoms/deviceSettingsRepositoryAtom";
+	deviceSettingsRepositoryAtom,
+} from "../../common";
 import { songTableColumnLayoutKeyForTag } from "../../song_table/functions/songTableColumnLayout";
 import { songTableStateAsyncAtom } from "../../song_table/states/atoms/songTableAtom";
 import { songTableColumnLayoutAtom } from "../../song_table/states/atoms/songTableColumnLayoutAtom";
