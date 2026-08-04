@@ -12,10 +12,9 @@ import type { Song } from "@sola_mpd/shared/src/models/song_pb.js";
 import { useAtomValue, useSetAtom } from "jotai";
 import { useCallback, useState } from "react";
 import { useHandlePluginExecuted } from "../hooks/useHandlePluginExecuted";
-import {
-	isPreviousPluginStillRunningAtom,
-	pluginExecutionModalOpenAtom,
-} from "../states/atoms/pluginExecutionAtom";
+import { closePluginExecutionModalActionAtom } from "../states/actions/closePluginExecutionModalActionAtom";
+import { showPluginExecutionProgressActionAtom } from "../states/actions/showPluginExecutionProgressActionAtom";
+import { isPreviousPluginStillRunningAtom } from "../states/atoms/pluginExecutionAtom";
 
 type PluginExecutionModalStartProps = {
 	plugin: Plugin;
@@ -31,8 +30,11 @@ export function PluginExecutionModalStart(
 		isPreviousPluginStillRunningAtom,
 	);
 	const handlePluginExecuted = useHandlePluginExecuted();
-	const setIsPluginExecutionModalOpen = useSetAtom(
-		pluginExecutionModalOpenAtom,
+	const closePluginExecutionModal = useSetAtom(
+		closePluginExecutionModalActionAtom,
+	);
+	const showPluginExecutionProgress = useSetAtom(
+		showPluginExecutionProgressActionAtom,
 	);
 
 	const [parameterValues, setParameterValues] = useState<Map<string, string>>(
@@ -41,13 +43,13 @@ export function PluginExecutionModalStart(
 
 	const onExecuted = useCallback(() => {
 		handlePluginExecuted(plugin, songs, parameterValues);
-		setIsPluginExecutionModalOpen("progress");
+		showPluginExecutionProgress();
 	}, [
 		handlePluginExecuted,
 		parameterValues,
 		plugin,
 		songs,
-		setIsPluginExecutionModalOpen,
+		showPluginExecutionProgress,
 	]);
 
 	if (plugin.info === undefined) {
@@ -83,10 +85,7 @@ export function PluginExecutionModalStart(
 					<Button onClick={onExecuted} loading={isPreviousPluginStillRunning}>
 						Execute
 					</Button>
-					<Button
-						color="gray"
-						onClick={() => setIsPluginExecutionModalOpen("closed")}
-					>
+					<Button color="gray" onClick={() => closePluginExecutionModal()}>
 						Cancel
 					</Button>
 				</Group>

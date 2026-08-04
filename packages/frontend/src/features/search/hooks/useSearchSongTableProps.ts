@@ -21,7 +21,7 @@ import {
 	type SongTableContextMenuItemParams,
 	SongTableKeyType,
 	type SongTableProps,
-	selectedSongsAtom,
+	setSelectedSongsActionAtom,
 	songTableColumnLayoutAtom,
 	songTableStateAtom,
 	useHandleSongDoubleClick,
@@ -47,7 +47,7 @@ export function useSearchSongTableProps(
 	const songTableState = useAtomValue(songTableStateAtom);
 	const songTableColumnLayout = useAtomValue(songTableColumnLayoutAtom);
 	const setIsSearchLoading = useSetAtom(setIsSearchLoadingActionAtom);
-	const setSelectedSongs = useSetAtom(selectedSongsAtom);
+	const setSelectedSongs = useSetAtom(setSelectedSongsActionAtom);
 	const addSongsToQueue = useSetAtom(addSongsToQueueActionAtom);
 	const replaceQueueWithSongs = useSetAtom(replaceQueueWithSongsActionAtom);
 	const handleSearchColumnsUpdated = useHandleSearchColumnsUpdated();

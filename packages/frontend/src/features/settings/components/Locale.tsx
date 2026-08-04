@@ -1,11 +1,12 @@
 import { Select, Stack, Title } from "@mantine/core";
 import { useAtomValue, useSetAtom } from "jotai";
+import { setLocaleActionAtom } from "../states/actions/setLocaleActionAtom";
 import { localeAtom, supportedLocalesAtom } from "../states/atoms/localeAtom";
 
 export function Locale() {
 	const localeState = useAtomValue(localeAtom);
 	const supportedLocalesState = useAtomValue(supportedLocalesAtom);
-	const setLocaleState = useSetAtom(localeAtom);
+	const setLocale = useSetAtom(setLocaleActionAtom);
 
 	return (
 		<Stack gap={12}>
@@ -20,7 +21,7 @@ export function Locale() {
 					if (value == null) {
 						return;
 					}
-					setLocaleState(value);
+					setLocale(value);
 				}}
 				data={Object.entries(supportedLocalesState).map(
 					([localeName, localeCode]) => ({

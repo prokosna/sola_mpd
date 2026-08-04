@@ -12,6 +12,7 @@ import {
 	diffSongTableColumns,
 	songTableColumnLayoutAtom,
 	songTableStateAtom,
+	updateSongTableColumnLayoutActionAtom,
 } from "../../song_table";
 import { setEditingSearchStatusActionAtom } from "../states/actions/setEditingSearchStatusActionAtom";
 import { setSearchSongTableColumnsActionAtom } from "../states/actions/setSearchSongTableColumnsActionAtom";
@@ -29,7 +30,9 @@ export function useHandleSearchColumnsUpdated() {
 		setSearchSongTableColumnsActionAtom,
 	);
 	const setEditingSearchStatus = useSetAtom(setEditingSearchStatusActionAtom);
-	const setSongTableColumnLayout = useSetAtom(songTableColumnLayoutAtom);
+	const updateSongTableColumnLayout = useSetAtom(
+		updateSongTableColumnLayoutActionAtom,
+	);
 
 	return useCallback(
 		(columns: SongTableColumn[]) => {
@@ -59,7 +62,7 @@ export function useHandleSearchColumnsUpdated() {
 			}
 
 			if (diff.widthChanged) {
-				setSongTableColumnLayout(buildSongTableColumnLayout(columns));
+				updateSongTableColumnLayout(buildSongTableColumnLayout(columns));
 			}
 		},
 		[
@@ -68,7 +71,7 @@ export function useHandleSearchColumnsUpdated() {
 			songTableColumnLayout,
 			setSearchSongTableColumns,
 			setEditingSearchStatus,
-			setSongTableColumnLayout,
+			updateSongTableColumnLayout,
 		],
 	);
 }

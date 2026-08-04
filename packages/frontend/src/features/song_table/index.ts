@@ -32,9 +32,12 @@ export { useHandleSongDoubleClick } from "./hooks/useHandleSongDoubleClick";
 export type { SongTableStateRepository } from "./repositories/SongTableStateRepository";
 export { addSongAndPlayActionAtom } from "./states/actions/addSongAndPlayActionAtom";
 export { addSongsToQueueActionAtom } from "./states/actions/addSongsToQueueActionAtom";
+export { clearSelectedSongsActionAtom } from "./states/actions/clearSelectedSongsActionAtom";
 export { refreshSongTableStateActionAtom } from "./states/actions/refreshSongTableStateActionAtom";
 export { replaceQueueWithSongsActionAtom } from "./states/actions/replaceQueueWithSongsActionAtom";
 export { resetSongTableColumnLayoutActionAtom } from "./states/actions/resetSongTableColumnLayoutActionAtom";
+export { setSelectedSongsActionAtom } from "./states/actions/setSelectedSongsActionAtom";
+export { updateSongTableColumnLayoutActionAtom } from "./states/actions/updateSongTableColumnLayoutActionAtom";
 export { updateSongTableServerStateActionAtom } from "./states/actions/updateSongTableServerStateActionAtom";
 export { updateSongTableStateActionAtom } from "./states/actions/updateSongTableStateActionAtom";
 // States

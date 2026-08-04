@@ -22,7 +22,7 @@ import {
 	type SongTableContextMenuItemParams,
 	SongTableKeyType,
 	type SongTableProps,
-	selectedSongsAtom,
+	setSelectedSongsActionAtom,
 	songTableStateAtom,
 	updateSongTableStateActionAtom,
 } from "../../song_table";
@@ -52,7 +52,7 @@ export function usePlayQueueSongTableProps(
 	const songTableState = useAtomValue(songTableStateAtom);
 	const setIsPlayQueueLoading = useSetAtom(setIsPlayQueueLoadingActionAtom);
 	const updateSongTableState = useSetAtom(updateSongTableStateActionAtom);
-	const setSelectedSongs = useSetAtom(selectedSongsAtom);
+	const setSelectedSongs = useSetAtom(setSelectedSongsActionAtom);
 	const removeQueueSongs = useSetAtom(removeQueueSongsActionAtom);
 	const clearQueue = useSetAtom(clearQueueActionAtom);
 	const reorderQueue = useSetAtom(reorderQueueActionAtom);

@@ -1,5 +1,6 @@
 import { Modal } from "@mantine/core";
 import { useAtomValue, useSetAtom } from "jotai";
+import { closePluginExecutionModalActionAtom } from "../states/actions/closePluginExecutionModalActionAtom";
 import {
 	pluginExecutionModalOpenAtom,
 	pluginExecutionPropsAtom,
@@ -11,8 +12,8 @@ import { PluginExecutionModalStart } from "./PluginExecutionModalStart";
 export function PluginExecutionModal() {
 	const { plugin, songs } = useAtomValue(pluginExecutionPropsAtom);
 	const isPluginExecutionModalOpen = useAtomValue(pluginExecutionModalOpenAtom);
-	const setIsPluginExecutionModalOpen = useSetAtom(
-		pluginExecutionModalOpenAtom,
+	const closePluginExecutionModal = useSetAtom(
+		closePluginExecutionModalActionAtom,
 	);
 
 	if (plugin === undefined) {
@@ -22,7 +23,7 @@ export function PluginExecutionModal() {
 	return (
 		<Modal
 			opened={isPluginExecutionModalOpen !== "closed"}
-			onClose={() => setIsPluginExecutionModalOpen("closed")}
+			onClose={() => closePluginExecutionModal()}
 			size={"xl"}
 			centered
 			title="Execute Plugin"

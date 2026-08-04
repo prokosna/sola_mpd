@@ -5,19 +5,17 @@ import { useCallback } from "react";
 
 import { executePluginWithRouting } from "../functions/pluginExecutionRouting";
 import { appendPluginExecutionWarningLogActionAtom } from "../states/actions/appendPluginExecutionWarningLogActionAtom";
-import {
-	pluginExecutionLatestResponseAtom,
-	pluginExecutionWarningLogsAtom,
-} from "../states/atoms/pluginExecutionAtom";
+import { clearPluginExecutionWarningLogsActionAtom } from "../states/actions/clearPluginExecutionWarningLogsActionAtom";
+import { recordPluginExecutionResponseActionAtom } from "../states/actions/recordPluginExecutionResponseActionAtom";
 import { pluginServiceAtom } from "../states/atoms/pluginServiceAtom";
 
 export function useHandlePluginExecuted() {
 	const pluginService = useAtomValue(pluginServiceAtom);
-	const setPluginExecutionLatestResponse = useSetAtom(
-		pluginExecutionLatestResponseAtom,
+	const recordPluginExecutionResponse = useSetAtom(
+		recordPluginExecutionResponseActionAtom,
 	);
-	const setPluginExecutionWarningLogs = useSetAtom(
-		pluginExecutionWarningLogsAtom,
+	const clearPluginExecutionWarningLogs = useSetAtom(
+		clearPluginExecutionWarningLogsActionAtom,
 	);
 	const appendPluginExecutionWarningLog = useSetAtom(
 		appendPluginExecutionWarningLogActionAtom,
@@ -25,27 +23,27 @@ export function useHandlePluginExecuted() {
 
 	return useCallback(
 		(plugin: Plugin, songs: Song[], parameters: Map<string, string>) => {
-			setPluginExecutionWarningLogs([]);
+			clearPluginExecutionWarningLogs();
 
 			executePluginWithRouting(plugin, songs, parameters, pluginService, {
 				onResponse: (resp) => {
-					setPluginExecutionLatestResponse(resp);
+					recordPluginExecutionResponse(resp);
 				},
 				onWarning: (message) => {
 					appendPluginExecutionWarningLog(message);
 				},
 				onError: (error) => {
-					setPluginExecutionLatestResponse(error);
+					recordPluginExecutionResponse(error);
 				},
 				onComplete: (resp) => {
-					setPluginExecutionLatestResponse(resp);
+					recordPluginExecutionResponse(resp);
 				},
 			});
 		},
 		[
-			setPluginExecutionWarningLogs,
+			clearPluginExecutionWarningLogs,
 			pluginService,
-			setPluginExecutionLatestResponse,
+			recordPluginExecutionResponse,
 			appendPluginExecutionWarningLog,
 		],
 	);

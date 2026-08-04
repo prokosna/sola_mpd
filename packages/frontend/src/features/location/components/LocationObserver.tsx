@@ -8,7 +8,7 @@ import {
 } from "../../../const/routes";
 import { refreshPlayQueueSongsActionAtom } from "../../play_queue";
 import { refreshPlaylistsActionAtom } from "../../playlist";
-import { selectedSongsAtom } from "../../song_table";
+import { clearSelectedSongsActionAtom } from "../../song_table";
 import { setPathnameActionAtom } from "../states/actions/setPathnameActionAtom";
 import { setSearchParamsActionAtom } from "../states/actions/setSearchParamsActionAtom";
 import { transitionCounterAtom } from "../states/atoms/locationAtom";
@@ -19,7 +19,7 @@ export function LocationObserver() {
 
 	const setPathname = useSetAtom(setPathnameActionAtom);
 	const setSearchParams = useSetAtom(setSearchParamsActionAtom);
-	const setSelectedSongs = useSetAtom(selectedSongsAtom);
+	const clearSelectedSongs = useSetAtom(clearSelectedSongsActionAtom);
 	const refreshPlaylistsState = useSetAtom(refreshPlaylistsActionAtom);
 	const refreshPlayQueueSongsState = useSetAtom(
 		refreshPlayQueueSongsActionAtom,
@@ -28,8 +28,8 @@ export function LocationObserver() {
 	useEffect(() => {
 		setPathname(location.pathname);
 		// When user moves to a different page, selected songs should be reset.
-		setSelectedSongs([]);
-	}, [location.pathname, setPathname, setSelectedSongs]);
+		clearSelectedSongs();
+	}, [location.pathname, setPathname, clearSelectedSongs]);
 
 	useEffect(() => {
 		setSearchParams(location.search);
