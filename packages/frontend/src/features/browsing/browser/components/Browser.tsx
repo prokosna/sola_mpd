@@ -1,9 +1,10 @@
 import { useMemo } from "react";
 import { BrowserView } from "../../common/components/BrowserView";
+import { BrowsingSelectionObserver } from "../../common/components/BrowsingSelectionObserver";
+import { restoreBrowserSelectionActionAtom } from "../states/actions/restoreBrowserSelectionActionAtom";
 import { BrowserContent } from "./BrowserContent";
 import { BrowserNavigation } from "./BrowserNavigation";
 import { BrowserNavigationBreadcrumbs } from "./BrowserNavigationBreadcrumbs";
-import { BrowserSelectionObserver } from "./BrowserSelectionObserver";
 
 export function Browser() {
 	const browserNavigationBreadcrumbs = useMemo(() => {
@@ -18,7 +19,9 @@ export function Browser() {
 
 	return (
 		<>
-			<BrowserSelectionObserver />
+			<BrowsingSelectionObserver
+				restoreSelectionActionAtom={restoreBrowserSelectionActionAtom}
+			/>
 			<BrowserView
 				{...{
 					browserNavigationBreadcrumbs,

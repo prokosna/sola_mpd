@@ -1,10 +1,11 @@
 import { useMemo } from "react";
 
 import { BrowserView } from "../../common/components/BrowserView";
+import { BrowsingSelectionObserver } from "../../common/components/BrowsingSelectionObserver";
+import { restoreRecentlyAddedSelectionActionAtom } from "../states/actions/restoreRecentlyAddedSelectionActionAtom";
 import { RecentlyAddedContent } from "./RecentlyAddedContent";
 import { RecentlyAddedNavigation } from "./RecentlyAddedNavigation";
 import { RecentlyAddedNavigationBreadcrumbs } from "./RecentlyAddedNavigationBreadcrumbs";
-import { RecentlyAddedSelectionObserver } from "./RecentlyAddedSelectionObserver";
 
 export function RecentlyAdded() {
 	const browserNavigationBreadcrumbs = useMemo(() => {
@@ -19,7 +20,9 @@ export function RecentlyAdded() {
 
 	return (
 		<>
-			<RecentlyAddedSelectionObserver />
+			<BrowsingSelectionObserver
+				restoreSelectionActionAtom={restoreRecentlyAddedSelectionActionAtom}
+			/>
 			<BrowserView
 				{...{
 					browserNavigationBreadcrumbs,

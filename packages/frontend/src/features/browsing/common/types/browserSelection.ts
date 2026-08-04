@@ -29,6 +29,14 @@ export type SerializedBrowserSelection =
 	// it as a View State Blob and reference it by token instead.
 	| { kind: "blob"; payload: string };
 
+/**
+ * A single query param carrying a navigation position — either the page's own
+ * inline param or the shared `?vs=` blob token. Also the shape cached per
+ * profile in device settings, so a restored position can be replayed into the
+ * address bar verbatim.
+ */
+export type SelectionQueryParam = { key: string; value: string };
+
 /** Decision returned by `deserializeBrowserSelection`; the caller resolves it. */
 export type DeserializedBrowserSelection =
 	| { kind: "selection"; selection: BrowserSelection }
