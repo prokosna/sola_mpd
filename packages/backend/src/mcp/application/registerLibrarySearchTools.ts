@@ -9,7 +9,7 @@ import { mapSortKeyToMetadataTag } from "../functions/mapSortKeyToMetadataTag.js
 import { songToOutput } from "../functions/songToOutput.js";
 import { tagNameToMetadataTag } from "../functions/tagNameToMetadataTag.js";
 import { toolError, toolResultJson } from "../functions/toolResult.js";
-import { resolveCurrentMpdProfile } from "../utils/currentMpdProfile.js";
+import { resolveCurrentMpdProfile } from "./currentMpdProfile.js";
 import {
 	errorToToolResult,
 	executeMpdCommand,

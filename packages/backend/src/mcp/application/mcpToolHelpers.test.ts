@@ -3,7 +3,7 @@ import { describe, expect, it } from "vitest";
 import {
 	MpdProfileNotFoundError,
 	NoCurrentMpdProfileError,
-} from "../utils/currentMpdProfile.js";
+} from "./currentMpdProfile.js";
 import { errorToToolResult, executeMpdCommand } from "./mcpToolHelpers.js";
 import { makeMpdClient, makeMpdResponse, makeProfile } from "./testHelpers.js";
 

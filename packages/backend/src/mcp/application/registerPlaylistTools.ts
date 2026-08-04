@@ -3,7 +3,7 @@ import { z } from "zod";
 
 import { songToOutput } from "../functions/songToOutput.js";
 import { toolError, toolResultJson } from "../functions/toolResult.js";
-import { resolveCurrentMpdProfile } from "../utils/currentMpdProfile.js";
+import { resolveCurrentMpdProfile } from "./currentMpdProfile.js";
 import {
 	errorToToolResult,
 	executeMpdCommand,

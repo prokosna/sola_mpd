@@ -6,7 +6,7 @@ import { toolResultJson } from "../functions/toolResult.js";
 import {
 	listMpdProfiles,
 	resolveCurrentMpdProfile,
-} from "../utils/currentMpdProfile.js";
+} from "./currentMpdProfile.js";
 import type { RegisterMcpToolsDeps } from "./mcpToolHelpers.js";
 
 export function registerProfileTools(

@@ -2,7 +2,7 @@ import type { McpServer } from "@modelcontextprotocol/server";
 import { z } from "zod";
 
 import { toolResultJson } from "../functions/toolResult.js";
-import { resolveCurrentMpdProfile } from "../utils/currentMpdProfile.js";
+import { resolveCurrentMpdProfile } from "./currentMpdProfile.js";
 import { ensureLibraryIndexUseCase } from "./libraryIndexUseCases.js";
 import {
 	errorToToolResult,

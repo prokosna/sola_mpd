@@ -14,7 +14,7 @@ import {
 	parseToolJson,
 } from "./testHelpers.js";
 
-vi.mock("../utils/currentMpdProfile.js", () => ({
+vi.mock("./currentMpdProfile.js", () => ({
 	NoCurrentMpdProfileError: class extends Error {
 		constructor() {
 			super("no profile");
@@ -26,9 +26,7 @@ vi.mock("../utils/currentMpdProfile.js", () => ({
 	listMpdProfiles: vi.fn(),
 }));
 
-const { resolveCurrentMpdProfile } = await import(
-	"../utils/currentMpdProfile.js"
-);
+const { resolveCurrentMpdProfile } = await import("./currentMpdProfile.js");
 const resolveMock = vi.mocked(resolveCurrentMpdProfile);
 
 beforeEach(() => {

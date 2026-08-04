@@ -7,7 +7,7 @@ import {
 	toolResultJson,
 	toolResultText,
 } from "../functions/toolResult.js";
-import { resolveCurrentMpdProfile } from "../utils/currentMpdProfile.js";
+import { resolveCurrentMpdProfile } from "./currentMpdProfile.js";
 import {
 	errorToToolResult,
 	executeMpdCommand,

@@ -4,7 +4,7 @@ import { z } from "zod";
 import { buildMpdStatsResponse } from "../functions/buildMpdStatsResponse.js";
 import { buildMpdStatusResponse } from "../functions/buildMpdStatusResponse.js";
 import { toolError, toolResultJson } from "../functions/toolResult.js";
-import { resolveCurrentMpdProfile } from "../utils/currentMpdProfile.js";
+import { resolveCurrentMpdProfile } from "./currentMpdProfile.js";
 import {
 	errorToToolResult,
 	executeMpdCommand,

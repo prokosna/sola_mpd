@@ -6,7 +6,7 @@ import {
 	DB_FILE_VIEW_STATE_BLOBS,
 } from "@sola_mpd/shared/src/const/database.js";
 
-import { backupDbDirectory } from "../../configs/repositories/backupDbDirectory.js";
+import { backupDbDirectory } from "../../configs/utils/backupDbDirectory.js";
 import type {
 	ViewStateBlobEntry,
 	ViewStateBlobRepository,

@@ -59,7 +59,7 @@ import {
 	getConfigDocumentCurrentVersion,
 	migrateConfigDocument,
 } from "../functions/migrateConfigDocument.js";
-import { backupDbDirectory } from "./backupDbDirectory.js";
+import { backupDbDirectory } from "../utils/backupDbDirectory.js";
 import type { ConfigRepository } from "./ConfigRepository.js";
 
 let hasAttemptedDbBackup = false;

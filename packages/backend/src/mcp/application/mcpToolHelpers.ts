@@ -12,7 +12,7 @@ import type { LibraryIndex } from "../services/LibraryIndex.js";
 import {
 	MpdProfileNotFoundError,
 	NoCurrentMpdProfileError,
-} from "../utils/currentMpdProfile.js";
+} from "./currentMpdProfile.js";
 
 export const mcpProfileNameSchema = z
 	.string()
