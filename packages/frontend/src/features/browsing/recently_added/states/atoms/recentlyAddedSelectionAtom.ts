@@ -2,7 +2,7 @@ import { RECENTLY_ADDED_SELECTION_QUERY_PARAM } from "../../../common/const/brow
 import {
 	createResolvedSelectionAtom,
 	createSelectionAtom,
-} from "../../../common/states/atoms/browsingSelectionAtoms";
+} from "../../../common/states/atoms/browsingSelectionAtom";
 
 /** Written by restoreRecentlyAddedSelectionActionAtom once it has resolved. */
 export const resolvedRecentlyAddedSelectionAtom = createResolvedSelectionAtom();

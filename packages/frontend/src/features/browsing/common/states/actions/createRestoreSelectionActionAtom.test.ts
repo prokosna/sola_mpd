@@ -21,7 +21,7 @@ import type {
 	BrowserSelection,
 	SelectionQueryParam,
 } from "../../types/browserSelection";
-import { createResolvedSelectionAtom } from "../atoms/browsingSelectionAtoms";
+import { createResolvedSelectionAtom } from "../atoms/browsingSelectionAtom";
 import { viewStateBlobRepositoryAtom } from "../atoms/viewStateBlobRepositoryAtom";
 
 import { createRestoreSelectionActionAtom } from "./createRestoreSelectionActionAtom";

@@ -2,7 +2,7 @@ import { BROWSER_SELECTION_QUERY_PARAM } from "../../../common/const/browsingSel
 import {
 	createResolvedSelectionAtom,
 	createSelectionAtom,
-} from "../../../common/states/atoms/browsingSelectionAtoms";
+} from "../../../common/states/atoms/browsingSelectionAtom";
 
 /** Written by restoreBrowserSelectionActionAtom once it has resolved. */
 export const resolvedBrowserSelectionAtom = createResolvedSelectionAtom();
