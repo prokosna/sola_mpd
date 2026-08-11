@@ -37,7 +37,6 @@ export function useJotaiStore() {
 	> => {
 		const store = createStore();
 
-		// DI
 		let messagingClient: MessagingClient;
 		if (window.__SOLA_IPC_BRIDGE__ != null) {
 			messagingClient = new MessagingClientElectronIpc(
@@ -48,8 +47,6 @@ export function useJotaiStore() {
 		}
 		await messagingClient.isReady();
 
-		// Live sync: dispatch a server-broadcast config change to the refresh
-		// action for that key.
 		await messagingClient.on(SOCKETIO_CONFIG_CHANGED, (payload) => {
 			store.set(
 				handleConfigChangedActionAtom,

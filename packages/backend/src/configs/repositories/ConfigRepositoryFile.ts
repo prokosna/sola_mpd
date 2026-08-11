@@ -101,8 +101,6 @@ class ConfigRepositoryFile<T extends Message & { schemaVersion: number }>
 				JSON.parse(fileContent) as JsonObject,
 			);
 
-			// Make sure that the local cache has all the latest necessary fields.
-			// Otherwise, copy the field from the default value.
 			const defaultValueJson = toJson(schema, defaultValue);
 			for (const [key, value] of Object.entries(
 				defaultValueJson as JsonObject,

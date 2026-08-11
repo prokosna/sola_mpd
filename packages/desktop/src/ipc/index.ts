@@ -146,7 +146,6 @@ function registerIpcHandlers(): void {
 		},
 	);
 
-	// MPD subscribe
 	ipcMain.handle(
 		SOCKETIO_MPD_SUBSCRIBE,
 		async (event, msg: Uint8Array): Promise<Uint8Array> => {
@@ -179,7 +178,6 @@ function registerIpcHandlers(): void {
 		},
 	);
 
-	// MPD unsubscribe
 	ipcMain.handle(
 		SOCKETIO_MPD_UNSUBSCRIBE,
 		async (_event, msg: Uint8Array): Promise<Uint8Array> => {

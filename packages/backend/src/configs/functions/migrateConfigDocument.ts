@@ -23,9 +23,8 @@ export type ConfigMigrationChainTable = Record<
 	ConfigDocumentMigration[]
 >;
 
-// Each document's current schema version is derived from its chain length
-// (1 + chain.length) rather than tracked as a separate constant, so the two
-// can never drift apart. Phase 1 introduces no real migrations yet.
+// A document's current schema version is 1 + its chain length, so a version
+// and its chain cannot drift apart.
 export const CONFIG_MIGRATION_CHAINS: ConfigMigrationChainTable = {
 	[CONFIG_KEY_BROWSER_STATE]: [],
 	[CONFIG_KEY_COMMON_SONG_TABLE_STATE]: [],

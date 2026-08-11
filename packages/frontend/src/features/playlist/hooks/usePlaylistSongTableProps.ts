@@ -73,13 +73,11 @@ export function usePlaylistSongTableProps(
 	);
 	const reorderPlaylist = useSetAtom(reorderPlaylistActionAtom);
 
-	// Plugin context menu items
 	const pluginContextMenuItems = usePluginContextMenuItems(
 		Plugin_PluginType.ON_PLAYLIST,
 		songTableKeyType,
 	);
 
-	// Similarity search
 	const {
 		isAdvancedSearchAvailable,
 		setSimilaritySearchTargetSong,

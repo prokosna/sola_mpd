@@ -36,7 +36,6 @@ export function useAgGridReactData(
 } {
 	const localeCollator = useAtomValue(localeCollatorAtom);
 
-	// Convert Song to AdGrid item format (Column -> Value).
 	const rowData = useMemo(() => {
 		if (isCompact) {
 			return (
@@ -64,7 +63,6 @@ export function useAgGridReactData(
 		});
 	}, [isCompact, isSortingEnabled, songs, columns, keyType, localeCollator]);
 
-	// Convert columns to AgGrid column definitions
 	const columnDefs = useMemo(() => {
 		if (isCompact) {
 			return [
@@ -112,7 +110,6 @@ export function useAgGridReactData(
 		}));
 	}, [columns, isCompact, isReorderingEnabled, isSortingEnabled]);
 
-	// Selection column definision
 	const selectionColumnDef: SelectionColumnDef = useMemo(() => {
 		return {
 			sortable: false,

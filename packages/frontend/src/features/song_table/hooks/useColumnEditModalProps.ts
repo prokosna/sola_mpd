@@ -13,7 +13,6 @@ export function useColumnEditModalProps(
 	const handleColumnsUpdated = useCallback(
 		async (newColumns: SongTableColumn[]) => {
 			onColumnsUpdated(newColumns);
-			// Close the modal after updating the columns.
 			setIsOpenColumnEditModal(false);
 		},
 		[onColumnsUpdated, setIsOpenColumnEditModal],
@@ -21,7 +20,6 @@ export function useColumnEditModalProps(
 
 	const handleModalDisposed = useCallback(async () => {
 		onModalDisposed();
-		// Make sure to close the modal.
 		setIsOpenColumnEditModal(false);
 	}, [onModalDisposed, setIsOpenColumnEditModal]);
 

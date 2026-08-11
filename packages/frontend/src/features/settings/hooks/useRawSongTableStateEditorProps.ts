@@ -12,9 +12,7 @@ import type { SettingsStatesEditorProps } from "../components/SettingsStatesEdit
 import { useSettingsStateEditorProps } from "./useSettingsStateEditorProps";
 
 // Raw Data must edit the genuine server document, not the device-composed
-// songTableStateAtom the rest of the app reads. Split out from
-// SettingsStates.tsx so this wiring is
-// independently testable without standing up the other five documents.
+// songTableStateAtom the rest of the app reads.
 export function useRawSongTableStateEditorProps(): [
 	() => void,
 	SettingsStatesEditorProps<SongTableState> | undefined,

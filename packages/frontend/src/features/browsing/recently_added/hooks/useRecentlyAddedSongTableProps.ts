@@ -57,13 +57,11 @@ export function useRecentlyAddedSongTableProps(
 	const addSongsToQueue = useSetAtom(addSongsToQueueActionAtom);
 	const replaceQueueWithSongs = useSetAtom(replaceQueueWithSongsActionAtom);
 
-	// Plugin context menu items
 	const pluginContextMenuItems = usePluginContextMenuItems(
 		Plugin_PluginType.ON_RECENTLY_ADDED,
 		songTableKeyType,
 	);
 
-	// Similarity search
 	const {
 		isAdvancedSearchAvailable,
 		setSimilaritySearchTargetSong,
@@ -71,7 +69,6 @@ export function useRecentlyAddedSongTableProps(
 		setIsSimilaritySearchModalOpen,
 	} = useSimilaritySearchContextMenuProps();
 
-	// Context menu
 	const contextMenuSections: ContextMenuSection<SongTableContextMenuItemParams>[] =
 		[
 			{
@@ -114,7 +111,6 @@ export function useRecentlyAddedSongTableProps(
 		});
 	}
 
-	// Handlers
 	const onSongsReordered = useCallback(async (_orderedSongs: Song[]) => {
 		throw new Error("Reorder songs must be disabled in the recentlyAdded.");
 	}, []);

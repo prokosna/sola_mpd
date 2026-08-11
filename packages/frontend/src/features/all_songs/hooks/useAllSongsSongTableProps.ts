@@ -83,13 +83,11 @@ export function useAllSongsSongTableProps(
 		? fastState.songs.length === 0 && (fastState.isLoading || fastState.hasMore)
 		: slowIsLoading;
 
-	// Plugin context menu items
 	const pluginContextMenuItems = usePluginContextMenuItems(
 		Plugin_PluginType.ON_FULL_TEXT_SEARCH,
 		songTableKeyType,
 	);
 
-	// Similarity search
 	const {
 		isAdvancedSearchAvailable,
 		setSimilaritySearchTargetSong,
@@ -139,7 +137,6 @@ export function useAllSongsSongTableProps(
 		});
 	}
 
-	// Handlers
 	const onSongsReordered = useCallback(async (_orderedSongs: Song[]) => {
 		throw new Error("Reorder songs must be disabled in AllSongs.");
 	}, []);

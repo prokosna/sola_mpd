@@ -52,13 +52,11 @@ export function useSearchSongTableProps(
 	const replaceQueueWithSongs = useSetAtom(replaceQueueWithSongsActionAtom);
 	const handleSearchColumnsUpdated = useHandleSearchColumnsUpdated();
 
-	// Plugin context menu items
 	const pluginContextMenuItems = usePluginContextMenuItems(
 		Plugin_PluginType.ON_SAVED_SEARCH,
 		songTableKeyType,
 	);
 
-	// Similarity search
 	const {
 		isAdvancedSearchAvailable,
 		setSimilaritySearchTargetSong,
@@ -108,7 +106,6 @@ export function useSearchSongTableProps(
 		});
 	}
 
-	// Handlers
 	const onSongsReordered = useCallback(async (_orderedSongs: Song[]) => {
 		throw new Error("Reorder songs is not supported in Search.");
 	}, []);

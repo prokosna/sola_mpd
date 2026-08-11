@@ -45,8 +45,8 @@ export const loadAllSongsFastActionAtom = atom(null, async (get, set) => {
 			},
 		});
 
-		// Relying on MPD's natural traversal order rather than an explicit sort.
-		// Cross-check against `stats songs_count` so the discrepancy is visible.
+		// Nothing here can verify the traversal-order assumption the windowed
+		// fetch rests on; a count mismatch is the only signal that it broke.
 		const stats = get(statsAtom);
 		if (stats !== undefined && result.songs.length !== stats.songsCount) {
 			console.warn(

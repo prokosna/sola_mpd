@@ -18,7 +18,6 @@ const __dirname = path.dirname(__filename);
 const app = express();
 const server = http.createServer(app);
 
-// APIs
 app.use("/api/configs", configsRouter);
 app.use("/api/mpd", mpdRouter);
 app.use(API_VIEW_STATE_BLOBS, viewStateBlobsRouter);
@@ -39,14 +38,12 @@ const errorHandler: ErrorRequestHandler = (err, _req, res, _next) => {
 };
 app.use(errorHandler);
 
-// Socket.io
 const io = new SocketIOServer(server, {
 	path: "/io/",
 	maxHttpBufferSize: 1.024e9,
 });
 SocketIoManager.initialize(io);
 
-// Serve SPA
 app.use(express.static(path.join(__dirname, "public")));
 app.get("*splat", (_req, res) => {
 	res.sendFile(path.join(__dirname, "public/index.html"));

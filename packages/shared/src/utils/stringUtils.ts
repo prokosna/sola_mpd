@@ -1,7 +1,6 @@
 const normalizationRegex = new RegExp(/[\u0300-\u036F]/g);
 
 /**
- * Formats a duration in seconds into a human-readable string.
  * @param duration Duration in seconds
  * @returns Formatted string in the format "DD:HH:MM:SS", "HH:MM:SS", or "MM:SS"
  */
@@ -28,7 +27,6 @@ export function displayDuration(duration: number): string {
 }
 
 /**
- * Normalizes a string by removing diacritics and converting to lowercase.
  * @param input String to normalize
  * @returns Normalized string
  */

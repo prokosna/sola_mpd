@@ -66,7 +66,6 @@ export class SocketIoManager {
 			const id = socket.id;
 			console.info(`Socket.io is connected: ${id}`);
 
-			// Subscribe MPD events for the given profile.
 			socket.on(SOCKETIO_MPD_SUBSCRIBE, async (msg: ArrayBuffer, callback) => {
 				try {
 					await mpdHandler.subscribeEvents(id, new Uint8Array(msg), socket);
@@ -77,7 +76,6 @@ export class SocketIoManager {
 				}
 			});
 
-			// Unsubscribe MPD events for the given profile.
 			socket.on(
 				SOCKETIO_MPD_UNSUBSCRIBE,
 				async (msg: ArrayBuffer, callback) => {
@@ -91,7 +89,6 @@ export class SocketIoManager {
 				},
 			);
 
-			// Execute the given command.
 			socket.on(SOCKETIO_MPD_COMMAND, async (msg: ArrayBuffer, callback) => {
 				try {
 					const res = await mpdHandler.command(new Uint8Array(msg));
@@ -102,7 +99,6 @@ export class SocketIoManager {
 				}
 			});
 
-			// Execute the given commands in bulk.
 			socket.on(
 				SOCKETIO_MPD_COMMAND_BULK,
 				async (msg: ArrayBuffer, callback) => {
@@ -116,7 +112,6 @@ export class SocketIoManager {
 				},
 			);
 
-			// Register a plugin.
 			socket.on(
 				SOCKETIO_PLUGIN_REGISTER,
 				async (msg: ArrayBuffer, callback) => {
@@ -130,7 +125,6 @@ export class SocketIoManager {
 				},
 			);
 
-			// Execute a plugin command.
 			// ACK on receipt, not completion: results stream via separate events
 			// and execution may outlast the client's ACK timeout.
 			socket.on(SOCKETIO_PLUGIN_EXECUTE, async (msg: ArrayBuffer, callback) => {
@@ -146,7 +140,6 @@ export class SocketIoManager {
 				}
 			});
 
-			// Execute an advanced search command.
 			socket.on(
 				SOCKETIO_ADVANCED_SEARCH,
 				async (msg: ArrayBuffer, callback) => {
@@ -162,7 +155,6 @@ export class SocketIoManager {
 				},
 			);
 
-			// Config state fetch/save.
 			for (const key of configKeys) {
 				socket.on(
 					`${SOCKETIO_CONFIG_FETCH}_${key}`,
@@ -239,7 +231,6 @@ export class SocketIoManager {
 				},
 			);
 
-			// Disconnect.
 			socket.on("disconnect", async () => {
 				try {
 					await mpdHandler.disconnect(id, socket);

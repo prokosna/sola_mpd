@@ -1,10 +1,6 @@
 import equal from "fast-deep-equal";
 
 /**
- * A Map implementation that supports deep equality comparison for keys.
- * Unlike the standard Map, this implementation compares keys using deep equality
- * rather than reference equality.
- *
  * @template K - The type of keys in the map
  * @template V - The type of values in the map
  */

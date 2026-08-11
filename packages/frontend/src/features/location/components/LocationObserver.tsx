@@ -27,7 +27,6 @@ export function LocationObserver() {
 
 	useEffect(() => {
 		setPathname(location.pathname);
-		// When user moves to a different page, selected songs should be reset.
 		clearSelectedSongs();
 	}, [location.pathname, setPathname, clearSelectedSongs]);
 

@@ -29,14 +29,12 @@ export function useBrowserNavigationFilterSelectListProps(
 		onScrolledNearBottom,
 	} = props;
 
-	// Handlers
 	const onItemsSelected = useCallback(
 		async (selectedValues: string[]) => {
 			if (browserFilters === undefined) {
 				return;
 			}
 
-			// If selected values are the same with the current state, just ignore the callback.
 			const currentSelectedValues = browserFilter.selectedValues.map(
 				(selectedValue) => convertSongMetadataValueToString(selectedValue),
 			);
@@ -72,7 +70,6 @@ export function useBrowserNavigationFilterSelectListProps(
 		convertSongMetadataValueToString(value),
 	);
 
-	// Context menu
 	const contextMenuSections: ContextMenuSection<SelectListContextMenuItemParams>[] =
 		[
 			{

@@ -37,21 +37,17 @@ export function SelectList(props: SelectListProps) {
 	const ref = useRef(null);
 	const gridRef = useRef<AgGridReact>(null);
 
-	// AgGridReact format
 	const { rowData, columnDefs } = useAgGridReactData(
 		props.values,
 		props.headerTitle,
 	);
 
-	// Context menu
 	const openContextMenu = useOpenContextMenu(props.id);
 
-	// Get Row ID
 	const getRowId = useCallback((params: GetRowIdParams) => {
 		return String(params.data.key);
 	}, []);
 
-	// Handlers
 	const handleSelectionChange = useHandleSelectionChange(props.onItemsSelected);
 	const handleRowDataUpdated = useHandleRowDataUpdated(
 		props.onLoadingCompleted,
@@ -77,7 +73,6 @@ export function SelectList(props: SelectListProps) {
 		[onScrolledNearBottom, nearBottomThreshold],
 	);
 
-	// Color mode
 	const theme = useAgGridTheme();
 
 	// Sync with selectedValues which can be updated outside of this component

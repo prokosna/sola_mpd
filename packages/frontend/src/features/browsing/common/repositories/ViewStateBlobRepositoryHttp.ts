@@ -6,9 +6,7 @@ const textEncoder = new TextEncoder();
 const textDecoder = new TextDecoder();
 
 // Not wired into DI: messagingClient already absorbs the Socket.IO vs.
-// Electron IPC difference, so only ViewStateBlobRepositorySocketIo is
-// injected. Kept for symmetry with the sibling Http/SocketIo adapter pairs
-// elsewhere in the codebase (e.g. MpdProfileStateRepositoryHttp).
+// Electron IPC difference, so only ViewStateBlobRepositorySocketIo is injected.
 export class ViewStateBlobRepositoryHttp implements ViewStateBlobRepository {
 	constructor(private readonly client: HttpClient) {}
 

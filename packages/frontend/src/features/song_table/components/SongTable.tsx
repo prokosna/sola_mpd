@@ -54,11 +54,9 @@ export function SongTable(props: SongTableProps): JSX.Element {
 	const ref = useRef<HTMLDivElement>(null);
 	const gridRef = useRef<AgGridReact>(null);
 
-	// Songs
 	const songsWithIndex = useSongsWithIndex(props.songs);
 	const songsMap = useSongsMap(songsWithIndex, props.songTableKeyType);
 
-	// Context menu
 	const openContextMenu = useOpenContextMenu(
 		props.id,
 		props.songTableKeyType,
@@ -68,10 +66,8 @@ export function SongTable(props: SongTableProps): JSX.Element {
 		props.contextMenuAnchorRef,
 	);
 
-	// Keyboard shortcut
 	useKeyboardShortcutSelectAll(ref, gridRef, songsMap, props.onSongsSelected);
 
-	// AgGridReact format
 	const { rowData, columnDefs, selectionColumnDef } = useAgGridReactData(
 		songsWithIndex,
 		props.songTableKeyType,
@@ -90,12 +86,10 @@ export function SongTable(props: SongTableProps): JSX.Element {
 	// Use bold for the playing song.
 	const rowClassRules = useRowClassRules(props.songTableKeyType, songsMap);
 
-	// Get Row ID callback function
 	const getRowId = useCallback((params: GetRowIdParams<SongTableRowData>) => {
 		return String(params.data.key);
 	}, []);
 
-	// Handlers
 	const handleRowClick = useHandleRowClick();
 	const handleColumnsUpdated = useHandleColumnsUpdated(
 		props.columns,
@@ -122,7 +116,6 @@ export function SongTable(props: SongTableProps): JSX.Element {
 		props.scrollToPlayingSong ?? false,
 	);
 
-	// Color mode
 	const theme = useAgGridTheme();
 
 	return (

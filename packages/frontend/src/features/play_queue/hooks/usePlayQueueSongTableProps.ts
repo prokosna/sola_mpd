@@ -58,13 +58,11 @@ export function usePlayQueueSongTableProps(
 	const reorderQueue = useSetAtom(reorderQueueActionAtom);
 	const playSongById = useSetAtom(playSongByIdActionAtom);
 
-	// Plugin context menu items
 	const pluginContextMenuItems = usePluginContextMenuItems(
 		Plugin_PluginType.ON_PLAY_QUEUE,
 		songTableKeyType,
 	);
 
-	// Similarity search
 	const {
 		isAdvancedSearchAvailable,
 		setSimilaritySearchTargetSong,
@@ -143,7 +141,6 @@ export function usePlayQueueSongTableProps(
 		});
 	}
 
-	// Handlers
 	const onSongsReordered = useCallback(
 		async (orderedSongs: Song[]) => {
 			await reorderQueue(orderedSongs);
