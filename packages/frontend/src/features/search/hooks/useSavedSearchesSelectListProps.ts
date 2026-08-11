@@ -11,6 +11,7 @@ import { mpdClientAtom } from "../../mpd";
 import { currentMpdProfileAtom } from "../../profile";
 import type { SelectListContextMenuItemParams } from "../../select_list";
 import { convertSearchToFormValues } from "../functions/search";
+import { setSearchSongTableColumnsActionAtom } from "../states/actions/setSearchSongTableColumnsActionAtom";
 import { setTargetSearchActionAtom } from "../states/actions/setTargetSearchActionAtom";
 import { updateSavedSearchesActionAtom } from "../states/actions/updateSavedSearchesActionAtom";
 import { savedSearchesAtom } from "../states/atoms/savedSearchesAtom";
@@ -28,6 +29,9 @@ export function useSavedSearchesSelectListProps({
 	const savedSearches = useAtomValue(savedSearchesAtom);
 	const updateSavedSearchesAction = useSetAtom(updateSavedSearchesActionAtom);
 	const setTargetSearch = useSetAtom(setTargetSearchActionAtom);
+	const setSearchSongTableColumns = useSetAtom(
+		setSearchSongTableColumnsActionAtom,
+	);
 
 	const contextMenuSections: ContextMenuSection<SelectListContextMenuItemParams>[] =
 		[
@@ -86,10 +90,12 @@ export function useSavedSearchesSelectListProps({
 					return;
 				}
 				form.setValues(convertSearchToFormValues(savedSearch));
+				// The song table reads its columns from this atom, not the form.
+				setSearchSongTableColumns(savedSearch.columns);
 				setTargetSearch(undefined);
 			}
 		},
-		[savedSearches?.searches, setTargetSearch, form],
+		[savedSearches?.searches, setSearchSongTableColumns, setTargetSearch, form],
 	);
 
 	if (savedSearches === undefined) {

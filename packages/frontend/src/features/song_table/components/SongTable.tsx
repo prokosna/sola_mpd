@@ -21,6 +21,7 @@ import { useOpenContextMenu } from "../hooks/useOpenContextMenu";
 import { useRowClassRules } from "../hooks/useRowClassRules";
 import { useSongsMap } from "../hooks/useSongsMap";
 import { useSongsWithIndex } from "../hooks/useSongsWithIndex";
+import { useSyncColumnSortState } from "../hooks/useSyncColumnSortState";
 import type {
 	SongTableContextMenuItemParams,
 	SongTableKeyType,
@@ -78,6 +79,12 @@ export function SongTable(props: SongTableProps): JSX.Element {
 		props.isSortingEnabled,
 		props.isReorderingEnabled,
 		isCompact,
+	);
+
+	useSyncColumnSortState(
+		gridRef,
+		props.columns,
+		!isCompact && props.isSortingEnabled,
 	);
 
 	// Use bold for the playing song.

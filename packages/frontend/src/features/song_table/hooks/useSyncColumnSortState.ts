@@ -1,0 +1,47 @@
+import type { SongTableColumn } from "@sola_mpd/shared/src/models/song_table_pb.js";
+import type { AgGridReact } from "ag-grid-react";
+import { type RefObject, useEffect } from "react";
+
+import {
+	buildColumnSortState,
+	needsColumnSortStateUpdate,
+} from "../functions/songTableSortState";
+
+/**
+ * Pushes the columns' sort into the grid.
+ *
+ * AG Grid reads `sort` off a column definition only when it creates the column,
+ * and keeps its own sort state across later definition updates. Without this,
+ * columns arriving from elsewhere — opening a saved search, say — leave
+ * whatever the user last sorted by in place.
+ *
+ * Applied only when the two differ, so the sort the user makes in the grid,
+ * which comes back through onColumnsUpdated, is not re-applied to itself.
+ */
+export function useSyncColumnSortState(
+	gridRef: RefObject<AgGridReact | null>,
+	columns: SongTableColumn[],
+	isEnabled: boolean,
+): void {
+	useEffect(() => {
+		if (!isEnabled) {
+			return;
+		}
+		const api = gridRef.current?.api;
+		if (api === undefined || api.isDestroyed()) {
+			return;
+		}
+
+		const desired = buildColumnSortState(columns);
+		const current = api.getColumnState().map((state) => ({
+			colId: state.colId,
+			sort: state.sort ?? null,
+			sortIndex: state.sortIndex ?? null,
+		}));
+		if (!needsColumnSortStateUpdate(current, desired)) {
+			return;
+		}
+
+		api.applyColumnState({ state: desired, defaultState: { sort: null } });
+	}, [gridRef, columns, isEnabled]);
+}

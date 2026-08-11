@@ -7,8 +7,8 @@ import { useAtomValue, useSetAtom } from "jotai";
 import { useCallback } from "react";
 
 import {
+	applyColumnWidthsToLayout,
 	applyDeviceColumnWidths,
-	buildSongTableColumnLayout,
 	diffSongTableColumns,
 	songTableColumnLayoutAtom,
 	songTableStateAtom,
@@ -62,7 +62,11 @@ export function useHandleSearchColumnsUpdated() {
 			}
 
 			if (diff.widthChanged) {
-				updateSongTableColumnLayout(buildSongTableColumnLayout(columns));
+				// Only the widths: this table's sort belongs to the saved search,
+				// not to the device layout the common song table sorts by.
+				updateSongTableColumnLayout(
+					applyColumnWidthsToLayout(songTableColumnLayout, columns),
+				);
 			}
 		},
 		[

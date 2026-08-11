@@ -1,5 +1,4 @@
 import type { FilterCondition } from "@sola_mpd/shared/src/models/filter_pb.js";
-import type { SongTableColumn } from "@sola_mpd/shared/src/models/song_table_pb.js";
 
 export type SearchConditions = {
 	mpdConditions: FilterCondition[];
@@ -24,5 +23,4 @@ export type SearchFormValues = {
 	queries: {
 		conditions: ConditionFormValues[];
 	}[];
-	columns: SongTableColumn[];
 };

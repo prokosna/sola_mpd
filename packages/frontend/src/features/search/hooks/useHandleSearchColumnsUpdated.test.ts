@@ -163,4 +163,42 @@ describe("useHandleSearchColumnsUpdated", () => {
 			].widthFlex,
 		).toBe(250);
 	});
+
+	// Regression: the device layout is where the common song table reads its
+	// sort from, so a width drag in Search must not touch it.
+	it("does not write the saved search's sort into the device layout on a width change", async () => {
+		const store = await createReadyStore();
+		store.set(songTableColumnLayoutAtom, {
+			[songTableColumnLayoutKeyForTag(Song_MetadataTag.TITLE)]: {
+				widthFlex: 100,
+				sortOrder: undefined,
+				isSortDesc: false,
+			},
+		});
+		store.set(searchSongTableColumnsAtom, [
+			createColumn(Song_MetadataTag.TITLE, {
+				sortOrder: 0,
+				isSortDesc: true,
+				widthFlex: 100,
+			}),
+		]);
+		const { result } = renderUseHandleSearchColumnsUpdated(store);
+
+		act(() => {
+			result.current([
+				createColumn(Song_MetadataTag.TITLE, {
+					sortOrder: 0,
+					isSortDesc: true,
+					widthFlex: 250,
+				}),
+			]);
+		});
+
+		const entry = store.get(songTableColumnLayoutAtom)[
+			songTableColumnLayoutKeyForTag(Song_MetadataTag.TITLE)
+		];
+		expect(entry.widthFlex).toBe(250);
+		expect(entry.sortOrder).toBeUndefined();
+		expect(entry.isSortDesc).toBe(false);
+	});
 });

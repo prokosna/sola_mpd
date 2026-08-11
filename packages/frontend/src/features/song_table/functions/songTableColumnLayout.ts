@@ -27,3 +27,28 @@ export function buildSongTableColumnLayout(
 	}
 	return layout;
 }
+
+/**
+ * Overlays column widths onto an existing device layout, leaving each entry's
+ * sort untouched.
+ *
+ * Width is Device-owned everywhere, but sort is Device-owned only for the
+ * common song table — in Search it belongs to the saved search, and must not
+ * reach the layout the common table sorts by.
+ */
+export function applyColumnWidthsToLayout(
+	layout: SongTableColumnLayout,
+	columns: SongTableColumn[],
+): SongTableColumnLayout {
+	const updated: SongTableColumnLayout = { ...layout };
+	for (const column of columns) {
+		const key = songTableColumnLayoutKeyForTag(column.tag);
+		const entry = updated[key];
+		updated[key] = {
+			widthFlex: column.widthFlex,
+			sortOrder: entry?.sortOrder,
+			isSortDesc: entry?.isSortDesc ?? false,
+		};
+	}
+	return updated;
+}

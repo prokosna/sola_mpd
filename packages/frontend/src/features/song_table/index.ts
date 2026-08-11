@@ -7,7 +7,10 @@ export { SongTable, type SongTableProps } from "./components/SongTable";
 // Functions
 export { applyDeviceColumnWidths } from "./functions/applyDeviceColumnWidths";
 export { diffSongTableColumns } from "./functions/diffSongTableColumns";
-export { buildSongTableColumnLayout } from "./functions/songTableColumnLayout";
+export {
+	applyColumnWidthsToLayout,
+	buildSongTableColumnLayout,
+} from "./functions/songTableColumnLayout";
 // Utils
 export {
 	convertSongMetadataTagFromDisplayName,
