@@ -4,6 +4,10 @@ import { atom } from "jotai";
 import { atomWithRefresh, atomWithStorage } from "jotai/utils";
 
 import { atomWithSync } from "../../../../lib/jotai/atomWithSync";
+import {
+	buildDeviceSettingKey,
+	DEVICE_SETTING_KEY_SIMILARITY_SEARCH_TYPE,
+} from "../../../common";
 import { currentMpdProfileAtom } from "../../../profile/states/atoms/mpdProfileAtom";
 import { searchSimilarSongs } from "../../functions/similaritySearch";
 import {
@@ -16,7 +20,7 @@ export const similaritySearchTargetSongAtom = atom<Song | undefined>(undefined);
 
 export const similaritySearchTypeAtom =
 	atomWithStorage<AdvancedSearchCommand_SimilarityType>(
-		"similaritySearchType",
+		buildDeviceSettingKey(DEVICE_SETTING_KEY_SIMILARITY_SEARCH_TYPE),
 		AdvancedSearchCommand_SimilarityType.MUQ,
 		undefined,
 		{ getOnInit: true },

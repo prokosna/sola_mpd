@@ -3,6 +3,10 @@ import { atomWithStorage } from "jotai/utils";
 
 import { ENV_ADVANCED_SEARCH_ENDPOINT } from "../../../../const/envs";
 import { atomWithSync } from "../../../../lib/jotai/atomWithSync";
+import {
+	buildDeviceSettingKey,
+	DEVICE_SETTING_KEY_ADVANCED_SEARCH_QUERY_LIMIT,
+} from "../../../common";
 import { fetchAdvancedSearchStats } from "../../functions/advancedSearchOperations";
 import { advancedSearchClientAtom } from "./advancedSearchClientAtom";
 
@@ -28,7 +32,7 @@ export const advancedSearchStatsAtom = atomWithSync(
 );
 
 export const advancedSearchQueryLimitAtom = atomWithStorage(
-	"advancedSearchQueryLimit",
+	buildDeviceSettingKey(DEVICE_SETTING_KEY_ADVANCED_SEARCH_QUERY_LIMIT),
 	100,
 	undefined,
 	{ getOnInit: true },
