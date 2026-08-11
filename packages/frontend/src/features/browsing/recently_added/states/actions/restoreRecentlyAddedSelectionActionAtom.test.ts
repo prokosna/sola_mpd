@@ -27,9 +27,7 @@ describe("restoreRecentlyAddedSelectionActionAtom", () => {
 		});
 		store.set(viewStateBlobRepositoryAtom, repository);
 
-		await expect(
-			store.set(restoreRecentlyAddedSelectionActionAtom, "?vs=deadbeef"),
-		).resolves.toEqual({});
+		await store.set(restoreRecentlyAddedSelectionActionAtom, "?vs=deadbeef");
 
 		expect(store.get(resolvedRecentlyAddedSelectionAtom)).toEqual([]);
 	});

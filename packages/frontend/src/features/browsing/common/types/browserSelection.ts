@@ -2,9 +2,7 @@ import type { Song_MetadataTag } from "@sola_mpd/shared/src/models/song_pb.js";
 
 /**
  * A navigation position for the Browser / Recently Added filter panels: which
- * values are selected for a tag, string-typed to match how selections are
- * already handled throughout the browsing feature (see
- * `selectBrowserFilterValues` in `functions/browserFilter.ts`).
+ * values are selected for a tag.
  */
 export interface BrowserSelectionEntry {
 	tag: Song_MetadataTag;
@@ -12,13 +10,11 @@ export interface BrowserSelectionEntry {
 }
 
 /**
- * The full navigation position, ordered by selection order (the tag the user
- * picked first comes first). Deliberately excludes tags with no selection —
- * mirrors `selectedOrder`/`selectedValues` on `BrowserFilter` without the
- * proto's "-1 means unselected" placeholder encoding.
+ * The full navigation position, ordered by selection order. Mirrors
+ * `selectedOrder`/`selectedValues` on `BrowserFilter` without the proto's
+ * "-1 means unselected" encoding, and excludes tags with no selection.
  *
- * This is a navigation position, not a setting, so it lives in the URL
- * instead of `BrowserFilter.selected_values`.
+ * A navigation position, not a setting, so it lives in the URL.
  */
 export type BrowserSelection = BrowserSelectionEntry[];
 
@@ -30,10 +26,8 @@ export type SerializedBrowserSelection =
 	| { kind: "blob"; payload: string };
 
 /**
- * A single query param carrying a navigation position — either the page's own
- * inline param or the shared `?vs=` blob token. Also the shape cached per
- * profile in device settings, so a restored position can be replayed into the
- * address bar verbatim.
+ * A single query param carrying a navigation position — the page's own inline
+ * param or the shared `?vs=` blob token.
  */
 export type SelectionQueryParam = { key: string; value: string };
 

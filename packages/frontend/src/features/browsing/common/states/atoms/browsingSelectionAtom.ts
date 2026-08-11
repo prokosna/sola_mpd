@@ -5,10 +5,8 @@ import { deserializeBrowserSelection } from "../../functions/deserializeBrowserS
 import type { BrowserSelection } from "../../types/browserSelection";
 
 /**
- * Holds the position resolved by the restore action once it has done I/O —
- * a `?vs=` token lookup or a read of the device's last-position cache, neither
- * of which can be derived synchronously from the URL. Starts empty so the page
- * renders with no selection until resolution completes.
+ * Holds the position the restore action fetched for a `?vs=` token, which
+ * cannot be derived synchronously from the URL.
  */
 export function createResolvedSelectionAtom(): PrimitiveAtom<BrowserSelection> {
 	return atom<BrowserSelection>([]);
@@ -18,10 +16,6 @@ export function createResolvedSelectionAtom(): PrimitiveAtom<BrowserSelection> {
  * The current navigation position. The URL wins whenever it carries an
  * explicit inline selection (the common case — pure and synchronous, no I/O);
  * otherwise the last value the restore action resolved is used.
- *
- * Browser and Recently Added each own an inline query param and a resolved
- * atom, but that precedence rule is one rule and must not drift between them,
- * so it lives here rather than in each feature.
  */
 export function createSelectionAtom(
 	selectionQueryParam: string,

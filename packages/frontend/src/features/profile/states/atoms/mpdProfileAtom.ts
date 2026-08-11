@@ -2,8 +2,6 @@ import type { MpdProfileState } from "@sola_mpd/shared/src/models/mpd/mpd_profil
 import { atom, type Getter } from "jotai";
 import { atomWithDefault } from "jotai/utils";
 import { atomWithSync } from "../../../../lib/jotai/atomWithSync";
-import { deviceSettingsRepositoryAtom } from "../../../common";
-import { sweepOrphanedProfileDeviceSettings } from "../../functions/sweepOrphanedProfileDeviceSettings";
 
 import { mpdProfileStateRepositoryAtom } from "./mpdProfileStateRepositoryAtom";
 import { selectedProfileNameAtom } from "./selectedProfileNameAtom";
@@ -18,10 +16,6 @@ export async function loadMpdProfileState(
 ): Promise<MpdProfileState> {
 	const repository = get(mpdProfileStateRepositoryAtom);
 	const state = await repository.fetch();
-	sweepOrphanedProfileDeviceSettings(
-		get(deviceSettingsRepositoryAtom),
-		state.profiles.map((profile) => profile.name),
-	);
 	return state;
 }
 

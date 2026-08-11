@@ -1,8 +1,6 @@
 import { atom } from "jotai";
 import { showNotification } from "../../../../lib/mantine/showNotification";
-import { deviceSettingsRepositoryAtom } from "../../../common";
 import { removeProfileFromState } from "../../functions/profileConstruction";
-import { sweepOrphanedProfileDeviceSettings } from "../../functions/sweepOrphanedProfileDeviceSettings";
 import { mpdProfileStateAsyncAtom } from "../atoms/mpdProfileAtom";
 import { mpdProfileStateRepositoryAtom } from "../atoms/mpdProfileStateRepositoryAtom";
 
@@ -29,12 +27,5 @@ export const deleteMpdProfileActionAtom = atom(
 			return;
 		}
 		set(mpdProfileStateAsyncAtom, Promise.resolve(newState));
-		// Drop this profile's per-profile device settings immediately, in the
-		// same step as the deletion, so a same-named profile created
-		// later on this device doesn't inherit its cached browsing position.
-		sweepOrphanedProfileDeviceSettings(
-			get(deviceSettingsRepositoryAtom),
-			newState.profiles.map((profile) => profile.name),
-		);
 	},
 );

@@ -30,9 +30,7 @@ describe("restoreBrowserSelectionActionAtom", () => {
 		});
 		store.set(viewStateBlobRepositoryAtom, repository);
 
-		await expect(
-			store.set(restoreBrowserSelectionActionAtom, "?vs=deadbeef"),
-		).resolves.toEqual({});
+		await store.set(restoreBrowserSelectionActionAtom, "?vs=deadbeef");
 
 		expect(store.get(resolvedBrowserSelectionAtom)).toEqual([]);
 	});
@@ -77,12 +75,8 @@ describe("restoreBrowserSelectionActionAtom", () => {
 		const params = new URLSearchParams();
 		params.set(BROWSER_SELECTION_QUERY_PARAM, value);
 
-		const result = await store.set(
-			restoreBrowserSelectionActionAtom,
-			`?${params.toString()}`,
-		);
+		await store.set(restoreBrowserSelectionActionAtom, `?${params.toString()}`);
 
-		expect(result).toEqual({});
 		expect(repository.fetch).not.toHaveBeenCalled();
 	});
 });

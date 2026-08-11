@@ -1,11 +1,10 @@
 import type { BrowserFilter } from "@sola_mpd/shared/src/models/browser_pb.js";
 import { useSetAtom } from "jotai";
 import { useCallback } from "react";
-import { useSearchParams } from "react-router";
 
 import { RECENTLY_ADDED_SELECTION_QUERY_PARAM } from "../../common/const/browsingSelectionQueryParams";
-import { applySelectionQueryParam } from "../../common/functions/applySelectionQueryParam";
 import { extractBrowserSelectionFromFilters } from "../../common/functions/browserFilter";
+import { useApplySelectionToUrl } from "../../common/hooks/useApplySelectionToUrl";
 import { updateRecentlyAddedFiltersActionAtom } from "../states/actions/updateRecentlyAddedFiltersActionAtom";
 import { updateRecentlyAddedSelectionActionAtom } from "../states/actions/updateRecentlyAddedSelectionActionAtom";
 
@@ -14,10 +13,12 @@ import { updateRecentlyAddedSelectionActionAtom } from "../states/actions/update
  * the full rationale.
  */
 export function useUpdateRecentlyAddedFilters() {
-	const [, setSearchParams] = useSearchParams();
 	const updateFiltersAction = useSetAtom(updateRecentlyAddedFiltersActionAtom);
 	const updateSelectionAction = useSetAtom(
 		updateRecentlyAddedSelectionActionAtom,
+	);
+	const applySelectionToUrl = useApplySelectionToUrl(
+		RECENTLY_ADDED_SELECTION_QUERY_PARAM,
 	);
 
 	return useCallback(
@@ -27,16 +28,8 @@ export function useUpdateRecentlyAddedFilters() {
 			const selection = extractBrowserSelectionFromFilters(filters);
 			const result = await updateSelectionAction(selection);
 
-			setSearchParams(
-				(prev) =>
-					applySelectionQueryParam(
-						prev,
-						RECENTLY_ADDED_SELECTION_QUERY_PARAM,
-						result,
-					),
-				{ replace: true },
-			);
+			applySelectionToUrl(result);
 		},
-		[updateFiltersAction, updateSelectionAction, setSearchParams],
+		[updateFiltersAction, updateSelectionAction, applySelectionToUrl],
 	);
 }
