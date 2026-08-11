@@ -19,10 +19,7 @@ import {
 	type SavedSearches,
 	SavedSearchesSchema,
 } from "@sola_mpd/shared/src/models/search_pb.js";
-import {
-	type SongTableState,
-	SongTableStateSchema,
-} from "@sola_mpd/shared/src/models/song_table_pb.js";
+import type { SongTableState } from "@sola_mpd/shared/src/models/song_table_pb.js";
 import { useAtomValue, useSetAtom } from "jotai";
 import { useCallback } from "react";
 import { UpdateMode } from "../../../types/stateTypes";
@@ -39,11 +36,9 @@ import {
 	updateMpdProfileStateActionAtom,
 } from "../../profile";
 import { savedSearchesAtom, updateSavedSearchesActionAtom } from "../../search";
-import {
-	songTableStateAtom,
-	updateSongTableStateActionAtom,
-} from "../../song_table";
+import { useRawSongTableStateEditorProps } from "../hooks/useRawSongTableStateEditorProps";
 import { useSettingsStateEditorProps } from "../hooks/useSettingsStateEditorProps";
+import { ScopeNote } from "./ScopeNote";
 import { SettingsStatesEditor } from "./SettingsStatesEditor";
 
 export function SettingsStates() {
@@ -63,19 +58,11 @@ export function SettingsStates() {
 			},
 		);
 
-	const songTableState = useAtomValue(songTableStateAtom);
-	const updateSongTableStateAction = useSetAtom(updateSongTableStateActionAtom);
+	// Reads/writes the genuine server document (not the device-composed
+	// songTableStateAtom the rest of the app uses) so this stays a true
+	// escape hatch onto what's actually on disk.
 	const [onOpenSongTableState, songTableStateProps] =
-		useSettingsStateEditorProps<SongTableState>(
-			SongTableStateSchema,
-			songTableState,
-			async (newState: SongTableState) => {
-				updateSongTableStateAction({
-					state: newState,
-					mode: UpdateMode.LOCAL_STATE | UpdateMode.PERSIST,
-				});
-			},
-		);
+		useRawSongTableStateEditorProps();
 
 	const browserState = useAtomValue(browserStateAtom);
 	const updateBrowserStateAction = useSetAtom(updateBrowserStateActionAtom);
@@ -153,7 +140,6 @@ export function SettingsStates() {
 	if (
 		mpdProfileState === undefined ||
 		profileStateProps === undefined ||
-		songTableState === undefined ||
 		songTableStateProps === undefined ||
 		browserState === undefined ||
 		browserStateProps === undefined ||
@@ -167,13 +153,33 @@ export function SettingsStates() {
 		return <CenterSpinner />;
 	}
 
+	// Every document editable here is a Workspace document — it lives on the
+	// server and is shared by every device and profile. There is no Device
+	// entry in this table because device settings aren't stored as
+	// server-fetched protobuf documents; see the "This device" tab instead.
 	const rows = [
-		{ name: "Profile", onEdit: onOpenProfileState },
-		{ name: "Song Table", onEdit: onOpenSongTableState },
-		{ name: "Browser", onEdit: onOpenBrowserState },
-		{ name: "Recently Added", onEdit: onOpenRecentlyAddedState },
-		{ name: "Saved Searches", onEdit: onOpenSavedSearches },
-		{ name: "Plugins", onEdit: onOpenPluginState },
+		{
+			name: "Profile",
+			onEdit: onOpenProfileState,
+			note: undefined,
+		},
+		{
+			name: "Song Table",
+			onEdit: onOpenSongTableState,
+			note:
+				"The column set/order here is authoritative. Width, sort order, " +
+				"and descending flags in this document are legacy and no longer " +
+				"read by the app — the values actually in effect live on this " +
+				'device (see the "This device" tab).',
+		},
+		{ name: "Browser", onEdit: onOpenBrowserState, note: undefined },
+		{
+			name: "Recently Added",
+			onEdit: onOpenRecentlyAddedState,
+			note: undefined,
+		},
+		{ name: "Saved Searches", onEdit: onOpenSavedSearches, note: undefined },
+		{ name: "Plugins", onEdit: onOpenPluginState, note: undefined },
 	];
 
 	return (
@@ -183,17 +189,30 @@ export function SettingsStates() {
 					Edit raw setting JSON files
 				</Title>
 				<Text c="red">Do not edit unless you know what you are doing.</Text>
-				<Table maw="50%">
+				<Table maw="70%">
 					<Table.Thead>
 						<Table.Tr>
 							<Table.Th>STATE</Table.Th>
+							<Table.Th>SCOPE</Table.Th>
 							<Table.Th>ACTION</Table.Th>
 						</Table.Tr>
 					</Table.Thead>
 					<Table.Tbody>
 						{rows.map((row) => (
 							<Table.Tr key={row.name}>
-								<Table.Td>{row.name}</Table.Td>
+								<Table.Td>
+									<Stack gap={2}>
+										<Text>{row.name}</Text>
+										{row.note !== undefined && (
+											<Text size="xs" c="dimmed">
+												{row.note}
+											</Text>
+										)}
+									</Stack>
+								</Table.Td>
+								<Table.Td>
+									<ScopeNote scope="workspace" />
+								</Table.Td>
 								<Table.Td>
 									<Button variant="outline" size="xs" onClick={row.onEdit}>
 										Edit

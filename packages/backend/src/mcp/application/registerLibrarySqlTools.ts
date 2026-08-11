@@ -3,10 +3,11 @@ import { z } from "zod";
 
 import { toolResultJson } from "../functions/toolResult.js";
 import { validateSelectSql } from "../functions/validateSelectSql.js";
-import { resolveCurrentMpdProfile } from "../utils/currentMpdProfile.js";
+import { resolveCurrentMpdProfile } from "./currentMpdProfile.js";
 import { ensureLibraryIndexUseCase } from "./libraryIndexUseCases.js";
 import {
 	errorToToolResult,
+	mcpProfileNameSchema,
 	type RegisterMcpToolsDeps,
 } from "./mcpToolHelpers.js";
 
@@ -30,7 +31,9 @@ ${sql_schema}
 
 ${notes}
 
-Behaviour: rows beyond row_limit (default ${DEFAULT_SQL_ROWS}) are dropped and the response sets truncated=true. Use LIMIT in your SQL or raise row_limit when you really need more — large result sets may exceed your context window.`,
+Behaviour: rows beyond row_limit (default ${DEFAULT_SQL_ROWS}) are dropped and the response sets truncated=true. Use LIMIT in your SQL or raise row_limit when you really need more — large result sets may exceed your context window.
+
+Omitting profile uses the workspace default profile.`,
 			inputSchema: z.object({
 				sql: z
 					.string()
@@ -49,11 +52,12 @@ Behaviour: rows beyond row_limit (default ${DEFAULT_SQL_ROWS}) are dropped and t
 					.describe(
 						`Maximum rows to materialize. Default ${DEFAULT_SQL_ROWS}. Very large values may exhaust server memory or your context window.`,
 					),
+				profile: mcpProfileNameSchema,
 			}),
 		},
 		async (args) => {
 			try {
-				const profile = resolveCurrentMpdProfile();
+				const profile = resolveCurrentMpdProfile(args.profile);
 				await ensureLibraryIndexUseCase({ profile, mpdClient, libraryIndex });
 				validateSelectSql(args.sql);
 				const result = libraryIndex.querySql(
@@ -73,12 +77,12 @@ Behaviour: rows beyond row_limit (default ${DEFAULT_SQL_ROWS}) are dropped and t
 		{
 			title: "Library mirror stats",
 			description:
-				"Returns metadata about the analytical SQLite mirror: when it was last built and how many songs it currently holds.",
-			inputSchema: z.object({}),
+				"Returns metadata about the analytical SQLite mirror: when it was last built and how many songs it currently holds. Omitting profile uses the workspace default profile.",
+			inputSchema: z.object({ profile: mcpProfileNameSchema }),
 		},
-		async () => {
+		async (args) => {
 			try {
-				const profile = resolveCurrentMpdProfile();
+				const profile = resolveCurrentMpdProfile(args.profile);
 				await ensureLibraryIndexUseCase({ profile, mpdClient, libraryIndex });
 				return toolResultJson(libraryIndex.stats());
 			} catch (err) {

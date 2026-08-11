@@ -11,6 +11,7 @@ import type { ContextMenuSection } from "../../context_menu";
 import { usePluginContextMenuItems } from "../../plugin";
 import {
 	addSongsToQueueActionAtom,
+	applyDeviceColumnWidths,
 	getSongTableContextMenuAdd,
 	getSongTableContextMenuAddToPlaylist,
 	getSongTableContextMenuEditColumns,
@@ -20,7 +21,8 @@ import {
 	type SongTableContextMenuItemParams,
 	SongTableKeyType,
 	type SongTableProps,
-	selectedSongsAtom,
+	setSelectedSongsActionAtom,
+	songTableColumnLayoutAtom,
 	songTableStateAtom,
 	useHandleSongDoubleClick,
 } from "../../song_table";
@@ -43,19 +45,18 @@ export function useSearchSongTableProps(
 	const songs = useAtomValue(searchVisibleSongsAtom);
 	const searchSongTableColumns = useAtomValue(searchSongTableColumnsAtom);
 	const songTableState = useAtomValue(songTableStateAtom);
+	const songTableColumnLayout = useAtomValue(songTableColumnLayoutAtom);
 	const setIsSearchLoading = useSetAtom(setIsSearchLoadingActionAtom);
-	const setSelectedSongs = useSetAtom(selectedSongsAtom);
+	const setSelectedSongs = useSetAtom(setSelectedSongsActionAtom);
 	const addSongsToQueue = useSetAtom(addSongsToQueueActionAtom);
 	const replaceQueueWithSongs = useSetAtom(replaceQueueWithSongsActionAtom);
 	const handleSearchColumnsUpdated = useHandleSearchColumnsUpdated();
 
-	// Plugin context menu items
 	const pluginContextMenuItems = usePluginContextMenuItems(
 		Plugin_PluginType.ON_SAVED_SEARCH,
 		songTableKeyType,
 	);
 
-	// Similarity search
 	const {
 		isAdvancedSearchAvailable,
 		setSimilaritySearchTargetSong,
@@ -105,7 +106,6 @@ export function useSearchSongTableProps(
 		});
 	}
 
-	// Handlers
 	const onSongsReordered = useCallback(async (_orderedSongs: Song[]) => {
 		throw new Error("Reorder songs is not supported in Search.");
 	}, []);
@@ -134,14 +134,19 @@ export function useSearchSongTableProps(
 		return undefined;
 	}
 
+	// Search.columns owns tag/sort (the saved search's definition); width_flex
+	// is always the device's, same as the common song table.
+	const baseColumns =
+		searchSongTableColumns.length !== 0
+			? searchSongTableColumns
+			: songTableState.columns;
+	const columns = applyDeviceColumnWidths(baseColumns, songTableColumnLayout);
+
 	return {
 		id: COMPONENT_ID_SEARCH_MAIN_PANE,
 		songTableKeyType,
 		songs,
-		columns:
-			searchSongTableColumns.length !== 0
-				? searchSongTableColumns
-				: songTableState.columns,
+		columns,
 		isSortingEnabled: true,
 		isReorderingEnabled: false,
 		isGlobalFilterEnabled: true,

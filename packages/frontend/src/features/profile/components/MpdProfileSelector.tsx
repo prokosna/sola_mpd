@@ -3,27 +3,33 @@ import { useAtomValue } from "jotai";
 import { useNotification } from "../../../lib/mantine/hooks/useNotification";
 import { enabledOutputDeviceAtom } from "../../output_devices";
 import { useChangeCurrentMpdProfile } from "../hooks/useChangeCurrentMpdProfile";
-import { mpdProfileStateAtom } from "../states/atoms/mpdProfileAtom";
+import {
+	currentMpdProfileAtom,
+	mpdProfileStateAtom,
+} from "../states/atoms/mpdProfileAtom";
 
 export function MpdProfileSelector() {
 	const notify = useNotification();
 
 	const mpdProfileState = useAtomValue(mpdProfileStateAtom);
+	// The device's active profile, not mpdProfileState.currentProfile — that
+	// field now means "workspace default" (see mpdProfileAtom.ts), and would
+	// desync this selector from the profile actually in use on this device.
+	const currentMpdProfile = useAtomValue(currentMpdProfileAtom);
 	const enabledOutputDevice = useAtomValue(enabledOutputDeviceAtom);
 	const changeCurrentMpdProfile = useChangeCurrentMpdProfile();
 
 	return (
 		<Group px={0} w="100%" miw={100} maw={300}>
-			{mpdProfileState?.currentProfile === undefined ? (
+			{mpdProfileState === undefined || currentMpdProfile === undefined ? (
 				<Select w="100%" size="md" placeholder="Loading profiles..." />
 			) : (
 				<Select
 					w="100%"
 					size="md"
-					value={mpdProfileState.currentProfile.name}
+					value={currentMpdProfile.name}
 					data={mpdProfileState.profiles.map((profile) => {
-						const isSelected =
-							profile.name === mpdProfileState.currentProfile?.name;
+						const isSelected = profile.name === currentMpdProfile.name;
 						const text =
 							profile.name +
 							(isSelected

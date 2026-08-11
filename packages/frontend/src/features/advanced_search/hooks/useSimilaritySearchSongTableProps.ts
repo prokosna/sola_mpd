@@ -22,7 +22,7 @@ import {
 	type SongTableContextMenuItemParams,
 	SongTableKeyType,
 	type SongTableProps,
-	selectedSongsAtom,
+	setSelectedSongsActionAtom,
 	songTableStateAtom,
 	updateSongTableStateActionAtom,
 	useHandleSongDoubleClick,
@@ -43,11 +43,10 @@ export function useSimilaritySearchSongTableProps(
 	const songs = useAtomValue(similaritySearchSongsAtom);
 	const songTableState = useAtomValue(songTableStateAtom);
 	const updateSongTableState = useSetAtom(updateSongTableStateActionAtom);
-	const setSelectedSongs = useSetAtom(selectedSongsAtom);
+	const setSelectedSongs = useSetAtom(setSelectedSongsActionAtom);
 	const addSongsToQueue = useSetAtom(addSongsToQueueActionAtom);
 	const replaceQueueWithSongs = useSetAtom(replaceQueueWithSongsActionAtom);
 
-	// Plugin context menu items
 	const pluginContextMenuItems = usePluginContextMenuItems(
 		Plugin_PluginType.ON_ADVANCED_SEARCH,
 		songTableKeyType,
@@ -84,7 +83,6 @@ export function useSimilaritySearchSongTableProps(
 		});
 	}
 
-	// Handlers
 	const onSongsReordered = useCallback(async (_orderedSongs: Song[]) => {
 		throw new Error("Reorder songs must be disabled in the similarity search.");
 	}, []);

@@ -24,11 +24,9 @@ export async function* syncWithSubsonic(
 		status: PluginExecuteResponse_Status.OK,
 	});
 
-	// Make sure target playlist existence
 	let playlist = await client.getOrCreatePlaylist(playlistName);
 	const existingSongs = await client.fetchSongs(playlist);
 
-	// Figure out target songs
 	let toAddSongs = diffSongs(songs, existingSongs);
 	if (toAddSongs === undefined) {
 		yield create(PluginExecuteResponseSchema, {
@@ -42,7 +40,6 @@ export async function* syncWithSubsonic(
 		toAddSongs = songs;
 	}
 
-	// Sync
 	const total = toAddSongs.length;
 	for (const [index, song] of toAddSongs.entries()) {
 		const title = getSongMetadataAsString(song, Song_MetadataTag.TITLE);

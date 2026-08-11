@@ -6,11 +6,9 @@ export type NotificationParams = {
 	status: "info" | "warning" | "success" | "error";
 };
 
-// Mantine's `notifications.show` is backed by a module-scoped store, not
-// React context, so calling it from anywhere (atoms, services, plain
-// callbacks) works as long as <Notifications /> is mounted somewhere in the
-// tree. This wrapper applies the project-wide color / autoClose conventions
-// so the look stays consistent regardless of caller.
+// Mantine's `notifications.show` is backed by a module-scoped store, not React
+// context, so this works from atoms and services too, as long as
+// <Notifications /> is mounted somewhere in the tree.
 export function showNotification({
 	title,
 	description,

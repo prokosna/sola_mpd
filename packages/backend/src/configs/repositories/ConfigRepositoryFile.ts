@@ -10,6 +10,7 @@ import {
 } from "@bufbuild/protobuf";
 import type { GenMessage } from "@bufbuild/protobuf/codegenv2";
 import {
+	DB_DIRECTORY,
 	DB_FILE_BROWSER_STATE,
 	DB_FILE_COMMON_SONG_TABLE_STATE,
 	DB_FILE_MPD_PROFILE_STATE,
@@ -17,6 +18,14 @@ import {
 	DB_FILE_RECENTLY_ADDED_STATE,
 	DB_FILE_SAVED_SEARCHES,
 } from "@sola_mpd/shared/src/const/database.js";
+import {
+	CONFIG_KEY_BROWSER_STATE,
+	CONFIG_KEY_COMMON_SONG_TABLE_STATE,
+	CONFIG_KEY_MPD_PROFILE_STATE,
+	CONFIG_KEY_PLUGIN_STATE,
+	CONFIG_KEY_RECENTLY_ADDED_STATE,
+	CONFIG_KEY_SAVED_SEARCHES,
+} from "@sola_mpd/shared/src/const/socketio.js";
 import {
 	BrowserFilterSchema,
 	type BrowserState,
@@ -45,14 +54,36 @@ import {
 	SongTableStateSchema,
 } from "@sola_mpd/shared/src/models/song_table_pb.js";
 
+import type { ConfigKey } from "../functions/migrateConfigDocument.js";
+import {
+	getConfigDocumentCurrentVersion,
+	migrateConfigDocument,
+} from "../functions/migrateConfigDocument.js";
+import { backupDbDirectory } from "../utils/backupDbDirectory.js";
 import type { ConfigRepository } from "./ConfigRepository.js";
 
-class ConfigRepositoryFile<T extends Message> implements ConfigRepository<T> {
+let hasAttemptedDbBackup = false;
+
+// The backup has to precede the first *write*: reads are non-destructive, and
+// deferring it this far keeps a bare module import — all a unit test does —
+// from writing into the real db directory.
+function backupDbDirectoryOnce() {
+	if (hasAttemptedDbBackup) {
+		return;
+	}
+	hasAttemptedDbBackup = true;
+	backupDbDirectory(DB_DIRECTORY);
+}
+
+class ConfigRepositoryFile<T extends Message & { schemaVersion: number }>
+	implements ConfigRepository<T>
+{
 	private localCache: T;
 
 	constructor(
 		private localFilePath: string,
 		private schema: GenMessage<T>,
+		private configKey: ConfigKey,
 		defaultValue: T,
 	) {
 		this.localFilePath = localFilePath;
@@ -61,10 +92,16 @@ class ConfigRepositoryFile<T extends Message> implements ConfigRepository<T> {
 			fs.mkdirSync(dirPath, { recursive: true });
 			const fileContent = fs.readFileSync(this.localFilePath, "utf-8");
 
-			// Make sure that the local cache has all the latest necessary fields.
-			// Otherwise, copy the field from the default value.
+			// Migrate the raw JSON before anything else touches it. Running this
+			// after the fill-in loop below would let the loop inject the current
+			// schemaVersion into a legacy document, silently disabling migration
+			// forever for that file.
+			const fileContentJson = migrateConfigDocument(
+				this.configKey,
+				JSON.parse(fileContent) as JsonObject,
+			);
+
 			const defaultValueJson = toJson(schema, defaultValue);
-			const fileContentJson = JSON.parse(fileContent);
 			for (const [key, value] of Object.entries(
 				defaultValueJson as JsonObject,
 			)) {
@@ -89,17 +126,31 @@ class ConfigRepositoryFile<T extends Message> implements ConfigRepository<T> {
 	}
 
 	private save() {
+		backupDbDirectoryOnce();
+
+		this.localCache.schemaVersion = getConfigDocumentCurrentVersion(
+			this.configKey,
+		);
+
+		const dirPath = path.dirname(this.localFilePath);
+		const tempFilePath = path.join(
+			dirPath,
+			`.${path.basename(this.localFilePath)}.${process.pid}.${Date.now()}.tmp`,
+		);
 		fs.writeFileSync(
-			this.localFilePath,
+			tempFilePath,
 			JSON.stringify(toJson(this.schema, this.localCache), null, 2),
 		);
+		fs.renameSync(tempFilePath, this.localFilePath);
 	}
 }
 
 export const browserStateRepository = new ConfigRepositoryFile<BrowserState>(
 	DB_FILE_BROWSER_STATE,
 	BrowserStateSchema,
+	CONFIG_KEY_BROWSER_STATE,
 	create(BrowserStateSchema, {
+		schemaVersion: getConfigDocumentCurrentVersion(CONFIG_KEY_BROWSER_STATE),
 		filters: [
 			create(BrowserFilterSchema, {
 				tag: Song_MetadataTag.GENRE,
@@ -133,7 +184,11 @@ export const commonSongTableStateRepository =
 	new ConfigRepositoryFile<SongTableState>(
 		DB_FILE_COMMON_SONG_TABLE_STATE,
 		SongTableStateSchema,
+		CONFIG_KEY_COMMON_SONG_TABLE_STATE,
 		create(SongTableStateSchema, {
+			schemaVersion: getConfigDocumentCurrentVersion(
+				CONFIG_KEY_COMMON_SONG_TABLE_STATE,
+			),
 			columns: [
 				{
 					tag: Song_MetadataTag.TITLE,
@@ -155,7 +210,11 @@ export const mpdProfileStateRepository =
 	new ConfigRepositoryFile<MpdProfileState>(
 		DB_FILE_MPD_PROFILE_STATE,
 		MpdProfileStateSchema,
+		CONFIG_KEY_MPD_PROFILE_STATE,
 		create(MpdProfileStateSchema, {
+			schemaVersion: getConfigDocumentCurrentVersion(
+				CONFIG_KEY_MPD_PROFILE_STATE,
+			),
 			profiles: [],
 		}),
 	);
@@ -163,7 +222,9 @@ export const mpdProfileStateRepository =
 export const pluginStateRepository = new ConfigRepositoryFile<PluginState>(
 	DB_FILE_PLUGIN_STATE,
 	PluginStateSchema,
+	CONFIG_KEY_PLUGIN_STATE,
 	create(PluginStateSchema, {
+		schemaVersion: getConfigDocumentCurrentVersion(CONFIG_KEY_PLUGIN_STATE),
 		plugins: [],
 	}),
 );
@@ -172,7 +233,11 @@ export const recentlyAddedStateRepository =
 	new ConfigRepositoryFile<RecentlyAddedState>(
 		DB_FILE_RECENTLY_ADDED_STATE,
 		RecentlyAddedStateSchema,
+		CONFIG_KEY_RECENTLY_ADDED_STATE,
 		create(RecentlyAddedStateSchema, {
+			schemaVersion: getConfigDocumentCurrentVersion(
+				CONFIG_KEY_RECENTLY_ADDED_STATE,
+			),
 			filters: [
 				create(RecentlyAddedFilterSchema, {
 					tag: Song_MetadataTag.ALBUM,
@@ -190,7 +255,9 @@ export const recentlyAddedStateRepository =
 export const savedSearchRepository = new ConfigRepositoryFile<SavedSearches>(
 	DB_FILE_SAVED_SEARCHES,
 	SavedSearchesSchema,
+	CONFIG_KEY_SAVED_SEARCHES,
 	create(SavedSearchesSchema, {
+		schemaVersion: getConfigDocumentCurrentVersion(CONFIG_KEY_SAVED_SEARCHES),
 		searches: [],
 	}),
 );

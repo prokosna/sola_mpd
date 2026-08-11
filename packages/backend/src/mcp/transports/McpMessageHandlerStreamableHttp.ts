@@ -29,15 +29,10 @@ function reportMcpError(err: Error): void {
 }
 
 /**
- * Streamable HTTP transport serving both protocol eras from one endpoint:
- * `modern` (2026-07-28, per-request `_meta` envelope) and, through the
- * default stateless fallback, the 2025-era revisions. Clients predating
- * 2026-07-28 keep working unchanged; the era is classified per request.
- *
- * The factory builds a fresh `McpServer` per request: cheap (tool
- * registration is in-process and sub-millisecond) and free of session
- * bookkeeping. Deps (MpdClient, LibraryIndex) are shared so the analytical
- * mirror persists across requests.
+ * Serves both protocol eras from one endpoint, classified per request: `modern`
+ * (2026-07-28, per-request `_meta` envelope) and, through the stateless
+ * fallback, the 2025-era revisions. A fresh `McpServer` per request avoids
+ * session bookkeeping; deps are shared so the mirror outlives a request.
  */
 export class McpMessageHandlerStreamableHttp implements McpMessageHandler {
 	private readonly handler: McpHttpHandler;

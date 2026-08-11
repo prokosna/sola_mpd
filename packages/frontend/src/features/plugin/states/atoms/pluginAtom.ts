@@ -1,6 +1,7 @@
 import { create } from "@bufbuild/protobuf";
 import type { PluginState } from "@sola_mpd/shared/src/models/plugin/plugin_pb.js";
 import { PluginStateSchema } from "@sola_mpd/shared/src/models/plugin/plugin_pb.js";
+import type { Getter } from "jotai";
 import { atomWithDefault } from "jotai/utils";
 
 import { atomWithSync } from "../../../../lib/jotai/atomWithSync";
@@ -10,9 +11,9 @@ import { registerAllPluginsAndCheckAvailability } from "../../functions/pluginRe
 import { pluginServiceAtom } from "./pluginServiceAtom";
 import { pluginStateRepositoryAtom } from "./pluginStateRepositoryAtom";
 
-export const pluginAsyncAtom = atomWithDefault<
-	Promise<PluginState> | PluginState
->(async (get) => {
+// Registration and availability checks have to run again on every refetch: a
+// peer's config-changed broadcast can mean the plugin list itself changed.
+export async function loadPluginState(get: Getter): Promise<PluginState> {
 	const repository = get(pluginStateRepositoryAtom);
 	const pluginState = await repository.fetch();
 	const pluginService = get(pluginServiceAtom);
@@ -32,6 +33,10 @@ export const pluginAsyncAtom = atomWithDefault<
 	return create(PluginStateSchema, {
 		plugins: newPlugins,
 	});
-});
+}
+
+export const pluginAsyncAtom = atomWithDefault<
+	Promise<PluginState> | PluginState
+>(loadPluginState);
 
 export const pluginAtom = atomWithSync(pluginAsyncAtom);

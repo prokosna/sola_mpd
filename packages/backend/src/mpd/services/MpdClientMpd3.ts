@@ -274,7 +274,6 @@ class MpdClientMpd3 implements MpdClient {
 		const cmd = this.convertCommand(req);
 
 		switch (req.command?.case) {
-			// Connection
 			case "ping": {
 				try {
 					await this.sendCommand(client, cmd);
@@ -291,7 +290,6 @@ class MpdClientMpd3 implements MpdClient {
 					}
 				}
 			}
-			// Control
 			case "next":
 				await this.sendCommand(client, cmd);
 				return create(MpdResponseSchema, {
@@ -323,7 +321,6 @@ class MpdClientMpd3 implements MpdClient {
 					command: { case: "stop", value: {} },
 				});
 
-			// Playback
 			case "consume":
 				await this.sendCommand(client, cmd);
 				return create(MpdResponseSchema, {
@@ -363,7 +360,6 @@ class MpdClientMpd3 implements MpdClient {
 					command: { case: "single", value: {} },
 				});
 
-			// Status
 			case "currentsong": {
 				const ret = await this.streamCommandToObject(client, cmd);
 				const song = parseSong(ret);
@@ -396,7 +392,6 @@ class MpdClientMpd3 implements MpdClient {
 				});
 			}
 
-			// Queue
 			case "add":
 				await this.sendCommand(client, cmd);
 				return create(MpdResponseSchema, {
@@ -434,7 +429,6 @@ class MpdClientMpd3 implements MpdClient {
 					command: { case: "shuffle", value: {} },
 				});
 
-			// StoredPlaylist
 			case "listplaylistinfo": {
 				const songs = await this.streamCommandToStream(client, cmd, ["file"])
 					.then((stream) => stream.pipeThrough(this.transformToSong()))
@@ -508,7 +502,6 @@ class MpdClientMpd3 implements MpdClient {
 					command: { case: "save", value: {} },
 				});
 
-			// Database
 			case "list": {
 				const values = await this.streamCommandToStream(client, cmd)
 					.then((stream) =>
@@ -550,7 +543,6 @@ class MpdClientMpd3 implements MpdClient {
 					command: { case: "update", value: {} },
 				});
 
-			// Audio
 			case "outputs": {
 				const devices = await this.streamCommandToStream(client, cmd)
 					.then((stream) =>
@@ -572,7 +564,6 @@ class MpdClientMpd3 implements MpdClient {
 				});
 			}
 
-			// Utility
 			case "listAllSongs": {
 				let songs = this.allSongsCache.get(profile);
 				if (songs === undefined) {
@@ -638,11 +629,9 @@ class MpdClientMpd3 implements MpdClient {
 
 	private convertCommand(req: MpdRequest): Command {
 		switch (req.command?.case) {
-			// Connection
 			case "ping":
 				return Command.cmd("ping");
 
-			// Control
 			case "next":
 				return Command.cmd("next");
 			case "pause":
@@ -689,7 +678,6 @@ class MpdClientMpd3 implements MpdClient {
 			case "stop":
 				return Command.cmd("stop");
 
-			// Playback
 			case "consume":
 				return Command.cmd("consume", req.command.value.enable ? "1" : "0");
 			case "random":
@@ -703,7 +691,6 @@ class MpdClientMpd3 implements MpdClient {
 			case "single":
 				return Command.cmd("single", req.command.value.enable ? "1" : "0");
 
-			// Status
 			case "currentsong":
 				return Command.cmd("currentsong");
 			case "status":
@@ -711,7 +698,6 @@ class MpdClientMpd3 implements MpdClient {
 			case "stats":
 				return Command.cmd("stats");
 
-			// Queue
 			case "add":
 				return Command.cmd("add", req.command.value.uri);
 			case "clear":
@@ -749,7 +735,6 @@ class MpdClientMpd3 implements MpdClient {
 			case "shuffle":
 				return Command.cmd("shuffle");
 
-			// StoredPlaylist
 			case "listplaylistinfo":
 				return Command.cmd("listplaylistinfo", req.command.value.name);
 			case "listplaylists":
@@ -786,7 +771,6 @@ class MpdClientMpd3 implements MpdClient {
 			case "save":
 				return Command.cmd("save", req.command.value.name);
 
-			// Database
 			case "list": {
 				const tag = convertSongMetadataTagToMpdTag(req.command.value.tag);
 				const conditions = req.command.value.conditions;
@@ -814,11 +798,9 @@ class MpdClientMpd3 implements MpdClient {
 			case "update":
 				return Command.cmd("update");
 
-			// Audio
 			case "outputs":
 				return Command.cmd("outputs");
 
-			// Utility
 			case "listAllSongs":
 				return Command.cmd("listallinfo");
 			case "listAllFolders":

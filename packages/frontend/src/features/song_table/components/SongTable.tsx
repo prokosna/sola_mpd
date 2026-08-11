@@ -21,6 +21,7 @@ import { useOpenContextMenu } from "../hooks/useOpenContextMenu";
 import { useRowClassRules } from "../hooks/useRowClassRules";
 import { useSongsMap } from "../hooks/useSongsMap";
 import { useSongsWithIndex } from "../hooks/useSongsWithIndex";
+import { useSyncColumnSortState } from "../hooks/useSyncColumnSortState";
 import type {
 	SongTableContextMenuItemParams,
 	SongTableKeyType,
@@ -53,11 +54,9 @@ export function SongTable(props: SongTableProps): JSX.Element {
 	const ref = useRef<HTMLDivElement>(null);
 	const gridRef = useRef<AgGridReact>(null);
 
-	// Songs
 	const songsWithIndex = useSongsWithIndex(props.songs);
 	const songsMap = useSongsMap(songsWithIndex, props.songTableKeyType);
 
-	// Context menu
 	const openContextMenu = useOpenContextMenu(
 		props.id,
 		props.songTableKeyType,
@@ -67,10 +66,8 @@ export function SongTable(props: SongTableProps): JSX.Element {
 		props.contextMenuAnchorRef,
 	);
 
-	// Keyboard shortcut
 	useKeyboardShortcutSelectAll(ref, gridRef, songsMap, props.onSongsSelected);
 
-	// AgGridReact format
 	const { rowData, columnDefs, selectionColumnDef } = useAgGridReactData(
 		songsWithIndex,
 		props.songTableKeyType,
@@ -80,15 +77,19 @@ export function SongTable(props: SongTableProps): JSX.Element {
 		isCompact,
 	);
 
+	useSyncColumnSortState(
+		gridRef,
+		props.columns,
+		!isCompact && props.isSortingEnabled,
+	);
+
 	// Use bold for the playing song.
 	const rowClassRules = useRowClassRules(props.songTableKeyType, songsMap);
 
-	// Get Row ID callback function
 	const getRowId = useCallback((params: GetRowIdParams<SongTableRowData>) => {
 		return String(params.data.key);
 	}, []);
 
-	// Handlers
 	const handleRowClick = useHandleRowClick();
 	const handleColumnsUpdated = useHandleColumnsUpdated(
 		props.columns,
@@ -115,7 +116,6 @@ export function SongTable(props: SongTableProps): JSX.Element {
 		props.scrollToPlayingSong ?? false,
 	);
 
-	// Color mode
 	const theme = useAgGridTheme();
 
 	return (

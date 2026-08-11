@@ -37,6 +37,7 @@ message PluginInfo {
 
 message PluginState {
   repeated Plugin plugins = 1;
+  uint32 schema_version = 2;
 }
 
 message PluginRegisterRequest {

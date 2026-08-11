@@ -13,7 +13,7 @@ import type { Message } from "@bufbuild/protobuf";
  * Describes the file song_table.proto.
  */
 export const file_song_table: GenFile = /*@__PURE__*/
-  fileDesc("ChBzb25nX3RhYmxlLnByb3RvIoMBCg9Tb25nVGFibGVDb2x1bW4SHgoDdGFnGAEgASgOMhEuU29uZy5NZXRhZGF0YVRhZxIXCgpzb3J0X29yZGVyGAIgASgFSACIAQESFAoMaXNfc29ydF9kZXNjGAMgASgIEhIKCndpZHRoX2ZsZXgYBCABKAVCDQoLX3NvcnRfb3JkZXIiMwoOU29uZ1RhYmxlU3RhdGUSIQoHY29sdW1ucxgBIAMoCzIQLlNvbmdUYWJsZUNvbHVtbmIGcHJvdG8z", [file_song, file_google_protobuf_wrappers]);
+  fileDesc("ChBzb25nX3RhYmxlLnByb3RvIoMBCg9Tb25nVGFibGVDb2x1bW4SHgoDdGFnGAEgASgOMhEuU29uZy5NZXRhZGF0YVRhZxIXCgpzb3J0X29yZGVyGAIgASgFSACIAQESFAoMaXNfc29ydF9kZXNjGAMgASgIEhIKCndpZHRoX2ZsZXgYBCABKAVCDQoLX3NvcnRfb3JkZXIiSwoOU29uZ1RhYmxlU3RhdGUSIQoHY29sdW1ucxgBIAMoCzIQLlNvbmdUYWJsZUNvbHVtbhIWCg5zY2hlbWFfdmVyc2lvbhgCIAEoDWIGcHJvdG8z", [file_song, file_google_protobuf_wrappers]);
 
 /**
  * @generated from message SongTableColumn
@@ -55,6 +55,11 @@ export type SongTableState = Message<"SongTableState"> & {
    * @generated from field: repeated SongTableColumn columns = 1;
    */
   columns: SongTableColumn[];
+
+  /**
+   * @generated from field: uint32 schema_version = 2;
+   */
+  schemaVersion: number;
 };
 
 /**

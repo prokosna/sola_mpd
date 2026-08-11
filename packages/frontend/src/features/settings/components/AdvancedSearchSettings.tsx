@@ -4,6 +4,7 @@ import {
 	Group,
 	Stack,
 	Table,
+	Text,
 	TextInput,
 	Title,
 } from "@mantine/core";
@@ -56,10 +57,14 @@ export function AdvancedSearchSettings({
 	});
 
 	return (
-		<Stack gap={16} maw="70%">
-			<Title order={1} size="lg">
+		<Stack gap={12} maw={720}>
+			<Title order={2} size="md">
 				Advanced Search
 			</Title>
+			<Text size="sm" c="dimmed">
+				The query limit is kept on this device. Scan, Vacuum, and Analyze act on
+				the shared library index, so they affect every device.
+			</Text>
 			<form>
 				<Group>
 					<TextInput

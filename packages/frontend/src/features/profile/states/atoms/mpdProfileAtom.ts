@@ -1,18 +1,49 @@
-import { atom } from "jotai";
+import type { MpdProfileState } from "@sola_mpd/shared/src/models/mpd/mpd_profile_pb.js";
+import { atom, type Getter } from "jotai";
 import { atomWithDefault } from "jotai/utils";
-
 import { atomWithSync } from "../../../../lib/jotai/atomWithSync";
 
 import { mpdProfileStateRepositoryAtom } from "./mpdProfileStateRepositoryAtom";
+import { selectedProfileNameAtom } from "./selectedProfileNameAtom";
 
-export const mpdProfileStateAsyncAtom = atomWithDefault(async (get) => {
+export async function loadMpdProfileState(
+	get: Getter,
+): Promise<MpdProfileState> {
 	const repository = get(mpdProfileStateRepositoryAtom);
-	return repository.fetch();
-});
+	const state = await repository.fetch();
+	return state;
+}
+
+export const mpdProfileStateAsyncAtom = atomWithDefault<
+	Promise<MpdProfileState> | MpdProfileState
+>(loadMpdProfileState);
 
 export const mpdProfileStateAtom = atomWithSync(mpdProfileStateAsyncAtom);
 
+// Selection is per-device, the default is per-workspace (server). The
+// device's choice wins when it still names a profile that exists; a
+// deleted-elsewhere server default falls back to the first remaining
+// profile so the UI never points at a profile that no longer exists.
 export const currentMpdProfileAtom = atom((get) => {
 	const profileState = get(mpdProfileStateAtom);
-	return profileState?.currentProfile;
+	if (profileState === undefined) {
+		return undefined;
+	}
+
+	const selectedProfileName = get(selectedProfileNameAtom);
+	const selectedProfile = profileState.profiles.find(
+		(profile) => profile.name === selectedProfileName,
+	);
+	if (selectedProfile !== undefined) {
+		return selectedProfile;
+	}
+
+	const defaultProfile = profileState.profiles.find(
+		(profile) => profile.name === profileState.currentProfile?.name,
+	);
+	if (defaultProfile !== undefined) {
+		return defaultProfile;
+	}
+
+	return profileState.profiles[0];
 });

@@ -10,13 +10,9 @@ import type { Song } from "@sola_mpd/shared/src/models/song_pb.js";
 import type { MpdClient } from "../../mpd";
 
 /**
- * Fetch one chunk of the library via MPD `search`.
- *
- * Conditions is empty; the backend turns that into the `(base "")` tautology
- * so MPD returns every song. No `sort` is specified — we rely on MPD's
- * deterministic database-traversal order so sequential `window` calls form a
- * non-overlapping partition of the result set, matching what `listallinfo`
- * currently returns.
+ * No `sort` is specified: sequential `window` calls form a non-overlapping
+ * partition only because MPD's database-traversal order is deterministic.
+ * Empty conditions become the `(base "")` tautology on the backend.
  */
 export async function fetchAllSongsFastChunk(
 	mpdClient: MpdClient,

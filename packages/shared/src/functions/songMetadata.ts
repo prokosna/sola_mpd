@@ -111,7 +111,6 @@ export function convertStringToSongMetadataValue(
 		});
 	}
 
-	// Date
 	const tryDate = dayjs(value);
 	if (tryDate.isValid() && value.includes("-")) {
 		return create(Song_MetadataValueSchema, {
@@ -122,7 +121,6 @@ export function convertStringToSongMetadataValue(
 		});
 	}
 
-	// number
 	const tryNumber = Number(value);
 	if (!Number.isNaN(tryNumber)) {
 		if (tryNumber % 1 === 0) {
@@ -141,7 +139,6 @@ export function convertStringToSongMetadataValue(
 		});
 	}
 
-	// string
 	return create(Song_MetadataValueSchema, {
 		value: {
 			case: "stringValue",

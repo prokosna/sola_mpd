@@ -22,7 +22,7 @@ import {
 	type SongTableContextMenuItemParams,
 	SongTableKeyType,
 	type SongTableProps,
-	selectedSongsAtom,
+	setSelectedSongsActionAtom,
 	songTableStateAtom,
 	updateSongTableStateActionAtom,
 } from "../../song_table";
@@ -52,19 +52,17 @@ export function usePlayQueueSongTableProps(
 	const songTableState = useAtomValue(songTableStateAtom);
 	const setIsPlayQueueLoading = useSetAtom(setIsPlayQueueLoadingActionAtom);
 	const updateSongTableState = useSetAtom(updateSongTableStateActionAtom);
-	const setSelectedSongs = useSetAtom(selectedSongsAtom);
+	const setSelectedSongs = useSetAtom(setSelectedSongsActionAtom);
 	const removeQueueSongs = useSetAtom(removeQueueSongsActionAtom);
 	const clearQueue = useSetAtom(clearQueueActionAtom);
 	const reorderQueue = useSetAtom(reorderQueueActionAtom);
 	const playSongById = useSetAtom(playSongByIdActionAtom);
 
-	// Plugin context menu items
 	const pluginContextMenuItems = usePluginContextMenuItems(
 		Plugin_PluginType.ON_PLAY_QUEUE,
 		songTableKeyType,
 	);
 
-	// Similarity search
 	const {
 		isAdvancedSearchAvailable,
 		setSimilaritySearchTargetSong,
@@ -143,7 +141,6 @@ export function usePlayQueueSongTableProps(
 		});
 	}
 
-	// Handlers
 	const onSongsReordered = useCallback(
 		async (orderedSongs: Song[]) => {
 			await reorderQueue(orderedSongs);

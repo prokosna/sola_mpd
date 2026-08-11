@@ -17,12 +17,12 @@ import { songTableStateAtom } from "../../../../song_table/states/atoms/songTabl
 import { fetchBrowserSongs } from "../../../common/functions/browserSongs";
 import { sortSongsByPath } from "../../functions/sortSongsByPath";
 import { recentlyAddedFastStateAtom } from "./recentlyAddedFastStateAtom";
-import { recentlyAddedBrowserFiltersAtom } from "./recentlyAddedFiltersAtom";
+import { recentlyAddedFiltersAtom } from "./recentlyAddedFiltersAtom";
 
 export const recentlyAddedSongsAsyncAtom = atomWithRefresh(async (get) => {
 	const mpdClient = get(mpdClientAtom);
 	const currentMpdProfile = get(currentMpdProfileAtom);
-	const browserFilters = get(recentlyAddedBrowserFiltersAtom);
+	const browserFilters = get(recentlyAddedFiltersAtom);
 
 	if (currentMpdProfile === undefined || browserFilters === undefined) {
 		return undefined;
@@ -35,7 +35,7 @@ const recentlyAddedSlowSongsAtom = atomWithSync(recentlyAddedSongsAsyncAtom);
 
 const recentlyAddedFastSongsAtom = atom((get) => {
 	const fastState = get(recentlyAddedFastStateAtom);
-	const browserFilters = get(recentlyAddedBrowserFiltersAtom);
+	const browserFilters = get(recentlyAddedFiltersAtom);
 	if (browserFilters === undefined) {
 		return undefined;
 	}

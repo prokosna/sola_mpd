@@ -12,4 +12,5 @@ message SongTableColumn {
 
 message SongTableState {
   repeated SongTableColumn columns = 1;
+  uint32 schema_version = 2;
 }

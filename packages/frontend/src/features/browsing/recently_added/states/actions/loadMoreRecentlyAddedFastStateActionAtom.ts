@@ -14,12 +14,9 @@ import {
 import { recentlyAddedFastStateAtom } from "../atoms/recentlyAddedFastStateAtom";
 
 /**
- * Extend the visible window by one step and append the delta. If the step
- * yields zero new songs (a quiet period in the user's library) keep extending
- * until either a non-empty delta arrives, the loaded count reaches
- * `stats.songsCount`, or the cutoff exceeds RECENTLY_ADDED_MAX_DAYS. The first
- * caller bears the cost of crossing quiet periods so a single scroll trigger
- * always surfaces something visible (or terminates the loader).
+ * Keeps extending past a step that yields nothing — a quiet period in the
+ * library — so one scroll trigger always either surfaces songs or terminates
+ * the loader, instead of asking the user to scroll again for each empty step.
  */
 export const loadMoreRecentlyAddedFastStateActionAtom = atom(
 	null,

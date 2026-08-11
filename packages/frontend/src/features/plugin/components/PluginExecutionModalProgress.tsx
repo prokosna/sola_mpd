@@ -10,9 +10,9 @@ import {
 } from "@mantine/core";
 import type { Plugin } from "@sola_mpd/shared/src/models/plugin/plugin_pb.js";
 import { useAtomValue, useSetAtom } from "jotai";
+import { closePluginExecutionModalActionAtom } from "../states/actions/closePluginExecutionModalActionAtom";
 import {
 	pluginExecutionLatestResponseAtom,
-	pluginExecutionModalOpenAtom,
 	pluginExecutionWarningLogsAtom,
 } from "../states/atoms/pluginExecutionAtom";
 
@@ -26,8 +26,8 @@ export function PluginExecutionModalProgress(
 	const { plugin } = props;
 	const latestResponse = useAtomValue(pluginExecutionLatestResponseAtom);
 	const warningLogs = useAtomValue(pluginExecutionWarningLogsAtom);
-	const setIsPluginExecutionModalOpen = useSetAtom(
-		pluginExecutionModalOpenAtom,
+	const closePluginExecutionModal = useSetAtom(
+		closePluginExecutionModalActionAtom,
 	);
 
 	if (plugin.info === undefined) {
@@ -79,10 +79,7 @@ export function PluginExecutionModalProgress(
 				maxRows={4}
 			/>
 			<Group justify="flex-end">
-				<Button
-					variant="outline"
-					onClick={() => setIsPluginExecutionModalOpen("closed")}
-				>
+				<Button variant="outline" onClick={() => closePluginExecutionModal()}>
 					Dismiss
 				</Button>
 			</Group>

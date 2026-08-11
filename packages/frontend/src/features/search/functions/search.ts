@@ -271,7 +271,6 @@ export function convertSearchToFormValues(search: Search): SearchFormValues {
 		queries: search.queries.map((query) => ({
 			conditions: query.conditions.map(convertConditionToFormValues),
 		})),
-		columns: search.columns,
 	};
 }
 
@@ -286,7 +285,6 @@ export function convertFormValuesToSearch(values: SearchFormValues): Search {
 				value: convertStringToSongMetadataValue(condition.value),
 			})),
 		})),
-		columns: values.columns,
 	});
 }
 

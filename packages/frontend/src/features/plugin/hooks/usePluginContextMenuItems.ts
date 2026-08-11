@@ -8,12 +8,9 @@ import {
 	type SongTableKeyType,
 } from "../../song_table";
 import { filterAvailablePlugins } from "../functions/pluginFiltering";
+import { beginPluginExecutionActionAtom } from "../states/actions/beginPluginExecutionActionAtom";
 import { pluginAtom } from "../states/atoms/pluginAtom";
-import {
-	isPreviousPluginStillRunningAtom,
-	pluginExecutionModalOpenAtom,
-	pluginExecutionPropsAtom,
-} from "../states/atoms/pluginExecutionAtom";
+import { isPreviousPluginStillRunningAtom } from "../states/atoms/pluginExecutionAtom";
 
 export function usePluginContextMenuItems(
 	pluginType: Plugin_PluginType,
@@ -25,10 +22,7 @@ export function usePluginContextMenuItems(
 	const isPreviousPluginStillRunning = useAtomValue(
 		isPreviousPluginStillRunningAtom,
 	);
-	const setPluginExecutionProps = useSetAtom(pluginExecutionPropsAtom);
-	const setIsPluginExecutionModalOpen = useSetAtom(
-		pluginExecutionModalOpenAtom,
-	);
+	const beginPluginExecution = useSetAtom(beginPluginExecutionActionAtom);
 
 	const availablePlugins = filterAvailablePlugins(
 		pluginState?.plugins ?? [],
@@ -56,11 +50,7 @@ export function usePluginContextMenuItems(
 			if (targetSongs.length === 0) {
 				return;
 			}
-			setPluginExecutionProps({
-				plugin,
-				songs: targetSongs,
-			});
-			setIsPluginExecutionModalOpen("start");
+			beginPluginExecution({ plugin, songs: targetSongs });
 		},
 	}));
 }

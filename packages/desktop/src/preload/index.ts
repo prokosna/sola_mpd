@@ -22,13 +22,21 @@ const ALLOWED_INVOKE_CHANNELS = new Set([
 	"socketio_plugin_register",
 	"socketio_plugin_execute",
 	"socketio_advanced_search",
+	"socketio_view_state_blob_save",
+	"socketio_view_state_blob_fetch",
 	...CONFIG_KEYS.flatMap((key) => [
 		`socketio_config_fetch_${key}`,
 		`socketio_config_save_${key}`,
 	]),
 ]);
 
-const ALLOWED_RECEIVE_CHANNELS = new Set(["socketio_mpd_event"]);
+// socketio_config_changed has no desktop sender — one client cannot race with
+// itself — but the renderer subscribes on every transport, and `on` throws for
+// a channel that is not listed.
+const ALLOWED_RECEIVE_CHANNELS = new Set([
+	"socketio_mpd_event",
+	"socketio_config_changed",
+]);
 
 function isPluginCallbackChannel(channel: string): boolean {
 	return /^\d+_[\d.]+$/.test(channel);

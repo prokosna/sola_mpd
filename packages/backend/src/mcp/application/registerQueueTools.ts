@@ -7,10 +7,11 @@ import {
 	toolResultJson,
 	toolResultText,
 } from "../functions/toolResult.js";
-import { resolveCurrentMpdProfile } from "../utils/currentMpdProfile.js";
+import { resolveCurrentMpdProfile } from "./currentMpdProfile.js";
 import {
 	errorToToolResult,
 	executeMpdCommand,
+	mcpProfileNameSchema,
 	type RegisterMcpToolsDeps,
 } from "./mcpToolHelpers.js";
 
@@ -28,7 +29,8 @@ export function registerQueueTools(
 		"queue_get",
 		{
 			title: "Get current play queue",
-			description: "Returns songs currently in the play queue.",
+			description:
+				"Returns songs currently in the play queue. Omitting profile uses the workspace default profile.",
 			inputSchema: z.object({
 				limit: z
 					.number()
@@ -38,11 +40,12 @@ export function registerQueueTools(
 					.describe(
 						`Max rows to return. Default ${DEFAULT_QUEUE_RESULTS}. Very large values may exceed your context window.`,
 					),
+				profile: mcpProfileNameSchema,
 			}),
 		},
 		async (args) => {
 			try {
-				const profile = resolveCurrentMpdProfile();
+				const profile = resolveCurrentMpdProfile(args.profile);
 				const res = await executeMpdCommand(mpdClient, profile, {
 					case: "playlistinfo",
 					value: {},
@@ -68,12 +71,15 @@ export function registerQueueTools(
 		{
 			title: "Add to play queue",
 			description:
-				"Appends a URI (file path returned by library_search / library_query_sql, or an MPD-recognized directory) to the play queue.",
-			inputSchema: z.object({ uri: z.string().min(1) }),
+				"Appends a URI (file path returned by library_search / library_query_sql, or an MPD-recognized directory) to the play queue. Omitting profile uses the workspace default profile.",
+			inputSchema: z.object({
+				uri: z.string().min(1),
+				profile: mcpProfileNameSchema,
+			}),
 		},
 		async (args) => {
 			try {
-				const profile = resolveCurrentMpdProfile();
+				const profile = resolveCurrentMpdProfile(args.profile);
 				await executeMpdCommand(mpdClient, profile, {
 					case: "add",
 					value: { uri: args.uri },
@@ -89,12 +95,13 @@ export function registerQueueTools(
 		"queue_clear",
 		{
 			title: "Clear play queue",
-			description: "Removes every song from the play queue.",
-			inputSchema: z.object({}),
+			description:
+				"Removes every song from the play queue. Omitting profile uses the workspace default profile.",
+			inputSchema: z.object({ profile: mcpProfileNameSchema }),
 		},
-		async () => {
+		async (args) => {
 			try {
-				const profile = resolveCurrentMpdProfile();
+				const profile = resolveCurrentMpdProfile(args.profile);
 				await executeMpdCommand(mpdClient, profile, {
 					case: "clear",
 					value: {},

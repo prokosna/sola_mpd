@@ -20,6 +20,7 @@ import {
 } from "@sola_mpd/shared/src/models/song_pb.js";
 
 import type { MpdClient } from "../../../mpd";
+import type { BrowserSelection } from "../types/browserSelection";
 
 export function listBrowserSongMetadataTags(): Song_MetadataTag[] {
 	return [
@@ -273,4 +274,88 @@ export async function fetchBrowserFilterValues(
 		);
 
 	return new Map(browserFilterValuesPairs);
+}
+
+/**
+ * Drops `selectedValues`/`selectedOrder`, keeping only the Workspace-owned
+ * `tag`/`order` fields. Used before persisting `BrowserFilter`s to the
+ * server: selection is a navigation position that now lives in the URL, not
+ * a setting — nothing should write it.
+ */
+export function stripBrowserFilterSelection(
+	filter: BrowserFilter,
+): BrowserFilter {
+	return create(BrowserFilterSchema, {
+		tag: filter.tag,
+		order: filter.order,
+		selectedOrder: -1,
+		selectedValues: [],
+	});
+}
+
+/**
+ * Structural equality: same tags, in the same order. Ignores the selection
+ * entirely, so a pure selection change never registers as a structural one.
+ */
+export function haveBrowserFilterTagsChanged(
+	prev: BrowserFilter[],
+	next: BrowserFilter[],
+): boolean {
+	return (
+		prev.length !== next.length ||
+		prev.some(
+			(filter, index) =>
+				filter.tag !== next[index]?.tag || filter.order !== next[index]?.order,
+		)
+	);
+}
+
+/**
+ * Extracts the navigation position (tag → selected values, in selection
+ * order) out of a merged `BrowserFilter[]`, for handing off to
+ * `updateBrowserSelectionActionAtom` / `updateRecentlyAddedSelectionActionAtom`.
+ */
+export function extractBrowserSelectionFromFilters(
+	filters: BrowserFilter[],
+): BrowserSelection {
+	return filters
+		.filter((filter) => filter.selectedValues.length > 0)
+		.toSorted((a, b) => a.selectedOrder - b.selectedOrder)
+		.map((filter) => ({
+			tag: filter.tag,
+			values: filter.selectedValues.map((value) =>
+				convertSongMetadataValueToString(value),
+			),
+		}));
+}
+
+/**
+ * Overlays a URL-derived selection onto the server's structural filters
+ * (`tag`/`order`), producing the merged `BrowserFilter[]` shape every
+ * existing consumer expects. Inverse of `extractBrowserSelectionFromFilters`.
+ */
+export function applyBrowserSelectionToFilters(
+	filters: BrowserFilter[],
+	selection: BrowserSelection,
+): BrowserFilter[] {
+	const selectionByTag = new Map(
+		selection.map((entry, index) => [
+			entry.tag,
+			{ ...entry, order: index + 1 },
+		]),
+	);
+	return filters.map((filter) => {
+		const entry = selectionByTag.get(filter.tag);
+		const values = entry?.values ?? [];
+		return create(BrowserFilterSchema, {
+			tag: filter.tag,
+			order: filter.order,
+			selectedOrder: values.length > 0 ? entry?.order : -1,
+			selectedValues: values.map((value) =>
+				create(Song_MetadataValueSchema, {
+					value: { case: "stringValue", value: { value } },
+				}),
+			),
+		});
+	});
 }

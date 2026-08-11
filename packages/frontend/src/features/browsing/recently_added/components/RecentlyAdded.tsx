@@ -1,6 +1,8 @@
 import { useMemo } from "react";
 
 import { BrowserView } from "../../common/components/BrowserView";
+import { BrowsingSelectionObserver } from "../../common/components/BrowsingSelectionObserver";
+import { restoreRecentlyAddedSelectionActionAtom } from "../states/actions/restoreRecentlyAddedSelectionActionAtom";
 import { RecentlyAddedContent } from "./RecentlyAddedContent";
 import { RecentlyAddedNavigation } from "./RecentlyAddedNavigation";
 import { RecentlyAddedNavigationBreadcrumbs } from "./RecentlyAddedNavigationBreadcrumbs";
@@ -17,12 +19,17 @@ export function RecentlyAdded() {
 	}, []);
 
 	return (
-		<BrowserView
-			{...{
-				browserNavigationBreadcrumbs,
-				browserNavigation,
-				browserContent,
-			}}
-		/>
+		<>
+			<BrowsingSelectionObserver
+				restoreSelectionActionAtom={restoreRecentlyAddedSelectionActionAtom}
+			/>
+			<BrowserView
+				{...{
+					browserNavigationBreadcrumbs,
+					browserNavigation,
+					browserContent,
+				}}
+			/>
+		</>
 	);
 }

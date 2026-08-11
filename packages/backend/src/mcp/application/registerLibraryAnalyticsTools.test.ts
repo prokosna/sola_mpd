@@ -10,15 +10,14 @@ import {
 	parseToolJson,
 } from "./testHelpers.js";
 
-vi.mock("../utils/currentMpdProfile.js", () => ({
+vi.mock("./currentMpdProfile.js", () => ({
 	NoCurrentMpdProfileError: class extends Error {},
+	MpdProfileNotFoundError: class extends Error {},
 	resolveCurrentMpdProfile: vi.fn(),
 	listMpdProfiles: vi.fn(),
 }));
 
-const { resolveCurrentMpdProfile } = await import(
-	"../utils/currentMpdProfile.js"
-);
+const { resolveCurrentMpdProfile } = await import("./currentMpdProfile.js");
 const resolveMock = vi.mocked(resolveCurrentMpdProfile);
 
 beforeEach(() => {

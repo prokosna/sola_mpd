@@ -2,7 +2,7 @@ import { CONFIG_KEY_COMMON_SONG_TABLE_STATE } from "@sola_mpd/shared/src/const/s
 import type { SongTableState } from "@sola_mpd/shared/src/models/song_table_pb.js";
 import { SongTableStateSchema } from "@sola_mpd/shared/src/models/song_table_pb.js";
 import type { MessagingClient } from "../../../lib/messaging/MessagingClient";
-import { StateRepositorySocketIo } from "../../common/repositories/StateRepositorySocketIo";
+import { StateRepositorySocketIo } from "../../common";
 
 export class SongTableStateRepositorySocketIo extends StateRepositorySocketIo<SongTableState> {
 	constructor(client: MessagingClient) {

@@ -10,12 +10,28 @@ import { pathnameAtom } from "../../../../location/states/atoms/locationAtom";
 import { mpdClientAtom } from "../../../../mpd/states/atoms/mpdClientAtom";
 import { currentMpdProfileAtom } from "../../../../profile/states/atoms/mpdProfileAtom";
 import { localeCollatorAtom } from "../../../../settings/states/atoms/localeAtom";
-import { fetchBrowserFilterValues } from "../../../common/functions/browserFilter";
+import {
+	applyBrowserSelectionToFilters,
+	fetchBrowserFilterValues,
+} from "../../../common/functions/browserFilter";
+import { browserSelectionAtom } from "./browserSelectionAtom";
 import { browserStateAtom } from "./browserStateAtom";
 
-export const browserFiltersAtom = atom((get) => {
+// Only `tag`/`order` are authoritative here; the selection lives in the URL.
+// Deliberately not exported, so every consumer goes through browserFiltersAtom
+// below and sees the two overlaid.
+const browserFiltersServerAtom = atom((get) => {
 	const browserState = get(browserStateAtom);
 	return browserState?.filters;
+});
+
+export const browserFiltersAtom = atom((get) => {
+	const serverFilters = get(browserFiltersServerAtom);
+	if (serverFilters === undefined) {
+		return undefined;
+	}
+	const selection = get(browserSelectionAtom);
+	return applyBrowserSelectionToFilters(serverFilters, selection);
 });
 
 const browserFilterValuesMapAsyncAtom = atom(async (get) => {

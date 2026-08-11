@@ -1,4 +1,4 @@
-import { createStateRepositoryAtom } from "../../../common/states/atoms/stateRepositoryAtom";
+import { createStateRepositoryAtom } from "../../../common";
 import type { SongTableStateRepository } from "../../repositories/SongTableStateRepository";
 
 export const songTableStateRepositoryAtom =

@@ -27,7 +27,6 @@ export type ColumnEditModalProps = {
 };
 
 export function ColumnEditModal(props: ColumnEditModalProps): JSX.Element {
-	// Available tags in use
 	const [activeTagsState, setActiveTagsState] = useState<Song_MetadataTag[]>(
 		[],
 	);
@@ -41,7 +40,6 @@ export function ColumnEditModal(props: ColumnEditModalProps): JSX.Element {
 		Song_MetadataTag | undefined
 	>(undefined);
 
-	// Available tags not in use
 	const inactiveTags = listAllSongMetadataTags().filter(
 		(v) => !activeTagsState.includes(v),
 	);
@@ -49,7 +47,6 @@ export function ColumnEditModal(props: ColumnEditModalProps): JSX.Element {
 		Song_MetadataTag | undefined
 	>(undefined);
 
-	// Handlers
 	const handleActiveTagSelected = useCallback((tag: Song_MetadataTag) => {
 		setSelectedActiveTag(tag);
 		setSelectedInactiveTag(undefined);
@@ -74,12 +71,10 @@ export function ColumnEditModal(props: ColumnEditModalProps): JSX.Element {
 	}, [activeTagsState, selectedActiveTag]);
 
 	const handleSubmit = useCallback(() => {
-		// Remove inactive tags from the columns.
 		const normalizedColumns = normalizeSongTableColumns(
 			props.columns.filter((column) => activeTagsState.includes(column.tag)),
 		);
 
-		// Add missing columns.
 		const averageWidthFlex = getAverageWidthFlex(normalizedColumns);
 		const activeColumns = ensureTagsContainedInColumns(
 			normalizedColumns,

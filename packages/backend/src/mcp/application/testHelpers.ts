@@ -34,10 +34,6 @@ export type FakeMcpServer = {
 	call: (name: string, args?: unknown) => Promise<CallToolResult>;
 };
 
-/**
- * Capture-only McpServer stand-in: tool callbacks are stored on the map so
- * tests can invoke them directly without spinning up an MCP transport.
- */
 export function createFakeMcpServer(): FakeMcpServer {
 	const tools = new Map<string, CapturedTool>();
 	return {

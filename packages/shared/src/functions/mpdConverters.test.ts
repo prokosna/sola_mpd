@@ -188,7 +188,6 @@ describe("mpdConverters", () => {
 	});
 
 	it("convertConditionToString should format added-since timestamps as UTC Z", () => {
-		// Non-UTC input must still be emitted in UTC.
 		const date = new Date("2024-03-15T19:30:00+09:00");
 		const condition = create(FilterConditionSchema, {
 			tag: Song_MetadataTag.ADDED_AT,

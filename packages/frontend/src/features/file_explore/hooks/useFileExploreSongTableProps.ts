@@ -24,7 +24,7 @@ import {
 	type SongTableContextMenuItemParams,
 	SongTableKeyType,
 	type SongTableProps,
-	selectedSongsAtom,
+	setSelectedSongsActionAtom,
 	songTableStateAtom,
 	updateSongTableStateActionAtom,
 	useHandleSongDoubleClick,
@@ -51,17 +51,15 @@ export function useFileExploreSongTableProps(
 	const songTableState = useAtomValue(songTableStateAtom);
 	const setIsFileExploreLoading = useSetAtom(setIsFileExploreLoadingActionAtom);
 	const updateSongTableState = useSetAtom(updateSongTableStateActionAtom);
-	const setSelectedSongs = useSetAtom(selectedSongsAtom);
+	const setSelectedSongs = useSetAtom(setSelectedSongsActionAtom);
 	const addSongsToQueue = useSetAtom(addSongsToQueueActionAtom);
 	const replaceQueueWithSongs = useSetAtom(replaceQueueWithSongsActionAtom);
 
-	// Plugin context menu items
 	const pluginContextMenuItems = usePluginContextMenuItems(
 		Plugin_PluginType.ON_FILE_EXPLORE,
 		songTableKeyType,
 	);
 
-	// Similarity search
 	const {
 		isAdvancedSearchAvailable,
 		setSimilaritySearchTargetSong,
@@ -111,7 +109,6 @@ export function useFileExploreSongTableProps(
 		});
 	}
 
-	// Handlers
 	const onSongsReordered = useCallback(async (_orderedSongs: Song[]) => {
 		throw new Error("Reorder songs shouldn't be supported in FileExplore.");
 	}, []);

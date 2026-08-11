@@ -1,9 +1,6 @@
-// Single source of truth for parameter keys exchanged between the
-// PluginRegisterResponse (advertised by register()) and the
-// PluginExecuteRequest (consumed by execute()). The host application looks up
-// these keys verbatim from `requiredPluginParameters` / `requiredRequestParameters`
-// when building its config form, so register and execute must use the same
-// strings — defining them here prevents drift.
+// register() advertises these keys and execute() consumes them, and the host
+// looks them up verbatim when building its config form, so both sides have to
+// use the same strings.
 
 export const SUBSONIC_PLUGIN_PARAMETER_KEYS = {
 	url: "Url",

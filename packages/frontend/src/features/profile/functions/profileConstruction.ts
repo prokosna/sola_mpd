@@ -17,6 +17,9 @@ export function removeProfileFromState(
 	}
 	const newState = clone(MpdProfileStateSchema, currentState);
 	newState.profiles.splice(index, 1);
+	if (newState.currentProfile?.name === profileName) {
+		newState.currentProfile = newState.profiles[0];
+	}
 	return newState;
 }
 

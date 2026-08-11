@@ -6,6 +6,7 @@ import {
 	CONFIG_KEY_RECENTLY_ADDED_STATE,
 	CONFIG_KEY_SAVED_SEARCHES,
 	SOCKETIO_ADVANCED_SEARCH,
+	SOCKETIO_CONFIG_CHANGED,
 	SOCKETIO_CONFIG_FETCH,
 	SOCKETIO_CONFIG_SAVE,
 	SOCKETIO_MPD_COMMAND,
@@ -14,6 +15,8 @@ import {
 	SOCKETIO_MPD_UNSUBSCRIBE,
 	SOCKETIO_PLUGIN_EXECUTE,
 	SOCKETIO_PLUGIN_REGISTER,
+	SOCKETIO_VIEW_STATE_BLOB_FETCH,
+	SOCKETIO_VIEW_STATE_BLOB_SAVE,
 } from "@sola_mpd/shared/src/const/socketio.js";
 import type { Server as IOServer } from "socket.io";
 import type { AdvancedSearchMessageHandler } from "./advanced_search/transports/AdvancedSearchMessageHandler.js";
@@ -29,6 +32,8 @@ import {
 	createMpdErrorBuffer,
 	createPluginRegisterErrorBuffer,
 } from "./utils/errorBufferUtils.js";
+import type { ViewStateBlobMessageHandler } from "./view_state_blobs/transports/ViewStateBlobMessageHandler.js";
+import { ViewStateBlobMessageHandlerSocketIo } from "./view_state_blobs/transports/ViewStateBlobMessageHandlerSocketIo.js";
 
 export class SocketIoManager {
 	private constructor(_io: IOServer) {}
@@ -45,6 +50,8 @@ export class SocketIoManager {
 			AdvancedSearchMessageHandlerSocketIo.initialize();
 		const configHandler: ConfigMessageHandler =
 			new ConfigMessageHandlerSocketIo();
+		const viewStateBlobHandler: ViewStateBlobMessageHandler =
+			new ViewStateBlobMessageHandlerSocketIo();
 
 		const configKeys = [
 			CONFIG_KEY_BROWSER_STATE,
@@ -59,7 +66,6 @@ export class SocketIoManager {
 			const id = socket.id;
 			console.info(`Socket.io is connected: ${id}`);
 
-			// Subscribe MPD events for the given profile.
 			socket.on(SOCKETIO_MPD_SUBSCRIBE, async (msg: ArrayBuffer, callback) => {
 				try {
 					await mpdHandler.subscribeEvents(id, new Uint8Array(msg), socket);
@@ -70,7 +76,6 @@ export class SocketIoManager {
 				}
 			});
 
-			// Unsubscribe MPD events for the given profile.
 			socket.on(
 				SOCKETIO_MPD_UNSUBSCRIBE,
 				async (msg: ArrayBuffer, callback) => {
@@ -84,7 +89,6 @@ export class SocketIoManager {
 				},
 			);
 
-			// Execute the given command.
 			socket.on(SOCKETIO_MPD_COMMAND, async (msg: ArrayBuffer, callback) => {
 				try {
 					const res = await mpdHandler.command(new Uint8Array(msg));
@@ -95,7 +99,6 @@ export class SocketIoManager {
 				}
 			});
 
-			// Execute the given commands in bulk.
 			socket.on(
 				SOCKETIO_MPD_COMMAND_BULK,
 				async (msg: ArrayBuffer, callback) => {
@@ -109,7 +112,6 @@ export class SocketIoManager {
 				},
 			);
 
-			// Register a plugin.
 			socket.on(
 				SOCKETIO_PLUGIN_REGISTER,
 				async (msg: ArrayBuffer, callback) => {
@@ -123,7 +125,6 @@ export class SocketIoManager {
 				},
 			);
 
-			// Execute a plugin command.
 			// ACK on receipt, not completion: results stream via separate events
 			// and execution may outlast the client's ACK timeout.
 			socket.on(SOCKETIO_PLUGIN_EXECUTE, async (msg: ArrayBuffer, callback) => {
@@ -139,7 +140,6 @@ export class SocketIoManager {
 				}
 			});
 
-			// Execute an advanced search command.
 			socket.on(
 				SOCKETIO_ADVANCED_SEARCH,
 				async (msg: ArrayBuffer, callback) => {
@@ -155,7 +155,6 @@ export class SocketIoManager {
 				},
 			);
 
-			// Config state fetch/save.
 			for (const key of configKeys) {
 				socket.on(
 					`${SOCKETIO_CONFIG_FETCH}_${key}`,
@@ -175,16 +174,63 @@ export class SocketIoManager {
 					(msg: ArrayBuffer, callback) => {
 						try {
 							configHandler.save(key, Buffer.from(new Uint8Array(msg)));
-							callback();
 						} catch (err) {
 							console.error(err);
 							callback();
+							return;
+						}
+						// Ack the sender first: it already holds the new value, and a
+						// broadcast failure below must not turn a successful save into
+						// a failed one from the caller's perspective.
+						callback();
+						try {
+							// "Except sender" broadcast: the saving client already has the
+							// new value locally, so echoing back to it would trigger a
+							// pointless refetch that can race with its own local update.
+							socket.broadcast.emit(
+								SOCKETIO_CONFIG_CHANGED,
+								Buffer.from(key, "utf-8"),
+							);
+						} catch (err) {
+							console.error(err);
 						}
 					},
 				);
 			}
 
-			// Disconnect.
+			// View state blob save (request-response): payload is the blob text,
+			// response is the token text.
+			socket.on(SOCKETIO_VIEW_STATE_BLOB_SAVE, (msg: ArrayBuffer, callback) => {
+				try {
+					const data = Buffer.from(new Uint8Array(msg)).toString("utf-8");
+					const token = viewStateBlobHandler.save(data);
+					callback(Buffer.from(token, "utf-8"));
+				} catch (err) {
+					console.error(err);
+					callback(Buffer.alloc(0));
+				}
+			});
+
+			// View state blob fetch (request-response): payload is the token text,
+			// response is the blob text, or an empty buffer when the token is
+			// unknown (blob tokens always resolve to non-empty text, so this is
+			// unambiguous).
+			socket.on(
+				SOCKETIO_VIEW_STATE_BLOB_FETCH,
+				(msg: ArrayBuffer, callback) => {
+					try {
+						const token = Buffer.from(new Uint8Array(msg)).toString("utf-8");
+						const data = viewStateBlobHandler.fetch(token);
+						callback(
+							data === undefined ? Buffer.alloc(0) : Buffer.from(data, "utf-8"),
+						);
+					} catch (err) {
+						console.error(err);
+						callback(Buffer.alloc(0));
+					}
+				},
+			);
+
 			socket.on("disconnect", async () => {
 				try {
 					await mpdHandler.disconnect(id, socket);

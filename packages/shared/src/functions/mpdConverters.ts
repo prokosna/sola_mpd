@@ -13,9 +13,6 @@ import { Song_MetadataTag } from "../models/song_pb.js";
 import { convertSongMetadataValueToString } from "./songMetadata.js";
 
 /**
- * Escapes special characters in a condition argument for MPD filter expressions.
- * Specifically handles escaping of double quotes and single quotes.
- *
  * @param value - The string value to escape, or undefined
  * @returns The escaped string, or an empty string if the input is undefined
  * @example
@@ -27,8 +24,6 @@ export function escapeConditionArg(value: string | undefined): string {
 }
 
 /**
- * Escapes backslashes and double quotes in an expression for MPD commands.
- *
  * @param value - The string value to escape
  * @returns The escaped string
  * @example
@@ -40,9 +35,6 @@ export function escapeExpression(value: string): string {
 }
 
 /**
- * Escapes special regex characters in a string for MPD regex expressions.
- * Handles escaping of regex metacharacters and the hyphen character.
- *
  * @param value - The string value to escape
  * @returns The escaped string safe for use in regex
  * @example
@@ -56,9 +48,6 @@ export function escapeRegexString(value: string): string {
 }
 
 /**
- * Converts an array of filter conditions to an MPD filter expression string.
- * Combines multiple conditions with AND operator.
- *
  * @param conditions - Array of filter conditions to convert
  * @returns The combined filter expression string, or empty string if no conditions
  * @example
@@ -77,9 +66,6 @@ export function convertConditionsToString(
 }
 
 /**
- * Converts a single filter condition to an MPD filter expression string.
- * Supports various operators like EQUAL, NOT_EQUAL, CONTAIN, NOT_CONTAIN, and REGEX.
- *
  * @param condition - The filter condition to convert
  * @returns The filter expression string
  * @throws Error if condition value is undefined
@@ -125,9 +111,6 @@ export function convertConditionToString(condition: FilterCondition): string {
 }
 
 /**
- * Converts a Song_MetadataTag to its corresponding MPD tag name.
- * Converts the tag to lowercase and removes underscores.
- *
  * @param tag - The metadata tag to convert
  * @returns The MPD tag name
  * @example

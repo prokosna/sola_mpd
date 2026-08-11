@@ -12,7 +12,7 @@ import type { Message } from "@bufbuild/protobuf";
  * Describes the file browser.proto.
  */
 export const file_browser: GenFile = /*@__PURE__*/
-  fileDesc("Cg1icm93c2VyLnByb3RvIoQBCg1Ccm93c2VyRmlsdGVyEh4KA3RhZxgBIAEoDjIRLlNvbmcuTWV0YWRhdGFUYWcSLAoPc2VsZWN0ZWRfdmFsdWVzGAIgAygLMhMuU29uZy5NZXRhZGF0YVZhbHVlEg0KBW9yZGVyGAMgASgFEhYKDnNlbGVjdGVkX29yZGVyGAQgASgFIi8KDEJyb3dzZXJTdGF0ZRIfCgdmaWx0ZXJzGAEgAygLMg4uQnJvd3NlckZpbHRlcmIGcHJvdG8z", [file_song]);
+  fileDesc("Cg1icm93c2VyLnByb3RvIoQBCg1Ccm93c2VyRmlsdGVyEh4KA3RhZxgBIAEoDjIRLlNvbmcuTWV0YWRhdGFUYWcSLAoPc2VsZWN0ZWRfdmFsdWVzGAIgAygLMhMuU29uZy5NZXRhZGF0YVZhbHVlEg0KBW9yZGVyGAMgASgFEhYKDnNlbGVjdGVkX29yZGVyGAQgASgFIkcKDEJyb3dzZXJTdGF0ZRIfCgdmaWx0ZXJzGAEgAygLMg4uQnJvd3NlckZpbHRlchIWCg5zY2hlbWFfdmVyc2lvbhgCIAEoDWIGcHJvdG8z", [file_song]);
 
 /**
  * @generated from message BrowserFilter
@@ -54,6 +54,11 @@ export type BrowserState = Message<"BrowserState"> & {
    * @generated from field: repeated BrowserFilter filters = 1;
    */
   filters: BrowserFilter[];
+
+  /**
+   * @generated from field: uint32 schema_version = 2;
+   */
+  schemaVersion: number;
 };
 
 /**

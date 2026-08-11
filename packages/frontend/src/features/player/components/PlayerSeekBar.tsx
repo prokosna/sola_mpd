@@ -22,7 +22,8 @@ export function PlayerSeekBar() {
 	const lastSeekClicked = useRef(new Date());
 	const handleSeekBarClick = useCallback(
 		(value: number) => {
-			// It is possible that onChange() is fired frequently.
+			// onChangeEnd can land repeatedly in quick succession; seeking on
+			// every one of them makes MPD stutter.
 			const now = new Date();
 			const last = lastSeekClicked.current;
 			const elapsed = now.getTime() - last.getTime();

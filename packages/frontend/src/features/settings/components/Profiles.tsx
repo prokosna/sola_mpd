@@ -1,12 +1,17 @@
-import { Button, Modal, Stack, Table, Title } from "@mantine/core";
+import { Button, Modal, Stack, Table, Text, Title } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import { useAtomValue } from "jotai";
 import { CenterSpinner } from "../../loading";
-import { MpdProfileForm, mpdProfileStateAtom } from "../../profile";
+import {
+	currentMpdProfileAtom,
+	MpdProfileForm,
+	mpdProfileStateAtom,
+} from "../../profile";
 import { ProfilesProfile } from "./ProfilesProfile";
 
 export function Profiles() {
 	const mpdProfileState = useAtomValue(mpdProfileStateAtom);
+	const currentMpdProfile = useAtomValue(currentMpdProfileAtom);
 
 	const [opened, { open, close }] = useDisclosure(false);
 
@@ -36,16 +41,22 @@ export function Profiles() {
 				<Title order={1} size="lg">
 					MPD Profiles
 				</Title>
+				<Text size="sm" c="dimmed" maw={720}>
+					The profile list is shared with every device connected to this server.
+					Which profile a device actually plays from is picked from the selector
+					in the header and stays on that device.
+				</Text>
 				<Button w={200} size="sm" onClick={open}>
 					New Profile
 				</Button>
-				<Table maw="50%">
+				<Table maw={900}>
 					<Table.Thead>
 						<Table.Tr>
 							<Table.Th>NAME</Table.Th>
 							<Table.Th>HOST</Table.Th>
 							<Table.Th>PORT</Table.Th>
 							<Table.Th>PASSWORD</Table.Th>
+							<Table.Th>STATUS</Table.Th>
 							<Table.Th>ACTION</Table.Th>
 						</Table.Tr>
 					</Table.Thead>
@@ -56,6 +67,7 @@ export function Profiles() {
 								index={index}
 								profile={profile}
 								mpdProfileState={mpdProfileState}
+								isActiveOnThisDevice={profile.name === currentMpdProfile?.name}
 							/>
 						))}
 					</Table.Tbody>

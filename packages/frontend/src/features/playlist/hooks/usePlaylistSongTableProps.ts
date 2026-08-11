@@ -25,7 +25,7 @@ import {
 	type SongTableContextMenuItemParams,
 	SongTableKeyType,
 	type SongTableProps,
-	selectedSongsAtom,
+	setSelectedSongsActionAtom,
 	songTableStateAtom,
 	updateSongTableStateActionAtom,
 	useHandleSongDoubleClick,
@@ -63,7 +63,7 @@ export function usePlaylistSongTableProps(
 	const selectedPlaylist = useAtomValue(selectedPlaylistAtom);
 	const setIsPlaylistLoading = useSetAtom(setIsPlaylistLoadingActionAtom);
 	const updateSongTableState = useSetAtom(updateSongTableStateActionAtom);
-	const setSelectedSongs = useSetAtom(selectedSongsAtom);
+	const setSelectedSongs = useSetAtom(setSelectedSongsActionAtom);
 	const addSongsToQueue = useSetAtom(addSongsToQueueActionAtom);
 	const replaceQueueWithSongs = useSetAtom(replaceQueueWithSongsActionAtom);
 	const removePlaylistSongs = useSetAtom(removePlaylistSongsActionAtom);
@@ -73,13 +73,11 @@ export function usePlaylistSongTableProps(
 	);
 	const reorderPlaylist = useSetAtom(reorderPlaylistActionAtom);
 
-	// Plugin context menu items
 	const pluginContextMenuItems = usePluginContextMenuItems(
 		Plugin_PluginType.ON_PLAYLIST,
 		songTableKeyType,
 	);
 
-	// Similarity search
 	const {
 		isAdvancedSearchAvailable,
 		setSimilaritySearchTargetSong,

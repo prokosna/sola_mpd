@@ -3,7 +3,6 @@ import { convertSongMetadataValueToString } from "@sola_mpd/shared/src/functions
 import { BrowserFilterSchema } from "@sola_mpd/shared/src/models/browser_pb.js";
 import type { Song_MetadataTag } from "@sola_mpd/shared/src/models/song_pb.js";
 import { atom } from "jotai";
-import { atomWithDefault } from "jotai/utils";
 
 import { ROUTE_HOME_RECENTLY_ADDED } from "../../../../../const/routes";
 import { atomWithSync } from "../../../../../lib/jotai/atomWithSync";
@@ -15,31 +14,43 @@ import { mpdCapabilitiesAtom } from "../../../../mpd/states/atoms/mpdCapabilitie
 import { mpdClientAtom } from "../../../../mpd/states/atoms/mpdClientAtom";
 import { currentMpdProfileAtom } from "../../../../profile/states/atoms/mpdProfileAtom";
 import { localeCollatorAtom } from "../../../../settings/states/atoms/localeAtom";
-import { fetchBrowserFilterValues } from "../../../common/functions/browserFilter";
+import {
+	applyBrowserSelectionToFilters,
+	fetchBrowserFilterValues,
+} from "../../../common/functions/browserFilter";
 import {
 	extractRecentlyAddedFastFilterValues,
 	extractRecentlyAddedFilterValues,
 	sortRecentlyAddedFilterValues,
 } from "../../functions/recentlyAddedFiltering";
 import { recentlyAddedFastStateAtom } from "./recentlyAddedFastStateAtom";
+import { recentlyAddedSelectionAtom } from "./recentlyAddedSelectionAtom";
 import { recentlyAddedStateAtom } from "./recentlyAddedStateAtom";
 
-const recentlyAddedFiltersAtom = atom((get) => {
+// Private: the server's tag configuration only (Workspace). Selection is a
+// navigation position and now lives in the URL. Not exported; every consumer
+// must go through recentlyAddedFiltersAtom below.
+const recentlyAddedFiltersServerAtom = atom((get) => {
 	const recentlyAddedState = get(recentlyAddedStateAtom);
-	return recentlyAddedState?.filters;
-});
-
-export const recentlyAddedBrowserFiltersAtom = atomWithDefault((get) => {
-	const recentlyAddedFilters = get(recentlyAddedFiltersAtom);
-	const browserFilters = recentlyAddedFilters?.map((filter, index) => {
-		return create(BrowserFilterSchema, {
+	return recentlyAddedState?.filters?.map((filter, index) =>
+		create(BrowserFilterSchema, {
 			tag: filter.tag,
 			selectedValues: [],
 			order: index,
 			selectedOrder: -1,
-		});
-	});
-	return browserFilters;
+		}),
+	);
+});
+
+// The composed atom every consumer reads: the server's tag structure with the
+// URL-derived selection overlaid. Mirrors browserFiltersAtom.
+export const recentlyAddedFiltersAtom = atom((get) => {
+	const structuralFilters = get(recentlyAddedFiltersServerAtom);
+	if (structuralFilters === undefined) {
+		return undefined;
+	}
+	const selection = get(recentlyAddedSelectionAtom);
+	return applyBrowserSelectionToFilters(structuralFilters, selection);
 });
 
 const allSongsSortedFilterValuesMapAtom = atom((get) => {
@@ -50,9 +61,9 @@ const allSongsSortedFilterValuesMapAtom = atom((get) => {
 	return extractRecentlyAddedFilterValues(allSongs);
 });
 
-const recentlyAddedBrowserFilterValuesMapAsyncAtom = atom(async (get) => {
+const recentlyAddedFilterValuesMapAsyncAtom = atom(async (get) => {
 	const mpdClient = get(mpdClientAtom);
-	const browserFilters = get(recentlyAddedBrowserFiltersAtom);
+	const browserFilters = get(recentlyAddedFiltersAtom);
 	const currentMpdProfile = get(currentMpdProfileAtom);
 	const collator = get(localeCollatorAtom);
 
@@ -68,10 +79,10 @@ const recentlyAddedBrowserFilterValuesMapAsyncAtom = atom(async (get) => {
 	);
 });
 
-const recentlyAddedSortedBrowserFilterValuesMapAsyncAtom = atom(async (get) => {
+const recentlyAddedSortedFilterValuesMapAsyncAtom = atom(async (get) => {
 	const sortedAllFilterValuesMap = get(allSongsSortedFilterValuesMapAtom);
 	const browserFilterValuesMap = await get(
-		recentlyAddedBrowserFilterValuesMapAsyncAtom,
+		recentlyAddedFilterValuesMapAsyncAtom,
 	);
 
 	if (
@@ -87,26 +98,26 @@ const recentlyAddedSortedBrowserFilterValuesMapAsyncAtom = atom(async (get) => {
 	);
 });
 
-const recentlyAddedSlowSortedBrowserFilterValuesMapAtom = atomWithSync(
-	recentlyAddedSortedBrowserFilterValuesMapAsyncAtom,
+const recentlyAddedSlowSortedFilterValuesMapAtom = atomWithSync(
+	recentlyAddedSortedFilterValuesMapAsyncAtom,
 );
 
-const recentlyAddedFastSortedBrowserFilterValuesMapAtom = atom((get) => {
+const recentlyAddedFastSortedFilterValuesMapAtom = atom((get) => {
 	const fastState = get(recentlyAddedFastStateAtom);
 	return extractRecentlyAddedFastFilterValues(fastState.songs);
 });
 
-const recentlyAddedSortedBrowserFilterValuesMapAtom = atom((get) => {
+const recentlyAddedSortedFilterValuesMapAtom = atom((get) => {
 	const capabilities = get(mpdCapabilitiesAtom);
 	if (capabilities.isMpd024OrLater) {
-		return get(recentlyAddedFastSortedBrowserFilterValuesMapAtom);
+		return get(recentlyAddedFastSortedFilterValuesMapAtom);
 	}
-	return get(recentlyAddedSlowSortedBrowserFilterValuesMapAtom);
+	return get(recentlyAddedSlowSortedFilterValuesMapAtom);
 });
 
-export const filteredRecentlyAddedBrowserFilterValuesMapAtom = atom((get) => {
-	const browserFilters = get(recentlyAddedBrowserFiltersAtom);
-	const valuesMap = get(recentlyAddedSortedBrowserFilterValuesMapAtom);
+export const filteredRecentlyAddedFilterValuesMapAtom = atom((get) => {
+	const browserFilters = get(recentlyAddedFiltersAtom);
+	const valuesMap = get(recentlyAddedSortedFilterValuesMapAtom);
 	const globalFilterTokens = get(globalFilterTokensAtom);
 	const pathname = get(pathnameAtom);
 

@@ -5,7 +5,7 @@ import {
 } from "@sola_mpd/shared/src/models/mpd/mpd_profile_pb.js";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
-import { NoCurrentMpdProfileError } from "../utils/currentMpdProfile.js";
+import { NoCurrentMpdProfileError } from "./currentMpdProfile.js";
 import { registerProfileTools } from "./registerProfileTools.js";
 import {
 	createFakeMcpServer,
@@ -15,7 +15,7 @@ import {
 	parseToolJson,
 } from "./testHelpers.js";
 
-vi.mock("../utils/currentMpdProfile.js", () => ({
+vi.mock("./currentMpdProfile.js", () => ({
 	NoCurrentMpdProfileError: class NoCurrentMpdProfileError extends Error {
 		constructor() {
 			super("no profile");
@@ -27,7 +27,7 @@ vi.mock("../utils/currentMpdProfile.js", () => ({
 }));
 
 const { resolveCurrentMpdProfile, listMpdProfiles } = await import(
-	"../utils/currentMpdProfile.js"
+	"./currentMpdProfile.js"
 );
 const resolveMock = vi.mocked(resolveCurrentMpdProfile);
 const listMock = vi.mocked(listMpdProfiles);
@@ -46,7 +46,7 @@ beforeEach(() => {
 });
 
 describe("registerProfileTools / mpd_profiles", () => {
-	it("returns the current profile alongside the full list", async () => {
+	it("returns the default profile alongside the full list", async () => {
 		const a = profile("a");
 		const b = profile("b");
 		listMock.mockReturnValue([a, b]);
@@ -60,14 +60,14 @@ describe("registerProfileTools / mpd_profiles", () => {
 
 		const result = await server.call("mpd_profiles");
 		const body = parseToolJson<{
-			current: { name: string; host: string; port: number } | null;
+			default_profile: { name: string; host: string; port: number } | null;
 			profiles: { name: string }[];
 		}>(result);
-		expect(body.current?.name).toBe("b");
+		expect(body.default_profile?.name).toBe("b");
 		expect(body.profiles.map((p) => p.name)).toEqual(["a", "b"]);
 	});
 
-	it("reports current=undefined when no profile is selected", async () => {
+	it("reports default_profile=undefined when no profile is selected", async () => {
 		listMock.mockReturnValue([profile("a")]);
 		resolveMock.mockImplementation(() => {
 			throw new NoCurrentMpdProfileError();
@@ -80,7 +80,7 @@ describe("registerProfileTools / mpd_profiles", () => {
 		});
 
 		const result = await server.call("mpd_profiles");
-		const body = parseToolJson<{ current: unknown }>(result);
-		expect(body.current).toBeUndefined();
+		const body = parseToolJson<{ default_profile: unknown }>(result);
+		expect(body.default_profile).toBeUndefined();
 	});
 });

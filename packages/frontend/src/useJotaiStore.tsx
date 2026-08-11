@@ -1,10 +1,16 @@
+import { SOCKETIO_CONFIG_CHANGED } from "@sola_mpd/shared/src/const/socketio.js";
 import { createStore } from "jotai";
 import { AdvancedSearchClientSocketIo } from "./features/advanced_search/services/AdvancedSearchClientSocketIo";
 import { advancedSearchClientAtom } from "./features/advanced_search/states/atoms/advancedSearchClientAtom";
 import { BrowserStateRepositorySocketIo } from "./features/browsing/browser/repositories/BrowserStateRepositorySocketIo";
 import { browserStateRepositoryAtom } from "./features/browsing/browser/states/atoms/browserStateRepositoryAtom";
+import { ViewStateBlobRepositorySocketIo } from "./features/browsing/common/repositories/ViewStateBlobRepositorySocketIo";
+import { viewStateBlobRepositoryAtom } from "./features/browsing/common/states/atoms/viewStateBlobRepositoryAtom";
 import { RecentlyAddedStateRepositorySocketIo } from "./features/browsing/recently_added/repositories/RecentlyAddedStateRepositorySocketIo";
 import { recentlyAddedStateRepositoryAtom } from "./features/browsing/recently_added/states/atoms/recentlyAddedStateRepositoryAtom";
+import { DeviceSettingsRepositoryLocalStorage } from "./features/common/repositories/DeviceSettingsRepositoryLocalStorage";
+import { handleConfigChangedActionAtom } from "./features/common/states/actions/handleConfigChangedActionAtom";
+import { deviceSettingsRepositoryAtom } from "./features/common/states/atoms/deviceSettingsRepositoryAtom";
 import { MpdClientSocketIo } from "./features/mpd/services/MpdClientSocketIo";
 import { MpdListenerSocketIo } from "./features/mpd/services/MpdListenerSocketIo";
 import { setMpdClientActionAtom } from "./features/mpd/states/actions/setMpdClientActionAtom";
@@ -31,7 +37,6 @@ export function useJotaiStore() {
 	> => {
 		const store = createStore();
 
-		// DI
 		let messagingClient: MessagingClient;
 		if (window.__SOLA_IPC_BRIDGE__ != null) {
 			messagingClient = new MessagingClientElectronIpc(
@@ -41,6 +46,13 @@ export function useJotaiStore() {
 			messagingClient = new MessagingClientSocketIo();
 		}
 		await messagingClient.isReady();
+
+		await messagingClient.on(SOCKETIO_CONFIG_CHANGED, (payload) => {
+			store.set(
+				handleConfigChangedActionAtom,
+				new TextDecoder().decode(payload),
+			);
+		});
 
 		store.set(setMpdClientActionAtom, new MpdClientSocketIo(messagingClient));
 		store.set(
@@ -54,6 +66,10 @@ export function useJotaiStore() {
 		store.set(
 			browserStateRepositoryAtom,
 			new BrowserStateRepositorySocketIo(messagingClient),
+		);
+		store.set(
+			viewStateBlobRepositoryAtom,
+			new ViewStateBlobRepositorySocketIo(messagingClient),
 		);
 		store.set(
 			pluginStateRepositoryAtom,
@@ -75,6 +91,10 @@ export function useJotaiStore() {
 		store.set(
 			advancedSearchClientAtom,
 			new AdvancedSearchClientSocketIo(messagingClient),
+		);
+		store.set(
+			deviceSettingsRepositoryAtom,
+			new DeviceSettingsRepositoryLocalStorage(),
 		);
 
 		globalStore = store;
