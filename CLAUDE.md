@@ -38,7 +38,14 @@ Documentation-only changes do not need them.
   no current value (`elapsed_seconds` when stopped, `last_updated` before the first DB update)
   use `null` so the JSON shape stays stable for LLM consumers. Optional nested objects
   (`current_song`, `current`) stay `undefined` to keep payloads compact.
-- **Comments.** Only where the *why* is non-obvious. No narration of what the code does.
+- **Comments.** Only where the *why* is non-obvious — a constraint, hazard, or trap the
+  reader cannot see from the code. Keep them short; a comment longer than the code it
+  explains is a sign the code needs work instead. Do not write:
+  - narration of what the code does, or restatements of a name or signature;
+  - justifications of the shape chosen over alternatives considered ("rather than keeping a
+    copy each", "kept as pure functions so it is testable", "this hook exists only so…");
+  - archaeology — what the code used to do, or which bug a change fixed. That belongs in the
+    commit message. In a test, one line naming the regression is fine.
 - **English only** in the repository — code, identifiers, comments, docs, test data. Chat with
   the user may be in Japanese; repository content may not.
 - **Commit scope.** One purpose per change; split unrelated edits.
