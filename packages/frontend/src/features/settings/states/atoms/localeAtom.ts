@@ -1,5 +1,9 @@
 import { atom } from "jotai";
 import { atomWithStorage } from "jotai/utils";
+import {
+	buildDeviceSettingKey,
+	DEVICE_SETTING_KEY_LOCALE,
+} from "../../../common";
 
 const localeCandidates = {
 	English: "en",
@@ -39,9 +43,12 @@ export const supportedLocalesAtom = atom((_) => {
 	);
 });
 
-export const localeAtom = atomWithStorage("solaMpdLocale", "en", undefined, {
-	getOnInit: true,
-});
+export const localeAtom = atomWithStorage(
+	buildDeviceSettingKey(DEVICE_SETTING_KEY_LOCALE),
+	"en",
+	undefined,
+	{ getOnInit: true },
+);
 
 export const localeCollatorAtom = atom((get) => {
 	const locale = get(localeAtom);

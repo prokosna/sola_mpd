@@ -3,6 +3,10 @@ import { atom } from "jotai";
 import { atomWithRefresh, atomWithStorage } from "jotai/utils";
 
 import { atomWithSync } from "../../../../lib/jotai/atomWithSync";
+import {
+	buildDeviceSettingKey,
+	DEVICE_SETTING_KEY_TEXT_TO_MUSIC_TYPE,
+} from "../../../common";
 import { currentMpdProfileAtom } from "../../../profile/states/atoms/mpdProfileAtom";
 import { searchSongsByText } from "../../functions/textToMusicSearch";
 import {
@@ -15,7 +19,7 @@ export const textToMusicSearchTextAtom = atom("");
 
 export const textToMusicTypeAtom =
 	atomWithStorage<AdvancedSearchCommand_TextToMusicType>(
-		"textToMusicType",
+		buildDeviceSettingKey(DEVICE_SETTING_KEY_TEXT_TO_MUSIC_TYPE),
 		AdvancedSearchCommand_TextToMusicType.MUQ_MULAN,
 		undefined,
 		{ getOnInit: true },
