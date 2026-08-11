@@ -17,16 +17,10 @@ const songTableColumnLayoutKey = buildDeviceSettingKey(
 // Not a per-profile key: column widths and sort order have nothing to do
 // with which music library is loaded.
 
-// atomWithDefault (async) is where the one-time migration lives. On the very
-// first read, if the device key is unset, fetch the SongTableState the
-// server still returns — the proto is unchanged, so old width_flex/sort_order
-// /is_sort_desc values are still sitting there — and copy them into the
-// device layout before returning it. Once the key exists, later reads never
-// touch the server again; the device value is authoritative from then on.
-// Reading songTableStateRepositoryAtom directly (rather than the sibling
-// songTableStateAsyncAtom in songTableAtom.ts) avoids a circular import
-// between the two atom files, since songTableAtom.ts's derived
-// songTableStateAtom itself depends on this atom for the overlay.
+// One-time migration: with no device key yet, copy the width/sort values the
+// server document still carries. Once the key exists the server is never
+// consulted again. Goes through songTableStateRepositoryAtom, not the sibling
+// songTableStateAsyncAtom, because songTableAtom.ts depends on this atom.
 const songTableColumnLayoutAsyncAtom = atomWithDefault<
 	Promise<SongTableColumnLayout> | SongTableColumnLayout
 >(async (get) => {

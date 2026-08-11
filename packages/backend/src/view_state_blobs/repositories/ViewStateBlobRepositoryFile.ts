@@ -27,11 +27,9 @@ function backupDbDirectoryOnce() {
 	backupDbDirectory(DB_DIRECTORY);
 }
 
-// Unlike ConfigRepositoryFile, this holds no in-memory cache: blobs are
-// opaque, unstructured, and read/written far less often than config, so a
-// read-through/write-through implementation keeps the constructor free of
-// any filesystem access at all (not even a read), which is the safest way to
-// guarantee an import never touches the real db directory.
+// No in-memory cache, unlike ConfigRepositoryFile: read-through/write-through
+// keeps the constructor free of any filesystem access, so an import can never
+// touch the real db directory.
 class ViewStateBlobRepositoryFile implements ViewStateBlobRepository {
 	constructor(private readonly localFilePath: string) {}
 

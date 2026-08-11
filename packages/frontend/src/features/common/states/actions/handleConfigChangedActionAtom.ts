@@ -17,11 +17,8 @@ import { refreshMpdProfileActionAtom } from "../../../profile";
 import { refreshSavedSearchesActionAtom } from "../../../search";
 import { refreshSongTableStateActionAtom } from "../../../song_table";
 
-// Dispatches a SOCKETIO_CONFIG_CHANGED broadcast (see SocketIoManager's
-// `${SOCKETIO_CONFIG_SAVE}_${key}` handler on the backend) to the refresh
-// action for the matching config key. A key this client doesn't recognize is
-// ignored rather than thrown: an older client must stay functional when a
-// newer server broadcasts a config key it doesn't know about yet.
+// An unrecognized key is ignored rather than thrown: an older client must stay
+// functional when a newer server broadcasts a config key it does not know yet.
 export const handleConfigChangedActionAtom = atom(
 	null,
 	(_get, set, configKey: string) => {

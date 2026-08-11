@@ -43,13 +43,10 @@ function createFakeDeviceSettingsRepository() {
 }
 
 describe("handleConfigChangedActionAtom", () => {
-	// Each case wires only the repository the config key's refresh action
-	// touches (plus mpd_profile_state's device-settings sweep dependency),
-	// primes the underlying async atom once, dispatches the config-changed
-	// key, and asserts the repository's fetch() ran a second time. Since
-	// fetch() is the only repository method ever invoked in these cases, this
-	// also doubles as the check that the refresh path is read-only (save()
-	// is never called, so there is no broadcast-storm risk).
+	// Each case primes one repository's async atom, dispatches the config key,
+	// and asserts fetch() ran again. fetch() being the only method ever invoked
+	// is also the check that the refresh path never calls save(), which would
+	// risk a broadcast storm.
 	it("CONFIG_KEY_BROWSER_STATE refetches the browser state", async () => {
 		const store = createStore();
 		const fetch = vi

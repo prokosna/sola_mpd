@@ -20,11 +20,9 @@ export type LoadAllSongsFastOptions = {
 	fetchChunk?: typeof fetchAllSongsFastChunk;
 };
 
-// Drives the chunked `search` window calls until the library is fully loaded.
-// `onProgress` is invoked after every chunk so callers can publish the partial
-// accumulator (e.g. into a Jotai atom) and the song table can render a growing
-// list while remaining pages are still in flight. A short chunk (fewer rows
-// than requested) marks the natural end of the result set.
+// A short chunk (fewer rows than requested) marks the end of the result set.
+// `onProgress` fires after each one so the table can render a growing list
+// while the remaining pages are still in flight.
 export async function loadAllSongsFast(
 	options: LoadAllSongsFastOptions,
 ): Promise<AllSongsFastProgress> {

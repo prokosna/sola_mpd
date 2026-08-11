@@ -88,12 +88,9 @@ async function flush() {
 }
 
 /**
- * Sets up a store where every dependency of useSearchSongTableProps other
- * than the column composition under test is either an already-resolved
- * value or a harmless stub: a defined MPD profile with no target search
- * (so searchSongsAsyncAtom's `search === undefined` branch returns `[]`
- * without ever issuing a real MPD query), and empty plugin/advanced-search
- * state, neither of which this hook's column logic depends on.
+ * Stubs every dependency other than the column composition under test. The
+ * profile has no target search, so searchSongsAsyncAtom returns `[]` without
+ * issuing a real MPD query.
  */
 async function createReadyStore() {
 	const store = createStore();

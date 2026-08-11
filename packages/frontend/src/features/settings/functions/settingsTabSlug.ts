@@ -1,8 +1,4 @@
-// The URL is the source of truth for which Settings tab is active
-// (Settings.tsx syncs it via useParams/navigate). This mapping is kept as
-// pure functions, separate from the component, so the slug<->value
-// round-trip and the unknown-slug fallback are unit-testable without
-// rendering the tab contents (each of which pulls in real app state).
+// The URL is the source of truth for which Settings tab is active.
 export const SETTINGS_TAB_SLUG_TO_VALUE: Record<string, string> = {
 	profiles: "Profiles",
 	shared: "Shared Settings",

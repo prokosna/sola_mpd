@@ -11,10 +11,8 @@ import { updateBrowserSelectionActionAtom } from "../states/actions/updateBrowse
 
 /**
  * Splits a merged `BrowserFilter[]` update in two: the structural half
- * (tag/order) is persisted to the server via updateBrowserFiltersActionAtom,
- * while the navigation half (selected values) is written to the URL.
- * `useSearchParams` cannot be called from inside a Jotai atom, so the URL half
- * lives in a hook.
+ * (tag/order) goes to the server, the selected values to the URL. The URL half
+ * lives in a hook because `useSearchParams` cannot be called inside an atom.
  */
 export function useUpdateBrowserFilters() {
 	const updateBrowserFiltersAction = useSetAtom(updateBrowserFiltersActionAtom);

@@ -40,9 +40,6 @@ function makeCondition(
 }
 
 /**
- * Converts an LLM-friendly filter object into the project's `FilterCondition`
- * list consumed by `convertConditionsToString`. Unset keys produce no clause.
- *
  * `added_since` accepts any string `Date.parse` understands; invalid values
  * raise so the caller can surface a clear error rather than silently dropping
  * the clause.

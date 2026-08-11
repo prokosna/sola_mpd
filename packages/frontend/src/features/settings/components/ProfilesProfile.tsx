@@ -41,12 +41,9 @@ export function ProfilesProfile(props: ProfilesProfileProps) {
 	}, [deleteMpdProfile, notify, profile.name]);
 
 	const handleSetAsDefault = useCallback(() => {
-		// This changes the workspace default for new devices, not what this
-		// device is currently using (that's a separate, per-device selection
-		// made by switching profiles in the header). LOCAL_STATE is still
-		// needed here so the local mirror of currentProfile — and therefore
-		// the "Default for new devices" badge — updates immediately instead
-		// of only on the next refetch.
+		// This sets the workspace default for new devices, not what this device
+		// is using. LOCAL_STATE keeps the "Default" badge from waiting for the
+		// next refetch.
 		updateCurrentMpdProfile({
 			profile,
 			mode: UpdateMode.LOCAL_STATE | UpdateMode.PERSIST,

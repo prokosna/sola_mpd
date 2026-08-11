@@ -64,11 +64,9 @@ import type { ConfigRepository } from "./ConfigRepository.js";
 
 let hasAttemptedDbBackup = false;
 
-// The backup has to precede the first *write*, not the first read: reads are
-// non-destructive, while both `save()` and the constructor's fallback for an
-// unreadable file overwrite a document. Deferring it this far also keeps a
-// bare module import — which is all a unit test does — from writing into the
-// real db directory.
+// The backup has to precede the first *write*: reads are non-destructive, and
+// deferring it this far keeps a bare module import — all a unit test does —
+// from writing into the real db directory.
 function backupDbDirectoryOnce() {
 	if (hasAttemptedDbBackup) {
 		return;

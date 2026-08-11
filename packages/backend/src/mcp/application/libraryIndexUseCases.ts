@@ -7,12 +7,9 @@ import type { MpdClient } from "../../mpd/services/MpdClient.js";
 import type { LibraryIndex } from "../services/LibraryIndex.js";
 
 /**
- * Fetches the full song list for the given profile via `listallinfo`, then
- * asks the library index to refresh if the song-list reference has changed.
- *
- * `MpdClient` already caches `listAllSongs` per profile and drops the cache
- * on MPD `database` events, so the index only rebuilds when the upstream
- * songs actually changed — a no-op on most calls.
+ * `MpdClient` caches `listAllSongs` per profile and drops the cache on MPD
+ * `database` events, so the index only rebuilds when the upstream songs
+ * actually changed — a no-op on most calls.
  */
 export const ensureLibraryIndexUseCase = async (input: {
 	profile: MpdProfile;

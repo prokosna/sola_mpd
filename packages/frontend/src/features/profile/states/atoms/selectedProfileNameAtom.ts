@@ -10,11 +10,9 @@ const selectedProfileNameKey = buildDeviceSettingKey(
 	DEVICE_SETTING_KEY_SELECTED_PROFILE_NAME,
 );
 
-// atomWithDefault (rather than reading the repository straight from
-// currentMpdProfileAtom) is what puts this value on Jotai's dependency
-// graph: DeviceSettingsRepository.get() is synchronous and non-reactive, so
-// a direct read would never trigger re-evaluation when the selection
-// changes and switching profiles would not update the screen.
+// atomWithDefault is what puts this value on Jotai's dependency graph.
+// DeviceSettingsRepository.get() is synchronous and non-reactive, so reading it
+// directly would leave the screen unchanged when the selection does change.
 const selectedProfileNameBaseAtom = atomWithDefault<string | undefined>((get) =>
 	get(deviceSettingsRepositoryAtom).get<string>(selectedProfileNameKey),
 );

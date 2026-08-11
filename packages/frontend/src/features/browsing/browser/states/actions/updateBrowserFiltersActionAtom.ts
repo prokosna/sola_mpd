@@ -13,11 +13,9 @@ import {
 import { browserStateAtom } from "../atoms/browserStateAtom";
 import { updateBrowserStateActionAtom } from "./updateBrowserStateActionAtom";
 
-// Persists only the Workspace-owned tag/order structure to the server;
-// `selectedValues`/`selectedOrder` are a navigation position and now live
-// in the URL — see
-// hooks/useUpdateBrowserFilters.ts, which handles that side and calls this
-// action for the structural half of every filter change.
+// Persists only the Workspace-owned tag/order structure. `selectedValues` and
+// `selectedOrder` are a navigation position and live in the URL, which
+// hooks/useUpdateBrowserFilters.ts handles alongside this action.
 export const updateBrowserFiltersActionAtom = atom(
 	null,
 	async (get, set, args: { filters: BrowserFilter[]; mode: UpdateMode }) => {

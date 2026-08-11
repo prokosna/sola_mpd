@@ -294,11 +294,8 @@ export function stripBrowserFilterSelection(
 }
 
 /**
- * Structural equality of two filter lists: same tags, in the same order.
- * Ignores `selectedValues`/`selectedOrder` entirely, so a pure selection
- * change never registers as a structural one. Mirrors
- * `diffSongTableColumns`'s `tagsChanged` in the song_table feature, which
- * gates the analogous Workspace-vs-Device split there.
+ * Structural equality: same tags, in the same order. Ignores the selection
+ * entirely, so a pure selection change never registers as a structural one.
  */
 export function haveBrowserFilterTagsChanged(
 	prev: BrowserFilter[],

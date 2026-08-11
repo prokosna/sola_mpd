@@ -29,11 +29,8 @@ export function buildSongTableColumnLayout(
 }
 
 /**
- * Overlays column widths onto an existing device layout, leaving each entry's
- * sort untouched.
- *
  * Width is Device-owned everywhere, but sort is Device-owned only for the
- * common song table — in Search it belongs to the saved search, and must not
+ * common song table — in Search it belongs to the saved search, so it must not
  * reach the layout the common table sorts by.
  */
 export function applyColumnWidthsToLayout(

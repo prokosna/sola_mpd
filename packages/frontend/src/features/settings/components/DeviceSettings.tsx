@@ -37,10 +37,6 @@ export function DeviceSettings() {
 		});
 	};
 
-	// One scope statement for the whole tab rather than one per section: every
-	// section below is device-scoped, so repeating it just adds noise — and
-	// repeating it forced the note above section titles that render their own
-	// heading (Locale, Advanced Search).
 	return (
 		<Stack gap={32}>
 			<Stack gap={4}>

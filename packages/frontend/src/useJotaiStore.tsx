@@ -8,9 +8,6 @@ import { ViewStateBlobRepositorySocketIo } from "./features/browsing/common/repo
 import { viewStateBlobRepositoryAtom } from "./features/browsing/common/states/atoms/viewStateBlobRepositoryAtom";
 import { RecentlyAddedStateRepositorySocketIo } from "./features/browsing/recently_added/repositories/RecentlyAddedStateRepositorySocketIo";
 import { recentlyAddedStateRepositoryAtom } from "./features/browsing/recently_added/states/atoms/recentlyAddedStateRepositoryAtom";
-// Deep imports, like every other wiring target below: this is the composition
-// root, and handleConfigChangedActionAtom is deliberately kept out of the
-// features/common barrel (see the note there).
 import { DeviceSettingsRepositoryLocalStorage } from "./features/common/repositories/DeviceSettingsRepositoryLocalStorage";
 import { handleConfigChangedActionAtom } from "./features/common/states/actions/handleConfigChangedActionAtom";
 import { deviceSettingsRepositoryAtom } from "./features/common/states/atoms/deviceSettingsRepositoryAtom";
@@ -53,9 +50,6 @@ export function useJotaiStore() {
 
 		// Live sync: dispatch a server-broadcast config change to the refresh
 		// action for that key.
-		// Lives here, next to connection setup, rather than in a component,
-		// since it is a single session-wide subscription with no per-profile
-		// lifecycle to tie it to.
 		await messagingClient.on(SOCKETIO_CONFIG_CHANGED, (payload) => {
 			store.set(
 				handleConfigChangedActionAtom,

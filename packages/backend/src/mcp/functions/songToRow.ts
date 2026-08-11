@@ -9,11 +9,9 @@ import {
 	Song_MetadataTag,
 } from "@sola_mpd/shared/src/models/song_pb.js";
 
-// `IndexedSongRow` is the wire shape consumed by better-sqlite3 named binds.
-// SQLite represents missing values as SQL NULL, which better-sqlite3 binds
-// from / returns as JavaScript `null` (passing `undefined` for a parameter
-// raises). Keep `| null` on this internal row type so the SQL boundary stays
-// honest; codebase-wide `undefined` shows up at the port surface above.
+// better-sqlite3 binds SQL NULL from and returns it as `null`, and raises on
+// `undefined`. Keep `| null` on this internal row type so the SQL boundary
+// stays honest; the port surface above is `undefined` like the rest.
 export type IndexedSongRow = {
 	path: string;
 	title: string;

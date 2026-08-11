@@ -20,12 +20,9 @@ import {
 import type { MpdClient } from "../../../mpd";
 
 /**
- * Issue a single delta fetch for the fast Recently Added path.
- *
- * The query is `(added-since 'sinceTime') sort -Added window offset:`. Because
- * widening `sinceTime` only enlarges the result universe and `sort -Added`
- * keeps the leading rows stable, advancing `offset` between calls returns the
- * songs that were not yet visible at the previous cutoff.
+ * Widening `sinceTime` only enlarges the result universe, and `sort -Added`
+ * keeps the leading rows stable, so advancing `offset` between calls returns
+ * the songs that were not yet visible at the previous cutoff.
  */
 export async function fetchRecentlyAddedFastDelta(
 	mpdClient: MpdClient,

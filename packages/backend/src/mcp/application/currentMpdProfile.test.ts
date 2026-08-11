@@ -9,11 +9,9 @@ import {
 } from "@sola_mpd/shared/src/models/mpd/mpd_profile_pb.js";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
-// mpdProfileStateRepository is a module-level singleton constructed from a
-// path relative to process.cwd() (see ConfigRepositoryFile.test.ts), so each
-// test chdirs into a fresh temp directory and re-imports the module
-// (vi.resetModules) to keep runs isolated and avoid touching the real
-// packages/backend/db/ runtime data.
+// mpdProfileStateRepository is a module-level singleton built from a path
+// relative to process.cwd(), so each test chdirs into a temp directory and
+// re-imports to keep runs off the real packages/backend/db/.
 describe("resolveCurrentMpdProfile", () => {
 	let tempDir: string;
 	let originalCwd: string;

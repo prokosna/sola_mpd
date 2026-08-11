@@ -12,11 +12,9 @@ import {
 import { songTableColumnLayoutAtom } from "../atoms/songTableColumnLayoutAtom";
 import { songTableStateRepositoryAtom } from "../atoms/songTableStateRepositoryAtom";
 
-// Splits writes between Workspace (server) and Device: `tag`/order is
-// Workspace, while sort_order/is_sort_desc/width_flex are Device. The ~19
-// AG Grid call sites
-// funnel through this one action unchanged, so this is the only place that
-// needs to know about the split.
+// Splits writes between Workspace and Device: `tag` and its order are
+// Workspace, sort_order/is_sort_desc/width_flex are Device. Every AG Grid call
+// site funnels through here, so this is the only place that knows the split.
 export const updateSongTableStateActionAtom = atom(
 	null,
 	async (get, set, params: { state: SongTableState; mode: UpdateMode }) => {

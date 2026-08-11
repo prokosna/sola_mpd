@@ -7,12 +7,7 @@ import {
 	pluginExecutionPropsAtom,
 } from "../atoms/pluginExecutionAtom";
 
-/**
- * Starts a plugin run for the given songs by opening the modal on its
- * parameter step. Naming the target songs and opening the modal are one
- * intent, not two independent writes — the modal has nothing to show until the
- * props are set.
- */
+/** The modal has nothing to show until the target songs are set. */
 export const beginPluginExecutionActionAtom = atom(
 	null,
 	(_get, set, args: { plugin: Plugin; songs: Song[] }) => {

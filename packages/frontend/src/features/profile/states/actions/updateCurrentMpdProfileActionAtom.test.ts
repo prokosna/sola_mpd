@@ -27,11 +27,9 @@ async function flush() {
 	await new Promise((resolve) => setTimeout(resolve, 0));
 }
 
-// This action's sole remaining caller is "Set as default" in the Settings
-// Profiles screen, always with LOCAL_STATE | PERSIST. Ordinary profile
-// switching no longer goes through here at all — see
-// useChangeCurrentMpdProfile, which only writes selectedProfileNameAtom
-// (see useChangeCurrentMpdProfile.test.ts for that path's regression test).
+// The action's only caller is "Set as default" in Settings, always with
+// LOCAL_STATE | PERSIST. Ordinary profile switching goes through
+// useChangeCurrentMpdProfile instead.
 describe("updateCurrentMpdProfileActionAtom", () => {
 	it(
 		"updates the local mirror's currentProfile immediately on " +

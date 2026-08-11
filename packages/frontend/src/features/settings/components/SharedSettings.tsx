@@ -8,11 +8,8 @@ import {
 } from "../../../const/routes";
 import { ScopeNote } from "./ScopeNote";
 
-// These five settings all live on the server and are shared by every device,
-// but each already has a dedicated editing surface elsewhere in the app.
-// Rather than duplicate that UI here, this tab exists to answer "which of my
-// settings do other devices see?" — it names each shared concern and links to
-// where it is actually edited.
+// Each of these is edited elsewhere in the app; this tab answers "which of my
+// settings do other devices see?" and links to where they are edited.
 const SHARED_SECTIONS: {
 	title: string;
 	description: string;

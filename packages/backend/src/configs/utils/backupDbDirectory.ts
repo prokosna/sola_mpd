@@ -11,16 +11,9 @@ function toFilesystemSafeTimestamp(date: Date): string {
 }
 
 /**
- * One-time startup safeguard, run before schema migrations touch anything:
- * copies the top-level `*.json` documents in `dbDirectoryPath` into a
- * timestamped subdirectory of `db/backups`, then writes a marker file so it
- * never runs again. Only direct `*.json` children are enumerated, which also
- * keeps `db/backups` itself (a directory, not a `.json` file) out of scope
- * without needing a separate exclusion check.
- *
- * Never throws: the backup is insurance on top of the real data, not a
- * dependency of it, so any failure is logged and swallowed and the marker is
- * left absent so the next startup retries.
+ * Runs once, before schema migrations touch anything. Never throws: the backup
+ * is insurance on top of the real data, not a dependency of it, so a failure
+ * leaves the marker absent and the next startup retries.
  */
 export function backupDbDirectory(dbDirectoryPath: string): void {
 	const markerPath = path.join(dbDirectoryPath, BACKUP_MARKER_FILE_NAME);

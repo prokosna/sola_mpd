@@ -8,15 +8,10 @@ import {
 } from "../functions/songTableSortState";
 
 /**
- * Pushes the columns' sort into the grid.
- *
  * AG Grid reads `sort` off a column definition only when it creates the column,
- * and keeps its own sort state across later definition updates. Without this,
- * columns arriving from elsewhere — opening a saved search, say — leave
- * whatever the user last sorted by in place.
- *
- * Applied only when the two differ, so the sort the user makes in the grid,
- * which comes back through onColumnsUpdated, is not re-applied to itself.
+ * and keeps its own sort state across later updates, so columns arriving from
+ * elsewhere would leave whatever the user last sorted by in place. Applied only
+ * on a difference, so the user's own sort is not re-applied to itself.
  */
 export function useSyncColumnSortState(
 	gridRef: RefObject<AgGridReact | null>,

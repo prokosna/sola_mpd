@@ -21,20 +21,11 @@ export const songTableStateAsyncAtom = atomWithDefault<
 	return await repository.fetch();
 });
 
-// The server's raw view. Only `columns[].tag` and its order are still
-// authoritative here — sort_order/is_sort_desc/width_flex are frozen legacy
-// values the server no longer receives meaningful writes for. Every UI
-// consumer must go
-// through songTableStateAtom below, which overlays the device layer; this is
-// exported only for the Raw Data settings editor, which is required to show
-// and edit the genuine on-disk document rather than the composed view.
+// The server's raw view, where only `columns[].tag` and its order are still
+// authoritative. Exported only for the Raw Data editor, which has to show the
+// genuine on-disk document; every UI consumer reads songTableStateAtom below.
 export const songTableServerStateAtom = atomWithSync(songTableStateAsyncAtom);
 
-// The composed, device-aware SongTableState every existing consumer reads.
-// Trusts only the server's tag list/order and overlays sort_order/
-// is_sort_desc/width_flex from the device-local column layout. The exported
-// name and shape are unchanged from before the split, so every downstream
-// consumer (~19 files) needed no changes.
 export const songTableStateAtom = atom((get) => {
 	const serverState = get(songTableServerStateAtom);
 	if (serverState === undefined) {

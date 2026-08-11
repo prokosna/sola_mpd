@@ -21,12 +21,9 @@ export class MpdProfileNotFoundError extends Error {
 }
 
 /**
- * Resolves the MPD profile an MCP tool call should target.
- *
- * With `name` given, resolves that specific profile — this is how an MCP
- * client (which has no device of its own) targets a non-default profile.
- * Without it, falls back to the workspace default profile persisted in
- * `MpdProfileState.currentProfile`.
+ * With `name` given, resolves that profile — this is how an MCP client, which
+ * has no device of its own, targets a non-default profile. Without it, falls
+ * back to the workspace default.
  */
 export function resolveCurrentMpdProfile(name?: string): MpdProfile {
 	const state = mpdProfileStateRepository.get();

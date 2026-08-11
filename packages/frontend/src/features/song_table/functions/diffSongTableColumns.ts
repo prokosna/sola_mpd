@@ -7,15 +7,9 @@ export type SongTableColumnDiff = {
 };
 
 /**
- * Classifies what changed between two column lists so callers can route the
- * write to the right layer:
- * `tag` (and its order) is Workspace, `sort_order`/`is_sort_desc`/`width_flex`
- * are Device in the common song table context.
- *
- * `tagsChanged` covers both membership and order — reordering without adding
- * or removing anything still counts, since the array order itself is the
- * column layout. `sortChanged`/`widthChanged` compare by tag, not index, so a
- * pure reorder never spuriously reports a sort or width change.
+ * `tagsChanged` covers membership and order alike, since the array order is
+ * itself the column layout. `sortChanged`/`widthChanged` compare by tag, not
+ * index, so a pure reorder never reports a spurious sort or width change.
  */
 export function diffSongTableColumns(
 	prev: SongTableColumn[],

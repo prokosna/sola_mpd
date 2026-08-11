@@ -2,9 +2,7 @@ import { Group, Text } from "@mantine/core";
 import { IconCloud, IconDeviceDesktop } from "@tabler/icons-react";
 
 // The one thing every settings section has to say: does this value follow
-// the user everywhere, or stay on this machine? Kept as a tiny
-// presentational component (not a framework) so the wording never drifts
-// between sections.
+// the user everywhere, or stay on this machine?
 export type SettingScope = "workspace" | "device";
 
 const SCOPE_LABEL: Record<SettingScope, string> = {

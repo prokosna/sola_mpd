@@ -17,20 +17,14 @@ import {
 import { browserSelectionAtom } from "./browserSelectionAtom";
 import { browserStateAtom } from "./browserStateAtom";
 
-// Private: the server's raw view. Only `tag`/`order` are still authoritative
-// here — `selectedValues`/`selectedOrder` are a navigation position, not a
-// setting, and now live in the URL instead. Not exported; every consumer
-// must go through
-// browserFiltersAtom below, which overlays the URL-derived selection.
+// Only `tag`/`order` are authoritative here; the selection lives in the URL.
+// Deliberately not exported, so every consumer goes through browserFiltersAtom
+// below and sees the two overlaid.
 const browserFiltersServerAtom = atom((get) => {
 	const browserState = get(browserStateAtom);
 	return browserState?.filters;
 });
 
-// The composed atom every existing consumer reads. Exported name and shape
-// are unchanged from before the split, so downstream consumers needed no
-// changes beyond the two places that write selections back out (see
-// hooks/useUpdateBrowserFilters.ts).
 export const browserFiltersAtom = atom((get) => {
 	const serverFilters = get(browserFiltersServerAtom);
 	if (serverFilters === undefined) {

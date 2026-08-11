@@ -4,13 +4,9 @@ import type { DeserializedBrowserSelection } from "../types/browserSelection";
 import { decodeBrowserSelectionValue } from "./serializeBrowserSelection";
 
 /**
- * Pure, synchronous read of a navigation position out of a URL query string.
- * Performs no I/O: a `?vs=<token>` reference is recognised but left
- * unresolved for the caller (an action atom) to fetch via
- * ViewStateBlobRepository.
- *
- * `selectionQueryParam` is the inline-value key to look for (Browser and
- * Recently Added each use their own, see `browsingSelectionQueryParams.ts`).
+ * Performs no I/O: a `?vs=<token>` reference is recognised but left unresolved
+ * for the caller to fetch. `selectionQueryParam` is the inline-value key, which
+ * Browser and Recently Added each have their own of.
  */
 export function deserializeBrowserSelection(
 	search: string,
