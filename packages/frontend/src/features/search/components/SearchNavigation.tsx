@@ -13,6 +13,7 @@ import {
 	convertSearchToFormValues,
 	getDefaultSearch,
 } from "../functions/search";
+import { setEditingSearchNameActionAtom } from "../states/actions/setEditingSearchNameActionAtom";
 import { setEditingSearchStatusActionAtom } from "../states/actions/setEditingSearchStatusActionAtom";
 import { savedSearchesAtom } from "../states/atoms/savedSearchesAtom";
 import { editingSearchStatusAtom } from "../states/atoms/searchEditAtom";
@@ -27,6 +28,7 @@ export function SearchNavigation() {
 	const savedSearches = useAtomValue(savedSearchesAtom);
 	const editingSearchStatus = useAtomValue(editingSearchStatusAtom);
 	const setEditingSearchStatus = useSetAtom(setEditingSearchStatusActionAtom);
+	const setEditingSearchName = useSetAtom(setEditingSearchNameActionAtom);
 	const { defaultLayout, onLayoutChanged } = useDefaultLayout({
 		id: "search-navigation",
 		storage: globalThis.localStorage,
@@ -39,6 +41,7 @@ export function SearchNavigation() {
 			name: isNotEmpty("Name is required."),
 		},
 		onValuesChange(values) {
+			setEditingSearchName(values.name);
 			const search = savedSearches?.searches.find(
 				(s) => s.name === values.name,
 			);

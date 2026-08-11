@@ -15,6 +15,7 @@ import { setSearchSongTableColumnsActionAtom } from "../states/actions/setSearch
 import { setTargetSearchActionAtom } from "../states/actions/setTargetSearchActionAtom";
 import { updateSavedSearchesActionAtom } from "../states/actions/updateSavedSearchesActionAtom";
 import { savedSearchesAtom } from "../states/atoms/savedSearchesAtom";
+import { selectedSavedSearchNameAtom } from "../states/atoms/searchEditAtom";
 import type { SearchFormValues } from "../types/searchTypes";
 
 export function useSavedSearchesSelectListProps({
@@ -27,6 +28,7 @@ export function useSavedSearchesSelectListProps({
 	const mpdClient = useAtomValue(mpdClientAtom);
 	const profile = useAtomValue(currentMpdProfileAtom);
 	const savedSearches = useAtomValue(savedSearchesAtom);
+	const selectedSavedSearchName = useAtomValue(selectedSavedSearchNameAtom);
 	const updateSavedSearchesAction = useSetAtom(updateSavedSearchesActionAtom);
 	const setTargetSearch = useSetAtom(setTargetSearchActionAtom);
 	const setSearchSongTableColumns = useSetAtom(
@@ -105,7 +107,8 @@ export function useSavedSearchesSelectListProps({
 	return {
 		id: COMPONENT_ID_SEARCH_SIDE_PANE,
 		values: savedSearches.searches.map((search) => search.name),
-		selectedValues: [],
+		selectedValues:
+			selectedSavedSearchName !== undefined ? [selectedSavedSearchName] : [],
 		headerTitle: "Saved Searches",
 		contextMenuSections,
 		isLoading: false,
