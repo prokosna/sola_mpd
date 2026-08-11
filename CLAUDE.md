@@ -46,6 +46,10 @@ Documentation-only changes do not need them.
     copy each", "kept as pure functions so it is testable", "this hook exists only so…");
   - archaeology — what the code used to do, or which bug a change fixed. That belongs in the
     commit message. In a test, one line naming the regression is fine.
+
+  `pnpm lint` warns on any comment over four lines of prose (`pnpm lint_comments` alone).
+  It is a warning, not a gate: a few long comments are genuinely earned. Read each one it
+  names and either shorten it or leave it deliberately.
 - **English only** in the repository — code, identifiers, comments, docs, test data. Chat with
   the user may be in Japanese; repository content may not.
 - **Commit scope.** One purpose per change; split unrelated edits.
