@@ -12,14 +12,15 @@ import type { Message } from "@bufbuild/protobuf";
  * Describes the file recently_added.proto.
  */
 export const file_recently_added: GenFile = /*@__PURE__*/
-  fileDesc("ChRyZWNlbnRseV9hZGRlZC5wcm90byI1ChNSZWNlbnRseUFkZGVkRmlsdGVyEh4KA3RhZxgBIAEoDjIRLlNvbmcuTWV0YWRhdGFUYWciUwoSUmVjZW50bHlBZGRlZFN0YXRlEiUKB2ZpbHRlcnMYASADKAsyFC5SZWNlbnRseUFkZGVkRmlsdGVyEhYKDnNjaGVtYV92ZXJzaW9uGAIgASgNYgZwcm90bzM", [file_song]);
+  fileDesc("ChRyZWNlbnRseV9hZGRlZC5wcm90byI5ChNSZWNlbnRseUFkZGVkRmlsdGVyEiIKA3RhZxgBIAEoDjIRLlNvbmcuTWV0YWRhdGFUYWdCAhgBIn8KElJlY2VudGx5QWRkZWRTdGF0ZRIpCgdmaWx0ZXJzGAEgAygLMhQuUmVjZW50bHlBZGRlZEZpbHRlckICGAESFgoOc2NoZW1hX3ZlcnNpb24YAiABKA0SJgoLZmlsdGVyX3RhZ3MYAyADKA4yES5Tb25nLk1ldGFkYXRhVGFnYgZwcm90bzM", [file_song]);
 
 /**
  * @generated from message RecentlyAddedFilter
  */
 export type RecentlyAddedFilter = Message<"RecentlyAddedFilter"> & {
   /**
-   * @generated from field: Song.MetadataTag tag = 1;
+   * @generated from field: Song.MetadataTag tag = 1 [deprecated = true];
+   * @deprecated
    */
   tag: Song_MetadataTag;
 };
@@ -36,7 +37,8 @@ export const RecentlyAddedFilterSchema: GenMessage<RecentlyAddedFilter> = /*@__P
  */
 export type RecentlyAddedState = Message<"RecentlyAddedState"> & {
   /**
-   * @generated from field: repeated RecentlyAddedFilter filters = 1;
+   * @generated from field: repeated RecentlyAddedFilter filters = 1 [deprecated = true];
+   * @deprecated
    */
   filters: RecentlyAddedFilter[];
 
@@ -44,6 +46,11 @@ export type RecentlyAddedState = Message<"RecentlyAddedState"> & {
    * @generated from field: uint32 schema_version = 2;
    */
   schemaVersion: number;
+
+  /**
+   * @generated from field: repeated Song.MetadataTag filter_tags = 3;
+   */
+  filterTags: Song_MetadataTag[];
 };
 
 /**

@@ -13,7 +13,7 @@ import type { Message } from "@bufbuild/protobuf";
  * Describes the file song_table.proto.
  */
 export const file_song_table: GenFile = /*@__PURE__*/
-  fileDesc("ChBzb25nX3RhYmxlLnByb3RvIoMBCg9Tb25nVGFibGVDb2x1bW4SHgoDdGFnGAEgASgOMhEuU29uZy5NZXRhZGF0YVRhZxIXCgpzb3J0X29yZGVyGAIgASgFSACIAQESFAoMaXNfc29ydF9kZXNjGAMgASgIEhIKCndpZHRoX2ZsZXgYBCABKAVCDQoLX3NvcnRfb3JkZXIiSwoOU29uZ1RhYmxlU3RhdGUSIQoHY29sdW1ucxgBIAMoCzIQLlNvbmdUYWJsZUNvbHVtbhIWCg5zY2hlbWFfdmVyc2lvbhgCIAEoDWIGcHJvdG8z", [file_song, file_google_protobuf_wrappers]);
+  fileDesc("ChBzb25nX3RhYmxlLnByb3RvIo8BCg9Tb25nVGFibGVDb2x1bW4SHgoDdGFnGAEgASgOMhEuU29uZy5NZXRhZGF0YVRhZxIbCgpzb3J0X29yZGVyGAIgASgFQgIYAUgAiAEBEhgKDGlzX3NvcnRfZGVzYxgDIAEoCEICGAESFgoKd2lkdGhfZmxleBgEIAEoBUICGAFCDQoLX3NvcnRfb3JkZXIidwoOU29uZ1RhYmxlU3RhdGUSJQoHY29sdW1ucxgBIAMoCzIQLlNvbmdUYWJsZUNvbHVtbkICGAESFgoOc2NoZW1hX3ZlcnNpb24YAiABKA0SJgoLY29sdW1uX3RhZ3MYAyADKA4yES5Tb25nLk1ldGFkYXRhVGFnYgZwcm90bzM", [file_song, file_google_protobuf_wrappers]);
 
 /**
  * @generated from message SongTableColumn
@@ -25,17 +25,20 @@ export type SongTableColumn = Message<"SongTableColumn"> & {
   tag: Song_MetadataTag;
 
   /**
-   * @generated from field: optional int32 sort_order = 2;
+   * @generated from field: optional int32 sort_order = 2 [deprecated = true];
+   * @deprecated
    */
   sortOrder?: number | undefined;
 
   /**
-   * @generated from field: bool is_sort_desc = 3;
+   * @generated from field: bool is_sort_desc = 3 [deprecated = true];
+   * @deprecated
    */
   isSortDesc: boolean;
 
   /**
-   * @generated from field: int32 width_flex = 4;
+   * @generated from field: int32 width_flex = 4 [deprecated = true];
+   * @deprecated
    */
   widthFlex: number;
 };
@@ -52,7 +55,8 @@ export const SongTableColumnSchema: GenMessage<SongTableColumn> = /*@__PURE__*/
  */
 export type SongTableState = Message<"SongTableState"> & {
   /**
-   * @generated from field: repeated SongTableColumn columns = 1;
+   * @generated from field: repeated SongTableColumn columns = 1 [deprecated = true];
+   * @deprecated
    */
   columns: SongTableColumn[];
 
@@ -60,6 +64,11 @@ export type SongTableState = Message<"SongTableState"> & {
    * @generated from field: uint32 schema_version = 2;
    */
   schemaVersion: number;
+
+  /**
+   * @generated from field: repeated Song.MetadataTag column_tags = 3;
+   */
+  columnTags: Song_MetadataTag[];
 };
 
 /**

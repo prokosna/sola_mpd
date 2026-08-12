@@ -59,6 +59,7 @@ import {
 	getConfigDocumentCurrentVersion,
 	migrateConfigDocument,
 } from "../functions/migrateConfigDocument.js";
+import { preserveDeprecatedConfigFields } from "../functions/preserveDeprecatedConfigFields.js";
 import { backupDbDirectory } from "../utils/backupDbDirectory.js";
 import type { ConfigRepository } from "./ConfigRepository.js";
 
@@ -121,7 +122,11 @@ class ConfigRepositoryFile<T extends Message & { schemaVersion: number }>
 	}
 
 	update(value: T) {
-		this.localCache = value;
+		this.localCache = preserveDeprecatedConfigFields(
+			this.configKey,
+			value,
+			this.localCache,
+		);
 		this.save();
 	}
 
@@ -177,6 +182,12 @@ export const browserStateRepository = new ConfigRepositoryFile<BrowserState>(
 				selectedOrder: -1,
 			}),
 		],
+		filterTags: [
+			Song_MetadataTag.GENRE,
+			Song_MetadataTag.ARTIST,
+			Song_MetadataTag.ALBUM,
+			Song_MetadataTag.COMPOSER,
+		],
 	}),
 );
 
@@ -202,6 +213,11 @@ export const commonSongTableStateRepository =
 					tag: Song_MetadataTag.ALBUM,
 					widthFlex: 1,
 				},
+			],
+			columnTags: [
+				Song_MetadataTag.TITLE,
+				Song_MetadataTag.ARTIST,
+				Song_MetadataTag.ALBUM,
 			],
 		}),
 	);
@@ -248,6 +264,11 @@ export const recentlyAddedStateRepository =
 				create(RecentlyAddedFilterSchema, {
 					tag: Song_MetadataTag.COMPOSER,
 				}),
+			],
+			filterTags: [
+				Song_MetadataTag.ALBUM,
+				Song_MetadataTag.ARTIST,
+				Song_MetadataTag.COMPOSER,
 			],
 		}),
 	);

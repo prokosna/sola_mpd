@@ -12,7 +12,7 @@ import type { Message } from "@bufbuild/protobuf";
  * Describes the file browser.proto.
  */
 export const file_browser: GenFile = /*@__PURE__*/
-  fileDesc("Cg1icm93c2VyLnByb3RvIoQBCg1Ccm93c2VyRmlsdGVyEh4KA3RhZxgBIAEoDjIRLlNvbmcuTWV0YWRhdGFUYWcSLAoPc2VsZWN0ZWRfdmFsdWVzGAIgAygLMhMuU29uZy5NZXRhZGF0YVZhbHVlEg0KBW9yZGVyGAMgASgFEhYKDnNlbGVjdGVkX29yZGVyGAQgASgFIkcKDEJyb3dzZXJTdGF0ZRIfCgdmaWx0ZXJzGAEgAygLMg4uQnJvd3NlckZpbHRlchIWCg5zY2hlbWFfdmVyc2lvbhgCIAEoDWIGcHJvdG8z", [file_song]);
+  fileDesc("Cg1icm93c2VyLnByb3RvIpABCg1Ccm93c2VyRmlsdGVyEh4KA3RhZxgBIAEoDjIRLlNvbmcuTWV0YWRhdGFUYWcSMAoPc2VsZWN0ZWRfdmFsdWVzGAIgAygLMhMuU29uZy5NZXRhZGF0YVZhbHVlQgIYARIRCgVvcmRlchgDIAEoBUICGAESGgoOc2VsZWN0ZWRfb3JkZXIYBCABKAVCAhgBInMKDEJyb3dzZXJTdGF0ZRIjCgdmaWx0ZXJzGAEgAygLMg4uQnJvd3NlckZpbHRlckICGAESFgoOc2NoZW1hX3ZlcnNpb24YAiABKA0SJgoLZmlsdGVyX3RhZ3MYAyADKA4yES5Tb25nLk1ldGFkYXRhVGFnYgZwcm90bzM", [file_song]);
 
 /**
  * @generated from message BrowserFilter
@@ -24,17 +24,20 @@ export type BrowserFilter = Message<"BrowserFilter"> & {
   tag: Song_MetadataTag;
 
   /**
-   * @generated from field: repeated Song.MetadataValue selected_values = 2;
+   * @generated from field: repeated Song.MetadataValue selected_values = 2 [deprecated = true];
+   * @deprecated
    */
   selectedValues: Song_MetadataValue[];
 
   /**
-   * @generated from field: int32 order = 3;
+   * @generated from field: int32 order = 3 [deprecated = true];
+   * @deprecated
    */
   order: number;
 
   /**
-   * @generated from field: int32 selected_order = 4;
+   * @generated from field: int32 selected_order = 4 [deprecated = true];
+   * @deprecated
    */
   selectedOrder: number;
 };
@@ -51,7 +54,8 @@ export const BrowserFilterSchema: GenMessage<BrowserFilter> = /*@__PURE__*/
  */
 export type BrowserState = Message<"BrowserState"> & {
   /**
-   * @generated from field: repeated BrowserFilter filters = 1;
+   * @generated from field: repeated BrowserFilter filters = 1 [deprecated = true];
+   * @deprecated
    */
   filters: BrowserFilter[];
 
@@ -59,6 +63,11 @@ export type BrowserState = Message<"BrowserState"> & {
    * @generated from field: uint32 schema_version = 2;
    */
   schemaVersion: number;
+
+  /**
+   * @generated from field: repeated Song.MetadataTag filter_tags = 3;
+   */
+  filterTags: Song_MetadataTag[];
 };
 
 /**

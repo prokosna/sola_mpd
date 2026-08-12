@@ -3,10 +3,11 @@ syntax = "proto3";
 import "song.proto";
 
 message RecentlyAddedFilter {
-  Song.MetadataTag tag = 1;
+  Song.MetadataTag tag = 1 [deprecated = true];
 }
 
 message RecentlyAddedState {
-  repeated RecentlyAddedFilter filters = 1;
+  repeated RecentlyAddedFilter filters = 1 [deprecated = true];
   uint32 schema_version = 2;
+  repeated Song.MetadataTag filter_tags = 3;
 }
