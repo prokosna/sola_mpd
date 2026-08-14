@@ -1,4 +1,3 @@
-import type { SongTableColumn } from "@sola_mpd/shared/src/models/song_table_pb.js";
 import type { AgGridReact } from "ag-grid-react";
 import { type RefObject, useEffect } from "react";
 
@@ -6,6 +5,7 @@ import {
 	buildColumnSortState,
 	needsColumnSortStateUpdate,
 } from "../functions/songTableSortState";
+import type { SongTableColumnView } from "../types/songTableTypes";
 
 /**
  * AG Grid reads `sort` off a column definition only when it creates the column,
@@ -15,7 +15,7 @@ import {
  */
 export function useSyncColumnSortState(
 	gridRef: RefObject<AgGridReact | null>,
-	columns: SongTableColumn[],
+	columns: SongTableColumnView[],
 	isEnabled: boolean,
 ): void {
 	useEffect(() => {

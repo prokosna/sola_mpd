@@ -7,7 +7,7 @@ import { globalFilterTokensAtom } from "../../../global_filter/states/atoms/glob
 import { pathnameAtom } from "../../../location/states/atoms/locationAtom";
 import { mpdClientAtom } from "../../../mpd/states/atoms/mpdClientAtom";
 import { currentMpdProfileAtom } from "../../../profile/states/atoms/mpdProfileAtom";
-import { songTableStateAtom } from "../../../song_table/states/atoms/songTableAtom";
+import { songTableColumnViewAtom } from "../../../song_table/states/atoms/songTableColumnViewAtom";
 import { fetchFileExploreSongs } from "../../functions/fileExploreFetching";
 
 import { selectedFileExploreFolderAtom } from "./fileExploreFoldersAtom";
@@ -35,13 +35,13 @@ const fileExploreSongsAtom = atomWithSync(fileExploreSongsAsyncAtom);
 
 export const fileExploreVisibleSongsAtom = atom((get) => {
 	const fileExploreSongs = get(fileExploreSongsAtom);
-	const songTableState = get(songTableStateAtom);
+	const songTableColumns = get(songTableColumnViewAtom);
 	const globalFilterTokens = get(globalFilterTokensAtom);
 	const pathname = get(pathnameAtom);
 
 	if (
 		pathname !== ROUTE_HOME_FILE_EXPLORE ||
-		songTableState === undefined ||
+		songTableColumns === undefined ||
 		fileExploreSongs === undefined
 	) {
 		return undefined;
@@ -50,7 +50,7 @@ export const fileExploreVisibleSongsAtom = atom((get) => {
 	const filteredSongs = filterSongsByGlobalFilter(
 		fileExploreSongs,
 		globalFilterTokens,
-		songTableState.columns,
+		songTableColumns,
 	);
 
 	return filteredSongs.toSorted((a, b) => (a.path > b.path ? 1 : -1));

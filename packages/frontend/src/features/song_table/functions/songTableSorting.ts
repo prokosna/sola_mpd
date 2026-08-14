@@ -1,10 +1,11 @@
 import { compareSongsByMetadataValue } from "@sola_mpd/shared/src/functions/songMetadata.js";
 import type { Song } from "@sola_mpd/shared/src/models/song_pb.js";
-import type { SongTableColumn } from "@sola_mpd/shared/src/models/song_table_pb.js";
+
+import type { SongTableColumnView } from "../types/songTableTypes";
 
 export function sortSongsByColumns(
 	songs: Song[],
-	columns: SongTableColumn[],
+	columns: SongTableColumnView[],
 	collator: Intl.Collator,
 ): Song[] {
 	const conditions = columns

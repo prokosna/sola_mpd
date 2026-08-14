@@ -34,6 +34,7 @@ import {
 import {
 	convertSongMetadataTagFromDisplayName,
 	convertSongMetadataTagToDisplayName,
+	type SongTableColumnView,
 } from "../../song_table";
 import type {
 	ConditionFormValues,
@@ -154,6 +155,37 @@ export function changeEditingSearchColumns(
 	const newSearch = clone(SearchSchema, search);
 	newSearch.columns = columns;
 	return newSearch;
+}
+
+/**
+ * Rebuilds a column view for a new Edit-Columns tag selection, carrying
+ * over sort for surviving tags (renumbered contiguous) and leaving new tags
+ * unsorted. Width is irrelevant: a tag change always writes to the saved
+ * search, which never carries a meaningful width.
+ */
+export function applyTagsToSearchColumnView(
+	tags: Song_MetadataTag[],
+	currentColumns: SongTableColumnView[],
+): SongTableColumnView[] {
+	const byTag = new Map(currentColumns.map((column) => [column.tag, column]));
+	const sortedTags = tags
+		.filter((tag) => (byTag.get(tag)?.sortOrder ?? -1) >= 0)
+		.sort(
+			(a, b) => (byTag.get(a)?.sortOrder ?? 0) - (byTag.get(b)?.sortOrder ?? 0),
+		);
+
+	return tags.map((tag) => {
+		const existing = byTag.get(tag);
+		return {
+			tag,
+			widthFlex: existing?.widthFlex ?? 1,
+			sortOrder:
+				existing?.sortOrder !== undefined && existing.sortOrder >= 0
+					? sortedTags.indexOf(tag)
+					: undefined,
+			isSortDesc: existing?.isSortDesc ?? false,
+		};
+	});
 }
 
 export function changeEditingSearchQuery(

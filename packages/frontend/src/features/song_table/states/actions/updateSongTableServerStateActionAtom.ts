@@ -6,9 +6,9 @@ import { UpdateMode } from "../../../../types/stateTypes";
 import { songTableStateAsyncAtom } from "../atoms/songTableAtom";
 import { songTableStateRepositoryAtom } from "../atoms/songTableStateRepositoryAtom";
 
-// No tag-diff gate, unlike updateSongTableStateActionAtom: the Raw Data editor
-// is an escape hatch onto the genuine on-disk document, which only holds if a
-// save here always reaches the server.
+// No routing or diffing, unlike the workspace/device write actions: the Raw
+// Data editor is an escape hatch onto the genuine on-disk document, which
+// only holds if a save here always reaches the server exactly as given.
 export const updateSongTableServerStateActionAtom = atom(
 	null,
 	async (get, set, params: { state: SongTableState; mode: UpdateMode }) => {

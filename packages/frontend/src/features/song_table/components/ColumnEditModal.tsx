@@ -8,21 +8,14 @@ import {
 } from "@mantine/core";
 import { listAllSongMetadataTags } from "@sola_mpd/shared/src/functions/songMetadata.js";
 import type { Song_MetadataTag } from "@sola_mpd/shared/src/models/song_pb.js";
-import type { SongTableColumn } from "@sola_mpd/shared/src/models/song_table_pb.js";
 import { IconArrowLeft, IconArrowRight } from "@tabler/icons-react";
 import { type JSX, useCallback, useEffect, useState } from "react";
-import {
-	copySortingAttributesToNewColumns,
-	ensureTagsContainedInColumns,
-	getAverageWidthFlex,
-	normalizeSongTableColumns,
-} from "../functions/songTableColumn";
 import { ColumnEditModalTagListBox } from "./ColumnEditModalTagListBox";
 
 export type ColumnEditModalProps = {
-	columns: SongTableColumn[];
+	tags: Song_MetadataTag[];
 	isOpen: boolean;
-	handleColumnsUpdated: (newColumns: SongTableColumn[]) => Promise<void>;
+	handleTagsUpdated: (newTags: Song_MetadataTag[]) => Promise<void>;
 	handleModalDisposed: () => Promise<void>;
 };
 
@@ -32,9 +25,9 @@ export function ColumnEditModal(props: ColumnEditModalProps): JSX.Element {
 	);
 	useEffect(() => {
 		if (props.isOpen) {
-			setActiveTagsState(props.columns.map((column) => column.tag));
+			setActiveTagsState(props.tags);
 		}
-	}, [props.columns, props.isOpen]);
+	}, [props.tags, props.isOpen]);
 
 	const [selectedActiveTag, setSelectedActiveTag] = useState<
 		Song_MetadataTag | undefined
@@ -71,23 +64,7 @@ export function ColumnEditModal(props: ColumnEditModalProps): JSX.Element {
 	}, [activeTagsState, selectedActiveTag]);
 
 	const handleSubmit = useCallback(() => {
-		const normalizedColumns = normalizeSongTableColumns(
-			props.columns.filter((column) => activeTagsState.includes(column.tag)),
-		);
-
-		const averageWidthFlex = getAverageWidthFlex(normalizedColumns);
-		const activeColumns = ensureTagsContainedInColumns(
-			normalizedColumns,
-			activeTagsState,
-			averageWidthFlex,
-		);
-
-		const newColumns = copySortingAttributesToNewColumns(
-			activeColumns,
-			props.columns,
-		);
-
-		props.handleColumnsUpdated(newColumns);
+		props.handleTagsUpdated(activeTagsState);
 	}, [activeTagsState, props]);
 
 	return (

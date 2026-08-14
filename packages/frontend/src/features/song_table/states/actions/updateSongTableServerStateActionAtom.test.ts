@@ -24,37 +24,33 @@ function createFakeSongTableStateRepository(
 }
 
 describe("updateSongTableServerStateActionAtom", () => {
-	it(
-		"always persists exactly what it's given, unlike " +
-			"updateSongTableStateActionAtom's tag-diff gate",
-		async () => {
-			const store = createStore();
-			const songTableStateRepository = createFakeSongTableStateRepository();
-			store.set(songTableStateRepositoryAtom, songTableStateRepository);
+	it("always persists exactly what it's given, with no routing or diffing", async () => {
+		const store = createStore();
+		const songTableStateRepository = createFakeSongTableStateRepository();
+		store.set(songTableStateRepositoryAtom, songTableStateRepository);
 
-			// A width-only change: updateSongTableStateActionAtom would route
-			// this to the device layout and never call save(). This action must
-			// still reach the server, because it's the Raw Data escape hatch.
-			const newState = create(SongTableStateSchema, {
-				columns: [
-					create(SongTableColumnSchema, {
-						tag: Song_MetadataTag.TITLE,
-						widthFlex: 300,
-					}),
-				],
-			});
+		// A width-only change: the device-aware write actions would route
+		// this to the device layout and never call save(). This action must
+		// still reach the server, because it's the Raw Data escape hatch.
+		const newState = create(SongTableStateSchema, {
+			columns: [
+				create(SongTableColumnSchema, {
+					tag: Song_MetadataTag.TITLE,
+					widthFlex: 300,
+				}),
+			],
+		});
 
-			await store.set(updateSongTableServerStateActionAtom, {
-				state: newState,
-				mode: UpdateMode.PERSIST | UpdateMode.LOCAL_STATE,
-			});
+		await store.set(updateSongTableServerStateActionAtom, {
+			state: newState,
+			mode: UpdateMode.PERSIST | UpdateMode.LOCAL_STATE,
+		});
 
-			expect(songTableStateRepository.save).toHaveBeenCalledWith(newState);
-			// Set directly with a plain (already-resolved) value, so it's
-			// readable synchronously without going through atomWithSync/unwrap.
-			expect(store.get(songTableStateAsyncAtom)).toBe(newState);
-		},
-	);
+		expect(songTableStateRepository.save).toHaveBeenCalledWith(newState);
+		// Set directly with a plain (already-resolved) value, so it's
+		// readable synchronously without going through atomWithSync/unwrap.
+		expect(store.get(songTableStateAsyncAtom)).toBe(newState);
+	});
 
 	it("does not update local state when PERSIST fails", async () => {
 		const save = vi.fn(async () => {

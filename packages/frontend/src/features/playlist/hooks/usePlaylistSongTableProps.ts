@@ -1,16 +1,10 @@
-import { clone } from "@bufbuild/protobuf";
 import { Plugin_PluginType } from "@sola_mpd/shared/src/models/plugin/plugin_pb.js";
 import type { Song } from "@sola_mpd/shared/src/models/song_pb.js";
-import {
-	type SongTableColumn,
-	SongTableStateSchema,
-} from "@sola_mpd/shared/src/models/song_table_pb.js";
 import { useAtomValue, useSetAtom } from "jotai";
 import { type MutableRefObject, useCallback } from "react";
 
 import { COMPONENT_ID_PLAYLIST_MAIN_PANE } from "../../../const/component";
 import { useNotification } from "../../../lib/mantine/hooks/useNotification";
-import { UpdateMode } from "../../../types/stateTypes";
 import { useSimilaritySearchContextMenuProps } from "../../advanced_search";
 import type { ContextMenuSection } from "../../context_menu";
 import { usePluginContextMenuItems } from "../../plugin";
@@ -26,8 +20,8 @@ import {
 	SongTableKeyType,
 	type SongTableProps,
 	setSelectedSongsActionAtom,
-	songTableStateAtom,
-	updateSongTableStateActionAtom,
+	songTableColumnViewAtom,
+	useHandleLibraryColumnsUpdated,
 	useHandleSongDoubleClick,
 } from "../../song_table";
 import {
@@ -59,10 +53,10 @@ export function usePlaylistSongTableProps(
 	useAtomValue(syncPlaylistLoadingEffectAtom);
 	const isLoading = useAtomValue(isPlaylistLoadingAtom);
 	const songs = useAtomValue(playlistVisibleSongsAtom);
-	const songTableState = useAtomValue(songTableStateAtom);
+	const columns = useAtomValue(songTableColumnViewAtom);
 	const selectedPlaylist = useAtomValue(selectedPlaylistAtom);
 	const setIsPlaylistLoading = useSetAtom(setIsPlaylistLoadingActionAtom);
-	const updateSongTableState = useSetAtom(updateSongTableStateActionAtom);
+	const onColumnsUpdated = useHandleLibraryColumnsUpdated();
 	const setSelectedSongs = useSetAtom(setSelectedSongsActionAtom);
 	const addSongsToQueue = useSetAtom(addSongsToQueueActionAtom);
 	const replaceQueueWithSongs = useSetAtom(replaceQueueWithSongsActionAtom);
@@ -168,21 +162,6 @@ export function usePlaylistSongTableProps(
 		[reorderPlaylist, selectedPlaylist],
 	);
 
-	const onColumnsUpdated = useCallback(
-		async (updatedColumns: SongTableColumn[]) => {
-			if (songTableState === undefined) {
-				return;
-			}
-			const newSongTableState = clone(SongTableStateSchema, songTableState);
-			newSongTableState.columns = updatedColumns;
-			updateSongTableState({
-				state: newSongTableState,
-				mode: UpdateMode.PERSIST,
-			});
-		},
-		[songTableState, updateSongTableState],
-	);
-
 	const onSongsSelected = useCallback(
 		async (selectedSongs: Song[]) => {
 			setSelectedSongs(selectedSongs);
@@ -196,7 +175,7 @@ export function usePlaylistSongTableProps(
 		setIsPlaylistLoading(false);
 	}, [setIsPlaylistLoading]);
 
-	if (songs === undefined || songTableState === undefined) {
+	if (songs === undefined || columns === undefined) {
 		return undefined;
 	}
 
@@ -204,7 +183,7 @@ export function usePlaylistSongTableProps(
 		id: COMPONENT_ID_PLAYLIST_MAIN_PANE,
 		songTableKeyType,
 		songs,
-		columns: songTableState.columns,
+		columns,
 		isSortingEnabled: false,
 		isReorderingEnabled: true,
 		isGlobalFilterEnabled: true,

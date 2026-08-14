@@ -1,8 +1,7 @@
-import { create } from "@bufbuild/protobuf";
 import { Song_MetadataTag } from "@sola_mpd/shared/src/models/song_pb.js";
-import { SongTableColumnSchema } from "@sola_mpd/shared/src/models/song_table_pb.js";
 import { describe, expect, it } from "vitest";
 
+import type { SongTableColumnView } from "../types/songTableTypes";
 import {
 	buildColumnSortState,
 	needsColumnSortStateUpdate,
@@ -12,13 +11,13 @@ import {
 function createColumn(
 	tag: Song_MetadataTag,
 	opts: { sortOrder?: number; isSortDesc?: boolean } = {},
-) {
-	return create(SongTableColumnSchema, {
+): SongTableColumnView {
+	return {
 		tag,
 		sortOrder: opts.sortOrder,
 		isSortDesc: opts.isSortDesc ?? false,
 		widthFlex: 100,
-	});
+	};
 }
 
 describe("buildColumnSortState", () => {

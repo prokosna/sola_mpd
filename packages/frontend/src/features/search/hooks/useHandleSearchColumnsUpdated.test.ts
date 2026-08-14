@@ -8,16 +8,17 @@ import { act, renderHook } from "@testing-library/react";
 import { createStore } from "jotai";
 import { Provider } from "jotai/react";
 import { createElement } from "react";
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 import type { DeviceSettingsRepository } from "../../common";
+import { deviceSettingsRepositoryAtom } from "../../common";
 import {
-	buildDeviceSettingKey,
-	DEVICE_SETTING_KEY_SONG_TABLE_COLUMN_LAYOUT,
-	deviceSettingsRepositoryAtom,
-} from "../../common";
-import { songTableColumnLayoutKeyForTag } from "../../song_table/functions/songTableColumnLayout";
-import { songTableStateAsyncAtom } from "../../song_table/states/atoms/songTableAtom";
-import { songTableColumnLayoutAtom } from "../../song_table/states/atoms/songTableColumnLayoutAtom";
+	songTableServerStateAtom,
+	songTableStateAsyncAtom,
+} from "../../song_table/states/atoms/songTableAtom";
+import { songTableColumnViewAtom } from "../../song_table/states/atoms/songTableColumnViewAtom";
+import { songTableDeviceLayoutAtom } from "../../song_table/states/atoms/songTableDeviceLayoutAtom";
+import { songTableStateRepositoryAtom } from "../../song_table/states/atoms/songTableStateRepositoryAtom";
+import type { SongTableColumnView } from "../../song_table/types/songTableTypes";
 import {
 	editingSearchStatusAtom,
 	searchSongTableColumnsAtom,
@@ -26,15 +27,8 @@ import { EditingSearchStatus } from "../types/searchTypes";
 
 import { useHandleSearchColumnsUpdated } from "./useHandleSearchColumnsUpdated";
 
-const songTableColumnLayoutKey = buildDeviceSettingKey(
-	DEVICE_SETTING_KEY_SONG_TABLE_COLUMN_LAYOUT,
-);
-
-// Seeds the device layout key so songTableColumnLayoutAtom's one-time
-// hydration (see songTableColumnLayoutAtom.ts) short-circuits instead of
-// reaching for songTableStateRepositoryAtom, which this test never wires up.
 function createFakeDeviceSettingsRepository(): DeviceSettingsRepository {
-	const backing = new Map<string, unknown>([[songTableColumnLayoutKey, {}]]);
+	const backing = new Map<string, unknown>();
 	return {
 		get: (<T>(key: string, defaultValue?: T) =>
 			backing.has(key)
@@ -54,13 +48,13 @@ function createFakeDeviceSettingsRepository(): DeviceSettingsRepository {
 function createColumn(
 	tag: Song_MetadataTag,
 	opts: { sortOrder?: number; isSortDesc?: boolean; widthFlex?: number } = {},
-) {
-	return create(SongTableColumnSchema, {
+): SongTableColumnView {
+	return {
 		tag,
 		sortOrder: opts.sortOrder,
 		isSortDesc: opts.isSortDesc ?? false,
-		widthFlex: opts.widthFlex ?? 100,
-	});
+		widthFlex: opts.widthFlex ?? 1,
+	};
 }
 
 async function flush() {
@@ -70,14 +64,16 @@ async function flush() {
 async function createReadyStore() {
 	const store = createStore();
 	store.set(deviceSettingsRepositoryAtom, createFakeDeviceSettingsRepository());
+	store.set(songTableStateRepositoryAtom, {
+		fetch: vi.fn(async () => create(SongTableStateSchema, {})),
+		save: vi.fn(async () => {}),
+	});
 	const commonState = create(SongTableStateSchema, {
-		columns: [
-			createColumn(Song_MetadataTag.TITLE, { sortOrder: 0 }),
-			createColumn(Song_MetadataTag.ARTIST),
-		],
+		columnTags: [Song_MetadataTag.TITLE, Song_MetadataTag.ARTIST],
 	});
 	store.set(songTableStateAsyncAtom, Promise.resolve(commonState));
-	store.get(songTableColumnLayoutAtom);
+	store.get(songTableServerStateAtom);
+	store.get(songTableDeviceLayoutAtom);
 	await flush();
 	return store;
 }
@@ -113,10 +109,16 @@ describe("useHandleSearchColumnsUpdated", () => {
 
 	it("writes sort changes to the saved search and marks it as edited, without touching the device layout", async () => {
 		const store = await createReadyStore();
-		store.set(searchSongTableColumnsAtom, [
-			createColumn(Song_MetadataTag.TITLE, { sortOrder: 0, isSortDesc: false }),
-			createColumn(Song_MetadataTag.ARTIST),
-		]);
+		const searchColumns = [
+			create(SongTableColumnSchema, {
+				tag: Song_MetadataTag.TITLE,
+				sortOrder: 0,
+				isSortDesc: false,
+			}),
+			create(SongTableColumnSchema, { tag: Song_MetadataTag.ARTIST }),
+		];
+		store.set(searchSongTableColumnsAtom, searchColumns);
+		const layoutBefore = store.get(songTableDeviceLayoutAtom);
 		const { result } = renderUseHandleSearchColumnsUpdated(store);
 
 		act(() => {
@@ -133,7 +135,7 @@ describe("useHandleSearchColumnsUpdated", () => {
 			EditingSearchStatus.COLUMNS_UPDATED,
 		);
 		expect(store.get(searchSongTableColumnsAtom)[0].isSortDesc).toBe(true);
-		expect(store.get(songTableColumnLayoutAtom)).toEqual({});
+		expect(store.get(songTableDeviceLayoutAtom)).toEqual(layoutBefore);
 	});
 
 	// Regression test: width and sort must not be treated alike.
@@ -141,45 +143,45 @@ describe("useHandleSearchColumnsUpdated", () => {
 	// write into Search.columns — only the device layout changes.
 	it("routes a width-only change to the device layout and leaves the editing status untouched", async () => {
 		const store = await createReadyStore();
-		store.set(searchSongTableColumnsAtom, [
-			createColumn(Song_MetadataTag.TITLE, { sortOrder: 0, widthFlex: 100 }),
-			createColumn(Song_MetadataTag.ARTIST, { widthFlex: 100 }),
-		]);
+		const searchColumns = [
+			create(SongTableColumnSchema, {
+				tag: Song_MetadataTag.TITLE,
+				sortOrder: 0,
+			}),
+			create(SongTableColumnSchema, { tag: Song_MetadataTag.ARTIST }),
+		];
+		store.set(searchSongTableColumnsAtom, searchColumns);
 		const statusBeforeEdit = store.get(editingSearchStatusAtom);
 		const { result } = renderUseHandleSearchColumnsUpdated(store);
 
 		act(() => {
 			result.current([
 				createColumn(Song_MetadataTag.TITLE, { sortOrder: 0, widthFlex: 250 }),
-				createColumn(Song_MetadataTag.ARTIST, { widthFlex: 100 }),
+				createColumn(Song_MetadataTag.ARTIST, { widthFlex: 1 }),
 			]);
 		});
 
 		expect(store.get(editingSearchStatusAtom)).toBe(statusBeforeEdit);
-		expect(store.get(searchSongTableColumnsAtom)[0].widthFlex).toBe(100);
-		expect(
-			store.get(songTableColumnLayoutAtom)[
-				songTableColumnLayoutKeyForTag(Song_MetadataTag.TITLE)
-			].widthFlex,
-		).toBe(250);
+		expect(store.get(searchSongTableColumnsAtom)).toEqual(searchColumns);
+		expect(store.get(songTableDeviceLayoutAtom)?.widthFlexByTag).toEqual({
+			[Song_MetadataTag.TITLE]: 250,
+			[Song_MetadataTag.ARTIST]: 1,
+		});
 	});
 
 	// Regression: the device layout is where the common song table reads its
 	// sort from, so a width drag in Search must not touch it.
 	it("does not write the saved search's sort into the device layout on a width change", async () => {
 		const store = await createReadyStore();
-		store.set(songTableColumnLayoutAtom, {
-			[songTableColumnLayoutKeyForTag(Song_MetadataTag.TITLE)]: {
-				widthFlex: 100,
-				sortOrder: undefined,
-				isSortDesc: false,
-			},
+		store.set(songTableDeviceLayoutAtom, {
+			widthFlexByTag: { [Song_MetadataTag.TITLE]: 1 },
+			sort: [],
 		});
 		store.set(searchSongTableColumnsAtom, [
-			createColumn(Song_MetadataTag.TITLE, {
+			create(SongTableColumnSchema, {
+				tag: Song_MetadataTag.TITLE,
 				sortOrder: 0,
 				isSortDesc: true,
-				widthFlex: 100,
 			}),
 		]);
 		const { result } = renderUseHandleSearchColumnsUpdated(store);
@@ -194,11 +196,38 @@ describe("useHandleSearchColumnsUpdated", () => {
 			]);
 		});
 
-		const entry = store.get(songTableColumnLayoutAtom)[
-			songTableColumnLayoutKeyForTag(Song_MetadataTag.TITLE)
-		];
-		expect(entry.widthFlex).toBe(250);
-		expect(entry.sortOrder).toBeUndefined();
-		expect(entry.isSortDesc).toBe(false);
+		const layout = store.get(songTableDeviceLayoutAtom);
+		expect(layout?.widthFlexByTag[Song_MetadataTag.TITLE]).toBe(250);
+		expect(layout?.sort).toEqual([]);
+	});
+
+	it("does nothing while the device layout migration is still pending", async () => {
+		const store = createStore();
+		store.set(
+			deviceSettingsRepositoryAtom,
+			createFakeDeviceSettingsRepository(),
+		);
+		store.set(songTableStateRepositoryAtom, {
+			fetch: () => new Promise(() => {}),
+			save: vi.fn(async () => {}),
+		});
+		store.set(
+			songTableStateAsyncAtom,
+			Promise.resolve(create(SongTableStateSchema, {})),
+		);
+		store.get(songTableServerStateAtom);
+		store.get(songTableDeviceLayoutAtom); // never settles
+		const { result } = renderUseHandleSearchColumnsUpdated(store);
+
+		act(() => {
+			result.current([
+				createColumn(Song_MetadataTag.TITLE, { widthFlex: 250 }),
+			]);
+		});
+
+		expect(store.get(editingSearchStatusAtom)).toBe(
+			EditingSearchStatus.NOT_SAVED,
+		);
+		expect(store.get(songTableColumnViewAtom)).toBeUndefined();
 	});
 });

@@ -1,5 +1,4 @@
 import type { Song } from "@sola_mpd/shared/src/models/song_pb.js";
-import type { SongTableColumn } from "@sola_mpd/shared/src/models/song_table_pb.js";
 import type { GetRowIdParams } from "ag-grid-community";
 import { AgGridReact } from "ag-grid-react";
 import { type JSX, type RefObject, useCallback, useRef } from "react";
@@ -23,6 +22,7 @@ import { useSongsMap } from "../hooks/useSongsMap";
 import { useSongsWithIndex } from "../hooks/useSongsWithIndex";
 import { useSyncColumnSortState } from "../hooks/useSyncColumnSortState";
 import type {
+	SongTableColumnView,
 	SongTableContextMenuItemParams,
 	SongTableKeyType,
 	SongTableRowData,
@@ -32,7 +32,7 @@ export type SongTableProps = {
 	id: string;
 	songTableKeyType: SongTableKeyType;
 	songs: Song[];
-	columns: SongTableColumn[];
+	columns: SongTableColumnView[];
 	isSortingEnabled: boolean;
 	isReorderingEnabled: boolean;
 	isGlobalFilterEnabled: boolean;
@@ -41,7 +41,7 @@ export type SongTableProps = {
 	contextMenuAnchorRef?: RefObject<HTMLElement | null>;
 	scrollToPlayingSong?: boolean;
 	onSongsReordered: (orderedSongs: Song[]) => Promise<void>;
-	onColumnsUpdated: (updatedColumns: SongTableColumn[]) => Promise<void>;
+	onColumnsUpdated: (updatedColumns: SongTableColumnView[]) => Promise<void>;
 	onSongsSelected: (selectedSongs: Song[]) => Promise<void>;
 	onSongDoubleClick: (clickedSong: Song, songs: Song[]) => Promise<void>;
 	onLoadingCompleted: () => Promise<void>;

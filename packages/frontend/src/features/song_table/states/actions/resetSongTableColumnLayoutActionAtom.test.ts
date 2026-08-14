@@ -6,14 +6,11 @@ import {
 	buildDeviceSettingKey,
 	deviceSettingsRepositoryAtom,
 } from "../../../common";
-import { songTableColumnLayoutKeyForTag } from "../../functions/songTableColumnLayout";
-import type { SongTableColumnLayout } from "../../types/songTableTypes";
-import { songTableColumnLayoutAtom } from "../atoms/songTableColumnLayoutAtom";
+import type { SongTableDeviceLayout } from "../../types/songTableTypes";
+import { songTableDeviceLayoutAtom } from "../atoms/songTableDeviceLayoutAtom";
 import { resetSongTableColumnLayoutActionAtom } from "./resetSongTableColumnLayoutActionAtom";
 
-const SONG_TABLE_COLUMN_LAYOUT_KEY = buildDeviceSettingKey(
-	"songTableColumnLayout",
-);
+const SONG_TABLE_LAYOUT_KEY = buildDeviceSettingKey("songTableLayout");
 const OTHER_DEVICE_SETTING_KEY = buildDeviceSettingKey("selectedProfileName");
 
 function createFakeDeviceSettingsRepository(
@@ -36,27 +33,35 @@ function createFakeDeviceSettingsRepository(
 	};
 }
 
+async function flush() {
+	await new Promise((resolve) => setTimeout(resolve, 0));
+}
+
 describe("resetSongTableColumnLayoutActionAtom", () => {
-	it("clears the device column layout and leaves other device settings untouched", () => {
-		const layout: SongTableColumnLayout = {
-			[songTableColumnLayoutKeyForTag(Song_MetadataTag.TITLE)]: {
-				widthFlex: 250,
-				sortOrder: 0,
-				isSortDesc: true,
-			},
+	it("clears the device column widths, leaves sort and other device settings untouched", async () => {
+		const layout: SongTableDeviceLayout = {
+			widthFlexByTag: { [Song_MetadataTag.TITLE]: 250 },
+			sort: [{ tag: Song_MetadataTag.TITLE, isDesc: true }],
 		};
 		const repository = createFakeDeviceSettingsRepository({
-			[SONG_TABLE_COLUMN_LAYOUT_KEY]: layout,
+			[SONG_TABLE_LAYOUT_KEY]: layout,
 			[OTHER_DEVICE_SETTING_KEY]: "Home",
 		});
 		const store = createStore();
 		store.set(deviceSettingsRepositoryAtom, repository);
-		store.set(songTableColumnLayoutAtom, layout);
+		store.get(songTableDeviceLayoutAtom); // primes the async->sync unwrap
+		await flush();
 
 		store.set(resetSongTableColumnLayoutActionAtom);
 
-		expect(store.get(songTableColumnLayoutAtom)).toEqual({});
-		expect(repository.get(SONG_TABLE_COLUMN_LAYOUT_KEY)).toEqual({});
+		expect(store.get(songTableDeviceLayoutAtom)).toEqual({
+			widthFlexByTag: {},
+			sort: [{ tag: Song_MetadataTag.TITLE, isDesc: true }],
+		});
+		expect(repository.get(SONG_TABLE_LAYOUT_KEY)).toEqual({
+			widthFlexByTag: {},
+			sort: [{ tag: Song_MetadataTag.TITLE, isDesc: true }],
+		});
 		expect(repository.get(OTHER_DEVICE_SETTING_KEY)).toBe("Home");
 	});
 });

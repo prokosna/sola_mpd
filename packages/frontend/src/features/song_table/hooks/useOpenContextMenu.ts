@@ -1,15 +1,15 @@
 import type { Song } from "@sola_mpd/shared/src/models/song_pb.js";
-import type { SongTableColumn } from "@sola_mpd/shared/src/models/song_table_pb.js";
 import type { CellContextMenuEvent } from "ag-grid-community";
 import { type RefObject, useCallback } from "react";
 import { type TriggerEvent, useContextMenu } from "react-contexify";
 import {
-	convertAgGridColumnsToSongTableColumns,
+	convertAgGridColumnsToSongTableColumnViews,
 	copySortingAttributesToNewColumns,
 } from "../functions/songTableColumn";
 import { getSongTableKey } from "../functions/songTableKey";
 import { getSongsInTableFromGrid } from "../functions/songTableState";
 import type {
+	SongTableColumnView,
 	SongTableContextMenuItemParams,
 	SongTableKey,
 	SongTableKeyType,
@@ -19,7 +19,7 @@ export function useOpenContextMenu(
 	id: string,
 	keyType: SongTableKeyType,
 	songsMap: Map<SongTableKey, Song>,
-	columns: SongTableColumn[],
+	columns: SongTableColumnView[],
 	isSortingEnabled: boolean,
 	contextMenuAnchorRef?: RefObject<HTMLElement | null>,
 ): (event: CellContextMenuEvent) => void {
@@ -35,7 +35,7 @@ export function useOpenContextMenu(
 				return;
 			}
 
-			const updatedColumns = convertAgGridColumnsToSongTableColumns(
+			const updatedColumns = convertAgGridColumnsToSongTableColumnViews(
 				api.getAllGridColumns(),
 			);
 			const currentColumns = isSortingEnabled

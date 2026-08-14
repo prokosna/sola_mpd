@@ -1,6 +1,5 @@
 import { Plugin_PluginType } from "@sola_mpd/shared/src/models/plugin/plugin_pb.js";
 import type { Song } from "@sola_mpd/shared/src/models/song_pb.js";
-import type { SongTableColumn } from "@sola_mpd/shared/src/models/song_table_pb.js";
 import { useAtomValue, useSetAtom } from "jotai";
 import { type MutableRefObject, useCallback } from "react";
 
@@ -11,23 +10,21 @@ import type { ContextMenuSection } from "../../context_menu";
 import { usePluginContextMenuItems } from "../../plugin";
 import {
 	addSongsToQueueActionAtom,
-	applyDeviceColumnWidths,
 	getSongTableContextMenuAdd,
 	getSongTableContextMenuAddToPlaylist,
 	getSongTableContextMenuEditColumns,
 	getSongTableContextMenuReplace,
 	getSongTableContextMenuSimilarSongs,
 	replaceQueueWithSongsActionAtom,
+	type SongTableColumnView,
 	type SongTableContextMenuItemParams,
 	SongTableKeyType,
 	type SongTableProps,
 	setSelectedSongsActionAtom,
-	songTableColumnLayoutAtom,
-	songTableStateAtom,
 	useHandleSongDoubleClick,
 } from "../../song_table";
 import { setIsSearchLoadingActionAtom } from "../states/actions/setIsSearchLoadingActionAtom";
-import { searchSongTableColumnsAtom } from "../states/atoms/searchEditAtom";
+import { searchColumnViewAtom } from "../states/atoms/searchColumnViewAtom";
 import { searchVisibleSongsAtom } from "../states/atoms/searchSongsAtom";
 import { isSearchLoadingAtom } from "../states/atoms/searchUiAtom";
 import { useHandleSearchColumnsUpdated } from "./useHandleSearchColumnsUpdated";
@@ -43,9 +40,7 @@ export function useSearchSongTableProps(
 
 	const isLoading = useAtomValue(isSearchLoadingAtom);
 	const songs = useAtomValue(searchVisibleSongsAtom);
-	const searchSongTableColumns = useAtomValue(searchSongTableColumnsAtom);
-	const songTableState = useAtomValue(songTableStateAtom);
-	const songTableColumnLayout = useAtomValue(songTableColumnLayoutAtom);
+	const columns = useAtomValue(searchColumnViewAtom);
 	const setIsSearchLoading = useSetAtom(setIsSearchLoadingActionAtom);
 	const setSelectedSongs = useSetAtom(setSelectedSongsActionAtom);
 	const addSongsToQueue = useSetAtom(addSongsToQueueActionAtom);
@@ -111,7 +106,7 @@ export function useSearchSongTableProps(
 	}, []);
 
 	const onColumnsUpdated = useCallback(
-		async (updatedColumns: SongTableColumn[]) => {
+		async (updatedColumns: SongTableColumnView[]) => {
 			handleSearchColumnsUpdated(updatedColumns);
 		},
 		[handleSearchColumnsUpdated],
@@ -130,17 +125,9 @@ export function useSearchSongTableProps(
 		setIsSearchLoading(false);
 	}, [setIsSearchLoading]);
 
-	if (songs === undefined || songTableState === undefined) {
+	if (songs === undefined || columns === undefined) {
 		return undefined;
 	}
-
-	// Search.columns owns tag/sort (the saved search's definition); width_flex
-	// is always the device's, same as the common song table.
-	const baseColumns =
-		searchSongTableColumns.length !== 0
-			? searchSongTableColumns
-			: songTableState.columns;
-	const columns = applyDeviceColumnWidths(baseColumns, songTableColumnLayout);
 
 	return {
 		id: COMPONENT_ID_SEARCH_MAIN_PANE,

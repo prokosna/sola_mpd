@@ -9,7 +9,7 @@ import { pathnameAtom } from "../../../location/states/atoms/locationAtom";
 import { mpdCapabilitiesAtom } from "../../../mpd/states/atoms/mpdCapabilitiesAtom";
 import { mpdClientAtom } from "../../../mpd/states/atoms/mpdClientAtom";
 import { currentMpdProfileAtom } from "../../../profile/states/atoms/mpdProfileAtom";
-import { songTableStateAtom } from "../../../song_table/states/atoms/songTableAtom";
+import { songTableColumnViewAtom } from "../../../song_table/states/atoms/songTableColumnViewAtom";
 import { fetchAllSongs } from "../../functions/allSongsFetching";
 import { allSongsFastStateAtom } from "./allSongsFastStateAtom";
 
@@ -40,14 +40,14 @@ export const allSongsAtom = atom((get) => {
 
 export const allVisibleSongsAtom = atom((get) => {
 	const allSongs = get(allSongsAtom);
-	const songTableState = get(songTableStateAtom);
+	const songTableColumns = get(songTableColumnViewAtom);
 	const globalFilterTokens = get(globalFilterTokensAtom);
 	const pathname = get(pathnameAtom);
 
 	if (
 		pathname !== ROUTE_HOME_ALL_SONGS ||
 		allSongs === undefined ||
-		songTableState === undefined
+		songTableColumns === undefined
 	) {
 		return undefined;
 	}
@@ -55,6 +55,6 @@ export const allVisibleSongsAtom = atom((get) => {
 	return filterSongsByGlobalFilter(
 		allSongs,
 		globalFilterTokens,
-		songTableState.columns,
+		songTableColumns,
 	);
 });

@@ -8,7 +8,7 @@ import { globalFilterTokensAtom } from "../../../global_filter/states/atoms/glob
 import { pathnameAtom } from "../../../location/states/atoms/locationAtom";
 import { mpdClientAtom } from "../../../mpd/states/atoms/mpdClientAtom";
 import { currentMpdProfileAtom } from "../../../profile/states/atoms/mpdProfileAtom";
-import { songTableStateAtom } from "../../../song_table/states/atoms/songTableAtom";
+import { songTableColumnViewAtom } from "../../../song_table/states/atoms/songTableColumnViewAtom";
 import { fetchPlaylistSongs } from "../../functions/playlistOperations";
 
 import { selectedPlaylistAtom } from "./playlistAtom";
@@ -32,14 +32,14 @@ const playlistSongsAtom = atomWithSync(playlistSongsAsyncAtom);
 
 export const playlistVisibleSongsAtom = atom((get) => {
 	const playlistSongs = get(playlistSongsAtom);
-	const songTableState = get(songTableStateAtom);
+	const songTableColumns = get(songTableColumnViewAtom);
 	const globalFilterTokens = get(globalFilterTokensAtom);
 	const pathname = get(pathnameAtom);
 
 	if (
 		pathname !== ROUTE_HOME_PLAYLIST ||
 		playlistSongs === undefined ||
-		songTableState === undefined
+		songTableColumns === undefined
 	) {
 		return undefined;
 	}
@@ -47,6 +47,6 @@ export const playlistVisibleSongsAtom = atom((get) => {
 	return filterSongsByGlobalFilter(
 		playlistSongs,
 		globalFilterTokens,
-		songTableState.columns,
+		songTableColumns,
 	);
 });

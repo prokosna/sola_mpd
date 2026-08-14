@@ -1,21 +1,21 @@
-import type { SongTableColumn } from "@sola_mpd/shared/src/models/song_table_pb.js";
+import type { Song_MetadataTag } from "@sola_mpd/shared/src/models/song_pb.js";
 import { useCallback } from "react";
 
 import type { ColumnEditModalProps } from "../components/ColumnEditModal";
 
 export function useColumnEditModalProps(
 	isOpen: boolean,
-	columns: SongTableColumn[],
+	tags: Song_MetadataTag[],
 	setIsOpenColumnEditModal: (open: boolean) => void,
-	onColumnsUpdated: (columns: SongTableColumn[]) => void,
+	onTagsUpdated: (tags: Song_MetadataTag[]) => void,
 	onModalDisposed: () => void,
 ): ColumnEditModalProps {
-	const handleColumnsUpdated = useCallback(
-		async (newColumns: SongTableColumn[]) => {
-			onColumnsUpdated(newColumns);
+	const handleTagsUpdated = useCallback(
+		async (newTags: Song_MetadataTag[]) => {
+			onTagsUpdated(newTags);
 			setIsOpenColumnEditModal(false);
 		},
-		[onColumnsUpdated, setIsOpenColumnEditModal],
+		[onTagsUpdated, setIsOpenColumnEditModal],
 	);
 
 	const handleModalDisposed = useCallback(async () => {
@@ -24,9 +24,9 @@ export function useColumnEditModalProps(
 	}, [onModalDisposed, setIsOpenColumnEditModal]);
 
 	return {
-		columns,
+		tags,
 		isOpen,
-		handleColumnsUpdated,
+		handleTagsUpdated,
 		handleModalDisposed,
 	};
 }

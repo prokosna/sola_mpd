@@ -1,11 +1,15 @@
 import { atom } from "jotai";
 
-import { songTableColumnLayoutAtom } from "../atoms/songTableColumnLayoutAtom";
+import { songTableDeviceLayoutAtom } from "../atoms/songTableDeviceLayoutAtom";
 
-// Device-only reset for the "Device Settings" tab: clears this browser's
-// column widths and sort order without touching the server-side column
-// set/order, and
-// without touching any other device setting.
-export const resetSongTableColumnLayoutActionAtom = atom(null, (_get, set) => {
-	set(songTableColumnLayoutAtom, {});
+// Device-only reset for the "Device Settings" tab (R2): clears this
+// browser's column widths without touching sort, the server-side column
+// set, or any other device setting. A no-op while the migration is pending,
+// since the underlying atom refuses writes until it resolves.
+export const resetSongTableColumnLayoutActionAtom = atom(null, (get, set) => {
+	const current = get(songTableDeviceLayoutAtom);
+	if (current === undefined) {
+		return;
+	}
+	set(songTableDeviceLayoutAtom, { widthFlexByTag: {}, sort: current.sort });
 });

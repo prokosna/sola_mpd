@@ -21,8 +21,7 @@ export function DeviceSettings() {
 		notify({
 			status: "success",
 			title: "Column widths reset",
-			description:
-				"Song table column widths and sort order on this device have been reset.",
+			description: "Song table column widths on this device have been reset.",
 		});
 	};
 

@@ -1,11 +1,16 @@
 import { convertSongMetadataValueToString } from "@sola_mpd/shared/src/functions/songMetadata.js";
-import type { Song } from "@sola_mpd/shared/src/models/song_pb.js";
-import type { SongTableColumn } from "@sola_mpd/shared/src/models/song_table_pb.js";
+import type {
+	Song,
+	Song_MetadataTag,
+} from "@sola_mpd/shared/src/models/song_pb.js";
 import { normalize } from "@sola_mpd/shared/src/utils/stringUtils.js";
+
+/** Loose enough to accept both a `SongTableColumnView[]` and a saved search's `SongTableColumn[]`. */
+type GlobalFilterTargetColumn = { tag: Song_MetadataTag };
 
 function getSongRepresentation(
 	song: Song,
-	targetColumns: SongTableColumn[],
+	targetColumns: GlobalFilterTargetColumn[],
 ): string {
 	let representation = "";
 	for (const column of targetColumns) {
@@ -20,7 +25,7 @@ function getSongRepresentation(
 export function includesToken(
 	song: Song,
 	filterTokens: string[],
-	targetColumns: SongTableColumn[],
+	targetColumns: GlobalFilterTargetColumn[],
 ): boolean {
 	const representation = getSongRepresentation(song, targetColumns);
 	return filterTokens.every((token) => representation.includes(token));
@@ -29,7 +34,7 @@ export function includesToken(
 export function filterSongsByGlobalFilter(
 	songs: Song[],
 	filterTokens: string[],
-	targetColumns: SongTableColumn[],
+	targetColumns: GlobalFilterTargetColumn[],
 ): Song[] {
 	if (filterTokens.length === 0) {
 		return songs;

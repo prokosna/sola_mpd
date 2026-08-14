@@ -1,21 +1,21 @@
-import type { SongTableColumn } from "@sola_mpd/shared/src/models/song_table_pb.js";
 import type { AgGridEvent } from "ag-grid-community";
 import { useCallback } from "react";
 
 import {
-	convertAgGridColumnsToSongTableColumns,
+	convertAgGridColumnsToSongTableColumnViews,
 	copySortingAttributesToNewColumns,
 } from "../functions/songTableColumn";
+import type { SongTableColumnView } from "../types/songTableTypes";
 
 export function useHandleColumnsUpdated(
-	currentColumns: SongTableColumn[],
+	currentColumns: SongTableColumnView[],
 	isSortingEnabled: boolean,
-	onColumnsUpdated: (columns: SongTableColumn[]) => Promise<void>,
+	onColumnsUpdated: (columns: SongTableColumnView[]) => Promise<void>,
 ): (event: AgGridEvent) => void {
 	return useCallback(
 		(event: AgGridEvent) => {
 			const { api } = event;
-			const updatedColumns = convertAgGridColumnsToSongTableColumns(
+			const updatedColumns = convertAgGridColumnsToSongTableColumnViews(
 				api.getAllGridColumns(),
 			);
 			const newColumns = isSortingEnabled

@@ -1,19 +1,13 @@
-import { clone } from "@bufbuild/protobuf";
 import { Box, Modal } from "@mantine/core";
-import {
-	type SongTableColumn,
-	SongTableStateSchema,
-} from "@sola_mpd/shared/src/models/song_table_pb.js";
 import { useAtomValue, useSetAtom } from "jotai";
 import { useCallback, useRef, useState } from "react";
-import { UpdateMode } from "../../../types/stateTypes";
 import { CenterSpinner } from "../../loading";
 import { PlaylistSelectModal, usePlaylistSelectModal } from "../../playlist";
 import {
 	ColumnEditModal,
 	SongTable,
-	songTableStateAtom,
-	updateSongTableStateActionAtom,
+	songTableServerStateAtom,
+	updateSongTableColumnTagsActionAtom,
 	useColumnEditModalProps,
 } from "../../song_table";
 import { useSimilaritySearchSongTableProps } from "../hooks/useSimilaritySearchSongTableProps";
@@ -23,8 +17,10 @@ import { setSimilaritySearchTargetSongActionAtom } from "../states/actions/setSi
 import { isSimilaritySearchModalOpenAtom } from "../states/atoms/similaritySearchUiAtom";
 
 export function SimilaritySearchModal() {
-	const songTableState = useAtomValue(songTableStateAtom);
-	const updateSongTableState = useSetAtom(updateSongTableStateActionAtom);
+	const songTableServerState = useAtomValue(songTableServerStateAtom);
+	const updateSongTableColumnTags = useSetAtom(
+		updateSongTableColumnTagsActionAtom,
+	);
 
 	const [isColumnEditModalOpen, setIsColumnEditModalOpen] = useState(false);
 	const contextMenuAnchorRef = useRef<HTMLDivElement | null>(null);
@@ -40,26 +36,11 @@ export function SimilaritySearchModal() {
 		setIsPlaylistSelectModalOpen,
 		setIsColumnEditModalOpen,
 	);
-
-	const onColumnsUpdated = useCallback(
-		async (columns: SongTableColumn[]) => {
-			if (songTableState === undefined) {
-				return;
-			}
-			const newSongTableState = clone(SongTableStateSchema, songTableState);
-			newSongTableState.columns = columns;
-			await updateSongTableState({
-				state: newSongTableState,
-				mode: UpdateMode.LOCAL_STATE | UpdateMode.PERSIST,
-			});
-		},
-		[songTableState, updateSongTableState],
-	);
 	const columnEditModalProps = useColumnEditModalProps(
 		isColumnEditModalOpen,
-		songTableState?.columns || [],
+		songTableServerState?.columnTags ?? [],
 		setIsColumnEditModalOpen,
-		onColumnsUpdated,
+		updateSongTableColumnTags,
 		async () => {},
 	);
 

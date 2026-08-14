@@ -24,37 +24,26 @@ import { ROUTE_HOME_SEARCH } from "../../../const/routes";
 import type { AdvancedSearchClient } from "../../advanced_search/services/AdvancedSearchClient";
 import { advancedSearchClientAtom } from "../../advanced_search/states/atoms/advancedSearchClientAtom";
 import type { DeviceSettingsRepository } from "../../common";
-import {
-	buildDeviceSettingKey,
-	DEVICE_SETTING_KEY_SONG_TABLE_COLUMN_LAYOUT,
-	deviceSettingsRepositoryAtom,
-} from "../../common";
+import { deviceSettingsRepositoryAtom } from "../../common";
 import { pathnameAtom } from "../../location/states/atoms/locationAtom";
 import { mpdClientAtom } from "../../mpd/states/atoms/mpdClientAtom";
 import type { PluginService } from "../../plugin/services/PluginService";
 import { pluginServiceAtom } from "../../plugin/states/atoms/pluginServiceAtom";
 import { pluginStateRepositoryAtom } from "../../plugin/states/atoms/pluginStateRepositoryAtom";
 import { mpdProfileStateRepositoryAtom } from "../../profile/states/atoms/mpdProfileStateRepositoryAtom";
-import { songTableColumnLayoutKeyForTag } from "../../song_table/functions/songTableColumnLayout";
 import {
+	songTableServerStateAtom,
 	songTableStateAsyncAtom,
-	songTableStateAtom,
 } from "../../song_table/states/atoms/songTableAtom";
-import { songTableColumnLayoutAtom } from "../../song_table/states/atoms/songTableColumnLayoutAtom";
+import { songTableDeviceLayoutAtom } from "../../song_table/states/atoms/songTableDeviceLayoutAtom";
+import { songTableStateRepositoryAtom } from "../../song_table/states/atoms/songTableStateRepositoryAtom";
 import { searchSongTableColumnsAtom } from "../states/atoms/searchEditAtom";
 import { searchVisibleSongsAtom } from "../states/atoms/searchSongsAtom";
 
 import { useSearchSongTableProps } from "./useSearchSongTableProps";
 
-const songTableColumnLayoutKey = buildDeviceSettingKey(
-	DEVICE_SETTING_KEY_SONG_TABLE_COLUMN_LAYOUT,
-);
-
-// Seeds the device layout key so songTableColumnLayoutAtom's one-time
-// hydration (see songTableColumnLayoutAtom.ts) short-circuits instead of
-// reaching for songTableStateRepositoryAtom, which this test never wires up.
 function createFakeDeviceSettingsRepository(): DeviceSettingsRepository {
-	const backing = new Map<string, unknown>([[songTableColumnLayoutKey, {}]]);
+	const backing = new Map<string, unknown>();
 	return {
 		get: (<T>(key: string, defaultValue?: T) =>
 			backing.has(key)
@@ -79,7 +68,7 @@ function createColumn(
 		tag,
 		sortOrder: opts.sortOrder,
 		isSortDesc: opts.isSortDesc ?? false,
-		widthFlex: opts.widthFlex ?? 100,
+		widthFlex: opts.widthFlex ?? 1,
 	});
 }
 
@@ -95,6 +84,10 @@ async function flush() {
 async function createReadyStore() {
 	const store = createStore();
 	store.set(deviceSettingsRepositoryAtom, createFakeDeviceSettingsRepository());
+	store.set(songTableStateRepositoryAtom, {
+		fetch: vi.fn(async () => create(SongTableStateSchema, {})),
+		save: vi.fn(async () => {}),
+	});
 	store.set(pathnameAtom, ROUTE_HOME_SEARCH);
 
 	const profile = create(MpdProfileSchema, {
@@ -138,19 +131,17 @@ async function createReadyStore() {
 	} as AdvancedSearchClient);
 
 	const serverState = create(SongTableStateSchema, {
-		columns: [
-			createColumn(Song_MetadataTag.TITLE, { widthFlex: 1 }),
-			createColumn(Song_MetadataTag.ARTIST, { widthFlex: 1 }),
-		],
+		columnTags: [Song_MetadataTag.TITLE, Song_MetadataTag.ARTIST],
 	});
 	store.set(songTableStateAsyncAtom, Promise.resolve(serverState));
 
 	// Primes the async->sync unwrap layers the hook reads synchronously
 	// (searchVisibleSongsAtom depends on searchSongsAsyncAtom via an internal
-	// unwrap; songTableStateAtom depends on songTableStateAsyncAtom via the
-	// same mechanism), so the very first render already sees resolved values.
+	// unwrap; songTableServerStateAtom and songTableDeviceLayoutAtom the
+	// same), so the very first render already sees resolved values.
 	store.get(searchVisibleSongsAtom);
-	store.get(songTableStateAtom);
+	store.get(songTableServerStateAtom);
+	store.get(songTableDeviceLayoutAtom);
 	await flush();
 	// searchVisibleSongsAtom's dependency chain resolves over two hops
 	// (profile fetch, then the search-songs fetch keyed off it); a second
@@ -178,11 +169,9 @@ function renderSearchSongTableProps(store: ReturnType<typeof createStore>) {
 describe("useSearchSongTableProps", () => {
 	it("falls back to the common table's tag/sort, overlaid with the device width, when no saved-search columns are set", async () => {
 		const store = await createReadyStore();
-		store.set(songTableColumnLayoutAtom, {
-			[songTableColumnLayoutKeyForTag(Song_MetadataTag.TITLE)]: {
-				widthFlex: 321,
-				isSortDesc: false,
-			},
+		store.set(songTableDeviceLayoutAtom, {
+			widthFlexByTag: { [Song_MetadataTag.TITLE]: 321 },
+			sort: [],
 		});
 
 		const { result } = renderSearchSongTableProps(store);
@@ -193,7 +182,7 @@ describe("useSearchSongTableProps", () => {
 			Song_MetadataTag.ARTIST,
 		]);
 		expect(result.current?.columns[0].widthFlex).toBe(321);
-		// No device entry for ARTIST: keeps the (common table's) existing width.
+		// No device entry for ARTIST: falls back to the default flex.
 		expect(result.current?.columns[1].widthFlex).toBe(1);
 	});
 
@@ -206,11 +195,9 @@ describe("useSearchSongTableProps", () => {
 				widthFlex: 0, // saved searches never carry a meaningful width
 			}),
 		]);
-		store.set(songTableColumnLayoutAtom, {
-			[songTableColumnLayoutKeyForTag(Song_MetadataTag.ALBUM)]: {
-				widthFlex: 555,
-				isSortDesc: false,
-			},
+		store.set(songTableDeviceLayoutAtom, {
+			widthFlexByTag: { [Song_MetadataTag.ALBUM]: 555 },
+			sort: [],
 		});
 
 		const { result } = renderSearchSongTableProps(store);

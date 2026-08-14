@@ -59,8 +59,8 @@ export function SettingsStates() {
 		);
 
 	// Reads/writes the genuine server document (not the device-composed
-	// songTableStateAtom the rest of the app uses) so this stays a true
-	// escape hatch onto what's actually on disk.
+	// column view the rest of the app uses) so this stays a true escape
+	// hatch onto what's actually on disk.
 	const [onOpenSongTableState, songTableStateProps] =
 		useRawSongTableStateEditorProps();
 

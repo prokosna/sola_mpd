@@ -1,18 +1,12 @@
-import { clone } from "@bufbuild/protobuf";
 import { Box } from "@mantine/core";
-import {
-	type SongTableColumn,
-	SongTableStateSchema,
-} from "@sola_mpd/shared/src/models/song_table_pb.js";
 import { useAtomValue, useSetAtom } from "jotai";
-import { useCallback, useState } from "react";
-import { UpdateMode } from "../../../types/stateTypes";
+import { useState } from "react";
 import { CenterSpinner } from "../../loading";
 import {
 	ColumnEditModal,
 	SongTable,
-	songTableStateAtom,
-	updateSongTableStateActionAtom,
+	songTableServerStateAtom,
+	updateSongTableColumnTagsActionAtom,
 	useColumnEditModalProps,
 } from "../../song_table";
 import { usePlaylistSelectModal } from "../hooks/usePlaylistSelectModalProps";
@@ -20,8 +14,10 @@ import { usePlaylistSongTableProps } from "../hooks/usePlaylistSongTableProps";
 import { PlaylistSelectModal } from "./PlaylistSelectModal";
 
 export function PlaylistContent() {
-	const songTableState = useAtomValue(songTableStateAtom);
-	const updateSongTableState = useSetAtom(updateSongTableStateActionAtom);
+	const songTableServerState = useAtomValue(songTableServerStateAtom);
+	const updateSongTableColumnTags = useSetAtom(
+		updateSongTableColumnTagsActionAtom,
+	);
 
 	const [isColumnEditModalOpen, setIsColumnEditModalOpen] = useState(false);
 
@@ -36,26 +32,11 @@ export function PlaylistContent() {
 		setIsPlaylistSelectModalOpen,
 		setIsColumnEditModalOpen,
 	);
-
-	const onColumnsUpdated = useCallback(
-		async (columns: SongTableColumn[]) => {
-			if (songTableState === undefined) {
-				return;
-			}
-			const newSongTableState = clone(SongTableStateSchema, songTableState);
-			newSongTableState.columns = columns;
-			await updateSongTableState({
-				state: newSongTableState,
-				mode: UpdateMode.LOCAL_STATE | UpdateMode.PERSIST,
-			});
-		},
-		[songTableState, updateSongTableState],
-	);
 	const columnEditModalProps = useColumnEditModalProps(
 		isColumnEditModalOpen,
-		songTableState?.columns || [],
+		songTableServerState?.columnTags ?? [],
 		setIsColumnEditModalOpen,
-		onColumnsUpdated,
+		updateSongTableColumnTags,
 		async () => {},
 	);
 

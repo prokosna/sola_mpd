@@ -5,9 +5,9 @@ import {
 	Song_MetadataValueSchema,
 	SongSchema,
 } from "@sola_mpd/shared/src/models/song_pb.js";
-import { SongTableColumnSchema } from "@sola_mpd/shared/src/models/song_table_pb.js";
 import { describe, expect, it } from "vitest";
 
+import type { SongTableColumnView } from "../types/songTableTypes";
 import { sortSongsByColumns } from "./songTableSorting";
 
 function createSongWithTitle(title: string) {
@@ -54,13 +54,13 @@ describe("songTableSorting", () => {
 				createSongWithTitle("Alice"),
 				createSongWithTitle("Bob"),
 			];
-			const columns = [
-				create(SongTableColumnSchema, {
+			const columns: SongTableColumnView[] = [
+				{
 					tag: Song_MetadataTag.TITLE,
 					sortOrder: 0,
 					isSortDesc: false,
 					widthFlex: 100,
-				}),
+				},
 			];
 			const result = sortSongsByColumns([...songs], columns, collator);
 			expect(result.map((s) => s.path)).toEqual([
@@ -76,13 +76,13 @@ describe("songTableSorting", () => {
 				createSongWithTitle("Charlie"),
 				createSongWithTitle("Bob"),
 			];
-			const columns = [
-				create(SongTableColumnSchema, {
+			const columns: SongTableColumnView[] = [
+				{
 					tag: Song_MetadataTag.TITLE,
 					sortOrder: 0,
 					isSortDesc: true,
 					widthFlex: 100,
-				}),
+				},
 			];
 			const result = sortSongsByColumns([...songs], columns, collator);
 			expect(result.map((s) => s.path)).toEqual([
@@ -94,11 +94,8 @@ describe("songTableSorting", () => {
 
 		it("should skip columns without valid sort order", () => {
 			const songs = [createSongWithTitle("B"), createSongWithTitle("A")];
-			const columns = [
-				create(SongTableColumnSchema, {
-					tag: Song_MetadataTag.TITLE,
-					widthFlex: 100,
-				}),
+			const columns: SongTableColumnView[] = [
+				{ tag: Song_MetadataTag.TITLE, isSortDesc: false, widthFlex: 100 },
 			];
 			const result = sortSongsByColumns([...songs], columns, collator);
 			expect(result.map((s) => s.path)).toEqual(["/B.mp3", "/A.mp3"]);
@@ -110,13 +107,13 @@ describe("songTableSorting", () => {
 				createSongWithTitle("Alice"),
 			];
 			const original = [...songs];
-			const columns = [
-				create(SongTableColumnSchema, {
+			const columns: SongTableColumnView[] = [
+				{
 					tag: Song_MetadataTag.TITLE,
 					sortOrder: 0,
 					isSortDesc: false,
 					widthFlex: 100,
-				}),
+				},
 			];
 			sortSongsByColumns(songs, columns, collator);
 			expect(songs).toEqual(original);
@@ -126,19 +123,19 @@ describe("songTableSorting", () => {
 			const s1 = createSongWithDuration("Same", 300);
 			const s2 = createSongWithDuration("Same", 100);
 			const s3 = createSongWithDuration("Same", 200);
-			const columns = [
-				create(SongTableColumnSchema, {
+			const columns: SongTableColumnView[] = [
+				{
 					tag: Song_MetadataTag.TITLE,
 					sortOrder: 0,
 					isSortDesc: false,
 					widthFlex: 100,
-				}),
-				create(SongTableColumnSchema, {
+				},
+				{
 					tag: Song_MetadataTag.DURATION,
 					sortOrder: 1,
 					isSortDesc: false,
 					widthFlex: 100,
-				}),
+				},
 			];
 			const result = sortSongsByColumns([s1, s2, s3], columns, collator);
 			expect(result).toEqual([s2, s3, s1]);
