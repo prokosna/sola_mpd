@@ -5,6 +5,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [4.10.1](https://github.com/prokosna/sola_mpd/compare/v4.10.0...v4.10.1) (2026-08-15)
+
+
+### Bug Fixes
+
+* **frontend:** remember the last browsing selection per device ([#395](https://github.com/prokosna/sola_mpd/issues/395)) ([3a5d10c](https://github.com/prokosna/sola_mpd/commit/3a5d10c435481fbb76b73228d9c0d9f52e2bb070))
+
 ## [4.10.0](https://github.com/prokosna/sola_mpd/compare/v4.9.3...v4.10.0) (2026-08-15)
 
 
