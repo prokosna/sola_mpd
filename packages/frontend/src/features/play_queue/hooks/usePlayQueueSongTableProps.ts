@@ -11,8 +11,10 @@ import { usePluginContextMenuItems } from "../../plugin";
 import {
 	getSongTableContextMenuAddToPlaylist,
 	getSongTableContextMenuEditColumns,
+	getSongTableContextMenuResetLayout,
 	getSongTableContextMenuSimilarSongs,
 	getTargetSongsForContextMenu,
+	resetSongTableLayoutActionAtom,
 	type SongTableContextMenuItemParams,
 	SongTableKeyType,
 	type SongTableProps,
@@ -51,6 +53,7 @@ export function usePlayQueueSongTableProps(
 	const clearQueue = useSetAtom(clearQueueActionAtom);
 	const reorderQueue = useSetAtom(reorderQueueActionAtom);
 	const playSongById = useSetAtom(playSongByIdActionAtom);
+	const resetSongTableLayout = useSetAtom(resetSongTableLayoutActionAtom);
 
 	const pluginContextMenuItems = usePluginContextMenuItems(
 		Plugin_PluginType.ON_PLAY_QUEUE,
@@ -115,7 +118,10 @@ export function usePlayQueueSongTableProps(
 				],
 			},
 			{
-				items: [getSongTableContextMenuEditColumns(setIsColumnEditModalOpen)],
+				items: [
+					getSongTableContextMenuEditColumns(setIsColumnEditModalOpen),
+					getSongTableContextMenuResetLayout(resetSongTableLayout),
+				],
 			},
 		];
 	if (isAdvancedSearchAvailable) {

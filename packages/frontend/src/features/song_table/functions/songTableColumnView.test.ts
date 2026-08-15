@@ -80,6 +80,24 @@ describe("composeSongTableColumnView", () => {
 			},
 		]);
 	});
+
+	it("resolves width through the fallback chain: override, then shared, then default", () => {
+		const result = composeSongTableColumnView(
+			[Song_MetadataTag.TITLE, Song_MetadataTag.ARTIST, Song_MetadataTag.ALBUM],
+			{
+				[Song_MetadataTag.TITLE]: 250,
+				[Song_MetadataTag.ARTIST]: 300,
+			},
+			[],
+			{ [Song_MetadataTag.TITLE]: 555 },
+		);
+
+		expect(result.map((column) => column.widthFlex)).toEqual([
+			555, // override wins over the shared width
+			300, // no override: falls back to the shared width
+			1, // neither map has an entry: falls back to the default
+		]);
+	});
 });
 
 describe("buildDeviceSortFromColumnViews", () => {

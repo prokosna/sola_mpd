@@ -87,6 +87,51 @@ describe("updateSongTableDeviceLayoutActionAtom", () => {
 		expect(layout?.widthFlexByTag).toEqual({ [Song_MetadataTag.TITLE]: 250 });
 	});
 
+	it("merges a width patch into a named search's own map, leaving the shared map untouched", async () => {
+		const store = await createReadyStore();
+		store.set(songTableDeviceLayoutAtom, {
+			widthFlexByTag: { [Song_MetadataTag.ARTIST]: 100 },
+			sort: [],
+		});
+
+		store.set(updateSongTableDeviceLayoutActionAtom, {
+			widthFlexByTag: { [Song_MetadataTag.TITLE]: 250 },
+			searchName: "Rock",
+		});
+
+		const layout = store.get(songTableDeviceLayoutAtom);
+		expect(layout?.widthFlexByTagBySearchName).toEqual({
+			Rock: { [Song_MetadataTag.TITLE]: 250 },
+		});
+		expect(layout?.widthFlexByTag).toEqual({
+			[Song_MetadataTag.ARTIST]: 100,
+		});
+	});
+
+	it("merges a search-scoped width patch over that search's existing map without dropping its other tags", async () => {
+		const store = await createReadyStore();
+		store.set(songTableDeviceLayoutAtom, {
+			widthFlexByTag: {},
+			sort: [],
+			widthFlexByTagBySearchName: {
+				Rock: { [Song_MetadataTag.ARTIST]: 100 },
+				Jazz: { [Song_MetadataTag.ALBUM]: 400 },
+			},
+		});
+
+		store.set(updateSongTableDeviceLayoutActionAtom, {
+			widthFlexByTag: { [Song_MetadataTag.TITLE]: 250 },
+			searchName: "Rock",
+		});
+
+		expect(
+			store.get(songTableDeviceLayoutAtom)?.widthFlexByTagBySearchName,
+		).toEqual({
+			Rock: { [Song_MetadataTag.ARTIST]: 100, [Song_MetadataTag.TITLE]: 250 },
+			Jazz: { [Song_MetadataTag.ALBUM]: 400 },
+		});
+	});
+
 	it("is a no-op while the migration is still pending", () => {
 		const store = createStore();
 		store.set(

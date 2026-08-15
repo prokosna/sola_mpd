@@ -13,8 +13,10 @@ import {
 	getSongTableContextMenuAddToPlaylist,
 	getSongTableContextMenuEditColumns,
 	getSongTableContextMenuReplace,
+	getSongTableContextMenuResetLayout,
 	getSongTableContextMenuSimilarSongs,
 	replaceQueueWithSongsActionAtom,
+	resetSongTableLayoutActionAtom,
 	type SongTableContextMenuItemParams,
 	SongTableKeyType,
 	type SongTableProps,
@@ -48,6 +50,7 @@ export function useFileExploreSongTableProps(
 	const setSelectedSongs = useSetAtom(setSelectedSongsActionAtom);
 	const addSongsToQueue = useSetAtom(addSongsToQueueActionAtom);
 	const replaceQueueWithSongs = useSetAtom(replaceQueueWithSongsActionAtom);
+	const resetSongTableLayout = useSetAtom(resetSongTableLayoutActionAtom);
 
 	const pluginContextMenuItems = usePluginContextMenuItems(
 		Plugin_PluginType.ON_FILE_EXPLORE,
@@ -83,7 +86,10 @@ export function useFileExploreSongTableProps(
 				],
 			},
 			{
-				items: [getSongTableContextMenuEditColumns(setIsOpenColumnEditModal)],
+				items: [
+					getSongTableContextMenuEditColumns(setIsOpenColumnEditModal),
+					getSongTableContextMenuResetLayout(resetSongTableLayout),
+				],
 			},
 		];
 	if (isAdvancedSearchAvailable) {

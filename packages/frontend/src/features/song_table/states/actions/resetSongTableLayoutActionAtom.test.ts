@@ -1,6 +1,6 @@
 import { Song_MetadataTag } from "@sola_mpd/shared/src/models/song_pb.js";
 import { createStore } from "jotai";
-import { describe, expect, it, vi } from "vitest";
+import { beforeEach, describe, expect, it, vi } from "vitest";
 import type { DeviceSettingsRepository } from "../../../common";
 import {
 	buildDeviceSettingKey,
@@ -10,9 +10,10 @@ import type { SongTableStateRepository } from "../../repositories/SongTableState
 import type { SongTableDeviceLayout } from "../../types/songTableTypes";
 import { songTableDeviceLayoutAtom } from "../atoms/songTableDeviceLayoutAtom";
 import { songTableStateRepositoryAtom } from "../atoms/songTableStateRepositoryAtom";
-import { resetSongTableDeviceLayoutActionAtom } from "./resetSongTableDeviceLayoutActionAtom";
+import { resetSongTableLayoutActionAtom } from "./resetSongTableLayoutActionAtom";
 
 const SONG_TABLE_LAYOUT_KEY = buildDeviceSettingKey("songTableLayout");
+const RESIZABLE_PANELS_KEY = "react-resizable-panels:search";
 
 function createFakeDeviceSettingsRepository(
 	initial: Record<string, unknown> = {},
@@ -47,8 +48,12 @@ async function flush() {
 	await new Promise((resolve) => setTimeout(resolve, 0));
 }
 
-describe("resetSongTableDeviceLayoutActionAtom", () => {
-	it("writes an empty layout — present, not absent — and clears width and sort", async () => {
+describe("resetSongTableLayoutActionAtom", () => {
+	beforeEach(() => {
+		globalThis.localStorage.clear();
+	});
+
+	it("writes an empty layout — present, not absent — clears width and sort, and clears pane split ratios", async () => {
 		const layout: SongTableDeviceLayout = {
 			widthFlexByTag: { [Song_MetadataTag.TITLE]: 250 },
 			sort: [{ tag: Song_MetadataTag.TITLE, isDesc: true }],
@@ -56,16 +61,18 @@ describe("resetSongTableDeviceLayoutActionAtom", () => {
 		const repository = createFakeDeviceSettingsRepository({
 			[SONG_TABLE_LAYOUT_KEY]: layout,
 		});
+		globalThis.localStorage.setItem(RESIZABLE_PANELS_KEY, "[1,2]");
 		const store = createStore();
 		store.set(deviceSettingsRepositoryAtom, repository);
 		store.get(songTableDeviceLayoutAtom); // primes the async->sync unwrap
 		await flush();
 
-		store.set(resetSongTableDeviceLayoutActionAtom);
+		store.set(resetSongTableLayoutActionAtom);
 
 		const expected = { widthFlexByTag: {}, sort: [] };
 		expect(store.get(songTableDeviceLayoutAtom)).toEqual(expected);
 		expect(repository.get(SONG_TABLE_LAYOUT_KEY)).toEqual(expected);
+		expect(globalThis.localStorage.getItem(RESIZABLE_PANELS_KEY)).toBeNull();
 	});
 
 	// Regression test: deleting the key instead of writing an empty layout
@@ -85,7 +92,7 @@ describe("resetSongTableDeviceLayoutActionAtom", () => {
 		firstLoadStore.get(songTableDeviceLayoutAtom);
 		await flush();
 
-		firstLoadStore.set(resetSongTableDeviceLayoutActionAtom);
+		firstLoadStore.set(resetSongTableLayoutActionAtom);
 
 		// Simulates the next app load: a fresh store over the same repository.
 		const nextLoadStore = createStore();
@@ -109,7 +116,7 @@ describe("resetSongTableDeviceLayoutActionAtom", () => {
 		expect(songTableStateRepository.fetch).not.toHaveBeenCalled();
 	});
 
-	it("does nothing while the migration is still pending", async () => {
+	it("does nothing while the migration is still pending — no write, no pane keys cleared", async () => {
 		const store = createStore();
 		const repository = createFakeDeviceSettingsRepository();
 		store.set(deviceSettingsRepositoryAtom, repository);
@@ -117,11 +124,15 @@ describe("resetSongTableDeviceLayoutActionAtom", () => {
 			songTableStateRepositoryAtom,
 			createFakeSongTableStateRepository(() => new Promise(() => {})),
 		);
+		globalThis.localStorage.setItem(RESIZABLE_PANELS_KEY, "[1,2]");
 		store.get(songTableDeviceLayoutAtom); // primes; migration never settles
 
-		store.set(resetSongTableDeviceLayoutActionAtom);
+		store.set(resetSongTableLayoutActionAtom);
 
 		expect(store.get(songTableDeviceLayoutAtom)).toBeUndefined();
 		expect(repository.get(SONG_TABLE_LAYOUT_KEY)).toBeUndefined();
+		expect(
+			globalThis.localStorage.getItem(RESIZABLE_PANELS_KEY),
+		).not.toBeNull();
 	});
 });

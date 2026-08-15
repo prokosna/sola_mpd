@@ -100,6 +100,17 @@ export function getSongTableContextMenuEditColumns(
 	};
 }
 
+export function getSongTableContextMenuResetLayout(
+	resetSongTableLayout: () => void,
+): ContextMenuItem<SongTableContextMenuItemParams> {
+	return {
+		name: "Reset Layout",
+		onClick: async (): Promise<void> => {
+			resetSongTableLayout();
+		},
+	};
+}
+
 export function getSongTableContextMenuSimilarSongs(
 	setSimilaritySearchTargetSong: (song: Song | undefined) => void,
 	refreshSimilaritySearchSongs: () => void,

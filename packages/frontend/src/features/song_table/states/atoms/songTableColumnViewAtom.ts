@@ -5,12 +5,8 @@ import type { SongTableColumnView } from "../../types/songTableTypes";
 import { songTableServerStateAtom } from "./songTableAtom";
 import { songTableDeviceLayoutAtom } from "./songTableDeviceLayoutAtom";
 
-/**
- * The shared column set every library view reads: tag order
- * from the workspace document, width and sort from the device layout.
- * `undefined` until both the server document and the device migration have
- * resolved — never an empty array standing in for "not ready yet".
- */
+// `undefined` until both sources resolve, never an empty array: a table that
+// paints defaults meanwhile persists them on the first column drag.
 export const songTableColumnViewAtom = atom<SongTableColumnView[] | undefined>(
 	(get) => {
 		const serverState = get(songTableServerStateAtom);

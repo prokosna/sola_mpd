@@ -14,6 +14,7 @@ import {
 	getSongTableContextMenuAddToPlaylist,
 	getSongTableContextMenuEditColumns,
 	getSongTableContextMenuReplace,
+	getSongTableContextMenuResetLayout,
 	getSongTableContextMenuSimilarSongs,
 	replaceQueueWithSongsActionAtom,
 	type SongTableColumnView,
@@ -23,6 +24,7 @@ import {
 	setSelectedSongsActionAtom,
 	useHandleSongDoubleClick,
 } from "../../song_table";
+import { resetSearchLayoutActionAtom } from "../states/actions/resetSearchLayoutActionAtom";
 import { setIsSearchLoadingActionAtom } from "../states/actions/setIsSearchLoadingActionAtom";
 import { searchColumnViewAtom } from "../states/atoms/searchColumnViewAtom";
 import { searchVisibleSongsAtom } from "../states/atoms/searchSongsAtom";
@@ -45,6 +47,7 @@ export function useSearchSongTableProps(
 	const setSelectedSongs = useSetAtom(setSelectedSongsActionAtom);
 	const addSongsToQueue = useSetAtom(addSongsToQueueActionAtom);
 	const replaceQueueWithSongs = useSetAtom(replaceQueueWithSongsActionAtom);
+	const resetSearchLayout = useSetAtom(resetSearchLayoutActionAtom);
 	const handleSearchColumnsUpdated = useHandleSearchColumnsUpdated();
 
 	const pluginContextMenuItems = usePluginContextMenuItems(
@@ -81,7 +84,10 @@ export function useSearchSongTableProps(
 				],
 			},
 			{
-				items: [getSongTableContextMenuEditColumns(setIsColumnEditModalOpen)],
+				items: [
+					getSongTableContextMenuEditColumns(setIsColumnEditModalOpen),
+					getSongTableContextMenuResetLayout(resetSearchLayout),
+				],
 			},
 		];
 	if (isAdvancedSearchAvailable) {

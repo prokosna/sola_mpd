@@ -11,12 +11,13 @@ import {
 import { updateSearchColumnTagsActionAtom } from "../states/actions/updateSearchColumnTagsActionAtom";
 import { updateSearchSortActionAtom } from "../states/actions/updateSearchSortActionAtom";
 import { searchColumnViewAtom } from "../states/atoms/searchColumnViewAtom";
+import { selectedSavedSearchNameAtom } from "../states/atoms/searchEditAtom";
 
-// Routes an AG Grid column event to the right owner: a tag reorder/add/remove
-// and the sort both belong to the saved search being edited, width is always
-// device-owned — mirrors useHandleLibraryColumnsUpdated.
+// Routes an AG Grid column event to the right owner. Tags and sort belong to
+// the saved search; width belongs to the device, under that search's name.
 export function useHandleSearchColumnsUpdated() {
 	const columns = useAtomValue(searchColumnViewAtom);
+	const searchName = useAtomValue(selectedSavedSearchNameAtom);
 	const updateColumnTags = useSetAtom(updateSearchColumnTagsActionAtom);
 	const updateSort = useSetAtom(updateSearchSortActionAtom);
 	const updateDeviceLayout = useSetAtom(updateSongTableDeviceLayoutActionAtom);
@@ -39,9 +40,10 @@ export function useHandleSearchColumnsUpdated() {
 				// not to the device layout the common song table sorts by.
 				updateDeviceLayout({
 					widthFlexByTag: buildWidthFlexByTagFromColumnViews(updatedColumns),
+					searchName,
 				});
 			}
 		},
-		[columns, updateColumnTags, updateSort, updateDeviceLayout],
+		[columns, searchName, updateColumnTags, updateSort, updateDeviceLayout],
 	);
 }

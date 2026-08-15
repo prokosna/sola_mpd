@@ -12,7 +12,9 @@ import {
 	getSongTableContextMenuAddToPlaylist,
 	getSongTableContextMenuEditColumns,
 	getSongTableContextMenuReplace,
+	getSongTableContextMenuResetLayout,
 	replaceQueueWithSongsActionAtom,
+	resetSongTableLayoutActionAtom,
 	type SongTableContextMenuItemParams,
 	SongTableKeyType,
 	type SongTableProps,
@@ -40,6 +42,7 @@ export function useSimilaritySearchSongTableProps(
 	const setSelectedSongs = useSetAtom(setSelectedSongsActionAtom);
 	const addSongsToQueue = useSetAtom(addSongsToQueueActionAtom);
 	const replaceQueueWithSongs = useSetAtom(replaceQueueWithSongsActionAtom);
+	const resetSongTableLayout = useSetAtom(resetSongTableLayoutActionAtom);
 
 	const pluginContextMenuItems = usePluginContextMenuItems(
 		Plugin_PluginType.ON_ADVANCED_SEARCH,
@@ -68,7 +71,10 @@ export function useSimilaritySearchSongTableProps(
 				],
 			},
 			{
-				items: [getSongTableContextMenuEditColumns(setIsColumnEditModalOpen)],
+				items: [
+					getSongTableContextMenuEditColumns(setIsColumnEditModalOpen),
+					getSongTableContextMenuResetLayout(resetSongTableLayout),
+				],
 			},
 		];
 	if (pluginContextMenuItems.length > 0) {

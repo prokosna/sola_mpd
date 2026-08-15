@@ -82,4 +82,12 @@ export type SongTableDeviceLayoutSort = {
 export type SongTableDeviceLayout = {
 	widthFlexByTag: Partial<Record<Song_MetadataTag, number>>;
 	sort: SongTableDeviceLayoutSort[];
+	/**
+	 * Keyed by saved search name, since that is how a saved search is
+	 * identified elsewhere; renaming a search orphans its entry here.
+	 * Optional so a layout stored before this field existed loads as-is.
+	 */
+	widthFlexByTagBySearchName?: Partial<
+		Record<string, Partial<Record<Song_MetadataTag, number>>>
+	>;
 };

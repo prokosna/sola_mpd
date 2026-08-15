@@ -14,8 +14,10 @@ import {
 	getSongTableContextMenuAddToPlaylist,
 	getSongTableContextMenuEditColumns,
 	getSongTableContextMenuReplace,
+	getSongTableContextMenuResetLayout,
 	getSongTableContextMenuSimilarSongs,
 	replaceQueueWithSongsActionAtom,
+	resetSongTableLayoutActionAtom,
 	type SongTableContextMenuItemParams,
 	SongTableKeyType,
 	type SongTableProps,
@@ -66,6 +68,7 @@ export function usePlaylistSongTableProps(
 		dropDuplicatePlaylistSongsActionAtom,
 	);
 	const reorderPlaylist = useSetAtom(reorderPlaylistActionAtom);
+	const resetSongTableLayout = useSetAtom(resetSongTableLayoutActionAtom);
 
 	const pluginContextMenuItems = usePluginContextMenuItems(
 		Plugin_PluginType.ON_PLAYLIST,
@@ -129,6 +132,7 @@ export function usePlaylistSongTableProps(
 					{
 						items: [
 							getSongTableContextMenuEditColumns(setIsColumnEditModalOpen),
+							getSongTableContextMenuResetLayout(resetSongTableLayout),
 						],
 					},
 				];

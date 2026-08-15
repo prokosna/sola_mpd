@@ -14,8 +14,10 @@ import {
 	getSongTableContextMenuAddToPlaylist,
 	getSongTableContextMenuEditColumns,
 	getSongTableContextMenuReplace,
+	getSongTableContextMenuResetLayout,
 	getSongTableContextMenuSimilarSongs,
 	replaceQueueWithSongsActionAtom,
+	resetSongTableLayoutActionAtom,
 	type SongTableContextMenuItemParams,
 	SongTableKeyType,
 	type SongTableProps,
@@ -55,6 +57,7 @@ export function useAllSongsSongTableProps(
 	const setSelectedSongs = useSetAtom(setSelectedSongsActionAtom);
 	const addSongsToQueue = useSetAtom(addSongsToQueueActionAtom);
 	const replaceQueueWithSongs = useSetAtom(replaceQueueWithSongsActionAtom);
+	const resetSongTableLayout = useSetAtom(resetSongTableLayoutActionAtom);
 
 	const capabilities = useAtomValue(mpdCapabilitiesAtom);
 	const fastState = useAtomValue(allSongsFastStateAtom);
@@ -111,7 +114,10 @@ export function useAllSongsSongTableProps(
 				],
 			},
 			{
-				items: [getSongTableContextMenuEditColumns(setIsColumnEditModalOpen)],
+				items: [
+					getSongTableContextMenuEditColumns(setIsColumnEditModalOpen),
+					getSongTableContextMenuResetLayout(resetSongTableLayout),
+				],
 			},
 		];
 	if (isAdvancedSearchAvailable) {

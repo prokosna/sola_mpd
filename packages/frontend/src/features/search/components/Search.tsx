@@ -7,12 +7,13 @@ import {
 	useDefaultLayout,
 } from "react-resizable-panels";
 import styles from "../../../ResizeHandle.module.css";
+import { SEARCH_PANEL_GROUP_ID } from "../const/searchPanelGroups";
 import { SearchContent } from "./SearchContent";
 import { SearchNavigation } from "./SearchNavigation";
 
 export function Search() {
 	const { defaultLayout, onLayoutChanged } = useDefaultLayout({
-		id: "search",
+		id: SEARCH_PANEL_GROUP_ID,
 		storage: globalThis.localStorage,
 	});
 

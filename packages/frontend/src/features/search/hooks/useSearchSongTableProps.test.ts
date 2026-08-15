@@ -9,6 +9,10 @@ import {
 } from "@sola_mpd/shared/src/models/mpd/mpd_profile_pb.js";
 import { MpdStatsSchema } from "@sola_mpd/shared/src/models/mpd/mpd_stats_pb.js";
 import { PluginStateSchema } from "@sola_mpd/shared/src/models/plugin/plugin_pb.js";
+import {
+	SavedSearchesSchema,
+	SearchSchema,
+} from "@sola_mpd/shared/src/models/search_pb.js";
 import { Song_MetadataTag } from "@sola_mpd/shared/src/models/song_pb.js";
 import { SongTableStateSchema } from "@sola_mpd/shared/src/models/song_table_pb.js";
 import { renderHook, waitFor } from "@testing-library/react";
@@ -34,7 +38,12 @@ import {
 } from "../../song_table/states/atoms/songTableAtom";
 import { songTableDeviceLayoutAtom } from "../../song_table/states/atoms/songTableDeviceLayoutAtom";
 import { songTableStateRepositoryAtom } from "../../song_table/states/atoms/songTableStateRepositoryAtom";
-import { searchEditColumnsAtom } from "../states/atoms/searchEditAtom";
+import { savedSearchesAsyncAtom } from "../states/atoms/savedSearchesAtom";
+import {
+	editingSearchNameAtom,
+	searchEditColumnsAtom,
+	selectedSavedSearchNameAtom,
+} from "../states/atoms/searchEditAtom";
 import { searchVisibleSongsAtom } from "../states/atoms/searchSongsAtom";
 
 import { useSearchSongTableProps } from "./useSearchSongTableProps";
@@ -66,9 +75,19 @@ async function flush() {
  * profile has no target search, so searchSongsAsyncAtom returns `[]` without
  * issuing a real MPD query.
  */
-async function createReadyStore() {
+async function createReadyStore(savedSearchNames: string[] = []) {
 	const store = createStore();
 	store.set(deviceSettingsRepositoryAtom, createFakeDeviceSettingsRepository());
+	store.set(
+		savedSearchesAsyncAtom,
+		Promise.resolve(
+			create(SavedSearchesSchema, {
+				searches: savedSearchNames.map((name) =>
+					create(SearchSchema, { name }),
+				),
+			}),
+		),
+	);
 	store.set(songTableStateRepositoryAtom, {
 		fetch: vi.fn(async () => create(SongTableStateSchema, {})),
 		save: vi.fn(async () => {}),
@@ -127,6 +146,7 @@ async function createReadyStore() {
 	store.get(searchVisibleSongsAtom);
 	store.get(songTableServerStateAtom);
 	store.get(songTableDeviceLayoutAtom);
+	store.get(selectedSavedSearchNameAtom);
 	await flush();
 	// searchVisibleSongsAtom's dependency chain resolves over two hops
 	// (profile fetch, then the search-songs fetch keyed off it); a second
@@ -190,5 +210,39 @@ describe("useSearchSongTableProps", () => {
 		expect(result.current?.columns[0].sortOrder).toBe(0);
 		expect(result.current?.columns[0].isSortDesc).toBe(true);
 		expect(result.current?.columns[0].widthFlex).toBe(555);
+	});
+
+	it("drops the open saved search's own width and staged sort on Reset Layout, leaving the shared device layout untouched", async () => {
+		const store = await createReadyStore(["Rock"]);
+		store.set(editingSearchNameAtom, "Rock");
+		store.set(searchEditColumnsAtom, {
+			columnTags: [Song_MetadataTag.ALBUM],
+			sort: [{ tag: Song_MetadataTag.ALBUM, isDesc: true }],
+		});
+		const sharedLayout = {
+			widthFlexByTag: { [Song_MetadataTag.ALBUM]: 100 },
+			sort: [{ tag: Song_MetadataTag.ARTIST, isDesc: false }],
+			widthFlexByTagBySearchName: {
+				Rock: { [Song_MetadataTag.ALBUM]: 555 },
+			},
+		};
+		store.set(songTableDeviceLayoutAtom, sharedLayout);
+
+		const { result } = renderSearchSongTableProps(store);
+		await waitFor(() => expect(result.current).toBeDefined());
+
+		const resetLayoutItem = result.current?.contextMenuSections
+			.flatMap((section) => section.items)
+			.find((item) => item.name === "Reset Layout");
+		await resetLayoutItem?.onClick?.(undefined);
+
+		expect(store.get(songTableDeviceLayoutAtom)).toEqual({
+			...sharedLayout,
+			widthFlexByTagBySearchName: {},
+		});
+		expect(store.get(searchEditColumnsAtom)).toEqual({
+			columnTags: [Song_MetadataTag.ALBUM],
+			sort: [],
+		});
 	});
 });

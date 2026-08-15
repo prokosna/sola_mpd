@@ -25,6 +25,7 @@ export {
 	getSongTableContextMenuAddToPlaylist,
 	getSongTableContextMenuEditColumns,
 	getSongTableContextMenuReplace,
+	getSongTableContextMenuResetLayout,
 	getSongTableContextMenuSimilarSongs,
 } from "./functions/songTableMenuItem";
 export { convertOrderingToOperations } from "./functions/songTableOrdering";
@@ -39,8 +40,8 @@ export { addSongsToQueueActionAtom } from "./states/actions/addSongsToQueueActio
 export { clearSelectedSongsActionAtom } from "./states/actions/clearSelectedSongsActionAtom";
 export { refreshSongTableStateActionAtom } from "./states/actions/refreshSongTableStateActionAtom";
 export { replaceQueueWithSongsActionAtom } from "./states/actions/replaceQueueWithSongsActionAtom";
-export { resetSongTableColumnLayoutActionAtom } from "./states/actions/resetSongTableColumnLayoutActionAtom";
-export { resetSongTableDeviceLayoutActionAtom } from "./states/actions/resetSongTableDeviceLayoutActionAtom";
+export { resetSongTableLayoutActionAtom } from "./states/actions/resetSongTableLayoutActionAtom";
+export { resetSongTableSearchWidthActionAtom } from "./states/actions/resetSongTableSearchWidthActionAtom";
 export { setSelectedSongsActionAtom } from "./states/actions/setSelectedSongsActionAtom";
 export { updateSongTableColumnTagsActionAtom } from "./states/actions/updateSongTableColumnTagsActionAtom";
 export {

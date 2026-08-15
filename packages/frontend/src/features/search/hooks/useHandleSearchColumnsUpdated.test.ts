@@ -1,4 +1,8 @@
 import { create } from "@bufbuild/protobuf";
+import {
+	SavedSearchesSchema,
+	SearchSchema,
+} from "@sola_mpd/shared/src/models/search_pb.js";
 import { Song_MetadataTag } from "@sola_mpd/shared/src/models/song_pb.js";
 import { SongTableStateSchema } from "@sola_mpd/shared/src/models/song_table_pb.js";
 import { act, renderHook } from "@testing-library/react";
@@ -15,9 +19,12 @@ import {
 import { songTableDeviceLayoutAtom } from "../../song_table/states/atoms/songTableDeviceLayoutAtom";
 import { songTableStateRepositoryAtom } from "../../song_table/states/atoms/songTableStateRepositoryAtom";
 import type { SongTableColumnView } from "../../song_table/types/songTableTypes";
+import { savedSearchesAsyncAtom } from "../states/atoms/savedSearchesAtom";
 import {
+	editingSearchNameAtom,
 	editingSearchStatusAtom,
 	searchEditColumnsAtom,
+	selectedSavedSearchNameAtom,
 } from "../states/atoms/searchEditAtom";
 import { EditingSearchStatus } from "../types/searchTypes";
 
@@ -57,7 +64,7 @@ async function flush() {
 	await new Promise((resolve) => setTimeout(resolve, 0));
 }
 
-async function createReadyStore() {
+async function createReadyStore(savedSearchNames: string[] = []) {
 	const store = createStore();
 	store.set(deviceSettingsRepositoryAtom, createFakeDeviceSettingsRepository());
 	store.set(songTableStateRepositoryAtom, {
@@ -68,8 +75,19 @@ async function createReadyStore() {
 		columnTags: [Song_MetadataTag.TITLE, Song_MetadataTag.ARTIST],
 	});
 	store.set(songTableStateAsyncAtom, Promise.resolve(commonState));
+	store.set(
+		savedSearchesAsyncAtom,
+		Promise.resolve(
+			create(SavedSearchesSchema, {
+				searches: savedSearchNames.map((name) =>
+					create(SearchSchema, { name }),
+				),
+			}),
+		),
+	);
 	store.get(songTableServerStateAtom);
 	store.get(songTableDeviceLayoutAtom);
+	store.get(selectedSavedSearchNameAtom);
 	await flush();
 	return store;
 }
@@ -215,5 +233,55 @@ describe("useHandleSearchColumnsUpdated", () => {
 			],
 			sort: [{ tag: Song_MetadataTag.TITLE, isDesc: true }],
 		});
+	});
+
+	it("writes a width change into the open saved search's own map, leaving the shared map untouched", async () => {
+		const store = await createReadyStore(["Rock"]);
+		store.set(editingSearchNameAtom, "Rock");
+		store.set(songTableDeviceLayoutAtom, {
+			widthFlexByTag: { [Song_MetadataTag.ARTIST]: 1 },
+			sort: [],
+		});
+		store.set(searchEditColumnsAtom, {
+			columnTags: [Song_MetadataTag.TITLE, Song_MetadataTag.ARTIST],
+			sort: [],
+		});
+		const { result } = renderUseHandleSearchColumnsUpdated(store);
+
+		act(() => {
+			result.current([
+				createColumn(Song_MetadataTag.TITLE, { widthFlex: 250 }),
+				createColumn(Song_MetadataTag.ARTIST, { widthFlex: 1 }),
+			]);
+		});
+
+		const layout = store.get(songTableDeviceLayoutAtom);
+		expect(layout?.widthFlexByTagBySearchName).toEqual({
+			Rock: {
+				[Song_MetadataTag.TITLE]: 250,
+				[Song_MetadataTag.ARTIST]: 1,
+			},
+		});
+		expect(layout?.widthFlexByTag).toEqual({ [Song_MetadataTag.ARTIST]: 1 });
+	});
+
+	it("writes a width change to the shared map when no saved search is open", async () => {
+		const store = await createReadyStore();
+		store.set(songTableDeviceLayoutAtom, { widthFlexByTag: {}, sort: [] });
+		store.set(searchEditColumnsAtom, {
+			columnTags: [Song_MetadataTag.TITLE],
+			sort: [],
+		});
+		const { result } = renderUseHandleSearchColumnsUpdated(store);
+
+		act(() => {
+			result.current([
+				createColumn(Song_MetadataTag.TITLE, { widthFlex: 250 }),
+			]);
+		});
+
+		const layout = store.get(songTableDeviceLayoutAtom);
+		expect(layout?.widthFlexByTag).toEqual({ [Song_MetadataTag.TITLE]: 250 });
+		expect(layout?.widthFlexByTagBySearchName).toBeUndefined();
 	});
 });

@@ -7,22 +7,25 @@ import type {
 } from "../types/songTableTypes";
 
 /**
- * Shared by library views and Search, which differ only in where the tag
- * order and sort come from. A tag with no width entry always gets the
- * default rather than falling back to a stored value, which is what makes a
- * device reset land on the app default rather than a per-user value.
+ * Shared by library views and Search; `overrideWidthFlexByTag` is a saved
+ * search's own widths, tried before the shared map. A tag absent from every
+ * map gets the default, not a stored value — what lets a reset land there.
  */
 export function composeSongTableColumnView(
 	tags: Song_MetadataTag[],
 	widthFlexByTag: Partial<Record<Song_MetadataTag, number>>,
 	sort: SongTableDeviceLayoutSort[],
+	overrideWidthFlexByTag?: Partial<Record<Song_MetadataTag, number>>,
 ): SongTableColumnView[] {
 	return tags.map((tag) => {
 		const sortIndex = sort.findIndex((entry) => entry.tag === tag);
 		const sortEntry = sortIndex >= 0 ? sort[sortIndex] : undefined;
 		return {
 			tag,
-			widthFlex: widthFlexByTag[tag] ?? DEFAULT_COLUMN_WIDTH_FLEX,
+			widthFlex:
+				overrideWidthFlexByTag?.[tag] ??
+				widthFlexByTag[tag] ??
+				DEFAULT_COLUMN_WIDTH_FLEX,
 			sortOrder: sortEntry !== undefined ? sortIndex : undefined,
 			isSortDesc: sortEntry?.isDesc ?? false,
 		};
