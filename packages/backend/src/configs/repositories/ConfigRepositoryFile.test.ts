@@ -344,4 +344,65 @@ describe("ConfigRepositoryFile default documents", () => {
 			Song_MetadataTag.COMPOSER,
 		]);
 	});
+
+	// A document written before schemaVersion existed carries no version at
+	// all, which readDocumentVersion has to treat as version 1 for the chain
+	// to run at all.
+	it("upgrades a document that predates schemaVersion", async () => {
+		fs.mkdirSync(path.join(tempDir, "db"), { recursive: true });
+		fs.writeFileSync(
+			path.join(tempDir, "db", "common_song_table_state.json"),
+			JSON.stringify({
+				columns: [
+					{ tag: "TITLE", widthFlex: 2, sortOrder: 1, isSortDesc: true },
+					{ tag: "ALBUM", widthFlex: 3 },
+				],
+			}),
+		);
+		fs.writeFileSync(
+			path.join(tempDir, "db", "browser_state.json"),
+			JSON.stringify({
+				filters: [
+					{ tag: "ALBUM", order: 2, selectedOrder: -1 },
+					{ tag: "GENRE", order: 0, selectedOrder: -1 },
+					{ tag: "ARTIST", order: 1, selectedOrder: -1 },
+				],
+			}),
+		);
+
+		const { commonSongTableStateRepository, browserStateRepository } =
+			await import("./ConfigRepositoryFile.js");
+
+		const songTableState = commonSongTableStateRepository.get();
+		expect(songTableState.columnTags).toEqual([
+			Song_MetadataTag.TITLE,
+			Song_MetadataTag.ALBUM,
+		]);
+		expect(songTableState.columns).toHaveLength(2);
+		expect(browserStateRepository.get().filterTags).toEqual([
+			Song_MetadataTag.GENRE,
+			Song_MetadataTag.ARTIST,
+			Song_MetadataTag.ALBUM,
+		]);
+	});
+
+	it("keeps a document carrying a field the schema no longer knows", async () => {
+		fs.mkdirSync(path.join(tempDir, "db"), { recursive: true });
+		fs.writeFileSync(
+			path.join(tempDir, "db", "common_song_table_state.json"),
+			JSON.stringify({
+				schemaVersion: 2,
+				columnTags: ["ALBUM"],
+				fieldRemovedInAnEarlierVersion: 42,
+			}),
+		);
+
+		const { commonSongTableStateRepository } = await import(
+			"./ConfigRepositoryFile.js"
+		);
+
+		expect(commonSongTableStateRepository.get().columnTags).toEqual([
+			Song_MetadataTag.ALBUM,
+		]);
+	});
 });

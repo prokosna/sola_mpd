@@ -110,7 +110,11 @@ class ConfigRepositoryFile<T extends Message & { schemaVersion: number }>
 					fileContentJson[key] = value;
 				}
 			}
-			this.localCache = fromJson(schema, fileContentJson);
+			// Without this, a field the schema no longer knows rejects the whole
+			// document and the catch below replaces it with the defaults.
+			this.localCache = fromJson(schema, fileContentJson, {
+				ignoreUnknownFields: true,
+			});
 		} catch (_) {
 			this.localCache = defaultValue;
 			this.save();
