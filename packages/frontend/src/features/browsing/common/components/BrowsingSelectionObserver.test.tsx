@@ -155,11 +155,16 @@ describe("BrowsingSelectionObserver", () => {
 			</StrictMode>,
 		);
 
+		// The URL lands in the render commit, but the effect that records the
+		// memory and re-resolves runs after it, so wait for that too before
+		// asserting on either.
 		await waitFor(() =>
 			expect(getByTestId("location").textContent).toBe("/browser?bsel=Jazz"),
 		);
+		await waitFor(() =>
+			expect(searches.some((s) => s.includes("Jazz"))).toBe(true),
+		);
 		expect(store.get(rememberedSelectionAtom)).toEqual(remembered);
-		expect(searches.some((s) => s.includes("Jazz"))).toBe(true);
 
 		// StrictMode's synchronous double-invoke of the hydrating run must not
 		// slip an `undefined` write in before the replace lands.
@@ -274,7 +279,9 @@ describe("BrowsingSelectionObserver", () => {
 		await waitFor(() =>
 			expect(getByTestId("location").textContent).toBe("/browser"),
 		);
-		expect(store.get(rememberedSelectionAtom)).toBe(undefined);
+		await waitFor(() =>
+			expect(store.get(rememberedSelectionAtom)).toBe(undefined),
+		);
 	});
 
 	// This is the Back button's safety net: once the user has deliberately
