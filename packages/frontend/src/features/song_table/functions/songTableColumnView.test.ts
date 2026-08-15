@@ -1,26 +1,18 @@
-import { create } from "@bufbuild/protobuf";
 import { Song_MetadataTag } from "@sola_mpd/shared/src/models/song_pb.js";
-import { SongTableColumnSchema } from "@sola_mpd/shared/src/models/song_table_pb.js";
 import { describe, expect, it } from "vitest";
 
-import type { SongTableDeviceLayout } from "../types/songTableTypes";
 import {
 	buildDeviceSortFromColumnViews,
 	buildWidthFlexByTagFromColumnViews,
-	composeSearchSongTableColumnView,
 	composeSongTableColumnView,
 } from "./songTableColumnView";
 
 describe("composeSongTableColumnView", () => {
-	it("takes tag order from the workspace and width/sort from the device", () => {
-		const deviceLayout: SongTableDeviceLayout = {
-			widthFlexByTag: { [Song_MetadataTag.TITLE]: 250 },
-			sort: [{ tag: Song_MetadataTag.TITLE, isDesc: true }],
-		};
-
+	it("takes tag order from the argument and width/sort from the given maps", () => {
 		const result = composeSongTableColumnView(
 			[Song_MetadataTag.TITLE, Song_MetadataTag.ARTIST],
-			deviceLayout,
+			{ [Song_MetadataTag.TITLE]: 250 },
+			[{ tag: Song_MetadataTag.TITLE, isDesc: true }],
 		);
 
 		expect(result).toEqual([
@@ -39,16 +31,8 @@ describe("composeSongTableColumnView", () => {
 		]);
 	});
 
-	it("never falls back to a workspace width or sort for a tag with no device entry", () => {
-		const deviceLayout: SongTableDeviceLayout = {
-			widthFlexByTag: {},
-			sort: [],
-		};
-
-		const result = composeSongTableColumnView(
-			[Song_MetadataTag.ALBUM],
-			deviceLayout,
-		);
+	it("never falls back to some other width or sort for a tag with no entry", () => {
+		const result = composeSongTableColumnView([Song_MetadataTag.ALBUM], {}, []);
 
 		expect(result).toEqual([
 			{
@@ -60,18 +44,14 @@ describe("composeSongTableColumnView", () => {
 		]);
 	});
 
-	it("assigns sortOrder by position in the device sort list", () => {
-		const deviceLayout: SongTableDeviceLayout = {
-			widthFlexByTag: {},
-			sort: [
+	it("assigns sortOrder by position in the sort list", () => {
+		const result = composeSongTableColumnView(
+			[Song_MetadataTag.TITLE, Song_MetadataTag.ARTIST],
+			{},
+			[
 				{ tag: Song_MetadataTag.ARTIST, isDesc: false },
 				{ tag: Song_MetadataTag.TITLE, isDesc: true },
 			],
-		};
-
-		const result = composeSongTableColumnView(
-			[Song_MetadataTag.TITLE, Song_MetadataTag.ARTIST],
-			deviceLayout,
 		);
 
 		expect(result[0]).toMatchObject({
@@ -83,24 +63,13 @@ describe("composeSongTableColumnView", () => {
 			sortOrder: 0,
 		});
 	});
-});
 
-describe("composeSearchSongTableColumnView", () => {
-	it("keeps tag and sort from the search's own columns, overlaying only the device width", () => {
-		const columns = [
-			create(SongTableColumnSchema, {
-				tag: Song_MetadataTag.ALBUM,
-				sortOrder: 0,
-				isSortDesc: true,
-				widthFlex: 0,
-			}),
-		];
-		const deviceLayout: SongTableDeviceLayout = {
-			widthFlexByTag: { [Song_MetadataTag.ALBUM]: 555 },
-			sort: [],
-		};
-
-		const result = composeSearchSongTableColumnView(columns, deviceLayout);
+	it("composes a search's own tags/sort with the device width, same as a library view", () => {
+		const result = composeSongTableColumnView(
+			[Song_MetadataTag.ALBUM],
+			{ [Song_MetadataTag.ALBUM]: 555 },
+			[{ tag: Song_MetadataTag.ALBUM, isDesc: true }],
+		);
 
 		expect(result).toEqual([
 			{
@@ -110,22 +79,6 @@ describe("composeSearchSongTableColumnView", () => {
 				isSortDesc: true,
 			},
 		]);
-	});
-
-	it("falls back to the default width when the device has no entry for the tag", () => {
-		const columns = [
-			create(SongTableColumnSchema, {
-				tag: Song_MetadataTag.TITLE,
-				widthFlex: 0,
-			}),
-		];
-
-		const result = composeSearchSongTableColumnView(columns, {
-			widthFlexByTag: {},
-			sort: [],
-		});
-
-		expect(result[0].widthFlex).toBe(1);
 	});
 });
 

@@ -1,7 +1,4 @@
-import {
-	convertSongMetadataValueToString,
-	getSongMetadataAsString,
-} from "@sola_mpd/shared/src/functions/songMetadata.js";
+import { getSongMetadataAsString } from "@sola_mpd/shared/src/functions/songMetadata.js";
 import { atom } from "jotai";
 import { atomWithRefresh } from "jotai/utils";
 
@@ -51,9 +48,7 @@ const recentlyAddedFastSongsAtom = atom((get) => {
 				return true;
 			}
 			const songValue = getSongMetadataAsString(song, filter.tag);
-			return filter.selectedValues.some(
-				(value) => convertSongMetadataValueToString(value) === songValue,
-			);
+			return filter.selectedValues.some((value) => value === songValue);
 		}),
 	);
 });

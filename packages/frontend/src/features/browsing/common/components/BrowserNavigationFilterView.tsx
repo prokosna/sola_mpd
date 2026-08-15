@@ -1,20 +1,16 @@
 import { Group } from "@mantine/core";
-import type { BrowserFilter } from "@sola_mpd/shared/src/models/browser_pb.js";
 import type { Song_MetadataTag } from "@sola_mpd/shared/src/models/song_pb.js";
-import type { UpdateMode } from "../../../../types/stateTypes";
 import { FullWidthSkeleton } from "../../../loading";
 import { SelectList } from "../../../select_list";
 import { useBrowserNavigationFilterSelectListProps } from "../hooks/useBrowserNavigationFilterSelectListProps";
+import type { BrowserFilterView } from "../types/browserFilterView";
 
 export type BrowserNavigationFilterViewProps = {
-	browserFilter: BrowserFilter;
+	browserFilter: BrowserFilterView;
 	values?: string[];
-	browserFilters?: BrowserFilter[];
+	browserFilters?: BrowserFilterView[];
 	availableTags: Song_MetadataTag[];
-	updateBrowserFilters: (
-		browserFilters: BrowserFilter[],
-		mode: UpdateMode,
-	) => Promise<void>;
+	updateBrowserFilters: (browserFilters: BrowserFilterView[]) => Promise<void>;
 	onScrolledNearBottom?: () => void;
 };
 

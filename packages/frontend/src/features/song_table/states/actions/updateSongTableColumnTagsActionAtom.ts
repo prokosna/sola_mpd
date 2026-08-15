@@ -11,7 +11,7 @@ import {
 import { songTableStateRepositoryAtom } from "../atoms/songTableStateRepositoryAtom";
 
 /**
- * The only writer of the shared column set (DESIGN.md §6). Clones the
+ * The only writer of the shared column set. Clones the
  * fetched document and sets only `column_tags`, which is what keeps the
  * deprecated fields the backend save-guard and the device migration rely on
  * intact — never construct a fresh message here.

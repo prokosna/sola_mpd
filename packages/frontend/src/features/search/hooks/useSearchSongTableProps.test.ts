@@ -10,10 +10,7 @@ import {
 import { MpdStatsSchema } from "@sola_mpd/shared/src/models/mpd/mpd_stats_pb.js";
 import { PluginStateSchema } from "@sola_mpd/shared/src/models/plugin/plugin_pb.js";
 import { Song_MetadataTag } from "@sola_mpd/shared/src/models/song_pb.js";
-import {
-	SongTableColumnSchema,
-	SongTableStateSchema,
-} from "@sola_mpd/shared/src/models/song_table_pb.js";
+import { SongTableStateSchema } from "@sola_mpd/shared/src/models/song_table_pb.js";
 import { renderHook, waitFor } from "@testing-library/react";
 import { createStore } from "jotai";
 import { Provider } from "jotai/react";
@@ -37,7 +34,7 @@ import {
 } from "../../song_table/states/atoms/songTableAtom";
 import { songTableDeviceLayoutAtom } from "../../song_table/states/atoms/songTableDeviceLayoutAtom";
 import { songTableStateRepositoryAtom } from "../../song_table/states/atoms/songTableStateRepositoryAtom";
-import { searchSongTableColumnsAtom } from "../states/atoms/searchEditAtom";
+import { searchEditColumnsAtom } from "../states/atoms/searchEditAtom";
 import { searchVisibleSongsAtom } from "../states/atoms/searchSongsAtom";
 
 import { useSearchSongTableProps } from "./useSearchSongTableProps";
@@ -58,18 +55,6 @@ function createFakeDeviceSettingsRepository(): DeviceSettingsRepository {
 		listKeys: (prefix: string) =>
 			[...backing.keys()].filter((key) => key.startsWith(prefix)),
 	};
-}
-
-function createColumn(
-	tag: Song_MetadataTag,
-	opts: { sortOrder?: number; isSortDesc?: boolean; widthFlex?: number } = {},
-) {
-	return create(SongTableColumnSchema, {
-		tag,
-		sortOrder: opts.sortOrder,
-		isSortDesc: opts.isSortDesc ?? false,
-		widthFlex: opts.widthFlex ?? 1,
-	});
 }
 
 async function flush() {
@@ -186,15 +171,12 @@ describe("useSearchSongTableProps", () => {
 		expect(result.current?.columns[1].widthFlex).toBe(1);
 	});
 
-	it("uses the saved search's own tag/sort, overlaid with the device width, when searchSongTableColumns is set", async () => {
+	it("uses the saved search's own tag/sort, overlaid with the device width, when a search edit is set", async () => {
 		const store = await createReadyStore();
-		store.set(searchSongTableColumnsAtom, [
-			createColumn(Song_MetadataTag.ALBUM, {
-				sortOrder: 0,
-				isSortDesc: true,
-				widthFlex: 0, // saved searches never carry a meaningful width
-			}),
-		]);
+		store.set(searchEditColumnsAtom, {
+			columnTags: [Song_MetadataTag.ALBUM],
+			sort: [{ tag: Song_MetadataTag.ALBUM, isDesc: true }],
+		});
 		store.set(songTableDeviceLayoutAtom, {
 			widthFlexByTag: { [Song_MetadataTag.ALBUM]: 555 },
 			sort: [],

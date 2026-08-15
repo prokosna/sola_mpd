@@ -58,7 +58,7 @@ describe("convertLegacySongTableColumnLayout", () => {
 		expect(convertLegacySongTableColumnLayout(legacy).sort).toEqual([]);
 	});
 
-	// A stored zero is not a width (R1): importing it would render the
+	// A stored zero is not a width: importing it would render the
 	// column at flex 0 instead of composing to the default.
 	it("produces no widthFlexByTag key for an entry with widthFlex 0", () => {
 		const legacy: LegacySongTableColumnLayout = {
@@ -69,7 +69,11 @@ describe("convertLegacySongTableColumnLayout", () => {
 
 		expect(result.widthFlexByTag).toEqual({});
 		expect(
-			composeSongTableColumnView([Song_MetadataTag.TITLE], result)[0].widthFlex,
+			composeSongTableColumnView(
+				[Song_MetadataTag.TITLE],
+				result.widthFlexByTag,
+				result.sort,
+			)[0].widthFlex,
 		).toBe(DEFAULT_COLUMN_WIDTH_FLEX);
 	});
 });
@@ -103,7 +107,7 @@ describe("buildDeviceLayoutFromServerColumns", () => {
 		]);
 	});
 
-	// A stored zero is not a width (R1): a column averaged down to flex 0
+	// A stored zero is not a width: a column averaged down to flex 0
 	// before this refactor must not survive the migration as a fixed width.
 	it("produces no widthFlexByTag key for a column with widthFlex 0", () => {
 		const columns = [
@@ -118,7 +122,11 @@ describe("buildDeviceLayoutFromServerColumns", () => {
 
 		expect(result.widthFlexByTag).toEqual({});
 		expect(
-			composeSongTableColumnView([Song_MetadataTag.TITLE], result)[0].widthFlex,
+			composeSongTableColumnView(
+				[Song_MetadataTag.TITLE],
+				result.widthFlexByTag,
+				result.sort,
+			)[0].widthFlex,
 		).toBe(DEFAULT_COLUMN_WIDTH_FLEX);
 	});
 });
@@ -143,9 +151,9 @@ describe("migrateSongTableDeviceLayout", () => {
 		});
 	});
 
-	// The async ordering is load-bearing (DESIGN.md §7): a device with no
-	// local key must wait for a slow backend fetch and end up with the
-	// server's values, not the defaults.
+	// The async ordering is load-bearing: a device with no local key must
+	// wait for a slow backend fetch and end up with the server's values,
+	// not the defaults.
 	it("waits for a slow backend fetch and resolves to the server's values, not the defaults", async () => {
 		const serverColumns = [
 			create(SongTableColumnSchema, {

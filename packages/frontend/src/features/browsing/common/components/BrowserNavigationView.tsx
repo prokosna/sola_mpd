@@ -1,4 +1,3 @@
-import type { BrowserFilter } from "@sola_mpd/shared/src/models/browser_pb.js";
 import type { Song_MetadataTag } from "@sola_mpd/shared/src/models/song_pb.js";
 import clsx from "clsx";
 import * as React from "react";
@@ -9,19 +8,19 @@ import {
 	useDefaultLayout,
 } from "react-resizable-panels";
 import styles from "../../../../ResizeHandle.module.css";
-import type { UpdateMode } from "../../../../types/stateTypes";
 import { FullWidthSkeleton } from "../../../loading";
 import { convertSongMetadataTagToDisplayName } from "../../../song_table";
-import { listBrowserSongMetadataTags } from "../functions/browserFilter";
+import {
+	buildBrowserNavigationPanelIds,
+	listBrowserSongMetadataTags,
+} from "../functions/browserFilter";
+import type { BrowserFilterView } from "../types/browserFilterView";
 import { BrowserNavigationFilterView } from "./BrowserNavigationFilterView";
 
 type BrowserNavigationViewProps = {
-	browserFilters?: BrowserFilter[];
+	browserFilters?: BrowserFilterView[];
 	browserFilterValues?: Map<Song_MetadataTag, string[]>;
-	updateBrowserFilters: (
-		browserFilters: BrowserFilter[],
-		mode: UpdateMode,
-	) => Promise<void>;
+	updateBrowserFilters: (browserFilters: BrowserFilterView[]) => Promise<void>;
 	onScrolledNearBottom?: () => void;
 };
 
@@ -38,12 +37,7 @@ export function BrowserNavigationView(props: BrowserNavigationViewProps) {
 	const availableTags = listBrowserSongMetadataTags().filter(
 		(tag) => !usedTags.includes(tag),
 	);
-	const sortedBrowserFilters = [...resolvedBrowserFilters].sort(
-		(a, b) => a.order - b.order,
-	);
-	const panelIds = sortedBrowserFilters.map((browserFilter) =>
-		convertSongMetadataTagToDisplayName(browserFilter.tag),
-	);
+	const panelIds = buildBrowserNavigationPanelIds(usedTags);
 	const { defaultLayout, onLayoutChanged } = useDefaultLayout({
 		id: "browser-navigation-view",
 		panelIds,
@@ -60,7 +54,7 @@ export function BrowserNavigationView(props: BrowserNavigationViewProps) {
 			defaultLayout={defaultLayout}
 			onLayoutChanged={onLayoutChanged}
 		>
-			{sortedBrowserFilters.map((browserFilter, index, array) => (
+			{resolvedBrowserFilters.map((browserFilter, index, array) => (
 				<React.Fragment key={browserFilter.tag}>
 					<Panel
 						minSize="10%"
@@ -70,7 +64,7 @@ export function BrowserNavigationView(props: BrowserNavigationViewProps) {
 							{...{
 								browserFilter,
 								values: browserFilterValues?.get(browserFilter.tag),
-								browserFilters: sortedBrowserFilters,
+								browserFilters: resolvedBrowserFilters,
 								availableTags,
 								updateBrowserFilters,
 								onScrolledNearBottom,

@@ -24,8 +24,8 @@ const legacySongTableColumnLayoutKey = buildDeviceSettingKey(
 // with which music library is loaded.
 
 /**
- * One-time migration (DESIGN.md §7): legacy device key, then the workspace
- * document's deprecated per-column width/sort, then the defaults. A failed
+ * One-time migration: legacy device key, then the workspace document's
+ * deprecated per-column width/sort, then the defaults. A failed
  * workspace fetch resolves to the defaults for this session only —
  * `repository.set` below is skipped, so the next load retries.
  */
@@ -55,7 +55,7 @@ const songTableDeviceLayoutAsyncAtom = atomWithDefault<
 
 // `unwrap` resolves to `undefined` until the underlying promise first
 // settles, which is exactly the "pending" signal consumers must see instead
-// of a painted-in-defaults `{}` (DESIGN.md §7).
+// of a painted-in-defaults `{}`.
 const songTableDeviceLayoutUnwrappedAtom = atomWithSync(
 	songTableDeviceLayoutAsyncAtom,
 );

@@ -1,26 +1,14 @@
-import type { BrowserFilter } from "@sola_mpd/shared/src/models/browser_pb.js";
 import { useAtomValue } from "jotai";
-import { useCallback } from "react";
 
-import type { UpdateMode } from "../../../../types/stateTypes";
 import { BrowserNavigationBreadcrumbsView } from "../../common/components/BrowserNavigationBreadcrumbsView";
-import { useUpdateRecentlyAddedFilters } from "../hooks/useUpdateRecentlyAddedFilters";
-import { recentlyAddedFiltersAtom } from "../states/atoms/recentlyAddedFiltersAtom";
+import { useUpdateRecentlyAddedSelection } from "../hooks/useUpdateRecentlyAddedSelection";
+import { recentlyAddedSelectionAtom } from "../states/atoms/recentlyAddedSelectionAtom";
 
 export function RecentlyAddedNavigationBreadcrumbs() {
-	const browserFilters = useAtomValue(recentlyAddedFiltersAtom);
-	const updateRecentlyAddedFilters = useUpdateRecentlyAddedFilters();
-
-	const updateBrowserFilters = useCallback(
-		async (filters: BrowserFilter[], _mode: UpdateMode) => {
-			await updateRecentlyAddedFilters(filters);
-		},
-		[updateRecentlyAddedFilters],
-	);
+	const selection = useAtomValue(recentlyAddedSelectionAtom);
+	const updateSelection = useUpdateRecentlyAddedSelection();
 
 	return (
-		<BrowserNavigationBreadcrumbsView
-			{...{ browserFilters, updateBrowserFilters }}
-		/>
+		<BrowserNavigationBreadcrumbsView {...{ selection, updateSelection }} />
 	);
 }

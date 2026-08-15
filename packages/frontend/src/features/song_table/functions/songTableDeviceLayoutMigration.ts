@@ -7,7 +7,7 @@ import type {
 	SongTableDeviceLayoutSort,
 } from "../types/songTableTypes";
 
-/** The superseded `sola:v1:device:songTableColumnLayout` shape (DESIGN.md §5, §7). */
+/** The superseded `sola:v1:device:songTableColumnLayout` shape. */
 export type LegacySongTableColumnLayoutEntry = {
 	widthFlex: number;
 	sortOrder?: number;
@@ -33,9 +33,10 @@ function buildSortList(
 }
 
 /**
- * Source 1 (§7): the pre-scoping-release device key. Object.keys gives back
- * strings, so a stale key surviving a tag's removal from the enum must be
- * dropped rather than coerced into a bogus tag.
+ * The superseded device key, from before workspace/device scoping split
+ * layout into its own store. Object.keys gives back strings, so a stale key
+ * surviving a tag's removal from the enum must be dropped rather than
+ * coerced into a bogus tag.
  */
 export function convertLegacySongTableColumnLayout(
 	legacy: LegacySongTableColumnLayout,
@@ -52,7 +53,7 @@ export function convertLegacySongTableColumnLayout(
 			continue;
 		}
 		const entry = legacy[key];
-		// A stored zero is not a width (R1): importing it would render the
+		// A stored zero is not a width: importing it would render the
 		// column at flex 0 instead of falling back to the default.
 		if (entry.widthFlex > 0) {
 			widthFlexByTag[tag] = entry.widthFlex;
@@ -66,13 +67,13 @@ export function convertLegacySongTableColumnLayout(
 	return { widthFlexByTag, sort: buildSortList(sortEntries) };
 }
 
-/** Source 2 (§7): the workspace document's deprecated per-column width/sort. */
+/** The workspace document's deprecated per-column width and sort, the fallback source when no legacy device key exists. */
 export function buildDeviceLayoutFromServerColumns(
 	columns: SongTableColumn[],
 ): SongTableDeviceLayout {
 	const widthFlexByTag: Partial<Record<Song_MetadataTag, number>> = {};
 	for (const column of columns) {
-		// A stored zero is not a width (R1): importing it would render the
+		// A stored zero is not a width: importing it would render the
 		// column at flex 0 instead of falling back to the default.
 		if (column.widthFlex > 0) {
 			widthFlexByTag[column.tag] = column.widthFlex;
@@ -92,7 +93,7 @@ export type SongTableDeviceLayoutMigrationResult =
 
 /**
  * Async so a server-only history is never raced by the default winning and
- * getting written first (DESIGN.md §7). A failed fetch resolves as "failed"
+ * getting written first. A failed fetch resolves as "failed"
  * rather than throwing, so the caller can run on defaults without persisting
  * them.
  */

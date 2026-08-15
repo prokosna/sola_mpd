@@ -1,9 +1,6 @@
 import { create, toJsonString } from "@bufbuild/protobuf";
 import { StringValueSchema } from "@bufbuild/protobuf/wkt";
 import { escapeRegexString } from "@sola_mpd/shared/src/functions/mpdConverters.js";
-import { convertSongMetadataValueToString } from "@sola_mpd/shared/src/functions/songMetadata.js";
-import type { BrowserFilter } from "@sola_mpd/shared/src/models/browser_pb.js";
-import { BrowserFilterSchema } from "@sola_mpd/shared/src/models/browser_pb.js";
 import {
 	type FilterCondition,
 	FilterCondition_Operator,
@@ -18,8 +15,9 @@ import {
 	Song_MetadataTag,
 	Song_MetadataValueSchema,
 } from "@sola_mpd/shared/src/models/song_pb.js";
-
 import type { MpdClient } from "../../../mpd";
+import { convertSongMetadataTagToDisplayName } from "../../../song_table";
+import type { BrowserFilterView } from "../types/browserFilterView";
 import type { BrowserSelection } from "../types/browserSelection";
 
 export function listBrowserSongMetadataTags(): Song_MetadataTag[] {
@@ -32,26 +30,42 @@ export function listBrowserSongMetadataTags(): Song_MetadataTag[] {
 	];
 }
 
+/**
+ * The `react-resizable-panels` key includes each panel's id verbatim
+ * (`react-resizable-panels:<viewId>:<panelId>...`), so this order and string
+ * form must stay byte-identical or every existing user silently loses their
+ * saved pane splits.
+ */
+export function buildBrowserNavigationPanelIds(
+	filterTags: Song_MetadataTag[],
+): string[] {
+	return filterTags.map((tag) => convertSongMetadataTagToDisplayName(tag));
+}
+
 export function convertBrowserFilterToCondition(
-	browserFilter: BrowserFilter,
+	tag: Song_MetadataTag,
+	selectedValues: string[],
 ): FilterCondition | undefined {
-	if (browserFilter.selectedValues.length === 0) {
+	if (selectedValues.length === 0) {
 		return undefined;
 	}
 
-	if (browserFilter.selectedValues.length === 1) {
+	if (selectedValues.length === 1) {
 		return create(FilterConditionSchema, {
-			tag: browserFilter.tag,
-			value: browserFilter.selectedValues[0],
+			tag,
+			value: create(Song_MetadataValueSchema, {
+				value: {
+					case: "stringValue",
+					value: create(StringValueSchema, { value: selectedValues[0] }),
+				},
+			}),
 			operator: FilterCondition_Operator.EQUAL,
 		});
 	}
 
-	const regexValue = `^(${browserFilter.selectedValues
-		.map((value) => escapeRegexString(convertSongMetadataValueToString(value)))
-		.join("|")})$`;
+	const regexValue = `^(${selectedValues.map(escapeRegexString).join("|")})$`;
 	return create(FilterConditionSchema, {
-		tag: browserFilter.tag,
+		tag,
 		value: create(Song_MetadataValueSchema, {
 			value: {
 				case: "stringValue",
@@ -62,201 +76,180 @@ export function convertBrowserFilterToCondition(
 	});
 }
 
-function cloneFilter(filter: BrowserFilter): BrowserFilter {
-	return create(BrowserFilterSchema, {
-		tag: filter.tag,
-		order: filter.order,
-		selectedOrder: filter.selectedOrder,
-		selectedValues: [...filter.selectedValues],
-	});
-}
-
-function normalizeBrowserFilters(filters: BrowserFilter[]): BrowserFilter[] {
-	const newFilters = filters.map(cloneFilter);
-	newFilters.sort((a, b) => a.order - b.order);
-	let order = 0;
-	for (const newFilter of newFilters) {
-		newFilter.order = order;
-		order += 1;
-
-		if (newFilter.selectedValues.length > 0) {
-			if (newFilter.selectedOrder < 0) {
-				const nextOrderIndex =
-					Math.max(0, ...newFilters.map((filter) => filter.selectedOrder)) + 1;
-				newFilter.selectedOrder = nextOrderIndex;
-			}
-		} else {
-			newFilter.selectedOrder = -1;
-		}
+function findFilterIndex(
+	filters: BrowserFilterView[],
+	target: BrowserFilterView,
+): number {
+	const index = filters.findIndex((filter) => filter.tag === target.tag);
+	if (index < 0) {
+		throw new Error(
+			`The filter doesn't exist: ${Song_MetadataTag[target.tag]}`,
+		);
 	}
-
-	const minOrderIndex = Math.min(
-		...newFilters
-			.filter((filter) => filter.selectedOrder > 0)
-			.map((filter) => filter.selectedOrder),
-	);
-	for (const newFilter of newFilters) {
-		if (newFilter.selectedOrder > 0) {
-			newFilter.selectedOrder -= minOrderIndex - 1;
-		}
-	}
-	return newFilters;
+	return index;
 }
 
 export function changeBrowserFilterToTheOtherTag(
-	currentFilters: BrowserFilter[],
-	target: BrowserFilter,
+	currentFilters: BrowserFilterView[],
+	target: BrowserFilterView,
 	next: Song_MetadataTag,
-): BrowserFilter[] {
-	const index = currentFilters.findIndex((filter) => filter.tag === target.tag);
-	if (index < 0) {
-		throw new Error(
-			`The filter doesn't exist: ${Song_MetadataTag[target.tag]}`,
-		);
-	}
-	const newFilters = currentFilters.map((filter, i) =>
-		i === index
-			? create(BrowserFilterSchema, {
-					tag: next,
-					order: filter.order,
-					selectedOrder: -1,
-					selectedValues: [],
-				})
-			: filter,
+): BrowserFilterView[] {
+	const index = findFilterIndex(currentFilters, target);
+	return currentFilters.map((filter, i) =>
+		i === index ? { tag: next, selectedValues: [] } : filter,
 	);
-	return normalizeBrowserFilters(newFilters);
 }
 
 export function addBrowserFilterNext(
-	currentFilters: BrowserFilter[],
-	target: BrowserFilter,
+	currentFilters: BrowserFilterView[],
+	target: BrowserFilterView,
 	next: Song_MetadataTag,
-): BrowserFilter[] {
-	const index = currentFilters.findIndex((filter) => filter.tag === target.tag);
-	if (index < 0) {
-		throw new Error(
-			`The filter doesn't exist: ${Song_MetadataTag[target.tag]}`,
-		);
-	}
-	const targetOrder = currentFilters[index].order;
-	const newFilters = currentFilters.map((filter) =>
-		filter.order > targetOrder
-			? create(BrowserFilterSchema, {
-					tag: filter.tag,
-					order: filter.order + 1,
-					selectedOrder: filter.selectedOrder,
-					selectedValues: [...filter.selectedValues],
-				})
-			: filter,
-	);
-	newFilters.push(
-		create(BrowserFilterSchema, {
-			tag: next,
-			selectedOrder: -1,
-			selectedValues: [],
-			order: targetOrder + 1,
-		}),
-	);
-	return normalizeBrowserFilters(newFilters);
+): BrowserFilterView[] {
+	const index = findFilterIndex(currentFilters, target);
+	const newFilters = [...currentFilters];
+	newFilters.splice(index + 1, 0, { tag: next, selectedValues: [] });
+	return newFilters;
 }
 
 export function removeBrowserFilter(
-	currentFilters: BrowserFilter[],
-	target: BrowserFilter,
-): BrowserFilter[] {
-	const index = currentFilters.findIndex((filter) => filter.tag === target.tag);
-	if (index < 0) {
-		throw new Error(
-			`The filter doesn't exist: ${Song_MetadataTag[target.tag]}`,
-		);
-	}
+	currentFilters: BrowserFilterView[],
+	target: BrowserFilterView,
+): BrowserFilterView[] {
+	const index = findFilterIndex(currentFilters, target);
 	const newFilters = [...currentFilters];
 	newFilters.splice(index, 1);
-	return normalizeBrowserFilters(newFilters);
+	return newFilters;
 }
 
 export function selectBrowserFilterValues(
-	currentFilters: BrowserFilter[],
-	target: BrowserFilter,
+	currentFilters: BrowserFilterView[],
+	target: BrowserFilterView,
 	selectedValues: string[],
-): BrowserFilter[] {
-	const index = currentFilters.findIndex((filter) => filter.tag === target.tag);
-	if (index < 0) {
-		throw new Error(
-			`The filter doesn't exist: ${Song_MetadataTag[target.tag]}`,
-		);
-	}
-	const newFilters = currentFilters.map((filter, i) =>
-		i === index
-			? create(BrowserFilterSchema, {
-					tag: filter.tag,
-					order: filter.order,
-					selectedOrder: filter.selectedOrder,
-					selectedValues: selectedValues.map((value) =>
-						create(Song_MetadataValueSchema, {
-							value: {
-								case: "stringValue",
-								value: {
-									value,
-								},
-							},
-						}),
-					),
-				})
-			: filter,
+): BrowserFilterView[] {
+	const index = findFilterIndex(currentFilters, target);
+	return currentFilters.map((filter, i) =>
+		i === index ? { tag: filter.tag, selectedValues } : filter,
 	);
-	return normalizeBrowserFilters(newFilters);
 }
 
 export function resetAllBrowserFilters(
-	currentFilters: BrowserFilter[],
-): BrowserFilter[] {
-	const newFilters = currentFilters.map((filter) =>
-		create(BrowserFilterSchema, {
-			tag: filter.tag,
-			order: filter.order,
-			selectedOrder: filter.selectedOrder,
-			selectedValues: [],
-		}),
-	);
-	return normalizeBrowserFilters(newFilters);
+	currentFilters: BrowserFilterView[],
+): BrowserFilterView[] {
+	return currentFilters.map((filter) => ({
+		tag: filter.tag,
+		selectedValues: [],
+	}));
 }
 
+/** Structural equality of the panel set: same tags, in the same order. */
+export function haveBrowserFilterTagsChanged(
+	prevTags: Song_MetadataTag[],
+	nextTags: Song_MetadataTag[],
+): boolean {
+	return (
+		prevTags.length !== nextTags.length ||
+		prevTags.some((tag, index) => tag !== nextTags[index])
+	);
+}
+
+/**
+ * The runtime value a filter panel renders: the workspace's
+ * tag list with the URL-derived selection overlaid, in tag-list order.
+ */
+export function composeBrowserFilterView(
+	filterTags: Song_MetadataTag[],
+	selection: BrowserSelection,
+): BrowserFilterView[] {
+	const selectionByTag = new Map(
+		selection.map((entry) => [entry.tag, entry.values]),
+	);
+	return filterTags.map((tag) => ({
+		tag,
+		selectedValues: selectionByTag.get(tag) ?? [],
+	}));
+}
+
+/**
+ * Preserves each already-selected tag's chronological position — that order
+ * is what lets the first-selected panel show unfiltered choices while later
+ * ones narrow by what was picked before them — and appends newly selected
+ * tags at the end.
+ */
+export function mergeBrowserSelectionFromViews(
+	currentSelection: BrowserSelection,
+	views: BrowserFilterView[],
+): BrowserSelection {
+	const viewByTag = new Map(views.map((view) => [view.tag, view]));
+
+	const preserved: BrowserSelection = [];
+	for (const entry of currentSelection) {
+		const view = viewByTag.get(entry.tag);
+		if (view !== undefined && view.selectedValues.length > 0) {
+			preserved.push({ tag: entry.tag, values: view.selectedValues });
+		}
+	}
+
+	const preservedTags = new Set(preserved.map((entry) => entry.tag));
+	const newlySelected = views
+		.filter(
+			(view) => view.selectedValues.length > 0 && !preservedTags.has(view.tag),
+		)
+		.map((view) => ({ tag: view.tag, values: view.selectedValues }));
+
+	return [...preserved, ...newlySelected];
+}
+
+export function removeBrowserSelectionValue(
+	selection: BrowserSelection,
+	tag: Song_MetadataTag,
+	value: string,
+): BrowserSelection {
+	const entry = selection.find((candidate) => candidate.tag === tag);
+	if (entry === undefined) {
+		return selection;
+	}
+	const values = entry.values.filter((candidate) => candidate !== value);
+	return values.length > 0
+		? selection.map((candidate) =>
+				candidate.tag === tag ? { tag, values } : candidate,
+			)
+		: selection.filter((candidate) => candidate.tag !== tag);
+}
+
+/**
+ * Progressive faceting: a panel with no selection is narrowed by every
+ * selected panel, the earliest-selected panel is shown unfiltered, and every
+ * later one is narrowed only by what was selected before it — chronology
+ * comes entirely from `selection`'s order, not from panel display order.
+ */
 export async function fetchBrowserFilterValues(
 	mpdClient: MpdClient,
 	profile: MpdProfile,
-	browserFilters: BrowserFilter[],
+	filterTags: Song_MetadataTag[],
+	selection: BrowserSelection,
 	collator: Intl.Collator,
 ): Promise<Map<Song_MetadataTag, string[]>> {
-	const selectedSortedFilters = Array.from(
-		browserFilters.filter(
-			(browserFilter) => browserFilter.selectedValues.length !== 0,
-		),
-	).sort((a, b) => a.selectedOrder - b.selectedOrder);
-
 	const browserFilterValuesPairs: [Song_MetadataTag, string[]][] =
 		await Promise.all(
-			browserFilters.map(async (browserFilter) => {
-				const conditions: FilterCondition[] = [];
-				if (browserFilter.selectedOrder !== 1) {
-					for (const selectedFilter of selectedSortedFilters) {
-						if (browserFilter === selectedFilter) {
-							break;
-						}
-						const condition = convertBrowserFilterToCondition(selectedFilter);
-						if (condition === undefined) {
-							continue;
-						}
-						conditions.push(condition);
-					}
-				}
+			filterTags.map(async (tag) => {
+				const selectedIndex = selection.findIndex((entry) => entry.tag === tag);
+				const precedingEntries =
+					selectedIndex < 0 ? selection : selection.slice(0, selectedIndex);
+				const conditions = precedingEntries
+					.map((entry) =>
+						convertBrowserFilterToCondition(entry.tag, entry.values),
+					)
+					.filter(
+						(condition): condition is FilterCondition =>
+							condition !== undefined,
+					);
 
 				const req = create(MpdRequestSchema, {
 					profile,
 					command: {
 						case: "list",
 						value: {
-							tag: browserFilter.tag,
+							tag,
 							conditions,
 						},
 					},
@@ -269,93 +262,9 @@ export async function fetchBrowserFilterValues(
 				}
 				const values = res.command.value.values;
 				const sortedValues = values.sort((a, b) => collator.compare(a, b));
-				return [browserFilter.tag, sortedValues];
+				return [tag, sortedValues];
 			}),
 		);
 
 	return new Map(browserFilterValuesPairs);
-}
-
-/**
- * Drops `selectedValues`/`selectedOrder`, keeping only the Workspace-owned
- * `tag`/`order` fields. Used before persisting `BrowserFilter`s to the
- * server: selection is a navigation position that now lives in the URL, not
- * a setting — nothing should write it.
- */
-export function stripBrowserFilterSelection(
-	filter: BrowserFilter,
-): BrowserFilter {
-	return create(BrowserFilterSchema, {
-		tag: filter.tag,
-		order: filter.order,
-		selectedOrder: -1,
-		selectedValues: [],
-	});
-}
-
-/**
- * Structural equality: same tags, in the same order. Ignores the selection
- * entirely, so a pure selection change never registers as a structural one.
- */
-export function haveBrowserFilterTagsChanged(
-	prev: BrowserFilter[],
-	next: BrowserFilter[],
-): boolean {
-	return (
-		prev.length !== next.length ||
-		prev.some(
-			(filter, index) =>
-				filter.tag !== next[index]?.tag || filter.order !== next[index]?.order,
-		)
-	);
-}
-
-/**
- * Extracts the navigation position (tag → selected values, in selection
- * order) out of a merged `BrowserFilter[]`, for handing off to
- * `updateBrowserSelectionActionAtom` / `updateRecentlyAddedSelectionActionAtom`.
- */
-export function extractBrowserSelectionFromFilters(
-	filters: BrowserFilter[],
-): BrowserSelection {
-	return filters
-		.filter((filter) => filter.selectedValues.length > 0)
-		.toSorted((a, b) => a.selectedOrder - b.selectedOrder)
-		.map((filter) => ({
-			tag: filter.tag,
-			values: filter.selectedValues.map((value) =>
-				convertSongMetadataValueToString(value),
-			),
-		}));
-}
-
-/**
- * Overlays a URL-derived selection onto the server's structural filters
- * (`tag`/`order`), producing the merged `BrowserFilter[]` shape every
- * existing consumer expects. Inverse of `extractBrowserSelectionFromFilters`.
- */
-export function applyBrowserSelectionToFilters(
-	filters: BrowserFilter[],
-	selection: BrowserSelection,
-): BrowserFilter[] {
-	const selectionByTag = new Map(
-		selection.map((entry, index) => [
-			entry.tag,
-			{ ...entry, order: index + 1 },
-		]),
-	);
-	return filters.map((filter) => {
-		const entry = selectionByTag.get(filter.tag);
-		const values = entry?.values ?? [];
-		return create(BrowserFilterSchema, {
-			tag: filter.tag,
-			order: filter.order,
-			selectedOrder: values.length > 0 ? entry?.order : -1,
-			selectedValues: values.map((value) =>
-				create(Song_MetadataValueSchema, {
-					value: { case: "stringValue", value: { value } },
-				}),
-			),
-		});
-	});
 }

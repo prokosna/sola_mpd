@@ -11,7 +11,7 @@ import { mpdCapabilitiesAtom } from "../../../mpd/states/atoms/mpdCapabilitiesAt
 import { mpdClientAtom } from "../../../mpd/states/atoms/mpdClientAtom";
 import { currentMpdProfileAtom } from "../../../profile/states/atoms/mpdProfileAtom";
 import { fetchSearchSongs } from "../../functions/search";
-import { searchSongTableColumnsAtom } from "./searchEditAtom";
+import { searchColumnViewAtom } from "./searchColumnViewAtom";
 
 export const targetSearchAtom = atom<Search | undefined>(undefined);
 
@@ -40,17 +40,21 @@ const searchSongsAtom = atomWithSync(searchSongsAsyncAtom);
 
 export const searchVisibleSongsAtom = atom((get) => {
 	const searchSongs = get(searchSongsAtom);
-	const searchSongTableColumns = get(searchSongTableColumnsAtom);
+	const searchColumns = get(searchColumnViewAtom);
 	const globalFilterTokens = get(globalFilterTokensAtom);
 	const pathname = get(pathnameAtom);
 
-	if (pathname !== ROUTE_HOME_SEARCH || searchSongs === undefined) {
+	if (
+		pathname !== ROUTE_HOME_SEARCH ||
+		searchSongs === undefined ||
+		searchColumns === undefined
+	) {
 		return undefined;
 	}
 
 	return filterSongsByGlobalFilter(
 		searchSongs,
 		globalFilterTokens,
-		searchSongTableColumns,
+		searchColumns,
 	);
 });

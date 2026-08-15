@@ -12,8 +12,8 @@ import { songTableColumnViewAtom } from "../states/atoms/songTableColumnViewAtom
 import type { SongTableColumnView } from "../types/songTableTypes";
 
 /**
- * Routes an AG Grid column event to the right owner (DESIGN.md §6): a tag
- * reorder/add/remove is the shared workspace column set, sort and width are
+ * Routes an AG Grid column event to the right owner: a tag reorder/add/remove
+ * is the shared workspace column set, sort and width are
  * device-owned. Shared by every library view; Search has its own routing in
  * useHandleSearchColumnsUpdated, since its sort belongs to the saved search.
  */

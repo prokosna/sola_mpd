@@ -61,7 +61,7 @@ export type SongTableContextMenuItemParams = {
 	selectedSortedSongs: Song[];
 };
 
-/** What a song table renders: a composed view, not a persisted document (see DESIGN.md §6). */
+/** What a song table renders: a composed view, not a persisted document. */
 export type SongTableColumnView = {
 	tag: Song_MetadataTag;
 	widthFlex: number;
@@ -77,7 +77,7 @@ export type SongTableDeviceLayoutSort = {
 /**
  * `Partial<Record<...>>` keeps the enum in the type while JS stores the key
  * as a string; enumerating via `Object.keys` needs `Number(key)` plus an enum
- * membership check to convert back (see DESIGN.md §5).
+ * membership check to convert back.
  */
 export type SongTableDeviceLayout = {
 	widthFlexByTag: Partial<Record<Song_MetadataTag, number>>;

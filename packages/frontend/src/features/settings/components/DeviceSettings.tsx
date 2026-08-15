@@ -3,7 +3,11 @@ import { useAtomValue, useSetAtom } from "jotai";
 import { useNotification } from "../../../lib/mantine/hooks/useNotification";
 import { resetPaneLayout } from "../../../lib/resizablePanels/resetPaneLayout";
 import { advancedSearchStatsAtom } from "../../advanced_search";
-import { resetSongTableColumnLayoutActionAtom } from "../../song_table";
+import {
+	resetSongTableColumnLayoutActionAtom,
+	resetSongTableDeviceLayoutActionAtom,
+	songTableDeviceLayoutAtom,
+} from "../../song_table";
 import { AdvancedSearchSettings } from "./AdvancedSearchSettings";
 import { ColorModeSwitchButton } from "./ColorModeSwitchButton";
 import { Locale } from "./Locale";
@@ -14,6 +18,13 @@ export function DeviceSettings() {
 	const resetSongTableColumnLayout = useSetAtom(
 		resetSongTableColumnLayoutActionAtom,
 	);
+	const resetSongTableDeviceLayout = useSetAtom(
+		resetSongTableDeviceLayoutActionAtom,
+	);
+	// Both resets no-op until the device layout resolves, so offering them
+	// before that would report a success that did not happen.
+	const isDeviceLayoutReady =
+		useAtomValue(songTableDeviceLayoutAtom) !== undefined;
 	const notify = useNotification();
 
 	const handleResetColumnWidths = () => {
@@ -26,13 +37,15 @@ export function DeviceSettings() {
 	};
 
 	const handleResetLayout = () => {
+		resetSongTableDeviceLayout();
 		resetPaneLayout();
 		notify({
 			status: "success",
-			title: "Layout reset",
+			title: "Layout reset to defaults",
 			description:
-				"Pane sizes on this device have been reset. Reopen the affected " +
-				"view to see the default layout.",
+				"Column widths, sort, and pane sizes on this device have been reset " +
+				"to the application defaults. Reopen the affected view to see the " +
+				"default pane sizes.",
 		});
 	};
 
@@ -75,11 +88,19 @@ export function DeviceSettings() {
 					Resets apply to this device only and take effect immediately.
 				</Text>
 				<Group gap={16}>
-					<Button variant="outline" onClick={handleResetColumnWidths}>
+					<Button
+						variant="outline"
+						disabled={!isDeviceLayoutReady}
+						onClick={handleResetColumnWidths}
+					>
 						Reset column widths
 					</Button>
-					<Button variant="outline" onClick={handleResetLayout}>
-						Reset layout
+					<Button
+						variant="outline"
+						disabled={!isDeviceLayoutReady}
+						onClick={handleResetLayout}
+					>
+						Reset layout to defaults
 					</Button>
 				</Group>
 			</Stack>

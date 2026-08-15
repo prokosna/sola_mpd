@@ -20,9 +20,7 @@ import { describe, expect, it } from "vitest";
 import {
 	addEditingQueryCondition,
 	addEditingSearchQuery,
-	applyTagsToSearchColumnView,
 	changeEditingQueryCondition,
-	changeEditingSearchColumns,
 	changeEditingSearchName,
 	changeEditingSearchQuery,
 	convertFormValuesToSearch,
@@ -213,79 +211,6 @@ describe("search", () => {
 			const result = changeEditingSearchName(search, "New Name");
 			expect(result.name).toBe("New Name");
 			expect(search.name).toBe(originalName);
-		});
-	});
-
-	describe("changeEditingSearchColumns", () => {
-		it("should return a new search with updated columns", () => {
-			const search = createSearch([]);
-			const result = changeEditingSearchColumns(search, []);
-			expect(result.columns).toEqual([]);
-		});
-	});
-
-	describe("applyTagsToSearchColumnView", () => {
-		it("carries over sort for a tag that survives, renumbered from 0", () => {
-			const current = [
-				{
-					tag: Song_MetadataTag.ARTIST,
-					widthFlex: 1,
-					sortOrder: 1,
-					isSortDesc: false,
-				},
-				{
-					tag: Song_MetadataTag.TITLE,
-					widthFlex: 1,
-					sortOrder: 0,
-					isSortDesc: true,
-				},
-			];
-
-			// ARTIST removed: TITLE is the only sorted tag left.
-			const result = applyTagsToSearchColumnView(
-				[Song_MetadataTag.TITLE, Song_MetadataTag.ALBUM],
-				current,
-			);
-
-			expect(result).toEqual([
-				{
-					tag: Song_MetadataTag.TITLE,
-					widthFlex: 1,
-					sortOrder: 0,
-					isSortDesc: true,
-				},
-				{
-					tag: Song_MetadataTag.ALBUM,
-					widthFlex: 1,
-					sortOrder: undefined,
-					isSortDesc: false,
-				},
-			]);
-		});
-
-		it("gives a newly added tag no sort and the default width", () => {
-			const result = applyTagsToSearchColumnView([Song_MetadataTag.GENRE], []);
-
-			expect(result).toEqual([
-				{
-					tag: Song_MetadataTag.GENRE,
-					widthFlex: 1,
-					sortOrder: undefined,
-					isSortDesc: false,
-				},
-			]);
-		});
-
-		it("preserves array order as the new tag order", () => {
-			const result = applyTagsToSearchColumnView(
-				[Song_MetadataTag.ALBUM, Song_MetadataTag.ARTIST],
-				[],
-			);
-
-			expect(result.map((c) => c.tag)).toEqual([
-				Song_MetadataTag.ALBUM,
-				Song_MetadataTag.ARTIST,
-			]);
 		});
 	});
 

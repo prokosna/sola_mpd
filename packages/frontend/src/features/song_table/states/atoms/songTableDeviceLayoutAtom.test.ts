@@ -75,9 +75,9 @@ describe("songTableDeviceLayoutAtom hydration", () => {
 		expect(store.get(songTableDeviceLayoutAtom)).toBeUndefined();
 	});
 
-	// The async ordering is load-bearing (DESIGN.md §7): a device with no
-	// local key must end up with the server's values, not the defaults, even
-	// though the backend fetch is slow.
+	// The async ordering is load-bearing: a device with no local key must end
+	// up with the server's values, not the defaults, even though the backend
+	// fetch is slow.
 	it("waits for a slow backend fetch and ends up with the server's values, not the defaults", async () => {
 		const store = createStore();
 		const deviceRepository = createFakeDeviceSettingsRepository();

@@ -1,6 +1,3 @@
-import { create } from "@bufbuild/protobuf";
-import { convertSongMetadataValueToString } from "@sola_mpd/shared/src/functions/songMetadata.js";
-import { BrowserFilterSchema } from "@sola_mpd/shared/src/models/browser_pb.js";
 import type { Song_MetadataTag } from "@sola_mpd/shared/src/models/song_pb.js";
 import { atom } from "jotai";
 
@@ -15,7 +12,7 @@ import { mpdClientAtom } from "../../../../mpd/states/atoms/mpdClientAtom";
 import { currentMpdProfileAtom } from "../../../../profile/states/atoms/mpdProfileAtom";
 import { localeCollatorAtom } from "../../../../settings/states/atoms/localeAtom";
 import {
-	applyBrowserSelectionToFilters,
+	composeBrowserFilterView,
 	fetchBrowserFilterValues,
 } from "../../../common/functions/browserFilter";
 import {
@@ -27,30 +24,22 @@ import { recentlyAddedFastStateAtom } from "./recentlyAddedFastStateAtom";
 import { recentlyAddedSelectionAtom } from "./recentlyAddedSelectionAtom";
 import { recentlyAddedStateAtom } from "./recentlyAddedStateAtom";
 
-// Private: the server's tag configuration only (Workspace). Selection is a
-// navigation position and now lives in the URL. Not exported; every consumer
-// must go through recentlyAddedFiltersAtom below.
-const recentlyAddedFiltersServerAtom = atom((get) => {
+// The workspace's panel set only. Not exported; every consumer goes through
+// recentlyAddedFiltersAtom below, which overlays the URL-derived selection.
+export const recentlyAddedFilterTagsAtom = atom((get) => {
 	const recentlyAddedState = get(recentlyAddedStateAtom);
-	return recentlyAddedState?.filters?.map((filter, index) =>
-		create(BrowserFilterSchema, {
-			tag: filter.tag,
-			selectedValues: [],
-			order: index,
-			selectedOrder: -1,
-		}),
-	);
+	return recentlyAddedState?.filterTags;
 });
 
 // The composed atom every consumer reads: the server's tag structure with the
 // URL-derived selection overlaid. Mirrors browserFiltersAtom.
 export const recentlyAddedFiltersAtom = atom((get) => {
-	const structuralFilters = get(recentlyAddedFiltersServerAtom);
-	if (structuralFilters === undefined) {
+	const filterTags = get(recentlyAddedFilterTagsAtom);
+	if (filterTags === undefined) {
 		return undefined;
 	}
 	const selection = get(recentlyAddedSelectionAtom);
-	return applyBrowserSelectionToFilters(structuralFilters, selection);
+	return composeBrowserFilterView(filterTags, selection);
 });
 
 const allSongsSortedFilterValuesMapAtom = atom((get) => {
@@ -63,18 +52,20 @@ const allSongsSortedFilterValuesMapAtom = atom((get) => {
 
 const recentlyAddedFilterValuesMapAsyncAtom = atom(async (get) => {
 	const mpdClient = get(mpdClientAtom);
-	const browserFilters = get(recentlyAddedFiltersAtom);
+	const filterTags = get(recentlyAddedFilterTagsAtom);
+	const selection = get(recentlyAddedSelectionAtom);
 	const currentMpdProfile = get(currentMpdProfileAtom);
 	const collator = get(localeCollatorAtom);
 
-	if (currentMpdProfile === undefined || browserFilters === undefined) {
+	if (currentMpdProfile === undefined || filterTags === undefined) {
 		return undefined;
 	}
 
 	return await fetchBrowserFilterValues(
 		mpdClient,
 		currentMpdProfile,
-		browserFilters,
+		filterTags,
+		selection,
 		collator,
 	);
 });
@@ -136,9 +127,7 @@ export const filteredRecentlyAddedFilterValuesMapAtom = atom((get) => {
 			browserFilter.tag,
 			filterStringsByGlobalFilter(
 				values,
-				browserFilter.selectedValues.map((value) =>
-					convertSongMetadataValueToString(value),
-				),
+				browserFilter.selectedValues,
 				globalFilterTokens,
 			),
 		);

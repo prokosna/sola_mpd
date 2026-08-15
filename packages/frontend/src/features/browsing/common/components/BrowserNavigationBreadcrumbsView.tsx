@@ -6,80 +6,37 @@ import {
 	Tooltip,
 	useComputedColorScheme,
 } from "@mantine/core";
-import { convertSongMetadataValueToString } from "@sola_mpd/shared/src/functions/songMetadata.js";
-import type { BrowserFilter } from "@sola_mpd/shared/src/models/browser_pb.js";
 import { IconX } from "@tabler/icons-react";
-import { useCallback, useMemo } from "react";
-import { UpdateMode } from "../../../../types/stateTypes";
-import {
-	resetAllBrowserFilters,
-	selectBrowserFilterValues,
-} from "../functions/browserFilter";
+import { useCallback } from "react";
+import { removeBrowserSelectionValue } from "../functions/browserFilter";
+import type { BrowserSelection } from "../types/browserSelection";
 
 type BrowserNavigationBreadcrumbsViewProps = {
-	browserFilters?: BrowserFilter[];
-	updateBrowserFilters: (
-		browserFilters: BrowserFilter[],
-		mode: UpdateMode,
-	) => Promise<void>;
+	selection?: BrowserSelection;
+	updateSelection: (selection: BrowserSelection) => Promise<void>;
 };
 
 export function BrowserNavigationBreadcrumbsView(
 	props: BrowserNavigationBreadcrumbsViewProps,
 ) {
-	const browserFilters = props.browserFilters;
-	const updateBrowserFilters = props.updateBrowserFilters;
+	const { selection, updateSelection } = props;
 	const scheme = useComputedColorScheme();
 
-	const selectedBrowserFilters = useMemo(
-		() =>
-			browserFilters
-				?.filter((filter) => filter.selectedValues.length > 0)
-				.toSorted((a, b) => a.selectedOrder - b.selectedOrder),
-		[browserFilters],
-	);
-
 	const handleResetClick = useCallback(() => {
-		if (browserFilters === undefined) {
-			return;
-		}
-		const newFilters = resetAllBrowserFilters(browserFilters);
-		updateBrowserFilters(
-			newFilters,
-			UpdateMode.LOCAL_STATE | UpdateMode.PERSIST,
-		);
-	}, [browserFilters, updateBrowserFilters]);
+		updateSelection([]);
+	}, [updateSelection]);
 
 	const handleCloseClick = useCallback(
-		(browserFilter: BrowserFilter, value: string) => {
-			if (browserFilters === undefined) {
+		(tag: BrowserSelection[number]["tag"], value: string) => {
+			if (selection === undefined) {
 				return;
 			}
-			const selectedValues = browserFilter.selectedValues.map((selectedValue) =>
-				convertSongMetadataValueToString(selectedValue),
-			);
-			const index = selectedValues.indexOf(value);
-			if (index < 0) {
-				return;
-			}
-			selectedValues.splice(index, 1);
-			const newFilters = selectBrowserFilterValues(
-				browserFilters,
-				browserFilter,
-				selectedValues,
-			);
-			updateBrowserFilters(
-				newFilters,
-				UpdateMode.LOCAL_STATE | UpdateMode.PERSIST,
-			);
+			updateSelection(removeBrowserSelectionValue(selection, tag, value));
 		},
-		[browserFilters, updateBrowserFilters],
+		[selection, updateSelection],
 	);
 
-	if (
-		selectedBrowserFilters === undefined ||
-		selectedBrowserFilters.length === 0
-	) {
+	if (selection === undefined || selection.length === 0) {
 		return null;
 	}
 
@@ -103,14 +60,10 @@ export function BrowserNavigationBreadcrumbsView(
 
 			<Group justify="center" flex={1}>
 				<Breadcrumbs separator=">" separatorMargin="xs">
-					{selectedBrowserFilters.map((browserFilter) => (
-						<Group key={`breadcrumb_item_${browserFilter.tag}`} gap={0}>
-							{browserFilter.selectedValues.map((value) => (
-								<Tooltip
-									key={convertSongMetadataValueToString(value)}
-									label={convertSongMetadataValueToString(value)}
-									withArrow
-								>
+					{selection.map((entry) => (
+						<Group key={`breadcrumb_item_${entry.tag}`} gap={0}>
+							{entry.values.map((value) => (
+								<Tooltip key={value} label={value} withArrow>
 									<Badge
 										c="brand"
 										variant="outline"
@@ -121,18 +74,13 @@ export function BrowserNavigationBreadcrumbsView(
 												size="xs"
 												color="gray.5"
 												variant="transparent"
-												onClick={() =>
-													handleCloseClick(
-														browserFilter,
-														convertSongMetadataValueToString(value),
-													)
-												}
+												onClick={() => handleCloseClick(entry.tag, value)}
 											>
 												<IconX />
 											</ActionIcon>
 										}
 									>
-										{convertSongMetadataValueToString(value)}
+										{value}
 									</Badge>
 								</Tooltip>
 							))}

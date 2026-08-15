@@ -11,7 +11,7 @@ export type SongTableDeviceLayoutPatch = {
 };
 
 /**
- * The only writer of device-owned width and sort (DESIGN.md §6). A no-op
+ * The only writer of device-owned width and sort. A no-op
  * while the one-time migration is still pending, since the underlying atom
  * refuses writes until it resolves.
  */

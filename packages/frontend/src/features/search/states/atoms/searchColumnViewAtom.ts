@@ -1,12 +1,12 @@
 import { atom } from "jotai";
 
 import {
-	composeSearchSongTableColumnView,
+	composeSongTableColumnView,
 	type SongTableColumnView,
 	songTableColumnViewAtom,
 	songTableDeviceLayoutAtom,
 } from "../../../song_table";
-import { searchSongTableColumnsAtom } from "./searchEditAtom";
+import { searchEditColumnsAtom } from "./searchEditAtom";
 
 /**
  * What the Search table currently shows: the saved search's own tag/sort
@@ -15,15 +15,19 @@ import { searchSongTableColumnsAtom } from "./searchEditAtom";
  */
 export const searchColumnViewAtom = atom<SongTableColumnView[] | undefined>(
 	(get) => {
-		const searchSongTableColumns = get(searchSongTableColumnsAtom);
+		const searchEditColumns = get(searchEditColumnsAtom);
 		const deviceLayout = get(songTableDeviceLayoutAtom);
 		if (deviceLayout === undefined) {
 			return undefined;
 		}
-		if (searchSongTableColumns.length !== 0) {
-			return composeSearchSongTableColumnView(
-				searchSongTableColumns,
-				deviceLayout,
+		if (
+			searchEditColumns !== undefined &&
+			searchEditColumns.columnTags.length !== 0
+		) {
+			return composeSongTableColumnView(
+				searchEditColumns.columnTags,
+				deviceLayout.widthFlexByTag,
+				searchEditColumns.sort,
 			);
 		}
 		return get(songTableColumnViewAtom);

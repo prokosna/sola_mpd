@@ -1,7 +1,6 @@
 import { Box } from "@mantine/core";
-import type { Song_MetadataTag } from "@sola_mpd/shared/src/models/song_pb.js";
-import { useAtomValue } from "jotai";
-import { useCallback, useState } from "react";
+import { useAtomValue, useSetAtom } from "jotai";
+import { useState } from "react";
 import { CenterSpinner } from "../../loading";
 import { PlaylistSelectModal, usePlaylistSelectModal } from "../../playlist";
 import {
@@ -9,14 +8,13 @@ import {
 	SongTable,
 	useColumnEditModalProps,
 } from "../../song_table";
-import { applyTagsToSearchColumnView } from "../functions/search";
-import { useHandleSearchColumnsUpdated } from "../hooks/useHandleSearchColumnsUpdated";
 import { useSearchSongTableProps } from "../hooks/useSearchSongTableProps";
+import { updateSearchColumnTagsActionAtom } from "../states/actions/updateSearchColumnTagsActionAtom";
 import { searchColumnViewAtom } from "../states/atoms/searchColumnViewAtom";
 
 export function SearchContent() {
 	const columns = useAtomValue(searchColumnViewAtom);
-	const handleSearchColumnsUpdated = useHandleSearchColumnsUpdated();
+	const updateSearchColumnTags = useSetAtom(updateSearchColumnTagsActionAtom);
 
 	const [isColumnEditModalOpen, setIsColumnEditModalOpen] = useState(false);
 
@@ -32,20 +30,11 @@ export function SearchContent() {
 		setIsColumnEditModalOpen,
 	);
 
-	const handleTagsUpdated = useCallback(
-		(tags: Song_MetadataTag[]) => {
-			handleSearchColumnsUpdated(
-				applyTagsToSearchColumnView(tags, columns ?? []),
-			);
-		},
-		[columns, handleSearchColumnsUpdated],
-	);
-
 	const columnEditModalProps = useColumnEditModalProps(
 		isColumnEditModalOpen,
 		columns?.map((column) => column.tag) ?? [],
 		setIsColumnEditModalOpen,
-		handleTagsUpdated,
+		updateSearchColumnTags,
 		async () => {},
 	);
 

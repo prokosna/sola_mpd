@@ -1,15 +1,14 @@
 import { create } from "@bufbuild/protobuf";
-import { BrowserFilterSchema } from "@sola_mpd/shared/src/models/browser_pb.js";
 import { MpdResponseSchema } from "@sola_mpd/shared/src/models/mpd/mpd_command_pb.js";
 import { MpdProfileSchema } from "@sola_mpd/shared/src/models/mpd/mpd_profile_pb.js";
 import {
 	Song_MetadataTag,
-	Song_MetadataValueSchema,
 	SongSchema,
 } from "@sola_mpd/shared/src/models/song_pb.js";
 import { describe, expect, it, vi } from "vitest";
 
 import type { MpdClient } from "../../../mpd";
+import type { BrowserFilterView } from "../types/browserFilterView";
 
 import { fetchBrowserSongs } from "./browserSongs";
 
@@ -39,17 +38,8 @@ describe("fetchBrowserSongs", () => {
 				command: { case: "search", value: { songs } },
 			}),
 		);
-		const filters = [
-			create(BrowserFilterSchema, {
-				tag: Song_MetadataTag.ARTIST,
-				selectedValues: [
-					create(Song_MetadataValueSchema, {
-						value: { case: "stringValue", value: { value: "Test Artist" } },
-					}),
-				],
-				order: 0,
-				selectedOrder: 0,
-			}),
+		const filters: BrowserFilterView[] = [
+			{ tag: Song_MetadataTag.ARTIST, selectedValues: ["Test Artist"] },
 		];
 
 		const result = await fetchBrowserSongs(client, profile, filters);
@@ -63,13 +53,8 @@ describe("fetchBrowserSongs", () => {
 				command: { case: "search", value: { songs: [] } },
 			}),
 		);
-		const filters = [
-			create(BrowserFilterSchema, {
-				tag: Song_MetadataTag.ARTIST,
-				selectedValues: [],
-				order: 0,
-				selectedOrder: -1,
-			}),
+		const filters: BrowserFilterView[] = [
+			{ tag: Song_MetadataTag.ARTIST, selectedValues: [] },
 		];
 
 		const result = await fetchBrowserSongs(client, profile, filters);
@@ -83,17 +68,8 @@ describe("fetchBrowserSongs", () => {
 				command: { case: undefined, value: undefined },
 			}),
 		);
-		const filters = [
-			create(BrowserFilterSchema, {
-				tag: Song_MetadataTag.ARTIST,
-				selectedValues: [
-					create(Song_MetadataValueSchema, {
-						value: { case: "stringValue", value: { value: "Test" } },
-					}),
-				],
-				order: 0,
-				selectedOrder: 0,
-			}),
+		const filters: BrowserFilterView[] = [
+			{ tag: Song_MetadataTag.ARTIST, selectedValues: ["Test"] },
 		];
 
 		await expect(fetchBrowserSongs(client, profile, filters)).rejects.toThrow(

@@ -9,7 +9,6 @@ export { diffSongTableColumns } from "./functions/diffSongTableColumns";
 export {
 	buildDeviceSortFromColumnViews,
 	buildWidthFlexByTagFromColumnViews,
-	composeSearchSongTableColumnView,
 	composeSongTableColumnView,
 } from "./functions/songTableColumnView";
 // Utils
@@ -41,6 +40,7 @@ export { clearSelectedSongsActionAtom } from "./states/actions/clearSelectedSong
 export { refreshSongTableStateActionAtom } from "./states/actions/refreshSongTableStateActionAtom";
 export { replaceQueueWithSongsActionAtom } from "./states/actions/replaceQueueWithSongsActionAtom";
 export { resetSongTableColumnLayoutActionAtom } from "./states/actions/resetSongTableColumnLayoutActionAtom";
+export { resetSongTableDeviceLayoutActionAtom } from "./states/actions/resetSongTableDeviceLayoutActionAtom";
 export { setSelectedSongsActionAtom } from "./states/actions/setSelectedSongsActionAtom";
 export { updateSongTableColumnTagsActionAtom } from "./states/actions/updateSongTableColumnTagsActionAtom";
 export {
@@ -61,5 +61,6 @@ export {
 	type SongTableColumnView,
 	type SongTableContextMenuItemParams,
 	type SongTableDeviceLayout,
+	type SongTableDeviceLayoutSort,
 	SongTableKeyType,
 } from "./types/songTableTypes";
