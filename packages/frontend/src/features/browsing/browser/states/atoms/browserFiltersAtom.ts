@@ -1,4 +1,3 @@
-import { convertSongMetadataValueToString } from "@sola_mpd/shared/src/functions/songMetadata.js";
 import type { Song_MetadataTag } from "@sola_mpd/shared/src/models/song_pb.js";
 import { atom } from "jotai";
 
@@ -11,43 +10,44 @@ import { mpdClientAtom } from "../../../../mpd/states/atoms/mpdClientAtom";
 import { currentMpdProfileAtom } from "../../../../profile/states/atoms/mpdProfileAtom";
 import { localeCollatorAtom } from "../../../../settings/states/atoms/localeAtom";
 import {
-	applyBrowserSelectionToFilters,
+	composeBrowserFilterView,
 	fetchBrowserFilterValues,
 } from "../../../common/functions/browserFilter";
 import { browserSelectionAtom } from "./browserSelectionAtom";
 import { browserStateAtom } from "./browserStateAtom";
 
-// Only `tag`/`order` are authoritative here; the selection lives in the URL.
-// Deliberately not exported, so every consumer goes through browserFiltersAtom
-// below and sees the two overlaid.
-const browserFiltersServerAtom = atom((get) => {
+// The workspace's panel set only. Not exported; every consumer goes through
+// browserFiltersAtom below, which overlays the URL-derived selection.
+export const browserFilterTagsAtom = atom((get) => {
 	const browserState = get(browserStateAtom);
-	return browserState?.filters;
+	return browserState?.filterTags;
 });
 
 export const browserFiltersAtom = atom((get) => {
-	const serverFilters = get(browserFiltersServerAtom);
-	if (serverFilters === undefined) {
+	const filterTags = get(browserFilterTagsAtom);
+	if (filterTags === undefined) {
 		return undefined;
 	}
 	const selection = get(browserSelectionAtom);
-	return applyBrowserSelectionToFilters(serverFilters, selection);
+	return composeBrowserFilterView(filterTags, selection);
 });
 
 const browserFilterValuesMapAsyncAtom = atom(async (get) => {
 	const mpdClient = get(mpdClientAtom);
-	const browserFilters = get(browserFiltersAtom);
+	const filterTags = get(browserFilterTagsAtom);
+	const selection = get(browserSelectionAtom);
 	const currentMpdProfile = get(currentMpdProfileAtom);
 	const collator = get(localeCollatorAtom);
 
-	if (currentMpdProfile === undefined || browserFilters === undefined) {
+	if (currentMpdProfile === undefined || filterTags === undefined) {
 		return new Map<Song_MetadataTag, string[]>();
 	}
 
 	return await fetchBrowserFilterValues(
 		mpdClient,
 		currentMpdProfile,
-		browserFilters,
+		filterTags,
+		selection,
 		collator,
 	);
 });
@@ -77,9 +77,7 @@ export const filteredBrowserFilterValuesMapAtom = atom((get) => {
 			browserFilter.tag,
 			filterStringsByGlobalFilter(
 				values,
-				browserFilter.selectedValues.map((value) =>
-					convertSongMetadataValueToString(value),
-				),
+				browserFilter.selectedValues,
 				globalFilterTokens,
 			),
 		);

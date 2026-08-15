@@ -1,4 +1,4 @@
-import type { SongTableColumn } from "@sola_mpd/shared/src/models/song_table_pb.js";
+import type { SongTableColumnView } from "../types/songTableTypes";
 
 export type SongTableColumnDiff = {
 	tagsChanged: boolean;
@@ -12,8 +12,8 @@ export type SongTableColumnDiff = {
  * index, so a pure reorder never reports a spurious sort or width change.
  */
 export function diffSongTableColumns(
-	prev: SongTableColumn[],
-	next: SongTableColumn[],
+	prev: SongTableColumnView[],
+	next: SongTableColumnView[],
 ): SongTableColumnDiff {
 	const tagsChanged =
 		prev.length !== next.length ||

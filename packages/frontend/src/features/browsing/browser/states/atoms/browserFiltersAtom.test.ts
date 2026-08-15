@@ -1,8 +1,5 @@
 import { create } from "@bufbuild/protobuf";
-import {
-	BrowserFilterSchema,
-	BrowserStateSchema,
-} from "@sola_mpd/shared/src/models/browser_pb.js";
+import { BrowserStateSchema } from "@sola_mpd/shared/src/models/browser_pb.js";
 import { Song_MetadataTag } from "@sola_mpd/shared/src/models/song_pb.js";
 import { createStore } from "jotai";
 import { describe, expect, it } from "vitest";
@@ -21,10 +18,7 @@ describe("browserFiltersAtom", () => {
 	it("reflects the URL selection reactively, and re-evaluates when it changes", async () => {
 		const store = createStore();
 		const serverState = create(BrowserStateSchema, {
-			filters: [
-				create(BrowserFilterSchema, { tag: Song_MetadataTag.ARTIST, order: 0 }),
-				create(BrowserFilterSchema, { tag: Song_MetadataTag.ALBUM, order: 1 }),
-			],
+			filterTags: [Song_MetadataTag.ARTIST, Song_MetadataTag.ALBUM],
 		});
 		store.set(browserStateAsyncAtom, Promise.resolve(serverState));
 		store.get(browserFiltersAtom); // primes the async->sync unwrap
@@ -47,13 +41,13 @@ describe("browserFiltersAtom", () => {
 		const artistFilter = withSelection?.find(
 			(f) => f.tag === Song_MetadataTag.ARTIST,
 		);
-		expect(artistFilter?.selectedValues).toHaveLength(1);
+		expect(artistFilter?.selectedValues).toEqual(["Beatles"]);
 		const albumFilter = withSelection?.find(
 			(f) => f.tag === Song_MetadataTag.ALBUM,
 		);
 		expect(albumFilter?.selectedValues).toHaveLength(0);
 
-		// Structure (tag/order) is unaffected by the URL.
+		// Structure (tag order) is unaffected by the URL.
 		expect(withSelection?.map((f) => f.tag)).toEqual([
 			Song_MetadataTag.ARTIST,
 			Song_MetadataTag.ALBUM,

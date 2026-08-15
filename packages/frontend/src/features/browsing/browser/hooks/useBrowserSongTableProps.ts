@@ -1,15 +1,9 @@
-import { clone } from "@bufbuild/protobuf";
 import { Plugin_PluginType } from "@sola_mpd/shared/src/models/plugin/plugin_pb.js";
 import type { Song } from "@sola_mpd/shared/src/models/song_pb.js";
-import {
-	type SongTableColumn,
-	SongTableStateSchema,
-} from "@sola_mpd/shared/src/models/song_table_pb.js";
 import { useAtom, useAtomValue, useSetAtom } from "jotai";
 import { type MutableRefObject, useCallback } from "react";
 import { COMPONENT_ID_BROWSER } from "../../../../const/component";
 import { useNotification } from "../../../../lib/mantine/hooks/useNotification";
-import { UpdateMode } from "../../../../types/stateTypes";
 import { useSimilaritySearchContextMenuProps } from "../../../advanced_search";
 import type { ContextMenuSection } from "../../../context_menu";
 import { usePluginContextMenuItems } from "../../../plugin";
@@ -19,14 +13,16 @@ import {
 	getSongTableContextMenuAddToPlaylist,
 	getSongTableContextMenuEditColumns,
 	getSongTableContextMenuReplace,
+	getSongTableContextMenuResetLayout,
 	getSongTableContextMenuSimilarSongs,
 	replaceQueueWithSongsActionAtom,
+	resetSongTableLayoutActionAtom,
 	type SongTableContextMenuItemParams,
 	SongTableKeyType,
 	type SongTableProps,
 	setSelectedSongsActionAtom,
-	songTableStateAtom,
-	updateSongTableStateActionAtom,
+	songTableColumnViewAtom,
+	useHandleLibraryColumnsUpdated,
 	useHandleSongDoubleClick,
 } from "../../../song_table";
 import { setIsBrowserLoadingActionAtom } from "../states/actions/setIsBrowserLoadingActionAtom";
@@ -48,12 +44,13 @@ export function useBrowserSongTableProps(
 	useAtom(syncBrowserLoadingEffectAtom);
 	const isLoading = useAtomValue(isBrowserLoadingAtom);
 	const songs = useAtomValue(browserVisibleSongsAtom);
-	const songTableState = useAtomValue(songTableStateAtom);
+	const columns = useAtomValue(songTableColumnViewAtom);
 	const setIsBrowserLoading = useSetAtom(setIsBrowserLoadingActionAtom);
-	const updateSongTableState = useSetAtom(updateSongTableStateActionAtom);
+	const onColumnsUpdated = useHandleLibraryColumnsUpdated();
 	const setSelectedSongs = useSetAtom(setSelectedSongsActionAtom);
 	const addSongsToQueue = useSetAtom(addSongsToQueueActionAtom);
 	const replaceQueueWithSongs = useSetAtom(replaceQueueWithSongsActionAtom);
+	const resetSongTableLayout = useSetAtom(resetSongTableLayoutActionAtom);
 
 	const pluginContextMenuItems = usePluginContextMenuItems(
 		Plugin_PluginType.ON_BROWSER,
@@ -89,7 +86,10 @@ export function useBrowserSongTableProps(
 				],
 			},
 			{
-				items: [getSongTableContextMenuEditColumns(setIsColumnEditModalOpen)],
+				items: [
+					getSongTableContextMenuEditColumns(setIsColumnEditModalOpen),
+					getSongTableContextMenuResetLayout(resetSongTableLayout),
+				],
 			},
 		];
 	if (isAdvancedSearchAvailable) {
@@ -113,21 +113,6 @@ export function useBrowserSongTableProps(
 		throw new Error("Reorder songs must be disabled in the browser.");
 	}, []);
 
-	const onColumnsUpdated = useCallback(
-		async (updatedColumns: SongTableColumn[]) => {
-			if (songTableState === undefined) {
-				return;
-			}
-			const newSongTableState = clone(SongTableStateSchema, songTableState);
-			newSongTableState.columns = updatedColumns;
-			await updateSongTableState({
-				state: newSongTableState,
-				mode: UpdateMode.PERSIST,
-			});
-		},
-		[songTableState, updateSongTableState],
-	);
-
 	const onSongsSelected = useCallback(
 		async (selectedSongs: Song[]) => {
 			setSelectedSongs(selectedSongs);
@@ -141,7 +126,7 @@ export function useBrowserSongTableProps(
 		setIsBrowserLoading(false);
 	}, [setIsBrowserLoading]);
 
-	if (songs === undefined || songTableState === undefined) {
+	if (songs === undefined || columns === undefined) {
 		return undefined;
 	}
 
@@ -149,7 +134,7 @@ export function useBrowserSongTableProps(
 		id: COMPONENT_ID_BROWSER,
 		songTableKeyType,
 		songs,
-		columns: songTableState.columns,
+		columns,
 		isSortingEnabled: true,
 		isReorderingEnabled: false,
 		isGlobalFilterEnabled: true,

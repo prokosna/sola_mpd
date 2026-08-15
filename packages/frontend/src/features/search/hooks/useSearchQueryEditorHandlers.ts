@@ -1,6 +1,9 @@
-import { clone } from "@bufbuild/protobuf";
+import { clone, create } from "@bufbuild/protobuf";
 import type { UseFormReturnType } from "@mantine/form";
-import { SavedSearchesSchema } from "@sola_mpd/shared/src/models/search_pb.js";
+import {
+	SavedSearchesSchema,
+	SearchSortSchema,
+} from "@sola_mpd/shared/src/models/search_pb.js";
 import { useAtomValue, useSetAtom } from "jotai";
 import { useCallback } from "react";
 import { UpdateMode } from "../../../types/stateTypes";
@@ -14,7 +17,7 @@ import { setIsSearchLoadingActionAtom } from "../states/actions/setIsSearchLoadi
 import { setTargetSearchActionAtom } from "../states/actions/setTargetSearchActionAtom";
 import { updateSavedSearchesActionAtom } from "../states/actions/updateSavedSearchesActionAtom";
 import { savedSearchesAtom } from "../states/atoms/savedSearchesAtom";
-import { searchSongTableColumnsAtom } from "../states/atoms/searchEditAtom";
+import { searchEditColumnsAtom } from "../states/atoms/searchEditAtom";
 import {
 	EditingSearchStatus,
 	type SearchFormValues,
@@ -27,7 +30,7 @@ export function useSearchQueryEditorHandlers(
 	const updateSavedSearchesAction = useSetAtom(updateSavedSearchesActionAtom);
 	const setIsSearchLoading = useSetAtom(setIsSearchLoadingActionAtom);
 	const setTargetSearch = useSetAtom(setTargetSearchActionAtom);
-	const searchSongTableColumns = useAtomValue(searchSongTableColumnsAtom);
+	const searchEditColumns = useAtomValue(searchEditColumnsAtom);
 	const setEditingSearchStatus = useSetAtom(setEditingSearchStatusActionAtom);
 
 	const handleSave = useCallback(
@@ -36,7 +39,10 @@ export function useSearchQueryEditorHandlers(
 				return;
 			}
 			const editingSearch = convertFormValuesToSearch(values);
-			editingSearch.columns = searchSongTableColumns;
+			editingSearch.columnTags = searchEditColumns?.columnTags ?? [];
+			editingSearch.sort = (searchEditColumns?.sort ?? []).map((entry) =>
+				create(SearchSortSchema, entry),
+			);
 			const index = savedSearches.searches.findIndex(
 				(search) => search.name === editingSearch.name,
 			);
@@ -54,7 +60,7 @@ export function useSearchQueryEditorHandlers(
 		},
 		[
 			savedSearches,
-			searchSongTableColumns,
+			searchEditColumns,
 			setEditingSearchStatus,
 			updateSavedSearchesAction,
 		],

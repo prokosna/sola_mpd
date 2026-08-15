@@ -1,81 +1,49 @@
-import { clone } from "@bufbuild/protobuf";
-import {
-	type SongTableColumn,
-	SongTableColumnSchema,
-} from "@sola_mpd/shared/src/models/song_table_pb.js";
 import { useAtomValue, useSetAtom } from "jotai";
 import { useCallback } from "react";
 
 import {
-	applyColumnWidthsToLayout,
-	applyDeviceColumnWidths,
+	buildDeviceSortFromColumnViews,
+	buildWidthFlexByTagFromColumnViews,
 	diffSongTableColumns,
-	songTableColumnLayoutAtom,
-	songTableStateAtom,
-	updateSongTableColumnLayoutActionAtom,
+	type SongTableColumnView,
+	updateSongTableDeviceLayoutActionAtom,
 } from "../../song_table";
-import { setEditingSearchStatusActionAtom } from "../states/actions/setEditingSearchStatusActionAtom";
-import { setSearchSongTableColumnsActionAtom } from "../states/actions/setSearchSongTableColumnsActionAtom";
-import { searchSongTableColumnsAtom } from "../states/atoms/searchEditAtom";
-import { EditingSearchStatus } from "../types/searchTypes";
+import { updateSearchColumnTagsActionAtom } from "../states/actions/updateSearchColumnTagsActionAtom";
+import { updateSearchSortActionAtom } from "../states/actions/updateSearchSortActionAtom";
+import { searchColumnViewAtom } from "../states/atoms/searchColumnViewAtom";
+import { selectedSavedSearchNameAtom } from "../states/atoms/searchEditAtom";
 
-// Saved-search column updates don't go through updateSongTableStateActionAtom:
-// a saved search's `tag`/sort are part of the search definition (Workspace),
-// but `width_flex` is always Device, same as the common song table.
+// Routes an AG Grid column event to the right owner. Tags and sort belong to
+// the saved search; width belongs to the device, under that search's name.
 export function useHandleSearchColumnsUpdated() {
-	const searchSongTableColumns = useAtomValue(searchSongTableColumnsAtom);
-	const songTableState = useAtomValue(songTableStateAtom);
-	const songTableColumnLayout = useAtomValue(songTableColumnLayoutAtom);
-	const setSearchSongTableColumns = useSetAtom(
-		setSearchSongTableColumnsActionAtom,
-	);
-	const setEditingSearchStatus = useSetAtom(setEditingSearchStatusActionAtom);
-	const updateSongTableColumnLayout = useSetAtom(
-		updateSongTableColumnLayoutActionAtom,
-	);
+	const columns = useAtomValue(searchColumnViewAtom);
+	const searchName = useAtomValue(selectedSavedSearchNameAtom);
+	const updateColumnTags = useSetAtom(updateSearchColumnTagsActionAtom);
+	const updateSort = useSetAtom(updateSearchSortActionAtom);
+	const updateDeviceLayout = useSetAtom(updateSongTableDeviceLayoutActionAtom);
 
 	return useCallback(
-		(columns: SongTableColumn[]) => {
-			const baseColumns =
-				searchSongTableColumns.length !== 0
-					? searchSongTableColumns
-					: (songTableState?.columns ?? []);
-			const currentColumns = applyDeviceColumnWidths(
-				baseColumns,
-				songTableColumnLayout,
-			);
-			const diff = diffSongTableColumns(currentColumns, columns);
+		(updatedColumns: SongTableColumnView[]) => {
+			const currentColumns = columns ?? [];
+			const diff = diffSongTableColumns(currentColumns, updatedColumns);
 
-			if (diff.tagsChanged || diff.sortChanged) {
-				// Search.columns never carries a meaningful width_flex:
-				// readers always overlay the device value, so a stale width
-				// here would just be ignored, but we keep it at 0 to be
-				// explicit that it isn't the source of truth.
-				const columnsForSearch = columns.map((column) => {
-					const withoutWidth = clone(SongTableColumnSchema, column);
-					withoutWidth.widthFlex = 0;
-					return withoutWidth;
-				});
-				setSearchSongTableColumns(columnsForSearch);
-				setEditingSearchStatus(EditingSearchStatus.COLUMNS_UPDATED);
+			if (diff.tagsChanged) {
+				updateColumnTags(updatedColumns.map((column) => column.tag));
 				return;
 			}
 
+			if (diff.sortChanged) {
+				updateSort(buildDeviceSortFromColumnViews(updatedColumns));
+			}
 			if (diff.widthChanged) {
 				// Only the widths: this table's sort belongs to the saved search,
 				// not to the device layout the common song table sorts by.
-				updateSongTableColumnLayout(
-					applyColumnWidthsToLayout(songTableColumnLayout, columns),
-				);
+				updateDeviceLayout({
+					widthFlexByTag: buildWidthFlexByTagFromColumnViews(updatedColumns),
+					searchName,
+				});
 			}
 		},
-		[
-			searchSongTableColumns,
-			songTableState,
-			songTableColumnLayout,
-			setSearchSongTableColumns,
-			setEditingSearchStatus,
-			updateSongTableColumnLayout,
-		],
+		[columns, searchName, updateColumnTags, updateSort, updateDeviceLayout],
 	);
 }

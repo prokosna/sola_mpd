@@ -1,26 +1,22 @@
-import { clone } from "@bufbuild/protobuf";
 import { Box } from "@mantine/core";
-import {
-	type SongTableColumn,
-	SongTableStateSchema,
-} from "@sola_mpd/shared/src/models/song_table_pb.js";
 import { useAtomValue, useSetAtom } from "jotai";
-import { useCallback, useState } from "react";
-import { UpdateMode } from "../../../types/stateTypes";
+import { useState } from "react";
 import { CenterSpinner } from "../../loading";
 import { PlaylistSelectModal, usePlaylistSelectModal } from "../../playlist";
 import {
 	ColumnEditModal,
 	SongTable,
-	songTableStateAtom,
-	updateSongTableStateActionAtom,
+	songTableServerStateAtom,
+	updateSongTableColumnTagsActionAtom,
 	useColumnEditModalProps,
 } from "../../song_table";
 import { usePlayQueueSongTableProps } from "../hooks/usePlayQueueSongTableProps";
 
 export function PlayQueue() {
-	const songTableState = useAtomValue(songTableStateAtom);
-	const updateSongTableState = useSetAtom(updateSongTableStateActionAtom);
+	const songTableServerState = useAtomValue(songTableServerStateAtom);
+	const updateSongTableColumnTags = useSetAtom(
+		updateSongTableColumnTagsActionAtom,
+	);
 
 	const [isColumnEditModalOpen, setIsColumnEditModalOpen] = useState(false);
 
@@ -35,26 +31,11 @@ export function PlayQueue() {
 		setIsPlaylistSelectModalOpen,
 		setIsColumnEditModalOpen,
 	);
-
-	const onColumnsUpdated = useCallback(
-		async (columns: SongTableColumn[]) => {
-			if (songTableState === undefined) {
-				return;
-			}
-			const newSongTableState = clone(SongTableStateSchema, songTableState);
-			newSongTableState.columns = columns;
-			await updateSongTableState({
-				state: newSongTableState,
-				mode: UpdateMode.LOCAL_STATE | UpdateMode.PERSIST,
-			});
-		},
-		[songTableState, updateSongTableState],
-	);
 	const columnEditModalProps = useColumnEditModalProps(
 		isColumnEditModalOpen,
-		songTableState?.columns || [],
+		songTableServerState?.columnTags ?? [],
 		setIsColumnEditModalOpen,
-		onColumnsUpdated,
+		updateSongTableColumnTags,
 		async () => {},
 	);
 

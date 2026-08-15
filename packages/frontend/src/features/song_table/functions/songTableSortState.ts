@@ -1,5 +1,4 @@
-import type { SongTableColumn } from "@sola_mpd/shared/src/models/song_table_pb.js";
-
+import type { SongTableColumnView } from "../types/songTableTypes";
 import { convertSongMetadataTagToDisplayName } from "./songTableConversion";
 
 /** AG Grid's per-column sort state, narrowed to what a song table sets. */
@@ -10,7 +9,7 @@ export type SongTableColumnSortState = {
 };
 
 export function buildColumnSortState(
-	columns: SongTableColumn[],
+	columns: SongTableColumnView[],
 ): SongTableColumnSortState[] {
 	return columns.map((column) => {
 		const isSorted = column.sortOrder !== undefined && column.sortOrder >= 0;

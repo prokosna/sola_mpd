@@ -1,16 +1,24 @@
 syntax = "proto3";
 
 import "filter.proto";
+import "song.proto";
 import "song_table.proto";
 
 message Query {
   repeated FilterCondition conditions = 1;
 }
 
+message SearchSort {
+  Song.MetadataTag tag = 1;
+  bool is_desc = 2;
+}
+
 message Search {
   string name = 1;
   repeated Query queries = 2;
-  repeated SongTableColumn columns = 3;
+  repeated SongTableColumn columns = 3 [deprecated = true];
+  repeated Song.MetadataTag column_tags = 4;
+  repeated SearchSort sort = 5;
 }
 
 message SavedSearches {

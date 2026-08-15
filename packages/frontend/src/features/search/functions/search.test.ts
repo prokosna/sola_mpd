@@ -21,7 +21,6 @@ import {
 	addEditingQueryCondition,
 	addEditingSearchQuery,
 	changeEditingQueryCondition,
-	changeEditingSearchColumns,
 	changeEditingSearchName,
 	changeEditingSearchQuery,
 	convertFormValuesToSearch,
@@ -212,14 +211,6 @@ describe("search", () => {
 			const result = changeEditingSearchName(search, "New Name");
 			expect(result.name).toBe("New Name");
 			expect(search.name).toBe(originalName);
-		});
-	});
-
-	describe("changeEditingSearchColumns", () => {
-		it("should return a new search with updated columns", () => {
-			const search = createSearch([]);
-			const result = changeEditingSearchColumns(search, []);
-			expect(result.columns).toEqual([]);
 		});
 	});
 

@@ -1,5 +1,4 @@
 import type { Song } from "@sola_mpd/shared/src/models/song_pb.js";
-import type { SongTableColumn } from "@sola_mpd/shared/src/models/song_table_pb.js";
 import type {
 	SelectionColumnDef,
 	SuppressKeyboardEventParams,
@@ -18,6 +17,7 @@ import { sortSongsByColumns } from "../functions/songTableSorting";
 import {
 	SONGS_TAG_COMPACT,
 	type SongTableColumnDefinition,
+	type SongTableColumnView,
 	type SongTableKeyType,
 	type SongTableRowData,
 } from "../types/songTableTypes";
@@ -25,7 +25,7 @@ import {
 export function useAgGridReactData(
 	songs: Song[],
 	keyType: SongTableKeyType,
-	columns: SongTableColumn[],
+	columns: SongTableColumnView[],
 	isSortingEnabled: boolean,
 	isReorderingEnabled: boolean,
 	isCompact: boolean,

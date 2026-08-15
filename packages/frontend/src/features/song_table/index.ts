@@ -5,12 +5,12 @@ export {
 } from "./components/ColumnEditModal";
 export { SongTable, type SongTableProps } from "./components/SongTable";
 // Functions
-export { applyDeviceColumnWidths } from "./functions/applyDeviceColumnWidths";
 export { diffSongTableColumns } from "./functions/diffSongTableColumns";
 export {
-	applyColumnWidthsToLayout,
-	buildSongTableColumnLayout,
-} from "./functions/songTableColumnLayout";
+	buildDeviceSortFromColumnViews,
+	buildWidthFlexByTagFromColumnViews,
+	composeSongTableColumnView,
+} from "./functions/songTableColumnView";
 // Utils
 export {
 	convertSongMetadataTagFromDisplayName,
@@ -25,11 +25,13 @@ export {
 	getSongTableContextMenuAddToPlaylist,
 	getSongTableContextMenuEditColumns,
 	getSongTableContextMenuReplace,
+	getSongTableContextMenuResetLayout,
 	getSongTableContextMenuSimilarSongs,
 } from "./functions/songTableMenuItem";
 export { convertOrderingToOperations } from "./functions/songTableOrdering";
 // Hooks
 export { useColumnEditModalProps } from "./hooks/useColumnEditModalProps";
+export { useHandleLibraryColumnsUpdated } from "./hooks/useHandleLibraryColumnsUpdated";
 export { useHandleSongDoubleClick } from "./hooks/useHandleSongDoubleClick";
 // Services
 export type { SongTableStateRepository } from "./repositories/SongTableStateRepository";
@@ -38,21 +40,28 @@ export { addSongsToQueueActionAtom } from "./states/actions/addSongsToQueueActio
 export { clearSelectedSongsActionAtom } from "./states/actions/clearSelectedSongsActionAtom";
 export { refreshSongTableStateActionAtom } from "./states/actions/refreshSongTableStateActionAtom";
 export { replaceQueueWithSongsActionAtom } from "./states/actions/replaceQueueWithSongsActionAtom";
-export { resetSongTableColumnLayoutActionAtom } from "./states/actions/resetSongTableColumnLayoutActionAtom";
+export { resetSongTableLayoutActionAtom } from "./states/actions/resetSongTableLayoutActionAtom";
+export { resetSongTableSearchWidthActionAtom } from "./states/actions/resetSongTableSearchWidthActionAtom";
 export { setSelectedSongsActionAtom } from "./states/actions/setSelectedSongsActionAtom";
-export { updateSongTableColumnLayoutActionAtom } from "./states/actions/updateSongTableColumnLayoutActionAtom";
+export { updateSongTableColumnTagsActionAtom } from "./states/actions/updateSongTableColumnTagsActionAtom";
+export {
+	type SongTableDeviceLayoutPatch,
+	updateSongTableDeviceLayoutActionAtom,
+} from "./states/actions/updateSongTableDeviceLayoutActionAtom";
 export { updateSongTableServerStateActionAtom } from "./states/actions/updateSongTableServerStateActionAtom";
-export { updateSongTableStateActionAtom } from "./states/actions/updateSongTableStateActionAtom";
 // States
 export { selectedSongsAtom } from "./states/atoms/selectedSongsAtom";
 export {
 	songTableServerStateAtom,
-	songTableStateAtom,
+	songTableStateAsyncAtom,
 } from "./states/atoms/songTableAtom";
-export { songTableColumnLayoutAtom } from "./states/atoms/songTableColumnLayoutAtom";
+export { songTableColumnViewAtom } from "./states/atoms/songTableColumnViewAtom";
+export { songTableDeviceLayoutAtom } from "./states/atoms/songTableDeviceLayoutAtom";
 // Types
 export {
-	type SongTableColumnLayout,
+	type SongTableColumnView,
 	type SongTableContextMenuItemParams,
+	type SongTableDeviceLayout,
+	type SongTableDeviceLayoutSort,
 	SongTableKeyType,
 } from "./types/songTableTypes";

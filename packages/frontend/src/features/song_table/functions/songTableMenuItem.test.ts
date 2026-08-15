@@ -9,6 +9,7 @@ import {
 	getSongTableContextMenuAddToPlaylist,
 	getSongTableContextMenuEditColumns,
 	getSongTableContextMenuReplace,
+	getSongTableContextMenuResetLayout,
 	getSongTableContextMenuSimilarSongs,
 } from "./songTableMenuItem";
 
@@ -86,6 +87,20 @@ describe("getSongTableContextMenuEditColumns", () => {
 		const item = getSongTableContextMenuEditColumns(setOpen);
 		await item.onClick?.(undefined);
 		expect(setOpen).toHaveBeenCalledWith(true);
+	});
+});
+
+describe("getSongTableContextMenuResetLayout", () => {
+	it("should create a Reset Layout menu item", () => {
+		const item = getSongTableContextMenuResetLayout(vi.fn());
+		expect(item.name).toBe("Reset Layout");
+	});
+
+	it("should call the reset action on click", async () => {
+		const resetSongTableLayout = vi.fn();
+		const item = getSongTableContextMenuResetLayout(resetSongTableLayout);
+		await item.onClick?.(undefined);
+		expect(resetSongTableLayout).toHaveBeenCalledTimes(1);
 	});
 });
 

@@ -11,7 +11,7 @@ import { mpdClientAtom } from "../../mpd";
 import { currentMpdProfileAtom } from "../../profile";
 import type { SelectListContextMenuItemParams } from "../../select_list";
 import { convertSearchToFormValues } from "../functions/search";
-import { setSearchSongTableColumnsActionAtom } from "../states/actions/setSearchSongTableColumnsActionAtom";
+import { setSearchEditColumnsActionAtom } from "../states/actions/setSearchEditColumnsActionAtom";
 import { setTargetSearchActionAtom } from "../states/actions/setTargetSearchActionAtom";
 import { updateSavedSearchesActionAtom } from "../states/actions/updateSavedSearchesActionAtom";
 import { savedSearchesAtom } from "../states/atoms/savedSearchesAtom";
@@ -31,9 +31,7 @@ export function useSavedSearchesSelectListProps({
 	const selectedSavedSearchName = useAtomValue(selectedSavedSearchNameAtom);
 	const updateSavedSearchesAction = useSetAtom(updateSavedSearchesActionAtom);
 	const setTargetSearch = useSetAtom(setTargetSearchActionAtom);
-	const setSearchSongTableColumns = useSetAtom(
-		setSearchSongTableColumnsActionAtom,
-	);
+	const setSearchEditColumns = useSetAtom(setSearchEditColumnsActionAtom);
 
 	const contextMenuSections: ContextMenuSection<SelectListContextMenuItemParams>[] =
 		[
@@ -93,11 +91,17 @@ export function useSavedSearchesSelectListProps({
 				}
 				form.setValues(convertSearchToFormValues(savedSearch));
 				// The song table reads its columns from this atom, not the form.
-				setSearchSongTableColumns(savedSearch.columns);
+				// An empty column_tags means this search has never had its own
+				// columns set, so fall back to the shared library view.
+				setSearchEditColumns(
+					savedSearch.columnTags.length === 0
+						? undefined
+						: { columnTags: savedSearch.columnTags, sort: savedSearch.sort },
+				);
 				setTargetSearch(undefined);
 			}
 		},
-		[savedSearches?.searches, setSearchSongTableColumns, setTargetSearch, form],
+		[savedSearches?.searches, setSearchEditColumns, setTargetSearch, form],
 	);
 
 	if (savedSearches === undefined) {

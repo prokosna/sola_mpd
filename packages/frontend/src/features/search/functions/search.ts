@@ -23,7 +23,6 @@ import {
 	Song_MetadataTag,
 	Song_MetadataValueSchema,
 } from "@sola_mpd/shared/src/models/song_pb.js";
-import type { SongTableColumn } from "@sola_mpd/shared/src/models/song_table_pb.js";
 import { v4 as uuidv4 } from "uuid";
 import type { MpdClient } from "../../mpd";
 import {
@@ -144,15 +143,6 @@ export function convertSearchToConditions(
 export function changeEditingSearchName(search: Search, name: string): Search {
 	const newSearch = clone(SearchSchema, search);
 	newSearch.name = name;
-	return newSearch;
-}
-
-export function changeEditingSearchColumns(
-	search: Search,
-	columns: SongTableColumn[],
-): Search {
-	const newSearch = clone(SearchSchema, search);
-	newSearch.columns = columns;
 	return newSearch;
 }
 

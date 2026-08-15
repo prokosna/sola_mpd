@@ -9,6 +9,7 @@ import {
 	useDefaultLayout,
 } from "react-resizable-panels";
 import styles from "../../../ResizeHandle.module.css";
+import { SEARCH_NAVIGATION_PANEL_GROUP_ID } from "../const/searchPanelGroups";
 import {
 	convertSearchToFormValues,
 	getDefaultSearch,
@@ -30,7 +31,7 @@ export function SearchNavigation() {
 	const setEditingSearchStatus = useSetAtom(setEditingSearchStatusActionAtom);
 	const setEditingSearchName = useSetAtom(setEditingSearchNameActionAtom);
 	const { defaultLayout, onLayoutChanged } = useDefaultLayout({
-		id: "search-navigation",
+		id: SEARCH_NAVIGATION_PANEL_GROUP_ID,
 		storage: globalThis.localStorage,
 	});
 

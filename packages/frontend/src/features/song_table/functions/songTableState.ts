@@ -1,14 +1,7 @@
-import { clone } from "@bufbuild/protobuf";
 import type { Song } from "@sola_mpd/shared/src/models/song_pb.js";
-import {
-	type SongTableColumn,
-	type SongTableState,
-	SongTableStateSchema,
-} from "@sola_mpd/shared/src/models/song_table_pb.js";
 import type { GridApi, IRowNode } from "ag-grid-community";
 
 import type { SongsInTable } from "../types/songTableTypes";
-import { copySortingAttributesToNewColumns } from "./songTableColumn";
 import { convertNodeToSong } from "./songTableKey";
 
 export function getSongsInTableFromGrid(
@@ -46,23 +39,6 @@ export function getSongsInTableFromGrid(
 		sortedSongs,
 		selectedSortedSongs,
 	};
-}
-
-export function createNewSongTableStateFromColumns(
-	columns: SongTableColumn[],
-	baseSongTableState: SongTableState,
-	isSortingEnabled: boolean,
-): SongTableState {
-	const newState = clone(SongTableStateSchema, baseSongTableState);
-	if (isSortingEnabled) {
-		newState.columns = columns;
-	} else {
-		newState.columns = copySortingAttributesToNewColumns(
-			columns,
-			baseSongTableState.columns,
-		);
-	}
-	return newState;
 }
 
 export function getTableIndexOfSong(

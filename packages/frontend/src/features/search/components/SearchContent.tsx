@@ -1,5 +1,5 @@
 import { Box } from "@mantine/core";
-import { useAtomValue } from "jotai";
+import { useAtomValue, useSetAtom } from "jotai";
 import { useState } from "react";
 import { CenterSpinner } from "../../loading";
 import { PlaylistSelectModal, usePlaylistSelectModal } from "../../playlist";
@@ -8,13 +8,13 @@ import {
 	SongTable,
 	useColumnEditModalProps,
 } from "../../song_table";
-import { useHandleSearchColumnsUpdated } from "../hooks/useHandleSearchColumnsUpdated";
 import { useSearchSongTableProps } from "../hooks/useSearchSongTableProps";
-import { searchSongTableColumnsAtom } from "../states/atoms/searchEditAtom";
+import { updateSearchColumnTagsActionAtom } from "../states/actions/updateSearchColumnTagsActionAtom";
+import { searchColumnViewAtom } from "../states/atoms/searchColumnViewAtom";
 
 export function SearchContent() {
-	const columns = useAtomValue(searchSongTableColumnsAtom);
-	const handleSearchColumnsUpdated = useHandleSearchColumnsUpdated();
+	const columns = useAtomValue(searchColumnViewAtom);
+	const updateSearchColumnTags = useSetAtom(updateSearchColumnTagsActionAtom);
 
 	const [isColumnEditModalOpen, setIsColumnEditModalOpen] = useState(false);
 
@@ -32,9 +32,9 @@ export function SearchContent() {
 
 	const columnEditModalProps = useColumnEditModalProps(
 		isColumnEditModalOpen,
-		columns,
+		columns?.map((column) => column.tag) ?? [],
 		setIsColumnEditModalOpen,
-		handleSearchColumnsUpdated,
+		updateSearchColumnTags,
 		async () => {},
 	);
 

@@ -6,6 +6,8 @@ import type { GenFile, GenMessage } from "@bufbuild/protobuf/codegenv2";
 import { fileDesc, messageDesc } from "@bufbuild/protobuf/codegenv2";
 import type { FilterCondition } from "./filter_pb.js";
 import { file_filter } from "./filter_pb.js";
+import type { Song_MetadataTag } from "./song_pb.js";
+import { file_song } from "./song_pb.js";
 import type { SongTableColumn } from "./song_table_pb.js";
 import { file_song_table } from "./song_table_pb.js";
 import type { Message } from "@bufbuild/protobuf";
@@ -14,7 +16,7 @@ import type { Message } from "@bufbuild/protobuf";
  * Describes the file search.proto.
  */
 export const file_search: GenFile = /*@__PURE__*/
-  fileDesc("CgxzZWFyY2gucHJvdG8iLQoFUXVlcnkSJAoKY29uZGl0aW9ucxgBIAMoCzIQLkZpbHRlckNvbmRpdGlvbiJSCgZTZWFyY2gSDAoEbmFtZRgBIAEoCRIXCgdxdWVyaWVzGAIgAygLMgYuUXVlcnkSIQoHY29sdW1ucxgDIAMoCzIQLlNvbmdUYWJsZUNvbHVtbiJCCg1TYXZlZFNlYXJjaGVzEhkKCHNlYXJjaGVzGAEgAygLMgcuU2VhcmNoEhYKDnNjaGVtYV92ZXJzaW9uGAIgASgNYgZwcm90bzM", [file_filter, file_song_table]);
+  fileDesc("CgxzZWFyY2gucHJvdG8iLQoFUXVlcnkSJAoKY29uZGl0aW9ucxgBIAMoCzIQLkZpbHRlckNvbmRpdGlvbiI9CgpTZWFyY2hTb3J0Eh4KA3RhZxgBIAEoDjIRLlNvbmcuTWV0YWRhdGFUYWcSDwoHaXNfZGVzYxgCIAEoCCKZAQoGU2VhcmNoEgwKBG5hbWUYASABKAkSFwoHcXVlcmllcxgCIAMoCzIGLlF1ZXJ5EiUKB2NvbHVtbnMYAyADKAsyEC5Tb25nVGFibGVDb2x1bW5CAhgBEiYKC2NvbHVtbl90YWdzGAQgAygOMhEuU29uZy5NZXRhZGF0YVRhZxIZCgRzb3J0GAUgAygLMgsuU2VhcmNoU29ydCJCCg1TYXZlZFNlYXJjaGVzEhkKCHNlYXJjaGVzGAEgAygLMgcuU2VhcmNoEhYKDnNjaGVtYV92ZXJzaW9uGAIgASgNYgZwcm90bzM", [file_filter, file_song, file_song_table]);
 
 /**
  * @generated from message Query
@@ -34,6 +36,28 @@ export const QuerySchema: GenMessage<Query> = /*@__PURE__*/
   messageDesc(file_search, 0);
 
 /**
+ * @generated from message SearchSort
+ */
+export type SearchSort = Message<"SearchSort"> & {
+  /**
+   * @generated from field: Song.MetadataTag tag = 1;
+   */
+  tag: Song_MetadataTag;
+
+  /**
+   * @generated from field: bool is_desc = 2;
+   */
+  isDesc: boolean;
+};
+
+/**
+ * Describes the message SearchSort.
+ * Use `create(SearchSortSchema)` to create a new message.
+ */
+export const SearchSortSchema: GenMessage<SearchSort> = /*@__PURE__*/
+  messageDesc(file_search, 1);
+
+/**
  * @generated from message Search
  */
 export type Search = Message<"Search"> & {
@@ -48,9 +72,20 @@ export type Search = Message<"Search"> & {
   queries: Query[];
 
   /**
-   * @generated from field: repeated SongTableColumn columns = 3;
+   * @generated from field: repeated SongTableColumn columns = 3 [deprecated = true];
+   * @deprecated
    */
   columns: SongTableColumn[];
+
+  /**
+   * @generated from field: repeated Song.MetadataTag column_tags = 4;
+   */
+  columnTags: Song_MetadataTag[];
+
+  /**
+   * @generated from field: repeated SearchSort sort = 5;
+   */
+  sort: SearchSort[];
 };
 
 /**
@@ -58,7 +93,7 @@ export type Search = Message<"Search"> & {
  * Use `create(SearchSchema)` to create a new message.
  */
 export const SearchSchema: GenMessage<Search> = /*@__PURE__*/
-  messageDesc(file_search, 1);
+  messageDesc(file_search, 2);
 
 /**
  * @generated from message SavedSearches
@@ -80,5 +115,5 @@ export type SavedSearches = Message<"SavedSearches"> & {
  * Use `create(SavedSearchesSchema)` to create a new message.
  */
 export const SavedSearchesSchema: GenMessage<SavedSearches> = /*@__PURE__*/
-  messageDesc(file_search, 2);
+  messageDesc(file_search, 3);
 

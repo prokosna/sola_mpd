@@ -1,5 +1,7 @@
-import type { Song } from "@sola_mpd/shared/src/models/song_pb.js";
-import type { SongTableColumn } from "@sola_mpd/shared/src/models/song_table_pb.js";
+import type {
+	Song,
+	Song_MetadataTag,
+} from "@sola_mpd/shared/src/models/song_pb.js";
 import type { SuppressKeyboardEventParams } from "ag-grid-community";
 import type { CustomCellRendererProps } from "ag-grid-react";
 import type { JSX } from "react";
@@ -53,19 +55,39 @@ export type SongsInTable = {
 };
 
 export type SongTableContextMenuItemParams = {
-	columns: SongTableColumn[];
+	columns: SongTableColumnView[];
 	clickedSong: Song;
 	sortedSongs: Song[];
 	selectedSortedSongs: Song[];
 };
 
-// Device-owned layout for one SongTableColumn. Keyed by
-// `String(Song_MetadataTag)` since device settings are
-// persisted as JSON, which cannot use a numeric enum as an object key.
-export type SongTableColumnLayoutEntry = {
+/** What a song table renders: a composed view, not a persisted document. */
+export type SongTableColumnView = {
+	tag: Song_MetadataTag;
 	widthFlex: number;
 	sortOrder?: number;
 	isSortDesc: boolean;
 };
 
-export type SongTableColumnLayout = Record<string, SongTableColumnLayoutEntry>;
+export type SongTableDeviceLayoutSort = {
+	tag: Song_MetadataTag;
+	isDesc: boolean;
+};
+
+/**
+ * `Partial<Record<...>>` keeps the enum in the type while JS stores the key
+ * as a string; enumerating via `Object.keys` needs `Number(key)` plus an enum
+ * membership check to convert back.
+ */
+export type SongTableDeviceLayout = {
+	widthFlexByTag: Partial<Record<Song_MetadataTag, number>>;
+	sort: SongTableDeviceLayoutSort[];
+	/**
+	 * Keyed by saved search name, since that is how a saved search is
+	 * identified elsewhere; renaming a search orphans its entry here.
+	 * Optional so a layout stored before this field existed loads as-is.
+	 */
+	widthFlexByTagBySearchName?: Partial<
+		Record<string, Partial<Record<Song_MetadataTag, number>>>
+	>;
+};

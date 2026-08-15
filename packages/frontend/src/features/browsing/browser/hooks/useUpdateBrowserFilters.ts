@@ -1,40 +1,54 @@
-import type { BrowserFilter } from "@sola_mpd/shared/src/models/browser_pb.js";
-import { useSetAtom } from "jotai";
+import { useAtomValue, useSetAtom } from "jotai";
 import { useCallback } from "react";
 
-import type { UpdateMode } from "../../../../types/stateTypes";
 import { BROWSER_SELECTION_QUERY_PARAM } from "../../common/const/browsingSelectionQueryParams";
-import { extractBrowserSelectionFromFilters } from "../../common/functions/browserFilter";
+import {
+	haveBrowserFilterTagsChanged,
+	mergeBrowserSelectionFromViews,
+} from "../../common/functions/browserFilter";
 import { useApplySelectionToUrl } from "../../common/hooks/useApplySelectionToUrl";
-import { updateBrowserFiltersActionAtom } from "../states/actions/updateBrowserFiltersActionAtom";
+import type { BrowserFilterView } from "../../common/types/browserFilterView";
+import { updateBrowserFilterTagsActionAtom } from "../states/actions/updateBrowserFilterTagsActionAtom";
 import { updateBrowserSelectionActionAtom } from "../states/actions/updateBrowserSelectionActionAtom";
+import { browserFilterTagsAtom } from "../states/atoms/browserFiltersAtom";
+import { browserSelectionAtom } from "../states/atoms/browserSelectionAtom";
 
 /**
- * Splits a merged `BrowserFilter[]` update in two: the structural half
- * (tag/order) goes to the server, the selected values to the URL. The URL half
- * lives in a hook because `useSearchParams` cannot be called inside an atom.
+ * Takes a full new panel set, splits the update in two: the tag set (if it
+ * changed) goes to the workspace, the selection — folded back into
+ * chronological order — goes to the URL.
  */
 export function useUpdateBrowserFilters() {
-	const updateBrowserFiltersAction = useSetAtom(updateBrowserFiltersActionAtom);
-	const updateBrowserSelectionAction = useSetAtom(
-		updateBrowserSelectionActionAtom,
-	);
+	const currentTags = useAtomValue(browserFilterTagsAtom);
+	const currentSelection = useAtomValue(browserSelectionAtom);
+	const updateFilterTagsAction = useSetAtom(updateBrowserFilterTagsActionAtom);
+	const updateSelectionAction = useSetAtom(updateBrowserSelectionActionAtom);
 	const applySelectionToUrl = useApplySelectionToUrl(
 		BROWSER_SELECTION_QUERY_PARAM,
 	);
 
 	return useCallback(
-		async (filters: BrowserFilter[], mode: UpdateMode) => {
-			await updateBrowserFiltersAction({ filters, mode });
+		async (views: BrowserFilterView[]) => {
+			const newTags = views.map((view) => view.tag);
+			if (
+				currentTags === undefined ||
+				haveBrowserFilterTagsChanged(currentTags, newTags)
+			) {
+				await updateFilterTagsAction(newTags);
+			}
 
-			const selection = extractBrowserSelectionFromFilters(filters);
-			const result = await updateBrowserSelectionAction(selection);
-
+			const newSelection = mergeBrowserSelectionFromViews(
+				currentSelection,
+				views,
+			);
+			const result = await updateSelectionAction(newSelection);
 			applySelectionToUrl(result);
 		},
 		[
-			updateBrowserFiltersAction,
-			updateBrowserSelectionAction,
+			currentTags,
+			currentSelection,
+			updateFilterTagsAction,
+			updateSelectionAction,
 			applySelectionToUrl,
 		],
 	);

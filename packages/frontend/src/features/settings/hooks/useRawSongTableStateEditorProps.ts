@@ -12,7 +12,7 @@ import type { SettingsStatesEditorProps } from "../components/SettingsStatesEdit
 import { useSettingsStateEditorProps } from "./useSettingsStateEditorProps";
 
 // Raw Data must edit the genuine server document, not the device-composed
-// songTableStateAtom the rest of the app reads.
+// column view the rest of the app reads.
 export function useRawSongTableStateEditorProps(): [
 	() => void,
 	SettingsStatesEditorProps<SongTableState> | undefined,

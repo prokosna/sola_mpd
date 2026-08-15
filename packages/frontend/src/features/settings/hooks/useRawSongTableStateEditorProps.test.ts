@@ -10,13 +10,13 @@ import { describe, expect, it, vi } from "vitest";
 
 import type { DeviceSettingsRepository } from "../../common";
 import { deviceSettingsRepositoryAtom } from "../../common";
-import { songTableColumnLayoutKeyForTag } from "../../song_table/functions/songTableColumnLayout";
 import type { SongTableStateRepository } from "../../song_table/repositories/SongTableStateRepository";
 import {
 	songTableServerStateAtom,
 	songTableStateAsyncAtom,
 } from "../../song_table/states/atoms/songTableAtom";
-import { songTableColumnLayoutAtom } from "../../song_table/states/atoms/songTableColumnLayoutAtom";
+import { songTableColumnViewAtom } from "../../song_table/states/atoms/songTableColumnViewAtom";
+import { songTableDeviceLayoutAtom } from "../../song_table/states/atoms/songTableDeviceLayoutAtom";
 import { songTableStateRepositoryAtom } from "../../song_table/states/atoms/songTableStateRepositoryAtom";
 
 import { useRawSongTableStateEditorProps } from "./useRawSongTableStateEditorProps";
@@ -53,8 +53,8 @@ async function flush() {
 describe("useRawSongTableStateEditorProps", () => {
 	it(
 		"feeds the editor from the genuine server document, not the device-" +
-			"composed songTableStateAtom (regression: Raw Data must be a true " +
-			"escape hatch onto what's actually on disk)",
+			"composed songTableColumnViewAtom (regression: Raw Data must be a " +
+			"true escape hatch onto what's actually on disk)",
 		async () => {
 			const store = getDefaultStore();
 			store.set(
@@ -64,20 +64,10 @@ describe("useRawSongTableStateEditorProps", () => {
 			const songTableStateRepository = createFakeSongTableStateRepository();
 			store.set(songTableStateRepositoryAtom, songTableStateRepository);
 
-			// The device layout overrides TITLE's width/sort — this is what
-			// songTableStateAtom (the composed view) would show, and must NOT be
-			// what the raw editor shows.
-			store.set(songTableColumnLayoutAtom, {
-				[songTableColumnLayoutKeyForTag(Song_MetadataTag.TITLE)]: {
-					widthFlex: 250,
-					sortOrder: 0,
-					isSortDesc: true,
-				},
-			});
-
-			// The server's stale/frozen values, which are what's genuinely on
-			// disk and must be exactly what the raw editor shows.
+			// The server's stale/frozen deprecated `columns`, which are what's
+			// genuinely on disk and must be exactly what the raw editor shows.
 			const serverState = create(SongTableStateSchema, {
+				columnTags: [Song_MetadataTag.TITLE],
 				columns: [
 					create(SongTableColumnSchema, {
 						tag: Song_MetadataTag.TITLE,
@@ -89,7 +79,17 @@ describe("useRawSongTableStateEditorProps", () => {
 			});
 			store.set(songTableStateAsyncAtom, Promise.resolve(serverState));
 			store.get(songTableServerStateAtom); // primes the async->sync unwrap
+			store.get(songTableDeviceLayoutAtom); // primes the device layout hydration
 			await flush();
+
+			// The device layout overrides TITLE's width — this is what
+			// songTableColumnViewAtom (the composed view) would show, and must
+			// NOT be what the raw editor shows.
+			store.set(songTableDeviceLayoutAtom, {
+				widthFlexByTag: { [Song_MetadataTag.TITLE]: 250 },
+				sort: [{ tag: Song_MetadataTag.TITLE, isDesc: true }],
+			});
+			expect(store.get(songTableColumnViewAtom)?.[0].widthFlex).toBe(250);
 
 			const { result } = renderHook(() => useRawSongTableStateEditorProps());
 			const [, editorProps] = result.current;

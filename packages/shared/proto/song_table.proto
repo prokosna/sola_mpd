@@ -5,12 +5,13 @@ import "google/protobuf/wrappers.proto";
 
 message SongTableColumn {
   Song.MetadataTag tag = 1;
-  optional int32 sort_order = 2;
-  bool is_sort_desc = 3;
-  int32 width_flex = 4;
+  optional int32 sort_order = 2 [deprecated = true];
+  bool is_sort_desc = 3 [deprecated = true];
+  int32 width_flex = 4 [deprecated = true];
 }
 
 message SongTableState {
-  repeated SongTableColumn columns = 1;
+  repeated SongTableColumn columns = 1 [deprecated = true];
   uint32 schema_version = 2;
+  repeated Song.MetadataTag column_tags = 3;
 }

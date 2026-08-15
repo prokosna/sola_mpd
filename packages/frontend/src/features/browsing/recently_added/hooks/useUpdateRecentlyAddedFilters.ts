@@ -1,19 +1,28 @@
-import type { BrowserFilter } from "@sola_mpd/shared/src/models/browser_pb.js";
-import { useSetAtom } from "jotai";
+import { useAtomValue, useSetAtom } from "jotai";
 import { useCallback } from "react";
 
 import { RECENTLY_ADDED_SELECTION_QUERY_PARAM } from "../../common/const/browsingSelectionQueryParams";
-import { extractBrowserSelectionFromFilters } from "../../common/functions/browserFilter";
+import {
+	haveBrowserFilterTagsChanged,
+	mergeBrowserSelectionFromViews,
+} from "../../common/functions/browserFilter";
 import { useApplySelectionToUrl } from "../../common/hooks/useApplySelectionToUrl";
-import { updateRecentlyAddedFiltersActionAtom } from "../states/actions/updateRecentlyAddedFiltersActionAtom";
+import type { BrowserFilterView } from "../../common/types/browserFilterView";
+import { updateRecentlyAddedFilterTagsActionAtom } from "../states/actions/updateRecentlyAddedFilterTagsActionAtom";
 import { updateRecentlyAddedSelectionActionAtom } from "../states/actions/updateRecentlyAddedSelectionActionAtom";
+import { recentlyAddedFilterTagsAtom } from "../states/atoms/recentlyAddedFiltersAtom";
+import { recentlyAddedSelectionAtom } from "../states/atoms/recentlyAddedSelectionAtom";
 
 /**
  * Recently Added counterpart of useUpdateBrowserFilters — see that file for
  * the full rationale.
  */
 export function useUpdateRecentlyAddedFilters() {
-	const updateFiltersAction = useSetAtom(updateRecentlyAddedFiltersActionAtom);
+	const currentTags = useAtomValue(recentlyAddedFilterTagsAtom);
+	const currentSelection = useAtomValue(recentlyAddedSelectionAtom);
+	const updateFilterTagsAction = useSetAtom(
+		updateRecentlyAddedFilterTagsActionAtom,
+	);
 	const updateSelectionAction = useSetAtom(
 		updateRecentlyAddedSelectionActionAtom,
 	);
@@ -22,14 +31,28 @@ export function useUpdateRecentlyAddedFilters() {
 	);
 
 	return useCallback(
-		async (filters: BrowserFilter[]) => {
-			await updateFiltersAction(filters);
+		async (views: BrowserFilterView[]) => {
+			const newTags = views.map((view) => view.tag);
+			if (
+				currentTags === undefined ||
+				haveBrowserFilterTagsChanged(currentTags, newTags)
+			) {
+				await updateFilterTagsAction(newTags);
+			}
 
-			const selection = extractBrowserSelectionFromFilters(filters);
-			const result = await updateSelectionAction(selection);
-
+			const newSelection = mergeBrowserSelectionFromViews(
+				currentSelection,
+				views,
+			);
+			const result = await updateSelectionAction(newSelection);
 			applySelectionToUrl(result);
 		},
-		[updateFiltersAction, updateSelectionAction, applySelectionToUrl],
+		[
+			currentTags,
+			currentSelection,
+			updateFilterTagsAction,
+			updateSelectionAction,
+			applySelectionToUrl,
+		],
 	);
 }

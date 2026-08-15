@@ -1,7 +1,4 @@
-import {
-	convertSongMetadataValueToString,
-	getSongMetadataAsString,
-} from "@sola_mpd/shared/src/functions/songMetadata.js";
+import { getSongMetadataAsString } from "@sola_mpd/shared/src/functions/songMetadata.js";
 import { atom } from "jotai";
 import { atomWithRefresh } from "jotai/utils";
 
@@ -13,7 +10,7 @@ import { pathnameAtom } from "../../../../location/states/atoms/locationAtom";
 import { mpdCapabilitiesAtom } from "../../../../mpd/states/atoms/mpdCapabilitiesAtom";
 import { mpdClientAtom } from "../../../../mpd/states/atoms/mpdClientAtom";
 import { currentMpdProfileAtom } from "../../../../profile/states/atoms/mpdProfileAtom";
-import { songTableStateAtom } from "../../../../song_table/states/atoms/songTableAtom";
+import { songTableColumnViewAtom } from "../../../../song_table/states/atoms/songTableColumnViewAtom";
 import { fetchBrowserSongs } from "../../../common/functions/browserSongs";
 import { sortSongsByPath } from "../../functions/sortSongsByPath";
 import { recentlyAddedFastStateAtom } from "./recentlyAddedFastStateAtom";
@@ -51,9 +48,7 @@ const recentlyAddedFastSongsAtom = atom((get) => {
 				return true;
 			}
 			const songValue = getSongMetadataAsString(song, filter.tag);
-			return filter.selectedValues.some(
-				(value) => convertSongMetadataValueToString(value) === songValue,
-			);
+			return filter.selectedValues.some((value) => value === songValue);
 		}),
 	);
 });
@@ -71,14 +66,14 @@ const recentlyAddedSongsAtom = atom((get) => {
 
 export const recentlyAddedVisibleSongsAtom = atom((get) => {
 	const recentlyAddedSongs = get(recentlyAddedSongsAtom);
-	const songTableState = get(songTableStateAtom);
+	const songTableColumns = get(songTableColumnViewAtom);
 	const globalFilterTokens = get(globalFilterTokensAtom);
 	const pathname = get(pathnameAtom);
 
 	if (
 		pathname !== ROUTE_HOME_RECENTLY_ADDED ||
 		recentlyAddedSongs === undefined ||
-		songTableState === undefined
+		songTableColumns === undefined
 	) {
 		return undefined;
 	}
@@ -86,6 +81,6 @@ export const recentlyAddedVisibleSongsAtom = atom((get) => {
 	return filterSongsByGlobalFilter(
 		recentlyAddedSongs,
 		globalFilterTokens,
-		songTableState.columns,
+		songTableColumns,
 	);
 });

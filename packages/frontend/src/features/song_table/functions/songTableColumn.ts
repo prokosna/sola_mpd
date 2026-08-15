@@ -1,23 +1,13 @@
-import { clone, create } from "@bufbuild/protobuf";
-import type { Song_MetadataTag } from "@sola_mpd/shared/src/models/song_pb.js";
-import type { SongTableColumn } from "@sola_mpd/shared/src/models/song_table_pb.js";
-import { SongTableColumnSchema } from "@sola_mpd/shared/src/models/song_table_pb.js";
 import type { Column } from "ag-grid-community";
 
+import type { SongTableColumnView } from "../types/songTableTypes";
 import { convertSongMetadataTagFromDisplayName } from "./songTableConversion";
 
-export function getAverageWidthFlex(columns: SongTableColumn[]): number {
-	const sum = columns
-		.map((column) => column.widthFlex)
-		.reduce((a, b) => a + b, 0);
-	return Math.floor(sum / columns.length || 0);
-}
-
-export function convertAgGridColumnsToSongTableColumns(
+export function convertAgGridColumnsToSongTableColumnViews(
 	agGridColumns: Column[],
-): SongTableColumn[] {
+): SongTableColumnView[] {
 	return agGridColumns
-		.map((col) => {
+		.map((col): SongTableColumnView | undefined => {
 			const sortOrder = col.getSortIndex();
 			const isSortDesc = (() => {
 				switch (col.getSort()) {
@@ -34,69 +24,29 @@ export function convertAgGridColumnsToSongTableColumns(
 			if (tag === undefined) {
 				return undefined;
 			}
-			const column = create(SongTableColumnSchema, {
+			return {
 				tag,
 				sortOrder: sortOrder != null ? sortOrder : undefined,
 				isSortDesc,
 				widthFlex: flex,
-			});
-			return column;
+			};
 		})
 		.filter((column) => column !== undefined);
 }
 
 export function copySortingAttributesToNewColumns(
-	newColumns: SongTableColumn[],
-	baseColumns: SongTableColumn[],
-): SongTableColumn[] {
+	newColumns: SongTableColumnView[],
+	baseColumns: SongTableColumnView[],
+): SongTableColumnView[] {
 	return newColumns.map((column) => {
-		for (const baseColumn of baseColumns) {
-			if (column.tag === baseColumn.tag) {
-				const newColumn = clone(SongTableColumnSchema, column);
-				newColumn.isSortDesc = baseColumn.isSortDesc;
-				newColumn.sortOrder = baseColumn.sortOrder;
-				return newColumn;
-			}
+		const baseColumn = baseColumns.find((base) => base.tag === column.tag);
+		if (baseColumn === undefined) {
+			return column;
 		}
-		return column;
+		return {
+			...column,
+			sortOrder: baseColumn.sortOrder,
+			isSortDesc: baseColumn.isSortDesc,
+		};
 	});
-}
-
-export function normalizeSongTableColumns(
-	columns: SongTableColumn[],
-): SongTableColumn[] {
-	const sorted = Array.from(
-		columns.filter(
-			(column) => column.sortOrder !== undefined && column.sortOrder >= 0,
-		),
-		// biome-ignore lint/style/noNonNullAssertion: Must not be null.
-	).sort((a, b) => a.sortOrder! - b.sortOrder!);
-	return columns.map((column) => {
-		if (column.sortOrder !== undefined && column.sortOrder >= 0) {
-			const normalized = clone(SongTableColumnSchema, column);
-			normalized.sortOrder = sorted.findIndex((col) => col.tag === column.tag);
-			return normalized;
-		}
-		return column;
-	});
-}
-
-export function ensureTagsContainedInColumns(
-	columns: SongTableColumn[],
-	tags: Song_MetadataTag[],
-	widthFlexInt: number,
-): SongTableColumn[] {
-	const result = [...columns];
-	for (const tag of tags) {
-		if (result.every((column) => column.tag !== tag)) {
-			result.push(
-				create(SongTableColumnSchema, {
-					tag,
-					widthFlex: widthFlexInt,
-					isSortDesc: false,
-				}),
-			);
-		}
-	}
-	return result;
 }

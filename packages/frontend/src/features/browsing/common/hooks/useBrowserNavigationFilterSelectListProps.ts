@@ -1,8 +1,6 @@
-import { convertSongMetadataValueToString } from "@sola_mpd/shared/src/functions/songMetadata.js";
 import { useCallback } from "react";
 
 import { COMPONENT_ID_BROWSER_FILTER_LIST_PREFIX } from "../../../../const/component";
-import { UpdateMode } from "../../../../types/stateTypes";
 import type { ContextMenuSection } from "../../../context_menu";
 import type {
 	SelectListContextMenuItemParams,
@@ -35,10 +33,7 @@ export function useBrowserNavigationFilterSelectListProps(
 				return;
 			}
 
-			const currentSelectedValues = browserFilter.selectedValues.map(
-				(selectedValue) => convertSongMetadataValueToString(selectedValue),
-			);
-			const currentSelectedValuesSet = new Set(currentSelectedValues);
+			const currentSelectedValuesSet = new Set(browserFilter.selectedValues);
 			const selectedValuesSet = new Set(selectedValues);
 			if (
 				currentSelectedValuesSet.size === selectedValuesSet.size &&
@@ -52,10 +47,7 @@ export function useBrowserNavigationFilterSelectListProps(
 				browserFilter,
 				selectedValues,
 			);
-			await updateBrowserFilters(
-				newFilters,
-				UpdateMode.LOCAL_STATE | UpdateMode.PERSIST,
-			);
+			await updateBrowserFilters(newFilters);
 		},
 		[browserFilter, browserFilters, updateBrowserFilters],
 	);
@@ -65,10 +57,6 @@ export function useBrowserNavigationFilterSelectListProps(
 	if (values === undefined || browserFilters === undefined) {
 		return undefined;
 	}
-
-	const selectedValues = browserFilter.selectedValues.map((value) =>
-		convertSongMetadataValueToString(value),
-	);
 
 	const contextMenuSections: ContextMenuSection<SelectListContextMenuItemParams>[] =
 		[
@@ -87,10 +75,7 @@ export function useBrowserNavigationFilterSelectListProps(
 									browserFilter,
 									tag,
 								);
-								await updateBrowserFilters(
-									newFilters,
-									UpdateMode.LOCAL_STATE | UpdateMode.PERSIST,
-								);
+								await updateBrowserFilters(newFilters);
 							},
 						})),
 					},
@@ -109,10 +94,7 @@ export function useBrowserNavigationFilterSelectListProps(
 					browserFilter,
 					availableTags[0],
 				);
-				await updateBrowserFilters(
-					newFilters,
-					UpdateMode.LOCAL_STATE | UpdateMode.PERSIST,
-				);
+				await updateBrowserFilters(newFilters);
 			},
 		});
 	}
@@ -124,10 +106,7 @@ export function useBrowserNavigationFilterSelectListProps(
 					return;
 				}
 				const newFilters = removeBrowserFilter(browserFilters, browserFilter);
-				await updateBrowserFilters(
-					newFilters,
-					UpdateMode.LOCAL_STATE | UpdateMode.PERSIST,
-				);
+				await updateBrowserFilters(newFilters);
 			},
 		});
 	}
@@ -135,7 +114,7 @@ export function useBrowserNavigationFilterSelectListProps(
 	return {
 		id: `${COMPONENT_ID_BROWSER_FILTER_LIST_PREFIX}_${browserFilter.tag}`,
 		values,
-		selectedValues,
+		selectedValues: browserFilter.selectedValues,
 		headerTitle: convertSongMetadataTagToDisplayName(browserFilter.tag),
 		contextMenuSections,
 		isLoading: false,

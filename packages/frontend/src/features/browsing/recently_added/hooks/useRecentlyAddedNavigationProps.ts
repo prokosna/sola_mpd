@@ -1,10 +1,9 @@
-import type { BrowserFilter } from "@sola_mpd/shared/src/models/browser_pb.js";
 import type { Song_MetadataTag } from "@sola_mpd/shared/src/models/song_pb.js";
 import { useAtom, useAtomValue, useSetAtom } from "jotai";
 import { useCallback, useEffect } from "react";
 
-import type { UpdateMode } from "../../../../types/stateTypes";
 import { mpdCapabilitiesAtom } from "../../../mpd/states/atoms/mpdCapabilitiesAtom";
+import type { BrowserFilterView } from "../../common/types/browserFilterView";
 import { loadMoreRecentlyAddedFastStateActionAtom } from "../states/actions/loadMoreRecentlyAddedFastStateActionAtom";
 import {
 	recentlyAddedFastStateAtom,
@@ -17,12 +16,9 @@ import {
 import { useUpdateRecentlyAddedFilters } from "./useUpdateRecentlyAddedFilters";
 
 type RecentlyAddedNavigationProps = {
-	browserFilters?: BrowserFilter[];
+	browserFilters?: BrowserFilterView[];
 	browserFilterValues?: Map<Song_MetadataTag, string[]>;
-	updateBrowserFilters: (
-		browserFilters: BrowserFilter[],
-		mode: UpdateMode,
-	) => Promise<void>;
+	updateBrowserFilters: (browserFilters: BrowserFilterView[]) => Promise<void>;
 	onScrolledNearBottom?: () => void;
 };
 
@@ -34,7 +30,7 @@ export function useRecentlyAddedNavigationProps(): RecentlyAddedNavigationProps 
 	const browserFilterValues = useAtomValue(
 		filteredRecentlyAddedFilterValuesMapAtom,
 	);
-	const updateRecentlyAddedFilters = useUpdateRecentlyAddedFilters();
+	const updateBrowserFilters = useUpdateRecentlyAddedFilters();
 	const capabilities = useAtomValue(mpdCapabilitiesAtom);
 	const fastState = useAtomValue(recentlyAddedFastStateAtom);
 	const loadMore = useSetAtom(loadMoreRecentlyAddedFastStateActionAtom);
@@ -48,13 +44,6 @@ export function useRecentlyAddedNavigationProps(): RecentlyAddedNavigationProps 
 			loadMore();
 		}
 	}, [isFast, fastEmpty, fastIdle, loadMore]);
-
-	const updateBrowserFilters = useCallback(
-		async (filters: BrowserFilter[], _mode: UpdateMode) => {
-			await updateRecentlyAddedFilters(filters);
-		},
-		[updateRecentlyAddedFilters],
-	);
 
 	const onScrolledNearBottom = useCallback(() => {
 		loadMore();

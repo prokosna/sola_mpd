@@ -1,30 +1,26 @@
-import { clone } from "@bufbuild/protobuf";
 import { Plugin_PluginType } from "@sola_mpd/shared/src/models/plugin/plugin_pb.js";
 import type { Song } from "@sola_mpd/shared/src/models/song_pb.js";
-import {
-	type SongTableColumn,
-	SongTableStateSchema,
-} from "@sola_mpd/shared/src/models/song_table_pb.js";
 import { useAtomValue, useSetAtom } from "jotai";
 import { type MutableRefObject, useCallback } from "react";
 
 import { COMPONENT_ID_PLAY_QUEUE } from "../../../const/component";
 import { useNotification } from "../../../lib/mantine/hooks/useNotification";
-import { UpdateMode } from "../../../types/stateTypes";
 import { useSimilaritySearchContextMenuProps } from "../../advanced_search";
 import type { ContextMenuSection } from "../../context_menu";
 import { usePluginContextMenuItems } from "../../plugin";
 import {
 	getSongTableContextMenuAddToPlaylist,
 	getSongTableContextMenuEditColumns,
+	getSongTableContextMenuResetLayout,
 	getSongTableContextMenuSimilarSongs,
 	getTargetSongsForContextMenu,
+	resetSongTableLayoutActionAtom,
 	type SongTableContextMenuItemParams,
 	SongTableKeyType,
 	type SongTableProps,
 	setSelectedSongsActionAtom,
-	songTableStateAtom,
-	updateSongTableStateActionAtom,
+	songTableColumnViewAtom,
+	useHandleLibraryColumnsUpdated,
 } from "../../song_table";
 import { clearQueueActionAtom } from "../states/actions/clearQueueActionAtom";
 import { playSongByIdActionAtom } from "../states/actions/playSongByIdActionAtom";
@@ -49,14 +45,15 @@ export function usePlayQueueSongTableProps(
 	useAtomValue(syncPlayQueueLoadingEffectAtom);
 	const isLoading = useAtomValue(isPlayQueueLoadingAtom);
 	const songs = useAtomValue(playQueueVisibleSongsAtom);
-	const songTableState = useAtomValue(songTableStateAtom);
+	const columns = useAtomValue(songTableColumnViewAtom);
 	const setIsPlayQueueLoading = useSetAtom(setIsPlayQueueLoadingActionAtom);
-	const updateSongTableState = useSetAtom(updateSongTableStateActionAtom);
+	const onColumnsUpdated = useHandleLibraryColumnsUpdated();
 	const setSelectedSongs = useSetAtom(setSelectedSongsActionAtom);
 	const removeQueueSongs = useSetAtom(removeQueueSongsActionAtom);
 	const clearQueue = useSetAtom(clearQueueActionAtom);
 	const reorderQueue = useSetAtom(reorderQueueActionAtom);
 	const playSongById = useSetAtom(playSongByIdActionAtom);
+	const resetSongTableLayout = useSetAtom(resetSongTableLayoutActionAtom);
 
 	const pluginContextMenuItems = usePluginContextMenuItems(
 		Plugin_PluginType.ON_PLAY_QUEUE,
@@ -121,7 +118,10 @@ export function usePlayQueueSongTableProps(
 				],
 			},
 			{
-				items: [getSongTableContextMenuEditColumns(setIsColumnEditModalOpen)],
+				items: [
+					getSongTableContextMenuEditColumns(setIsColumnEditModalOpen),
+					getSongTableContextMenuResetLayout(resetSongTableLayout),
+				],
 			},
 		];
 	if (isAdvancedSearchAvailable) {
@@ -148,21 +148,6 @@ export function usePlayQueueSongTableProps(
 		[reorderQueue],
 	);
 
-	const onColumnsUpdated = useCallback(
-		async (updatedColumns: SongTableColumn[]) => {
-			if (songTableState === undefined) {
-				return;
-			}
-			const newSongTableState = clone(SongTableStateSchema, songTableState);
-			newSongTableState.columns = updatedColumns;
-			updateSongTableState({
-				state: newSongTableState,
-				mode: UpdateMode.PERSIST,
-			});
-		},
-		[songTableState, updateSongTableState],
-	);
-
 	const onSongsSelected = useCallback(
 		async (selectedSongs: Song[]) => {
 			setSelectedSongs(selectedSongs);
@@ -181,7 +166,7 @@ export function usePlayQueueSongTableProps(
 		setIsPlayQueueLoading(false);
 	}, [setIsPlayQueueLoading]);
 
-	if (songs === undefined || songTableState === undefined) {
+	if (songs === undefined || columns === undefined) {
 		return undefined;
 	}
 
@@ -189,7 +174,7 @@ export function usePlayQueueSongTableProps(
 		id: COMPONENT_ID_PLAY_QUEUE,
 		songTableKeyType: SongTableKeyType.ID,
 		songs,
-		columns: songTableState.columns,
+		columns,
 		isSortingEnabled: false,
 		isReorderingEnabled: true,
 		isGlobalFilterEnabled: true,
