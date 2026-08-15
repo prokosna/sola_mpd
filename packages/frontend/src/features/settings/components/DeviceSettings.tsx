@@ -13,13 +13,12 @@ export function DeviceSettings() {
 		<Stack gap={32}>
 			<Stack gap={4}>
 				<Title order={1} size="lg">
-					Device Settings
+					This Device
 				</Title>
 				<ScopeNote scope="device" />
 				<Text size="sm" c="dimmed" maw={720}>
-					These are stored in this browser only. Other devices connected to the
-					same server keep their own, and clearing this browser's site data
-					resets them.
+					Stored in this browser. Other devices keep their own values, and
+					clearing site data resets these.
 				</Text>
 			</Stack>
 

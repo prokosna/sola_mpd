@@ -21,12 +21,7 @@ export function Profiles() {
 
 	return (
 		<>
-			<Modal
-				centered
-				opened={opened}
-				onClose={close}
-				title="MPD Server Information"
-			>
+			<Modal centered opened={opened} onClose={close} title="New MPD Profile">
 				<MpdProfileForm
 					onProfileCreated={async () => {
 						close();
@@ -42,9 +37,8 @@ export function Profiles() {
 					MPD Profiles
 				</Title>
 				<Text size="sm" c="dimmed" maw={720}>
-					The profile list is shared with every device connected to this server.
-					Which profile a device actually plays from is picked from the selector
-					in the header and stays on that device.
+					The profile list is shared with every device. Each device chooses
+					which profile it plays from in the header.
 				</Text>
 				<Button w={200} size="sm" onClick={open}>
 					New Profile

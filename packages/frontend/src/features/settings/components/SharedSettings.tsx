@@ -8,8 +8,8 @@ import {
 } from "../../../const/routes";
 import { ScopeNote } from "./ScopeNote";
 
-// Each of these is edited elsewhere in the app; this tab answers "which of my
-// settings do other devices see?" and links to where they are edited.
+// Nothing here is edited on this tab; it lists what other devices see and
+// links to where each one is edited.
 const SHARED_SECTIONS: {
 	title: string;
 	description: string;
@@ -18,38 +18,34 @@ const SHARED_SECTIONS: {
 }[] = [
 	{
 		title: "Saved Searches",
-		description:
-			"Create, rename, and delete saved searches from the Search page.",
+		description: "Create, rename, and delete saved searches.",
 		route: ROUTE_HOME_SEARCH,
 		linkLabel: "Open Search",
 	},
 	{
 		title: "Browser filters",
 		description:
-			"Right-click a filter panel on the Browser page to add, remove, or " +
-			"change which tag it browses by. What you have selected in those " +
-			"filters is not shared — it lives in the page URL.",
+			"Right-click a filter panel to change which tag it browses by. " +
+			"The selection itself is not shared.",
 		route: ROUTE_HOME_BROWSER,
 		linkLabel: "Open Browser",
 	},
 	{
 		title: "Recently Added filters",
 		description:
-			"Right-click a filter panel on the Recently Added page to add, " +
-			"remove, or change which tag it browses by.",
+			"Right-click a filter panel to change which tag it browses by.",
 		route: ROUTE_HOME_RECENTLY_ADDED,
 		linkLabel: "Open Recently Added",
 	},
 	{
 		title: "Song table columns",
 		description:
-			"Right-click any song table's column header and choose \"Edit " +
-			'Columns" to change which columns show and their order. How wide ' +
-			"each column is, and how the table is sorted, stay on each device.",
+			'Right-click a column header and choose "Edit Columns" to change ' +
+			"which columns appear. Column widths and sort order stay on each device.",
 	},
 	{
 		title: "Plugins",
-		description: "Register, connect, and remove plugins from the Plugins page.",
+		description: "Register, connect, and remove plugins.",
 		route: ROUTE_HOME_PLUGIN,
 		linkLabel: "Open Plugins",
 	},
@@ -67,9 +63,7 @@ export function SharedSettings() {
 				<ScopeNote scope="workspace" />
 			</Stack>
 			<Text size="sm" c="dimmed" maw={720}>
-				These are stored on the server, so changing one changes it for every
-				device and browser connected to it. MPD profiles are shared the same way
-				and have their own tab.
+				Stored on the server. Every device connected to it sees the same values.
 			</Text>
 			{SHARED_SECTIONS.map((section) => (
 				<Card key={section.title} withBorder maw={720}>

@@ -36,7 +36,7 @@ export function ProfilesProfile(props: ProfilesProfileProps) {
 		notify({
 			status: "success",
 			title: "Profile successfully deleted",
-			description: `${profile.name} profile has been deleted.`,
+			description: `${profile.name} has been removed.`,
 		});
 	}, [deleteMpdProfile, notify, profile.name]);
 
@@ -51,7 +51,7 @@ export function ProfilesProfile(props: ProfilesProfileProps) {
 		notify({
 			status: "success",
 			title: "Default profile updated",
-			description: `${profile.name} is now the default profile for new devices.`,
+			description: `New devices will start with ${profile.name}.`,
 		});
 	}, [notify, profile, updateCurrentMpdProfile]);
 
@@ -72,7 +72,7 @@ export function ProfilesProfile(props: ProfilesProfileProps) {
 					{isActiveOnThisDevice && (
 						<Tooltip
 							withArrow
-							label="This device is connected to this profile. Every device picks its own."
+							label="This device is playing from this profile."
 						>
 							<Badge
 								size="sm"
@@ -85,10 +85,7 @@ export function ProfilesProfile(props: ProfilesProfileProps) {
 						</Tooltip>
 					)}
 					{isDefaultProfile && (
-						<Tooltip
-							withArrow
-							label="Devices that have not picked a profile yet start with this one."
-						>
+						<Tooltip withArrow label="New devices start with this profile.">
 							<Badge
 								size="sm"
 								variant="light"

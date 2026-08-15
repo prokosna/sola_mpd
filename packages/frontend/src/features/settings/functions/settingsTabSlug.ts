@@ -1,8 +1,8 @@
 // The URL is the source of truth for which Settings tab is active.
 export const SETTINGS_TAB_SLUG_TO_VALUE: Record<string, string> = {
 	profiles: "Profiles",
-	shared: "Shared Settings",
-	device: "Device Settings",
+	shared: "Shared",
+	device: "This Device",
 	"raw-data": "Raw Data",
 };
 

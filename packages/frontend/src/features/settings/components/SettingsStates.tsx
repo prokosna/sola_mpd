@@ -153,10 +153,8 @@ export function SettingsStates() {
 		return <CenterSpinner />;
 	}
 
-	// Every document editable here is a Workspace document — it lives on the
-	// server and is shared by every device and profile. There is no Device
-	// entry in this table because device settings aren't stored as
-	// server-fetched protobuf documents; see the "This device" tab instead.
+	// Every document editable here is a Workspace document. Device settings
+	// have no row because they are not server-fetched protobuf documents.
 	const rows = [
 		{
 			name: "Profile",
@@ -167,10 +165,8 @@ export function SettingsStates() {
 			name: "Song Table",
 			onEdit: onOpenSongTableState,
 			note:
-				"The column set/order here is authoritative. Width, sort order, " +
-				"and descending flags in this document are legacy and no longer " +
-				"read by the app — the values actually in effect live on this " +
-				'device (see the "This device" tab).',
+				"Only the column set and their order are read from here. Widths " +
+				"and sort order are stored per device.",
 		},
 		{ name: "Browser", onEdit: onOpenBrowserState, note: undefined },
 		{
@@ -186,9 +182,11 @@ export function SettingsStates() {
 		<>
 			<Stack gap={16}>
 				<Title order={1} size="lg">
-					Edit raw setting JSON files
+					Raw Data
 				</Title>
-				<Text c="red">Do not edit unless you know what you are doing.</Text>
+				<Text c="red" size="sm">
+					Editing these documents directly can corrupt your settings.
+				</Text>
 				<Table maw="70%">
 					<Table.Thead>
 						<Table.Tr>

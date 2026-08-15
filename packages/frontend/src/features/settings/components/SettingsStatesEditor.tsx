@@ -46,10 +46,10 @@ export function SettingsStatesEditor<T extends Message>(
 	};
 
 	return (
-		<Modal opened={isOpen} onClose={close} title="Edit JSON file">
+		<Modal opened={isOpen} onClose={close} title="Edit JSON">
 			<Stack>
-				<Text c="red">
-					{"Don't edit unless you understand what you are doing."}
+				<Text c="red" size="sm">
+					Changes are saved as-is and apply to every connected device.
 				</Text>
 				<Textarea
 					autosize

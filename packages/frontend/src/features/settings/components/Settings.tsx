@@ -27,8 +27,8 @@ export function Settings() {
 			<Tabs value={activeTab} onChange={handleTabChange}>
 				<Tabs.List>
 					<Tabs.Tab value="Profiles">Profiles</Tabs.Tab>
-					<Tabs.Tab value="Shared Settings">Shared Settings</Tabs.Tab>
-					<Tabs.Tab value="Device Settings">Device Settings</Tabs.Tab>
+					<Tabs.Tab value="Shared">Shared</Tabs.Tab>
+					<Tabs.Tab value="This Device">This Device</Tabs.Tab>
 					<Tabs.Tab value="Raw Data">Raw Data</Tabs.Tab>
 				</Tabs.List>
 				<Tabs.Panel value="Profiles">
@@ -36,12 +36,12 @@ export function Settings() {
 						<Profiles />
 					</Box>
 				</Tabs.Panel>
-				<Tabs.Panel value="Shared Settings">
+				<Tabs.Panel value="Shared">
 					<Box p={16}>
 						<SharedSettings />
 					</Box>
 				</Tabs.Panel>
-				<Tabs.Panel value="Device Settings">
+				<Tabs.Panel value="This Device">
 					<Box p={16}>
 						<DeviceSettings />
 					</Box>
