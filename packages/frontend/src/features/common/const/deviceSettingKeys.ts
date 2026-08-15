@@ -1,6 +1,9 @@
 export const DEVICE_SETTING_KEY_ADVANCED_SEARCH_QUERY_LIMIT =
 	"advancedSearchQueryLimit";
+export const DEVICE_SETTING_KEY_BROWSER_SELECTION = "browserSelection";
 export const DEVICE_SETTING_KEY_LOCALE = "locale";
+export const DEVICE_SETTING_KEY_RECENTLY_ADDED_SELECTION =
+	"recentlyAddedSelection";
 export const DEVICE_SETTING_KEY_SELECTED_PROFILE_NAME = "selectedProfileName";
 export const DEVICE_SETTING_KEY_SIMILARITY_SEARCH_TYPE = "similaritySearchType";
 export const DEVICE_SETTING_KEY_SONG_TABLE_COLUMN_LAYOUT =
