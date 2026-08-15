@@ -62,8 +62,8 @@ export function AdvancedSearchSettings({
 				Advanced Search
 			</Title>
 			<Text size="sm" c="dimmed">
-				The query limit is kept on this device. Scan, Vacuum, and Analyze act on
-				the shared library index, so they affect every device.
+				The query limit applies to this device. Scan, Vacuum, and Analyze run on
+				the shared library index.
 			</Text>
 			<form>
 				<Group>

@@ -20,8 +20,7 @@ export function useSettingsStateEditorProps<T extends Message>(
 			update(newState);
 			notify({
 				status: "success",
-				title: "State successfully updated",
-				description: "The state has been updated.",
+				title: "Settings successfully updated",
 			});
 		},
 		[notify, update],

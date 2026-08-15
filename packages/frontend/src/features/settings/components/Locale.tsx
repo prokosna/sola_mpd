@@ -1,4 +1,4 @@
-import { Select, Stack, Title } from "@mantine/core";
+import { Select, Stack, Text, Title } from "@mantine/core";
 import { useAtomValue, useSetAtom } from "jotai";
 import { setLocaleActionAtom } from "../states/actions/setLocaleActionAtom";
 import { localeAtom, supportedLocalesAtom } from "../states/atoms/localeAtom";
@@ -11,8 +11,11 @@ export function Locale() {
 	return (
 		<Stack gap={12}>
 			<Title order={2} size="md">
-				Locale (for language-aware sorting)
+				Locale
 			</Title>
+			<Text size="sm" c="dimmed">
+				Determines how song lists are sorted.
+			</Text>
 			<Select
 				value={localeState}
 				size="md"

@@ -6,8 +6,8 @@ import { IconCloud, IconDeviceDesktop } from "@tabler/icons-react";
 export type SettingScope = "workspace" | "device";
 
 const SCOPE_LABEL: Record<SettingScope, string> = {
-	workspace: "Shared across all devices and profiles",
-	device: "Saved on this device only",
+	workspace: "Shared across devices",
+	device: "This device only",
 };
 
 export function ScopeNote({ scope }: { scope: SettingScope }) {
