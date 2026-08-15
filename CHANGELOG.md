@@ -5,6 +5,15 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [4.10.0](https://github.com/prokosna/sola_mpd/compare/v4.9.3...v4.10.0) (2026-08-15)
+
+
+### Features
+
+* **backend:** migrate MCP to SDK v2 and serve protocol revision 2026-07-28 ([#389](https://github.com/prokosna/sola_mpd/issues/389)) ([3924047](https://github.com/prokosna/sola_mpd/commit/392404731bf29aeccfdd23d14067104dd17baf74))
+* **frontend:** sync settings page tabs with the URL ([#387](https://github.com/prokosna/sola_mpd/issues/387)) ([6d38e7f](https://github.com/prokosna/sola_mpd/commit/6d38e7fd189760a99e3f026af5e088488bca760c))
+* scope settings and state across workspace, device, and URL layers ([#391](https://github.com/prokosna/sola_mpd/issues/391)) ([cb1e3be](https://github.com/prokosna/sola_mpd/commit/cb1e3be72e9133413a261e39a018c77f0b0d4317))
+
 ## [4.9.3](https://github.com/prokosna/sola_mpd/compare/v4.9.2...v4.9.3) (2026-08-01)
 
 
