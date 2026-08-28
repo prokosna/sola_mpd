@@ -46,6 +46,7 @@ export type SongTableColumnDefinition = {
 	cellDataType?: boolean;
 	suppressKeyboardEvent: (params: SuppressKeyboardEventParams) => boolean;
 	cellRenderer?: (props: CustomCellRendererProps) => JSX.Element;
+	valueFormatter?: (params: any) => string;
 };
 
 export type SongsInTable = {
