@@ -42,6 +42,7 @@ message Song {
     COMMENT = 15;
     LABEL = 16;
     ADDED_AT = 17;
+    TIME = 18;
   }
 
   message MetadataValue {

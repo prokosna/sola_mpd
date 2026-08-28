@@ -21,9 +21,9 @@ export function displayDuration(duration: number): string {
 		return `${days}:${hoursStr}:${minutesStr}:${secondsStr}`;
 	}
 	if (hours > 0) {
-		return `${hoursStr}:${minutesStr}:${secondsStr}`;
+		return `${hours}:${minutesStr}:${secondsStr}`;
 	}
-	return `${minutesStr}:${secondsStr}`;
+	return `${minutes}:${secondsStr}`;
 }
 
 /**

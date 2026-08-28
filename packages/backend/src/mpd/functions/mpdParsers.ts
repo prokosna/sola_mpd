@@ -165,6 +165,13 @@ export function parseSong(v?: Record<string, unknown>): Song | undefined {
 		},
 	});
 
+	song.metadata[Song_MetadataTag.TIME] = create(Song_MetadataValueSchema, {
+		value: {
+			case: "floatValue",
+			value: create(FloatValueSchema, { value: duration }),
+		},
+	});
+
 	const format = raw.format ? parseAudioFormat(raw.format) : undefined;
 	song.metadata[Song_MetadataTag.FORMAT] = create(Song_MetadataValueSchema, {
 		value: {

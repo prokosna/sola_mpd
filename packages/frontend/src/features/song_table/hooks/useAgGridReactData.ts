@@ -11,6 +11,7 @@ import {
 	convertSongForGridRowValueCompact,
 	convertSongMetadataForGridRowValue,
 	convertSongMetadataTagToDisplayName,
+	SONG_METADATA_FORMATTERS,
 } from "../functions/songTableConversion";
 import { getSongTableKey } from "../functions/songTableKey";
 import { sortSongsByColumns } from "../functions/songTableSorting";
@@ -88,6 +89,7 @@ export function useAgGridReactData(
 			resizable: true,
 			sortable: isSortingEnabled,
 			tooltipField: convertSongMetadataTagToDisplayName(column.tag),
+			valueFormatter: SONG_METADATA_FORMATTERS[column.tag],
 			sort:
 				!isSortingEnabled ||
 				isReorderingEnabled ||

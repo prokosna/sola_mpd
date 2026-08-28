@@ -8,8 +8,13 @@ import {
 	Song_MetadataTag,
 	type Song_MetadataValue,
 } from "@sola_mpd/shared/src/models/song_pb.js";
+import { displayDuration } from "@sola_mpd/shared/src/utils/stringUtils.js";
+import type { ValueFormatterParams } from "ag-grid-community";
 import dayjs from "dayjs";
-import type { SongTableRowCompact } from "../types/songTableTypes";
+import type {
+	SongTableRowCompact,
+	SongTableRowValue,
+} from "../types/songTableTypes";
 
 export function convertSongMetadataTagToDisplayName(
 	tag: Song_MetadataTag,
@@ -68,3 +73,15 @@ export function convertSongForGridRowValueCompact(
 		secondLine: `${[album, artist ?? albumArtist ?? "-", composer].filter((v) => v !== "").join(" / ")}`,
 	};
 }
+
+export const SONG_METADATA_FORMATTERS: Partial<
+	Record<
+		Song_MetadataTag,
+		(params: ValueFormatterParams<any, SongTableRowValue>) => string
+	>
+> = {
+	[Song_MetadataTag.TIME]: (params) =>
+		typeof params.value === "number"
+			? displayDuration(params.value)
+			: String(params.value ?? ""),
+};

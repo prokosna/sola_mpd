@@ -5,18 +5,18 @@ import { displayDuration, normalize } from "./stringUtils.js";
 describe("stringUtils", () => {
 	describe("displayDuration", () => {
 		it("should format seconds only", () => {
-			expect(displayDuration(5)).toBe("00:05");
-			expect(displayDuration(45)).toBe("00:45");
+			expect(displayDuration(5)).toBe("0:05");
+			expect(displayDuration(45)).toBe("0:45");
 		});
 
 		it("should format minutes and seconds", () => {
-			expect(displayDuration(65)).toBe("01:05");
+			expect(displayDuration(65)).toBe("1:05");
 			expect(displayDuration(3599)).toBe("59:59");
 		});
 
 		it("should format hours, minutes and seconds", () => {
-			expect(displayDuration(3600)).toBe("01:00:00");
-			expect(displayDuration(3661)).toBe("01:01:01");
+			expect(displayDuration(3600)).toBe("1:00:00");
+			expect(displayDuration(3661)).toBe("1:01:01");
 			expect(displayDuration(86399)).toBe("23:59:59");
 		});
 
@@ -27,12 +27,12 @@ describe("stringUtils", () => {
 		});
 
 		it("should handle zero duration", () => {
-			expect(displayDuration(0)).toBe("00:00");
+			expect(displayDuration(0)).toBe("0:00");
 		});
 
 		it("should handle floating point numbers", () => {
-			expect(displayDuration(65.4)).toBe("01:05");
-			expect(displayDuration(65.8)).toBe("01:05");
+			expect(displayDuration(65.4)).toBe("1:05");
+			expect(displayDuration(65.8)).toBe("1:05");
 		});
 	});
 
