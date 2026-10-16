@@ -138,7 +138,7 @@ class MpdClientMpd3 implements MpdClient {
 						create(MpdEventSchema, { eventType: MpdEvent_EventType.UPDATE }),
 					);
 					break;
-				case "mixier":
+				case "mixer":
 					callback(
 						create(MpdEventSchema, { eventType: MpdEvent_EventType.MIXER }),
 					);
