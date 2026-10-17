@@ -70,6 +70,10 @@ export const playerStatusElapsedAtom = atom((get) => {
 	);
 });
 
+export const playerStatusReceivedAtAtom = atom((get) => {
+	return get(playerStatusSnapshotAtom)?.receivedAt;
+});
+
 export const playerStatusDurationAtom = atom((get) => {
 	return get(playerStatusAtom)?.duration;
 });

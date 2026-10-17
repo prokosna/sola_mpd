@@ -1,6 +1,9 @@
 import { describe, expect, it } from "vitest";
 
-import { getElapsedTimePercentage } from "./playerDisplay";
+import {
+	getElapsedFromPercentage,
+	getElapsedTimePercentage,
+} from "./playerDisplay";
 
 describe("playerDisplay", () => {
 	describe("getElapsedTimePercentage", () => {
@@ -30,6 +33,17 @@ describe("playerDisplay", () => {
 
 		it("should return -1 when both are undefined", () => {
 			expect(getElapsedTimePercentage(undefined, undefined)).toBe(-1);
+		});
+	});
+
+	describe("getElapsedFromPercentage", () => {
+		it("should convert a percentage to seconds", () => {
+			expect(getElapsedFromPercentage(25, 200)).toBe(50);
+		});
+
+		it("should return undefined without a usable duration", () => {
+			expect(getElapsedFromPercentage(25, undefined)).toBeUndefined();
+			expect(getElapsedFromPercentage(25, 0)).toBeUndefined();
 		});
 	});
 });
