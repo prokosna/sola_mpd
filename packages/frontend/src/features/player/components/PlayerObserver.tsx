@@ -1,33 +1,41 @@
-import { useSetAtom } from "jotai";
-import { useEffect, useRef } from "react";
+import { useAtomValue, useSetAtom } from "jotai";
+import { useEffect } from "react";
 
+import {
+	PLAYER_CLOCK_TICK_INTERVAL_MS,
+	PLAYER_STATUS_RESYNC_INTERVAL_MS,
+} from "../const/playerTiming";
 import { refreshCurrentSongActionAtom } from "../states/actions/refreshCurrentSongActionAtom";
 import { refreshPlayerStatusActionAtom } from "../states/actions/refreshPlayerStatusActionAtom";
+import { tickPlayerClockActionAtom } from "../states/actions/tickPlayerClockActionAtom";
+import { playerStatusIsPlayingAtom } from "../states/atoms/playerStatusAtom";
 
 export function PlayerObserver() {
 	const refreshCurrentSong = useSetAtom(refreshCurrentSongActionAtom);
 	const refreshPlayerStatus = useSetAtom(refreshPlayerStatusActionAtom);
-
-	const intervalIdRef = useRef<ReturnType<typeof setInterval> | undefined>(
-		undefined,
-	);
+	const tickPlayerClock = useSetAtom(tickPlayerClockActionAtom);
+	const isPlaying = useAtomValue(playerStatusIsPlayingAtom);
 
 	useEffect(() => {
-		if (intervalIdRef.current === undefined) {
-			const id = setInterval(() => {
-				refreshCurrentSong();
-				refreshPlayerStatus();
-			}, 1000);
-			intervalIdRef.current = id;
-		}
-
+		const id = setInterval(() => {
+			refreshCurrentSong();
+			refreshPlayerStatus();
+		}, PLAYER_STATUS_RESYNC_INTERVAL_MS);
 		return () => {
-			if (intervalIdRef.current !== undefined) {
-				clearInterval(intervalIdRef.current);
-				intervalIdRef.current = undefined;
-			}
+			clearInterval(id);
 		};
 	}, [refreshCurrentSong, refreshPlayerStatus]);
+
+	useEffect(() => {
+		if (!isPlaying) {
+			return;
+		}
+		tickPlayerClock();
+		const id = setInterval(tickPlayerClock, PLAYER_CLOCK_TICK_INTERVAL_MS);
+		return () => {
+			clearInterval(id);
+		};
+	}, [isPlaying, tickPlayerClock]);
 
 	return null;
 }
