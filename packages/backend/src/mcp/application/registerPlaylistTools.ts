@@ -1,7 +1,7 @@
 import type { McpServer } from "@modelcontextprotocol/server";
 import { z } from "zod";
 
-import { isMpdNoExistError } from "../functions/isMpdNoExistError.js";
+import { findSkippedPlaylistUris } from "../functions/findSkippedPlaylistUris.js";
 import { songToOutput } from "../functions/songToOutput.js";
 import {
 	toolError,
@@ -160,7 +160,7 @@ export function registerPlaylistTools(
 		{
 			title: "Load a stored playlist into the play queue",
 			description:
-				"Appends every song of a stored playlist to the end of the play queue, in playlist order. Does not clear the queue or start playback; use queue_clear and playback_control for that. Songs whose files no longer exist in the library are skipped and listed in the result. Any other failure stops the call and returns an error stating how many songs were added and which URI failed; songs added before the failure stay in the queue. Omitting profile uses the workspace default profile.",
+				"Appends every song of a stored playlist to the end of the play queue, in playlist order. Does not clear the queue or start playback; use queue_clear and playback_control for that. Songs whose files no longer exist in the library are skipped and listed in the result. Omitting profile uses the workspace default profile.",
 			inputSchema: z.object({
 				name: z.string().min(1).describe("Stored playlist name."),
 				profile: mcpProfileNameSchema,
@@ -169,32 +169,51 @@ export function registerPlaylistTools(
 		async (args) => {
 			try {
 				const profile = resolveCurrentMpdProfile(args.profile);
-				const res = await executeMpdCommand(mpdClient, profile, {
+				const playlistRes = await executeMpdCommand(mpdClient, profile, {
 					case: "listplaylistinfo",
 					value: { name: args.name },
 				});
-				if (res.command?.case !== "listplaylistinfo") {
+				if (playlistRes.command?.case !== "listplaylistinfo") {
 					return toolError("Unexpected response from MPD listplaylistinfo.");
 				}
-				const uris = res.command.value.songs.map((song) => song.path);
-				const result = await executeMpdCommandsSequentially(
-					mpdClient,
-					profile,
-					uris.map((uri) => ({ case: "add", value: { uri } })),
-					isMpdNoExistError,
-				);
-				const skipped = result.skippedIndexes.map((i) => uris[i]);
+				const uris = playlistRes.command.value.songs.map((song) => song.path);
+				const statusRes = await executeMpdCommand(mpdClient, profile, {
+					case: "status",
+					value: {},
+				});
+				if (statusRes.command?.case !== "status") {
+					return toolError("Unexpected response from MPD status.");
+				}
+				const queueLengthBefore =
+					statusRes.command.value.status?.playQueueLength ?? 0;
+				await executeMpdCommand(mpdClient, profile, {
+					case: "load",
+					value: { name: args.name },
+				});
+				let appendedUris: string[];
+				try {
+					const queueRes = await executeMpdCommand(mpdClient, profile, {
+						case: "playlistinfo",
+						value: {},
+					});
+					if (queueRes.command?.case !== "playlistinfo") {
+						throw new Error("Unexpected response from MPD playlistinfo.");
+					}
+					appendedUris = queueRes.command.value.songs
+						.slice(queueLengthBefore)
+						.map((song) => song.path);
+				} catch (err) {
+					return toolError(
+						`Loaded playlist "${args.name}" into the queue, but could not read the queue back to find skipped songs: ${errorMessage(err)}`,
+					);
+				}
+				const skipped = findSkippedPlaylistUris(uris, appendedUris);
 				const skippedNote =
 					skipped.length > 0
 						? `; skipped ${skipped.length} not in the library: ${JSON.stringify(skipped)}`
 						: "";
-				if (result.failure !== undefined) {
-					return toolError(
-						`Added ${result.completed} of ${uris.length} songs from playlist "${args.name}" to the queue${skippedNote}, then failed on ${uris[result.failure.index]}: ${errorMessage(result.failure.error)}. The remaining songs were not added.`,
-					);
-				}
 				return toolResultText(
-					`added ${result.completed} of ${uris.length} songs from playlist "${args.name}" to the queue${skippedNote}`,
+					`added ${uris.length - skipped.length} of ${uris.length} songs from playlist "${args.name}" to the queue${skippedNote}`,
 				);
 			} catch (err) {
 				return errorToToolResult(err);

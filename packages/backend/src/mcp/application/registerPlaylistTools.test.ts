@@ -227,17 +227,56 @@ describe("registerPlaylistTools / playlist_save_queue", () => {
 });
 
 describe("registerPlaylistTools / playlist_load", () => {
-	it("adds every song of the playlist to the queue in order", async () => {
-		const songs = ["x/1.flac", "x/2.flac"].map((path) =>
-			create(SongSchema, { path }),
-		);
-		const client = makeMpdClient((req) =>
-			req.command?.case === "listplaylistinfo"
-				? makeMpdResponse({
-						command: { case: "listplaylistinfo", value: { songs } },
-					})
-				: makeMpdResponse({ command: { case: "add", value: {} } }),
-		);
+	function loadClient(options: {
+		playlist: string[];
+		queueBefore: string[];
+		loaded: string[];
+		failOn?: (caseName: string) => Error | undefined;
+	}) {
+		const toSongs = (paths: string[]) =>
+			paths.map((path) => create(SongSchema, { path }));
+		let queue = options.queueBefore;
+		return makeMpdClient((req) => {
+			const caseName = req.command?.case ?? "";
+			const err = options.failOn?.(caseName);
+			if (err !== undefined) throw err;
+			switch (req.command?.case) {
+				case "listplaylistinfo":
+					return makeMpdResponse({
+						command: {
+							case: "listplaylistinfo",
+							value: { songs: toSongs(options.playlist) },
+						},
+					});
+				case "status":
+					return makeMpdResponse({
+						command: {
+							case: "status",
+							value: { status: { playQueueLength: queue.length } },
+						},
+					});
+				case "load":
+					queue = [...queue, ...options.loaded];
+					return makeMpdResponse({ command: { case: "load", value: {} } });
+				case "playlistinfo":
+					return makeMpdResponse({
+						command: {
+							case: "playlistinfo",
+							value: { songs: toSongs(queue) },
+						},
+					});
+				default:
+					throw new Error(`unexpected command ${caseName}`);
+			}
+		});
+	}
+
+	it("loads the playlist with MPD load and reports every song added", async () => {
+		const client = loadClient({
+			playlist: ["x/1.flac", "x/2.flac"],
+			queueBefore: ["q.flac"],
+			loaded: ["x/1.flac", "x/2.flac"],
+		});
 		const server = setup(client);
 
 		const result = await server.call("playlist_load", { name: "x" });
@@ -247,66 +286,22 @@ describe("registerPlaylistTools / playlist_load", () => {
 			'added 2 of 2 songs from playlist "x" to the queue',
 		);
 		expect(sentCommands(client)).toEqual([
+			expect.objectContaining({ case: "listplaylistinfo" }),
+			expect.objectContaining({ case: "status" }),
 			expect.objectContaining({
-				case: "listplaylistinfo",
+				case: "load",
 				value: expect.objectContaining({ name: "x" }),
 			}),
-			expect.objectContaining({
-				case: "add",
-				value: expect.objectContaining({ uri: "x/1.flac" }),
-			}),
-			expect.objectContaining({
-				case: "add",
-				value: expect.objectContaining({ uri: "x/2.flac" }),
-			}),
+			expect.objectContaining({ case: "playlistinfo" }),
 		]);
 	});
 
-	it("reports zero added for an empty playlist", async () => {
-		const client = makeMpdClient(() =>
-			makeMpdResponse({
-				command: { case: "listplaylistinfo", value: { songs: [] } },
-			}),
-		);
-		const server = setup(client);
-
-		const result = await server.call("playlist_load", { name: "empty" });
-
-		expect(textOf(result)).toBe(
-			'added 0 of 0 songs from playlist "empty" to the queue',
-		);
-		expect(client.execute).toHaveBeenCalledOnce();
-	});
-
-	function playlistClient(
-		paths: string[],
-		failAdd: (uri: string) => Error | undefined,
-	) {
-		const songs = paths.map((path) => create(SongSchema, { path }));
-		return makeMpdClient((req) => {
-			if (req.command?.case === "listplaylistinfo") {
-				return makeMpdResponse({
-					command: { case: "listplaylistinfo", value: { songs } },
-				});
-			}
-			if (req.command?.case === "add") {
-				const err = failAdd(req.command.value.uri);
-				if (err !== undefined) throw err;
-			}
-			return makeMpdResponse({ command: { case: "add", value: {} } });
+	it("lists the songs MPD skipped because their files no longer exist", async () => {
+		const client = loadClient({
+			playlist: ["1.flac", "gone.flac", "3.flac", "lost.flac"],
+			queueBefore: ["3.flac"],
+			loaded: ["1.flac", "3.flac"],
 		});
-	}
-
-	it("skips songs whose files no longer exist and lists them in a normal result", async () => {
-		const client = playlistClient(
-			["1.flac", "gone.flac", "3.flac", "lost.flac"],
-			(uri) =>
-				uri === "gone.flac"
-					? Object.assign(new Error("No such directory"), { errno: 50 })
-					: uri === "lost.flac"
-						? new Error("ACK [50@0] {add} Not found")
-						: undefined,
-		);
 		const server = setup(client);
 
 		const result = await server.call("playlist_load", { name: "p" });
@@ -315,34 +310,28 @@ describe("registerPlaylistTools / playlist_load", () => {
 		expect(textOf(result)).toBe(
 			'added 2 of 4 songs from playlist "p" to the queue; skipped 2 not in the library: ["gone.flac","lost.flac"]',
 		);
-		expect(client.execute).toHaveBeenCalledTimes(5);
 	});
 
-	it("aborts on a non-missing error, reporting added and skipped songs", async () => {
-		const client = playlistClient(
-			["1.flac", "gone.flac", "3.flac", "4.flac"],
-			(uri) =>
-				uri === "gone.flac"
-					? new Error("ACK [50@0] {add} No such directory")
-					: uri === "3.flac"
-						? new Error("connect ECONNREFUSED")
-						: undefined,
-		);
+	it("reports zero added for an empty playlist", async () => {
+		const client = loadClient({ playlist: [], queueBefore: [], loaded: [] });
 		const server = setup(client);
 
-		const result = await server.call("playlist_load", { name: "p" });
+		const result = await server.call("playlist_load", { name: "empty" });
 
-		expect(result.isError).toBe(true);
-		const text = textOf(result);
-		expect(text).toContain('Added 1 of 4 songs from playlist "p"');
-		expect(text).toContain('skipped 1 not in the library: ["gone.flac"]');
-		expect(text).toContain("failed on 3.flac: connect ECONNREFUSED");
-		expect(client.execute).toHaveBeenCalledTimes(4);
+		expect(textOf(result)).toBe(
+			'added 0 of 0 songs from playlist "empty" to the queue',
+		);
 	});
 
 	it("returns MPD's error when the playlist does not exist", async () => {
-		const client = makeMpdClient(() => {
-			throw new Error("ACK [50@0] {listplaylistinfo} No such playlist");
+		const client = loadClient({
+			playlist: [],
+			queueBefore: [],
+			loaded: [],
+			failOn: (c) =>
+				c === "listplaylistinfo"
+					? new Error("ACK [50@0] {listplaylistinfo} No such playlist")
+					: undefined,
 		});
 		const server = setup(client);
 
@@ -351,6 +340,40 @@ describe("registerPlaylistTools / playlist_load", () => {
 		expect(result.isError).toBe(true);
 		expect(textOf(result)).toContain("No such playlist");
 		expect(client.execute).toHaveBeenCalledOnce();
+	});
+
+	it("returns MPD's error when load fails", async () => {
+		const client = loadClient({
+			playlist: ["1.flac"],
+			queueBefore: [],
+			loaded: [],
+			failOn: (c) =>
+				c === "load" ? new Error("connect ECONNREFUSED") : undefined,
+		});
+		const server = setup(client);
+
+		const result = await server.call("playlist_load", { name: "p" });
+
+		expect(result.isError).toBe(true);
+		expect(textOf(result)).toContain("connect ECONNREFUSED");
+	});
+
+	it("says the playlist was loaded when the queue cannot be read back", async () => {
+		const client = loadClient({
+			playlist: ["1.flac"],
+			queueBefore: [],
+			loaded: ["1.flac"],
+			failOn: (c) =>
+				c === "playlistinfo" ? new Error("connection lost") : undefined,
+		});
+		const server = setup(client);
+
+		const result = await server.call("playlist_load", { name: "p" });
+
+		expect(result.isError).toBe(true);
+		const text = textOf(result);
+		expect(text).toContain('Loaded playlist "p" into the queue');
+		expect(text).toContain("connection lost");
 	});
 
 	it("returns a tool error on unexpected MPD response shape", async () => {
