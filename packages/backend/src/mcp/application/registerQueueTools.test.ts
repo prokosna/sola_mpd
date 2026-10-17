@@ -87,6 +87,98 @@ describe("registerQueueTools / queue_add", () => {
 		expect(req.command.case).toBe("add");
 		expect(req.command.value.uri).toBe("songs/foo.flac");
 	});
+
+	it("adds every entry of uris in order and reports the count", async () => {
+		const client = makeMpdClient(() => makeMpdResponse({}));
+		const server = createFakeMcpServer();
+		registerQueueTools(server as never, {
+			mpdClient: client,
+			libraryIndex: makeLibraryIndex(),
+		});
+
+		const result = await server.call("queue_add", {
+			uris: ["a.flac", "b.flac", "c.flac"],
+		});
+
+		expect(result.isError).toBeUndefined();
+		expect(result.content?.[0]).toEqual({
+			type: "text",
+			text: "added 3 URIs to the queue",
+		});
+		expect(
+			vi.mocked(client.execute).mock.calls.map(([req]) => req.command),
+		).toEqual(
+			["a.flac", "b.flac", "c.flac"].map((uri) =>
+				expect.objectContaining({
+					case: "add",
+					value: expect.objectContaining({ uri }),
+				}),
+			),
+		);
+	});
+
+	it("stops at the first failing entry of uris and names the added count and failing URI", async () => {
+		const client = makeMpdClient((req) => {
+			if (req.command?.case === "add" && req.command.value.uri === "bad") {
+				throw new Error("No such directory");
+			}
+			return makeMpdResponse({});
+		});
+		const server = createFakeMcpServer();
+		registerQueueTools(server as never, {
+			mpdClient: client,
+			libraryIndex: makeLibraryIndex(),
+		});
+
+		const result = await server.call("queue_add", {
+			uris: ["a.flac", "bad", "c.flac"],
+		});
+
+		expect(result.isError).toBe(true);
+		const block = result.content?.[0];
+		if (block?.type !== "text") throw new Error("expected text block");
+		expect(block.text).toContain("Added 1 of 3 URIs to the queue");
+		expect(block.text).toContain("failed on bad: No such directory");
+		expect(client.execute).toHaveBeenCalledTimes(2);
+	});
+
+	it("requires exactly one of uri or uris in its input schema", () => {
+		const server = createFakeMcpServer();
+		registerQueueTools(server as never, {
+			mpdClient: makeMpdClient(() => makeMpdResponse({})),
+			libraryIndex: makeLibraryIndex(),
+		});
+		const schema = server.tools.get("queue_add")?.config.inputSchema as {
+			safeParse: (v: unknown) => {
+				success: boolean;
+				error?: { issues: { message: string }[] };
+			};
+		};
+
+		expect(schema.safeParse({ uri: "a" }).success).toBe(true);
+		expect(schema.safeParse({ uris: ["a", "b"] }).success).toBe(true);
+		const neither = schema.safeParse({});
+		expect(neither.success).toBe(false);
+		expect(neither.error?.issues[0]?.message).toBe(
+			"Provide exactly one of `uri` or `uris`.",
+		);
+		expect(schema.safeParse({ uri: "a", uris: ["b"] }).success).toBe(false);
+		expect(schema.safeParse({ uris: [] }).success).toBe(false);
+	});
+
+	it("returns a tool error when neither uri nor uris reaches the handler", async () => {
+		const client = makeMpdClient(() => makeMpdResponse({}));
+		const server = createFakeMcpServer();
+		registerQueueTools(server as never, {
+			mpdClient: client,
+			libraryIndex: makeLibraryIndex(),
+		});
+
+		const result = await server.call("queue_add", {});
+
+		expect(result.isError).toBe(true);
+		expect(client.execute).not.toHaveBeenCalled();
+	});
 });
 
 describe("registerQueueTools / queue_clear", () => {
