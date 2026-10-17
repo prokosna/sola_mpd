@@ -2,7 +2,10 @@ import type {
 	Song,
 	Song_MetadataTag,
 } from "@sola_mpd/shared/src/models/song_pb.js";
-import type { SuppressKeyboardEventParams } from "ag-grid-community";
+import type {
+	SuppressKeyboardEventParams,
+	ValueFormatterParams,
+} from "ag-grid-community";
 import type { CustomCellRendererProps } from "ag-grid-react";
 import type { JSX } from "react";
 
@@ -46,7 +49,9 @@ export type SongTableColumnDefinition = {
 	cellDataType?: boolean;
 	suppressKeyboardEvent: (params: SuppressKeyboardEventParams) => boolean;
 	cellRenderer?: (props: CustomCellRendererProps) => JSX.Element;
-	valueFormatter?: (params: any) => string;
+	valueFormatter?: (
+		params: ValueFormatterParams<SongTableRowData, SongTableRowValue>,
+	) => string;
 };
 
 export type SongsInTable = {
