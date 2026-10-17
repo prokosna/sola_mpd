@@ -19,7 +19,10 @@ import {
 	SOCKETIO_VIEW_STATE_BLOB_FETCH,
 	SOCKETIO_VIEW_STATE_BLOB_SAVE,
 } from "@sola_mpd/shared/src/const/socketio.js";
-import { MpdEventSchema } from "@sola_mpd/shared/src/models/mpd/mpd_event_pb.js";
+import {
+	MpdEvent_EventType,
+	MpdEventSchema,
+} from "@sola_mpd/shared/src/models/mpd/mpd_event_pb.js";
 import type { MpdProfile } from "@sola_mpd/shared/src/models/mpd/mpd_profile_pb.js";
 import { MpdProfileSchema } from "@sola_mpd/shared/src/models/mpd/mpd_profile_pb.js";
 import { PluginExecuteResponseWrapperSchema } from "@sola_mpd/shared/src/models/plugin/plugin_wrapper_pb.js";
@@ -151,7 +154,9 @@ function registerIpcHandlers(): void {
 		async (event, msg: Uint8Array): Promise<Uint8Array> => {
 			try {
 				const targetProfile = fromBinary(MpdProfileSchema, msg);
-				if (idEventHandlerMap.has([CLIENT_ID, targetProfile])) {
+				const existing = idEventHandlerMap.get([CLIENT_ID, targetProfile]);
+				if (existing !== undefined) {
+					await existing;
 					return new Uint8Array(0);
 				}
 
@@ -159,6 +164,9 @@ function registerIpcHandlers(): void {
 				const { profile, handlerPromise } = await subscribeMpdEventsUseCase({
 					msg,
 					onEvent: (event) => {
+						if (event.eventType === MpdEvent_EventType.DISCONNECTED) {
+							idEventHandlerMap.delete([CLIENT_ID, targetProfile]);
+						}
 						if (!sender.isDestroyed()) {
 							sender.send(SOCKETIO_MPD_EVENT, toBinary(MpdEventSchema, event));
 						}
@@ -167,7 +175,14 @@ function registerIpcHandlers(): void {
 				});
 
 				idEventHandlerMap.set([CLIENT_ID, profile], handlerPromise);
-				await handlerPromise;
+				try {
+					await handlerPromise;
+				} catch (err) {
+					if (idEventHandlerMap.get([CLIENT_ID, profile]) === handlerPromise) {
+						idEventHandlerMap.delete([CLIENT_ID, profile]);
+					}
+					throw err;
+				}
 				const room = `${profile.host}:${profile.port}`;
 				console.info(`Desktop client subscribed to ${room}`);
 				return new Uint8Array(0);
