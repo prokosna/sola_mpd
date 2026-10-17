@@ -121,6 +121,8 @@ If you are using the latest version of Docker, the `compose` command is already 
     $ vi docker-compose.yaml
     ```
 
+    See [Changing the port](#changing-the-port) below: how to change it depends on the network mode.
+
 1. **For users migrating from `docker/start.sh`:**
    If you were using the previous version with `docker/start.sh`, run the migration script before starting the new version:
 
@@ -140,7 +142,36 @@ If you are using the latest version of Docker, the `compose` command is already 
 
 1. In the setup dialog, please enter the endpoint of your mpd server which can be accessed from the Sola MPD server. 
 
-    **If you are using bridge mode and MPD is running on the same server, you need to use "host.docker.internal" instead of "localhost".**
+    **If you are using bridge mode and MPD is running on the same server, you need to use "host.docker.internal" instead of "localhost".** If the connection test fails, see [Troubleshooting the MPD connection](#troubleshooting-the-mpd-connection).
+
+### Changing the port
+
+Sola MPD listens on the port given by the `PORT` environment variable, or `3000` if it is not set.
+
+- **Host network mode (the default, `network_mode: host`)**: the container shares the server's network, so `ports:` mappings are ignored. Set `PORT` in the `environment:` section of `docker-compose.yaml` instead:
+
+    ```yaml
+        environment:
+          - USER=${USER}
+          - PORT=8080
+    ```
+
+- **Bridge network mode**: keep the app on `3000` inside the container and change only the host side of the `ports:` mapping, e.g. `- 8080:3000`. If you also set `PORT`, the container side of the mapping must match it.
+
+After editing, recreate the container with `docker compose up -d`.
+
+### Troubleshooting the MPD connection
+
+When the connection test in the setup dialog fails, the raw error is shown together with a hint. Keep in mind that the connection to MPD is made from the Sola MPD server (the container), not from your browser.
+
+- **Connection refused with `localhost` / `127.0.0.1`**
+  - In bridge mode, `localhost` is the container itself. Use `host.docker.internal` and enable the `extra_hosts: - host.docker.internal:host-gateway` lines in `docker-compose.yaml` (required on Linux).
+  - In host mode, `localhost` is the server, so check that MPD is running and listening on that port.
+  - If `bind_to_address` in `mpd.conf` is limited to `localhost`, MPD does not accept connections from the container (bridge mode) or from another machine.
+- **Host not found**: check the spelling of the host name, or use the IP address of the MPD server. `host.docker.internal` only resolves inside Docker, so do not use it in host mode, outside Docker, or in the desktop application.
+- **Timed out**: check the host and port, and that no firewall blocks the MPD port between the two machines.
+- **Password errors**: check the password against `password` in `mpd.conf`.
+- **Unexpected response**: something other than MPD answered on that port. MPD's default port is `6600`.
 
 ## How to update
 
@@ -210,7 +241,7 @@ Both protocol eras are served from that one endpoint: the `2026-07-28` revision 
 
 ### Connecting
 
-Point any MCP client at `http://[Your Server IP]:[Sola MPD port]/mcp` (the same port as the web UI — `3000` by default, see `docker-compose.yaml` if you changed it).
+Point any MCP client at `http://[Your Server IP]:[Sola MPD port]/mcp` (the same port as the web UI — `3000` by default, see [Changing the port](#changing-the-port)).
 
 ### Available tool categories
 
