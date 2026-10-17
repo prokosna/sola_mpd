@@ -19,7 +19,7 @@ import type { MpdListener } from "./MpdListener";
 export class MpdListenerSocketIo implements MpdListener {
 	private socket: MessagingClient;
 	private callbacks: Map<MpdEvent_EventType, () => void>;
-	private subscribedCallback: (() => void) | undefined;
+	private subscribedCallback: ((isResubscription: boolean) => void) | undefined;
 	private subscribedProfile: MpdProfile | undefined;
 
 	constructor(messagingClient: MessagingClient) {
@@ -27,7 +27,7 @@ export class MpdListenerSocketIo implements MpdListener {
 		this.callbacks = new Map();
 		this.socket.onReconnect(() => {
 			if (this.subscribedProfile !== undefined) {
-				this.requestSubscription(this.subscribedProfile);
+				this.requestSubscription(this.subscribedProfile, true);
 			}
 		});
 	}
@@ -39,7 +39,7 @@ export class MpdListenerSocketIo implements MpdListener {
 			console.info(`MPD event: ${MpdEvent_EventType[event.eventType]}`);
 			this.callbacks.get(event.eventType)?.();
 		});
-		this.requestSubscription(profile);
+		this.requestSubscription(profile, false);
 	};
 
 	unsubscribe = (profile: MpdProfile): void => {
@@ -59,18 +59,21 @@ export class MpdListenerSocketIo implements MpdListener {
 		this.callbacks.delete(event);
 	};
 
-	onSubscribed = (callback: () => void): void => {
+	onSubscribed = (callback: (isResubscription: boolean) => void): void => {
 		this.subscribedCallback = callback;
 	};
 
-	private requestSubscription(profile: MpdProfile): void {
+	private requestSubscription(
+		profile: MpdProfile,
+		isResubscription: boolean,
+	): void {
 		this.socket
 			.emit(SOCKETIO_MPD_SUBSCRIBE, toBinary(MpdProfileSchema, profile))
 			.then(() => {
 				// A late ack for a profile switched away from must not trigger a
 				// refetch on its behalf.
 				if (this.subscribedProfile === profile) {
-					this.subscribedCallback?.();
+					this.subscribedCallback?.(isResubscription);
 				}
 			})
 			.catch((err) => {

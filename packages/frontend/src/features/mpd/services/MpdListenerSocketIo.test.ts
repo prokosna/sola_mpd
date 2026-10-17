@@ -88,7 +88,7 @@ describe("MpdListenerSocketIo", () => {
 		expect(onSubscribed).not.toHaveBeenCalled();
 		await flush();
 
-		expect(onSubscribed).toHaveBeenCalledTimes(1);
+		expect(onSubscribed).toHaveBeenCalledWith(false);
 	});
 
 	it("should re-subscribe the current profile after a reconnect", async () => {
@@ -104,7 +104,7 @@ describe("MpdListenerSocketIo", () => {
 			{ event: SOCKETIO_MPD_SUBSCRIBE, profileName: "A" },
 			{ event: SOCKETIO_MPD_SUBSCRIBE, profileName: "A" },
 		]);
-		expect(onSubscribed).toHaveBeenCalledTimes(2);
+		expect(onSubscribed.mock.calls).toEqual([[false], [true]]);
 	});
 
 	it("should re-subscribe only the latest profile after switching", async () => {

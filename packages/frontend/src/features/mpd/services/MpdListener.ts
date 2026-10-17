@@ -8,5 +8,5 @@ export interface MpdListener {
 	off: (event: MpdEvent_EventType) => void;
 	// Fires after every acknowledged subscription, including the re-subscription
 	// after a transport reconnect; events before it were never delivered.
-	onSubscribed: (callback: () => void) => void;
+	onSubscribed: (callback: (isResubscription: boolean) => void) => void;
 }
