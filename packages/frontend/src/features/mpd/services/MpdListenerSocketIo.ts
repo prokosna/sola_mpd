@@ -19,25 +19,31 @@ import type { MpdListener } from "./MpdListener";
 export class MpdListenerSocketIo implements MpdListener {
 	private socket: MessagingClient;
 	private callbacks: Map<MpdEvent_EventType, () => void>;
+	private subscribedCallback: (() => void) | undefined;
+	private subscribedProfile: MpdProfile | undefined;
 
 	constructor(messagingClient: MessagingClient) {
 		this.socket = messagingClient;
 		this.callbacks = new Map();
+		this.socket.onReconnect(() => {
+			if (this.subscribedProfile !== undefined) {
+				this.requestSubscription(this.subscribedProfile);
+			}
+		});
 	}
 
 	subscribe = (profile: MpdProfile): void => {
+		this.subscribedProfile = profile;
 		this.socket.on(SOCKETIO_MPD_EVENT, (msg: Uint8Array) => {
 			const event = fromBinary(MpdEventSchema, msg);
 			console.info(`MPD event: ${MpdEvent_EventType[event.eventType]}`);
 			this.callbacks.get(event.eventType)?.();
 		});
-		this.socket.emit(
-			SOCKETIO_MPD_SUBSCRIBE,
-			toBinary(MpdProfileSchema, profile),
-		);
+		this.requestSubscription(profile);
 	};
 
 	unsubscribe = (profile: MpdProfile): void => {
+		this.subscribedProfile = undefined;
 		this.socket.off(SOCKETIO_MPD_EVENT);
 		this.socket.emit(
 			SOCKETIO_MPD_UNSUBSCRIBE,
@@ -52,4 +58,23 @@ export class MpdListenerSocketIo implements MpdListener {
 	off = (event: MpdEvent_EventType): void => {
 		this.callbacks.delete(event);
 	};
+
+	onSubscribed = (callback: () => void): void => {
+		this.subscribedCallback = callback;
+	};
+
+	private requestSubscription(profile: MpdProfile): void {
+		this.socket
+			.emit(SOCKETIO_MPD_SUBSCRIBE, toBinary(MpdProfileSchema, profile))
+			.then(() => {
+				// A late ack for a profile switched away from must not trigger a
+				// refetch on its behalf.
+				if (this.subscribedProfile === profile) {
+					this.subscribedCallback?.();
+				}
+			})
+			.catch((err) => {
+				console.error(err);
+			});
+	}
 }
