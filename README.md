@@ -29,7 +29,7 @@ This client has the following features:
   - Text-to-Music search (MuQ-MuLan)
   - Similarity search (MuQ)
 - [x] MCP server (Beta) for LLM-driven library analysis and control
-  - Playback / queue / playlist control tools
+  - Playback and queue control, plus building stored playlists (add songs, save the queue, load into the queue)
   - Structured analytics (top artists, decade breakdown, recently-added per artist, etc.)
   - Read-only SQL queries against an in-memory mirror of the library
 
@@ -202,7 +202,7 @@ Please note that lainbow requires a NVIDIA GPU to generate embeddings. It works 
 
 ## MCP server (Beta)
 
-Sola MPD exposes a [Model Context Protocol](https://modelcontextprotocol.io/) server so LLM clients (Claude Code, Claude Desktop, etc.) can browse and analyze your library, drive playback, and run read-only SQL queries against an in-memory mirror of all songs. The intent is not to wrap MPD commands one-for-one but to support multi-angle questions such as "which artists have I not added music from in two years?" or "break down my library by decade and format."
+Sola MPD exposes a [Model Context Protocol](https://modelcontextprotocol.io/) server so LLM clients (Claude Code, Claude Desktop, etc.) can browse and analyze your library, drive playback, build playlists, and run read-only SQL queries against an in-memory mirror of all songs. The intent is not to wrap MPD commands one-for-one but to support multi-angle questions such as "which artists have I not added music from in two years?" or "break down my library by decade and format."
 
 The server runs on the same Express process as the web UI, listening at `POST /mcp` over the [Streamable HTTP](https://modelcontextprotocol.io/docs/concepts/transports#streamable-http) transport in stateless mode. It uses the MPD profile currently selected in the Sola MPD UI.
 
@@ -219,7 +219,7 @@ Point any MCP client at `http://[Your Server IP]:[Sola MPD port]/mcp` (the same 
 | Status | `mpd_profiles`, `mpd_status`, `mpd_stats` |
 | Playback | `playback_control`, `playback_set_volume`, `playback_set_mode` |
 | Queue | `queue_get`, `queue_add`, `queue_clear` |
-| Playlists | `playlist_list`, `playlist_get` |
+| Playlists | `playlist_list`, `playlist_get`, `playlist_add`, `playlist_save_queue`, `playlist_load` |
 | Library search | `library_list_tag_values`, `library_search` |
 | Library analytics | `library_top_by_tag`, `library_breakdown`, `library_format_distribution`, `library_decade_breakdown`, `library_recently_added_by_artist`, `library_artist_summary` |
 | Free-form analytics | `library_query_sql`, `library_index_stats` |
