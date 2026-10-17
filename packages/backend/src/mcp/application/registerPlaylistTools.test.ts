@@ -243,7 +243,9 @@ describe("registerPlaylistTools / playlist_load", () => {
 		const result = await server.call("playlist_load", { name: "x" });
 
 		expect(result.isError).toBeUndefined();
-		expect(textOf(result)).toBe('added 2 songs from playlist "x" to the queue');
+		expect(textOf(result)).toBe(
+			'added 2 of 2 songs from playlist "x" to the queue',
+		);
 		expect(sentCommands(client)).toEqual([
 			expect.objectContaining({
 				case: "listplaylistinfo",
@@ -271,39 +273,71 @@ describe("registerPlaylistTools / playlist_load", () => {
 		const result = await server.call("playlist_load", { name: "empty" });
 
 		expect(textOf(result)).toBe(
-			'added 0 songs from playlist "empty" to the queue',
+			'added 0 of 0 songs from playlist "empty" to the queue',
 		);
 		expect(client.execute).toHaveBeenCalledOnce();
 	});
 
-	it("stops at the first failing add and names the added count and failing URI", async () => {
-		const songs = ["1.flac", "gone.flac", "3.flac"].map((path) =>
-			create(SongSchema, { path }),
-		);
-		const client = makeMpdClient((req) => {
+	function playlistClient(
+		paths: string[],
+		failAdd: (uri: string) => Error | undefined,
+	) {
+		const songs = paths.map((path) => create(SongSchema, { path }));
+		return makeMpdClient((req) => {
 			if (req.command?.case === "listplaylistinfo") {
 				return makeMpdResponse({
 					command: { case: "listplaylistinfo", value: { songs } },
 				});
 			}
-			if (
-				req.command?.case === "add" &&
-				req.command.value.uri === "gone.flac"
-			) {
-				throw new Error("ACK [50@0] {add} No such directory");
+			if (req.command?.case === "add") {
+				const err = failAdd(req.command.value.uri);
+				if (err !== undefined) throw err;
 			}
 			return makeMpdResponse({ command: { case: "add", value: {} } });
 		});
+	}
+
+	it("skips songs whose files no longer exist and lists them in a normal result", async () => {
+		const client = playlistClient(
+			["1.flac", "gone.flac", "3.flac", "lost.flac"],
+			(uri) =>
+				uri === "gone.flac"
+					? Object.assign(new Error("No such directory"), { errno: 50 })
+					: uri === "lost.flac"
+						? new Error("ACK [50@0] {add} Not found")
+						: undefined,
+		);
+		const server = setup(client);
+
+		const result = await server.call("playlist_load", { name: "p" });
+
+		expect(result.isError).toBeUndefined();
+		expect(textOf(result)).toBe(
+			'added 2 of 4 songs from playlist "p" to the queue; skipped 2 not in the library: ["gone.flac","lost.flac"]',
+		);
+		expect(client.execute).toHaveBeenCalledTimes(5);
+	});
+
+	it("aborts on a non-missing error, reporting added and skipped songs", async () => {
+		const client = playlistClient(
+			["1.flac", "gone.flac", "3.flac", "4.flac"],
+			(uri) =>
+				uri === "gone.flac"
+					? new Error("ACK [50@0] {add} No such directory")
+					: uri === "3.flac"
+						? new Error("connect ECONNREFUSED")
+						: undefined,
+		);
 		const server = setup(client);
 
 		const result = await server.call("playlist_load", { name: "p" });
 
 		expect(result.isError).toBe(true);
 		const text = textOf(result);
-		expect(text).toContain('Added 1 of 3 songs from playlist "p"');
-		expect(text).toContain("failed on gone.flac");
-		expect(text).toContain("No such directory");
-		expect(client.execute).toHaveBeenCalledTimes(3);
+		expect(text).toContain('Added 1 of 4 songs from playlist "p"');
+		expect(text).toContain('skipped 1 not in the library: ["gone.flac"]');
+		expect(text).toContain("failed on 3.flac: connect ECONNREFUSED");
+		expect(client.execute).toHaveBeenCalledTimes(4);
 	});
 
 	it("returns MPD's error when the playlist does not exist", async () => {

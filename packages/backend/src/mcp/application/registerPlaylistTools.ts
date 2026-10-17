@@ -1,6 +1,7 @@
 import type { McpServer } from "@modelcontextprotocol/server";
 import { z } from "zod";
 
+import { isMpdNoExistError } from "../functions/isMpdNoExistError.js";
 import { songToOutput } from "../functions/songToOutput.js";
 import {
 	toolError,
@@ -159,7 +160,7 @@ export function registerPlaylistTools(
 		{
 			title: "Load a stored playlist into the play queue",
 			description:
-				"Appends every song of a stored playlist to the end of the play queue, in playlist order. Does not clear the queue or start playback; use queue_clear and playback_control for that. Songs are added one at a time; if one fails (for example a file no longer in the library), the call stops there and returns an error stating how many songs were added and which URI failed. Songs added before the failure stay in the queue. Omitting profile uses the workspace default profile.",
+				"Appends every song of a stored playlist to the end of the play queue, in playlist order. Does not clear the queue or start playback; use queue_clear and playback_control for that. Songs whose files no longer exist in the library are skipped and listed in the result. Any other failure stops the call and returns an error stating how many songs were added and which URI failed; songs added before the failure stay in the queue. Omitting profile uses the workspace default profile.",
 			inputSchema: z.object({
 				name: z.string().min(1).describe("Stored playlist name."),
 				profile: mcpProfileNameSchema,
@@ -180,14 +181,20 @@ export function registerPlaylistTools(
 					mpdClient,
 					profile,
 					uris.map((uri) => ({ case: "add", value: { uri } })),
+					isMpdNoExistError,
 				);
+				const skipped = result.skippedIndexes.map((i) => uris[i]);
+				const skippedNote =
+					skipped.length > 0
+						? `; skipped ${skipped.length} not in the library: ${JSON.stringify(skipped)}`
+						: "";
 				if (result.failure !== undefined) {
 					return toolError(
-						`Added ${result.completed} of ${uris.length} songs from playlist "${args.name}" to the queue, then failed on ${uris[result.failure.index]}: ${errorMessage(result.failure.error)}. The remaining songs were not added.`,
+						`Added ${result.completed} of ${uris.length} songs from playlist "${args.name}" to the queue${skippedNote}, then failed on ${uris[result.failure.index]}: ${errorMessage(result.failure.error)}. The remaining songs were not added.`,
 					);
 				}
 				return toolResultText(
-					`added ${result.completed} songs from playlist "${args.name}" to the queue`,
+					`added ${result.completed} of ${uris.length} songs from playlist "${args.name}" to the queue${skippedNote}`,
 				);
 			} catch (err) {
 				return errorToToolResult(err);
