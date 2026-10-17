@@ -51,7 +51,7 @@ describe("createValidationResult", () => {
 
 describe("validateMpdProfile", () => {
 	it("should reject when mpdClient is undefined", async () => {
-		const result = await validateMpdProfile(undefined, [], validInput);
+		const result = await validateMpdProfile(undefined, [], validInput, "web");
 		expect(result.isValid).toBe(false);
 		expect(result.message).toContain("MpdClient is not ready");
 	});
@@ -62,6 +62,7 @@ describe("validateMpdProfile", () => {
 			client,
 			["New Profile"],
 			validInput,
+			"web",
 		);
 		expect(result.isValid).toBe(false);
 		expect(result.message).toContain("already used");
@@ -70,7 +71,7 @@ describe("validateMpdProfile", () => {
 	it("should reject when host is empty", async () => {
 		const client = createMockClient(create(MpdResponseSchema));
 		const input: ProfileInput = { ...validInput, host: "" };
-		const result = await validateMpdProfile(client, [], input);
+		const result = await validateMpdProfile(client, [], input, "web");
 		expect(result.isValid).toBe(false);
 		expect(result.message).toBe("Host is required.");
 	});
@@ -86,7 +87,7 @@ describe("validateMpdProfile", () => {
 				},
 			}),
 		);
-		const result = await validateMpdProfile(client, [], validInput);
+		const result = await validateMpdProfile(client, [], validInput, "web");
 		expect(result.isValid).toBe(false);
 		expect(result.message).toContain("0.21 or later");
 	});
@@ -102,7 +103,7 @@ describe("validateMpdProfile", () => {
 				},
 			}),
 		);
-		const result = await validateMpdProfile(client, [], validInput);
+		const result = await validateMpdProfile(client, [], validInput, "web");
 		expect(result.isValid).toBe(true);
 	});
 
@@ -112,15 +113,25 @@ describe("validateMpdProfile", () => {
 				command: { case: undefined, value: undefined },
 			}),
 		);
-		const result = await validateMpdProfile(client, [], validInput);
+		const result = await validateMpdProfile(client, [], validInput, "web");
 		expect(result.isValid).toBe(false);
 		expect(result.message).toContain("Invalid MPD response");
 	});
 
 	it("should handle connection errors", async () => {
 		const client = createRejectingClient(new Error("Connection refused"));
-		const result = await validateMpdProfile(client, [], validInput);
+		const result = await validateMpdProfile(client, [], validInput, "web");
 		expect(result.isValid).toBe(false);
 		expect(result.message).toContain("Connection refused");
+	});
+
+	it("attaches a hint for a recognized connection error", async () => {
+		const client = createRejectingClient(
+			new Error("connect ECONNREFUSED 127.0.0.1:6600"),
+		);
+		const result = await validateMpdProfile(client, [], validInput, "web");
+		expect(result.isValid).toBe(false);
+		expect(result.message).toBe("Error: connect ECONNREFUSED 127.0.0.1:6600");
+		expect(result.hint).toContain("host.docker.internal");
 	});
 });

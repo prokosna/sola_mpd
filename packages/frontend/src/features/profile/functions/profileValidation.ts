@@ -2,21 +2,25 @@ import { create } from "@bufbuild/protobuf";
 import { MpdRequestSchema } from "@sola_mpd/shared/src/models/mpd/mpd_command_pb.js";
 import { MpdProfileSchema } from "@sola_mpd/shared/src/models/mpd/mpd_profile_pb.js";
 
+import type { AppRuntime } from "../../../lib/ipc/detectAppRuntime";
 import { isMpdVersionAtLeast, type MpdClient } from "../../mpd";
 import type { ProfileInput } from "../types/profileTypes";
 import type { ValidationResult } from "../types/validationTypes";
+import { buildMpdConnectionHint } from "./mpdConnectionHint";
 
 export function createValidationResult(
 	isValid: boolean,
 	message?: string,
+	hint?: string,
 ): ValidationResult {
-	return { isValid, message };
+	return { isValid, message, hint };
 }
 
 export async function validateMpdProfile(
 	mpdClient: MpdClient | undefined,
 	existingProfileNames: string[],
 	input: ProfileInput,
+	runtime: AppRuntime,
 ): Promise<ValidationResult> {
 	if (mpdClient === undefined) {
 		return createValidationResult(
@@ -66,6 +70,11 @@ export async function validateMpdProfile(
 
 		return createValidationResult(true);
 	} catch (err) {
-		return createValidationResult(false, String(err));
+		const message = String(err);
+		return createValidationResult(
+			false,
+			message,
+			buildMpdConnectionHint(message, input.host, runtime),
+		);
 	}
 }

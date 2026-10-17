@@ -17,6 +17,7 @@ import {
 import { useAddMpdProfile } from "../hooks/useAddMpdProfile";
 import { useValidateMpdProfile } from "../hooks/useValidateMpdProfile";
 import { mpdProfileStateAtom } from "../states/atoms/mpdProfileAtom";
+import type { ValidationResult } from "../types/validationTypes";
 
 type MpdProfileFormProps = {
 	onProfileCreated: () => Promise<void>;
@@ -30,10 +31,10 @@ export function MpdProfileForm(props: MpdProfileFormProps) {
 	const addMpdProfile = useAddMpdProfile();
 	const mpdProfiles = useAtomValue(mpdProfileStateAtom)?.profiles;
 
-	const [isValidated, setIsValidated] = useState(false);
-	const [validationErrorMessage, setValidationErrorMessage] = useState<
-		string | undefined
+	const [validationResult, setValidationResult] = useState<
+		ValidationResult | undefined
 	>(undefined);
+	const isValidated = validationResult?.isValid === true;
 
 	const form = useForm({
 		mode: "uncontrolled",
@@ -60,14 +61,7 @@ export function MpdProfileForm(props: MpdProfileFormProps) {
 	const handleTest = useCallback(
 		async (values: typeof form.values) => {
 			const profileInput = buildProfileInputFromForm(values);
-			const result = await validateMpdProfile(profileInput);
-			if (result.isValid) {
-				setValidationErrorMessage(undefined);
-				setIsValidated(true);
-			} else {
-				setValidationErrorMessage(result.message);
-				setIsValidated(false);
-			}
+			setValidationResult(await validateMpdProfile(profileInput));
 		},
 		[validateMpdProfile],
 	);
@@ -82,16 +76,14 @@ export function MpdProfileForm(props: MpdProfileFormProps) {
 				description: `${values.name} profile have been created.`,
 			});
 			await props.onProfileCreated();
-			setIsValidated(false);
-			setValidationErrorMessage(undefined);
+			setValidationResult(undefined);
 			form.reset();
 		},
 		[addMpdProfile, props, notify, form],
 	);
 
 	const handleClose = useCallback(() => {
-		setIsValidated(false);
-		setValidationErrorMessage(undefined);
+		setValidationResult(undefined);
 		form.reset();
 		props.onCancelled();
 	}, [form, props]);
@@ -134,8 +126,8 @@ export function MpdProfileForm(props: MpdProfileFormProps) {
 			<Group justify="space-between">
 				<Group>
 					{isValidated ? <Text>Successfully connected!</Text> : undefined}
-					{validationErrorMessage !== undefined ? (
-						<Text c="red">{validationErrorMessage}</Text>
+					{validationResult?.isValid === false ? (
+						<Text c="red">{validationResult.message}</Text>
 					) : undefined}
 				</Group>
 				<Group justify="flex-end">
@@ -155,6 +147,11 @@ export function MpdProfileForm(props: MpdProfileFormProps) {
 					)}
 				</Group>
 			</Group>
+			{validationResult?.hint !== undefined ? (
+				<Text w="400" mt={8} size="sm">
+					{validationResult.hint}
+				</Text>
+			) : undefined}
 		</form>
 	);
 }

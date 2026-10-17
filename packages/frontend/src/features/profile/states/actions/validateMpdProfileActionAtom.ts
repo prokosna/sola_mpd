@@ -1,5 +1,6 @@
 import { atom } from "jotai";
 
+import { detectAppRuntime } from "../../../../lib/ipc/detectAppRuntime";
 import { mpdClientAtom } from "../../../mpd";
 import { validateMpdProfile } from "../../functions/profileValidation";
 import type { ProfileInput } from "../../types/profileTypes";
@@ -13,6 +14,11 @@ export const validateMpdProfileActionAtom = atom(
 		const mpdProfileState = get(mpdProfileStateAtom);
 		const existingNames =
 			mpdProfileState?.profiles.map((profile) => profile.name) ?? [];
-		return validateMpdProfile(mpdClient, existingNames, input);
+		return validateMpdProfile(
+			mpdClient,
+			existingNames,
+			input,
+			detectAppRuntime(),
+		);
 	},
 );
