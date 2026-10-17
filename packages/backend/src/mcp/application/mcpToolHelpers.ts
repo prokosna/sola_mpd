@@ -39,6 +39,32 @@ export async function executeMpdCommand(
 	return mpdClient.execute(request);
 }
 
+export type SequentialMpdCommandsResult = {
+	completed: number;
+	failure?: { index: number; error: unknown };
+};
+
+// Not batchable via executeBulk: callers must report how many commands MPD
+// already applied before a failure.
+export async function executeMpdCommandsSequentially(
+	mpdClient: MpdClient,
+	profile: MpdProfile,
+	commands: MpdRequestCommand[],
+): Promise<SequentialMpdCommandsResult> {
+	for (const [index, command] of commands.entries()) {
+		try {
+			await executeMpdCommand(mpdClient, profile, command);
+		} catch (error) {
+			return { completed: index, failure: { index, error } };
+		}
+	}
+	return { completed: commands.length };
+}
+
+export function errorMessage(err: unknown): string {
+	return err instanceof Error ? err.message : String(err);
+}
+
 export function errorToToolResult(err: unknown) {
 	if (
 		err instanceof NoCurrentMpdProfileError ||
@@ -46,6 +72,5 @@ export function errorToToolResult(err: unknown) {
 	) {
 		return toolError(err.message);
 	}
-	const message = err instanceof Error ? err.message : String(err);
-	return toolError(message);
+	return toolError(errorMessage(err));
 }
