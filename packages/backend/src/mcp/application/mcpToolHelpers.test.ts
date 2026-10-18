@@ -4,7 +4,12 @@ import {
 	MpdProfileNotFoundError,
 	NoCurrentMpdProfileError,
 } from "./currentMpdProfile.js";
-import { errorToToolResult, executeMpdCommand } from "./mcpToolHelpers.js";
+import {
+	errorMessage,
+	errorToToolResult,
+	executeMpdCommand,
+	executeMpdCommandsSequentially,
+} from "./mcpToolHelpers.js";
 import { makeMpdClient, makeMpdResponse, makeProfile } from "./testHelpers.js";
 
 describe("executeMpdCommand", () => {
@@ -27,6 +32,94 @@ describe("executeMpdCommand", () => {
 		).mock.calls[0]?.[0] as { profile?: unknown; command?: { case: string } };
 		expect(sentRequest?.profile).toEqual(profile);
 		expect(sentRequest?.command?.case).toBe("stats");
+	});
+});
+
+describe("executeMpdCommandsSequentially", () => {
+	it("runs every command in order and reports them all completed", async () => {
+		const client = makeMpdClient(() => makeMpdResponse({}));
+
+		const result = await executeMpdCommandsSequentially(client, makeProfile(), [
+			{ case: "add", value: { uri: "a" } },
+			{ case: "add", value: { uri: "b" } },
+		]);
+
+		expect(result).toEqual({ completed: 2, skippedIndexes: [] });
+		expect(client.execute).toHaveBeenCalledTimes(2);
+	});
+
+	it("stops at the first failure and reports its index and error", async () => {
+		const error = new Error("boom");
+		const client = makeMpdClient((req) => {
+			if (req.command?.case === "add" && req.command.value.uri === "b") {
+				throw error;
+			}
+			return makeMpdResponse({});
+		});
+
+		const result = await executeMpdCommandsSequentially(client, makeProfile(), [
+			{ case: "add", value: { uri: "a" } },
+			{ case: "add", value: { uri: "b" } },
+			{ case: "add", value: { uri: "c" } },
+		]);
+
+		expect(result).toEqual({
+			completed: 1,
+			skippedIndexes: [],
+			failure: { index: 1, error },
+		});
+		expect(client.execute).toHaveBeenCalledTimes(2);
+	});
+
+	it("returns zero completed for an empty command list", async () => {
+		const client = makeMpdClient(() => makeMpdResponse({}));
+
+		const result = await executeMpdCommandsSequentially(
+			client,
+			makeProfile(),
+			[],
+		);
+
+		expect(result).toEqual({ completed: 0, skippedIndexes: [] });
+		expect(client.execute).not.toHaveBeenCalled();
+	});
+
+	it("continues past skippable errors and stops at the first other one", async () => {
+		const skippable = new Error("skip me");
+		const fatal = new Error("fatal");
+		const client = makeMpdClient((req) => {
+			if (req.command?.case === "add" && req.command.value.uri === "b") {
+				throw skippable;
+			}
+			if (req.command?.case === "add" && req.command.value.uri === "d") {
+				throw fatal;
+			}
+			return makeMpdResponse({});
+		});
+
+		const result = await executeMpdCommandsSequentially(
+			client,
+			makeProfile(),
+			["a", "b", "c", "d", "e"].map((uri) => ({
+				case: "add",
+				value: { uri },
+			})),
+			(err) => err === skippable,
+		);
+
+		expect(result).toEqual({
+			completed: 2,
+			skippedIndexes: [1],
+			failure: { index: 3, error: fatal },
+		});
+		expect(client.execute).toHaveBeenCalledTimes(4);
+	});
+});
+
+describe("errorMessage", () => {
+	it("uses Error.message and stringifies other throwables", () => {
+		expect(errorMessage(new Error("boom"))).toBe("boom");
+		expect(errorMessage("plain")).toBe("plain");
 	});
 });
 
