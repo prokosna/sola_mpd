@@ -19,7 +19,10 @@ import {
 	SOCKETIO_VIEW_STATE_BLOB_FETCH,
 	SOCKETIO_VIEW_STATE_BLOB_SAVE,
 } from "@sola_mpd/shared/src/const/socketio.js";
-import { MpdEventSchema } from "@sola_mpd/shared/src/models/mpd/mpd_event_pb.js";
+import {
+	MpdEvent_EventType,
+	MpdEventSchema,
+} from "@sola_mpd/shared/src/models/mpd/mpd_event_pb.js";
 import type { MpdProfile } from "@sola_mpd/shared/src/models/mpd/mpd_profile_pb.js";
 import { MpdProfileSchema } from "@sola_mpd/shared/src/models/mpd/mpd_profile_pb.js";
 import { PluginExecuteResponseWrapperSchema } from "@sola_mpd/shared/src/models/plugin/plugin_wrapper_pb.js";
@@ -151,14 +154,19 @@ function registerIpcHandlers(): void {
 		async (event, msg: Uint8Array): Promise<Uint8Array> => {
 			try {
 				const targetProfile = fromBinary(MpdProfileSchema, msg);
-				if (idEventHandlerMap.has([CLIENT_ID, targetProfile])) {
+				const existing = idEventHandlerMap.get([CLIENT_ID, targetProfile]);
+				if (existing !== undefined) {
+					await existing;
 					return new Uint8Array(0);
 				}
 
 				const sender = event.sender;
-				const { profile, handlerPromise } = await subscribeMpdEventsUseCase({
+				const { handlerPromise } = await subscribeMpdEventsUseCase({
 					msg,
 					onEvent: (event) => {
+						if (event.eventType === MpdEvent_EventType.DISCONNECTED) {
+							idEventHandlerMap.delete([CLIENT_ID, targetProfile]);
+						}
 						if (!sender.isDestroyed()) {
 							sender.send(SOCKETIO_MPD_EVENT, toBinary(MpdEventSchema, event));
 						}
@@ -166,9 +174,18 @@ function registerIpcHandlers(): void {
 					mpdClient: mpdClientMpd3,
 				});
 
-				idEventHandlerMap.set([CLIENT_ID, profile], handlerPromise);
-				await handlerPromise;
-				const room = `${profile.host}:${profile.port}`;
+				idEventHandlerMap.set([CLIENT_ID, targetProfile], handlerPromise);
+				try {
+					await handlerPromise;
+				} catch (err) {
+					if (
+						idEventHandlerMap.get([CLIENT_ID, targetProfile]) === handlerPromise
+					) {
+						idEventHandlerMap.delete([CLIENT_ID, targetProfile]);
+					}
+					throw err;
+				}
+				const room = `${targetProfile.host}:${targetProfile.port}`;
 				console.info(`Desktop client subscribed to ${room}`);
 				return new Uint8Array(0);
 			} catch (err) {

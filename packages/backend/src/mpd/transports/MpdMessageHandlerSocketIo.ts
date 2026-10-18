@@ -3,7 +3,10 @@ import {
 	SOCKETIO_MESSAGE,
 	SOCKETIO_MPD_EVENT,
 } from "@sola_mpd/shared/src/const/socketio.js";
-import { MpdEventSchema } from "@sola_mpd/shared/src/models/mpd/mpd_event_pb.js";
+import {
+	MpdEvent_EventType,
+	MpdEventSchema,
+} from "@sola_mpd/shared/src/models/mpd/mpd_event_pb.js";
 import type { MpdProfile } from "@sola_mpd/shared/src/models/mpd/mpd_profile_pb.js";
 import { MpdProfileSchema } from "@sola_mpd/shared/src/models/mpd/mpd_profile_pb.js";
 import { DeepMap } from "@sola_mpd/shared/src/utils/DeepMap.js";
@@ -41,32 +44,40 @@ export class MpdMessageHandlerSocketIo implements MpdMessageHandler {
 		msg: Uint8Array,
 		connection: MpdTransportConnection,
 	): Promise<void> {
-		try {
-			const targetProfile = fromBinary(MpdProfileSchema, msg);
-			if (this.idEventHandlerMap.has([id, targetProfile])) {
-				return;
-			}
-
-			const { profile, handlerPromise } = await subscribeMpdEventsUseCase({
-				msg,
-				onEvent: (event) => {
-					const room = `${profile.host}:${profile.port}`;
-					this.io
-						.to(room)
-						.emit(SOCKETIO_MPD_EVENT, toBinary(MpdEventSchema, event));
-				},
-				mpdClient: mpdClientMpd3,
-			});
-
-			const room = `${profile.host}:${profile.port}`;
-			connection.join(room);
-			this.idEventHandlerMap.set([id, profile], handlerPromise);
-			await handlerPromise;
-			console.info(`New client registered: ${id} for ${room}`);
-		} catch (err) {
-			console.error(err);
-			connection.emit(SOCKETIO_MESSAGE, err);
+		const targetProfile = fromBinary(MpdProfileSchema, msg);
+		const existing = this.idEventHandlerMap.get([id, targetProfile]);
+		if (existing !== undefined) {
+			await existing;
+			return;
 		}
+
+		const room = `${targetProfile.host}:${targetProfile.port}`;
+		const { handlerPromise } = await subscribeMpdEventsUseCase({
+			msg,
+			onEvent: (event) => {
+				this.io
+					.to(room)
+					.emit(SOCKETIO_MPD_EVENT, toBinary(MpdEventSchema, event));
+				if (event.eventType === MpdEvent_EventType.DISCONNECTED) {
+					this.idEventHandlerMap.delete([id, targetProfile]);
+					connection.leave(room);
+				}
+			},
+			mpdClient: mpdClientMpd3,
+		});
+
+		connection.join(room);
+		this.idEventHandlerMap.set([id, targetProfile], handlerPromise);
+		try {
+			await handlerPromise;
+		} catch (err) {
+			if (this.idEventHandlerMap.get([id, targetProfile]) === handlerPromise) {
+				this.idEventHandlerMap.delete([id, targetProfile]);
+				connection.leave(room);
+			}
+			throw err;
+		}
+		console.info(`New client registered: ${id} for ${room}`);
 	}
 
 	async unsubscribeEvents(

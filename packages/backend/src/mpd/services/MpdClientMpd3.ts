@@ -30,7 +30,7 @@ import {
 	parsePlaylist,
 	parseSong,
 } from "../functions/mpdParsers.js";
-import type { MpdClient } from "./MpdClient.js";
+import type { MpdClient, MpdSubscriptionHandler } from "./MpdClient.js";
 
 type MpdConnectOptions = {
 	cache?: boolean;
@@ -44,6 +44,10 @@ class MpdClientMpd3 implements MpdClient {
 		new Map(),
 	);
 	private allSongsCache: DeepMap<MpdProfile, Song[]> = new DeepMap(new Map());
+	private subscriptions: Map<
+		MpdSubscriptionHandler,
+		{ client: Client; handleClose: () => void }
+	> = new Map();
 
 	private async connect(
 		profile: MpdProfile,
@@ -85,8 +89,12 @@ class MpdClientMpd3 implements MpdClient {
 					console.info(
 						`MPD connection closed for ${profile.name}: ${error?.message || "normal disconnect"}`,
 					);
-					this.clients.delete(profile);
-					this.allSongsCache.delete(profile);
+					// An uncached client (ping) shares the profile key but must not
+					// evict the cached one.
+					if (this.clients.get(profile) === clientPromise) {
+						this.clients.delete(profile);
+						this.allSongsCache.delete(profile);
+					}
 				});
 
 				client.on("error", (error) => {
@@ -101,7 +109,9 @@ class MpdClientMpd3 implements MpdClient {
 				console.error(
 					`Failed to connect to MPD server ${profile.name}: ${error.message}`,
 				);
-				this.clients.delete(profile);
+				if (this.clients.get(profile) === clientPromise) {
+					this.clients.delete(profile);
+				}
 				throw error;
 			});
 
@@ -114,17 +124,9 @@ class MpdClientMpd3 implements MpdClient {
 	async subscribe(
 		profile: MpdProfile,
 		callback: (event: MpdEvent) => void,
-	): Promise<(name?: string) => void> {
+	): Promise<MpdSubscriptionHandler> {
 		const client = await this.connect(profile);
 		const handle = (name?: string) => {
-			if (name == null) {
-				callback(
-					create(MpdEventSchema, {
-						eventType: MpdEvent_EventType.DISCONNECTED,
-					}),
-				);
-				return;
-			}
 			console.info(`MPD event: ${name}`);
 			switch (name) {
 				case "database":
@@ -171,24 +173,36 @@ class MpdClientMpd3 implements MpdClient {
 					);
 			}
 		};
+		// mpd3 emits "close" only once idle monitoring is over for good: after its
+		// own reconnect attempts give up, or on an explicit disconnect.
+		const handleClose = () => {
+			this.detachSubscription(handle);
+			callback(
+				create(MpdEventSchema, { eventType: MpdEvent_EventType.DISCONNECTED }),
+			);
+		};
 		client.on("system", handle);
-		client.on("close", handle);
+		client.on("close", handleClose);
+		this.subscriptions.set(handle, { client, handleClose });
 		return handle;
 	}
 
 	async unsubscribe(
-		profile: MpdProfile,
-		handle: (name?: string) => void,
+		_profile: MpdProfile,
+		handle: MpdSubscriptionHandler,
 	): Promise<boolean> {
-		try {
-			const client = await this.connect(profile);
-			client.off("system", handle);
-			client.off("close", handle);
-			return true;
-		} catch (err) {
-			console.error(err);
-			return false;
+		this.detachSubscription(handle);
+		return true;
+	}
+
+	private detachSubscription(handle: MpdSubscriptionHandler): void {
+		const subscription = this.subscriptions.get(handle);
+		if (subscription === undefined) {
+			return;
 		}
+		subscription.client.off("system", handle);
+		subscription.client.off("close", subscription.handleClose);
+		this.subscriptions.delete(handle);
 	}
 
 	async executeBulk(reqs: MpdRequest[]): Promise<void> {

@@ -58,7 +58,6 @@ export function MpdEventObserver() {
 			refreshCurrentSong();
 			refreshPlayerStatus();
 		});
-		mpdListener.on(MpdEvent_EventType.DISCONNECTED, () => {});
 		mpdListener.onSubscribed((isResubscription) => {
 			// State loads on first read; after a reconnect its events may have
 			// been missed.
