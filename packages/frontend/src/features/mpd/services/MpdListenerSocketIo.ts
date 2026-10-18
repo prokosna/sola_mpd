@@ -32,6 +32,7 @@ export class MpdListenerSocketIo implements MpdListener {
 		this.callbacks = new Map();
 		this.socket.onReconnect(() => {
 			if (this.subscribedProfile !== undefined) {
+				this.resetRecovery();
 				this.requestSubscription(this.subscribedProfile, true);
 			}
 		});

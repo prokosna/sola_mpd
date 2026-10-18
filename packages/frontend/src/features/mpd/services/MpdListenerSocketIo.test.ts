@@ -257,6 +257,24 @@ describe("MpdListenerSocketIo", () => {
 			).toEqual(["A", "B"]);
 		});
 
+		it("should restart the backoff when the transport reconnects", async () => {
+			listener.subscribe(profileA);
+			await vi.advanceTimersByTimeAsync(0);
+			client.failingSubscribes = Number.POSITIVE_INFINITY;
+
+			client.push(MpdEvent_EventType.DISCONNECTED);
+			await vi.advanceTimersByTimeAsync(RESUBSCRIBE_INITIAL_DELAY_MS);
+			await vi.advanceTimersByTimeAsync(RESUBSCRIBE_INITIAL_DELAY_MS * 2);
+			expect(subscribes()).toBe(3);
+
+			client.reconnect();
+			await vi.advanceTimersByTimeAsync(0);
+			expect(subscribes()).toBe(4);
+
+			await vi.advanceTimersByTimeAsync(RESUBSCRIBE_INITIAL_DELAY_MS);
+			expect(subscribes()).toBe(5);
+		});
+
 		it("should retry a subscription that failed from the start", async () => {
 			const onSubscribed = vi.fn();
 			listener.onSubscribed(onSubscribed);
