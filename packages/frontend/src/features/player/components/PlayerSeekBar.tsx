@@ -4,6 +4,7 @@ import { useAtomValue, useSetAtom } from "jotai";
 import {
 	getElapsedFromPercentage,
 	getElapsedTimePercentage,
+	isSeekable,
 } from "../functions/playerDisplay";
 import { usePlayerSeekBarSlider } from "../hooks/usePlayerSeekBarSlider";
 import { seekActionAtom } from "../states/actions/seekActionAtom";
@@ -19,9 +20,11 @@ export function PlayerSeekBar() {
 	const playerStatusReceivedAt = useAtomValue(playerStatusReceivedAtAtom);
 	const seek = useSetAtom(seekActionAtom);
 
+	const seekable = isSeekable(playerStatusDuration);
 	const slider = usePlayerSeekBarSlider(
 		getElapsedTimePercentage(playerStatusElapsed, playerStatusDuration),
 		playerStatusReceivedAt,
+		seekable,
 		seek,
 	);
 	const labelElapsed =
@@ -36,6 +39,7 @@ export function PlayerSeekBar() {
 			min={0}
 			max={100}
 			thumbSize={0}
+			disabled={!seekable}
 			value={slider.value}
 			label={displayDuration(labelElapsed ?? 0)}
 			onChange={slider.onChange}

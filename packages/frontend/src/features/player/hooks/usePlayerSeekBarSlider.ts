@@ -7,6 +7,7 @@ type PendingSeek = { percentage: number; sentAt?: number };
 export function usePlayerSeekBarSlider(
 	percentage: number,
 	statusReceivedAt: number | undefined,
+	isSeekable: boolean,
 	commitSeek: (percentage: number) => void,
 ) {
 	const [draggingPercentage, setDraggingPercentage] = useState<
@@ -66,7 +67,9 @@ export function usePlayerSeekBarSlider(
 		[sendSeek],
 	);
 
-	const draftPercentage = draggingPercentage ?? pendingSeek?.percentage;
+	const draftPercentage = isSeekable
+		? (draggingPercentage ?? pendingSeek?.percentage)
+		: undefined;
 
 	return {
 		value: draftPercentage ?? percentage,

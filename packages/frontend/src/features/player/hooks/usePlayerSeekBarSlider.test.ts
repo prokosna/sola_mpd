@@ -3,12 +3,16 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 import { usePlayerSeekBarSlider } from "./usePlayerSeekBarSlider";
 
-type Props = { percentage: number; receivedAt: number | undefined };
+type Props = {
+	percentage: number;
+	receivedAt: number | undefined;
+	seekable?: boolean;
+};
 
 function render(commitSeek = vi.fn()) {
 	return renderHook(
-		({ percentage, receivedAt }: Props) =>
-			usePlayerSeekBarSlider(percentage, receivedAt, commitSeek),
+		({ percentage, receivedAt, seekable = true }: Props) =>
+			usePlayerSeekBarSlider(percentage, receivedAt, seekable, commitSeek),
 		{ initialProps: { percentage: 10, receivedAt: 1 } as Props },
 	);
 }
@@ -99,5 +103,15 @@ describe("usePlayerSeekBarSlider", () => {
 		act(() => vi.advanceTimersByTime(1000));
 
 		expect(commitSeek).toHaveBeenCalledTimes(1);
+	});
+
+	it("shows the playback position instead of a draft while not seekable", () => {
+		const { result, rerender } = render();
+
+		act(() => result.current.onChange(70));
+		rerender({ percentage: -1, receivedAt: 1, seekable: false });
+
+		expect(result.current.value).toBe(-1);
+		expect(result.current.draftPercentage).toBeUndefined();
 	});
 });

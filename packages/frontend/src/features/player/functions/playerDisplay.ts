@@ -17,3 +17,7 @@ export function getElapsedFromPercentage(
 	}
 	return (percentage / 100) * duration;
 }
+
+export function isSeekable(duration?: number): duration is number {
+	return duration !== undefined && duration > 0;
+}
