@@ -16,7 +16,7 @@ function render(commitSeek = vi.fn()) {
 describe("usePlayerSeekBarSlider", () => {
 	beforeEach(() => {
 		vi.useFakeTimers();
-		vi.setSystemTime(10_000);
+		vi.advanceTimersByTime(10_000);
 	});
 
 	afterEach(() => {
@@ -42,7 +42,7 @@ describe("usePlayerSeekBarSlider", () => {
 		expect(result.current.value).toBe(70);
 	});
 
-	it("seeks on release and holds the position until a new status arrives", () => {
+	it("seeks on release and holds the position until a newer status arrives", () => {
 		const commitSeek = vi.fn();
 		const { result, rerender } = render(commitSeek);
 
@@ -53,22 +53,51 @@ describe("usePlayerSeekBarSlider", () => {
 		expect(commitSeek).toHaveBeenCalledWith(70);
 		expect(result.current.value).toBe(70);
 
-		rerender({ percentage: 70, receivedAt: 2 });
+		rerender({ percentage: 70, receivedAt: performance.now() + 1 });
 
 		expect(result.current.draftPercentage).toBeUndefined();
 		expect(result.current.value).toBe(70);
 	});
 
-	it("drops a release within the throttle window and keeps the pending seek", () => {
+	it("ignores a status received before the seek was sent", () => {
+		const { result, rerender } = render();
+
+		act(() => result.current.onChangeEnd(70));
+		rerender({ percentage: 12, receivedAt: performance.now() - 1 });
+
+		expect(result.current.value).toBe(70);
+	});
+
+	it("sends a release within the throttle window as one trailing seek", () => {
 		const commitSeek = vi.fn();
-		const { result } = render(commitSeek);
+		const { result, rerender } = render(commitSeek);
 
 		act(() => result.current.onChangeEnd(40));
-		vi.setSystemTime(10_500);
+		rerender({ percentage: 40, receivedAt: performance.now() + 1 });
+		act(() => vi.advanceTimersByTime(300));
 		act(() => result.current.onChangeEnd(60));
+		act(() => vi.advanceTimersByTime(300));
+		act(() => result.current.onChangeEnd(80));
 
 		expect(commitSeek).toHaveBeenCalledTimes(1);
-		expect(commitSeek).toHaveBeenCalledWith(40);
-		expect(result.current.value).toBe(40);
+		expect(result.current.value).toBe(80);
+
+		act(() => vi.advanceTimersByTime(400));
+
+		expect(commitSeek).toHaveBeenCalledTimes(2);
+		expect(commitSeek).toHaveBeenLastCalledWith(80);
+		expect(result.current.value).toBe(80);
+	});
+
+	it("drops a trailing seek when unmounted", () => {
+		const commitSeek = vi.fn();
+		const { result, unmount } = render(commitSeek);
+
+		act(() => result.current.onChangeEnd(40));
+		act(() => result.current.onChangeEnd(60));
+		unmount();
+		act(() => vi.advanceTimersByTime(1000));
+
+		expect(commitSeek).toHaveBeenCalledTimes(1);
 	});
 });
