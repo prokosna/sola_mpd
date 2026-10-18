@@ -179,11 +179,14 @@ export function registerPlaylistTools(
 					case: "status",
 					value: {},
 				});
-				if (statusRes.command?.case !== "status") {
+				if (
+					statusRes.command?.case !== "status" ||
+					statusRes.command.value.status === undefined
+				) {
 					return toolError("Unexpected response from MPD status.");
 				}
 				const queueLengthBefore =
-					statusRes.command.value.status?.playQueueLength ?? 0;
+					statusRes.command.value.status.playQueueLength;
 				await executeMpdCommand(mpdClient, profile, {
 					case: "load",
 					value: { name: args.name },

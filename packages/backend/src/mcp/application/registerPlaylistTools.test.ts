@@ -392,6 +392,29 @@ describe("registerPlaylistTools / playlist_load", () => {
 		expect(text).toContain("connection lost");
 	});
 
+	it("returns a tool error without loading when status has no player status", async () => {
+		const client = makeMpdClient((req) =>
+			req.command?.case === "listplaylistinfo"
+				? makeMpdResponse({
+						command: {
+							case: "listplaylistinfo",
+							value: { songs: [create(SongSchema, { path: "1.flac" })] },
+						},
+					})
+				: makeMpdResponse({ command: { case: "status", value: {} } }),
+		);
+		const server = setup(client);
+
+		const result = await server.call("playlist_load", { name: "p" });
+
+		expect(result.isError).toBe(true);
+		expect(textOf(result)).toContain("Unexpected response from MPD status.");
+		expect(sentCommands(client).map((c) => c.case)).toEqual([
+			"listplaylistinfo",
+			"status",
+		]);
+	});
+
 	it("returns a tool error on unexpected MPD response shape", async () => {
 		const client = makeMpdClient(() =>
 			makeMpdResponse({ command: { case: "status", value: {} } }),
