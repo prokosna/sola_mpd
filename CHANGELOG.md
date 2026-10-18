@@ -5,6 +5,22 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [4.12.0](https://github.com/prokosna/sola_mpd/compare/v4.11.0...v4.12.0) (2026-10-18)
+
+
+### Features
+
+* **backend:** MCP playlist write tools ([#404](https://github.com/prokosna/sola_mpd/issues/404)) ([3c383da](https://github.com/prokosna/sola_mpd/commit/3c383dab860fc69ba573aa51078c184d0b8dbabc))
+* **frontend:** event-driven player state ([#403](https://github.com/prokosna/sola_mpd/issues/403)) ([efb6bc1](https://github.com/prokosna/sola_mpd/commit/efb6bc19ee04b67533b7189323ef3247fdce077b))
+* load stored playlists with MPD load in MCP playlist_load ([#406](https://github.com/prokosna/sola_mpd/issues/406)) ([8bd96c1](https://github.com/prokosna/sola_mpd/commit/8bd96c1d6a151b8d329f961f1df66defc0684a88))
+
+
+### Bug Fixes
+
+* recover MPD event subscriptions after the MPD connection is lost ([#405](https://github.com/prokosna/sola_mpd/issues/405)) ([131e74b](https://github.com/prokosna/sola_mpd/commit/131e74b94e2ff38acd59c1b82c07f7f766db7d6e))
+* start playback when resuming from a stopped player ([#408](https://github.com/prokosna/sola_mpd/issues/408)) ([1930333](https://github.com/prokosna/sola_mpd/commit/1930333bf8b101d17e4f651ff06d304fcc41ef2d))
+* sync volume changes made by other MPD clients ([#400](https://github.com/prokosna/sola_mpd/issues/400)) ([f85483e](https://github.com/prokosna/sola_mpd/commit/f85483eea628f026fa2fffa5a4de95708f3ee46e))
+
 ## [4.11.0](https://github.com/prokosna/sola_mpd/compare/v4.10.1...v4.11.0) (2026-08-28)
 
 
