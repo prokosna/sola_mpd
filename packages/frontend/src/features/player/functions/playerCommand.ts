@@ -1,6 +1,7 @@
 import { create } from "@bufbuild/protobuf";
 import type { MpdRequest } from "@sola_mpd/shared/src/models/mpd/mpd_command_pb.js";
 import { MpdRequestSchema } from "@sola_mpd/shared/src/models/mpd/mpd_command_pb.js";
+import { MpdPlayerStatus_PlaybackState } from "@sola_mpd/shared/src/models/mpd/mpd_player_pb.js";
 import type { MpdProfile } from "@sola_mpd/shared/src/models/mpd/mpd_profile_pb.js";
 
 export function buildPauseCommand(
@@ -14,6 +15,33 @@ export function buildPauseCommand(
 			value: { pause },
 		},
 	});
+}
+
+// Starts the current song from the beginning, or the first song in the queue
+// when there is none.
+export function buildPlayCommand(profile: MpdProfile): MpdRequest {
+	return create(MpdRequestSchema, {
+		profile,
+		command: {
+			case: "play",
+			value: {},
+		},
+	});
+}
+
+export function buildTogglePlaybackCommand(
+	profile: MpdProfile,
+	playbackState: MpdPlayerStatus_PlaybackState | undefined,
+): MpdRequest {
+	switch (playbackState) {
+		case MpdPlayerStatus_PlaybackState.PLAY:
+			return buildPauseCommand(profile, true);
+		// MPD ignores pause while stopped.
+		case MpdPlayerStatus_PlaybackState.STOP:
+			return buildPlayCommand(profile);
+		default:
+			return buildPauseCommand(profile, false);
+	}
 }
 
 export function buildStopCommand(profile: MpdProfile): MpdRequest {
