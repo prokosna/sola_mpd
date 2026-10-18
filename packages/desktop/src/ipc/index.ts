@@ -161,7 +161,7 @@ function registerIpcHandlers(): void {
 				}
 
 				const sender = event.sender;
-				const { profile, handlerPromise } = await subscribeMpdEventsUseCase({
+				const { handlerPromise } = await subscribeMpdEventsUseCase({
 					msg,
 					onEvent: (event) => {
 						if (event.eventType === MpdEvent_EventType.DISCONNECTED) {
@@ -174,16 +174,18 @@ function registerIpcHandlers(): void {
 					mpdClient: mpdClientMpd3,
 				});
 
-				idEventHandlerMap.set([CLIENT_ID, profile], handlerPromise);
+				idEventHandlerMap.set([CLIENT_ID, targetProfile], handlerPromise);
 				try {
 					await handlerPromise;
 				} catch (err) {
-					if (idEventHandlerMap.get([CLIENT_ID, profile]) === handlerPromise) {
-						idEventHandlerMap.delete([CLIENT_ID, profile]);
+					if (
+						idEventHandlerMap.get([CLIENT_ID, targetProfile]) === handlerPromise
+					) {
+						idEventHandlerMap.delete([CLIENT_ID, targetProfile]);
 					}
 					throw err;
 				}
-				const room = `${profile.host}:${profile.port}`;
+				const room = `${targetProfile.host}:${targetProfile.port}`;
 				console.info(`Desktop client subscribed to ${room}`);
 				return new Uint8Array(0);
 			} catch (err) {

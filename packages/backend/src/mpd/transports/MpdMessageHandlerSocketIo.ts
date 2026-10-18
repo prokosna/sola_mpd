@@ -52,7 +52,7 @@ export class MpdMessageHandlerSocketIo implements MpdMessageHandler {
 		}
 
 		const room = `${targetProfile.host}:${targetProfile.port}`;
-		const { profile, handlerPromise } = await subscribeMpdEventsUseCase({
+		const { handlerPromise } = await subscribeMpdEventsUseCase({
 			msg,
 			onEvent: (event) => {
 				this.io
@@ -67,12 +67,12 @@ export class MpdMessageHandlerSocketIo implements MpdMessageHandler {
 		});
 
 		connection.join(room);
-		this.idEventHandlerMap.set([id, profile], handlerPromise);
+		this.idEventHandlerMap.set([id, targetProfile], handlerPromise);
 		try {
 			await handlerPromise;
 		} catch (err) {
-			if (this.idEventHandlerMap.get([id, profile]) === handlerPromise) {
-				this.idEventHandlerMap.delete([id, profile]);
+			if (this.idEventHandlerMap.get([id, targetProfile]) === handlerPromise) {
+				this.idEventHandlerMap.delete([id, targetProfile]);
 				connection.leave(room);
 			}
 			throw err;
