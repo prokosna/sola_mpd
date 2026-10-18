@@ -148,9 +148,7 @@ export function registerPlaylistTools(
 				});
 				return toolResultText(`queue saved as playlist "${args.name}"`);
 			} catch (err) {
-				return toolError(
-					`Failed to save the queue as playlist "${args.name}": ${errorMessage(err)}`,
-				);
+				return errorToToolResult(err);
 			}
 		},
 	);

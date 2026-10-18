@@ -21,7 +21,9 @@ vi.mock("./currentMpdProfile.js", () => ({
 	listMpdProfiles: vi.fn(),
 }));
 
-const { resolveCurrentMpdProfile } = await import("./currentMpdProfile.js");
+const { NoCurrentMpdProfileError, resolveCurrentMpdProfile } = await import(
+	"./currentMpdProfile.js"
+);
 const resolveMock = vi.mocked(resolveCurrentMpdProfile);
 
 beforeEach(() => {
@@ -220,9 +222,23 @@ describe("registerPlaylistTools / playlist_save_queue", () => {
 		const result = await server.call("playlist_save_queue", { name: "old" });
 
 		expect(result.isError).toBe(true);
-		const text = textOf(result);
-		expect(text).toContain('Failed to save the queue as playlist "old"');
-		expect(text).toContain("Playlist already exists");
+		expect(textOf(result)).toBe("ACK [56@0] {save} Playlist already exists");
+	});
+
+	it("returns a profile resolution error unchanged", async () => {
+		resolveMock.mockImplementation(() => {
+			throw Object.assign(new NoCurrentMpdProfileError(), {
+				message: "No default MPD profile",
+			});
+		});
+		const client = makeMpdClient(() => makeMpdResponse({}));
+		const server = setup(client);
+
+		const result = await server.call("playlist_save_queue", { name: "new" });
+
+		expect(result.isError).toBe(true);
+		expect(textOf(result)).toBe("No default MPD profile");
+		expect(client.execute).not.toHaveBeenCalled();
 	});
 });
 
