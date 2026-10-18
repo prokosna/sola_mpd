@@ -41,7 +41,6 @@ export async function executeMpdCommand(
 
 export type SequentialMpdCommandsResult = {
 	completed: number;
-	skippedIndexes: number[];
 	failure?: { index: number; error: unknown };
 };
 
@@ -51,22 +50,17 @@ export async function executeMpdCommandsSequentially(
 	mpdClient: MpdClient,
 	profile: MpdProfile,
 	commands: MpdRequestCommand[],
-	isSkippable: (error: unknown) => boolean = () => false,
 ): Promise<SequentialMpdCommandsResult> {
 	let completed = 0;
-	const skippedIndexes: number[] = [];
 	for (const [index, command] of commands.entries()) {
 		try {
 			await executeMpdCommand(mpdClient, profile, command);
 			completed++;
 		} catch (error) {
-			if (!isSkippable(error)) {
-				return { completed, skippedIndexes, failure: { index, error } };
-			}
-			skippedIndexes.push(index);
+			return { completed, failure: { index, error } };
 		}
 	}
-	return { completed, skippedIndexes };
+	return { completed };
 }
 
 export function errorMessage(err: unknown): string {

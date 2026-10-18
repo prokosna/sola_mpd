@@ -515,6 +515,11 @@ class MpdClientMpd3 implements MpdClient {
 				return create(MpdResponseSchema, {
 					command: { case: "save", value: {} },
 				});
+			case "load":
+				await this.sendCommand(client, cmd);
+				return create(MpdResponseSchema, {
+					command: { case: "load", value: {} },
+				});
 
 			case "list": {
 				const values = await this.streamCommandToStream(client, cmd)
@@ -784,6 +789,8 @@ class MpdClientMpd3 implements MpdClient {
 				return Command.cmd("rm", req.command.value.name);
 			case "save":
 				return Command.cmd("save", req.command.value.name);
+			case "load":
+				return Command.cmd("load", req.command.value.name);
 
 			case "list": {
 				const tag = convertSongMetadataTagToMpdTag(req.command.value.tag);

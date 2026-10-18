@@ -162,6 +162,10 @@ message MpdCommand {
       string name = 1;
     }
     message SaveResponse {}
+    message LoadRequest {
+      string name = 1;
+    }
+    message LoadResponse {}
   }
 
   message Database {
@@ -262,6 +266,7 @@ message MpdRequest {
     MpdCommand.StoredPlaylist.RenameRequest rename = 30;
     MpdCommand.StoredPlaylist.RemoveRequest rm = 31;
     MpdCommand.StoredPlaylist.SaveRequest save = 32;
+    MpdCommand.StoredPlaylist.LoadRequest load = 41;
 
     MpdCommand.Database.ListRequest list = 33;
     MpdCommand.Database.SearchRequest search = 34;
@@ -321,6 +326,7 @@ message MpdResponse {
     MpdCommand.StoredPlaylist.RenameResponse rename = 30;
     MpdCommand.StoredPlaylist.RemoveResponse rm = 31;
     MpdCommand.StoredPlaylist.SaveResponse save = 32;
+    MpdCommand.StoredPlaylist.LoadResponse load = 41;
 
     MpdCommand.Database.ListResponse list = 33;
     MpdCommand.Database.SearchResponse search = 34;
