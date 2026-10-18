@@ -60,17 +60,18 @@ export function MpdEventObserver() {
 		});
 		mpdListener.on(MpdEvent_EventType.DISCONNECTED, () => {});
 		mpdListener.onSubscribed((isResubscription) => {
+			// State loads on first read; after a reconnect its events may have
+			// been missed.
+			if (!isResubscription) {
+				return;
+			}
 			refreshCurrentSong();
 			refreshPlayerStatus();
-			// Everything else loads on first read; after a reconnect its events
-			// may have been missed.
-			if (isResubscription) {
-				refreshStats();
-				refreshPlayQueueSongs();
-				refreshPlaylists();
-				refreshPlaylistSongs();
-				refreshPlayerVolume();
-			}
+			refreshStats();
+			refreshPlayQueueSongs();
+			refreshPlaylists();
+			refreshPlaylistSongs();
+			refreshPlayerVolume();
 		});
 		mpdListener.subscribe(profile);
 
