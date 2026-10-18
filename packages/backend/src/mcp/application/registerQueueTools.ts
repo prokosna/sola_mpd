@@ -90,18 +90,19 @@ export function registerQueueTools(
 		},
 		async (args) => {
 			try {
-				const profile = resolveCurrentMpdProfile(args.profile);
-				if (args.uris === undefined) {
-					if (args.uri === undefined) {
-						return toolError("Provide exactly one of `uri` or `uris`.");
-					}
+				if (args.uri !== undefined && args.uris === undefined) {
+					const profile = resolveCurrentMpdProfile(args.profile);
 					await executeMpdCommand(mpdClient, profile, {
 						case: "add",
 						value: { uri: args.uri },
 					});
 					return toolResultText(`added: ${args.uri}`);
 				}
+				if (args.uri !== undefined || args.uris === undefined) {
+					return toolError("Provide exactly one of `uri` or `uris`.");
+				}
 				const uris = args.uris;
+				const profile = resolveCurrentMpdProfile(args.profile);
 				const result = await executeMpdCommandsSequentially(
 					mpdClient,
 					profile,

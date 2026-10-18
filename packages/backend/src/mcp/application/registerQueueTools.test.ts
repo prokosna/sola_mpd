@@ -179,6 +179,21 @@ describe("registerQueueTools / queue_add", () => {
 		expect(result.isError).toBe(true);
 		expect(client.execute).not.toHaveBeenCalled();
 	});
+
+	it("returns a tool error when both uri and uris reach the handler", async () => {
+		const client = makeMpdClient(() => makeMpdResponse({}));
+		const server = createFakeMcpServer();
+		registerQueueTools(server as never, {
+			mpdClient: client,
+			libraryIndex: makeLibraryIndex(),
+		});
+
+		const result = await server.call("queue_add", { uri: "a", uris: ["b"] });
+
+		expect(result.isError).toBe(true);
+		expect(client.execute).not.toHaveBeenCalled();
+		expect(resolveMock).not.toHaveBeenCalled();
+	});
 });
 
 describe("registerQueueTools / queue_clear", () => {
