@@ -13,6 +13,7 @@ import type { ValueFormatterParams } from "ag-grid-community";
 import dayjs from "dayjs";
 import type {
 	SongTableRowCompact,
+	SongTableRowData,
 	SongTableRowValue,
 } from "../types/songTableTypes";
 
@@ -77,7 +78,9 @@ export function convertSongForGridRowValueCompact(
 export const SONG_METADATA_FORMATTERS: Partial<
 	Record<
 		Song_MetadataTag,
-		(params: ValueFormatterParams<any, SongTableRowValue>) => string
+		(
+			params: ValueFormatterParams<SongTableRowData, SongTableRowValue>,
+		) => string
 	>
 > = {
 	[Song_MetadataTag.TIME]: (params) =>
