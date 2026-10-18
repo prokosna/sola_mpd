@@ -8,6 +8,7 @@ import {
 import { IconVolumeOff } from "@tabler/icons-react";
 import { useAtomValue, useSetAtom } from "jotai";
 import { useIsCompactMode } from "../../user_device";
+import { usePlayerVolumeSlider } from "../hooks/usePlayerVolumeSlider";
 import { setVolumeActionAtom } from "../states/actions/setVolumeActionAtom";
 import { playerVolumeAtom } from "../states/atoms/playerVolumeAtom";
 
@@ -17,6 +18,7 @@ export function PlayerControlsButtonVolume() {
 	const isCompact = useIsCompactMode();
 
 	const volume = playerVolume?.volume !== undefined ? playerVolume.volume : -1;
+	const slider = usePlayerVolumeSlider(volume, setVolume);
 
 	const theme = useMantineTheme();
 
@@ -35,10 +37,11 @@ export function PlayerControlsButtonVolume() {
 				<Box w={90} m={2}>
 					<Slider
 						color={theme.primaryColor}
-						defaultValue={playerVolume?.volume}
+						value={slider.value}
 						min={0}
 						max={100}
-						onChangeEnd={(v) => setVolume(v)}
+						onChange={slider.onChange}
+						onChangeEnd={slider.onChangeEnd}
 					/>
 				</Box>
 			)}
