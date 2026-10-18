@@ -3,7 +3,11 @@ import { useAtomValue, useSetAtom } from "jotai";
 import { useEffect } from "react";
 
 import { refreshPlayQueueSongsActionAtom } from "../../play_queue";
-import { refreshPlayerVolumeActionAtom } from "../../player";
+import {
+	refreshCurrentSongActionAtom,
+	refreshPlayerStatusActionAtom,
+	refreshPlayerVolumeActionAtom,
+} from "../../player";
 import {
 	refreshPlaylistSongsActionAtom,
 	refreshPlaylistsActionAtom,
@@ -20,6 +24,8 @@ export function MpdEventObserver() {
 	const refreshPlaylists = useSetAtom(refreshPlaylistsActionAtom);
 	const refreshPlaylistSongs = useSetAtom(refreshPlaylistSongsActionAtom);
 	const refreshPlayerVolume = useSetAtom(refreshPlayerVolumeActionAtom);
+	const refreshCurrentSong = useSetAtom(refreshCurrentSongActionAtom);
+	const refreshPlayerStatus = useSetAtom(refreshPlayerStatusActionAtom);
 
 	useEffect(() => {
 		if (profile === undefined) {
@@ -31,6 +37,8 @@ export function MpdEventObserver() {
 		});
 		mpdListener.on(MpdEvent_EventType.UPDATE, () => {
 			refreshStats();
+			// The database-updating flag lives in the player status.
+			refreshPlayerStatus();
 		});
 		mpdListener.on(MpdEvent_EventType.PLAYLIST, () => {
 			refreshPlaylists();
@@ -42,9 +50,29 @@ export function MpdEventObserver() {
 		mpdListener.on(MpdEvent_EventType.MIXER, () => {
 			refreshPlayerVolume();
 		});
-		mpdListener.on(MpdEvent_EventType.OPTIONS, () => {});
-		mpdListener.on(MpdEvent_EventType.PLAYER, () => {});
+		mpdListener.on(MpdEvent_EventType.OPTIONS, () => {
+			refreshCurrentSong();
+			refreshPlayerStatus();
+		});
+		mpdListener.on(MpdEvent_EventType.PLAYER, () => {
+			refreshCurrentSong();
+			refreshPlayerStatus();
+		});
 		mpdListener.on(MpdEvent_EventType.DISCONNECTED, () => {});
+		mpdListener.onSubscribed((isResubscription) => {
+			// State loads on first read; after a reconnect its events may have
+			// been missed.
+			if (!isResubscription) {
+				return;
+			}
+			refreshCurrentSong();
+			refreshPlayerStatus();
+			refreshStats();
+			refreshPlayQueueSongs();
+			refreshPlaylists();
+			refreshPlaylistSongs();
+			refreshPlayerVolume();
+		});
 		mpdListener.subscribe(profile);
 
 		return () => {
@@ -53,7 +81,9 @@ export function MpdEventObserver() {
 	}, [
 		mpdListener,
 		profile,
+		refreshCurrentSong,
 		refreshPlayQueueSongs,
+		refreshPlayerStatus,
 		refreshPlayerVolume,
 		refreshPlaylistSongs,
 		refreshPlaylists,

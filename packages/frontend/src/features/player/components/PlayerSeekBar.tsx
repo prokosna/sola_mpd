@@ -1,41 +1,36 @@
 import { Slider } from "@mantine/core";
 import { displayDuration } from "@sola_mpd/shared/src/utils/stringUtils.js";
 import { useAtomValue, useSetAtom } from "jotai";
-import { useCallback, useRef } from "react";
-import { getElapsedTimePercentage } from "../functions/playerDisplay";
+import {
+	getElapsedFromPercentage,
+	getElapsedTimePercentage,
+	isSeekable,
+} from "../functions/playerDisplay";
+import { usePlayerSeekBarSlider } from "../hooks/usePlayerSeekBarSlider";
 import { seekActionAtom } from "../states/actions/seekActionAtom";
 import {
 	playerStatusDurationAtom,
 	playerStatusElapsedAtom,
+	playerStatusReceivedAtAtom,
 } from "../states/atoms/playerStatusAtom";
 
 export function PlayerSeekBar() {
 	const playerStatusElapsed = useAtomValue(playerStatusElapsedAtom);
 	const playerStatusDuration = useAtomValue(playerStatusDurationAtom);
+	const playerStatusReceivedAt = useAtomValue(playerStatusReceivedAtAtom);
 	const seek = useSetAtom(seekActionAtom);
 
-	const elapsedTimePercentage = getElapsedTimePercentage(
-		playerStatusElapsed,
-		playerStatusDuration,
+	const seekable = isSeekable(playerStatusDuration);
+	const slider = usePlayerSeekBarSlider(
+		getElapsedTimePercentage(playerStatusElapsed, playerStatusDuration),
+		playerStatusReceivedAt,
+		seekable,
+		seek,
 	);
-
-	const lastSeekClicked = useRef(new Date());
-	const handleSeekBarClick = useCallback(
-		(value: number) => {
-			// onChangeEnd can land repeatedly in quick succession; seeking on
-			// every one of them makes MPD stutter.
-			const now = new Date();
-			const last = lastSeekClicked.current;
-			const elapsed = now.getTime() - last.getTime();
-			if (elapsed < 1000) {
-				return;
-			}
-			lastSeekClicked.current = now;
-
-			seek(value);
-		},
-		[seek],
-	);
+	const labelElapsed =
+		slider.draftPercentage !== undefined
+			? getElapsedFromPercentage(slider.draftPercentage, playerStatusDuration)
+			: playerStatusElapsed;
 
 	return (
 		<Slider
@@ -44,11 +39,11 @@ export function PlayerSeekBar() {
 			min={0}
 			max={100}
 			thumbSize={0}
-			value={elapsedTimePercentage}
-			label={displayDuration(playerStatusElapsed ?? 0)}
-			onChangeEnd={(v) => {
-				handleSeekBarClick(v);
-			}}
+			disabled={!seekable}
+			value={slider.value}
+			label={displayDuration(labelElapsed ?? 0)}
+			onChange={slider.onChange}
+			onChangeEnd={slider.onChangeEnd}
 			styles={{
 				// Lift above sibling absolute groups (PlayerDuration / controls)
 				// that would otherwise intercept clicks below the visible bar.

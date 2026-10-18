@@ -6,4 +6,7 @@ export interface MpdListener {
 	unsubscribe: (profile: MpdProfile) => void;
 	on: (event: MpdEvent_EventType, callback: () => void) => void;
 	off: (event: MpdEvent_EventType) => void;
+	// Fires after every acknowledged subscription, including the re-subscription
+	// after a transport reconnect; events before it were never delivered.
+	onSubscribed: (callback: (isResubscription: boolean) => void) => void;
 }

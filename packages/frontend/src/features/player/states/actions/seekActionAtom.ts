@@ -3,6 +3,7 @@ import { atom } from "jotai";
 import { mpdClientAtom } from "../../../mpd";
 import { currentMpdProfileAtom } from "../../../profile";
 import { buildSeekCommand } from "../../functions/playerCommand";
+import { isSeekable } from "../../functions/playerDisplay";
 import { playerStatusDurationAtom } from "../atoms/playerStatusAtom";
 
 export const seekActionAtom = atom(null, (get, _set, percentage: number) => {
@@ -15,7 +16,7 @@ export const seekActionAtom = atom(null, (get, _set, percentage: number) => {
 		return;
 	}
 	const duration = get(playerStatusDurationAtom);
-	if (duration === undefined) {
+	if (!isSeekable(duration)) {
 		return;
 	}
 	const seekTo = (percentage / 100) * duration;

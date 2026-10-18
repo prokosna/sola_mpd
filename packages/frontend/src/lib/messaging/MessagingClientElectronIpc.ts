@@ -35,4 +35,7 @@ export class MessagingClientElectronIpc implements MessagingClient {
 	off = async (event: string): Promise<void> => {
 		this.bridge.off(event);
 	};
+
+	// IPC lives as long as the renderer, so there is nothing to reconnect.
+	onReconnect = (_callback: () => void): void => {};
 }

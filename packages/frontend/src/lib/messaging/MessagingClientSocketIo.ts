@@ -8,14 +8,23 @@ const ACK_TIMEOUT_MS = 30_000;
 
 export class MessagingClientSocketIo implements MessagingClient {
 	private socket: Promise<Socket>;
+	private reconnectCallbacks: (() => void)[] = [];
 
 	constructor() {
 		this.socket = new Promise((resolve, reject) => {
 			console.info("Connecting socket.io...");
 			const socket = io(window.location.host, { path: "/io/" });
+			let hasConnected = false;
 
 			socket.on("connect", () => {
 				console.info("Socket.io is connected.");
+				if (hasConnected) {
+					for (const callback of this.reconnectCallbacks) {
+						callback();
+					}
+					return;
+				}
+				hasConnected = true;
 				resolve(socket);
 			});
 
@@ -93,5 +102,9 @@ export class MessagingClientSocketIo implements MessagingClient {
 	off = async (event: string): Promise<void> => {
 		const socket = await this.socket;
 		socket.off(event);
+	};
+
+	onReconnect = (callback: () => void): void => {
+		this.reconnectCallbacks.push(callback);
 	};
 }

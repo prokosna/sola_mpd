@@ -1,6 +1,10 @@
 import { describe, expect, it } from "vitest";
 
-import { getElapsedTimePercentage } from "./playerDisplay";
+import {
+	getElapsedFromPercentage,
+	getElapsedTimePercentage,
+	isSeekable,
+} from "./playerDisplay";
 
 describe("playerDisplay", () => {
 	describe("getElapsedTimePercentage", () => {
@@ -30,6 +34,25 @@ describe("playerDisplay", () => {
 
 		it("should return -1 when both are undefined", () => {
 			expect(getElapsedTimePercentage(undefined, undefined)).toBe(-1);
+		});
+	});
+
+	describe("getElapsedFromPercentage", () => {
+		it("should convert a percentage to seconds", () => {
+			expect(getElapsedFromPercentage(25, 200)).toBe(50);
+		});
+
+		it("should return undefined without a usable duration", () => {
+			expect(getElapsedFromPercentage(25, undefined)).toBeUndefined();
+			expect(getElapsedFromPercentage(25, 0)).toBeUndefined();
+		});
+	});
+
+	describe("isSeekable", () => {
+		it("should be true only for a positive duration", () => {
+			expect(isSeekable(200)).toBe(true);
+			expect(isSeekable(0)).toBe(false);
+			expect(isSeekable(undefined)).toBe(false);
 		});
 	});
 });

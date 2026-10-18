@@ -12,4 +12,7 @@ export interface MessagingClient {
 	on: (event: string, callback: (message: Uint8Array) => void) => Promise<void>;
 
 	off: (event: string) => Promise<void>;
+
+	// Server-side subscriptions do not survive a transport reconnect.
+	onReconnect: (callback: () => void) => void;
 }

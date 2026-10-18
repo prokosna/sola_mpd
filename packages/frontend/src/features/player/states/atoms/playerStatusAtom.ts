@@ -4,9 +4,17 @@ import { atomWithRefresh } from "jotai/utils";
 import { atomWithSync } from "../../../../lib/jotai/atomWithSync";
 import { mpdClientAtom } from "../../../mpd/states/atoms/mpdClientAtom";
 import { currentMpdProfileAtom } from "../../../profile/states/atoms/mpdProfileAtom";
+import {
+	interpolateElapsed,
+	isPlaybackAdvancing,
+	type PlayerStatusSnapshot,
+} from "../../functions/playerElapsed";
 import { fetchPlayerStatus } from "../../functions/playerFetching";
+import { playerClockAtom } from "./playerClockAtom";
 
-export const playerStatusAsyncAtom = atomWithRefresh(async (get) => {
+export const playerStatusAsyncAtom = atomWithRefresh<
+	Promise<PlayerStatusSnapshot | undefined>
+>(async (get) => {
 	const mpdClient = get(mpdClientAtom);
 	const profile = get(currentMpdProfileAtom);
 
@@ -14,13 +22,25 @@ export const playerStatusAsyncAtom = atomWithRefresh(async (get) => {
 		return undefined;
 	}
 
-	return await fetchPlayerStatus(mpdClient, profile);
+	const status = await fetchPlayerStatus(mpdClient, profile);
+	if (status === undefined) {
+		return undefined;
+	}
+	return { status, receivedAt: performance.now() };
 });
 
-const playerStatusAtom = atomWithSync(playerStatusAsyncAtom);
+const playerStatusSnapshotAtom = atomWithSync(playerStatusAsyncAtom);
+
+const playerStatusAtom = atom((get) => {
+	return get(playerStatusSnapshotAtom)?.status;
+});
 
 export const playerStatusPlaybackStateAtom = atom((get) => {
 	return get(playerStatusAtom)?.playbackState;
+});
+
+export const playerStatusIsPlayingAtom = atom((get) => {
+	return isPlaybackAdvancing(get(playerStatusAtom)?.playbackState);
 });
 
 export const playerStatusIsConsumeAtom = atom((get) => {
@@ -44,7 +64,14 @@ export const playerStatusIsDatabaseUpdatingAtom = atom((get) => {
 });
 
 export const playerStatusElapsedAtom = atom((get) => {
-	return get(playerStatusAtom)?.elapsed;
+	return interpolateElapsed(
+		get(playerStatusSnapshotAtom),
+		get(playerClockAtom),
+	);
+});
+
+export const playerStatusReceivedAtAtom = atom((get) => {
+	return get(playerStatusSnapshotAtom)?.receivedAt;
 });
 
 export const playerStatusDurationAtom = atom((get) => {
