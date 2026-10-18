@@ -665,9 +665,7 @@ class MpdClientMpd3 implements MpdClient {
 					case "pos":
 						return Command.cmd("play", req.command.value.target.value);
 					default:
-						throw new Error(
-							`Unsupported command: ${toJsonString(MpdRequestSchema, req)}`,
-						);
+						return Command.cmd("play");
 				}
 			case "previous":
 				return Command.cmd("previous");

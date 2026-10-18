@@ -1,4 +1,5 @@
 import { create } from "@bufbuild/protobuf";
+import { MpdPlayerStatus_PlaybackState } from "@sola_mpd/shared/src/models/mpd/mpd_player_pb.js";
 import {
 	type MpdProfile,
 	MpdProfileSchema,
@@ -9,12 +10,14 @@ import {
 	buildConsumeCommand,
 	buildNextCommand,
 	buildPauseCommand,
+	buildPlayCommand,
 	buildPreviousCommand,
 	buildRandomCommand,
 	buildRepeatCommand,
 	buildSeekCommand,
 	buildSetVolumeCommand,
 	buildStopCommand,
+	buildTogglePlaybackCommand,
 } from "./playerCommand";
 
 function createProfile(): MpdProfile {
@@ -95,5 +98,45 @@ describe("playerCommand", () => {
 			expect(cmd.command.value.time).toBe(42.5);
 			expect(cmd.command.value.target.case).toBe("current");
 		}
+	});
+
+	it("buildPlayCommand should create play command without a target", () => {
+		const cmd = buildPlayCommand(createProfile());
+		expect(cmd.command.case).toBe("play");
+		if (cmd.command.case === "play") {
+			expect(cmd.command.value.target.case).toBeUndefined();
+		}
+	});
+
+	describe("buildTogglePlaybackCommand", () => {
+		it("pauses while playing", () => {
+			const cmd = buildTogglePlaybackCommand(
+				createProfile(),
+				MpdPlayerStatus_PlaybackState.PLAY,
+			);
+			expect(cmd.command.case).toBe("pause");
+			if (cmd.command.case === "pause") {
+				expect(cmd.command.value.pause).toBe(true);
+			}
+		});
+
+		it("resumes while paused", () => {
+			const cmd = buildTogglePlaybackCommand(
+				createProfile(),
+				MpdPlayerStatus_PlaybackState.PAUSE,
+			);
+			expect(cmd.command.case).toBe("pause");
+			if (cmd.command.case === "pause") {
+				expect(cmd.command.value.pause).toBe(false);
+			}
+		});
+
+		it("plays while stopped", () => {
+			const cmd = buildTogglePlaybackCommand(
+				createProfile(),
+				MpdPlayerStatus_PlaybackState.STOP,
+			);
+			expect(cmd.command.case).toBe("play");
+		});
 	});
 });
