@@ -55,14 +55,19 @@ describe("registerPlaybackTools / playback_control", () => {
 		expect(req.command.value.target.value).toBe("3");
 	});
 
-	it("defaults to queue_position 0 when omitted", async () => {
+	it.each([
+		"play",
+		"resume",
+	])("sends a bare play for %s without queue_position", async (action) => {
 		const { server, client } = setupServer();
-		await server.call("playback_control", { action: "play" });
+		const result = await server.call("playback_control", { action });
+		expect(result.isError).toBeUndefined();
 		const req = (client.execute as unknown as { mock: { calls: unknown[][] } })
 			.mock.calls[0]?.[0] as {
-			command: { value: { target: { value: string } } };
+			command: { case: string; value: { target: { case?: string } } };
 		};
-		expect(req.command.value.target.value).toBe("0");
+		expect(req.command.case).toBe("play");
+		expect(req.command.value.target.case).toBeUndefined();
 	});
 
 	it("returns a tool error when seek is called without seek_seconds", async () => {

@@ -21,7 +21,7 @@ export function registerPlaybackTools(
 		{
 			title: "Playback control",
 			description:
-				"Controls playback transport. action=play optionally takes queue_position. action=seek requires seek_seconds. Omitting profile uses the workspace default profile.",
+				"Controls playback transport. action=play with queue_position plays that song; without it, play and resume both start the current song from the beginning when stopped (the first queued song if there is none) and resume it when paused. action=seek requires seek_seconds. Omitting profile uses the workspace default profile.",
 			inputSchema: z.object({
 				action: z.enum([
 					"play",
@@ -54,19 +54,18 @@ export function registerPlaybackTools(
 				const profile = resolveCurrentMpdProfile(args.profile);
 				switch (args.action) {
 					case "play":
-						if (args.queue_position !== undefined) {
-							await executeMpdCommand(mpdClient, profile, {
-								case: "play",
-								value: {
-									target: { case: "pos", value: String(args.queue_position) },
-								},
-							});
-						} else {
-							await executeMpdCommand(mpdClient, profile, {
-								case: "play",
-								value: { target: { case: "pos", value: "0" } },
-							});
-						}
+						await executeMpdCommand(mpdClient, profile, {
+							case: "play",
+							value:
+								args.queue_position !== undefined
+									? {
+											target: {
+												case: "pos",
+												value: String(args.queue_position),
+											},
+										}
+									: {},
+						});
 						break;
 					case "pause":
 						await executeMpdCommand(mpdClient, profile, {
@@ -74,10 +73,11 @@ export function registerPlaybackTools(
 							value: { pause: true },
 						});
 						break;
+					// MPD ignores pause while stopped; a bare play also unpauses.
 					case "resume":
 						await executeMpdCommand(mpdClient, profile, {
-							case: "pause",
-							value: { pause: false },
+							case: "play",
+							value: {},
 						});
 						break;
 					case "stop":
