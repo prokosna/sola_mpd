@@ -134,7 +134,8 @@ export const executeAdvancedSearchRequestUseCase = async (
 				if (req.config?.endpoint === undefined) {
 					throw new Error("Endpoint is undefined");
 				}
-				await advancedSearchApi.vacuumLibrary(req.config.endpoint);
+				// Lainbow removes deleted songs while scanning, so a vacuum is a scan.
+				await advancedSearchApi.scanLibrary(req.config.endpoint);
 				return create(AdvancedSearchResponseSchema, {
 					command: {
 						case: "vacuumLibrary",

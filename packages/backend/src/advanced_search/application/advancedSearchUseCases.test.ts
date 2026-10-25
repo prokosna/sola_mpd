@@ -36,7 +36,6 @@ const createAdvancedSearchApi = (
 		searchTextToMusic: vi.fn(),
 		searchSimilarSongs: vi.fn(),
 		scanLibrary: vi.fn(),
-		vacuumLibrary: vi.fn(),
 		analyze: vi.fn(),
 		...overrides,
 	};

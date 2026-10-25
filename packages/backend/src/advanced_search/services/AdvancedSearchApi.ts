@@ -35,6 +35,5 @@ export interface AdvancedSearchApi {
 		input: SearchSimilarSongsInput,
 	) => Promise<SearchSimilarSongsResult>;
 	scanLibrary: (endpoint: string) => Promise<void>;
-	vacuumLibrary: (endpoint: string) => Promise<void>;
 	analyze: (endpoint: string) => Promise<void>;
 }

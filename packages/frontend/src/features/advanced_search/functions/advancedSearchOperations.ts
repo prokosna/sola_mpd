@@ -45,23 +45,6 @@ export async function scanLibrary(
 	return;
 }
 
-export async function vacuumLibrary(
-	client: AdvancedSearchClient,
-	endpoint: string,
-): Promise<void> {
-	const req = create(AdvancedSearchRequestSchema, {
-		config: {
-			endpoint,
-		},
-		command: {
-			case: "vacuumLibrary",
-			value: {},
-		},
-	});
-	await client.command(req);
-	return;
-}
-
 export async function analyze(
 	client: AdvancedSearchClient,
 	endpoint: string,

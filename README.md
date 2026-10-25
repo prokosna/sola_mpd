@@ -194,7 +194,7 @@ $ docker compose up --build -d
 ```
 
 The "Advanced Search" tab then appears in the Settings page.
-Lainbow scans the library and analyzes new songs on its own; the Scan Library and Analyze buttons in Settings > Advanced Search only start that work right away.
+Lainbow scans the library every hour and analyzes new songs on its own. In Settings > Advanced Search, Scan Library starts a scan right away and Retry Failed analyzes songs whose analysis failed again.
 
 <img width="734" height="323" alt="2025-09-13 173633" src="https://github.com/user-attachments/assets/f2d623bb-de82-4b44-96af-1b8fa19ff1a7" />
 

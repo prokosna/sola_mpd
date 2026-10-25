@@ -136,18 +136,6 @@ class AdvancedSearchApiHttp implements AdvancedSearchApi {
 		}
 	}
 
-	async vacuumLibrary(endpoint: string): Promise<void> {
-		const url = `${endpoint}/api/v1/batch/vacuum/run`;
-		const response = await fetch(url, {
-			method: "POST",
-		});
-		if (!response.ok) {
-			throw new Error(
-				`Prune stale items failed with status ${response.status}`,
-			);
-		}
-	}
-
 	async analyze(endpoint: string): Promise<void> {
 		const url = `${endpoint}/api/v1/batch/analyze/run`;
 		const response = await fetch(url, {
