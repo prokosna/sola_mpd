@@ -72,9 +72,9 @@ const screenshotFiles = [
 ] as const;
 
 const advancedNoteEn =
-	"Requires Lainbow 2. It runs on a CPU; a GPU speeds up the first analysis of a large library.";
+	"Requires Lainbow. It runs on a CPU; a GPU speeds up the first analysis of a large library.";
 const advancedNoteJa =
-	"Lainbow 2 が必要です。CPU で動作し、大きなライブラリの最初の解析は GPU があると速く終わります。";
+	"Lainbow が必要です。CPU で動作し、大きなライブラリの最初の解析は GPU があると速く終わります。";
 
 const screenshots: Screenshot[] = [
 	{ src: screenshotFiles[0], caption: "Intuitive control" },
@@ -161,7 +161,7 @@ export const strings: Record<Locale, Strings> = {
 			{
 				title: "Advanced search",
 				description:
-					"Text-to-Music and similarity search powered by MuQ / MuQ-MuLan via Lainbow 2, which scans and analyzes your library on its own.",
+					"Text-to-Music and similarity search powered by MuQ / MuQ-MuLan via Lainbow, which scans and analyzes your library on its own.",
 			},
 			{
 				title: "MCP server (Beta)",
@@ -288,7 +288,7 @@ export const strings: Record<Locale, Strings> = {
 			{
 				title: "アドバンスド検索",
 				description:
-					"Lainbow 2 との連携により、MuQ / MuQ-MuLan を用いたテキストからの楽曲検索と類似検索が使えます。ライブラリの走査と解析は Lainbow が自動で行います。",
+					"Lainbow との連携により、MuQ / MuQ-MuLan を用いたテキストからの楽曲検索と類似検索が使えます。ライブラリの走査と解析は Lainbow が自動で行います。",
 			},
 			{
 				title: "MCP サーバー (Beta)",

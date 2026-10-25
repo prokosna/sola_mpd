@@ -25,7 +25,7 @@ This client has the following features:
 - [x] Supports touch devices
 - [x] Browse recently added artists, albums and composers
 - [x] Playlist sync with Subsonic API compatible service (via plugin)
-- [x] Advanced search (requires [Lainbow](https://github.com/prokosna/lainbow) 2)
+- [x] Advanced search (requires [Lainbow](https://github.com/prokosna/lainbow))
   - Text-to-Music search (MuQ-MuLan)
   - Similarity search (MuQ)
 - [x] MCP server (Beta) for LLM-driven library analysis and control
@@ -171,7 +171,7 @@ Released tags are listed on the [Releases](https://github.com/prokosna/sola_mpd/
 
 ## Advanced search
 
-Set up [Lainbow](https://github.com/prokosna/lainbow) 2 to add these features:
+Set up [Lainbow](https://github.com/prokosna/lainbow) to add these features:
 
 - Text-to-Music search ([MuQ-MuLan](https://huggingface.co/OpenMuQ/MuQ-MuLan-large))
 - Similarity search ([MuQ](https://huggingface.co/OpenMuQ/MuQ-large-msd-iter))

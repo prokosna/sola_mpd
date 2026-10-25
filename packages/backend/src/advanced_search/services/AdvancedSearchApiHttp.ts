@@ -21,7 +21,7 @@ class AdvancedSearchApiHttp implements AdvancedSearchApi {
 		const stats = await response.json();
 		return create(AdvancedSearchStatsSchema, {
 			totalSongs: stats.total_songs,
-			// Lainbow 2 no longer has the acoustic-features model.
+			// Lainbow no longer has the acoustic-features model.
 			songsWithAcousticFeatures: stats.songs_with_acoustic_features ?? 0,
 			songsWithMert: stats.songs_with_mert,
 			songsWithClap: stats.songs_with_clap,
@@ -102,7 +102,7 @@ class AdvancedSearchApiHttp implements AdvancedSearchApi {
 				return "mert";
 			case AdvancedSearchCommand_SimilarityType.ACOUSTIC_FEATURES:
 				throw new Error(
-					"Acoustic-features similarity is not available in Lainbow 2",
+					"Acoustic-features similarity is no longer available in Lainbow",
 				);
 			default: {
 				const exhaustiveCheck: never = similarityType;
