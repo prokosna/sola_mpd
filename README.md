@@ -25,7 +25,7 @@ This client has the following features:
 - [x] Supports touch devices
 - [x] Browse recently added artists, albums and composers
 - [x] Playlist sync with Subsonic API compatible service (via plugin)
-- [x] Advanced search (Beta, requires [lainbow](https://github.com/prokosna/lainbow) integration)
+- [x] Advanced search (requires [Lainbow](https://github.com/prokosna/lainbow) 2)
   - Text-to-Music search (MuQ-MuLan)
   - Similarity search (MuQ)
 - [x] MCP server (Beta) for LLM-driven library analysis and control
@@ -169,36 +169,36 @@ Released tags are listed on the [Releases](https://github.com/prokosna/sola_mpd/
 | Replace (Context menu)      | Replace the current play queue with the selected songs                                                                      |
 | Edit Columns (Context menu) | Edit the metadata to be used as columns - The order can be changed by directly dragging & dropping the column on the table. |
 
-## Advanced search (Beta)
+## Advanced search
 
-You can unlock the following features by setting up [lainbow](https://github.com/prokosna/lainbow).
+Set up [Lainbow](https://github.com/prokosna/lainbow) 2 to add these features:
 
 - Text-to-Music search ([MuQ-MuLan](https://huggingface.co/OpenMuQ/MuQ-MuLan-large))
 - Similarity search ([MuQ](https://huggingface.co/OpenMuQ/MuQ-large-msd-iter))
 
-Once you have set up [lainbow](https://github.com/prokosna/lainbow), you can just uncomment the following line in [docker-compose.yaml](docker-compose.yaml),
+Lainbow runs next to Sola MPD with Docker Compose; its README covers the setup.
+Point Lainbow at the same music folder as MPD's `music_directory`, because songs are matched by their path relative to it.
+
+Then uncomment the following line in [docker-compose.yaml](docker-compose.yaml),
 
 ```yaml
       args:
         LAINBOW_ENDPOINT: "http://your.lainbow.endpoint:port/"
 ```
 
-then restart the container.
+and restart the container.
 
 ```bash
 $ docker compose down
 $ docker compose up --build -d
 ```
 
-Sola MPD requires MuQ and MuQ-MuLan embeddings in the vector database for these features.
-After restarting the container, the "Advanced Search" tab will be available in the Settings page.
-If you use Settings > Advanced Search > Scan Library and Analyze buttons to prepare the vector database, only MuQ and MuQ-MuLan embeddings will be generated.
+The "Advanced Search" tab then appears in the Settings page.
+Lainbow scans the library and analyzes new songs on its own; the Scan Library and Analyze buttons in Settings > Advanced Search only start that work right away.
 
 <img width="734" height="323" alt="2025-09-13 173633" src="https://github.com/user-attachments/assets/f2d623bb-de82-4b44-96af-1b8fa19ff1a7" />
 
-Please note that lainbow requires a NVIDIA GPU to generate embeddings. It works with CPU but it takes much longer time to generate embeddings.
-
-**This feature may require some engineering skill to set up. Feel free to let me know if you are interested in this feature but having some trouble setting it up.**
+Lainbow works on a CPU. The first analysis of a large library is much faster with a GPU, and Lainbow can borrow one from another machine (for example a Windows desktop) just for that.
 
 ## MCP server (Beta)
 
