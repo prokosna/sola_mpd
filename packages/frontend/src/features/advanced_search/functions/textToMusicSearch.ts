@@ -8,6 +8,10 @@ import type { MpdProfile } from "@sola_mpd/shared/src/models/mpd/mpd_profile_pb.
 import type { Song } from "@sola_mpd/shared/src/models/song_pb.js";
 import type { AdvancedSearchClient } from "../services/AdvancedSearchClient";
 
+export type TextToMusicSearchResult =
+	| { kind: "songs"; songs: Song[] }
+	| { kind: "error"; message: string };
+
 export async function searchSongsByText(
 	profile: MpdProfile,
 	endpoint: string,
@@ -15,7 +19,7 @@ export async function searchSongsByText(
 	query: string,
 	limit: number,
 	textToMusicType: AdvancedSearchCommand_TextToMusicType,
-): Promise<Song[]> {
+): Promise<TextToMusicSearchResult> {
 	const req = create(AdvancedSearchRequestSchema, {
 		config: {
 			endpoint,
@@ -31,10 +35,13 @@ export async function searchSongsByText(
 		},
 	});
 	const res = await client.command(req);
+	if (res.command.case === "error") {
+		return { kind: "error", message: res.command.value };
+	}
 	if (res.command.case !== "textToMusicSearch") {
 		throw Error(
 			`Invalid AdvancedSearch response: ${toJsonString(AdvancedSearchResponseSchema, res)}`,
 		);
 	}
-	return res.command.value.songList?.songs ?? [];
+	return { kind: "songs", songs: res.command.value.songList?.songs ?? [] };
 }

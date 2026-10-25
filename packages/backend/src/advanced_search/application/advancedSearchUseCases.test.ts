@@ -57,7 +57,10 @@ describe("advancedSearchUseCases", () => {
 			path: "music/song.mp3",
 		});
 		const advancedSearchApi = createAdvancedSearchApi({
-			searchTextToMusic: vi.fn().mockResolvedValue(["music/song.mp3"]),
+			searchTextToMusic: vi.fn().mockResolvedValue({
+				kind: "songs",
+				filePaths: ["music/song.mp3"],
+			}),
 		});
 		const mpdClient = createMpdClient({
 			executeBulk: vi.fn().mockResolvedValue(undefined),
@@ -112,6 +115,36 @@ describe("advancedSearchUseCases", () => {
 			throw new Error("Unexpected command case");
 		}
 		expect(result.command.value.songList?.songs).toHaveLength(1);
+	});
+
+	it("textToMusicSearch returns error response on error result", async () => {
+		const advancedSearchApi = createAdvancedSearchApi({
+			searchTextToMusic: vi.fn().mockResolvedValue({
+				kind: "error",
+				message: "not ready",
+			}),
+		});
+		const mpdClient = createMpdClient();
+		const request = create(AdvancedSearchRequestSchema, {
+			config: { endpoint: "http://localhost:3001" },
+			command: {
+				case: "textToMusicSearch",
+				value: {
+					profile: createProfile(),
+					query: "lofi",
+					textToMusicType: AdvancedSearchCommand_TextToMusicType.CLAP,
+				},
+			},
+		});
+
+		const result = await executeAdvancedSearchRequestUseCase(
+			request,
+			advancedSearchApi,
+			mpdClient,
+		);
+
+		expect(result.command.case).toBe("error");
+		expect(mpdClient.execute).not.toHaveBeenCalled();
 	});
 
 	it("similaritySearch returns error response on not-found result", async () => {

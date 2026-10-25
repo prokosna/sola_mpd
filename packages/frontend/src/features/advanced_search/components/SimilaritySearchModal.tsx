@@ -1,4 +1,4 @@
-import { Box, Modal } from "@mantine/core";
+import { Alert, Box, Modal } from "@mantine/core";
 import { useAtomValue, useSetAtom } from "jotai";
 import { useCallback, useRef, useState } from "react";
 import { CenterSpinner } from "../../loading";
@@ -14,10 +14,12 @@ import { useSimilaritySearchSongTableProps } from "../hooks/useSimilaritySearchS
 import { refreshSimilaritySearchSongsActionAtom } from "../states/actions/refreshSimilaritySearchSongsActionAtom";
 import { setIsSimilaritySearchModalOpenActionAtom } from "../states/actions/setIsSimilaritySearchModalOpenActionAtom";
 import { setSimilaritySearchTargetSongActionAtom } from "../states/actions/setSimilaritySearchTargetSongActionAtom";
+import { similaritySearchSongsAtom } from "../states/atoms/similaritySearchAtom";
 import { isSimilaritySearchModalOpenAtom } from "../states/atoms/similaritySearchUiAtom";
 
 export function SimilaritySearchModal() {
 	const songTableServerState = useAtomValue(songTableServerStateAtom);
+	const searchResult = useAtomValue(similaritySearchSongsAtom);
 	const updateSongTableColumnTags = useSetAtom(
 		updateSongTableColumnTagsActionAtom,
 	);
@@ -98,10 +100,16 @@ export function SimilaritySearchModal() {
 							border: "1px solid var(--mantine-color-default-border)",
 						}}
 					>
-						<SongTable
-							{...songTableProps}
-							contextMenuAnchorRef={contextMenuAnchorRef}
-						/>
+						{searchResult?.kind === "error" ? (
+							<Alert color="gray" title="Not available yet" m="md">
+								{searchResult.message}
+							</Alert>
+						) : (
+							<SongTable
+								{...songTableProps}
+								contextMenuAnchorRef={contextMenuAnchorRef}
+							/>
+						)}
 						<PlaylistSelectModal {...playlistSelectModalProps} />
 						<ColumnEditModal {...columnEditModalProps} />
 					</Box>

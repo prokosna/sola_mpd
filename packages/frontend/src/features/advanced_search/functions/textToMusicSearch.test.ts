@@ -54,8 +54,12 @@ describe("searchSongsByText", () => {
 			10,
 			AdvancedSearchCommand_TextToMusicType.MUQ_MULAN,
 		);
-		expect(result).toHaveLength(2);
-		expect(result[0].path).toBe("/a.mp3");
+		expect(result.kind).toBe("songs");
+		if (result.kind !== "songs") {
+			throw new Error("Unexpected result");
+		}
+		expect(result.songs).toHaveLength(2);
+		expect(result.songs[0].path).toBe("/a.mp3");
 	});
 
 	it("should return empty array when songList is undefined", async () => {
@@ -76,7 +80,25 @@ describe("searchSongsByText", () => {
 			10,
 			AdvancedSearchCommand_TextToMusicType.MUQ_MULAN,
 		);
-		expect(result).toHaveLength(0);
+		expect(result).toEqual({ kind: "songs", songs: [] });
+	});
+
+	it("should return a typed error on error response", async () => {
+		const client = createMockClient(
+			create(AdvancedSearchResponseSchema, {
+				command: { case: "error", value: "not ready" },
+			}),
+		);
+
+		const result = await searchSongsByText(
+			profile,
+			endpoint,
+			client,
+			"happy music",
+			10,
+			AdvancedSearchCommand_TextToMusicType.MUQ_MULAN,
+		);
+		expect(result).toEqual({ kind: "error", message: "not ready" });
 	});
 
 	it("should throw on invalid response type", async () => {

@@ -18,7 +18,7 @@ export type SearchSimilarSongsInput = {
 	limit: number;
 };
 
-export type SearchSimilarSongsResult =
+export type SearchSongsResult =
 	| {
 			kind: "songs";
 			filePaths: string[];
@@ -28,9 +28,14 @@ export type SearchSimilarSongsResult =
 			message: string;
 	  };
 
+export type SearchSimilarSongsResult = SearchSongsResult;
+export type SearchTextToMusicResult = SearchSongsResult;
+
 export interface AdvancedSearchApi {
 	fetchStats: (endpoint: string) => Promise<AdvancedSearchStats>;
-	searchTextToMusic: (input: SearchTextToMusicInput) => Promise<string[]>;
+	searchTextToMusic: (
+		input: SearchTextToMusicInput,
+	) => Promise<SearchTextToMusicResult>;
 	searchSimilarSongs: (
 		input: SearchSimilarSongsInput,
 	) => Promise<SearchSimilarSongsResult>;

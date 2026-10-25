@@ -9,7 +9,34 @@ import type {
 	SearchSimilarSongsInput,
 	SearchSimilarSongsResult,
 	SearchTextToMusicInput,
+	SearchTextToMusicResult,
 } from "./AdvancedSearchApi.js";
+
+const SONG_NOT_ANALYZED_MESSAGE =
+	"This song has not been analyzed yet. Lainbow analyzes new songs automatically, so please try again later.";
+const TEXT_SEARCH_NOT_READY_MESSAGE =
+	"Text search is not ready yet. Lainbow's analysis engine is starting up or not running.";
+
+async function readDetail(response: Response): Promise<string | undefined> {
+	try {
+		const body = await response.json();
+		const detail = body?.detail;
+		if (typeof detail === "string") {
+			return detail;
+		}
+		if (detail !== undefined) {
+			return JSON.stringify(detail);
+		}
+	} catch {
+		// The body is not JSON; fall back to the status text.
+	}
+	return undefined;
+}
+
+async function unprocessableMessage(response: Response): Promise<string> {
+	const detail = (await readDetail(response)) ?? response.statusText;
+	return `Lainbow cannot run this search: ${detail}`;
+}
 
 class AdvancedSearchApiHttp implements AdvancedSearchApi {
 	async fetchStats(endpoint: string) {
@@ -32,7 +59,9 @@ class AdvancedSearchApiHttp implements AdvancedSearchApi {
 		});
 	}
 
-	async searchTextToMusic(input: SearchTextToMusicInput): Promise<string[]> {
+	async searchTextToMusic(
+		input: SearchTextToMusicInput,
+	): Promise<SearchTextToMusicResult> {
 		const params = new URLSearchParams();
 		params.append("q", input.query);
 		params.append(
@@ -46,13 +75,27 @@ class AdvancedSearchApiHttp implements AdvancedSearchApi {
 		const url = `${input.endpoint}/api/v1/songs/search?${params.toString()}`;
 		const response = await fetch(url);
 		if (!response.ok) {
+			if (response.status === 503) {
+				return { kind: "error", message: TEXT_SEARCH_NOT_READY_MESSAGE };
+			}
+			if (response.status === 422) {
+				return {
+					kind: "error",
+					message: await unprocessableMessage(response),
+				};
+			}
 			throw new Error(
 				`textToMusicSearch failed with status ${response.status}`,
 			);
 		}
 
 		const songList = await response.json();
-		return songList.songs.map((song: { file_path: string }) => song.file_path);
+		return {
+			kind: "songs",
+			filePaths: songList.songs.map(
+				(song: { file_path: string }) => song.file_path,
+			),
+		};
 	}
 
 	async searchSimilarSongs(
@@ -73,9 +116,12 @@ class AdvancedSearchApiHttp implements AdvancedSearchApi {
 
 		if (!response.ok) {
 			if (response.status === 404) {
+				return { kind: "error", message: SONG_NOT_ANALYZED_MESSAGE };
+			}
+			if (response.status === 422) {
 				return {
 					kind: "error",
-					message: `The song (${input.songPath}) not found. You may need to scan the library and run analyze to find similar songs.`,
+					message: await unprocessableMessage(response),
 				};
 			}
 			throw new Error(

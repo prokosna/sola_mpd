@@ -9,7 +9,10 @@ import {
 	DEVICE_SETTING_KEY_SIMILARITY_SEARCH_TYPE,
 } from "../../../common";
 import { currentMpdProfileAtom } from "../../../profile/states/atoms/mpdProfileAtom";
-import { searchSimilarSongs } from "../../functions/similaritySearch";
+import {
+	type SimilaritySearchResult,
+	searchSimilarSongs,
+} from "../../functions/similaritySearch";
 import {
 	advancedSearchEndpointAtom,
 	advancedSearchQueryLimitAtom,
@@ -26,30 +29,40 @@ export const similaritySearchTypeAtom =
 		{ getOnInit: true },
 	);
 
-export const similaritySearchSongsAsyncAtom = atomWithRefresh(async (get) => {
-	const targetSong = get(similaritySearchTargetSongAtom);
-	const profile = get(currentMpdProfileAtom);
-	const client = get(advancedSearchClientAtom);
-	const endpoint = get(advancedSearchEndpointAtom);
-	const limit = get(advancedSearchQueryLimitAtom);
-	const similarityType = get(similaritySearchTypeAtom);
+export const similaritySearchSongsAsyncAtom = atomWithRefresh(
+	async (get): Promise<SimilaritySearchResult> => {
+		try {
+			const targetSong = get(similaritySearchTargetSongAtom);
+			const profile = get(currentMpdProfileAtom);
+			const client = get(advancedSearchClientAtom);
+			const endpoint = get(advancedSearchEndpointAtom);
+			const limit = get(advancedSearchQueryLimitAtom);
+			const similarityType = get(similaritySearchTypeAtom);
 
-	if (profile === undefined || endpoint === undefined) {
-		return [];
-	}
-	if (targetSong === undefined) {
-		return [];
-	}
+			if (
+				profile === undefined ||
+				endpoint === undefined ||
+				targetSong === undefined
+			) {
+				return { kind: "songs", songs: [] };
+			}
 
-	return await searchSimilarSongs(
-		profile,
-		endpoint,
-		client,
-		targetSong,
-		limit,
-		similarityType,
-	);
-});
+			return await searchSimilarSongs(
+				profile,
+				endpoint,
+				client,
+				targetSong,
+				limit,
+				similarityType,
+			);
+		} catch (err) {
+			return {
+				kind: "error",
+				message: err instanceof Error ? err.message : String(err),
+			};
+		}
+	},
+);
 
 export const similaritySearchSongsAtom = atomWithSync(
 	similaritySearchSongsAsyncAtom,

@@ -1,6 +1,6 @@
-import { Box } from "@mantine/core";
+import { Alert, Box } from "@mantine/core";
 import { useAtomValue, useSetAtom } from "jotai";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { CenterSpinner } from "../../loading";
 import { PlaylistSelectModal, usePlaylistSelectModal } from "../../playlist";
 import {
@@ -11,9 +11,22 @@ import {
 	useColumnEditModalProps,
 } from "../../song_table";
 import { useTextToMusicSearchSongTableProps } from "../hooks/useTextToMusicSearchSongTableProps";
+import { setIsTextToMusicSearchLoadingActionAtom } from "../states/actions/setIsTextToMusicSearchLoadingActionAtom";
+import { textToMusicSearchSongsAtom } from "../states/atoms/textToMusicSearchAtom";
 
 export function TextToMusicSearchContent() {
 	const songTableServerState = useAtomValue(songTableServerStateAtom);
+	const searchResult = useAtomValue(textToMusicSearchSongsAtom);
+	const setIsTextToMusicSearchLoading = useSetAtom(
+		setIsTextToMusicSearchLoadingActionAtom,
+	);
+
+	// The table is not rendered on error, so it cannot report completion itself.
+	useEffect(() => {
+		if (searchResult?.kind === "error") {
+			setIsTextToMusicSearchLoading(false);
+		}
+	}, [searchResult, setIsTextToMusicSearchLoading]);
 	const updateSongTableColumnTags = useSetAtom(
 		updateSongTableColumnTagsActionAtom,
 	);
@@ -45,7 +58,13 @@ export function TextToMusicSearchContent() {
 
 	return (
 		<Box w="100%" h="100%">
-			<SongTable {...songTableProps} />
+			{searchResult?.kind === "error" ? (
+				<Alert color="gray" title="Not available yet" m="md">
+					{searchResult.message}
+				</Alert>
+			) : (
+				<SongTable {...songTableProps} />
+			)}
 			<PlaylistSelectModal {...playlistSelectModalProps} />
 			<ColumnEditModal {...columnEditModalProps} />
 		</Box>

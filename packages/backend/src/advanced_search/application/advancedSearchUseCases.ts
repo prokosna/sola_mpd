@@ -55,15 +55,19 @@ export const executeAdvancedSearchRequestUseCase = async (
 				if (req.command.value.profile === undefined) {
 					throw new Error("Profile is undefined");
 				}
-				const filePaths = await advancedSearchApi.searchTextToMusic({
+				const result = await advancedSearchApi.searchTextToMusic({
 					endpoint: req.config.endpoint,
 					query: req.command.value.query,
 					textToMusicType: req.command.value.textToMusicType,
 					limit: req.config.limit ?? 10,
 				});
+				if (result.kind === "error") {
+					return createErrorResponse(result.message);
+				}
+
 				const songs = await fetchSongs(
 					req.command.value.profile,
-					filePaths,
+					result.filePaths,
 					mpdClient,
 				);
 
