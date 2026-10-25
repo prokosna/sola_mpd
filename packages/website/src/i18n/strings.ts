@@ -72,9 +72,9 @@ const screenshotFiles = [
 ] as const;
 
 const advancedNoteEn =
-	"Requires additional setup via lainbow integration, an NVIDIA GPU for practical performance, and some engineering skill.";
+	"Requires Lainbow 2. It runs on a CPU; a GPU speeds up the first analysis of a large library.";
 const advancedNoteJa =
-	"lainbow 連携による追加セットアップ、実用的な速度を得るための NVIDIA GPU、そしてある程度のエンジニアリングスキルが必要です。";
+	"Lainbow 2 が必要です。CPU で動作し、大きなライブラリの最初の解析は GPU があると速く終わります。";
 
 const screenshots: Screenshot[] = [
 	{ src: screenshotFiles[0], caption: "Intuitive control" },
@@ -159,9 +159,9 @@ export const strings: Record<Locale, Strings> = {
 					"Integrate with external services through plugins. A Subsonic plugin is bundled to sync playlists with any Subsonic-compatible server.",
 			},
 			{
-				title: "Advanced search (Beta)",
+				title: "Advanced search",
 				description:
-					"Text-to-Music and similarity search powered by MuQ / MuQ-MuLan via lainbow. Additional setup, an NVIDIA GPU, and some engineering skill are required.",
+					"Text-to-Music and similarity search powered by MuQ / MuQ-MuLan via Lainbow 2, which scans and analyzes your library on its own.",
 			},
 			{
 				title: "MCP server (Beta)",
@@ -286,9 +286,9 @@ export const strings: Record<Locale, Strings> = {
 					"プラグイン経由で外部サービスと連携可能。同梱の Subsonic プラグインで、Subsonic 互換サーバーとプレイリストを同期できます。",
 			},
 			{
-				title: "アドバンスド検索 (Beta)",
+				title: "アドバンスド検索",
 				description:
-					"lainbow 連携により、MuQ / MuQ-MuLan を用いたテキストからの楽曲検索と類似検索が可能です。追加セットアップ、NVIDIA GPU、ある程度のエンジニアリングスキルが必要です。",
+					"Lainbow 2 との連携により、MuQ / MuQ-MuLan を用いたテキストからの楽曲検索と類似検索が使えます。ライブラリの走査と解析は Lainbow が自動で行います。",
 			},
 			{
 				title: "MCP サーバー (Beta)",
