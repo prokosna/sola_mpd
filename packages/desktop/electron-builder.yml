@@ -30,5 +30,6 @@ dmg:
       path: /Applications
 linux:
   target: AppImage
+  executableName: sola-mpd
   icon: build/icon.png
   category: Audio
