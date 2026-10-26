@@ -5,6 +5,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [4.13.0](https://github.com/prokosna/sola_mpd/compare/v4.12.2...v4.13.0) (2026-10-26)
+
+
+### Features
+
+* **advanced_search:** reliable Text-to-Music and similarity search with Lainbow ([#411](https://github.com/prokosna/sola_mpd/issues/411)) ([b9c6419](https://github.com/prokosna/sola_mpd/commit/b9c6419eb03d42e04c74a66d2322f3cdced61848))
+
 ## [4.12.2](https://github.com/prokosna/sola_mpd/compare/v4.12.1...v4.12.2) (2026-10-25)
 
 
