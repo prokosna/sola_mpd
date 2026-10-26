@@ -55,15 +55,19 @@ export const executeAdvancedSearchRequestUseCase = async (
 				if (req.command.value.profile === undefined) {
 					throw new Error("Profile is undefined");
 				}
-				const filePaths = await advancedSearchApi.searchTextToMusic({
+				const result = await advancedSearchApi.searchTextToMusic({
 					endpoint: req.config.endpoint,
 					query: req.command.value.query,
 					textToMusicType: req.command.value.textToMusicType,
 					limit: req.config.limit ?? 10,
 				});
+				if (result.kind === "error") {
+					return createErrorResponse(result.message);
+				}
+
 				const songs = await fetchSongs(
 					req.command.value.profile,
-					filePaths,
+					result.filePaths,
 					mpdClient,
 				);
 
@@ -134,7 +138,8 @@ export const executeAdvancedSearchRequestUseCase = async (
 				if (req.config?.endpoint === undefined) {
 					throw new Error("Endpoint is undefined");
 				}
-				await advancedSearchApi.vacuumLibrary(req.config.endpoint);
+				// Lainbow removes deleted songs while scanning, so a vacuum is a scan.
+				await advancedSearchApi.scanLibrary(req.config.endpoint);
 				return create(AdvancedSearchResponseSchema, {
 					command: {
 						case: "vacuumLibrary",

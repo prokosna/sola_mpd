@@ -13,7 +13,6 @@ export { analyzeActionAtom } from "./states/actions/analyzeActionAtom";
 export { scanLibraryActionAtom } from "./states/actions/scanLibraryActionAtom";
 export { setAdvancedSearchQueryLimitActionAtom } from "./states/actions/setAdvancedSearchQueryLimitActionAtom";
 export { setSimilaritySearchTypeActionAtom } from "./states/actions/setSimilaritySearchTypeActionAtom";
-export { vacuumLibraryActionAtom } from "./states/actions/vacuumLibraryActionAtom";
 
 // States - Atoms
 export {

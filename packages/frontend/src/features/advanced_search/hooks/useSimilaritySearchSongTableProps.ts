@@ -36,7 +36,13 @@ export function useSimilaritySearchSongTableProps(
 	const notify = useNotification();
 
 	const isLoading = useAtomValue(isSimilaritySearchLoadingAtom);
-	const songs = useAtomValue(similaritySearchSongsAtom);
+	const result = useAtomValue(similaritySearchSongsAtom);
+	const songs =
+		result === undefined
+			? undefined
+			: result.kind === "songs"
+				? result.songs
+				: [];
 	const columns = useAtomValue(songTableColumnViewAtom);
 	const onColumnsUpdated = useHandleLibraryColumnsUpdated();
 	const setSelectedSongs = useSetAtom(setSelectedSongsActionAtom);

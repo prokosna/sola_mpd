@@ -16,7 +16,6 @@ import {
 	analyzeActionAtom,
 	scanLibraryActionAtom,
 	setAdvancedSearchQueryLimitActionAtom,
-	vacuumLibraryActionAtom,
 } from "../../advanced_search";
 
 export function AdvancedSearchSettings({
@@ -29,7 +28,6 @@ export function AdvancedSearchSettings({
 	);
 	const advancedSearchQueryLimit = useAtomValue(advancedSearchQueryLimitAtom);
 	const scanLibrary = useSetAtom(scanLibraryActionAtom);
-	const vacuumLibrary = useSetAtom(vacuumLibraryActionAtom);
 	const analyze = useSetAtom(analyzeActionAtom);
 
 	const form = useForm({
@@ -62,8 +60,7 @@ export function AdvancedSearchSettings({
 				Advanced Search
 			</Title>
 			<Text size="sm" c="dimmed">
-				The query limit applies to this device. Scan, Vacuum, and Analyze run on
-				the shared library index.
+				The query limit applies to this device.
 			</Text>
 			<form>
 				<Group>
@@ -99,13 +96,15 @@ export function AdvancedSearchSettings({
 				<Button w={150} size="sm" onClick={scanLibrary}>
 					Scan Library
 				</Button>
-				<Button w={150} size="sm" onClick={vacuumLibrary}>
-					Vacuum Library
-				</Button>
 				<Button w={150} size="sm" onClick={analyze}>
-					Analyze
+					Retry Failed
 				</Button>
 			</Group>
+			<Text size="sm" c="dimmed">
+				Lainbow scans the library every hour and analyzes new songs on its own.
+				Scan Library starts a scan now. Retry Failed analyzes songs whose
+				analysis failed again.
+			</Text>
 		</Stack>
 	);
 }

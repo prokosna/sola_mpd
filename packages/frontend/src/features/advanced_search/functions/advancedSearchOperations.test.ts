@@ -11,7 +11,6 @@ import {
 	analyze,
 	fetchAdvancedSearchStats,
 	scanLibrary,
-	vacuumLibrary,
 } from "./advancedSearchOperations";
 
 function createMockClient(
@@ -72,29 +71,6 @@ describe("scanLibrary", () => {
 		};
 
 		await expect(scanLibrary(client, endpoint)).rejects.toThrow(
-			"connection failed",
-		);
-	});
-});
-
-describe("vacuumLibrary", () => {
-	it("should resolve on valid response", async () => {
-		const client = createMockClient(
-			create(AdvancedSearchResponseSchema, {
-				command: { case: "vacuumLibrary", value: {} },
-			}),
-		);
-
-		await expect(vacuumLibrary(client, endpoint)).resolves.toBeUndefined();
-		expect(client.command).toHaveBeenCalledOnce();
-	});
-
-	it("should propagate client error", async () => {
-		const client: AdvancedSearchClient = {
-			command: vi.fn().mockRejectedValue(new Error("connection failed")),
-		};
-
-		await expect(vacuumLibrary(client, endpoint)).rejects.toThrow(
 			"connection failed",
 		);
 	});

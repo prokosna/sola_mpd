@@ -8,7 +8,10 @@ import {
 	DEVICE_SETTING_KEY_TEXT_TO_MUSIC_TYPE,
 } from "../../../common";
 import { currentMpdProfileAtom } from "../../../profile/states/atoms/mpdProfileAtom";
-import { searchSongsByText } from "../../functions/textToMusicSearch";
+import {
+	searchSongsByText,
+	type TextToMusicSearchResult,
+} from "../../functions/textToMusicSearch";
 import {
 	advancedSearchEndpointAtom,
 	advancedSearchQueryLimitAtom,
@@ -38,30 +41,36 @@ export const textToMusicSearchQueryAtom = atom((get) => {
 	return tokens.join(" ");
 });
 
-export const textToMusicSearchSongsAsyncAtom = atomWithRefresh(async (get) => {
-	const query = get(textToMusicSearchQueryAtom);
-	const profile = get(currentMpdProfileAtom);
-	const client = get(advancedSearchClientAtom);
-	const endpoint = get(advancedSearchEndpointAtom);
-	const limit = get(advancedSearchQueryLimitAtom);
-	const textToMusicType = get(textToMusicTypeAtom);
+export const textToMusicSearchSongsAsyncAtom = atomWithRefresh(
+	async (get): Promise<TextToMusicSearchResult> => {
+		try {
+			const query = get(textToMusicSearchQueryAtom);
+			const profile = get(currentMpdProfileAtom);
+			const client = get(advancedSearchClientAtom);
+			const endpoint = get(advancedSearchEndpointAtom);
+			const limit = get(advancedSearchQueryLimitAtom);
+			const textToMusicType = get(textToMusicTypeAtom);
 
-	if (profile === undefined || endpoint === undefined) {
-		return [];
-	}
-	if (query === "") {
-		return [];
-	}
+			if (profile === undefined || endpoint === undefined || query === "") {
+				return { kind: "songs", songs: [] };
+			}
 
-	return await searchSongsByText(
-		profile,
-		endpoint,
-		client,
-		query,
-		limit,
-		textToMusicType,
-	);
-});
+			return await searchSongsByText(
+				profile,
+				endpoint,
+				client,
+				query,
+				limit,
+				textToMusicType,
+			);
+		} catch (err) {
+			return {
+				kind: "error",
+				message: err instanceof Error ? err.message : String(err),
+			};
+		}
+	},
+);
 
 export const textToMusicSearchSongsAtom = atomWithSync(
 	textToMusicSearchSongsAsyncAtom,

@@ -39,7 +39,13 @@ export function useTextToMusicSearchSongTableProps(
 	const notify = useNotification();
 
 	const isLoading = useAtomValue(isTextToMusicSearchLoadingAtom);
-	const songs = useAtomValue(textToMusicSearchSongsAtom);
+	const result = useAtomValue(textToMusicSearchSongsAtom);
+	const songs =
+		result === undefined
+			? undefined
+			: result.kind === "songs"
+				? result.songs
+				: [];
 	const columns = useAtomValue(songTableColumnViewAtom);
 	const setIsTextToMusicSearchLoading = useSetAtom(
 		setIsTextToMusicSearchLoadingActionAtom,
