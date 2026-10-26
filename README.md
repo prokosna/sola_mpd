@@ -179,6 +179,11 @@ Set up [Lainbow](https://github.com/prokosna/lainbow) to add these features:
 Lainbow runs next to Sola MPD with Docker Compose; its README covers the setup.
 Point Lainbow at the same music folder as MPD's `music_directory`, because songs are matched by their path relative to it.
 
+Lainbow must analyze every song once before search works. Rough time for 100,000 songs:
+
+- **GPU**: about 1.5 days (NVIDIA RTX 5070 Ti). Needs an NVIDIA GPU with 12 GB+ VRAM.
+- **CPU only**: about 6 weeks (AMD Ryzen AI 9 HX 370). Needs about 10 GB of free RAM.
+
 Then uncomment the following line in [docker-compose.yaml](docker-compose.yaml),
 
 ```yaml
