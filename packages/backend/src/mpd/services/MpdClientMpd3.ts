@@ -32,6 +32,10 @@ import {
 } from "../functions/mpdParsers.js";
 import type { MpdClient, MpdSubscriptionHandler } from "./MpdClient.js";
 
+// Must stay below the frontend's 30s ACK timeout so a request stuck on a dead
+// connection fails and frees its slot before the UI gives up.
+const MPD_COMMAND_TIMEOUT_MS = 10_000;
+
 type MpdConnectOptions = {
 	cache?: boolean;
 	timeout?: number;
@@ -68,6 +72,7 @@ class MpdClientMpd3 implements MpdClient {
 			port: number;
 			reconnectDelay: number;
 			maxRetries: number;
+			commandTimeout: number;
 			timeout?: number;
 			password?: string;
 		} = {
@@ -75,6 +80,7 @@ class MpdClientMpd3 implements MpdClient {
 			port: profile.port,
 			reconnectDelay: options?.reconnectDelay ?? 3000,
 			maxRetries: options?.maxRetries ?? 5,
+			commandTimeout: MPD_COMMAND_TIMEOUT_MS,
 		};
 		if (options?.timeout !== undefined) {
 			config.timeout = options.timeout;
