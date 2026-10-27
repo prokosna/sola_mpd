@@ -5,6 +5,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [4.13.1](https://github.com/prokosna/sola_mpd/compare/v4.13.0...v4.13.1) (2026-10-27)
+
+
+### Bug Fixes
+
+* **backend:** bound MPD command waits so dead connections are replaced ([#415](https://github.com/prokosna/sola_mpd/issues/415)) ([e6ede1c](https://github.com/prokosna/sola_mpd/commit/e6ede1c4426d45dedcf49d76fca9f0bf0602fcb8))
+
 ## [4.13.0](https://github.com/prokosna/sola_mpd/compare/v4.12.2...v4.13.0) (2026-10-26)
 
 
