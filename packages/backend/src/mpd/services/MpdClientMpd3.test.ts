@@ -16,10 +16,10 @@ class FakeClient extends EventEmitter {
 	});
 }
 
-const connect = vi.fn(async () => new FakeClient());
+const connect = vi.fn(async (_config?: unknown) => new FakeClient());
 
 vi.mock("@prokosna/mpd3", () => ({
-	Client: { connect: (...args: unknown[]) => connect(...(args as [])) },
+	Client: { connect: (...args: unknown[]) => connect(...(args as [unknown])) },
 	Command: { cmd: (name: string) => ({ name }) },
 	Parsers: {},
 }));
@@ -114,6 +114,14 @@ describe("MpdClientMpd3 subscriptions", () => {
 
 		expect(callback).not.toHaveBeenCalled();
 		expect(client.listenerCount("system")).toBe(0);
+	});
+
+	it("bounds how long a command may wait on a silent connection", async () => {
+		await mpdClientMpd3.subscribe(createProfile(), () => {});
+
+		expect(connect).toHaveBeenCalledWith(
+			expect.objectContaining({ commandTimeout: 10_000 }),
+		);
 	});
 
 	it("keeps the cached connection when an uncached ping client closes", async () => {

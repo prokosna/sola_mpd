@@ -16,7 +16,7 @@
 		"@connectrpc/connect-node": "^2.2.0",
 		"@modelcontextprotocol/node": "^2.1.1",
 		"@modelcontextprotocol/server": "^2.3.1",
-		"@prokosna/mpd3": "^2.0.0",
+		"@prokosna/mpd3": "^2.1.0",
 		"@sola_mpd/shared": "workspace:*",
 		"better-sqlite3": "^12.11.1",
 		"dayjs": "^1.11.23",

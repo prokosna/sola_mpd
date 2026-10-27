@@ -45,8 +45,8 @@ importers:
         specifier: ^2.3.1
         version: 2.3.1
       '@prokosna/mpd3':
-        specifier: ^2.0.0
-        version: 2.0.0
+        specifier: ^2.1.0
+        version: 2.1.0
       '@sola_mpd/shared':
         specifier: workspace:*
         version: link:../shared
@@ -91,8 +91,8 @@ importers:
         specifier: ^2.2.0
         version: 2.2.0(@bufbuild/protobuf@2.16.0)(@connectrpc/connect@2.2.0(@bufbuild/protobuf@2.16.0))
       '@prokosna/mpd3':
-        specifier: ^2.0.0
-        version: 2.0.0
+        specifier: ^2.1.0
+        version: 2.1.0
       '@sola_mpd/shared':
         specifier: workspace:*
         version: link:../shared
@@ -1184,8 +1184,8 @@ packages:
     engines: {node: '>=20'}
     hasBin: true
 
-  '@prokosna/mpd3@2.0.0':
-    resolution: {integrity: sha512-BcbyZBSVRYmt0sCXSqKhEN4bDPD5CNuUreeUo/8JJMpho4irTL1992EfkzOBAidAC0+oJT6LzajN8Ge5YA2/SQ==}
+  '@prokosna/mpd3@2.1.0':
+    resolution: {integrity: sha512-hCjMEfuUkLs0QONgDRiGmBRzcfp9jUeY9Zs79VKo1AKdV3K4rIMISWaOD2R1XHMJS1cb404LKJYstjlBJIYDRw==}
     engines: {node: '>=18'}
 
   '@quansync/fs@1.1.0':
@@ -4995,7 +4995,7 @@ snapshots:
     dependencies:
       playwright: 1.64.1
 
-  '@prokosna/mpd3@2.0.0':
+  '@prokosna/mpd3@2.1.0':
     dependencies:
       debug: 4.4.3
     transitivePeerDependencies:
