@@ -1,13 +1,9 @@
 import { atom } from "jotai";
 
+import { convertGlobalFilterTextToTokens } from "../../functions/globalFilterFiltering";
+
 export const globalFilterTextAtom = atom("");
 
-export const globalFilterTokensAtom = atom((get) => {
-	const text = get(globalFilterTextAtom);
-	const chunks = text.split(" ");
-	const tokens = chunks
-		.map((v) => v.trim())
-		.filter((v) => v !== "")
-		.map((v) => v.toLowerCase());
-	return tokens;
-});
+export const globalFilterTokensAtom = atom((get) =>
+	convertGlobalFilterTextToTokens(get(globalFilterTextAtom)),
+);

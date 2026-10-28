@@ -8,6 +8,15 @@ import { normalize } from "@sola_mpd/shared/src/utils/stringUtils.js";
 /** Loose enough to accept both a `SongTableColumnView[]` and a saved search's `SongTableColumn[]`. */
 type GlobalFilterTargetColumn = { tag: Song_MetadataTag };
 
+// Any whitespace separates tokens, so rows copied from a song table, which are
+// tab-separated, can be pasted into the filter as they are.
+export function convertGlobalFilterTextToTokens(text: string): string[] {
+	return text
+		.split(/\s+/)
+		.filter((v) => v !== "")
+		.map((v) => v.toLowerCase());
+}
+
 function getSongRepresentation(
 	song: Song,
 	targetColumns: GlobalFilterTargetColumn[],
