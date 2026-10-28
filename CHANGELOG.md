@@ -5,6 +5,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [4.14.1](https://github.com/prokosna/sola_mpd/compare/v4.14.0...v4.14.1) (2026-10-28)
+
+
+### Bug Fixes
+
+* **song_table:** stop double-clicking a row from selecting its text ([#421](https://github.com/prokosna/sola_mpd/issues/421)) ([8e46e10](https://github.com/prokosna/sola_mpd/commit/8e46e10c3254d3e9cf9789f44493cd05dcf36c55))
+
 ## [4.14.0](https://github.com/prokosna/sola_mpd/compare/v4.13.1...v4.14.0) (2026-10-28)
 
 
