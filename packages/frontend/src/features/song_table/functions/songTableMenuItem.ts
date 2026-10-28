@@ -99,7 +99,7 @@ export function getSongTableContextMenuCopy(
 	}) => Promise<void>,
 ): ContextMenuItem<SongTableContextMenuItemParams> {
 	return {
-		name: "Copy",
+		name: "Copy Text",
 		onClick: async (params?: SongTableContextMenuItemParams): Promise<void> => {
 			if (params === undefined) {
 				return;

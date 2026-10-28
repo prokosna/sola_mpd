@@ -81,13 +81,13 @@ describe("getSongTableContextMenuAddToPlaylist", () => {
 });
 
 describe("getSongTableContextMenuCopy", () => {
-	it("should create a Copy menu item", () => {
+	it("should create a Copy Text menu item", () => {
 		const item = getSongTableContextMenuCopy(
 			SongTableKeyType.PATH,
 			vi.fn(),
 			vi.fn().mockResolvedValue(undefined),
 		);
-		expect(item.name).toBe("Copy");
+		expect(item.name).toBe("Copy Text");
 	});
 
 	it("should copy the selected songs with the given columns", async () => {
