@@ -1,9 +1,11 @@
 import type { BodyScrollEvent, GetRowIdParams } from "ag-grid-community";
 import { AgGridReact } from "ag-grid-react";
-import { useCallback, useEffect, useRef } from "react";
+import { useAtomValue } from "jotai";
+import { useCallback, useEffect, useMemo, useRef } from "react";
 
 import { useAgGridTheme } from "../../../lib/agGrid/hooks/useAgGridTheme";
 import { ContextMenu, type ContextMenuSection } from "../../context_menu";
+import { globalFilterTokensAtom } from "../../global_filter/states/atoms/globalFilterAtom";
 import { CenterSpinnerOverlay } from "../../loading/components/CenterSpinnerOverlay";
 import { useAgGridReactData } from "../hooks/useAgGridReactData";
 import { useHandleRowDataUpdated } from "../hooks/useHandleRowDataUpdated";
@@ -15,6 +17,7 @@ import type {
 } from "../types/selectListTypes";
 
 const DEFAULT_NEAR_BOTTOM_THRESHOLD = 5;
+const NO_ROWS_FILTERED_MESSAGE = "No items match the filter.";
 
 export type SelectListProps = {
 	id: string;
@@ -23,6 +26,8 @@ export type SelectListProps = {
 	headerTitle?: string;
 	contextMenuSections: ContextMenuSection<SelectListContextMenuItemParams>[];
 	isLoading: boolean;
+	isGlobalFilterEnabled: boolean;
+	noRowsMessage: string;
 	allowMultipleSelection: boolean;
 	onItemsSelected: (selectedValues: SelectListRowValue[]) => Promise<void>;
 	onLoadingCompleted: () => Promise<void>;
@@ -73,6 +78,16 @@ export function SelectList(props: SelectListProps) {
 		[onScrolledNearBottom, nearBottomThreshold],
 	);
 
+	const globalFilterTokens = useAtomValue(globalFilterTokensAtom);
+	const noRowsText =
+		props.isGlobalFilterEnabled && globalFilterTokens.length > 0
+			? NO_ROWS_FILTERED_MESSAGE
+			: props.noRowsMessage;
+	const overlayComponentParams = useMemo(
+		() => ({ noRows: { overlayText: noRowsText } }),
+		[noRowsText],
+	);
+
 	const theme = useAgGridTheme();
 
 	// Sync with selectedValues which can be updated outside of this component
@@ -114,6 +129,7 @@ export function SelectList(props: SelectListProps) {
 						onRowDataUpdated={handleRowDataUpdated}
 						onBodyScroll={handleBodyScroll}
 						animateRows={false}
+						overlayComponentParams={overlayComponentParams}
 						rowSelection={{
 							mode: props.allowMultipleSelection ? "multiRow" : "singleRow",
 							checkboxes: false,

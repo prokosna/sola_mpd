@@ -116,6 +116,8 @@ export function useSavedSearchesSelectListProps({
 		headerTitle: "Saved Searches",
 		contextMenuSections,
 		isLoading: false,
+		isGlobalFilterEnabled: false,
+		noRowsMessage: "No saved searches yet. Save one from the Search Editor.",
 		allowMultipleSelection: false,
 		onItemsSelected,
 		onLoadingCompleted: async () => {},

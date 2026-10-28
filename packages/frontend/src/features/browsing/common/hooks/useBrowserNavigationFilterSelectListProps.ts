@@ -118,6 +118,8 @@ export function useBrowserNavigationFilterSelectListProps(
 		headerTitle: convertSongMetadataTagToDisplayName(browserFilter.tag),
 		contextMenuSections,
 		isLoading: false,
+		isGlobalFilterEnabled: true,
+		noRowsMessage: "No values to show.",
 		allowMultipleSelection: true,
 		onItemsSelected,
 		onLoadingCompleted,
