@@ -83,7 +83,6 @@ export function SongTable(props: SongTableProps): JSX.Element {
 		!isCompact && props.isSortingEnabled,
 	);
 
-	// Use bold for the playing song.
 	const rowClassRules = useRowClassRules(props.songTableKeyType, songsMap);
 
 	const getRowId = useCallback((params: GetRowIdParams<SongTableRowData>) => {
