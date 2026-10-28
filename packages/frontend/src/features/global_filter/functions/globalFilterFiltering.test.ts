@@ -1,5 +1,5 @@
 import { create } from "@bufbuild/protobuf";
-import { StringValueSchema } from "@bufbuild/protobuf/wkt";
+import { FloatValueSchema, StringValueSchema } from "@bufbuild/protobuf/wkt";
 import {
 	Song_MetadataTag,
 	Song_MetadataValueSchema,
@@ -81,6 +81,22 @@ describe("includesToken", () => {
 	it("should match accent-insensitively", () => {
 		const song = createSong("Caf\u00e9", "Art\u00edst");
 		expect(includesToken(song, ["cafe", "artist"], targetColumns)).toBe(true);
+	});
+
+	it("should match the time as the song table displays it", () => {
+		const song = createSong("Title", "Artist");
+		song.metadata[Song_MetadataTag.TIME] = create(Song_MetadataValueSchema, {
+			value: {
+				case: "floatValue",
+				value: create(FloatValueSchema, { value: 202.36 }),
+			},
+		});
+		const columns = [
+			titleColumn,
+			create(SongTableColumnSchema, { tag: Song_MetadataTag.TIME }),
+		];
+		expect(includesToken(song, ["3:22"], columns)).toBe(true);
+		expect(includesToken(song, ["202"], columns)).toBe(false);
 	});
 
 	it("should return true for empty tokens", () => {

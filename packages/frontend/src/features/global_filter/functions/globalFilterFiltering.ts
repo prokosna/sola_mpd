@@ -1,9 +1,12 @@
 import { convertSongMetadataValueToString } from "@sola_mpd/shared/src/functions/songMetadata.js";
-import type {
-	Song,
+import {
+	type Song,
 	Song_MetadataTag,
 } from "@sola_mpd/shared/src/models/song_pb.js";
-import { normalize } from "@sola_mpd/shared/src/utils/stringUtils.js";
+import {
+	displayDuration,
+	normalize,
+} from "@sola_mpd/shared/src/utils/stringUtils.js";
 
 /** Loose enough to accept both a `SongTableColumnView[]` and a saved search's `SongTableColumn[]`. */
 type GlobalFilterTargetColumn = { tag: Song_MetadataTag };
@@ -17,14 +20,27 @@ export function convertGlobalFilterTextToTokens(text: string): string[] {
 		.map((v) => v.toLowerCase());
 }
 
+// Match what the song table shows, so text copied from it filters back to it.
+function convertSongMetadataValueToDisplayString(
+	song: Song,
+	tag: Song_MetadataTag,
+): string {
+	const value = song.metadata[tag];
+	if (tag === Song_MetadataTag.TIME && value?.value.case === "floatValue") {
+		return displayDuration(value.value.value.value);
+	}
+	return convertSongMetadataValueToString(value);
+}
+
 function getSongRepresentation(
 	song: Song,
 	targetColumns: GlobalFilterTargetColumn[],
 ): string {
 	let representation = "";
 	for (const column of targetColumns) {
-		const metadataValue = convertSongMetadataValueToString(
-			song.metadata[column.tag],
+		const metadataValue = convertSongMetadataValueToDisplayString(
+			song,
+			column.tag,
 		);
 		representation += `${normalize(metadataValue)} `;
 	}
