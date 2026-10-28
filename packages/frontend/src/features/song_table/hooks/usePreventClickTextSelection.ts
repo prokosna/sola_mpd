@@ -1,6 +1,6 @@
 import { type RefObject, useEffect } from "react";
 
-export function usePreventShiftClickTextSelection(
+export function usePreventClickTextSelection(
 	ref: RefObject<HTMLDivElement | null>,
 ): void {
 	useEffect(() => {
@@ -9,12 +9,12 @@ export function usePreventShiftClickTextSelection(
 			return;
 		}
 
-		// With cell text selection enabled, Shift+clicking rows also extends the
-		// browser's text selection across every cell in between, which the copy
-		// shortcut would then copy instead of the selected rows. Row selection
-		// runs on click, so cancelling the mousedown leaves it intact.
+		// With cell text selection enabled, Shift+clicking rows extends the text
+		// selection across every cell in between (which copy would then take over
+		// the rows), and double-clicking to play selects a word. Selection and
+		// double-click run on click, so cancelling the mousedown keeps them.
 		const onMouseDown = (event: MouseEvent) => {
-			if (!event.shiftKey) {
+			if (!event.shiftKey && event.detail < 2) {
 				return;
 			}
 			event.preventDefault();
