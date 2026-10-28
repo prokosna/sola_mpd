@@ -52,6 +52,10 @@ export function useAllSongsSongTableProps(
 	const slowIsLoading = useAtomValue(isAllSongsLoadingAtom);
 	const songs = useAtomValue(allVisibleSongsAtom);
 	const columns = useAtomValue(songTableColumnViewAtom);
+	const noRows = {
+		isIdle: false,
+		message: "The library has no songs. Update the database to scan it.",
+	};
 	const setIsAllSongsLoading = useSetAtom(setIsAllSongsLoadingActionAtom);
 	const onColumnsUpdated = useHandleLibraryColumnsUpdated();
 	const setSelectedSongs = useSetAtom(setSelectedSongsActionAtom);
@@ -168,6 +172,7 @@ export function useAllSongsSongTableProps(
 		isGlobalFilterEnabled: true,
 		contextMenuSections,
 		isLoading,
+		noRows,
 		onSongsReordered,
 		onColumnsUpdated,
 		onSongsSelected,

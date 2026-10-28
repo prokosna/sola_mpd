@@ -67,6 +67,12 @@ export type SongTableContextMenuItemParams = {
 	selectedSortedSongs: Song[];
 };
 
+/** Why a table has no rows: nothing has been chosen yet, or the source is empty. */
+export type SongTableNoRows = {
+	isIdle: boolean;
+	message: string;
+};
+
 /** What a song table renders: a composed view, not a persisted document. */
 export type SongTableColumnView = {
 	tag: Song_MetadataTag;

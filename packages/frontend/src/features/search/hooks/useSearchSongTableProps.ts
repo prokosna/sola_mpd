@@ -27,7 +27,10 @@ import {
 import { resetSearchLayoutActionAtom } from "../states/actions/resetSearchLayoutActionAtom";
 import { setIsSearchLoadingActionAtom } from "../states/actions/setIsSearchLoadingActionAtom";
 import { searchColumnViewAtom } from "../states/atoms/searchColumnViewAtom";
-import { searchVisibleSongsAtom } from "../states/atoms/searchSongsAtom";
+import {
+	searchVisibleSongsAtom,
+	targetSearchAtom,
+} from "../states/atoms/searchSongsAtom";
 import { isSearchLoadingAtom } from "../states/atoms/searchUiAtom";
 import { useHandleSearchColumnsUpdated } from "./useHandleSearchColumnsUpdated";
 
@@ -43,6 +46,14 @@ export function useSearchSongTableProps(
 	const isLoading = useAtomValue(isSearchLoadingAtom);
 	const songs = useAtomValue(searchVisibleSongsAtom);
 	const columns = useAtomValue(searchColumnViewAtom);
+	const targetSearch = useAtomValue(targetSearchAtom);
+	const noRows =
+		targetSearch === undefined
+			? {
+					isIdle: true,
+					message: "Run a search or pick a saved search to show songs.",
+				}
+			: { isIdle: false, message: "No songs match this search." };
 	const setIsSearchLoading = useSetAtom(setIsSearchLoadingActionAtom);
 	const setSelectedSongs = useSetAtom(setSelectedSongsActionAtom);
 	const addSongsToQueue = useSetAtom(addSongsToQueueActionAtom);
@@ -145,6 +156,7 @@ export function useSearchSongTableProps(
 		isGlobalFilterEnabled: true,
 		contextMenuSections,
 		isLoading,
+		noRows,
 		onSongsReordered,
 		onColumnsUpdated,
 		onSongsSelected,

@@ -1,12 +1,15 @@
 import type { Song } from "@sola_mpd/shared/src/models/song_pb.js";
 import type { GetRowIdParams } from "ag-grid-community";
 import { AgGridReact } from "ag-grid-react";
-import { type JSX, type RefObject, useCallback, useRef } from "react";
+import { useAtomValue } from "jotai";
+import { type JSX, type RefObject, useCallback, useMemo, useRef } from "react";
 
 import { useAgGridTheme } from "../../../lib/agGrid/hooks/useAgGridTheme";
 import { ContextMenu, type ContextMenuSection } from "../../context_menu";
+import { globalFilterTokensAtom } from "../../global_filter/states/atoms/globalFilterAtom";
 import { CenterSpinnerOverlay } from "../../loading/components/CenterSpinnerOverlay";
 import { useIsCompactMode, useIsTouchDevice } from "../../user_device";
+import { getSongTableNoRowsMessage } from "../functions/songTableNoRows";
 import { useAgGridReactData } from "../hooks/useAgGridReactData";
 import { useHandleColumnsUpdated } from "../hooks/useHandleColumnsUpdated";
 import { useHandleFirstDataRendered } from "../hooks/useHandleFirstDataRendered";
@@ -25,6 +28,7 @@ import type {
 	SongTableColumnView,
 	SongTableContextMenuItemParams,
 	SongTableKeyType,
+	SongTableNoRows,
 	SongTableRowData,
 } from "../types/songTableTypes";
 
@@ -38,6 +42,7 @@ export type SongTableProps = {
 	isGlobalFilterEnabled: boolean;
 	contextMenuSections: ContextMenuSection<SongTableContextMenuItemParams>[];
 	isLoading: boolean;
+	noRows: SongTableNoRows;
 	contextMenuAnchorRef?: RefObject<HTMLElement | null>;
 	scrollToPlayingSong?: boolean;
 	onSongsReordered: (orderedSongs: Song[]) => Promise<void>;
@@ -115,6 +120,22 @@ export function SongTable(props: SongTableProps): JSX.Element {
 		props.scrollToPlayingSong ?? false,
 	);
 
+	const globalFilterTokens = useAtomValue(globalFilterTokensAtom);
+	const isGlobalFilterApplied =
+		props.isGlobalFilterEnabled && globalFilterTokens.length > 0;
+	const { isIdle, message } = props.noRows;
+	const overlayComponentParams = useMemo(
+		() => ({
+			noRows: {
+				overlayText: getSongTableNoRowsMessage(
+					{ isIdle, message },
+					isGlobalFilterApplied,
+				),
+			},
+		}),
+		[isIdle, message, isGlobalFilterApplied],
+	);
+
 	const theme = useAgGridTheme();
 
 	return (
@@ -136,6 +157,7 @@ export function SongTable(props: SongTableProps): JSX.Element {
 						onRowDataUpdated={handleRowDataUpdated}
 						onRowClicked={handleRowClick}
 						animateRows={true}
+						overlayComponentParams={overlayComponentParams}
 						colResizeDefault={"shift"}
 						rowSelection={{
 							mode: "multiRow",

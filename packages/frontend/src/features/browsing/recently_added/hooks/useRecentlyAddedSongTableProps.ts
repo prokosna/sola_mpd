@@ -25,7 +25,9 @@ import {
 	useHandleLibraryColumnsUpdated,
 	useHandleSongDoubleClick,
 } from "../../../song_table";
+import { hasBrowserFilterSelection } from "../../common/functions/browserFilter";
 import { setIsRecentlyAddedLoadingActionAtom } from "../states/actions/setIsRecentlyAddedLoadingActionAtom";
+import { recentlyAddedFiltersAtom } from "../states/atoms/recentlyAddedFiltersAtom";
 import { recentlyAddedVisibleSongsAtom } from "../states/atoms/recentlyAddedSongsAtom";
 import {
 	isRecentlyAddedLoadingAtom,
@@ -45,6 +47,13 @@ export function useRecentlyAddedSongTableProps(
 	const isLoading = useAtomValue(isRecentlyAddedLoadingAtom);
 	const songs = useAtomValue(recentlyAddedVisibleSongsAtom);
 	const columns = useAtomValue(songTableColumnViewAtom);
+	const filters = useAtomValue(recentlyAddedFiltersAtom);
+	const noRows = !hasBrowserFilterSelection(filters)
+		? {
+				isIdle: true,
+				message: "Select items in the lists to show their songs.",
+			}
+		: { isIdle: false, message: "No songs match the selection." };
 	const setIsRecentlyAddedLoading = useSetAtom(
 		setIsRecentlyAddedLoadingActionAtom,
 	);
@@ -142,6 +151,7 @@ export function useRecentlyAddedSongTableProps(
 		isGlobalFilterEnabled: true,
 		contextMenuSections,
 		isLoading,
+		noRows,
 		onSongsReordered,
 		onColumnsUpdated,
 		onSongsSelected,

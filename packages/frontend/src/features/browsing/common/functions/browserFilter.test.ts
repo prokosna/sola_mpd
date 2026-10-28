@@ -15,6 +15,7 @@ import {
 	composeBrowserFilterView,
 	convertBrowserFilterToCondition,
 	fetchBrowserFilterValues,
+	hasBrowserFilterSelection,
 	haveBrowserFilterTagsChanged,
 	listBrowserSongMetadataTags,
 	mergeBrowserSelectionFromViews,
@@ -435,6 +436,27 @@ describe("browserFilter", () => {
 				collator,
 			);
 			expect(result.get(Song_MetadataTag.ARTIST)).toEqual(["a", "b"]);
+		});
+	});
+
+	describe("hasBrowserFilterSelection", () => {
+		it("should be false when no filter has a selected value", () => {
+			expect(
+				hasBrowserFilterSelection([createFilter(Song_MetadataTag.GENRE)]),
+			).toBe(false);
+		});
+
+		it("should be false before the filters are loaded", () => {
+			expect(hasBrowserFilterSelection(undefined)).toBe(false);
+		});
+
+		it("should be true when any filter has a selected value", () => {
+			expect(
+				hasBrowserFilterSelection([
+					createFilter(Song_MetadataTag.GENRE),
+					createFilter(Song_MetadataTag.ARTIST, ["a"]),
+				]),
+			).toBe(true);
 		});
 	});
 });

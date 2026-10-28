@@ -44,6 +44,7 @@ export function useSimilaritySearchSongTableProps(
 				? result.songs
 				: [];
 	const columns = useAtomValue(songTableColumnViewAtom);
+	const noRows = { isIdle: false, message: "No similar songs were found." };
 	const onColumnsUpdated = useHandleLibraryColumnsUpdated();
 	const setSelectedSongs = useSetAtom(setSelectedSongsActionAtom);
 	const addSongsToQueue = useSetAtom(addSongsToQueueActionAtom);
@@ -118,6 +119,7 @@ export function useSimilaritySearchSongTableProps(
 		isGlobalFilterEnabled: false,
 		contextMenuSections,
 		isLoading,
+		noRows,
 		scrollToPlayingSong: true,
 		onSongsReordered,
 		onColumnsUpdated,

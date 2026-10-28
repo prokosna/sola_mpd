@@ -268,3 +268,9 @@ export async function fetchBrowserFilterValues(
 
 	return new Map(browserFilterValuesPairs);
 }
+
+export function hasBrowserFilterSelection(
+	filters: BrowserFilterView[] | undefined,
+): boolean {
+	return filters?.some((filter) => filter.selectedValues.length > 0) ?? false;
+}
