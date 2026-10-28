@@ -4,6 +4,7 @@ import type { MutableRefObject } from "react";
 import type { NotificationParams } from "../../../lib/mantine/showNotification";
 import type { ContextMenuItem } from "../../context_menu";
 import type {
+	SongTableColumnView,
 	SongTableContextMenuItemParams,
 	SongTableKeyType,
 } from "../types/songTableTypes";
@@ -85,6 +86,49 @@ export function getSongTableContextMenuAddToPlaylist(
 			}
 			songsToAddToPlaylistRef.current = targetSongs;
 			setIsPlaylistSelectModalOpen(true);
+		},
+	};
+}
+
+export function getSongTableContextMenuCopy(
+	songTableKeyType: SongTableKeyType,
+	showNotification: (params: NotificationParams) => void,
+	copySongsToClipboard: (params: {
+		songs: Song[];
+		columns: SongTableColumnView[];
+	}) => Promise<void>,
+): ContextMenuItem<SongTableContextMenuItemParams> {
+	return {
+		name: "Copy",
+		onClick: async (params?: SongTableContextMenuItemParams): Promise<void> => {
+			if (params === undefined) {
+				return;
+			}
+			const targetSongs = getTargetSongsForContextMenu(
+				params,
+				songTableKeyType,
+			);
+			if (targetSongs.length === 0) {
+				return;
+			}
+			try {
+				await copySongsToClipboard({
+					songs: targetSongs,
+					columns: params.columns,
+				});
+			} catch (error) {
+				showNotification({
+					status: "error",
+					title: "Failed to copy songs",
+					description: String(error),
+				});
+				return;
+			}
+			showNotification({
+				status: "success",
+				title: "Copied songs",
+				description: `${targetSongs.length} songs have been copied to the clipboard.`,
+			});
 		},
 	};
 }

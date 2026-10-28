@@ -23,6 +23,7 @@ export {
 export {
 	getSongTableContextMenuAdd,
 	getSongTableContextMenuAddToPlaylist,
+	getSongTableContextMenuCopy,
 	getSongTableContextMenuEditColumns,
 	getSongTableContextMenuReplace,
 	getSongTableContextMenuResetLayout,
@@ -38,6 +39,7 @@ export type { SongTableStateRepository } from "./repositories/SongTableStateRepo
 export { addSongAndPlayActionAtom } from "./states/actions/addSongAndPlayActionAtom";
 export { addSongsToQueueActionAtom } from "./states/actions/addSongsToQueueActionAtom";
 export { clearSelectedSongsActionAtom } from "./states/actions/clearSelectedSongsActionAtom";
+export { copySongsToClipboardActionAtom } from "./states/actions/copySongsToClipboardActionAtom";
 export { refreshSongTableStateActionAtom } from "./states/actions/refreshSongTableStateActionAtom";
 export { replaceQueueWithSongsActionAtom } from "./states/actions/replaceQueueWithSongsActionAtom";
 export { resetSongTableLayoutActionAtom } from "./states/actions/resetSongTableLayoutActionAtom";
