@@ -38,9 +38,13 @@ export function useOpenContextMenu(
 			const updatedColumns = convertAgGridColumnsToSongTableColumnViews(
 				api.getAllGridColumns(),
 			);
-			const currentColumns = isSortingEnabled
-				? updatedColumns
-				: copySortingAttributesToNewColumns(updatedColumns, columns);
+			// The compact layout has a single combined column with no tag.
+			const currentColumns =
+				updatedColumns.length === 0
+					? columns
+					: isSortingEnabled
+						? updatedColumns
+						: copySortingAttributesToNewColumns(updatedColumns, columns);
 
 			let { clickedSong, sortedSongs, selectedSortedSongs } =
 				getSongsInTableFromGrid(targetSongKey, api, songsMap);

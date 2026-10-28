@@ -1,12 +1,16 @@
 import { create } from "@bufbuild/protobuf";
 import type { Song } from "@sola_mpd/shared/src/models/song_pb.js";
-import { SongSchema } from "@sola_mpd/shared/src/models/song_pb.js";
+import {
+	Song_MetadataTag,
+	SongSchema,
+} from "@sola_mpd/shared/src/models/song_pb.js";
 import { describe, expect, it, vi } from "vitest";
 
 import { SongTableKeyType } from "../types/songTableTypes";
 import {
 	getSongTableContextMenuAdd,
 	getSongTableContextMenuAddToPlaylist,
+	getSongTableContextMenuCopy,
 	getSongTableContextMenuEditColumns,
 	getSongTableContextMenuReplace,
 	getSongTableContextMenuResetLayout,
@@ -73,6 +77,61 @@ describe("getSongTableContextMenuAddToPlaylist", () => {
 		});
 		expect(ref.current).toHaveLength(1);
 		expect(setOpen).toHaveBeenCalledWith(true);
+	});
+});
+
+describe("getSongTableContextMenuCopy", () => {
+	it("should create a Copy Text menu item", () => {
+		const item = getSongTableContextMenuCopy(
+			SongTableKeyType.PATH,
+			vi.fn(),
+			vi.fn().mockResolvedValue(undefined),
+		);
+		expect(item.name).toBe("Copy Text");
+	});
+
+	it("should copy the selected songs with the given columns", async () => {
+		const copy = vi.fn().mockResolvedValue(undefined);
+		const notify = vi.fn();
+		const item = getSongTableContextMenuCopy(
+			SongTableKeyType.PATH,
+			notify,
+			copy,
+		);
+		const songA = create(SongSchema, { path: "/a.mp3" });
+		const songB = create(SongSchema, { path: "/b.mp3" });
+		const columns = [
+			{ tag: Song_MetadataTag.TITLE, widthFlex: 100, isSortDesc: false },
+		];
+		await item.onClick?.({
+			columns,
+			clickedSong: songA,
+			sortedSongs: [songA, songB],
+			selectedSortedSongs: [songA, songB],
+		});
+		expect(copy).toHaveBeenCalledWith({ songs: [songA, songB], columns });
+		expect(notify).toHaveBeenCalledWith(
+			expect.objectContaining({ status: "success" }),
+		);
+	});
+
+	it("should notify an error when copying fails", async () => {
+		const notify = vi.fn();
+		const item = getSongTableContextMenuCopy(
+			SongTableKeyType.PATH,
+			notify,
+			vi.fn().mockRejectedValue(new Error("denied")),
+		);
+		const song = create(SongSchema, { path: "/a.mp3" });
+		await item.onClick?.({
+			columns: [],
+			clickedSong: song,
+			sortedSongs: [song],
+			selectedSortedSongs: [],
+		});
+		expect(notify).toHaveBeenCalledWith(
+			expect.objectContaining({ status: "error" }),
+		);
 	});
 });
 

@@ -15,8 +15,10 @@ import { useHandleRowDataUpdated } from "../hooks/useHandleRowDataUpdated";
 import { useHandleRowDoubleClick } from "../hooks/useHandleRowDoubleClick";
 import { useHandleRowDragEnded } from "../hooks/useHandleRowDragEnded";
 import { useHandleSelectionChange } from "../hooks/useHandleSelectionChange";
+import { useKeyboardShortcutCopy } from "../hooks/useKeyboardShortcutCopy";
 import { useKeyboardShortcutSelectAll } from "../hooks/useKeyboardShortcutSelectAll";
 import { useOpenContextMenu } from "../hooks/useOpenContextMenu";
+import { usePreventShiftClickTextSelection } from "../hooks/usePreventShiftClickTextSelection";
 import { useRowClassRules } from "../hooks/useRowClassRules";
 import { useSongsMap } from "../hooks/useSongsMap";
 import { useSongsWithIndex } from "../hooks/useSongsWithIndex";
@@ -67,6 +69,8 @@ export function SongTable(props: SongTableProps): JSX.Element {
 	);
 
 	useKeyboardShortcutSelectAll(ref, gridRef, songsMap, props.onSongsSelected);
+	useKeyboardShortcutCopy(ref, gridRef, songsMap, props.columns);
+	usePreventShiftClickTextSelection(ref);
 
 	const { rowData, columnDefs, selectionColumnDef } = useAgGridReactData(
 		songsWithIndex,
@@ -137,6 +141,8 @@ export function SongTable(props: SongTableProps): JSX.Element {
 						onRowDataUpdated={handleRowDataUpdated}
 						onRowClicked={handleRowClick}
 						animateRows={true}
+						enableCellTextSelection={true}
+						ensureDomOrder={true}
 						colResizeDefault={"shift"}
 						rowSelection={{
 							mode: "multiRow",
