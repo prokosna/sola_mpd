@@ -1,5 +1,5 @@
 import { create } from "@bufbuild/protobuf";
-import { StringValueSchema } from "@bufbuild/protobuf/wkt";
+import { FloatValueSchema, StringValueSchema } from "@bufbuild/protobuf/wkt";
 import {
 	Song_MetadataTag,
 	Song_MetadataValueSchema,
@@ -9,6 +9,7 @@ import { SongTableColumnSchema } from "@sola_mpd/shared/src/models/song_table_pb
 import { describe, expect, it } from "vitest";
 
 import {
+	convertGlobalFilterTextToTokens,
 	filterSongsByGlobalFilter,
 	filterStringsByGlobalFilter,
 	includesToken,
@@ -41,6 +42,31 @@ const artistColumn = create(SongTableColumnSchema, {
 });
 const targetColumns = [titleColumn, artistColumn];
 
+describe("convertGlobalFilterTextToTokens", () => {
+	it("should split on spaces and lowercase each token", () => {
+		expect(convertGlobalFilterTextToTokens("Foo  Bar")).toEqual(["foo", "bar"]);
+	});
+
+	it("should split on tabs and newlines from a pasted table row", () => {
+		expect(convertGlobalFilterTextToTokens("Title\tArtist\t\t3:34\n")).toEqual([
+			"title",
+			"artist",
+			"3:34",
+		]);
+	});
+
+	it("should split on full-width spaces", () => {
+		expect(convertGlobalFilterTextToTokens("花譜\u3000寓話")).toEqual([
+			"花譜",
+			"寓話",
+		]);
+	});
+
+	it("should return no tokens for blank text", () => {
+		expect(convertGlobalFilterTextToTokens(" \t ")).toEqual([]);
+	});
+});
+
 describe("includesToken", () => {
 	it("should return true when all tokens match", () => {
 		const song = createSong("Hello World", "John");
@@ -55,6 +81,22 @@ describe("includesToken", () => {
 	it("should match accent-insensitively", () => {
 		const song = createSong("Caf\u00e9", "Art\u00edst");
 		expect(includesToken(song, ["cafe", "artist"], targetColumns)).toBe(true);
+	});
+
+	it("should match the time as the song table displays it", () => {
+		const song = createSong("Title", "Artist");
+		song.metadata[Song_MetadataTag.TIME] = create(Song_MetadataValueSchema, {
+			value: {
+				case: "floatValue",
+				value: create(FloatValueSchema, { value: 202.36 }),
+			},
+		});
+		const columns = [
+			titleColumn,
+			create(SongTableColumnSchema, { tag: Song_MetadataTag.TIME }),
+		];
+		expect(includesToken(song, ["3:22"], columns)).toBe(true);
+		expect(includesToken(song, ["202"], columns)).toBe(false);
 	});
 
 	it("should return true for empty tokens", () => {
