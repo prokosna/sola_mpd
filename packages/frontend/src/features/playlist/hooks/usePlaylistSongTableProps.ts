@@ -60,6 +60,10 @@ export function usePlaylistSongTableProps(
 	const songs = useAtomValue(playlistVisibleSongsAtom);
 	const columns = useAtomValue(songTableColumnViewAtom);
 	const selectedPlaylist = useAtomValue(selectedPlaylistAtom);
+	const noRows =
+		selectedPlaylist === undefined
+			? { isIdle: true, message: "Select a playlist to show its songs." }
+			: { isIdle: false, message: "This playlist is empty." };
 	const setIsPlaylistLoading = useSetAtom(setIsPlaylistLoadingActionAtom);
 	const onColumnsUpdated = useHandleLibraryColumnsUpdated();
 	const setSelectedSongs = useSetAtom(setSelectedSongsActionAtom);
@@ -205,6 +209,7 @@ export function usePlaylistSongTableProps(
 		isGlobalFilterEnabled: true,
 		contextMenuSections,
 		isLoading,
+		noRows,
 		onSongsReordered,
 		onColumnsUpdated,
 		onSongsSelected,

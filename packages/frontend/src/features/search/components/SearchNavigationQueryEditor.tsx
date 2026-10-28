@@ -95,7 +95,7 @@ export function SearchNavigationQueryEditor({
 				<form onSubmit={form.onSubmit(handleSave)}>
 					<Group p={4} wrap="nowrap">
 						<TextInput
-							size="xs"
+							size="sm"
 							w="60%"
 							key={form.key("name")}
 							{...form.getInputProps("name")}
@@ -153,7 +153,7 @@ export function SearchNavigationQueryEditor({
 										</Grid.Col>
 										<Grid.Col span={3}>
 											<Select
-												size="xs"
+												size="sm"
 												data={availableTags.map((tag) =>
 													convertSongMetadataTagToDisplayName(tag),
 												)}
@@ -168,7 +168,7 @@ export function SearchNavigationQueryEditor({
 										</Grid.Col>
 										<Grid.Col span={2}>
 											<Select
-												size="xs"
+												size="sm"
 												data={availableOperators
 													.filter((operator) => {
 														const tag = convertSongMetadataTagFromDisplayName(
@@ -192,14 +192,14 @@ export function SearchNavigationQueryEditor({
 										<Grid.Col span={isUnsupported ? 4 : 5}>
 											{isDateInputTag(condition.tag) ? (
 												<DateInput
-													size="xs"
+													size="sm"
 													valueFormat="YYYY-MM-DD"
 													key={form.key(valuePath)}
 													{...form.getInputProps(valuePath)}
 												/>
 											) : (
 												<TextInput
-													size="xs"
+													size="sm"
 													key={form.key(valuePath)}
 													{...form.getInputProps(valuePath)}
 												/>

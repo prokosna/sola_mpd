@@ -11,6 +11,7 @@ import { mpdCapabilitiesAtom } from "../../../../mpd/states/atoms/mpdCapabilitie
 import { mpdClientAtom } from "../../../../mpd/states/atoms/mpdClientAtom";
 import { currentMpdProfileAtom } from "../../../../profile/states/atoms/mpdProfileAtom";
 import { songTableColumnViewAtom } from "../../../../song_table/states/atoms/songTableColumnViewAtom";
+import { hasBrowserFilterSelection } from "../../../common/functions/browserFilter";
 import { fetchBrowserSongs } from "../../../common/functions/browserSongs";
 import { sortSongsByPath } from "../../functions/sortSongsByPath";
 import { recentlyAddedFastStateAtom } from "./recentlyAddedFastStateAtom";
@@ -36,10 +37,7 @@ const recentlyAddedFastSongsAtom = atom((get) => {
 	if (browserFilters === undefined) {
 		return undefined;
 	}
-	const hasSelection = browserFilters.some(
-		(filter) => filter.selectedValues.length > 0,
-	);
-	if (!hasSelection) {
+	if (!hasBrowserFilterSelection(browserFilters)) {
 		return [];
 	}
 	return fastState.songs.filter((song) =>

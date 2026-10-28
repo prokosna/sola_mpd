@@ -82,6 +82,9 @@ export function usePlaylistNavigationSelectListProps() {
 		headerTitle: "Playlists",
 		contextMenuSections,
 		isLoading: false,
+		isGlobalFilterEnabled: false,
+		noRowsMessage:
+			"No playlists yet. Use Add to Playlist on any song to create one.",
 		allowMultipleSelection: false,
 		onItemsSelected: onItemsSelected,
 		onLoadingCompleted: async () => {},

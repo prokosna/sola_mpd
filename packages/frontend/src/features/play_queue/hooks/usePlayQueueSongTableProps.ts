@@ -49,6 +49,11 @@ export function usePlayQueueSongTableProps(
 	const isLoading = useAtomValue(isPlayQueueLoadingAtom);
 	const songs = useAtomValue(playQueueVisibleSongsAtom);
 	const columns = useAtomValue(songTableColumnViewAtom);
+	const noRows = {
+		isIdle: false,
+		message:
+			"The queue is empty. Add songs from Browser, Search, or the other views.",
+	};
 	const setIsPlayQueueLoading = useSetAtom(setIsPlayQueueLoadingActionAtom);
 	const onColumnsUpdated = useHandleLibraryColumnsUpdated();
 	const setSelectedSongs = useSetAtom(setSelectedSongsActionAtom);
@@ -192,6 +197,7 @@ export function usePlayQueueSongTableProps(
 		isGlobalFilterEnabled: true,
 		contextMenuSections,
 		isLoading,
+		noRows,
 		scrollToPlayingSong: true,
 		onSongsReordered,
 		onColumnsUpdated,

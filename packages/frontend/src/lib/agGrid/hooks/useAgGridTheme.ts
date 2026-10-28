@@ -15,6 +15,7 @@ export function useAgGridTheme(): Theme {
 		.withPart(colorSchemeLightWarm)
 		.withParams({
 			spacing: 4,
+			fontFamily: theme.fontFamily,
 			headerRowBorder: true,
 			wrapperBorder: false,
 			columnBorder: false,
@@ -29,6 +30,7 @@ export function useAgGridTheme(): Theme {
 
 	const agGridDarkTheme = themeAlpine.withPart(colorSchemeDarkBlue).withParams({
 		spacing: 4,
+		fontFamily: theme.fontFamily,
 		headerRowBorder: true,
 		wrapperBorder: false,
 		columnBorder: false,

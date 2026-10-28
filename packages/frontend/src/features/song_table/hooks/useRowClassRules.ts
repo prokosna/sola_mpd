@@ -23,7 +23,7 @@ export function useRowClassRules(
 			: undefined;
 
 		return {
-			"ag-font-weight-bold": (params) => {
+			"song-table-row-playing": (params) => {
 				if (params.data === undefined || currentSongKey === undefined) {
 					return false;
 				}

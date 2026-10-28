@@ -27,7 +27,10 @@ import {
 	useHandleSongDoubleClick,
 } from "../../song_table";
 import { setIsTextToMusicSearchLoadingActionAtom } from "../states/actions/setIsTextToMusicSearchLoadingActionAtom";
-import { textToMusicSearchSongsAtom } from "../states/atoms/textToMusicSearchAtom";
+import {
+	textToMusicSearchQueryAtom,
+	textToMusicSearchSongsAtom,
+} from "../states/atoms/textToMusicSearchAtom";
 import { isTextToMusicSearchLoadingAtom } from "../states/atoms/textToMusicSearchUiAtom";
 import { useSimilaritySearchContextMenuProps } from "./useSimilaritySearchContextMenuProps";
 
@@ -50,6 +53,14 @@ export function useTextToMusicSearchSongTableProps(
 				? result.songs
 				: [];
 	const columns = useAtomValue(songTableColumnViewAtom);
+	const query = useAtomValue(textToMusicSearchQueryAtom);
+	const noRows =
+		query === ""
+			? {
+					isIdle: true,
+					message: "Describe the music you want in English to show songs.",
+				}
+			: { isIdle: false, message: "No songs match this description." };
 	const setIsTextToMusicSearchLoading = useSetAtom(
 		setIsTextToMusicSearchLoadingActionAtom,
 	);
@@ -158,6 +169,7 @@ export function useTextToMusicSearchSongTableProps(
 		isGlobalFilterEnabled: false,
 		contextMenuSections,
 		isLoading,
+		noRows,
 		scrollToPlayingSong: true,
 		onSongsReordered,
 		onColumnsUpdated,

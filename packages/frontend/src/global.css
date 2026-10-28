@@ -8,7 +8,20 @@
 	--separator-border: var(--mantine-color-dark-4);
 }
 
-/* Ag Grid inrow font weight customization */
-.ag-font-weight-bold {
+.ag-row.song-table-row-playing {
 	font-weight: bold;
+}
+
+.ag-row.song-table-row-playing .ag-cell {
+	color: var(--mantine-color-brand-text);
+}
+
+/* The background is left alone so a playing row stays distinct from selected ones. */
+.ag-row.song-table-row-playing::before {
+	content: "";
+	position: absolute;
+	inset: 0 auto 0 0;
+	width: 3px;
+	background: var(--mantine-color-brand-filled);
+	z-index: 1;
 }

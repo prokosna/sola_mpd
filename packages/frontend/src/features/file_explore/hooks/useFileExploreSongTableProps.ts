@@ -28,6 +28,7 @@ import {
 	useHandleSongDoubleClick,
 } from "../../song_table";
 import { setIsFileExploreLoadingActionAtom } from "../states/actions/setIsFileExploreLoadingActionAtom";
+import { selectedFileExploreFolderAtom } from "../states/atoms/fileExploreFoldersAtom";
 import { fileExploreVisibleSongsAtom } from "../states/atoms/fileExploreSongsAtom";
 import {
 	isFileExploreLoadingAtom,
@@ -48,6 +49,11 @@ export function useFileExploreSongTableProps(
 	const isLoading = useAtomValue(isFileExploreLoadingAtom);
 	const songs = useAtomValue(fileExploreVisibleSongsAtom);
 	const columns = useAtomValue(songTableColumnViewAtom);
+	const selectedFolder = useAtomValue(selectedFileExploreFolderAtom);
+	const noRows =
+		selectedFolder === undefined
+			? { isIdle: true, message: "Select a folder to show its songs." }
+			: { isIdle: false, message: "This folder has no songs." };
 	const setIsFileExploreLoading = useSetAtom(setIsFileExploreLoadingActionAtom);
 	const onColumnsUpdated = useHandleLibraryColumnsUpdated();
 	const setSelectedSongs = useSetAtom(setSelectedSongsActionAtom);
@@ -152,6 +158,7 @@ export function useFileExploreSongTableProps(
 		isGlobalFilterEnabled: true,
 		contextMenuSections,
 		isLoading,
+		noRows,
 		onSongsReordered,
 		onColumnsUpdated,
 		onSongsSelected,
