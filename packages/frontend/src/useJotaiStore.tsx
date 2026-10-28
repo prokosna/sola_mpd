@@ -24,6 +24,8 @@ import { mpdProfileStateRepositoryAtom } from "./features/profile/states/atoms/m
 import { SavedSearchesRepositorySocketIo } from "./features/search/repositories/SavedSearchesRepositorySocketIo";
 import { savedSearchesRepositoryAtom } from "./features/search/states/atoms/savedSearchesRepositoryAtom";
 import { SongTableStateRepositorySocketIo } from "./features/song_table/repositories/SongTableStateRepositorySocketIo";
+import { ClipboardNavigator } from "./features/song_table/services/ClipboardNavigator";
+import { clipboardAtom } from "./features/song_table/states/atoms/clipboardAtom";
 import { songTableStateRepositoryAtom } from "./features/song_table/states/atoms/songTableStateRepositoryAtom";
 import type { MessagingClient } from "./lib/messaging/MessagingClient";
 import { MessagingClientElectronIpc } from "./lib/messaging/MessagingClientElectronIpc";
@@ -96,6 +98,7 @@ export function useJotaiStore() {
 			deviceSettingsRepositoryAtom,
 			new DeviceSettingsRepositoryLocalStorage(),
 		);
+		store.set(clipboardAtom, new ClipboardNavigator());
 
 		globalStore = store;
 		return globalStore;

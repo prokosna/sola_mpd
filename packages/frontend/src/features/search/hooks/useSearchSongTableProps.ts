@@ -10,8 +10,10 @@ import type { ContextMenuSection } from "../../context_menu";
 import { usePluginContextMenuItems } from "../../plugin";
 import {
 	addSongsToQueueActionAtom,
+	copySongsToClipboardActionAtom,
 	getSongTableContextMenuAdd,
 	getSongTableContextMenuAddToPlaylist,
+	getSongTableContextMenuCopy,
 	getSongTableContextMenuEditColumns,
 	getSongTableContextMenuReplace,
 	getSongTableContextMenuResetLayout,
@@ -42,6 +44,7 @@ export function useSearchSongTableProps(
 	const songTableKeyType = SongTableKeyType.PATH;
 
 	const notify = useNotification();
+	const copySongsToClipboard = useSetAtom(copySongsToClipboardActionAtom);
 
 	const isLoading = useAtomValue(isSearchLoadingAtom);
 	const songs = useAtomValue(searchVisibleSongsAtom);
@@ -91,6 +94,15 @@ export function useSearchSongTableProps(
 						songTableKeyType,
 						songsToAddToPlaylistRef,
 						setIsPlaylistSelectModalOpen,
+					),
+				],
+			},
+			{
+				items: [
+					getSongTableContextMenuCopy(
+						songTableKeyType,
+						notify,
+						copySongsToClipboard,
 					),
 				],
 			},

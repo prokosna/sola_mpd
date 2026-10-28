@@ -10,8 +10,10 @@ import { mpdCapabilitiesAtom } from "../../mpd/states/atoms/mpdCapabilitiesAtom"
 import { usePluginContextMenuItems } from "../../plugin";
 import {
 	addSongsToQueueActionAtom,
+	copySongsToClipboardActionAtom,
 	getSongTableContextMenuAdd,
 	getSongTableContextMenuAddToPlaylist,
+	getSongTableContextMenuCopy,
 	getSongTableContextMenuEditColumns,
 	getSongTableContextMenuReplace,
 	getSongTableContextMenuResetLayout,
@@ -46,6 +48,7 @@ export function useAllSongsSongTableProps(
 	const songTableKeyType = SongTableKeyType.PATH;
 
 	const notify = useNotification();
+	const copySongsToClipboard = useSetAtom(copySongsToClipboardActionAtom);
 
 	useAtom(syncAllSongsLoadingEffectAtom);
 	useAtom(syncAllSongsFastStateEffectAtom);
@@ -114,6 +117,15 @@ export function useAllSongsSongTableProps(
 						songTableKeyType,
 						songsToAddToPlaylistRef,
 						setIsPlaylistSelectModalOpen,
+					),
+				],
+			},
+			{
+				items: [
+					getSongTableContextMenuCopy(
+						songTableKeyType,
+						notify,
+						copySongsToClipboard,
 					),
 				],
 			},

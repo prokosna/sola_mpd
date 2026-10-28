@@ -9,7 +9,9 @@ import { useSimilaritySearchContextMenuProps } from "../../advanced_search";
 import type { ContextMenuSection } from "../../context_menu";
 import { usePluginContextMenuItems } from "../../plugin";
 import {
+	copySongsToClipboardActionAtom,
 	getSongTableContextMenuAddToPlaylist,
+	getSongTableContextMenuCopy,
 	getSongTableContextMenuEditColumns,
 	getSongTableContextMenuResetLayout,
 	getSongTableContextMenuSimilarSongs,
@@ -41,6 +43,7 @@ export function usePlayQueueSongTableProps(
 	const songTableKeyType = SongTableKeyType.ID;
 
 	const notify = useNotification();
+	const copySongsToClipboard = useSetAtom(copySongsToClipboardActionAtom);
 
 	useAtomValue(syncPlayQueueLoadingEffectAtom);
 	const isLoading = useAtomValue(isPlayQueueLoadingAtom);
@@ -119,6 +122,15 @@ export function usePlayQueueSongTableProps(
 						songTableKeyType,
 						songsToAddToPlaylistRef,
 						setIsPlaylistSelectModalOpen,
+					),
+				],
+			},
+			{
+				items: [
+					getSongTableContextMenuCopy(
+						songTableKeyType,
+						notify,
+						copySongsToClipboard,
 					),
 				],
 			},
