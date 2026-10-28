@@ -5,6 +5,19 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [4.14.0](https://github.com/prokosna/sola_mpd/compare/v4.13.1...v4.14.0) (2026-10-28)
+
+
+### Features
+
+* **frontend:** song table and list UI polish ([#418](https://github.com/prokosna/sola_mpd/issues/418)) ([16cca4a](https://github.com/prokosna/sola_mpd/commit/16cca4a1ae6f8801efd0bb440fd8f5522d131d50))
+* **song_table:** copy selected songs to the clipboard as TSV ([#417](https://github.com/prokosna/sola_mpd/issues/417)) ([5a63d38](https://github.com/prokosna/sola_mpd/commit/5a63d380d1ddf26c4be58d864a51f5448729862c))
+
+
+### Bug Fixes
+
+* **global_filter:** match pasted song table rows ([#419](https://github.com/prokosna/sola_mpd/issues/419)) ([a907188](https://github.com/prokosna/sola_mpd/commit/a907188b2a685c0976143bcc060d09aafe777b97))
+
 ## [4.13.1](https://github.com/prokosna/sola_mpd/compare/v4.13.0...v4.13.1) (2026-10-27)
 
 
