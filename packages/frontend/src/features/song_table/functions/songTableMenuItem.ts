@@ -2,7 +2,7 @@ import type { Song } from "@sola_mpd/shared/src/models/song_pb.js";
 import type { MutableRefObject } from "react";
 
 import type { NotificationParams } from "../../../lib/mantine/showNotification";
-import type { ContextMenuItem } from "../../context_menu";
+import type { ContextMenuItem, ContextMenuSection } from "../../context_menu";
 import type {
 	SongTableColumnView,
 	SongTableContextMenuItemParams,
@@ -172,4 +172,12 @@ export function getSongTableContextMenuSimilarSongs(
 			refreshSimilaritySearchSongs();
 		},
 	};
+}
+
+export function buildSongTableContextMenuSections(
+	itemGroups: ContextMenuItem<SongTableContextMenuItemParams>[][],
+): ContextMenuSection<SongTableContextMenuItemParams>[] {
+	return itemGroups
+		.filter((items) => items.length > 0)
+		.map((items) => ({ items }));
 }

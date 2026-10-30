@@ -5,28 +5,16 @@ import { type MutableRefObject, useCallback } from "react";
 
 import { COMPONENT_ID_PLAYLIST_MAIN_PANE } from "../../../const/component";
 import { useNotification } from "../../../lib/mantine/hooks/useNotification";
-import { useSimilaritySearchContextMenuProps } from "../../advanced_search";
-import type { ContextMenuSection } from "../../context_menu";
+import { useSimilarSongsContextMenuItems } from "../../advanced_search";
 import { usePluginContextMenuItems } from "../../plugin";
 import {
-	addSongsToQueueActionAtom,
-	copySongsToClipboardActionAtom,
-	getSongTableContextMenuAdd,
-	getSongTableContextMenuAddToPlaylist,
-	getSongTableContextMenuCopy,
-	getSongTableContextMenuEditColumns,
-	getSongTableContextMenuReplace,
-	getSongTableContextMenuResetLayout,
-	getSongTableContextMenuSimilarSongs,
-	replaceQueueWithSongsActionAtom,
-	resetSongTableLayoutActionAtom,
-	type SongTableContextMenuItemParams,
 	SongTableKeyType,
 	type SongTableProps,
 	setSelectedSongsActionAtom,
 	songTableColumnViewAtom,
 	useHandleLibraryColumnsUpdated,
 	useHandleSongDoubleClick,
+	useSongTableContextMenuSections,
 } from "../../song_table";
 import {
 	getSongTableContextMenuClear,
@@ -53,7 +41,6 @@ export function usePlaylistSongTableProps(
 	const songTableKeyType = SongTableKeyType.INDEX_PATH;
 
 	const notify = useNotification();
-	const copySongsToClipboard = useSetAtom(copySongsToClipboardActionAtom);
 
 	useAtomValue(syncPlaylistLoadingEffectAtom);
 	const isLoading = useAtomValue(isPlaylistLoadingAtom);
@@ -67,48 +54,28 @@ export function usePlaylistSongTableProps(
 	const setIsPlaylistLoading = useSetAtom(setIsPlaylistLoadingActionAtom);
 	const onColumnsUpdated = useHandleLibraryColumnsUpdated();
 	const setSelectedSongs = useSetAtom(setSelectedSongsActionAtom);
-	const addSongsToQueue = useSetAtom(addSongsToQueueActionAtom);
-	const replaceQueueWithSongs = useSetAtom(replaceQueueWithSongsActionAtom);
 	const removePlaylistSongs = useSetAtom(removePlaylistSongsActionAtom);
 	const clearPlaylist = useSetAtom(clearPlaylistActionAtom);
 	const dropDuplicatePlaylistSongs = useSetAtom(
 		dropDuplicatePlaylistSongsActionAtom,
 	);
 	const reorderPlaylist = useSetAtom(reorderPlaylistActionAtom);
-	const resetSongTableLayout = useSetAtom(resetSongTableLayoutActionAtom);
 
 	const pluginContextMenuItems = usePluginContextMenuItems(
 		Plugin_PluginType.ON_PLAYLIST,
 		songTableKeyType,
 	);
 
-	const {
-		isAdvancedSearchAvailable,
-		setSimilaritySearchTargetSong,
-		refreshSimilaritySearchSongs,
-		setIsSimilaritySearchModalOpen,
-	} = useSimilaritySearchContextMenuProps();
+	const similarSongsContextMenuItems = useSimilarSongsContextMenuItems();
 
-	const contextMenuSections: ContextMenuSection<SongTableContextMenuItemParams>[] =
-		selectedPlaylist === undefined
-			? []
-			: [
-					{
-						items: [
-							getSongTableContextMenuAdd(
-								songTableKeyType,
-								notify,
-								addSongsToQueue,
-							),
-							getSongTableContextMenuReplace(
-								songTableKeyType,
-								notify,
-								replaceQueueWithSongs,
-							),
-						],
-					},
-					{
-						items: [
+	const songTableContextMenuSections = useSongTableContextMenuSections({
+		songTableKeyType,
+		hasQueueItems: true,
+		sourceSections:
+			selectedPlaylist === undefined
+				? []
+				: [
+						[
 							getSongTableContextMenuRemove(
 								songTableKeyType,
 								selectedPlaylist.name,
@@ -126,48 +93,14 @@ export function usePlaylistSongTableProps(
 								dropDuplicatePlaylistSongs,
 							),
 						],
-					},
-					{
-						items: [
-							getSongTableContextMenuAddToPlaylist(
-								songTableKeyType,
-								songsToAddToPlaylistRef,
-								setIsPlaylistSelectModalOpen,
-							),
-						],
-					},
-					{
-						items: [
-							getSongTableContextMenuCopy(
-								songTableKeyType,
-								notify,
-								copySongsToClipboard,
-							),
-						],
-					},
-					{
-						items: [
-							getSongTableContextMenuEditColumns(setIsColumnEditModalOpen),
-							getSongTableContextMenuResetLayout(resetSongTableLayout),
-						],
-					},
-				];
-	if (isAdvancedSearchAvailable) {
-		contextMenuSections.push({
-			items: [
-				getSongTableContextMenuSimilarSongs(
-					setSimilaritySearchTargetSong,
-					refreshSimilaritySearchSongs,
-					setIsSimilaritySearchModalOpen,
-				),
-			],
-		});
-	}
-	if (pluginContextMenuItems.length > 0) {
-		contextMenuSections.push({
-			items: pluginContextMenuItems,
-		});
-	}
+					],
+		extraSections: [similarSongsContextMenuItems, pluginContextMenuItems],
+		songsToAddToPlaylistRef,
+		setIsPlaylistSelectModalOpen,
+		setIsColumnEditModalOpen,
+	});
+	const contextMenuSections =
+		selectedPlaylist === undefined ? [] : songTableContextMenuSections;
 
 	const onSongsReordered = useCallback(
 		async (orderedSongs: Song[]) => {

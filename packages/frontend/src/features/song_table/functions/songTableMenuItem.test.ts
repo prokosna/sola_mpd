@@ -8,6 +8,7 @@ import { describe, expect, it, vi } from "vitest";
 
 import { SongTableKeyType } from "../types/songTableTypes";
 import {
+	buildSongTableContextMenuSections,
 	getSongTableContextMenuAdd,
 	getSongTableContextMenuAddToPlaylist,
 	getSongTableContextMenuCopy,
@@ -167,5 +168,21 @@ describe("getSongTableContextMenuSimilarSongs", () => {
 	it("should create a Similar Songs menu item", () => {
 		const item = getSongTableContextMenuSimilarSongs(vi.fn(), vi.fn(), vi.fn());
 		expect(item.name).toBe("Similar Songs");
+	});
+});
+
+describe("buildSongTableContextMenuSections", () => {
+	it("should make a section of each group in order, dropping empty ones", () => {
+		const editColumns = getSongTableContextMenuEditColumns(vi.fn());
+		const reset = getSongTableContextMenuResetLayout(vi.fn());
+
+		const sections = buildSongTableContextMenuSections([
+			[],
+			[editColumns],
+			[],
+			[reset],
+		]);
+
+		expect(sections).toEqual([{ items: [editColumns] }, { items: [reset] }]);
 	});
 });

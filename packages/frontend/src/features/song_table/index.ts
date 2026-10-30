@@ -34,6 +34,10 @@ export { convertOrderingToOperations } from "./functions/songTableOrdering";
 export { useColumnEditModalProps } from "./hooks/useColumnEditModalProps";
 export { useHandleLibraryColumnsUpdated } from "./hooks/useHandleLibraryColumnsUpdated";
 export { useHandleSongDoubleClick } from "./hooks/useHandleSongDoubleClick";
+export {
+	type SongTableContextMenuSectionsParams,
+	useSongTableContextMenuSections,
+} from "./hooks/useSongTableContextMenuSections";
 // Services
 export type { SongTableStateRepository } from "./repositories/SongTableStateRepository";
 export { addSongAndPlayActionAtom } from "./states/actions/addSongAndPlayActionAtom";

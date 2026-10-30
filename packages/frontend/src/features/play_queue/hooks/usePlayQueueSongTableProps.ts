@@ -5,24 +5,17 @@ import { type MutableRefObject, useCallback } from "react";
 
 import { COMPONENT_ID_PLAY_QUEUE } from "../../../const/component";
 import { useNotification } from "../../../lib/mantine/hooks/useNotification";
-import { useSimilaritySearchContextMenuProps } from "../../advanced_search";
-import type { ContextMenuSection } from "../../context_menu";
+import { useSimilarSongsContextMenuItems } from "../../advanced_search";
 import { usePluginContextMenuItems } from "../../plugin";
 import {
-	copySongsToClipboardActionAtom,
-	getSongTableContextMenuAddToPlaylist,
-	getSongTableContextMenuCopy,
-	getSongTableContextMenuEditColumns,
-	getSongTableContextMenuResetLayout,
-	getSongTableContextMenuSimilarSongs,
 	getTargetSongsForContextMenu,
-	resetSongTableLayoutActionAtom,
 	type SongTableContextMenuItemParams,
 	SongTableKeyType,
 	type SongTableProps,
 	setSelectedSongsActionAtom,
 	songTableColumnViewAtom,
 	useHandleLibraryColumnsUpdated,
+	useSongTableContextMenuSections,
 } from "../../song_table";
 import { clearQueueActionAtom } from "../states/actions/clearQueueActionAtom";
 import { playSongByIdActionAtom } from "../states/actions/playSongByIdActionAtom";
@@ -43,7 +36,6 @@ export function usePlayQueueSongTableProps(
 	const songTableKeyType = SongTableKeyType.ID;
 
 	const notify = useNotification();
-	const copySongsToClipboard = useSetAtom(copySongsToClipboardActionAtom);
 
 	useAtomValue(syncPlayQueueLoadingEffectAtom);
 	const isLoading = useAtomValue(isPlayQueueLoadingAtom);
@@ -61,102 +53,61 @@ export function usePlayQueueSongTableProps(
 	const clearQueue = useSetAtom(clearQueueActionAtom);
 	const reorderQueue = useSetAtom(reorderQueueActionAtom);
 	const playSongById = useSetAtom(playSongByIdActionAtom);
-	const resetSongTableLayout = useSetAtom(resetSongTableLayoutActionAtom);
 
 	const pluginContextMenuItems = usePluginContextMenuItems(
 		Plugin_PluginType.ON_PLAY_QUEUE,
 		songTableKeyType,
 	);
 
-	const {
-		isAdvancedSearchAvailable,
-		setSimilaritySearchTargetSong,
-		refreshSimilaritySearchSongs,
-		setIsSimilaritySearchModalOpen,
-	} = useSimilaritySearchContextMenuProps();
+	const similarSongsContextMenuItems = useSimilarSongsContextMenuItems();
 
-	const contextMenuSections: ContextMenuSection<SongTableContextMenuItemParams>[] =
-		[
-			{
-				items: [
-					{
-						name: "Remove",
-						onClick: async (params?: SongTableContextMenuItemParams) => {
-							if (params === undefined) {
-								return;
-							}
-							const targetSongs = getTargetSongsForContextMenu(
-								params,
-								songTableKeyType,
-							);
-							if (targetSongs.length === 0) {
-								return;
-							}
-							await removeQueueSongs(targetSongs);
-							notify({
-								status: "success",
-								title: "Songs successfully removed",
-								description: `${targetSongs.length} songs have been removed from the play queue.`,
-							});
-						},
+	const contextMenuSections = useSongTableContextMenuSections({
+		songTableKeyType,
+		hasQueueItems: false,
+		sourceSections: [
+			[
+				{
+					name: "Remove",
+					onClick: async (params?: SongTableContextMenuItemParams) => {
+						if (params === undefined) {
+							return;
+						}
+						const targetSongs = getTargetSongsForContextMenu(
+							params,
+							songTableKeyType,
+						);
+						if (targetSongs.length === 0) {
+							return;
+						}
+						await removeQueueSongs(targetSongs);
+						notify({
+							status: "success",
+							title: "Songs successfully removed",
+							description: `${targetSongs.length} songs have been removed from the play queue.`,
+						});
 					},
-					{
-						name: "Clear",
-						onClick: async (params?: SongTableContextMenuItemParams) => {
-							if (params === undefined) {
-								return;
-							}
-							await clearQueue();
-							notify({
-								status: "success",
-								title: "Songs successfully cleared",
-								description: "All songs have been removed from the play queue.",
-							});
-						},
+				},
+				{
+					name: "Clear",
+					onClick: async (params?: SongTableContextMenuItemParams) => {
+						if (params === undefined) {
+							return;
+						}
+						await clearQueue();
+						notify({
+							status: "success",
+							title: "Songs successfully cleared",
+							description: "All songs have been removed from the play queue.",
+						});
 					},
-				],
-			},
-			{
-				items: [
-					getSongTableContextMenuAddToPlaylist(
-						songTableKeyType,
-						songsToAddToPlaylistRef,
-						setIsPlaylistSelectModalOpen,
-					),
-				],
-			},
-			{
-				items: [
-					getSongTableContextMenuCopy(
-						songTableKeyType,
-						notify,
-						copySongsToClipboard,
-					),
-				],
-			},
-			{
-				items: [
-					getSongTableContextMenuEditColumns(setIsColumnEditModalOpen),
-					getSongTableContextMenuResetLayout(resetSongTableLayout),
-				],
-			},
-		];
-	if (isAdvancedSearchAvailable) {
-		contextMenuSections.push({
-			items: [
-				getSongTableContextMenuSimilarSongs(
-					setSimilaritySearchTargetSong,
-					refreshSimilaritySearchSongs,
-					setIsSimilaritySearchModalOpen,
-				),
+				},
 			],
-		});
-	}
-	if (pluginContextMenuItems.length > 0) {
-		contextMenuSections.push({
-			items: pluginContextMenuItems,
-		});
-	}
+		],
+		extraSections: [similarSongsContextMenuItems, pluginContextMenuItems],
+		songsToAddToPlaylistRef,
+		setIsPlaylistSelectModalOpen,
+		setIsColumnEditModalOpen,
+	});
 
 	const onSongsReordered = useCallback(
 		async (orderedSongs: Song[]) => {

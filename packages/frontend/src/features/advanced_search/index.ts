@@ -3,7 +3,7 @@ export { SimilaritySearchModal } from "./components/SimilaritySearchModal";
 export { TextToMusicSearch } from "./components/TextToMusicSearch";
 
 // Hooks
-export { useSimilaritySearchContextMenuProps } from "./hooks/useSimilaritySearchContextMenuProps";
+export { useSimilarSongsContextMenuItems } from "./hooks/useSimilarSongsContextMenuItems";
 
 // Services
 export type { AdvancedSearchClient } from "./services/AdvancedSearchClient";
