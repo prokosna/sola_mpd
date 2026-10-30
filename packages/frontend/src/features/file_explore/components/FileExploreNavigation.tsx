@@ -2,7 +2,6 @@ import {
 	Box,
 	Divider,
 	Group,
-	NavLink,
 	Text,
 	useComputedColorScheme,
 	useMantineTheme,
@@ -10,34 +9,7 @@ import {
 import { Virtuoso } from "react-virtuoso";
 import { FullWidthSkeleton } from "../../loading";
 import { useFileExploreTreeViewNodes } from "../hooks/useFileExploreTreeViewNodes";
-import type { TreeNode } from "../types/treeViewTypes";
-
-function DirectoryNavLink({ node }: { node: TreeNode }) {
-	const hasChildren = node.children?.length > 0;
-	return (
-		<NavLink
-			key={node.id}
-			label={node.label}
-			active={node.isSelected}
-			onClick={
-				hasChildren
-					? undefined
-					: () => {
-							if (node.onClick !== undefined) {
-								node.onClick(node.id);
-							}
-						}
-			}
-			noWrap
-		>
-			{hasChildren
-				? node.children?.map((child) => (
-						<DirectoryNavLink key={child.id} node={child} />
-					))
-				: undefined}
-		</NavLink>
-	);
-}
+import { FileExploreDirectoryNavLink } from "./FileExploreDirectoryNavLink";
 
 export function FileExploreNavigation() {
 	const scheme = useComputedColorScheme();
@@ -80,7 +52,7 @@ export function FileExploreNavigation() {
 					style={{ height: "100%", background: "transparent" }}
 					data={nodes}
 					itemContent={(_index, node) => (
-						<DirectoryNavLink key={node.id} node={node} />
+						<FileExploreDirectoryNavLink key={node.id} node={node} />
 					)}
 				/>
 			</Box>
