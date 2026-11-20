@@ -43,7 +43,7 @@ export type SongTableColumnDefinition = {
 	flex: number;
 	resizable: boolean;
 	sortable: boolean;
-	tooltipField?: string;
+	tooltip?: boolean;
 	sort?: "asc" | "desc" | null;
 	sortIndex?: number;
 	cellDataType?: boolean;

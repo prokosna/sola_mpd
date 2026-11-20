@@ -149,11 +149,11 @@ importers:
         specifier: ^3.52.0
         version: 3.52.0(react@19.2.5)
       ag-grid-community:
-        specifier: ^35.3.1
-        version: 35.3.1
+        specifier: ^36.3.0
+        version: 36.3.0
       ag-grid-react:
-        specifier: ^35.3.1
-        version: 35.3.1(react-dom@19.2.5(react@19.2.5))(react@19.2.5)
+        specifier: ^36.3.0
+        version: 36.3.0(react-dom@19.2.5(react@19.2.5))(react@19.2.5)
       clsx:
         specifier: ^2.1.1
         version: 2.1.1
@@ -2007,17 +2007,20 @@ packages:
     resolution: {integrity: sha512-5cvg6CtKwfgdmVqY1WIiXKc3Q1bkRqGLi+2W/6ao+6Y7gu/RCwRuAhGEzh5B4KlszSuTLgZYuqFqo5bImjNKng==}
     engines: {node: '>= 0.6'}
 
-  ag-charts-types@13.3.1:
-    resolution: {integrity: sha512-m37eUe4g//swvGh8PWMlYQH3gknjSsPeW4sQwBhM3/auGAHmN0wvxEWlrdAn98pBPg4HoKbtOy+yf7gPCYsnvQ==}
+  ag-charts-types@14.3.0:
+    resolution: {integrity: sha512-6VtzUYBKN5mFY24/Eye3RUn1AAq7s+/B4hEu83ZOK/Pjqx26tHq2MoxiXlBE8F7oQO0VpjV5rZZaw6wxSpMNJg==}
 
-  ag-grid-community@35.3.1:
-    resolution: {integrity: sha512-Wmkd/xYTCbAApcZZO74nBggZCnd/oX753NY3MJ4zYARVpfBHRWWhIBJ2sFTFKbDWwHZOWsx3YT9+kkyeuyLKlw==}
+  ag-grid-community@36.3.0:
+    resolution: {integrity: sha512-0JRaIwE82TuOcx+upA3OnTyhDAIUDqrMxLoBib6yVON0SyfICdpOnwD4QdiT0A1lgrC8SkzLBFRst73bTREF6Q==}
 
-  ag-grid-react@35.3.1:
-    resolution: {integrity: sha512-M3ljCQyGL+qzoyPN0BYrn4eAlgZr6Ailcjd8+a7OcneSiVsMNSJb/gTkIMUwmYivkPLIA8EEJ4hTxxKSaya6mQ==}
+  ag-grid-react@36.3.0:
+    resolution: {integrity: sha512-Ttpb5J7b3oun8AdzTrLnXd5iMyh/G3R1esdG3nXnrfPC4kzFsM3sD0/h/wATE3dw7MH1oEKERa7xvQ+8QLuk1A==}
     peerDependencies:
       react: ^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0
       react-dom: ^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0
+
+  ag-stack@36.3.0:
+    resolution: {integrity: sha512-KbX/b6cM0GIJ4cz6W3jk8YoDG/XpqOC4WurYl8CDuQtER2d4rihjPI4tOLN4LqS0yfVspZ31ED1273kfG+6m0w==}
 
   agent-base@7.1.4:
     resolution: {integrity: sha512-MnA+YT8fwfJPgBx3m60MNqakm30XOkyIoH1y6huTQvC0PwZG7ki8NacLBcrPbNoo8vEZy7Jpuk7+jMO+CUovTQ==}
@@ -5735,18 +5738,21 @@ snapshots:
       mime-types: 3.0.2
       negotiator: 1.1.0
 
-  ag-charts-types@13.3.1: {}
+  ag-charts-types@14.3.0: {}
 
-  ag-grid-community@35.3.1:
+  ag-grid-community@36.3.0:
     dependencies:
-      ag-charts-types: 13.3.1
+      ag-charts-types: 14.3.0
+      ag-stack: 36.3.0
 
-  ag-grid-react@35.3.1(react-dom@19.2.5(react@19.2.5))(react@19.2.5):
+  ag-grid-react@36.3.0(react-dom@19.2.5(react@19.2.5))(react@19.2.5):
     dependencies:
-      ag-grid-community: 35.3.1
+      ag-grid-community: 36.3.0
       prop-types: 15.8.1
       react: 19.2.5
       react-dom: 19.2.5(react@19.2.5)
+
+  ag-stack@36.3.0: {}
 
   agent-base@7.1.4: {}
 

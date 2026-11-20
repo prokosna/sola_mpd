@@ -1,8 +1,8 @@
 import {
 	CellStyleModule,
 	ClientSideRowModelApiModule,
-	ClientSideRowModelModule,
 	ColumnApiModule,
+	enableDevValidations,
 	ModuleRegistry,
 	RowApiModule,
 	RowDragModule,
@@ -10,7 +10,6 @@ import {
 	RowStyleModule,
 	ScrollApiModule,
 	TooltipModule,
-	ValidationModule,
 } from "ag-grid-community";
 import { Provider } from "jotai";
 import { Suspense } from "react";
@@ -21,18 +20,20 @@ import { useJotaiStore } from "../useJotaiStore";
 import "react-contexify/dist/ReactContexify.css";
 import "../global.css";
 
+if (import.meta.env.DEV) {
+	enableDevValidations();
+}
+
 ModuleRegistry.registerModules([
 	RowDragModule,
 	TooltipModule,
 	RowSelectionModule,
 	CellStyleModule,
-	ClientSideRowModelModule,
 	ClientSideRowModelApiModule,
 	ColumnApiModule,
 	RowApiModule,
 	RowStyleModule,
 	ScrollApiModule,
-	ValidationModule,
 ]);
 
 export function RootLayout() {

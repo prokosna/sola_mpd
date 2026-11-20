@@ -101,7 +101,7 @@ export function useAgGridReactData(
 			flex: column.widthFlex,
 			resizable: true,
 			sortable: isSortingEnabled,
-			tooltipField: convertSongMetadataTagToDisplayName(column.tag),
+			tooltip: true,
 			valueFormatter: SONG_METADATA_FORMATTERS[column.tag],
 			sort:
 				!isSortingEnabled ||
