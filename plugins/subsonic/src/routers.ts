@@ -50,6 +50,27 @@ export function routes(router: ConnectRouter) {
 					req.pluginParameters[SUBSONIC_PLUGIN_PARAMETER_KEYS.password];
 				const playlistName =
 					req.requestParameters[SUBSONIC_REQUEST_PARAMETER_KEYS.playlistName];
+				if (!url || !user || !password || !playlistName) {
+					throw new ConnectError(
+						"Missing required Subsonic parameters (url, user, password, or playlistName).",
+						Code.InvalidArgument,
+					);
+				}
+				let parsedUrl: URL;
+				try {
+					parsedUrl = new URL(url);
+				} catch {
+					throw new ConnectError(
+						`Invalid Subsonic URL: "${url}"`,
+						Code.InvalidArgument,
+					);
+				}
+				if (parsedUrl.protocol !== "http:" && parsedUrl.protocol !== "https:") {
+					throw new ConnectError(
+						`Unsupported Subsonic URL protocol: "${parsedUrl.protocol}"`,
+						Code.InvalidArgument,
+					);
+				}
 				const songs = req.songs;
 				const client = new SubsonicApiHttp(url, user, password);
 				for await (const resp of syncWithSubsonic(
@@ -60,6 +81,9 @@ export function routes(router: ConnectRouter) {
 					yield resp;
 				}
 			} catch (e) {
+				if (e instanceof ConnectError) {
+					throw e;
+				}
 				if (e instanceof Error) {
 					throw new ConnectError(e.message, Code.Internal);
 				}
