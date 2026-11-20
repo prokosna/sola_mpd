@@ -2,6 +2,8 @@ packages:
   - packages/*
   - plugins/*
 
-onlyBuiltDependencies:
-  - "better-sqlite3"
-  - "mpd3"
+allowBuilds:
+  "@bufbuild/buf": false
+  better-sqlite3: false
+  electron-winstaller: false
+  esbuild: false
