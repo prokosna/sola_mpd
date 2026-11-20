@@ -12,8 +12,10 @@ export default defineConfig([
 		},
 		platform: "node",
 		dts: false,
-		external: ["electron"],
-		noExternal: [/^(?!electron$).*/],
+		deps: {
+			neverBundle: ["electron"],
+			alwaysBundle: [/^(?!electron$).*/],
+		},
 		alias: {
 			"#backend": path.resolve(__dirname, "../backend/src"),
 		},
@@ -25,6 +27,6 @@ export default defineConfig([
 		format: "cjs",
 		platform: "node",
 		dts: false,
-		external: ["electron"],
+		deps: { neverBundle: ["electron"] },
 	},
 ]);
