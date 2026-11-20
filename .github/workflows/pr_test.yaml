@@ -22,17 +22,16 @@ jobs:
 
     steps:
       - name: Checkout PR merge commit
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
 
-      - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v6
-        with:
-          node-version: ${{ matrix.node-version }}
-
-      - name: Install xvfb
-        run: sudo apt-get update && sudo apt-get install -y xvfb
       - name: Install pnpm
         uses: pnpm/action-setup@v6
+
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v7
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: pnpm
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
