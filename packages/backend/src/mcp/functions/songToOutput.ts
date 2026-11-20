@@ -2,7 +2,7 @@ import {
 	convertAudioFormatToString,
 	getSongMetadataAsAudioFormat,
 	getSongMetadataAsNumber,
-	getSongMetadataAsStringOrEmpty,
+	getSongMetadataAsString,
 	getSongMetadataAsTimestampMs,
 } from "@sola_mpd/shared/src/functions/songMetadata.js";
 import {
@@ -30,11 +30,7 @@ export type SongOutput = {
 };
 
 function metadataNumber(song: Song, tag: Song_MetadataTag): number | null {
-	if (song.metadata[tag] === undefined) {
-		return null;
-	}
-	const parsed = getSongMetadataAsNumber(song, tag);
-	return parsed === undefined || Number.isNaN(parsed) ? null : parsed;
+	return getSongMetadataAsNumber(song, tag) ?? null;
 }
 
 function metadataTimestampIso(
@@ -56,8 +52,7 @@ function metadataFormatString(song: Song, tag: Song_MetadataTag): string {
  * MetadataValue oneof so that tool output is directly inspectable.
  */
 export function songToOutput(song: Song): SongOutput {
-	const s = (tag: Song_MetadataTag) =>
-		getSongMetadataAsStringOrEmpty(song, tag);
+	const s = (tag: Song_MetadataTag) => getSongMetadataAsString(song, tag);
 	return {
 		path: song.path,
 		title: s(Song_MetadataTag.TITLE),

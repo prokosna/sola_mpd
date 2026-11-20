@@ -4,7 +4,7 @@
 	"private": true,
 	"type": "module",
 	"scripts": {
-		"build": "tsdown",
+		"build": "tsc --noEmit && tsdown",
 		"build:no_types": "tsdown",
 		"start": "node dist/index.mjs",
 		"dev": "tsdown --watch --onSuccess 'node dist/index.mjs'",

@@ -24,7 +24,12 @@ viewStateBlobsRouter.put("/", async (req: Request, res: Response) => {
 });
 
 viewStateBlobsRouter.get("/:token", async (req: Request, res: Response) => {
-	const data = readViewStateBlobUseCase(req.params.token);
+	const { token } = req.params;
+	if (typeof token !== "string") {
+		res.sendStatus(400);
+		return;
+	}
+	const data = readViewStateBlobUseCase(token);
 	if (data === undefined) {
 		res.sendStatus(404);
 		return;
