@@ -41,30 +41,22 @@ describe("parseSong", () => {
 		expect(song).toBeDefined();
 		expect(song?.path).toBe("music/artist/album/track.flac");
 
-		const title = song?.metadata[Song_MetadataTag.TITLE];
-		expect(title?.value.case).toBe("stringValue");
-		expect((title?.value as { value: { value: string } }).value.value).toBe(
-			"My Track",
-		);
-
-		const track = song?.metadata[Song_MetadataTag.TRACK];
-		expect(track?.value.case).toBe("intValue");
-		expect((track?.value as { value: { value: number } }).value.value).toBe(5);
-
-		const disc = song?.metadata[Song_MetadataTag.DISC];
-		expect(disc?.value.case).toBe("intValue");
-		expect((disc?.value as { value: { value: number } }).value.value).toBe(1);
-
-		const format = song?.metadata[Song_MetadataTag.FORMAT];
-		expect(format?.value.case).toBe("format");
-		const audioFormat = (
-			format?.value as {
-				value: { samplingRate: number; bits: number; channels: number };
-			}
-		).value;
-		expect(audioFormat.samplingRate).toBe(44100);
-		expect(audioFormat.bits).toBe(16);
-		expect(audioFormat.channels).toBe(2);
+		expect(song?.metadata[Song_MetadataTag.TITLE]?.value).toMatchObject({
+			case: "stringValue",
+			value: { value: "My Track" },
+		});
+		expect(song?.metadata[Song_MetadataTag.TRACK]?.value).toMatchObject({
+			case: "intValue",
+			value: { value: 5 },
+		});
+		expect(song?.metadata[Song_MetadataTag.DISC]?.value).toMatchObject({
+			case: "intValue",
+			value: { value: 1 },
+		});
+		expect(song?.metadata[Song_MetadataTag.FORMAT]?.value).toMatchObject({
+			case: "format",
+			value: { samplingRate: 44100, bits: 16, channels: 2 },
+		});
 	});
 
 	it("returns undefined when file field is missing", () => {
@@ -81,9 +73,10 @@ describe("parseSong", () => {
 		const song = parseSong(raw);
 		expect(song).toBeDefined();
 
-		const title = song?.metadata[Song_MetadataTag.TITLE];
-		expect(title?.value.case).toBe("stringValue");
-		expect((title?.value as { value: { value: string } }).value.value).toBe("");
+		expect(song?.metadata[Song_MetadataTag.TITLE]?.value).toMatchObject({
+			case: "stringValue",
+			value: { value: "" },
+		});
 	});
 
 	it("uses string value for non-numeric track field", () => {
@@ -96,35 +89,28 @@ describe("parseSong", () => {
 	it("parses PCM audio format", () => {
 		const raw = { file: "path/to/song.mp3", format: "96000:24:2" };
 		const song = parseSong(raw);
-		const format = song?.metadata[Song_MetadataTag.FORMAT];
-		const audioFormat = (
-			format?.value as {
-				value: {
-					encoding: number;
-					samplingRate: number;
-					bits: number;
-					channels: number;
-				};
-			}
-		).value;
-		expect(audioFormat.encoding).toBe(AudioFormat_Encoding.PCM);
-		expect(audioFormat.samplingRate).toBe(96000);
-		expect(audioFormat.bits).toBe(24);
-		expect(audioFormat.channels).toBe(2);
+		expect(song?.metadata[Song_MetadataTag.FORMAT]?.value).toMatchObject({
+			case: "format",
+			value: {
+				encoding: AudioFormat_Encoding.PCM,
+				samplingRate: 96000,
+				bits: 24,
+				channels: 2,
+			},
+		});
 	});
 
 	it("parses DSD audio format", () => {
 		const raw = { file: "path/to/song.dsf", format: "dsd256:1" };
 		const song = parseSong(raw);
-		const format = song?.metadata[Song_MetadataTag.FORMAT];
-		const audioFormat = (
-			format?.value as {
-				value: { encoding: number; samplingRate: number; channels: number };
-			}
-		).value;
-		expect(audioFormat.encoding).toBe(AudioFormat_Encoding.DSD);
-		expect(audioFormat.samplingRate).toBe(256);
-		expect(audioFormat.channels).toBe(1);
+		expect(song?.metadata[Song_MetadataTag.FORMAT]?.value).toMatchObject({
+			case: "format",
+			value: {
+				encoding: AudioFormat_Encoding.DSD,
+				samplingRate: 256,
+				channels: 1,
+			},
+		});
 	});
 
 	it("normalizes hyphenated and underscored keys", () => {
@@ -135,19 +121,19 @@ describe("parseSong", () => {
 		};
 		const song = parseSong(raw);
 		expect(song).toBeDefined();
-		const albumArtist = song?.metadata[Song_MetadataTag.ALBUM_ARTIST];
-		expect(
-			(albumArtist?.value as { value: { value: string } }).value.value,
-		).toBe("Artist Name");
+		expect(song?.metadata[Song_MetadataTag.ALBUM_ARTIST]?.value).toMatchObject({
+			case: "stringValue",
+			value: { value: "Artist Name" },
+		});
 	});
 
 	it("joins array values with semicolons", () => {
 		const raw = { file: "path/to/song.mp3", Artist: ["Artist A", "Artist B"] };
 		const song = parseSong(raw);
-		const artist = song?.metadata[Song_MetadataTag.ARTIST];
-		expect((artist?.value as { value: { value: string } }).value.value).toBe(
-			"Artist A; Artist B",
-		);
+		expect(song?.metadata[Song_MetadataTag.ARTIST]?.value).toMatchObject({
+			case: "stringValue",
+			value: { value: "Artist A; Artist B" },
+		});
 	});
 
 	it("parses Added attribute into ADDED_AT timestamp", () => {
@@ -156,13 +142,12 @@ describe("parseSong", () => {
 			Added: "2024-03-15T10:30:00Z",
 		};
 		const song = parseSong(raw);
-		const addedAt = song?.metadata[Song_MetadataTag.ADDED_AT];
-		expect(addedAt?.value.case).toBe("timestamp");
-		const seconds = (addedAt?.value as { value: { seconds: bigint } }).value
-			.seconds;
-		expect(Number(seconds)).toBe(
-			Math.floor(new Date("2024-03-15T10:30:00Z").getTime() / 1000),
-		);
+		expect(song?.metadata[Song_MetadataTag.ADDED_AT]?.value).toMatchObject({
+			case: "timestamp",
+			value: {
+				seconds: BigInt(new Date("2024-03-15T10:30:00Z").getTime() / 1000),
+			},
+		});
 	});
 
 	it("leaves ADDED_AT unset when Added is absent", () => {
