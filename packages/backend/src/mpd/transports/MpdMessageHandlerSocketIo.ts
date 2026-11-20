@@ -10,7 +10,6 @@ import {
 import type { MpdProfile } from "@sola_mpd/shared/src/models/mpd/mpd_profile_pb.js";
 import { MpdProfileSchema } from "@sola_mpd/shared/src/models/mpd/mpd_profile_pb.js";
 import { DeepMap } from "@sola_mpd/shared/src/utils/DeepMap.js";
-import type { Server as IOServer } from "socket.io";
 import {
 	disconnectMpdEventsUseCase,
 	executeMpdCommandBulkUseCase,
@@ -35,7 +34,7 @@ export class MpdMessageHandlerSocketIo implements MpdMessageHandler {
 		this.idEventHandlerMap = new DeepMap();
 	}
 
-	static initialize(_io: IOServer): MpdMessageHandlerSocketIo {
+	static initialize(): MpdMessageHandlerSocketIo {
 		return new MpdMessageHandlerSocketIo();
 	}
 
@@ -51,31 +50,28 @@ export class MpdMessageHandlerSocketIo implements MpdMessageHandler {
 			return;
 		}
 
-		const room = `${targetProfile.host}:${targetProfile.port}`;
+		const target = `${targetProfile.host}:${targetProfile.port}`;
 		const handlerPromise = subscribeMpdEventsUseCase({
 			msg,
 			onEvent: (event) => {
 				connection.emit(SOCKETIO_MPD_EVENT, toBinary(MpdEventSchema, event));
 				if (event.eventType === MpdEvent_EventType.DISCONNECTED) {
 					this.idEventHandlerMap.delete([id, targetProfile]);
-					connection.leave(room);
 				}
 			},
 			mpdClient: mpdClientMpd3,
 		}).then(({ handlerPromise: innerPromise }) => innerPromise);
 
-		connection.join(room);
 		this.idEventHandlerMap.set([id, targetProfile], handlerPromise);
 		try {
 			await handlerPromise;
 		} catch (err) {
 			if (this.idEventHandlerMap.get([id, targetProfile]) === handlerPromise) {
 				this.idEventHandlerMap.delete([id, targetProfile]);
-				connection.leave(room);
 			}
 			throw err;
 		}
-		console.info(`New client registered: ${id} for ${room}`);
+		console.info(`New client registered: ${id} for ${target}`);
 	}
 
 	async unsubscribeEvents(
@@ -97,8 +93,6 @@ export class MpdMessageHandlerSocketIo implements MpdMessageHandler {
 			});
 			if (unsubscribedProfile !== undefined) {
 				this.idEventHandlerMap.delete([id, unsubscribedProfile]);
-				const room = `${unsubscribedProfile.host}:${unsubscribedProfile.port}`;
-				connection.leave(room);
 				console.info(
 					`${id}.${unsubscribedProfile.name} has been unsubscribed.`,
 				);
@@ -122,7 +116,7 @@ export class MpdMessageHandlerSocketIo implements MpdMessageHandler {
 
 	async disconnect(
 		id: string,
-		connection: MpdTransportConnection,
+		_connection: MpdTransportConnection,
 	): Promise<void> {
 		const entries = Array.from(this.idEventHandlerMap).filter(
 			([[keyId]]) => keyId === id,
@@ -130,8 +124,6 @@ export class MpdMessageHandlerSocketIo implements MpdMessageHandler {
 		for (const [key, handlerPromise] of entries) {
 			const [, profile] = key;
 			this.idEventHandlerMap.delete(key);
-			const room = `${profile.host}:${profile.port}`;
-			connection.leave(room);
 			try {
 				await disconnectMpdEventsUseCase({
 					profile,

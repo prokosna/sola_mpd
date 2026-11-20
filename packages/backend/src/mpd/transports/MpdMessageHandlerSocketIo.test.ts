@@ -5,7 +5,6 @@ import {
 	MpdEventSchema,
 } from "@sola_mpd/shared/src/models/mpd/mpd_event_pb.js";
 import { MpdProfileSchema } from "@sola_mpd/shared/src/models/mpd/mpd_profile_pb.js";
-import type { Server as IOServer } from "socket.io";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import type { MpdSubscriptionHandler } from "../services/MpdClient.js";
 
@@ -32,22 +31,17 @@ const msg = toBinary(
 );
 
 const createConnection = () => ({
-	join: vi.fn(),
-	leave: vi.fn(),
 	emit: vi.fn(),
 });
 
 describe("MpdMessageHandlerSocketIo", () => {
-	let roomEmit: ReturnType<typeof vi.fn>;
-	let handler: InstanceType<typeof MpdMessageHandlerSocketIo>;
+	let handler: ReturnType<typeof MpdMessageHandlerSocketIo.initialize>;
 
 	beforeEach(() => {
 		subscribe.mockReset();
 		unsubscribe.mockClear();
 		vi.spyOn(console, "info").mockImplementation(() => {});
-		roomEmit = vi.fn();
-		const io = { to: () => ({ emit: roomEmit }) } as unknown as IOServer;
-		handler = MpdMessageHandlerSocketIo.initialize(io);
+		handler = MpdMessageHandlerSocketIo.initialize();
 	});
 
 	it("does not subscribe twice for the same client and profile", async () => {
@@ -78,8 +72,6 @@ describe("MpdMessageHandlerSocketIo", () => {
 			expect.any(String),
 			toBinary(MpdEventSchema, disconnected),
 		);
-		expect(roomEmit).not.toHaveBeenCalled();
-		expect(connection.leave).toHaveBeenCalledWith("localhost:6600");
 
 		await handler.subscribeEvents("id", msg, connection);
 		expect(subscribe).toHaveBeenCalledTimes(2);
@@ -93,7 +85,6 @@ describe("MpdMessageHandlerSocketIo", () => {
 		await expect(
 			handler.subscribeEvents("id", msg, connection),
 		).rejects.toThrow("MPD is down");
-		expect(connection.leave).toHaveBeenCalledWith("localhost:6600");
 
 		await handler.subscribeEvents("id", msg, connection);
 		expect(subscribe).toHaveBeenCalledTimes(2);
@@ -151,7 +142,6 @@ describe("MpdMessageHandlerSocketIo", () => {
 
 		expect(conn1.emit).toHaveBeenCalledTimes(1);
 		expect(conn2.emit).toHaveBeenCalledTimes(1);
-		expect(roomEmit).not.toHaveBeenCalled();
 	});
 
 	it("cleans up remaining subscriptions in disconnect even if one fails", async () => {

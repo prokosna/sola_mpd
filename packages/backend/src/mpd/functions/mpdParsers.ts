@@ -181,35 +181,19 @@ export function parseSong(v?: Record<string, unknown>): Song | undefined {
 	});
 
 	const lastModified = raw.lastmodified ? raw.lastmodified : undefined;
-	if (lastModified !== undefined) {
-		try {
-			const updatedAt = dayjs(lastModified);
-			if (updatedAt.isValid()) {
-				song.metadata[Song_MetadataTag.UPDATED_AT] = create(
-					Song_MetadataValueSchema,
-					{
-						value: {
-							case: "timestamp",
-							value: timestampFromDate(updatedAt.toDate()),
-						},
-					},
-				);
-			}
-		} catch (_) {
-			// Fall through to empty timestamp below.
-		}
-	}
-	if (song.metadata[Song_MetadataTag.UPDATED_AT] === undefined) {
-		song.metadata[Song_MetadataTag.UPDATED_AT] = create(
-			Song_MetadataValueSchema,
-			{
-				value: {
-					case: "timestamp",
-					value: create(TimestampSchema, undefined),
-				},
+	const updatedAt =
+		lastModified !== undefined ? dayjs(lastModified) : undefined;
+	song.metadata[Song_MetadataTag.UPDATED_AT] = create(
+		Song_MetadataValueSchema,
+		{
+			value: {
+				case: "timestamp",
+				value: updatedAt?.isValid()
+					? timestampFromDate(updatedAt.toDate())
+					: create(TimestampSchema, undefined),
 			},
-		);
-	}
+		},
+	);
 
 	if (raw.added && /^\d{4}-\d{2}-\d{2}/.test(raw.added)) {
 		// MPD emits a negative timestamp for "added time unknown". Require an
