@@ -16,6 +16,8 @@ import {
 } from "../states/atoms/recentlyAddedFiltersAtom";
 import { useUpdateRecentlyAddedFilters } from "./useUpdateRecentlyAddedFilters";
 
+const SCROLL_RETRY_BACKOFF_MS = 5_000;
+
 type RecentlyAddedNavigationProps = {
 	browserFilters?: BrowserFilterView[];
 	browserFilterValues?: Map<Song_MetadataTag, string[]>;
@@ -64,15 +66,33 @@ export function useRecentlyAddedNavigationProps(): RecentlyAddedNavigationProps 
 		}
 	}, [isFast, fastEmpty, fastIdle, fastState.error, loadMore, notify]);
 
+	const lastScrollErrorAtRef = useRef<number | undefined>(undefined);
+	const hadErrorRef = useRef(fastState.error !== undefined);
+	hadErrorRef.current = fastState.error !== undefined;
+
 	const onScrolledNearBottom = useCallback(() => {
-		loadMore().catch((err) => {
-			console.error("Failed to load more recently added songs:", err);
-			notify({
-				status: "error",
-				title: "Failed to load more recently added songs",
-				description: err instanceof Error ? err.message : String(err),
+		if (
+			lastScrollErrorAtRef.current !== undefined &&
+			Date.now() - lastScrollErrorAtRef.current < SCROLL_RETRY_BACKOFF_MS
+		) {
+			return;
+		}
+		const wasInError = hadErrorRef.current;
+		loadMore()
+			.then(() => {
+				lastScrollErrorAtRef.current = undefined;
+			})
+			.catch((err) => {
+				lastScrollErrorAtRef.current = Date.now();
+				console.error("Failed to load more recently added songs:", err);
+				if (!wasInError) {
+					notify({
+						status: "error",
+						title: "Failed to load more recently added songs",
+						description: err instanceof Error ? err.message : String(err),
+					});
+				}
 			});
-		});
 	}, [loadMore, notify]);
 
 	return {
