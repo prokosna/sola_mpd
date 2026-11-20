@@ -181,18 +181,25 @@ export function parseSong(v?: Record<string, unknown>): Song | undefined {
 	});
 
 	const lastModified = raw.lastmodified ? raw.lastmodified : undefined;
-	try {
-		const updatedAt = dayjs(lastModified);
-		song.metadata[Song_MetadataTag.UPDATED_AT] = create(
-			Song_MetadataValueSchema,
-			{
-				value: {
-					case: "timestamp",
-					value: timestampFromDate(updatedAt.toDate()),
-				},
-			},
-		);
-	} catch (_) {
+	if (lastModified !== undefined) {
+		try {
+			const updatedAt = dayjs(lastModified);
+			if (updatedAt.isValid()) {
+				song.metadata[Song_MetadataTag.UPDATED_AT] = create(
+					Song_MetadataValueSchema,
+					{
+						value: {
+							case: "timestamp",
+							value: timestampFromDate(updatedAt.toDate()),
+						},
+					},
+				);
+			}
+		} catch (_) {
+			// Fall through to empty timestamp below.
+		}
+	}
+	if (song.metadata[Song_MetadataTag.UPDATED_AT] === undefined) {
 		song.metadata[Song_MetadataTag.UPDATED_AT] = create(
 			Song_MetadataValueSchema,
 			{
@@ -381,13 +388,17 @@ export function parsePlaylist(
 	playlist.name = name;
 
 	const lastModified = raw.lastmodified ? raw.lastmodified : undefined;
-	try {
-		const updatedAt = dayjs(lastModified);
-		playlist.updatedAt = timestampFromDate(updatedAt.toDate());
-	} catch (e) {
-		console.error(
-			`Failed to parse last-modified: ${e instanceof Error ? e.message : String(e)}`,
-		);
+	if (lastModified !== undefined) {
+		try {
+			const updatedAt = dayjs(lastModified);
+			if (updatedAt.isValid()) {
+				playlist.updatedAt = timestampFromDate(updatedAt.toDate());
+			}
+		} catch (e) {
+			console.error(
+				`Failed to parse last-modified: ${e instanceof Error ? e.message : String(e)}`,
+			);
+		}
 	}
 
 	return playlist;

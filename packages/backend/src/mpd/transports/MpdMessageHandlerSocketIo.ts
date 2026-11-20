@@ -31,12 +31,12 @@ export class MpdMessageHandlerSocketIo implements MpdMessageHandler {
 		Promise<MpdSubscriptionHandler>
 	>;
 
-	private constructor(private io: IOServer) {
+	private constructor() {
 		this.idEventHandlerMap = new DeepMap();
 	}
 
-	static initialize(io: IOServer): MpdMessageHandlerSocketIo {
-		return new MpdMessageHandlerSocketIo(io);
+	static initialize(_io: IOServer): MpdMessageHandlerSocketIo {
+		return new MpdMessageHandlerSocketIo();
 	}
 
 	async subscribeEvents(
@@ -52,19 +52,17 @@ export class MpdMessageHandlerSocketIo implements MpdMessageHandler {
 		}
 
 		const room = `${targetProfile.host}:${targetProfile.port}`;
-		const { handlerPromise } = await subscribeMpdEventsUseCase({
+		const handlerPromise = subscribeMpdEventsUseCase({
 			msg,
 			onEvent: (event) => {
-				this.io
-					.to(room)
-					.emit(SOCKETIO_MPD_EVENT, toBinary(MpdEventSchema, event));
+				connection.emit(SOCKETIO_MPD_EVENT, toBinary(MpdEventSchema, event));
 				if (event.eventType === MpdEvent_EventType.DISCONNECTED) {
 					this.idEventHandlerMap.delete([id, targetProfile]);
 					connection.leave(room);
 				}
 			},
 			mpdClient: mpdClientMpd3,
-		});
+		}).then(({ handlerPromise: innerPromise }) => innerPromise);
 
 		connection.join(room);
 		this.idEventHandlerMap.set([id, targetProfile], handlerPromise);
@@ -107,7 +105,10 @@ export class MpdMessageHandlerSocketIo implements MpdMessageHandler {
 			}
 		} catch (err) {
 			console.error(err);
-			connection.emit(SOCKETIO_MESSAGE, err);
+			connection.emit(
+				SOCKETIO_MESSAGE,
+				err instanceof Error ? err.message : String(err),
+			);
 		}
 	}
 
@@ -123,20 +124,23 @@ export class MpdMessageHandlerSocketIo implements MpdMessageHandler {
 		id: string,
 		connection: MpdTransportConnection,
 	): Promise<void> {
-		for (const [key, handlerPromise] of this.idEventHandlerMap) {
-			const [keyId, profile] = key;
-			if (keyId !== id) {
-				continue;
-			}
-
-			await disconnectMpdEventsUseCase({
-				profile,
-				handlerPromise,
-				mpdClient: mpdClientMpd3,
-			});
+		const entries = Array.from(this.idEventHandlerMap).filter(
+			([[keyId]]) => keyId === id,
+		);
+		for (const [key, handlerPromise] of entries) {
+			const [, profile] = key;
 			this.idEventHandlerMap.delete(key);
 			const room = `${profile.host}:${profile.port}`;
 			connection.leave(room);
+			try {
+				await disconnectMpdEventsUseCase({
+					profile,
+					handlerPromise,
+					mpdClient: mpdClientMpd3,
+				});
+			} catch (err) {
+				console.error(err);
+			}
 		}
 	}
 }
