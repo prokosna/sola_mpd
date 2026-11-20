@@ -53,32 +53,39 @@ export class PluginServiceSocketIo implements PluginService {
 
 		const subject = new Subject<PluginExecuteResponse>();
 
-		this.client.on(reqWrapper.callbackEvent, (data: Uint8Array) => {
+		void (async () => {
 			try {
-				const resp = fromBinary(PluginExecuteResponseWrapperSchema, data);
-				switch (resp.result.case) {
-					case "response":
-						subject.next(resp.result.value);
-						break;
-					case "complete":
-						subject.complete();
+				await this.client.on(reqWrapper.callbackEvent, (data: Uint8Array) => {
+					try {
+						const resp = fromBinary(PluginExecuteResponseWrapperSchema, data);
+						switch (resp.result.case) {
+							case "response":
+								subject.next(resp.result.value);
+								break;
+							case "complete":
+								subject.complete();
+								this.client.off(reqWrapper.callbackEvent);
+								break;
+							case "error":
+								subject.error(new Error(resp.result.value));
+								this.client.off(reqWrapper.callbackEvent);
+								break;
+							default:
+								subject.error(new Error("No plugin execution result"));
+								this.client.off(reqWrapper.callbackEvent);
+								break;
+						}
+					} catch (e) {
+						subject.error(e);
 						this.client.off(reqWrapper.callbackEvent);
-						break;
-					case "error":
-						subject.error(new Error(resp.result.value));
-						this.client.off(reqWrapper.callbackEvent);
-						break;
-					default:
-						subject.error(new Error("No plugin execution result"));
-						break;
-				}
+					}
+				});
+				await this.client.emit(SOCKETIO_PLUGIN_EXECUTE, bytes);
 			} catch (e) {
-				subject.error(e);
 				this.client.off(reqWrapper.callbackEvent);
+				subject.error(e);
 			}
-		});
-
-		this.client.emit(SOCKETIO_PLUGIN_EXECUTE, bytes);
+		})();
 
 		return subject;
 	};

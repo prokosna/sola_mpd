@@ -5,7 +5,6 @@ import {
 	MpdEventSchema,
 } from "@sola_mpd/shared/src/models/mpd/mpd_event_pb.js";
 import { MpdProfileSchema } from "@sola_mpd/shared/src/models/mpd/mpd_profile_pb.js";
-import type { Server as IOServer } from "socket.io";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import type { MpdSubscriptionHandler } from "../services/MpdClient.js";
 
@@ -32,22 +31,17 @@ const msg = toBinary(
 );
 
 const createConnection = () => ({
-	join: vi.fn(),
-	leave: vi.fn(),
 	emit: vi.fn(),
 });
 
 describe("MpdMessageHandlerSocketIo", () => {
-	let roomEmit: ReturnType<typeof vi.fn>;
-	let handler: InstanceType<typeof MpdMessageHandlerSocketIo>;
+	let handler: ReturnType<typeof MpdMessageHandlerSocketIo.initialize>;
 
 	beforeEach(() => {
 		subscribe.mockReset();
 		unsubscribe.mockClear();
 		vi.spyOn(console, "info").mockImplementation(() => {});
-		roomEmit = vi.fn();
-		const io = { to: () => ({ emit: roomEmit }) } as unknown as IOServer;
-		handler = MpdMessageHandlerSocketIo.initialize(io);
+		handler = MpdMessageHandlerSocketIo.initialize();
 	});
 
 	it("does not subscribe twice for the same client and profile", async () => {
@@ -74,11 +68,10 @@ describe("MpdMessageHandlerSocketIo", () => {
 		});
 		onEvent(disconnected);
 
-		expect(roomEmit).toHaveBeenCalledWith(
+		expect(connection.emit).toHaveBeenCalledWith(
 			expect.any(String),
 			toBinary(MpdEventSchema, disconnected),
 		);
-		expect(connection.leave).toHaveBeenCalledWith("localhost:6600");
 
 		await handler.subscribeEvents("id", msg, connection);
 		expect(subscribe).toHaveBeenCalledTimes(2);
@@ -92,7 +85,6 @@ describe("MpdMessageHandlerSocketIo", () => {
 		await expect(
 			handler.subscribeEvents("id", msg, connection),
 		).rejects.toThrow("MPD is down");
-		expect(connection.leave).toHaveBeenCalledWith("localhost:6600");
 
 		await handler.subscribeEvents("id", msg, connection);
 		expect(subscribe).toHaveBeenCalledTimes(2);
@@ -115,5 +107,64 @@ describe("MpdMessageHandlerSocketIo", () => {
 		await expect(first).rejects.toThrow("MPD is down");
 		await expect(second).rejects.toThrow("MPD is down");
 		expect(subscribe).toHaveBeenCalledTimes(1);
+	});
+
+	it("deduplicates concurrent subscribe calls in the same tick", async () => {
+		subscribe.mockResolvedValue(() => {});
+		const connection = createConnection();
+
+		await Promise.all([
+			handler.subscribeEvents("id", msg, connection),
+			handler.subscribeEvents("id", msg, connection),
+		]);
+
+		expect(subscribe).toHaveBeenCalledTimes(1);
+	});
+
+	it("delivers events only to the subscribed connection instead of broadcasting to the room", async () => {
+		const callbacks: Array<(event: MpdEvent) => void> = [];
+		subscribe.mockImplementation(async (_, callback) => {
+			callbacks.push(callback);
+			return () => {};
+		});
+		const conn1 = createConnection();
+		const conn2 = createConnection();
+
+		await handler.subscribeEvents("client-1", msg, conn1);
+		await handler.subscribeEvents("client-2", msg, conn2);
+
+		const update = create(MpdEventSchema, {
+			eventType: MpdEvent_EventType.PLAYER,
+		});
+		for (const cb of callbacks) {
+			cb(update);
+		}
+
+		expect(conn1.emit).toHaveBeenCalledTimes(1);
+		expect(conn2.emit).toHaveBeenCalledTimes(1);
+	});
+
+	it("cleans up remaining subscriptions in disconnect even if one fails", async () => {
+		const errorSpy = vi.spyOn(console, "error").mockImplementation(() => {});
+		const msg2 = toBinary(
+			MpdProfileSchema,
+			create(MpdProfileSchema, {
+				name: "second",
+				host: "localhost",
+				port: 6601,
+			}),
+		);
+		subscribe
+			.mockRejectedValueOnce(new Error("first failed"))
+			.mockResolvedValueOnce(() => {});
+		const connection = createConnection();
+
+		const first = handler.subscribeEvents("id", msg, connection);
+		await handler.subscribeEvents("id", msg2, connection);
+		await expect(first).rejects.toThrow("first failed");
+
+		await handler.disconnect("id", connection);
+		expect(unsubscribe).toHaveBeenCalledTimes(1);
+		errorSpy.mockRestore();
 	});
 });

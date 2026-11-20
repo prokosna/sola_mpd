@@ -36,9 +36,20 @@ class ViewStateBlobRepositoryFile implements ViewStateBlobRepository {
 	private readDocument(): ViewStateBlobDocument {
 		try {
 			const fileContent = fs.readFileSync(this.localFilePath, "utf-8");
-			return JSON.parse(fileContent) as ViewStateBlobDocument;
-		} catch (_) {
-			return {};
+			const parsed: unknown = JSON.parse(fileContent);
+			if (
+				typeof parsed !== "object" ||
+				parsed === null ||
+				Array.isArray(parsed)
+			) {
+				throw new Error("View state blob store must be a JSON object");
+			}
+			return parsed as ViewStateBlobDocument;
+		} catch (err) {
+			if ((err as NodeJS.ErrnoException).code === "ENOENT") {
+				return {};
+			}
+			throw err;
 		}
 	}
 
@@ -53,16 +64,21 @@ class ViewStateBlobRepositoryFile implements ViewStateBlobRepository {
 			dirPath,
 			`.${path.basename(this.localFilePath)}.${process.pid}.${Date.now()}.tmp`,
 		);
-		fs.writeFileSync(tempFilePath, JSON.stringify(document, null, 2));
-		fs.renameSync(tempFilePath, this.localFilePath);
+		try {
+			fs.writeFileSync(tempFilePath, JSON.stringify(document, undefined, 2));
+			fs.renameSync(tempFilePath, this.localFilePath);
+		} catch (err) {
+			fs.rmSync(tempFilePath, { force: true });
+			throw err;
+		}
 	}
 
 	get = (token: string): ViewStateBlobEntry | undefined => {
 		const document = this.readDocument();
-		const entry = document[token];
-		if (entry === undefined) {
+		if (!Object.hasOwn(document, token)) {
 			return undefined;
 		}
+		const entry = document[token];
 
 		const refreshedEntry: ViewStateBlobEntry = {
 			...entry,
@@ -75,7 +91,7 @@ class ViewStateBlobRepositoryFile implements ViewStateBlobRepository {
 
 	put = (token: string, data: string): void => {
 		const document = this.readDocument();
-		if (document[token] !== undefined) {
+		if (Object.hasOwn(document, token)) {
 			return;
 		}
 

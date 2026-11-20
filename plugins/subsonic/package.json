@@ -6,7 +6,7 @@
 	"license": "MIT",
 	"type": "module",
 	"scripts": {
-		"build": "tsdown",
+		"build": "tsc --noEmit && tsdown",
 		"start": "node dist/index.mjs",
 		"dev": "tsdown --watch --onSuccess 'node dist/index.mjs'",
 		"test": "vitest run --passWithNoTests"

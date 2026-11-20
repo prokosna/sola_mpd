@@ -4,6 +4,7 @@ import { fileURLToPath, pathToFileURL } from "node:url";
 import {
 	app,
 	BrowserWindow,
+	dialog,
 	Menu,
 	net,
 	protocol,
@@ -65,10 +66,23 @@ app.whenReady().then(async () => {
 
 	// Set working directory to userData so backend's relative "./db/..." paths
 	// resolve to the OS-specific user data directory.
-	process.chdir(app.getPath("userData"));
+	const userDataPath = app.getPath("userData");
+	process.chdir(userDataPath);
 
 	// Dynamic import after chdir so backend singletons use the correct DB path.
-	const { initializeIpcManager } = await import("../ipc/index.mjs");
+	let initializeIpcManager: (window: BrowserWindow) => void;
+	try {
+		({ initializeIpcManager } = await import("../ipc/index.js"));
+	} catch (err) {
+		const message = err instanceof Error ? err.message : String(err);
+		const dbDir = path.join(userDataPath, "db");
+		dialog.showErrorBox(
+			"Sola MPD failed to start",
+			`${message}\n\nData directory: ${dbDir}`,
+		);
+		app.quit();
+		return;
+	}
 
 	const mainWindow = createWindow();
 	initializeIpcManager(mainWindow);

@@ -49,10 +49,10 @@ const createSubsonicApi = (overrides?: Partial<SubsonicApi>): SubsonicApi => ({
 
 const playlist: SubsonicPlaylist = { id: "pl-1", name: "Test" };
 
-const collectResponses = async (
-	gen: AsyncGenerator<unknown, void, unknown>,
-) => {
-	const results = [];
+const collectResponses = async <T>(
+	gen: AsyncGenerator<T, void, unknown>,
+): Promise<T[]> => {
+	const results: T[] = [];
 	for await (const r of gen) {
 		results.push(r);
 	}

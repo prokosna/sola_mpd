@@ -37,32 +37,45 @@ export function useAgGridReactData(
 } {
 	const localeCollator = useAtomValue(localeCollatorAtom);
 
-	const rowData = useMemo(() => {
+	const columnTagsKey = columns.map((c) => c.tag).join(",");
+	// biome-ignore lint/correctness/useExhaustiveDependencies: Keyed by tag list so width/sort changes don't rebuild all rows.
+	const columnTags = useMemo(() => columns.map((c) => c.tag), [columnTagsKey]);
+
+	const compactRowData = useMemo(() => {
+		if (!isCompact) {
+			return undefined;
+		}
+		return (
+			isSortingEnabled
+				? sortSongsByColumns(songs, columns, localeCollator)
+				: songs
+		).map((song) => {
+			const row: SongTableRowData = {};
+			row.key = getSongTableKey(song, keyType);
+			row[SONGS_TAG_COMPACT] = convertSongForGridRowValueCompact(song);
+			return row;
+		});
+	}, [isCompact, isSortingEnabled, songs, columns, keyType, localeCollator]);
+
+	const fullRowData = useMemo(() => {
 		if (isCompact) {
-			return (
-				isSortingEnabled
-					? sortSongsByColumns(songs, columns, localeCollator)
-					: songs
-			).map((song) => {
-				const row: SongTableRowData = {};
-				row.key = getSongTableKey(song, keyType);
-				row[SONGS_TAG_COMPACT] = convertSongForGridRowValueCompact(song);
-				return row;
-			});
+			return undefined;
 		}
 		return songs.map((song) => {
 			const row: SongTableRowData = {};
 			row.key = getSongTableKey(song, keyType);
-			for (const column of columns) {
-				const [tag, value] = convertSongMetadataForGridRowValue(
-					column.tag,
-					song.metadata[column.tag],
+			for (const tag of columnTags) {
+				const [displayTag, value] = convertSongMetadataForGridRowValue(
+					tag,
+					song.metadata[tag],
 				);
-				row[tag] = value;
+				row[displayTag] = value;
 			}
 			return row;
 		});
-	}, [isCompact, isSortingEnabled, songs, columns, keyType, localeCollator]);
+	}, [isCompact, songs, columnTags, keyType]);
+
+	const rowData = (isCompact ? compactRowData : fullRowData) ?? [];
 
 	const columnDefs = useMemo(() => {
 		if (isCompact) {

@@ -77,11 +77,14 @@ export function filterStringsByGlobalFilter(
 	if (filterTokens.length === 0) {
 		return strings;
 	}
+	const shouldIncludeSet = new Set(shouldInclude);
 	return strings.filter((str) => {
+		if (shouldIncludeSet.has(str)) {
+			return true;
+		}
 		const representation = normalize(str);
-		return (
-			shouldInclude.includes(str) ||
-			filterTokens.every((filterToken) => representation.includes(filterToken))
+		return filterTokens.every((filterToken) =>
+			representation.includes(filterToken),
 		);
 	});
 }

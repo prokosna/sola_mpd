@@ -1,7 +1,7 @@
 import {
 	convertAudioFormatToString,
 	getSongMetadataAsAudioFormat,
-	getSongMetadataAsStringOrEmpty,
+	getSongMetadataAsString,
 	getSongMetadataAsTimestampMs,
 } from "@sola_mpd/shared/src/functions/songMetadata.js";
 import {
@@ -65,8 +65,7 @@ function readFormat(song: Song): string {
  * correctly.
  */
 export function songToRow(song: Song): IndexedSongRow {
-	const s = (tag: Song_MetadataTag) =>
-		getSongMetadataAsStringOrEmpty(song, tag);
+	const s = (tag: Song_MetadataTag) => getSongMetadataAsString(song, tag);
 	const date = s(Song_MetadataTag.DATE);
 	return {
 		path: song.path,

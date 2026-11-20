@@ -1,6 +1,4 @@
 export type MpdTransportConnection = {
-	join: (room: string) => void;
-	leave: (room: string) => void;
 	emit: (event: string, payload: unknown) => void;
 };
 
