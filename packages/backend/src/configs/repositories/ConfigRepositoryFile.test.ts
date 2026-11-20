@@ -407,19 +407,16 @@ describe("ConfigRepositoryFile default documents", () => {
 		]);
 	});
 
-	it("does not overwrite a corrupt config file on load", async () => {
+	it("fails fast with remediation guidance without overwriting a corrupt config file", async () => {
 		const dbDir = path.join(tempDir, "db");
 		fs.mkdirSync(dbDir, { recursive: true });
 		const filePath = path.join(dbDir, "mpd_profile_state.json");
 		fs.writeFileSync(filePath, "{corrupt json");
 
-		const { mpdProfileStateRepository } = await import(
-			"./ConfigRepositoryFile.js"
+		await expect(import("./ConfigRepositoryFile.js")).rejects.toThrow(
+			/Failed to load config file .*mpd_profile_state\.json.*Fix or restore/,
 		);
-
-		expect(mpdProfileStateRepository.get().profiles).toEqual([]);
 		expect(fs.readFileSync(filePath, "utf-8")).toBe("{corrupt json");
-		expect(errorSpy).toHaveBeenCalled();
 	});
 
 	it("keeps localCache unchanged and cleans up temp file if renameSync fails", async () => {

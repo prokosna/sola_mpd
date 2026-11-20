@@ -116,15 +116,16 @@ class ConfigRepositoryFile<T extends Message & { schemaVersion: number }>
 				ignoreUnknownFields: true,
 			});
 		} catch (err) {
-			this.localCache = defaultValue;
 			if ((err as NodeJS.ErrnoException).code === "ENOENT") {
+				this.localCache = defaultValue;
 				this.save(defaultValue);
-			} else {
-				console.error(
-					`Failed to load config file "${this.localFilePath}"; using defaults in memory without overwriting disk:`,
-					err,
-				);
+				return;
 			}
+			const reason = err instanceof Error ? err.message : String(err);
+			throw new Error(
+				`Failed to load config file "${this.localFilePath}": ${reason}. Fix or restore the file from backup, or move/delete it to reset this config to defaults.`,
+				{ cause: err },
+			);
 		}
 	}
 
