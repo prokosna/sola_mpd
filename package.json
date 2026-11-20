@@ -1,6 +1,6 @@
 {
 	"name": "sola_mpd",
-	"version": "4.14.1",
+	"version": "4.14.2",
 	"private": true,
 	"author": "prokosna",
 	"license": "MIT",
@@ -39,11 +39,11 @@
 		}
 	},
 	"devDependencies": {
-		"@biomejs/biome": "2.6.8",
+		"@biomejs/biome": "2.4.14",
 		"clang-format": "^1.8.0",
 		"husky": "^9.1.7",
-		"lint-staged": "^17.6.1",
+		"lint-staged": "^16.4.0",
 		"typescript": "^6.0.3",
-		"vitest": "^5.1.1"
+		"vitest": "^4.1.12"
 	}
 }
