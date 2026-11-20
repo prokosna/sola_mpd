@@ -5,6 +5,25 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [4.14.2](https://github.com/prokosna/sola_mpd/compare/v4.14.1...v4.14.2) (2026-11-20)
+
+
+### Bug Fixes
+
+* **backend:** fix MPD event amplification, listAllSongs cache race, and missing Last-Modified parsing ([#425](https://github.com/prokosna/sola_mpd/issues/425)) ([55adfab](https://github.com/prokosna/sola_mpd/commit/55adfab8109015e7fc9b981bf8ed34a944cb0841))
+* **backend:** prevent data loss and prototype lookup in file repositories ([#424](https://github.com/prokosna/sola_mpd/issues/424)) ([6bf26c9](https://github.com/prokosna/sola_mpd/commit/6bf26c92a38940f12c10b57a348b472a0533b598))
+* **desktop:** harden sola:// protocol, window bounds, preload off(), and plugin execute IPC ([#430](https://github.com/prokosna/sola_mpd/issues/430)) ([872a91b](https://github.com/prokosna/sola_mpd/commit/872a91b43173b5a3784287fb189706b1bf95b50a))
+* **docker:** use the pnpm version from packageManager ([#443](https://github.com/prokosna/sola_mpd/issues/443)) ([b136e4b](https://github.com/prokosna/sola_mpd/commit/b136e4b1bc5fe7bbc2666debc7ebc14f9d3618fb))
+* **frontend:** fix progressive loader retry/profile races and async lifecycle bugs ([#427](https://github.com/prokosna/sola_mpd/issues/427)) ([302d098](https://github.com/prokosna/sola_mpd/commit/302d098bd128b4437a76d23aefe90fe5b127e90c))
+* **select_list:** show a selection restored from the URL after reload ([#442](https://github.com/prokosna/sola_mpd/issues/442)) ([9296417](https://github.com/prokosna/sola_mpd/commit/929641743724561ae68e40d7860045dc9be96b80))
+* **shared:** guard missing song metadata tags and add comparator tests ([#426](https://github.com/prokosna/sola_mpd/issues/426)) ([74fc3b1](https://github.com/prokosna/sola_mpd/commit/74fc3b1ea0391f4cad0e26b3d39e9717477d2c28))
+* **subsonic:** validate parameters, check HTTP/API errors, and add request timeouts ([#429](https://github.com/prokosna/sola_mpd/issues/429)) ([81e2b35](https://github.com/prokosna/sola_mpd/commit/81e2b358dbdd3a0f93d7a06a26cfa2a6648fb431))
+
+
+### Performance Improvements
+
+* **frontend:** eliminate O(N^2) loops, full-table selection scans, and resize listener churn ([#428](https://github.com/prokosna/sola_mpd/issues/428)) ([f0434f0](https://github.com/prokosna/sola_mpd/commit/f0434f0a8a5dafea7fcdb370f97b6090fc5511c6))
+
 ## [4.14.1](https://github.com/prokosna/sola_mpd/compare/v4.14.0...v4.14.1) (2026-10-28)
 
 
