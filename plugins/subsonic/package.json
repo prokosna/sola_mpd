@@ -14,7 +14,7 @@
 	"devDependencies": {
 		"@types/express": "^5.0.6",
 		"@types/node": "^25.9.9",
-		"tsdown": "^0.21.10"
+		"tsdown": "^0.23.7"
 	},
 	"dependencies": {
 		"@bufbuild/protobuf": "^2.16.0",
