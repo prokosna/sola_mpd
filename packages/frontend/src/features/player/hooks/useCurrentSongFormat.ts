@@ -13,7 +13,7 @@ export function useCurrentSongFormat() {
 			return classifyAudioFormat(undefined);
 		}
 		const format = song.metadata[Song_MetadataTag.FORMAT];
-		if (format.value.case === "format") {
+		if (format?.value.case === "format") {
 			return classifyAudioFormat(format.value.value);
 		}
 		return classifyAudioFormat(undefined);

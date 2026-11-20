@@ -77,7 +77,9 @@ export function useAllSongsSongTableProps(
 	const fastIdle = !fastState.isLoading && fastState.hasMore;
 	useEffect(() => {
 		if (isFast && fastIdle) {
-			loadAllSongsFast();
+			loadAllSongsFast().catch((err) => {
+				console.error("Failed to load all songs:", err);
+			});
 		}
 	}, [isFast, fastIdle, loadAllSongsFast]);
 

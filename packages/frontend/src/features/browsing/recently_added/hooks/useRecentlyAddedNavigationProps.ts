@@ -41,12 +41,16 @@ export function useRecentlyAddedNavigationProps(): RecentlyAddedNavigationProps 
 	const fastIdle = !fastState.isLoading && fastState.hasMore;
 	useEffect(() => {
 		if (isFast && fastEmpty && fastIdle) {
-			loadMore();
+			loadMore().catch((err) => {
+				console.error("Failed to load recently added songs:", err);
+			});
 		}
 	}, [isFast, fastEmpty, fastIdle, loadMore]);
 
 	const onScrolledNearBottom = useCallback(() => {
-		loadMore();
+		loadMore().catch((err) => {
+			console.error("Failed to load more recently added songs:", err);
+		});
 	}, [loadMore]);
 
 	return {
