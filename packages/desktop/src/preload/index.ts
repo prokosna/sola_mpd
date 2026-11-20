@@ -63,6 +63,12 @@ contextBridge.exposeInMainWorld("__SOLA_IPC_BRIDGE__", {
 	},
 
 	off: (channel: string): void => {
+		if (
+			!ALLOWED_RECEIVE_CHANNELS.has(channel) &&
+			!isPluginCallbackChannel(channel)
+		) {
+			throw new Error(`IPC channel not allowed: ${channel}`);
+		}
 		ipcRenderer.removeAllListeners(channel);
 	},
 });

@@ -25,7 +25,10 @@ import {
 } from "@sola_mpd/shared/src/models/mpd/mpd_event_pb.js";
 import type { MpdProfile } from "@sola_mpd/shared/src/models/mpd/mpd_profile_pb.js";
 import { MpdProfileSchema } from "@sola_mpd/shared/src/models/mpd/mpd_profile_pb.js";
-import { PluginExecuteResponseWrapperSchema } from "@sola_mpd/shared/src/models/plugin/plugin_wrapper_pb.js";
+import {
+	PluginExecuteRequestWrapperSchema,
+	PluginExecuteResponseWrapperSchema,
+} from "@sola_mpd/shared/src/models/plugin/plugin_wrapper_pb.js";
 import { DeepMap } from "@sola_mpd/shared/src/utils/DeepMap.js";
 import type { BrowserWindow } from "electron";
 import { ipcMain } from "electron";
@@ -243,32 +246,36 @@ function registerIpcHandlers(): void {
 		SOCKETIO_PLUGIN_EXECUTE,
 		async (event, msg: Uint8Array): Promise<Uint8Array> => {
 			const sender = event.sender;
-			let lastCallbackEvent: string | undefined;
-			try {
-				for await (const [callbackEvent, resp] of executePluginUseCase(
-					msg,
-					pluginClientConnect,
-				)) {
-					lastCallbackEvent = callbackEvent;
-					if (!sender.isDestroyed()) {
-						sender.send(callbackEvent, resp);
+			const reqWrapper = fromBinary(PluginExecuteRequestWrapperSchema, msg);
+			const callbackEvent = reqWrapper.callbackEvent;
+
+			void (async () => {
+				try {
+					for await (const [eventChannel, resp] of executePluginUseCase(
+						msg,
+						pluginClientConnect,
+					)) {
+						if (!sender.isDestroyed()) {
+							sender.send(eventChannel, resp);
+						}
+					}
+				} catch (err) {
+					console.error(err);
+					if (callbackEvent && !sender.isDestroyed()) {
+						const errorWrapper = create(PluginExecuteResponseWrapperSchema, {
+							result: {
+								case: "error",
+								value: err instanceof Error ? err.message : String(err),
+							},
+						});
+						sender.send(
+							callbackEvent,
+							toBinary(PluginExecuteResponseWrapperSchema, errorWrapper),
+						);
 					}
 				}
-			} catch (err) {
-				console.error(err);
-				if (lastCallbackEvent !== undefined && !sender.isDestroyed()) {
-					const errorWrapper = create(PluginExecuteResponseWrapperSchema, {
-						result: {
-							case: "error",
-							value: err instanceof Error ? err.message : String(err),
-						},
-					});
-					sender.send(
-						lastCallbackEvent,
-						toBinary(PluginExecuteResponseWrapperSchema, errorWrapper),
-					);
-				}
-			}
+			})();
+
 			return new Uint8Array(0);
 		},
 	);

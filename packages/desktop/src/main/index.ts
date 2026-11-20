@@ -1,7 +1,15 @@
 import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
-import { app, BrowserWindow, Menu, net, protocol } from "electron";
+import {
+	app,
+	BrowserWindow,
+	Menu,
+	net,
+	protocol,
+	screen,
+	shell,
+} from "electron";
 
 Menu.setApplicationMenu(null);
 
@@ -31,16 +39,25 @@ protocol.registerSchemesAsPrivileged([
 app.whenReady().then(async () => {
 	protocol.handle("sola", async (request) => {
 		const url = new URL(request.url);
-		let filePath = path.join(getRendererPath(), url.pathname);
+		const rendererRoot = path.resolve(getRendererPath());
+		const normalizedPathname = url.pathname.replaceAll("\\", "/");
+		let filePath = path.resolve(rendererRoot, `.${normalizedPathname}`);
+		const isInsideRenderer =
+			filePath === rendererRoot ||
+			filePath.startsWith(`${rendererRoot}${path.sep}`);
 
-		// SPA fallback: serve index.html for paths that don't match a file.
-		try {
-			const stat = await fs.promises.stat(filePath);
-			if (stat.isDirectory()) {
-				filePath = path.join(filePath, "index.html");
+		if (!isInsideRenderer) {
+			filePath = path.join(rendererRoot, "index.html");
+		} else {
+			// SPA fallback: serve index.html for paths that don't match a file.
+			try {
+				const stat = await fs.promises.stat(filePath);
+				if (stat.isDirectory()) {
+					filePath = path.join(filePath, "index.html");
+				}
+			} catch {
+				filePath = path.join(rendererRoot, "index.html");
 			}
-		} catch {
-			filePath = path.join(getRendererPath(), "index.html");
 		}
 
 		return net.fetch(pathToFileURL(filePath).toString());
@@ -84,16 +101,41 @@ function getWindowStatePath(): string {
 	return path.join(app.getPath("userData"), "window-state.json");
 }
 
+function isVisibleOnAnyDisplay(
+	x: number,
+	y: number,
+	width: number,
+	height: number,
+): boolean {
+	return screen.getAllDisplays().some(({ workArea }) => {
+		return (
+			x < workArea.x + workArea.width &&
+			x + width > workArea.x &&
+			y < workArea.y + workArea.height &&
+			y + height > workArea.y
+		);
+	});
+}
+
 function loadWindowState(): WindowState {
 	try {
 		const raw = fs.readFileSync(getWindowStatePath(), "utf-8");
 		const parsed = JSON.parse(raw) as Partial<WindowState>;
-		if (typeof parsed.width === "number" && typeof parsed.height === "number") {
+		if (
+			typeof parsed.width === "number" &&
+			typeof parsed.height === "number" &&
+			parsed.width >= 200 &&
+			parsed.height >= 200
+		) {
+			const hasPosition =
+				typeof parsed.x === "number" &&
+				typeof parsed.y === "number" &&
+				isVisibleOnAnyDisplay(parsed.x, parsed.y, parsed.width, parsed.height);
 			return {
 				width: parsed.width,
 				height: parsed.height,
-				x: typeof parsed.x === "number" ? parsed.x : undefined,
-				y: typeof parsed.y === "number" ? parsed.y : undefined,
+				x: hasPosition ? parsed.x : undefined,
+				y: hasPosition ? parsed.y : undefined,
 				isMaximized: parsed.isMaximized === true,
 			};
 		}
@@ -133,7 +175,27 @@ function createWindow(): BrowserWindow {
 			preload: path.join(__dirname, "..", "preload", "index.cjs"),
 			contextIsolation: true,
 			nodeIntegration: false,
+			sandbox: true,
+			webSecurity: true,
 		},
+	});
+
+	mainWindow.webContents.setWindowOpenHandler(({ url }) => {
+		try {
+			const parsed = new URL(url);
+			if (parsed.protocol === "http:" || parsed.protocol === "https:") {
+				void shell.openExternal(url);
+			}
+		} catch {
+			// Ignore invalid URLs.
+		}
+		return { action: "deny" };
+	});
+
+	mainWindow.webContents.on("will-navigate", (event, url) => {
+		if (!url.startsWith("sola://app/")) {
+			event.preventDefault();
+		}
 	});
 
 	if (state.isMaximized) {
