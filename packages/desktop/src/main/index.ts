@@ -51,7 +51,7 @@ app.whenReady().then(async () => {
 	process.chdir(app.getPath("userData"));
 
 	// Dynamic import after chdir so backend singletons use the correct DB path.
-	const { initializeIpcManager } = await import("../ipc/index.mjs");
+	const { initializeIpcManager } = await import("../ipc/index.js");
 
 	const mainWindow = createWindow();
 	initializeIpcManager(mainWindow);

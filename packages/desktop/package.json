@@ -6,7 +6,7 @@
 	"type": "module",
 	"main": "dist/main/index.mjs",
 	"scripts": {
-		"build": "tsdown",
+		"build": "tsc --noEmit && tsdown",
 		"build:no_types": "tsdown",
 		"dev": "tsdown && ELECTRON_RUN_AS_NODE= electron dist/main/index.mjs --no-sandbox",
 		"dist": "node scripts/dist.mjs",

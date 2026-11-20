@@ -39,7 +39,7 @@ const createConnection = () => ({
 
 describe("MpdMessageHandlerSocketIo", () => {
 	let roomEmit: ReturnType<typeof vi.fn>;
-	let handler: InstanceType<typeof MpdMessageHandlerSocketIo>;
+	let handler: ReturnType<typeof MpdMessageHandlerSocketIo.initialize>;
 
 	beforeEach(() => {
 		subscribe.mockReset();
