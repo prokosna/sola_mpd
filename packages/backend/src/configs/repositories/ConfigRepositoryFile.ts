@@ -111,7 +111,7 @@ class ConfigRepositoryFile<T extends Message & { schemaVersion: number }>
 				}
 			}
 			// Without this, a field the schema no longer knows rejects the whole
-			// document and the catch below replaces it with the defaults.
+			// document and the catch below fails startup.
 			this.localCache = fromJson(schema, fileContentJson, {
 				ignoreUnknownFields: true,
 			});
@@ -123,7 +123,7 @@ class ConfigRepositoryFile<T extends Message & { schemaVersion: number }>
 			}
 			const reason = err instanceof Error ? err.message : String(err);
 			throw new Error(
-				`Failed to load config file "${this.localFilePath}": ${reason}. Fix or restore the file from backup, or move/delete it to reset this config to defaults.`,
+				`Failed to load config file "${path.resolve(this.localFilePath)}": ${reason}. Fix or restore the file from backup, or move/delete it to reset this config to defaults.`,
 				{ cause: err },
 			);
 		}
