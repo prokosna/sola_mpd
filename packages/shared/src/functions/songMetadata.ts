@@ -17,6 +17,10 @@ import {
 	Song_MetadataValueSchema,
 } from "../models/song_pb.js";
 
+/**
+ * Returns the string representation of a metadata tag, or an empty string when
+ * the tag is absent from `song.metadata`.
+ */
 export function getSongMetadataAsString(
 	song: Song,
 	tag: Song_MetadataTag,
@@ -55,20 +59,6 @@ export function getSongMetadataAsNumber(
 			return value.value.value.samplingRate;
 	}
 	return undefined;
-}
-
-/**
- * Like `getSongMetadataAsString` but returns an empty string when the tag is
- * absent from `song.metadata` instead of crashing on an undefined value.
- */
-export function getSongMetadataAsStringOrEmpty(
-	song: Song,
-	tag: Song_MetadataTag,
-): string {
-	if (song.metadata[tag] === undefined) {
-		return "";
-	}
-	return getSongMetadataAsString(song, tag);
 }
 
 /**

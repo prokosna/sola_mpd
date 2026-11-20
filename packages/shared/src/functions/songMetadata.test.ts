@@ -26,7 +26,6 @@ import {
 	getSongMetadataAsAudioFormat,
 	getSongMetadataAsNumber,
 	getSongMetadataAsString,
-	getSongMetadataAsStringOrEmpty,
 	getSongMetadataAsTimestampMs,
 	listAllSongMetadataTags,
 } from "./songMetadata.js";
@@ -235,7 +234,7 @@ describe("songMetadata", () => {
 		expect(tags).toContain(Song_MetadataTag.ALBUM_ARTIST);
 	});
 
-	it("getSongMetadataAsStringOrEmpty returns '' for absent tag, value otherwise", () => {
+	it("getSongMetadataAsString returns '' for absent tag, value otherwise", () => {
 		const song = create(SongSchema, {
 			metadata: {
 				[Song_MetadataTag.TITLE]: create(Song_MetadataValueSchema, {
@@ -246,12 +245,8 @@ describe("songMetadata", () => {
 				}),
 			},
 		});
-		expect(getSongMetadataAsStringOrEmpty(song, Song_MetadataTag.TITLE)).toBe(
-			"Hello",
-		);
-		expect(getSongMetadataAsStringOrEmpty(song, Song_MetadataTag.ALBUM)).toBe(
-			"",
-		);
+		expect(getSongMetadataAsString(song, Song_MetadataTag.TITLE)).toBe("Hello");
+		expect(getSongMetadataAsString(song, Song_MetadataTag.ALBUM)).toBe("");
 	});
 
 	it("getSongMetadataAsTimestampMs returns ms or undefined", () => {
