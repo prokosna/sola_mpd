@@ -33,6 +33,9 @@ jobs:
           node-version: ${{ matrix.node-version }}
           cache: pnpm
 
+      - name: Install xvfb and mpd
+        run: sudo apt-get update && sudo apt-get install -y xvfb mpd
+
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
       - name: Run biome check
@@ -50,7 +53,19 @@ jobs:
         run: pnpm build
       - name: Run unit tests
         run: pnpm test
-      - name: Run desktop smoke test
-        run: pnpm --filter @sola_mpd/desktop test:e2e
+      - name: Package desktop app (unpacked)
+        run: pnpm --filter @sola_mpd/desktop dist --dir
+      - name: Run desktop E2E tests (packaged app + real MPD)
+        uses: ./.github/actions/smoke-test-desktop
+        with:
+          platform: linux
+          require-mpd: "1"
+      - name: Upload desktop E2E artifacts on failure
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: desktop-e2e-results-linux
+          path: packages/desktop/test-results
+          if-no-files-found: ignore
       - name: Test building docker container
         run: docker compose create

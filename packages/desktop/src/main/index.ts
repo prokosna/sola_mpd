@@ -11,8 +11,20 @@ import {
 	screen,
 	shell,
 } from "electron";
+import { resolveRendererFilePath } from "./protocol.js";
+import {
+	DEFAULT_WINDOW_STATE,
+	parseWindowState,
+	type WindowState,
+} from "./windowState.js";
 
 Menu.setApplicationMenu(null);
+
+if (process.env.SOLA_USER_DATA_DIR) {
+	const customUserDataDir = path.resolve(process.env.SOLA_USER_DATA_DIR);
+	fs.mkdirSync(customUserDataDir, { recursive: true });
+	app.setPath("userData", customUserDataDir);
+}
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
@@ -39,28 +51,11 @@ protocol.registerSchemesAsPrivileged([
 
 app.whenReady().then(async () => {
 	protocol.handle("sola", async (request) => {
-		const url = new URL(request.url);
-		const rendererRoot = path.resolve(getRendererPath());
-		const normalizedPathname = url.pathname.replaceAll("\\", "/");
-		let filePath = path.resolve(rendererRoot, `.${normalizedPathname}`);
-		const isInsideRenderer =
-			filePath === rendererRoot ||
-			filePath.startsWith(`${rendererRoot}${path.sep}`);
-
-		if (!isInsideRenderer) {
-			filePath = path.join(rendererRoot, "index.html");
-		} else {
-			// SPA fallback: serve index.html for paths that don't match a file.
-			try {
-				const stat = await fs.promises.stat(filePath);
-				if (stat.isDirectory()) {
-					filePath = path.join(filePath, "index.html");
-				}
-			} catch {
-				filePath = path.join(rendererRoot, "index.html");
-			}
-		}
-
+		const filePath = await resolveRendererFilePath(
+			getRendererPath(),
+			request.url,
+			(target) => fs.promises.stat(target),
+		);
 		return net.fetch(pathToFileURL(filePath).toString());
 	});
 
@@ -101,62 +96,20 @@ app.on("window-all-closed", () => {
 	}
 });
 
-type WindowState = {
-	width: number;
-	height: number;
-	x?: number;
-	y?: number;
-	isMaximized?: boolean;
-};
-
-const DEFAULT_WINDOW_STATE: WindowState = { width: 1280, height: 800 };
-
 function getWindowStatePath(): string {
 	return path.join(app.getPath("userData"), "window-state.json");
-}
-
-function isVisibleOnAnyDisplay(
-	x: number,
-	y: number,
-	width: number,
-	height: number,
-): boolean {
-	return screen.getAllDisplays().some(({ workArea }) => {
-		return (
-			x < workArea.x + workArea.width &&
-			x + width > workArea.x &&
-			y < workArea.y + workArea.height &&
-			y + height > workArea.y
-		);
-	});
 }
 
 function loadWindowState(): WindowState {
 	try {
 		const raw = fs.readFileSync(getWindowStatePath(), "utf-8");
-		const parsed = JSON.parse(raw) as Partial<WindowState>;
-		if (
-			typeof parsed.width === "number" &&
-			typeof parsed.height === "number" &&
-			parsed.width >= 200 &&
-			parsed.height >= 200
-		) {
-			const hasPosition =
-				typeof parsed.x === "number" &&
-				typeof parsed.y === "number" &&
-				isVisibleOnAnyDisplay(parsed.x, parsed.y, parsed.width, parsed.height);
-			return {
-				width: parsed.width,
-				height: parsed.height,
-				x: hasPosition ? parsed.x : undefined,
-				y: hasPosition ? parsed.y : undefined,
-				isMaximized: parsed.isMaximized === true,
-			};
-		}
+		const workAreas = screen
+			.getAllDisplays()
+			.map((display) => display.workArea);
+		return parseWindowState(raw, workAreas);
 	} catch {
-		// Fall through to default.
+		return DEFAULT_WINDOW_STATE;
 	}
-	return DEFAULT_WINDOW_STATE;
 }
 
 function saveWindowState(window: BrowserWindow): void {

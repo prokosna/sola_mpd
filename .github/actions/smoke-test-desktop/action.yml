@@ -1,0 +1,40 @@
+name: Smoke test packaged desktop app
+description: Runs Playwright E2E tests against the packaged Electron binary for the current platform.
+
+inputs:
+  platform:
+    description: Target platform (linux, mac, win)
+    required: true
+  require-mpd:
+    description: Fail if the mpd binary is not installed ("1" or "0")
+    required: false
+    default: "0"
+
+runs:
+  using: composite
+  steps:
+    - name: Run packaged desktop E2E (Linux)
+      if: inputs.platform == 'linux'
+      shell: bash
+      env:
+        SOLA_E2E_EXECUTABLE_PATH: packages/desktop/release/linux-unpacked/sola-mpd
+        SOLA_E2E_REQUIRE_MPD: ${{ inputs.require-mpd }}
+      run: xvfb-run --auto-servernum pnpm --filter @sola_mpd/desktop exec playwright test
+
+    - name: Run packaged desktop E2E (macOS)
+      if: inputs.platform == 'mac'
+      shell: bash
+      run: |
+        APP_BIN=$(find "$PWD/packages/desktop/release" -path "*.app/Contents/MacOS/Sola MPD" -type f | head -n 1)
+        if [ -z "$APP_BIN" ]; then
+          echo "::error::Packaged macOS app binary not found"
+          exit 1
+        fi
+        SOLA_E2E_EXECUTABLE_PATH="$APP_BIN" pnpm --filter @sola_mpd/desktop exec playwright test
+
+    - name: Run packaged desktop E2E (Windows)
+      if: inputs.platform == 'win'
+      shell: pwsh
+      run: |
+        $env:SOLA_E2E_EXECUTABLE_PATH = "packages/desktop/release/win-unpacked/Sola MPD.exe"
+        pnpm --filter @sola_mpd/desktop exec playwright test
