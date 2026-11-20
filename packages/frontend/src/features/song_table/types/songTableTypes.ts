@@ -4,7 +4,6 @@ import type {
 } from "@sola_mpd/shared/src/models/song_pb.js";
 import type {
 	SuppressKeyboardEventParams,
-	TooltipCallbackParams,
 	ValueFormatterParams,
 } from "ag-grid-community";
 import type { CustomCellRendererProps } from "ag-grid-react";
@@ -44,9 +43,7 @@ export type SongTableColumnDefinition = {
 	flex: number;
 	resizable: boolean;
 	sortable: boolean;
-	tooltip?: (
-		params: TooltipCallbackParams<SongTableRowData, SongTableRowValue>,
-	) => SongTableRowValue | null | undefined;
+	tooltip?: boolean;
 	sort?: "asc" | "desc" | null;
 	sortIndex?: number;
 	cellDataType?: boolean;
