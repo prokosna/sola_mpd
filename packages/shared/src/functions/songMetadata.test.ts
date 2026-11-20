@@ -19,13 +19,13 @@ import {
 } from "../models/song_pb.js";
 
 import {
+	compareSongsByMetadataValue,
 	convertAudioFormatToString,
 	convertSongMetadataValueToString,
 	convertStringToSongMetadataValue,
 	getSongMetadataAsAudioFormat,
 	getSongMetadataAsNumber,
 	getSongMetadataAsString,
-	getSongMetadataAsStringOrEmpty,
 	getSongMetadataAsTimestampMs,
 	listAllSongMetadataTags,
 } from "./songMetadata.js";
@@ -234,7 +234,7 @@ describe("songMetadata", () => {
 		expect(tags).toContain(Song_MetadataTag.ALBUM_ARTIST);
 	});
 
-	it("getSongMetadataAsStringOrEmpty returns '' for absent tag, value otherwise", () => {
+	it("getSongMetadataAsString returns '' for absent tag, value otherwise", () => {
 		const song = create(SongSchema, {
 			metadata: {
 				[Song_MetadataTag.TITLE]: create(Song_MetadataValueSchema, {
@@ -245,12 +245,8 @@ describe("songMetadata", () => {
 				}),
 			},
 		});
-		expect(getSongMetadataAsStringOrEmpty(song, Song_MetadataTag.TITLE)).toBe(
-			"Hello",
-		);
-		expect(getSongMetadataAsStringOrEmpty(song, Song_MetadataTag.ALBUM)).toBe(
-			"",
-		);
+		expect(getSongMetadataAsString(song, Song_MetadataTag.TITLE)).toBe("Hello");
+		expect(getSongMetadataAsString(song, Song_MetadataTag.ALBUM)).toBe("");
 	});
 
 	it("getSongMetadataAsTimestampMs returns ms or undefined", () => {
@@ -323,5 +319,114 @@ describe("songMetadata", () => {
 		expect(
 			getSongMetadataAsAudioFormat(missingSong, Song_MetadataTag.FORMAT),
 		).toBeUndefined();
+	});
+
+	it("returns safe defaults when metadata tags are absent or non-numeric", () => {
+		const emptySong = create(SongSchema);
+		expect(getSongMetadataAsString(emptySong, Song_MetadataTag.TITLE)).toBe("");
+		expect(
+			getSongMetadataAsNumber(emptySong, Song_MetadataTag.DURATION),
+		).toBeUndefined();
+
+		const nonNumericSong = create(SongSchema, {
+			metadata: {
+				[Song_MetadataTag.TRACK]: create(Song_MetadataValueSchema, {
+					value: {
+						case: "stringValue",
+						value: create(StringValueSchema, { value: "not-a-number" }),
+					},
+				}),
+				[Song_MetadataTag.DISC]: create(Song_MetadataValueSchema, {
+					value: {
+						case: "stringValue",
+						value: create(StringValueSchema, { value: "   " }),
+					},
+				}),
+			},
+		});
+		expect(
+			getSongMetadataAsNumber(nonNumericSong, Song_MetadataTag.TRACK),
+		).toBeUndefined();
+		expect(
+			getSongMetadataAsNumber(nonNumericSong, Song_MetadataTag.DISC),
+		).toBeUndefined();
+	});
+
+	it("compareSongsByMetadataValue compares values and handles missing tags", () => {
+		const collator = new Intl.Collator("en");
+		const songA = create(SongSchema, {
+			metadata: {
+				[Song_MetadataTag.TITLE]: create(Song_MetadataValueSchema, {
+					value: {
+						case: "stringValue",
+						value: create(StringValueSchema, { value: "Alpha" }),
+					},
+				}),
+				[Song_MetadataTag.DURATION]: create(Song_MetadataValueSchema, {
+					value: {
+						case: "intValue",
+						value: create(Int32ValueSchema, { value: 100 }),
+					},
+				}),
+			},
+		});
+		const songB = create(SongSchema, {
+			metadata: {
+				[Song_MetadataTag.TITLE]: create(Song_MetadataValueSchema, {
+					value: {
+						case: "stringValue",
+						value: create(StringValueSchema, { value: "Beta" }),
+					},
+				}),
+				[Song_MetadataTag.DURATION]: create(Song_MetadataValueSchema, {
+					value: {
+						case: "intValue",
+						value: create(Int32ValueSchema, { value: 200 }),
+					},
+				}),
+			},
+		});
+		const emptySong = create(SongSchema);
+
+		expect(
+			compareSongsByMetadataValue(
+				songA,
+				songB,
+				Song_MetadataTag.TITLE,
+				collator,
+			),
+		).toBeLessThan(0);
+		expect(
+			compareSongsByMetadataValue(
+				songB,
+				songA,
+				Song_MetadataTag.DURATION,
+				collator,
+			),
+		).toBeGreaterThan(0);
+		expect(
+			compareSongsByMetadataValue(
+				emptySong,
+				songA,
+				Song_MetadataTag.TITLE,
+				collator,
+			),
+		).toBe(-1);
+		expect(
+			compareSongsByMetadataValue(
+				songA,
+				emptySong,
+				Song_MetadataTag.TITLE,
+				collator,
+			),
+		).toBe(1);
+		expect(
+			compareSongsByMetadataValue(
+				emptySong,
+				emptySong,
+				Song_MetadataTag.TITLE,
+				collator,
+			),
+		).toBe(0);
 	});
 });
