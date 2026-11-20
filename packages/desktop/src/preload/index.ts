@@ -1,19 +1,60 @@
 import { contextBridge, ipcRenderer } from "electron";
-import {
-	isAllowedInvokeChannel,
-	isAllowedReceiveChannel,
-} from "./channels.js";
+
+// Channel names are defined in @sola_mpd/shared/src/const/socketio.ts.
+// They are hardcoded here because the preload runs in Electron's sandboxed
+// renderer, which cannot require workspace packages at runtime, and the
+// bundler (tsdown) does not inline workspace dependencies.
+
+const CONFIG_KEYS = [
+	"browser_state",
+	"common_song_table_state",
+	"mpd_profile_state",
+	"plugin_state",
+	"saved_searches",
+	"recently_added_state",
+];
+
+const ALLOWED_INVOKE_CHANNELS = new Set([
+	"socketio_mpd_command",
+	"socketio_mpd_command_bulk",
+	"socketio_mpd_subscribe",
+	"socketio_mpd_unsubscribe",
+	"socketio_plugin_register",
+	"socketio_plugin_execute",
+	"socketio_advanced_search",
+	"socketio_view_state_blob_save",
+	"socketio_view_state_blob_fetch",
+	...CONFIG_KEYS.flatMap((key) => [
+		`socketio_config_fetch_${key}`,
+		`socketio_config_save_${key}`,
+	]),
+]);
+
+// socketio_config_changed has no desktop sender — one client cannot race with
+// itself — but the renderer subscribes on every transport, and `on` throws for
+// a channel that is not listed.
+const ALLOWED_RECEIVE_CHANNELS = new Set([
+	"socketio_mpd_event",
+	"socketio_config_changed",
+]);
+
+function isPluginCallbackChannel(channel: string): boolean {
+	return /^\d+_[\d.]+$/.test(channel);
+}
 
 contextBridge.exposeInMainWorld("__SOLA_IPC_BRIDGE__", {
 	invoke: (channel: string, payload: Uint8Array): Promise<Uint8Array> => {
-		if (!isAllowedInvokeChannel(channel)) {
+		if (!ALLOWED_INVOKE_CHANNELS.has(channel)) {
 			return Promise.reject(new Error(`IPC channel not allowed: ${channel}`));
 		}
 		return ipcRenderer.invoke(channel, payload);
 	},
 
 	on: (channel: string, callback: (payload: Uint8Array) => void): void => {
-		if (!isAllowedReceiveChannel(channel)) {
+		if (
+			!ALLOWED_RECEIVE_CHANNELS.has(channel) &&
+			!isPluginCallbackChannel(channel)
+		) {
 			throw new Error(`IPC channel not allowed: ${channel}`);
 		}
 		ipcRenderer.on(channel, (_event, data: Uint8Array) => {
@@ -22,7 +63,10 @@ contextBridge.exposeInMainWorld("__SOLA_IPC_BRIDGE__", {
 	},
 
 	off: (channel: string): void => {
-		if (!isAllowedReceiveChannel(channel)) {
+		if (
+			!ALLOWED_RECEIVE_CHANNELS.has(channel) &&
+			!isPluginCallbackChannel(channel)
+		) {
 			throw new Error(`IPC channel not allowed: ${channel}`);
 		}
 		ipcRenderer.removeAllListeners(channel);
