@@ -28,6 +28,6 @@
 		"@types/better-sqlite3": "^9.6.0",
 		"@types/express": "^5.0.6",
 		"@types/node": "^24.19.2",
-		"tsdown": "^0.21.10"
+		"tsdown": "^0.23.7"
 	}
 }
