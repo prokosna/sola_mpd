@@ -1,6 +1,6 @@
-FROM node:24.13.0-alpine
+FROM node:26.13.1-alpine
 
-RUN corepack enable
+RUN npm install -g corepack@0.36.0 && corepack enable
 
 WORKDIR /app
 COPY . .
