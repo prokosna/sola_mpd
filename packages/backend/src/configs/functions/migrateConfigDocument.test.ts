@@ -28,23 +28,22 @@ describe("migrateConfigDocument", () => {
 		expect(result).toEqual(doc);
 	});
 
-	it.each([
-		undefined,
-		0,
-		1,
-	])("treats schemaVersion %s as version 1", (schemaVersion) => {
-		const doc: JsonObject =
-			schemaVersion === undefined
-				? { profiles: [] }
-				: { schemaVersion, profiles: [] };
+	it.each([undefined, 0, 1])(
+		"treats schemaVersion %s as version 1",
+		(schemaVersion) => {
+			const doc: JsonObject =
+				schemaVersion === undefined
+					? { profiles: [] }
+					: { schemaVersion, profiles: [] };
 
-		expect(getConfigDocumentCurrentVersion(CONFIG_KEY_MPD_PROFILE_STATE)).toBe(
-			1,
-		);
-		expect(migrateConfigDocument(CONFIG_KEY_MPD_PROFILE_STATE, doc)).toEqual(
-			doc,
-		);
-	});
+			expect(
+				getConfigDocumentCurrentVersion(CONFIG_KEY_MPD_PROFILE_STATE),
+			).toBe(1);
+			expect(migrateConfigDocument(CONFIG_KEY_MPD_PROFILE_STATE, doc)).toEqual(
+				doc,
+			);
+		},
+	);
 
 	it("runs an injected non-empty chain against a document with no schemaVersion", () => {
 		const chains: ConfigMigrationChainTable = {

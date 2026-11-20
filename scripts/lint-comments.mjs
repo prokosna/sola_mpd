@@ -1,8 +1,8 @@
 // Biome has no rule for comment length, and its GritQL plugins cannot match
-// trivia, so this walks the TypeScript CST instead.
+// trivia, so this reads the comments oxc-parser collects instead.
 import { globSync, readFileSync, statSync } from "node:fs";
 import { relative } from "node:path";
-import ts from "typescript";
+import { parseSync } from "oxc-parser";
 
 const MAX_COMMENT_LINES = 4;
 
@@ -13,48 +13,47 @@ const GENERATED_GLOBS = [
 ];
 
 /**
- * Every comment in the file, in source order, with runs of consecutive `//`
- * lines merged into one block.
+ * Every comment in the file, in source order, with runs of consecutive
+ * full-line `//` comments merged into one block.
  */
 function collectCommentBlocks(fileName, text) {
-	const sourceFile = ts.createSourceFile(
-		fileName,
-		text,
-		ts.ScriptTarget.Latest,
-		true,
-		fileName.endsWith(".tsx") ? ts.ScriptKind.TSX : ts.ScriptKind.TS,
-	);
+	const { comments } = parseSync(fileName, text);
 
-	const ranges = [];
-	const seen = new Set();
-	const visit = (node) => {
-		const children = node.getChildren(sourceFile);
-		if (children.length === 0) {
-			for (const range of ts.getLeadingCommentRanges(text, node.pos) ?? []) {
-				if (!seen.has(range.pos)) {
-					seen.add(range.pos);
-					ranges.push(range);
-				}
+	const lineStarts = [0];
+	for (let i = 0; i < text.length; i++) {
+		if (text[i] === "\n") {
+			lineStarts.push(i + 1);
+		}
+	}
+	const lineOf = (offset) => {
+		let low = 0;
+		let high = lineStarts.length - 1;
+		while (low < high) {
+			const mid = (low + high + 1) >> 1;
+			if (lineStarts[mid] <= offset) {
+				low = mid;
+			} else {
+				high = mid - 1;
 			}
-			return;
 		}
-		for (const child of children) {
-			visit(child);
-		}
+		return low;
 	};
-	visit(sourceFile);
-	ranges.sort((a, b) => a.pos - b.pos);
 
 	const blocks = [];
-	for (const range of ranges) {
-		const startLine = sourceFile.getLineAndCharacterOfPosition(range.pos).line;
-		const endLine = sourceFile.getLineAndCharacterOfPosition(range.end).line;
-		const isSingleLine = range.kind === ts.SyntaxKind.SingleLineCommentTrivia;
+	for (const comment of comments) {
+		const startLine = lineOf(comment.start);
+		const endLine = lineOf(comment.end);
+		const isSingleLine = comment.type === "Line";
+		// End-of-line comments annotate their own line, so a column of them is
+		// not one long comment.
+		const isMergeable =
+			isSingleLine &&
+			text.slice(lineStarts[startLine], comment.start).trim() === "";
 
 		const previous = blocks.at(-1);
 		if (
-			previous?.isSingleLine &&
-			isSingleLine &&
+			previous?.isMergeable &&
+			isMergeable &&
 			startLine === previous.endLine + 1
 		) {
 			previous.endLine = endLine;
@@ -63,12 +62,12 @@ function collectCommentBlocks(fileName, text) {
 		}
 
 		blocks.push({
-			isSingleLine,
+			isMergeable,
 			startLine,
 			endLine,
 			lines: isSingleLine
 				? 1
-				: countContentLines(text.slice(range.pos, range.end)),
+				: countContentLines(text.slice(comment.start, comment.end)),
 		});
 	}
 	return blocks;
