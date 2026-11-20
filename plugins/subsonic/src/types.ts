@@ -18,6 +18,18 @@ export const SubsonicPlaylistSchema = z.object({
 	name: z.string(),
 });
 
+export const SubsonicBaseResponseSchema = z.object({
+	"subsonic-response": z.object({
+		status: z.string(),
+		error: z
+			.object({
+				code: z.number().optional(),
+				message: z.string().optional(),
+			})
+			.optional(),
+	}),
+});
+
 export const SubsonicGetPlaylistsResponseSchema = z.object({
 	"subsonic-response": z.object({
 		playlists: z.object({
