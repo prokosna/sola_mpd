@@ -4,7 +4,7 @@ export default defineConfig({
 	entry: ["src/**/*.ts", "!src/**/*.test.ts"],
 	unbundle: true,
 	dts: true,
-	external: [/^[^./]/],
+	deps: { neverBundle: [/^[^./]/] },
 	outExtensions: () => ({ js: ".js" }),
 	clean: false,
 });

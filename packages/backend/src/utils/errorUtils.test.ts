@@ -29,7 +29,10 @@ describe("toErrorMessage", () => {
 		["boolean", true],
 		["plain object", { reason: "bad" }],
 		["array", ["a", "b"]],
-	])("returns 'Unknown error' for non-string non-Error input (%s)", (_, input) => {
-		expect(toErrorMessage(input)).toBe("Unknown error");
-	});
+	])(
+		"returns 'Unknown error' for non-string non-Error input (%s)",
+		(_, input) => {
+			expect(toErrorMessage(input)).toBe("Unknown error");
+		},
+	);
 });
