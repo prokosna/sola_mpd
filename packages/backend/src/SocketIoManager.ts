@@ -43,7 +43,7 @@ export class SocketIoManager {
 		const socketIoManager = new SocketIoManager(io);
 
 		const mpdHandler: MpdMessageHandler =
-			MpdMessageHandlerSocketIo.initialize(io);
+			MpdMessageHandlerSocketIo.initialize();
 		const pluginHandler: PluginMessageHandler =
 			new PluginMessageHandlerSocketIo();
 		const advancedSearchHandler: AdvancedSearchMessageHandler =

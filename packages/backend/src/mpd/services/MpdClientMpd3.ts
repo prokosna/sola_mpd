@@ -47,7 +47,9 @@ class MpdClientMpd3 implements MpdClient {
 	private clients: DeepMap<MpdProfile, Promise<Client>> = new DeepMap(
 		new Map(),
 	);
-	private allSongsCache: DeepMap<MpdProfile, Song[]> = new DeepMap(new Map());
+	private allSongsCache: DeepMap<MpdProfile, Promise<Song[]>> = new DeepMap(
+		new Map(),
+	);
 	private subscriptions: Map<
 		MpdSubscriptionHandler,
 		{ client: Client; handleClose: () => void }
@@ -590,16 +592,24 @@ class MpdClientMpd3 implements MpdClient {
 			}
 
 			case "listAllSongs": {
-				let songs = this.allSongsCache.get(profile);
-				if (songs === undefined) {
-					songs = await this.streamCommandToStream(client, cmd, [
+				let songsPromise = this.allSongsCache.get(profile);
+				if (songsPromise === undefined) {
+					songsPromise = this.streamCommandToStream(client, cmd, [
 						"directory",
 						"file",
 					])
 						.then((stream) => stream.pipeThrough(this.transformToSong()))
-						.then(Parsers.aggregateToList);
-					this.allSongsCache.set(profile, songs ?? []);
+						.then(Parsers.aggregateToList)
+						.then((list) => list ?? []);
+					const pending = songsPromise;
+					this.allSongsCache.set(profile, pending);
+					pending.catch(() => {
+						if (this.allSongsCache.get(profile) === pending) {
+							this.allSongsCache.delete(profile);
+						}
+					});
 				}
+				const songs = await songsPromise;
 				return create(MpdResponseSchema, {
 					command: {
 						case: "listAllSongs",

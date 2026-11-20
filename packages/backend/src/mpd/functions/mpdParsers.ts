@@ -181,28 +181,19 @@ export function parseSong(v?: Record<string, unknown>): Song | undefined {
 	});
 
 	const lastModified = raw.lastmodified ? raw.lastmodified : undefined;
-	try {
-		const updatedAt = dayjs(lastModified);
-		song.metadata[Song_MetadataTag.UPDATED_AT] = create(
-			Song_MetadataValueSchema,
-			{
-				value: {
-					case: "timestamp",
-					value: timestampFromDate(updatedAt.toDate()),
-				},
+	const updatedAt =
+		lastModified !== undefined ? dayjs(lastModified) : undefined;
+	song.metadata[Song_MetadataTag.UPDATED_AT] = create(
+		Song_MetadataValueSchema,
+		{
+			value: {
+				case: "timestamp",
+				value: updatedAt?.isValid()
+					? timestampFromDate(updatedAt.toDate())
+					: create(TimestampSchema, undefined),
 			},
-		);
-	} catch (_) {
-		song.metadata[Song_MetadataTag.UPDATED_AT] = create(
-			Song_MetadataValueSchema,
-			{
-				value: {
-					case: "timestamp",
-					value: create(TimestampSchema, undefined),
-				},
-			},
-		);
-	}
+		},
+	);
 
 	if (raw.added && /^\d{4}-\d{2}-\d{2}/.test(raw.added)) {
 		// MPD emits a negative timestamp for "added time unknown". Require an
@@ -381,13 +372,17 @@ export function parsePlaylist(
 	playlist.name = name;
 
 	const lastModified = raw.lastmodified ? raw.lastmodified : undefined;
-	try {
-		const updatedAt = dayjs(lastModified);
-		playlist.updatedAt = timestampFromDate(updatedAt.toDate());
-	} catch (e) {
-		console.error(
-			`Failed to parse last-modified: ${e instanceof Error ? e.message : String(e)}`,
-		);
+	if (lastModified !== undefined) {
+		try {
+			const updatedAt = dayjs(lastModified);
+			if (updatedAt.isValid()) {
+				playlist.updatedAt = timestampFromDate(updatedAt.toDate());
+			}
+		} catch (e) {
+			console.error(
+				`Failed to parse last-modified: ${e instanceof Error ? e.message : String(e)}`,
+			);
+		}
 	}
 
 	return playlist;

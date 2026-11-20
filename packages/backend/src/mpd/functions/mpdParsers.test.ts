@@ -285,6 +285,12 @@ describe("parsePlaylist", () => {
 		expect(parsePlaylist(raw)).toBeUndefined();
 	});
 
+	it("leaves updatedAt undefined when Last-Modified is absent", () => {
+		const playlist = parsePlaylist({ playlist: "no-date" });
+		expect(playlist?.name).toBe("no-date");
+		expect(playlist?.updatedAt).toBeUndefined();
+	});
+
 	it("returns undefined when playlist field is missing", () => {
 		const raw = { "Last-Modified": "2023-01-01T00:00:00Z" };
 		expect(parsePlaylist(raw)).toBeUndefined();
