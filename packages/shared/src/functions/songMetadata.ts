@@ -17,10 +17,6 @@ import {
 	Song_MetadataValueSchema,
 } from "../models/song_pb.js";
 
-/**
- * Returns the string representation of a metadata tag, or an empty string when
- * the tag is absent from `song.metadata`.
- */
 export function getSongMetadataAsString(
 	song: Song,
 	tag: Song_MetadataTag,
