@@ -115,9 +115,16 @@ class ConfigRepositoryFile<T extends Message & { schemaVersion: number }>
 			this.localCache = fromJson(schema, fileContentJson, {
 				ignoreUnknownFields: true,
 			});
-		} catch (_) {
+		} catch (err) {
 			this.localCache = defaultValue;
-			this.save();
+			if ((err as NodeJS.ErrnoException).code === "ENOENT") {
+				this.save(defaultValue);
+			} else {
+				console.error(
+					`Failed to load config file "${this.localFilePath}"; using defaults in memory without overwriting disk:`,
+					err,
+				);
+			}
 		}
 	}
 
@@ -126,31 +133,35 @@ class ConfigRepositoryFile<T extends Message & { schemaVersion: number }>
 	}
 
 	update(value: T) {
-		this.localCache = preserveDeprecatedConfigFields(
+		const next = preserveDeprecatedConfigFields(
 			this.configKey,
 			value,
 			this.localCache,
 		);
-		this.save();
+		this.save(next);
+		this.localCache = next;
 	}
 
-	private save() {
+	private save(value: T) {
 		backupDbDirectoryOnce();
 
-		this.localCache.schemaVersion = getConfigDocumentCurrentVersion(
-			this.configKey,
-		);
+		value.schemaVersion = getConfigDocumentCurrentVersion(this.configKey);
 
 		const dirPath = path.dirname(this.localFilePath);
 		const tempFilePath = path.join(
 			dirPath,
 			`.${path.basename(this.localFilePath)}.${process.pid}.${Date.now()}.tmp`,
 		);
-		fs.writeFileSync(
-			tempFilePath,
-			JSON.stringify(toJson(this.schema, this.localCache), null, 2),
-		);
-		fs.renameSync(tempFilePath, this.localFilePath);
+		try {
+			fs.writeFileSync(
+				tempFilePath,
+				JSON.stringify(toJson(this.schema, value), undefined, 2),
+			);
+			fs.renameSync(tempFilePath, this.localFilePath);
+		} catch (err) {
+			fs.rmSync(tempFilePath, { force: true });
+			throw err;
+		}
 	}
 }
 

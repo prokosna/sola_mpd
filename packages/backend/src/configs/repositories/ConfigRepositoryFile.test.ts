@@ -4,6 +4,7 @@ import path from "node:path";
 
 import { create, type JsonObject } from "@bufbuild/protobuf";
 import { BrowserStateSchema } from "@sola_mpd/shared/src/models/browser_pb.js";
+import { MpdProfileStateSchema } from "@sola_mpd/shared/src/models/mpd/mpd_profile_pb.js";
 import { RecentlyAddedStateSchema } from "@sola_mpd/shared/src/models/recently_added_pb.js";
 import { SavedSearchesSchema } from "@sola_mpd/shared/src/models/search_pb.js";
 import { Song_MetadataTag } from "@sola_mpd/shared/src/models/song_pb.js";
@@ -404,5 +405,41 @@ describe("ConfigRepositoryFile default documents", () => {
 		expect(commonSongTableStateRepository.get().columnTags).toEqual([
 			Song_MetadataTag.ALBUM,
 		]);
+	});
+
+	it("does not overwrite a corrupt config file on load", async () => {
+		const dbDir = path.join(tempDir, "db");
+		fs.mkdirSync(dbDir, { recursive: true });
+		const filePath = path.join(dbDir, "mpd_profile_state.json");
+		fs.writeFileSync(filePath, "{corrupt json");
+
+		const { mpdProfileStateRepository } = await import(
+			"./ConfigRepositoryFile.js"
+		);
+
+		expect(mpdProfileStateRepository.get().profiles).toEqual([]);
+		expect(fs.readFileSync(filePath, "utf-8")).toBe("{corrupt json");
+		expect(errorSpy).toHaveBeenCalled();
+	});
+
+	it("keeps localCache unchanged and cleans up temp file if renameSync fails", async () => {
+		const { mpdProfileStateRepository } = await import(
+			"./ConfigRepositoryFile.js"
+		);
+		const before = mpdProfileStateRepository.get();
+
+		vi.spyOn(fs, "renameSync").mockImplementationOnce(() => {
+			throw new Error("disk full");
+		});
+
+		const next = create(MpdProfileStateSchema, {
+			profiles: [{ name: "new", host: "127.0.0.1", port: 6600, password: "" }],
+		});
+
+		expect(() => mpdProfileStateRepository.update(next)).toThrow("disk full");
+		expect(mpdProfileStateRepository.get()).toBe(before);
+
+		const dbFiles = fs.readdirSync(path.join(tempDir, "db"));
+		expect(dbFiles.filter((f) => f.endsWith(".tmp"))).toEqual([]);
 	});
 });

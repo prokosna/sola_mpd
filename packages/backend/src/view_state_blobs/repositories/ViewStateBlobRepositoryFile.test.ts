@@ -120,4 +120,29 @@ describe("ViewStateBlobRepositoryFile", () => {
 		);
 		expect(path.basename(destPath)).toBe("view_state_blobs.json");
 	});
+
+	it("ignores Object.prototype keys in get and put", async () => {
+		const { viewStateBlobRepository } = await import(
+			"./ViewStateBlobRepositoryFile.js"
+		);
+
+		expect(viewStateBlobRepository.get("constructor")).toBeUndefined();
+		expect(viewStateBlobRepository.get("toString")).toBeUndefined();
+		expect(fs.existsSync(path.join(tempDir, "db"))).toBe(false);
+	});
+
+	it("throws instead of clobbering a corrupt blob store file", async () => {
+		const dbDir = path.join(tempDir, "db");
+		fs.mkdirSync(dbDir, { recursive: true });
+		const filePath = path.join(dbDir, "view_state_blobs.json");
+		fs.writeFileSync(filePath, "{corrupt json");
+
+		const { viewStateBlobRepository } = await import(
+			"./ViewStateBlobRepositoryFile.js"
+		);
+
+		expect(() => viewStateBlobRepository.get("token-a")).toThrow();
+		expect(() => viewStateBlobRepository.put("token-a", "data")).toThrow();
+		expect(fs.readFileSync(filePath, "utf-8")).toBe("{corrupt json");
+	});
 });
