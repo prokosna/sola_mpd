@@ -1,0 +1,75 @@
+name: Desktop cross-platform smoke test
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - "packages/desktop/**"
+      - "package.json"
+      - "pnpm-lock.yaml"
+      - ".github/workflows/desktop-cross-platform.yaml"
+      - ".github/actions/smoke-test-desktop/**"
+  schedule:
+    - cron: "0 3 * * 1"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  smoke:
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: macos-latest
+            platform: mac
+          - os: windows-latest
+            platform: win
+
+    runs-on: ${{ matrix.os }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v6
+
+      - name: Use Node.js 26.x
+        uses: actions/setup-node@v7
+        with:
+          node-version: 26.x
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Build shared package
+        run: pnpm --filter @sola_mpd/shared build:no_types
+
+      - name: Build frontend
+        run: pnpm --filter @sola_mpd/frontend build:no_types
+
+      - name: Build desktop
+        run: pnpm --filter @sola_mpd/desktop build:no_types
+
+      - name: Package desktop app (unpacked)
+        run: pnpm --filter @sola_mpd/desktop dist --dir
+
+      - name: Smoke test packaged desktop app
+        uses: ./.github/actions/smoke-test-desktop
+        with:
+          platform: ${{ matrix.platform }}
+
+      - name: Upload desktop E2E artifacts on failure
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: desktop-e2e-results-${{ matrix.platform }}
+          path: packages/desktop/test-results
+          if-no-files-found: ignore

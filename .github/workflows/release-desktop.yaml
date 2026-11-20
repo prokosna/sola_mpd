@@ -55,10 +55,28 @@ jobs:
         run: pnpm --filter @sola_mpd/frontend build:no_types
 
       - name: Build desktop
-        run: pnpm --filter @sola_mpd/desktop build
+        run: pnpm --filter @sola_mpd/desktop build:no_types
+
+      - name: Install xvfb and mpd (Linux)
+        if: matrix.platform == 'linux'
+        run: sudo apt-get update && sudo apt-get install -y xvfb mpd
 
       - name: Package desktop app
         run: pnpm --filter @sola_mpd/desktop dist
+
+      - name: Smoke test packaged desktop app
+        uses: ./.github/actions/smoke-test-desktop
+        with:
+          platform: ${{ matrix.platform }}
+          require-mpd: ${{ matrix.platform == 'linux' && '1' || '0' }}
+
+      - name: Upload desktop E2E artifacts on failure
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: release-desktop-e2e-${{ matrix.platform }}
+          path: packages/desktop/test-results
+          if-no-files-found: ignore
 
       - name: Upload release assets
         uses: softprops/action-gh-release@v3
