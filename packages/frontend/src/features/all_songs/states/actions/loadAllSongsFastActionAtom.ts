@@ -19,7 +19,7 @@ export const loadAllSongsFastActionAtom = atom(null, async (get, set) => {
 		return;
 	}
 
-	set(allSongsFastStateAtom, { ...state, isLoading: true });
+	set(allSongsFastStateAtom, { ...state, isLoading: true, error: undefined });
 
 	let lastProgress = {
 		songs: state.songs,
@@ -35,6 +35,9 @@ export const loadAllSongsFastActionAtom = atom(null, async (get, set) => {
 			initialOffset: state.offset,
 			chunkSize: ALL_SONGS_CHUNK_SIZE,
 			onProgress: (progress) => {
+				if (get(currentMpdProfileAtom)?.name !== profile.name) {
+					return;
+				}
 				lastProgress = progress;
 				set(allSongsFastStateAtom, {
 					songs: progress.songs,
@@ -45,6 +48,10 @@ export const loadAllSongsFastActionAtom = atom(null, async (get, set) => {
 			},
 		});
 
+		if (get(currentMpdProfileAtom)?.name !== profile.name) {
+			return;
+		}
+
 		// Nothing here can verify the traversal-order assumption the windowed
 		// fetch rests on; a count mismatch is the only signal that it broke.
 		const stats = get(statsAtom);
@@ -54,12 +61,15 @@ export const loadAllSongsFastActionAtom = atom(null, async (get, set) => {
 			);
 		}
 	} catch (e) {
-		set(allSongsFastStateAtom, {
-			songs: lastProgress.songs,
-			offset: lastProgress.offset,
-			isLoading: false,
-			hasMore: true,
-		});
+		if (get(currentMpdProfileAtom)?.name === profile.name) {
+			set(allSongsFastStateAtom, {
+				songs: lastProgress.songs,
+				offset: lastProgress.offset,
+				isLoading: false,
+				hasMore: true,
+				error: e instanceof Error ? e.message : String(e),
+			});
+		}
 		throw e;
 	}
 });

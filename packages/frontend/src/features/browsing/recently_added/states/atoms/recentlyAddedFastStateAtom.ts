@@ -9,6 +9,7 @@ export type RecentlyAddedFastState = {
 	daysVisible: number;
 	isLoading: boolean;
 	hasMore: boolean;
+	error?: string;
 };
 
 export const initialRecentlyAddedFastState: RecentlyAddedFastState = {

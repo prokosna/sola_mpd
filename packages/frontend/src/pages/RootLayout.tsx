@@ -21,22 +21,22 @@ import { useJotaiStore } from "../useJotaiStore";
 import "react-contexify/dist/ReactContexify.css";
 import "../global.css";
 
+ModuleRegistry.registerModules([
+	RowDragModule,
+	TooltipModule,
+	RowSelectionModule,
+	CellStyleModule,
+	ClientSideRowModelModule,
+	ClientSideRowModelApiModule,
+	ColumnApiModule,
+	RowApiModule,
+	RowStyleModule,
+	ScrollApiModule,
+	ValidationModule,
+]);
+
 export function RootLayout() {
 	const store = useJotaiStore();
-
-	ModuleRegistry.registerModules([
-		RowDragModule,
-		TooltipModule,
-		RowSelectionModule,
-		CellStyleModule,
-		ClientSideRowModelModule,
-		ClientSideRowModelApiModule,
-		ColumnApiModule,
-		RowApiModule,
-		RowStyleModule,
-		ScrollApiModule,
-		ValidationModule,
-	]);
 
 	return (
 		<Suspense fallback={<TopLoadingProgressBar />}>

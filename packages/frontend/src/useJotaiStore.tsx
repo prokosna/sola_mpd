@@ -32,81 +32,80 @@ import { MessagingClientElectronIpc } from "./lib/messaging/MessagingClientElect
 import { MessagingClientSocketIo } from "./lib/messaging/MessagingClientSocketIo";
 
 let globalStore: ReturnType<typeof createStore> | undefined;
+let globalStorePromise: Promise<ReturnType<typeof createStore>> | undefined;
+
+async function injectDependencies(): Promise<ReturnType<typeof createStore>> {
+	const store = createStore();
+
+	let messagingClient: MessagingClient;
+	if (window.__SOLA_IPC_BRIDGE__ !== undefined) {
+		messagingClient = new MessagingClientElectronIpc(
+			window.__SOLA_IPC_BRIDGE__,
+		);
+	} else {
+		messagingClient = new MessagingClientSocketIo();
+	}
+	await messagingClient.isReady();
+
+	await messagingClient.on(SOCKETIO_CONFIG_CHANGED, (payload) => {
+		store.set(handleConfigChangedActionAtom, new TextDecoder().decode(payload));
+	});
+
+	store.set(setMpdClientActionAtom, new MpdClientSocketIo(messagingClient));
+	store.set(setMpdListenerActionAtom, new MpdListenerSocketIo(messagingClient));
+	store.set(
+		songTableStateRepositoryAtom,
+		new SongTableStateRepositorySocketIo(messagingClient),
+	);
+	store.set(
+		browserStateRepositoryAtom,
+		new BrowserStateRepositorySocketIo(messagingClient),
+	);
+	store.set(
+		viewStateBlobRepositoryAtom,
+		new ViewStateBlobRepositorySocketIo(messagingClient),
+	);
+	store.set(
+		pluginStateRepositoryAtom,
+		new PluginStateRepositorySocketIo(messagingClient),
+	);
+	store.set(pluginServiceAtom, new PluginServiceSocketIo(messagingClient));
+	store.set(
+		mpdProfileStateRepositoryAtom,
+		new MpdProfileStateRepositorySocketIo(messagingClient),
+	);
+	store.set(
+		savedSearchesRepositoryAtom,
+		new SavedSearchesRepositorySocketIo(messagingClient),
+	);
+	store.set(
+		recentlyAddedStateRepositoryAtom,
+		new RecentlyAddedStateRepositorySocketIo(messagingClient),
+	);
+	store.set(
+		advancedSearchClientAtom,
+		new AdvancedSearchClientSocketIo(messagingClient),
+	);
+	store.set(
+		deviceSettingsRepositoryAtom,
+		new DeviceSettingsRepositoryLocalStorage(),
+	);
+	store.set(clipboardAtom, new ClipboardNavigator());
+
+	globalStore = store;
+	return globalStore;
+}
 
 export function useJotaiStore() {
-	const injectDependencies = async (): Promise<
-		ReturnType<typeof createStore>
-	> => {
-		const store = createStore();
-
-		let messagingClient: MessagingClient;
-		if (window.__SOLA_IPC_BRIDGE__ != null) {
-			messagingClient = new MessagingClientElectronIpc(
-				window.__SOLA_IPC_BRIDGE__,
-			);
-		} else {
-			messagingClient = new MessagingClientSocketIo();
-		}
-		await messagingClient.isReady();
-
-		await messagingClient.on(SOCKETIO_CONFIG_CHANGED, (payload) => {
-			store.set(
-				handleConfigChangedActionAtom,
-				new TextDecoder().decode(payload),
-			);
-		});
-
-		store.set(setMpdClientActionAtom, new MpdClientSocketIo(messagingClient));
-		store.set(
-			setMpdListenerActionAtom,
-			new MpdListenerSocketIo(messagingClient),
-		);
-		store.set(
-			songTableStateRepositoryAtom,
-			new SongTableStateRepositorySocketIo(messagingClient),
-		);
-		store.set(
-			browserStateRepositoryAtom,
-			new BrowserStateRepositorySocketIo(messagingClient),
-		);
-		store.set(
-			viewStateBlobRepositoryAtom,
-			new ViewStateBlobRepositorySocketIo(messagingClient),
-		);
-		store.set(
-			pluginStateRepositoryAtom,
-			new PluginStateRepositorySocketIo(messagingClient),
-		);
-		store.set(pluginServiceAtom, new PluginServiceSocketIo(messagingClient));
-		store.set(
-			mpdProfileStateRepositoryAtom,
-			new MpdProfileStateRepositorySocketIo(messagingClient),
-		);
-		store.set(
-			savedSearchesRepositoryAtom,
-			new SavedSearchesRepositorySocketIo(messagingClient),
-		);
-		store.set(
-			recentlyAddedStateRepositoryAtom,
-			new RecentlyAddedStateRepositorySocketIo(messagingClient),
-		);
-		store.set(
-			advancedSearchClientAtom,
-			new AdvancedSearchClientSocketIo(messagingClient),
-		);
-		store.set(
-			deviceSettingsRepositoryAtom,
-			new DeviceSettingsRepositoryLocalStorage(),
-		);
-		store.set(clipboardAtom, new ClipboardNavigator());
-
-		globalStore = store;
-		return globalStore;
-	};
-
 	if (globalStore === undefined) {
-		// Throw Promise to suspend until dependencies are ready.
-		throw injectDependencies();
+		if (globalStorePromise === undefined) {
+			globalStorePromise = injectDependencies().catch((err) => {
+				globalStorePromise = undefined;
+				throw err;
+			});
+		}
+		// Throw cached Promise to suspend until dependencies are ready.
+		throw globalStorePromise;
 	}
 
 	return globalStore;

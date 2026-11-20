@@ -33,7 +33,11 @@ export const loadMoreRecentlyAddedFastStateActionAtom = atom(
 			return;
 		}
 
-		set(recentlyAddedFastStateAtom, { ...state, isLoading: true });
+		set(recentlyAddedFastStateAtom, {
+			...state,
+			isLoading: true,
+			error: undefined,
+		});
 
 		let songs = state.songs;
 		let daysVisible = state.daysVisible;
@@ -41,14 +45,18 @@ export const loadMoreRecentlyAddedFastStateActionAtom = atom(
 
 		try {
 			while (true) {
-				daysVisible += RECENTLY_ADDED_STEP_DAYS;
-				const since = computeSinceTime(daysVisible);
+				const nextDaysVisible = daysVisible + RECENTLY_ADDED_STEP_DAYS;
+				const since = computeSinceTime(nextDaysVisible);
 				const delta = await fetchRecentlyAddedFastDelta(
 					mpdClient,
 					profile,
 					since,
 					songs.length,
 				);
+				if (get(currentMpdProfileAtom)?.name !== profile.name) {
+					return;
+				}
+				daysVisible = nextDaysVisible;
 				songs = songs.concat(delta);
 
 				if (stats !== undefined && songs.length >= stats.songsCount) {
@@ -63,13 +71,23 @@ export const loadMoreRecentlyAddedFastStateActionAtom = atom(
 					break;
 				}
 			}
-		} finally {
 			set(recentlyAddedFastStateAtom, {
 				songs,
 				daysVisible,
 				isLoading: false,
 				hasMore,
 			});
+		} catch (e) {
+			if (get(currentMpdProfileAtom)?.name === profile.name) {
+				set(recentlyAddedFastStateAtom, {
+					songs,
+					daysVisible,
+					isLoading: false,
+					hasMore: true,
+					error: e instanceof Error ? e.message : String(e),
+				});
+			}
+			throw e;
 		}
 	},
 );
