@@ -41,6 +41,24 @@ export function getSongsInTableFromGrid(
 	};
 }
 
+export function getSelectedSongsInTableFromGrid(
+	gridApi: GridApi,
+	songsMap: Map<string, Song>,
+): Song[] {
+	const selectedNodes = gridApi
+		.getSelectedNodes()
+		.filter((node) => node.rowIndex !== null)
+		.sort((a, b) => (a.rowIndex ?? 0) - (b.rowIndex ?? 0));
+	const selectedSortedSongs: Song[] = [];
+	for (const node of selectedNodes) {
+		const song = convertNodeToSong(songsMap, node);
+		if (song !== undefined) {
+			selectedSortedSongs.push(song);
+		}
+	}
+	return selectedSortedSongs;
+}
+
 export function getTableIndexOfSong(
 	songKey: string,
 	gridApi: GridApi,

@@ -1,4 +1,8 @@
-import type { BodyScrollEvent, GetRowIdParams } from "ag-grid-community";
+import type {
+	BodyScrollEvent,
+	GetRowIdParams,
+	IRowNode,
+} from "ag-grid-community";
 import { AgGridReact } from "ag-grid-react";
 import { useAtomValue } from "jotai";
 import { useCallback, useEffect, useMemo, useRef } from "react";
@@ -97,14 +101,23 @@ export function SelectList(props: SelectListProps) {
 			return;
 		}
 
+		const selectedSet = new Set(props.selectedValues);
+		const nodesToSelect: IRowNode[] = [];
+		const nodesToDeselect: IRowNode[] = [];
 		api.forEachNode((node) => {
 			const value = String(node.data.key);
-			if (node.isSelected() && !props.selectedValues.includes(value)) {
-				node.setSelected(false);
-			} else if (!node.isSelected() && props.selectedValues.includes(value)) {
-				node.setSelected(true);
+			if (node.isSelected() && !selectedSet.has(value)) {
+				nodesToDeselect.push(node);
+			} else if (!node.isSelected() && selectedSet.has(value)) {
+				nodesToSelect.push(node);
 			}
 		});
+		if (nodesToDeselect.length > 0) {
+			api.setNodesSelected({ nodes: nodesToDeselect, newValue: false });
+		}
+		if (nodesToSelect.length > 0) {
+			api.setNodesSelected({ nodes: nodesToSelect, newValue: true });
+		}
 	}, [props.selectedValues, api]);
 
 	return (

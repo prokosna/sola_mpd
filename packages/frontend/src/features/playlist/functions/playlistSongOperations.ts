@@ -46,11 +46,11 @@ export function buildRemovePlaylistSongsCommands(
 	profile: MpdProfile,
 	songTableKeyType: SongTableKeyType,
 ): MpdRequest[] {
-	const targetKeys = targetSongs.map((song) =>
-		getSongTableKey(song, songTableKeyType),
+	const targetKeys = new Set(
+		targetSongs.map((song) => getSongTableKey(song, songTableKeyType)),
 	);
 	const remainingSongs = allSongs.filter(
-		(song) => !targetKeys.includes(getSongTableKey(song, songTableKeyType)),
+		(song) => !targetKeys.has(getSongTableKey(song, songTableKeyType)),
 	);
 
 	return [
@@ -71,13 +71,14 @@ export function buildDropDuplicatePlaylistSongsCommands(
 	playlistName: string,
 	profile: MpdProfile,
 ): { commands: MpdRequest[]; duplicateCount: number } {
-	const uniqueSongs = songs.reduce(
-		(uniqueList: Song[], song) =>
-			uniqueList.some((v) => v.path === song.path)
-				? uniqueList
-				: uniqueList.concat([song]),
-		[],
-	);
+	const seenPaths = new Set<string>();
+	const uniqueSongs: Song[] = [];
+	for (const song of songs) {
+		if (!seenPaths.has(song.path)) {
+			seenPaths.add(song.path);
+			uniqueSongs.push(song);
+		}
+	}
 
 	const duplicateCount = songs.length - uniqueSongs.length;
 
