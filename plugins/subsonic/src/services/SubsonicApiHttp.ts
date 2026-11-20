@@ -1,5 +1,5 @@
 import { createHash, randomBytes } from "node:crypto";
-import { getSongMetadataAsStringOrEmpty } from "@sola_mpd/shared/src/functions/songMetadata.js";
+import { getSongMetadataAsString } from "@sola_mpd/shared/src/functions/songMetadata.js";
 import {
 	type Song,
 	Song_MetadataTag,
@@ -70,12 +70,13 @@ export class SubsonicApiHttp implements SubsonicApi {
 	}
 
 	async find(song: Song): Promise<SubsonicSong | undefined> {
-		const title = getSongMetadataAsStringOrEmpty(song, Song_MetadataTag.TITLE);
-		const artist = getSongMetadataAsStringOrEmpty(
-			song,
-			Song_MetadataTag.ARTIST,
-		);
-		const album = getSongMetadataAsStringOrEmpty(song, Song_MetadataTag.ALBUM);
+		const getTag = (tag: Song_MetadataTag) =>
+			song.metadata[tag] !== undefined
+				? getSongMetadataAsString(song, tag)
+				: "";
+		const title = getTag(Song_MetadataTag.TITLE);
+		const artist = getTag(Song_MetadataTag.ARTIST);
+		const album = getTag(Song_MetadataTag.ALBUM);
 		const queries = [album, artist, title];
 		for (const query of queries) {
 			if (query === "") {
@@ -174,7 +175,12 @@ export class SubsonicApiHttp implements SubsonicApi {
 					const err = new Error(
 						`Subsonic HTTP error: ${resp.status} ${resp.statusText}`,
 					);
-					if (resp.status >= 400 && resp.status < 500) {
+					if (
+						resp.status >= 400 &&
+						resp.status < 500 &&
+						resp.status !== 408 &&
+						resp.status !== 429
+					) {
 						throw new AbortError(err);
 					}
 					throw err;
@@ -209,6 +215,7 @@ export class SubsonicApiHttp implements SubsonicApi {
 					minTimeout: this.minBackoffMs,
 					maxTimeout: this.maxBackoffMs,
 					randomize: true,
+					shouldRetry: ({ error }) => error instanceof EmptySearchResultError,
 				},
 			);
 		} catch (err) {

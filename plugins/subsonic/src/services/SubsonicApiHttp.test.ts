@@ -1,5 +1,10 @@
 import { create } from "@bufbuild/protobuf";
-import { SongSchema } from "@sola_mpd/shared/src/models/song_pb.js";
+import { StringValueSchema } from "@bufbuild/protobuf/wkt";
+import {
+	Song_MetadataTag,
+	Song_MetadataValueSchema,
+	SongSchema,
+} from "@sola_mpd/shared/src/models/song_pb.js";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { SubsonicApiHttp } from "./SubsonicApiHttp.js";
 
@@ -56,5 +61,35 @@ describe("SubsonicApiHttp", () => {
 		const result = await client.find(emptySong);
 		expect(result).toBeUndefined();
 		expect(fetchSpy).not.toHaveBeenCalled();
+	});
+
+	it("does not retry 401 errors inside find() searchWithRetry loop", async () => {
+		const fetchSpy = vi.spyOn(globalThis, "fetch").mockResolvedValue(
+			new Response("Unauthorized", {
+				status: 401,
+				statusText: "Unauthorized",
+			}),
+		);
+		const client = new SubsonicApiHttp("http://localhost:4533/rest", "u", "p", {
+			fetchRetries: 2,
+			searchRetries: 5,
+			minBackoffMs: 1,
+			maxBackoffMs: 2,
+		});
+		const song = create(SongSchema, {
+			metadata: {
+				[Song_MetadataTag.TITLE]: create(Song_MetadataValueSchema, {
+					value: {
+						case: "stringValue",
+						value: create(StringValueSchema, { value: "Track 1" }),
+					},
+				}),
+			},
+		});
+
+		await expect(client.find(song)).rejects.toThrow(
+			"Subsonic HTTP error: 401 Unauthorized",
+		);
+		expect(fetchSpy).toHaveBeenCalledTimes(1);
 	});
 });
