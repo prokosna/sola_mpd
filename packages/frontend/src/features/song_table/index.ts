@@ -20,28 +20,21 @@ export {
 	getSongTableKey,
 	getTargetSongsForContextMenu,
 } from "./functions/songTableKey";
-export {
-	getSongTableContextMenuAdd,
-	getSongTableContextMenuAddToPlaylist,
-	getSongTableContextMenuCopy,
-	getSongTableContextMenuEditColumns,
-	getSongTableContextMenuReplace,
-	getSongTableContextMenuResetLayout,
-	getSongTableContextMenuSimilarSongs,
-} from "./functions/songTableMenuItem";
+export { getSongTableContextMenuSimilarSongs } from "./functions/songTableMenuItem";
 export { convertOrderingToOperations } from "./functions/songTableOrdering";
 // Hooks
 export { useColumnEditModalProps } from "./hooks/useColumnEditModalProps";
 export { useHandleLibraryColumnsUpdated } from "./hooks/useHandleLibraryColumnsUpdated";
 export { useHandleSongDoubleClick } from "./hooks/useHandleSongDoubleClick";
+export {
+	type SongTableContextMenuSectionsParams,
+	useSongTableContextMenuSections,
+} from "./hooks/useSongTableContextMenuSections";
 // Services
 export type { SongTableStateRepository } from "./repositories/SongTableStateRepository";
 export { addSongAndPlayActionAtom } from "./states/actions/addSongAndPlayActionAtom";
-export { addSongsToQueueActionAtom } from "./states/actions/addSongsToQueueActionAtom";
 export { clearSelectedSongsActionAtom } from "./states/actions/clearSelectedSongsActionAtom";
-export { copySongsToClipboardActionAtom } from "./states/actions/copySongsToClipboardActionAtom";
 export { refreshSongTableStateActionAtom } from "./states/actions/refreshSongTableStateActionAtom";
-export { replaceQueueWithSongsActionAtom } from "./states/actions/replaceQueueWithSongsActionAtom";
 export { resetSongTableLayoutActionAtom } from "./states/actions/resetSongTableLayoutActionAtom";
 export { resetSongTableSearchWidthActionAtom } from "./states/actions/resetSongTableSearchWidthActionAtom";
 export { setSelectedSongsActionAtom } from "./states/actions/setSelectedSongsActionAtom";

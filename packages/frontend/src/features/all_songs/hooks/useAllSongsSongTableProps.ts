@@ -4,29 +4,17 @@ import { useAtom, useAtomValue, useSetAtom } from "jotai";
 import { type MutableRefObject, useCallback, useEffect, useRef } from "react";
 import { COMPONENT_ID_ALL_SONGS } from "../../../const/component";
 import { useNotification } from "../../../lib/mantine/hooks/useNotification";
-import { useSimilaritySearchContextMenuProps } from "../../advanced_search";
-import type { ContextMenuSection } from "../../context_menu";
+import { useSimilarSongsContextMenuItems } from "../../advanced_search";
 import { mpdCapabilitiesAtom } from "../../mpd/states/atoms/mpdCapabilitiesAtom";
 import { usePluginContextMenuItems } from "../../plugin";
 import {
-	addSongsToQueueActionAtom,
-	copySongsToClipboardActionAtom,
-	getSongTableContextMenuAdd,
-	getSongTableContextMenuAddToPlaylist,
-	getSongTableContextMenuCopy,
-	getSongTableContextMenuEditColumns,
-	getSongTableContextMenuReplace,
-	getSongTableContextMenuResetLayout,
-	getSongTableContextMenuSimilarSongs,
-	replaceQueueWithSongsActionAtom,
-	resetSongTableLayoutActionAtom,
-	type SongTableContextMenuItemParams,
 	SongTableKeyType,
 	type SongTableProps,
 	setSelectedSongsActionAtom,
 	songTableColumnViewAtom,
 	useHandleLibraryColumnsUpdated,
 	useHandleSongDoubleClick,
+	useSongTableContextMenuSections,
 } from "../../song_table";
 import { loadAllSongsFastActionAtom } from "../states/actions/loadAllSongsFastActionAtom";
 import { setIsAllSongsLoadingActionAtom } from "../states/actions/setIsAllSongsLoadingActionAtom";
@@ -48,7 +36,6 @@ export function useAllSongsSongTableProps(
 	const songTableKeyType = SongTableKeyType.PATH;
 
 	const notify = useNotification();
-	const copySongsToClipboard = useSetAtom(copySongsToClipboardActionAtom);
 
 	useAtom(syncAllSongsLoadingEffectAtom);
 	useAtom(syncAllSongsFastStateEffectAtom);
@@ -62,9 +49,6 @@ export function useAllSongsSongTableProps(
 	const setIsAllSongsLoading = useSetAtom(setIsAllSongsLoadingActionAtom);
 	const onColumnsUpdated = useHandleLibraryColumnsUpdated();
 	const setSelectedSongs = useSetAtom(setSelectedSongsActionAtom);
-	const addSongsToQueue = useSetAtom(addSongsToQueueActionAtom);
-	const replaceQueueWithSongs = useSetAtom(replaceQueueWithSongsActionAtom);
-	const resetSongTableLayout = useSetAtom(resetSongTableLayoutActionAtom);
 
 	const capabilities = useAtomValue(mpdCapabilitiesAtom);
 	const fastState = useAtomValue(allSongsFastStateAtom);
@@ -110,67 +94,17 @@ export function useAllSongsSongTableProps(
 		Plugin_PluginType.ON_FULL_TEXT_SEARCH,
 		songTableKeyType,
 	);
+	const similarSongsContextMenuItems = useSimilarSongsContextMenuItems();
 
-	const {
-		isAdvancedSearchAvailable,
-		setSimilaritySearchTargetSong,
-		refreshSimilaritySearchSongs,
-		setIsSimilaritySearchModalOpen,
-	} = useSimilaritySearchContextMenuProps();
-
-	const contextMenuSections: ContextMenuSection<SongTableContextMenuItemParams>[] =
-		[
-			{
-				items: [
-					getSongTableContextMenuAdd(songTableKeyType, notify, addSongsToQueue),
-					getSongTableContextMenuReplace(
-						songTableKeyType,
-						notify,
-						replaceQueueWithSongs,
-					),
-				],
-			},
-			{
-				items: [
-					getSongTableContextMenuAddToPlaylist(
-						songTableKeyType,
-						songsToAddToPlaylistRef,
-						setIsPlaylistSelectModalOpen,
-					),
-				],
-			},
-			{
-				items: [
-					getSongTableContextMenuCopy(
-						songTableKeyType,
-						notify,
-						copySongsToClipboard,
-					),
-				],
-			},
-			{
-				items: [
-					getSongTableContextMenuEditColumns(setIsColumnEditModalOpen),
-					getSongTableContextMenuResetLayout(resetSongTableLayout),
-				],
-			},
-		];
-	if (isAdvancedSearchAvailable) {
-		contextMenuSections.push({
-			items: [
-				getSongTableContextMenuSimilarSongs(
-					setSimilaritySearchTargetSong,
-					refreshSimilaritySearchSongs,
-					setIsSimilaritySearchModalOpen,
-				),
-			],
-		});
-	}
-	if (pluginContextMenuItems.length > 0) {
-		contextMenuSections.push({
-			items: pluginContextMenuItems,
-		});
-	}
+	const contextMenuSections = useSongTableContextMenuSections({
+		songTableKeyType,
+		hasQueueItems: true,
+		sourceSections: [],
+		extraSections: [similarSongsContextMenuItems, pluginContextMenuItems],
+		songsToAddToPlaylistRef,
+		setIsPlaylistSelectModalOpen,
+		setIsColumnEditModalOpen,
+	});
 
 	const onSongsReordered = useCallback(async (_orderedSongs: Song[]) => {
 		throw new Error("Reorder songs must be disabled in AllSongs.");
