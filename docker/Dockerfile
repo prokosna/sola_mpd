@@ -1,11 +1,11 @@
-FROM node:24.13.0-alpine
+FROM node:26.13.1-alpine
 
 RUN apk add --no-cache build-base python3
 
 ARG LAINBOW_ENDPOINT
 ENV VITE_LAINBOW_ENDPOINT=${LAINBOW_ENDPOINT}
 
-RUN corepack enable
+RUN npm install -g corepack@0.36.0 && corepack enable
 
 WORKDIR /app
 COPY . .

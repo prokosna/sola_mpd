@@ -35,7 +35,7 @@
 	"packageManager": "pnpm@10.33.2",
 	"pnpm": {
 		"executionEnv": {
-			"nodeVersion": "24.13.0"
+			"nodeVersion": "26.13.1"
 		}
 	},
 	"devDependencies": {

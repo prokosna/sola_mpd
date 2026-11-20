@@ -28,7 +28,7 @@ importers:
         version: 7.0.2
       vitest:
         specifier: ^5.1.1
-        version: 5.1.1(@types/node@26.6.5)(happy-dom@21.0.4)(vite@8.3.8(@types/node@26.6.5)(esbuild@0.27.7)(jiti@2.7.0)(sugarss@5.0.2(postcss@8.5.33))(yaml@2.9.1))
+        version: 5.1.1(@types/node@26.6.6)(happy-dom@21.0.4)(vite@8.3.8(@types/node@26.6.6)(esbuild@0.27.7)(jiti@2.7.0)(sugarss@5.0.2(postcss@8.5.33))(yaml@2.9.1))
 
   packages/backend:
     dependencies:
@@ -76,8 +76,8 @@ importers:
         specifier: ^5.0.6
         version: 5.0.6
       '@types/node':
-        specifier: ^24.19.2
-        version: 24.19.2
+        specifier: ^26.6.6
+        version: 26.6.6
       tsdown:
         specifier: ^0.23.7
         version: 0.23.7(typescript@7.0.2)(unrun@0.2.39)
@@ -211,7 +211,7 @@ importers:
         version: 19.3.0(@types/react@19.3.0)
       '@vitejs/plugin-react':
         specifier: ^6.3.0
-        version: 6.3.0(vite@8.3.8(@types/node@26.6.5)(esbuild@0.27.7)(jiti@2.7.0)(sugarss@5.0.2(postcss@8.5.33))(yaml@2.9.1))
+        version: 6.3.0(vite@8.3.8(@types/node@26.6.6)(esbuild@0.27.7)(jiti@2.7.0)(sugarss@5.0.2(postcss@8.5.33))(yaml@2.9.1))
       happy-dom:
         specifier: ^21.0.4
         version: 21.0.4
@@ -226,7 +226,7 @@ importers:
         version: 7.0.1(postcss@8.5.33)
       vite:
         specifier: ^8.3.8
-        version: 8.3.8(@types/node@26.6.5)(esbuild@0.27.7)(jiti@2.7.0)(sugarss@5.0.2(postcss@8.5.33))(yaml@2.9.1)
+        version: 8.3.8(@types/node@26.6.6)(esbuild@0.27.7)(jiti@2.7.0)(sugarss@5.0.2(postcss@8.5.33))(yaml@2.9.1)
 
   packages/shared:
     dependencies:
@@ -254,7 +254,7 @@ importers:
     dependencies:
       astro:
         specifier: ^7.4.13
-        version: 7.4.13(@types/node@26.6.5)(esbuild@0.27.7)(jiti@2.7.0)(sugarss@5.0.2(postcss@8.5.33))(yaml@2.9.1)
+        version: 7.4.13(@types/node@26.6.6)(esbuild@0.27.7)(jiti@2.7.0)(sugarss@5.0.2(postcss@8.5.33))(yaml@2.9.1)
 
   plugins/subsonic:
     dependencies:
@@ -287,8 +287,8 @@ importers:
         specifier: ^5.0.6
         version: 5.0.6
       '@types/node':
-        specifier: ^24.19.2
-        version: 24.19.2
+        specifier: ^26.6.6
+        version: 26.6.6
       tsdown:
         specifier: ^0.23.7
         version: 0.23.7(typescript@7.0.2)(unrun@0.2.39)
@@ -1771,8 +1771,8 @@ packages:
   '@types/node@24.19.2':
     resolution: {integrity: sha512-93d49wCWJkCyN87MxLpNN6KXPCwFw7bVUg79mGUV1OS40JGWwVCr8n61DXCSqz7CV6/VfPkb7xec7uP2M+QHWQ==}
 
-  '@types/node@26.6.5':
-    resolution: {integrity: sha512-uMzsv9stDdofIZBx4UGh4Z9ZgXnGC9seRDscilBcTHAeOFk67MZg/k9bWVfO+bk4qZmG+l52hRnLwUiH2LnJTg==}
+  '@types/node@26.6.6':
+    resolution: {integrity: sha512-MzQj+8Kx3XI40OmUAE6Qoh58ZMNstNNMwn2nfd3qWsfe7nDNSqJNzes4njhz6AHwrSHOffSLwXU6yb474Q4aog==}
 
   '@types/qs@6.15.1':
     resolution: {integrity: sha512-GZHUBZR9hckSUhrxmp1nG6NwdpM9fCunJwyThLW1X3AyHgd9IlHb6VANpQQqDr2o/qQp6McZ3y/IA2rVzKzSbw==}
@@ -4466,7 +4466,7 @@ snapshots:
       is-docker: 4.0.0
       package-manager-detector: 1.9.0
 
-  '@astrojs/vite-plugin-astro@0.1.3(vite@8.3.8(@types/node@26.6.5)(esbuild@0.27.7)(jiti@2.7.0)(sugarss@5.0.2(postcss@8.5.33))(yaml@2.9.1))':
+  '@astrojs/vite-plugin-astro@0.1.3(vite@8.3.8(@types/node@26.6.6)(esbuild@0.27.7)(jiti@2.7.0)(sugarss@5.0.2(postcss@8.5.33))(yaml@2.9.1))':
     dependencies:
       '@astrojs/compiler-rs': 0.5.3
       '@astrojs/internal-helpers': 0.13.2
@@ -4476,7 +4476,7 @@ snapshots:
       magic-string: 1.4.5
       rolldown: 1.2.19
       smol-toml: 1.9.1
-      vite: 8.3.8(@types/node@26.6.5)(esbuild@0.27.7)(jiti@2.7.0)(sugarss@5.0.2(postcss@8.5.33))(yaml@2.9.1)
+      vite: 8.3.8(@types/node@26.6.6)(esbuild@0.27.7)(jiti@2.7.0)(sugarss@5.0.2(postcss@8.5.33))(yaml@2.9.1)
       zod: 4.6.7
 
   '@babel/code-frame@7.29.7':
@@ -5508,12 +5508,12 @@ snapshots:
 
   '@types/better-sqlite3@9.6.0':
     dependencies:
-      '@types/node': 24.19.2
+      '@types/node': 26.6.6
 
   '@types/body-parser@1.19.6':
     dependencies:
       '@types/connect': 3.4.38
-      '@types/node': 24.19.2
+      '@types/node': 26.6.6
 
   '@types/cacheable-request@6.0.3':
     dependencies:
@@ -5529,11 +5529,11 @@ snapshots:
 
   '@types/connect@3.4.38':
     dependencies:
-      '@types/node': 24.19.2
+      '@types/node': 26.6.6
 
   '@types/cors@2.8.19':
     dependencies:
-      '@types/node': 24.19.2
+      '@types/node': 26.6.6
 
   '@types/debug@4.1.13':
     dependencies:
@@ -5549,7 +5549,7 @@ snapshots:
 
   '@types/express-serve-static-core@5.1.3':
     dependencies:
-      '@types/node': 24.19.2
+      '@types/node': 26.6.6
       '@types/qs': 6.15.1
       '@types/range-parser': 1.2.7
       '@types/send': 1.2.1
@@ -5590,10 +5590,9 @@ snapshots:
     dependencies:
       undici-types: 7.24.6
 
-  '@types/node@26.6.5':
+  '@types/node@26.6.6':
     dependencies:
       undici-types: 8.9.0
-    optional: true
 
   '@types/qs@6.15.1': {}
 
@@ -5613,12 +5612,12 @@ snapshots:
 
   '@types/send@1.2.1':
     dependencies:
-      '@types/node': 24.19.2
+      '@types/node': 26.6.6
 
   '@types/serve-static@2.2.0':
     dependencies:
       '@types/http-errors': 2.0.5
-      '@types/node': 24.19.2
+      '@types/node': 26.6.6
 
   '@types/unist@3.0.3': {}
 
@@ -5697,19 +5696,19 @@ snapshots:
 
   '@ungap/structured-clone@1.4.0': {}
 
-  '@vitejs/plugin-react@6.3.0(vite@8.3.8(@types/node@26.6.5)(esbuild@0.27.7)(jiti@2.7.0)(sugarss@5.0.2(postcss@8.5.33))(yaml@2.9.1))':
+  '@vitejs/plugin-react@6.3.0(vite@8.3.8(@types/node@26.6.6)(esbuild@0.27.7)(jiti@2.7.0)(sugarss@5.0.2(postcss@8.5.33))(yaml@2.9.1))':
     dependencies:
       '@rolldown/pluginutils': 1.0.1
-      vite: 8.3.8(@types/node@26.6.5)(esbuild@0.27.7)(jiti@2.7.0)(sugarss@5.0.2(postcss@8.5.33))(yaml@2.9.1)
+      vite: 8.3.8(@types/node@26.6.6)(esbuild@0.27.7)(jiti@2.7.0)(sugarss@5.0.2(postcss@8.5.33))(yaml@2.9.1)
 
-  '@vitest/mocker@5.1.1(vite@8.3.8(@types/node@26.6.5)(esbuild@0.27.7)(jiti@2.7.0)(sugarss@5.0.2(postcss@8.5.33))(yaml@2.9.1))':
+  '@vitest/mocker@5.1.1(vite@8.3.8(@types/node@26.6.6)(esbuild@0.27.7)(jiti@2.7.0)(sugarss@5.0.2(postcss@8.5.33))(yaml@2.9.1))':
     dependencies:
       '@jridgewell/trace-mapping': 0.3.31
       '@vitest/spy': 5.1.1
       estree-walker: 3.0.3
       magic-string: 1.4.5
     optionalDependencies:
-      vite: 8.3.8(@types/node@26.6.5)(esbuild@0.27.7)(jiti@2.7.0)(sugarss@5.0.2(postcss@8.5.33))(yaml@2.9.1)
+      vite: 8.3.8(@types/node@26.6.6)(esbuild@0.27.7)(jiti@2.7.0)(sugarss@5.0.2(postcss@8.5.33))(yaml@2.9.1)
 
   '@vitest/spy@5.1.1': {}
 
@@ -5851,14 +5850,14 @@ snapshots:
 
   assertion-error@2.0.1: {}
 
-  astro@7.4.13(@types/node@26.6.5)(esbuild@0.27.7)(jiti@2.7.0)(sugarss@5.0.2(postcss@8.5.33))(yaml@2.9.1):
+  astro@7.4.13(@types/node@26.6.6)(esbuild@0.27.7)(jiti@2.7.0)(sugarss@5.0.2(postcss@8.5.33))(yaml@2.9.1):
     dependencies:
       '@astrojs/compiler-rs': 0.5.3
       '@astrojs/internal-helpers': 0.13.2
       '@astrojs/markdown-satteri': 0.4.10
       '@astrojs/runtime': 0.1.2
       '@astrojs/telemetry': 3.4.2
-      '@astrojs/vite-plugin-astro': 0.1.3(vite@8.3.8(@types/node@26.6.5)(esbuild@0.27.7)(jiti@2.7.0)(sugarss@5.0.2(postcss@8.5.33))(yaml@2.9.1))
+      '@astrojs/vite-plugin-astro': 0.1.3(vite@8.3.8(@types/node@26.6.6)(esbuild@0.27.7)(jiti@2.7.0)(sugarss@5.0.2(postcss@8.5.33))(yaml@2.9.1))
       '@capsizecss/unpack': 4.0.1
       '@clack/prompts': 1.9.0
       '@oslojs/encoding': 1.1.0
@@ -5901,12 +5900,12 @@ snapshots:
       unifont: 1.0.3
       unstorage: 1.17.6
       verkit: 0.5.0
-      vite: 8.3.8(@types/node@26.6.5)(esbuild@0.27.7)(jiti@2.7.0)(sugarss@5.0.2(postcss@8.5.33))(yaml@2.9.1)
-      vitefu: 1.1.3(vite@8.3.8(@types/node@26.6.5)(esbuild@0.27.7)(jiti@2.7.0)(sugarss@5.0.2(postcss@8.5.33))(yaml@2.9.1))
+      vite: 8.3.8(@types/node@26.6.6)(esbuild@0.27.7)(jiti@2.7.0)(sugarss@5.0.2(postcss@8.5.33))(yaml@2.9.1)
+      vitefu: 1.1.3(vite@8.3.8(@types/node@26.6.6)(esbuild@0.27.7)(jiti@2.7.0)(sugarss@5.0.2(postcss@8.5.33))(yaml@2.9.1))
       xxhash-wasm: 1.1.0
       zod: 4.6.7
     optionalDependencies:
-      sharp: 0.35.5(@types/node@26.6.5)
+      sharp: 0.35.5(@types/node@26.6.6)
     transitivePeerDependencies:
       - '@azure/app-configuration'
       - '@azure/cosmos'
@@ -6399,7 +6398,7 @@ snapshots:
   engine.io@6.6.11:
     dependencies:
       '@types/cors': 2.8.19
-      '@types/node': 24.19.2
+      '@types/node': 26.6.6
       '@types/ws': 8.18.2
       accepts: 1.3.8
       cookie: 0.7.2
@@ -7696,7 +7695,7 @@ snapshots:
 
   setprototypeof@1.2.0: {}
 
-  sharp@0.35.5(@types/node@26.6.5):
+  sharp@0.35.5(@types/node@26.6.6):
     dependencies:
       '@img/colour': 1.1.0
       detect-libc: 2.1.2
@@ -7727,7 +7726,7 @@ snapshots:
       '@img/sharp-win32-arm64': 0.35.5
       '@img/sharp-win32-ia32': 0.35.5
       '@img/sharp-win32-x64': 0.35.5
-      '@types/node': 26.6.5
+      '@types/node': 26.6.6
     optional: true
 
   shebang-command@2.0.0:
@@ -8056,8 +8055,7 @@ snapshots:
 
   undici-types@7.24.6: {}
 
-  undici-types@8.9.0:
-    optional: true
+  undici-types@8.9.0: {}
 
   undici@6.29.1: {}
 
@@ -8171,7 +8169,7 @@ snapshots:
       '@types/unist': 3.0.3
       vfile-message: 4.0.3
 
-  vite@8.3.8(@types/node@26.6.5)(esbuild@0.27.7)(jiti@2.7.0)(sugarss@5.0.2(postcss@8.5.33))(yaml@2.9.1):
+  vite@8.3.8(@types/node@26.6.6)(esbuild@0.27.7)(jiti@2.7.0)(sugarss@5.0.2(postcss@8.5.33))(yaml@2.9.1):
     dependencies:
       lightningcss: 1.33.0
       picomatch: 4.0.7
@@ -8179,21 +8177,21 @@ snapshots:
       rolldown: 1.2.19
       tinyglobby: 0.2.17
     optionalDependencies:
-      '@types/node': 26.6.5
+      '@types/node': 26.6.6
       esbuild: 0.27.7
       fsevents: 2.3.3
       jiti: 2.7.0
       sugarss: 5.0.2(postcss@8.5.33)
       yaml: 2.9.1
 
-  vitefu@1.1.3(vite@8.3.8(@types/node@26.6.5)(esbuild@0.27.7)(jiti@2.7.0)(sugarss@5.0.2(postcss@8.5.33))(yaml@2.9.1)):
+  vitefu@1.1.3(vite@8.3.8(@types/node@26.6.6)(esbuild@0.27.7)(jiti@2.7.0)(sugarss@5.0.2(postcss@8.5.33))(yaml@2.9.1)):
     optionalDependencies:
-      vite: 8.3.8(@types/node@26.6.5)(esbuild@0.27.7)(jiti@2.7.0)(sugarss@5.0.2(postcss@8.5.33))(yaml@2.9.1)
+      vite: 8.3.8(@types/node@26.6.6)(esbuild@0.27.7)(jiti@2.7.0)(sugarss@5.0.2(postcss@8.5.33))(yaml@2.9.1)
 
-  vitest@5.1.1(@types/node@26.6.5)(happy-dom@21.0.4)(vite@8.3.8(@types/node@26.6.5)(esbuild@0.27.7)(jiti@2.7.0)(sugarss@5.0.2(postcss@8.5.33))(yaml@2.9.1)):
+  vitest@5.1.1(@types/node@26.6.6)(happy-dom@21.0.4)(vite@8.3.8(@types/node@26.6.6)(esbuild@0.27.7)(jiti@2.7.0)(sugarss@5.0.2(postcss@8.5.33))(yaml@2.9.1)):
     dependencies:
       '@types/chai': 5.2.3
-      '@vitest/mocker': 5.1.1(vite@8.3.8(@types/node@26.6.5)(esbuild@0.27.7)(jiti@2.7.0)(sugarss@5.0.2(postcss@8.5.33))(yaml@2.9.1))
+      '@vitest/mocker': 5.1.1(vite@8.3.8(@types/node@26.6.6)(esbuild@0.27.7)(jiti@2.7.0)(sugarss@5.0.2(postcss@8.5.33))(yaml@2.9.1))
       chai: 6.3.0
       es-module-lexer: 2.3.2
       expect-type: 1.4.0
@@ -8204,10 +8202,10 @@ snapshots:
       tinybench: 6.2.4
       tinyexec: 1.3.1
       tinyglobby: 0.2.17
-      vite: 8.3.8(@types/node@26.6.5)(esbuild@0.27.7)(jiti@2.7.0)(sugarss@5.0.2(postcss@8.5.33))(yaml@2.9.1)
+      vite: 8.3.8(@types/node@26.6.6)(esbuild@0.27.7)(jiti@2.7.0)(sugarss@5.0.2(postcss@8.5.33))(yaml@2.9.1)
       why-is-node-running: 3.2.1
     optionalDependencies:
-      '@types/node': 26.6.5
+      '@types/node': 26.6.6
       happy-dom: 21.0.4
     transitivePeerDependencies:
       - msw
