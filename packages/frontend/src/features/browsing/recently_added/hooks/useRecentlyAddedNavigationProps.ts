@@ -1,7 +1,8 @@
 import type { Song_MetadataTag } from "@sola_mpd/shared/src/models/song_pb.js";
 import { useAtom, useAtomValue, useSetAtom } from "jotai";
-import { useCallback, useEffect } from "react";
+import { useCallback, useEffect, useRef } from "react";
 
+import { useNotification } from "../../../../lib/mantine/hooks/useNotification";
 import { mpdCapabilitiesAtom } from "../../../mpd/states/atoms/mpdCapabilitiesAtom";
 import type { BrowserFilterView } from "../../common/types/browserFilterView";
 import { loadMoreRecentlyAddedFastStateActionAtom } from "../states/actions/loadMoreRecentlyAddedFastStateActionAtom";
@@ -31,6 +32,7 @@ export function useRecentlyAddedNavigationProps(): RecentlyAddedNavigationProps 
 		filteredRecentlyAddedFilterValuesMapAtom,
 	);
 	const updateBrowserFilters = useUpdateRecentlyAddedFilters();
+	const notify = useNotification();
 	const capabilities = useAtomValue(mpdCapabilitiesAtom);
 	const fastState = useAtomValue(recentlyAddedFastStateAtom);
 	const loadMore = useSetAtom(loadMoreRecentlyAddedFastStateActionAtom);
@@ -38,20 +40,40 @@ export function useRecentlyAddedNavigationProps(): RecentlyAddedNavigationProps 
 	// Kick off the initial load when entering the page on a capable server.
 	const isFast = capabilities.isMpd024OrLater;
 	const fastEmpty = fastState.songs.length === 0;
-	const fastIdle = !fastState.isLoading && fastState.hasMore;
+	const hasAttemptedErrorRetryRef = useRef(false);
+	const canRetryStaleError =
+		fastState.error !== undefined && !hasAttemptedErrorRetryRef.current;
+	const fastIdle =
+		!fastState.isLoading &&
+		fastState.hasMore &&
+		(fastState.error === undefined || canRetryStaleError);
 	useEffect(() => {
 		if (isFast && fastEmpty && fastIdle) {
+			if (fastState.error !== undefined) {
+				hasAttemptedErrorRetryRef.current = true;
+			}
 			loadMore().catch((err) => {
+				hasAttemptedErrorRetryRef.current = true;
 				console.error("Failed to load recently added songs:", err);
+				notify({
+					status: "error",
+					title: "Failed to load recently added songs",
+					description: err instanceof Error ? err.message : String(err),
+				});
 			});
 		}
-	}, [isFast, fastEmpty, fastIdle, loadMore]);
+	}, [isFast, fastEmpty, fastIdle, fastState.error, loadMore, notify]);
 
 	const onScrolledNearBottom = useCallback(() => {
 		loadMore().catch((err) => {
 			console.error("Failed to load more recently added songs:", err);
+			notify({
+				status: "error",
+				title: "Failed to load more recently added songs",
+				description: err instanceof Error ? err.message : String(err),
+			});
 		});
-	}, [loadMore]);
+	}, [loadMore, notify]);
 
 	return {
 		browserFilters,

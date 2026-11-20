@@ -9,6 +9,7 @@ export type AllSongsFastState = {
 	offset: number;
 	isLoading: boolean;
 	hasMore: boolean;
+	error?: string;
 };
 
 export const initialAllSongsFastState: AllSongsFastState = {

@@ -19,7 +19,7 @@ export const loadAllSongsFastActionAtom = atom(null, async (get, set) => {
 		return;
 	}
 
-	set(allSongsFastStateAtom, { ...state, isLoading: true });
+	set(allSongsFastStateAtom, { ...state, isLoading: true, error: undefined });
 
 	let lastProgress = {
 		songs: state.songs,
@@ -66,7 +66,8 @@ export const loadAllSongsFastActionAtom = atom(null, async (get, set) => {
 				songs: lastProgress.songs,
 				offset: lastProgress.offset,
 				isLoading: false,
-				hasMore: false,
+				hasMore: true,
+				error: e instanceof Error ? e.message : String(e),
 			});
 		}
 		throw e;

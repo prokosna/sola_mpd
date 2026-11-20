@@ -1,7 +1,7 @@
 import { Plugin_PluginType } from "@sola_mpd/shared/src/models/plugin/plugin_pb.js";
 import type { Song } from "@sola_mpd/shared/src/models/song_pb.js";
 import { useAtom, useAtomValue, useSetAtom } from "jotai";
-import { type MutableRefObject, useCallback, useEffect } from "react";
+import { type MutableRefObject, useCallback, useEffect, useRef } from "react";
 import { COMPONENT_ID_ALL_SONGS } from "../../../const/component";
 import { useNotification } from "../../../lib/mantine/hooks/useNotification";
 import { useSimilaritySearchContextMenuProps } from "../../advanced_search";
@@ -74,19 +74,36 @@ export function useAllSongsSongTableProps(
 	// supports it. The loader is idempotent: re-entering with cached data is a
 	// no-op because it short-circuits when `hasMore` is false.
 	const isFast = capabilities.isMpd024OrLater;
-	const fastIdle = !fastState.isLoading && fastState.hasMore;
+	const hasAttemptedErrorRetryRef = useRef(false);
+	const canRetryStaleError =
+		fastState.error !== undefined && !hasAttemptedErrorRetryRef.current;
+	const fastIdle =
+		!fastState.isLoading &&
+		fastState.hasMore &&
+		(fastState.error === undefined || canRetryStaleError);
 	useEffect(() => {
 		if (isFast && fastIdle) {
+			if (fastState.error !== undefined) {
+				hasAttemptedErrorRetryRef.current = true;
+			}
 			loadAllSongsFast().catch((err) => {
+				hasAttemptedErrorRetryRef.current = true;
 				console.error("Failed to load all songs:", err);
+				notify({
+					status: "error",
+					title: "Failed to load songs",
+					description: err instanceof Error ? err.message : String(err),
+				});
 			});
 		}
-	}, [isFast, fastIdle, loadAllSongsFast]);
+	}, [isFast, fastIdle, fastState.error, loadAllSongsFast, notify]);
 
 	// In fast mode the spinner only blocks the table until the first chunk
 	// arrives; subsequent chunks just append rows beneath the user.
 	const isLoading = isFast
-		? fastState.songs.length === 0 && (fastState.isLoading || fastState.hasMore)
+		? fastState.songs.length === 0 &&
+			(fastState.isLoading ||
+				(fastState.hasMore && fastState.error === undefined))
 		: slowIsLoading;
 
 	const pluginContextMenuItems = usePluginContextMenuItems(

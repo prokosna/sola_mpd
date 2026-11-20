@@ -33,7 +33,11 @@ export const loadMoreRecentlyAddedFastStateActionAtom = atom(
 			return;
 		}
 
-		set(recentlyAddedFastStateAtom, { ...state, isLoading: true });
+		set(recentlyAddedFastStateAtom, {
+			...state,
+			isLoading: true,
+			error: undefined,
+		});
 
 		let songs = state.songs;
 		let daysVisible = state.daysVisible;
@@ -79,7 +83,8 @@ export const loadMoreRecentlyAddedFastStateActionAtom = atom(
 					songs,
 					daysVisible,
 					isLoading: false,
-					hasMore: false,
+					hasMore: true,
+					error: e instanceof Error ? e.message : String(e),
 				});
 			}
 			throw e;
