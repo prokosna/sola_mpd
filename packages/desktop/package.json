@@ -11,7 +11,7 @@
 		"dev": "tsdown && ELECTRON_RUN_AS_NODE= electron dist/main/index.mjs --no-sandbox",
 		"dist": "node scripts/dist.mjs",
 		"test": "vitest run --passWithNoTests",
-		"test:e2e": "xvfb-run --auto-servernum playwright test"
+		"test:e2e": "install-electron && xvfb-run --auto-servernum playwright test"
 	},
 	"dependencies": {
 		"@bufbuild/protobuf": "^2.17.0",
@@ -24,7 +24,7 @@
 	"devDependencies": {
 		"@playwright/test": "^1.65.1",
 		"@types/node": "^24.19.2",
-		"electron": "^41.10.7",
+		"electron": "^45.4.1",
 		"electron-builder": "^26.18.0",
 		"tsdown": "^0.23.7"
 	}
