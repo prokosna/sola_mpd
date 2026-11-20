@@ -22,6 +22,9 @@ export function getSongMetadataAsString(
 	tag: Song_MetadataTag,
 ): string {
 	const metadata = song.metadata[tag];
+	if (metadata === undefined) {
+		return "";
+	}
 	return convertSongMetadataValueToString(metadata);
 }
 
@@ -30,11 +33,20 @@ export function getSongMetadataAsNumber(
 	tag: Song_MetadataTag,
 ): number | undefined {
 	const value = song.metadata[tag];
+	if (value === undefined) {
+		return undefined;
+	}
 	switch (value.value.case) {
 		case "floatValue":
 			return value.value.value.value;
-		case "stringValue":
-			return Number(value.value.value.value);
+		case "stringValue": {
+			const raw = value.value.value.value.trim();
+			if (raw === "") {
+				return undefined;
+			}
+			const parsed = Number(raw);
+			return Number.isNaN(parsed) ? undefined : parsed;
+		}
 		case "intValue":
 			return value.value.value.value;
 		case "timestamp":
@@ -187,6 +199,12 @@ export function compareSongsByMetadataValue(
 ): number {
 	const valueA = songA.metadata[tag];
 	const valueB = songB.metadata[tag];
+	if (valueA === undefined || valueB === undefined) {
+		if (valueA === undefined && valueB === undefined) {
+			return 0;
+		}
+		return valueA === undefined ? -1 : 1;
+	}
 	if (
 		valueA.value.case === "floatValue" &&
 		valueB.value.case === "floatValue"
