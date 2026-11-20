@@ -1,11 +1,7 @@
-import type {
-	BodyScrollEvent,
-	GetRowIdParams,
-	IRowNode,
-} from "ag-grid-community";
+import type { BodyScrollEvent, GetRowIdParams } from "ag-grid-community";
 import { AgGridReact } from "ag-grid-react";
 import { useAtomValue } from "jotai";
-import { useCallback, useEffect, useMemo, useRef } from "react";
+import { useCallback, useMemo, useRef } from "react";
 
 import { useAgGridTheme } from "../../../lib/agGrid/hooks/useAgGridTheme";
 import { ContextMenu, type ContextMenuSection } from "../../context_menu";
@@ -15,6 +11,7 @@ import { useAgGridReactData } from "../hooks/useAgGridReactData";
 import { useHandleRowDataUpdated } from "../hooks/useHandleRowDataUpdated";
 import { useHandleSelectionChange } from "../hooks/useHandleSelectionChange";
 import { useOpenContextMenu } from "../hooks/useOpenContextMenu";
+import { useSyncSelectedValues } from "../hooks/useSyncSelectedValues";
 import type {
 	SelectListContextMenuItemParams,
 	SelectListRowValue,
@@ -58,8 +55,13 @@ export function SelectList(props: SelectListProps) {
 	}, []);
 
 	const handleSelectionChange = useHandleSelectionChange(props.onItemsSelected);
+	const syncSelectedValues = useSyncSelectedValues(
+		gridRef,
+		props.selectedValues,
+	);
 	const handleRowDataUpdated = useHandleRowDataUpdated(
 		props.onLoadingCompleted,
+		syncSelectedValues,
 	);
 
 	const onScrolledNearBottom = props.onScrolledNearBottom;
@@ -93,32 +95,6 @@ export function SelectList(props: SelectListProps) {
 	);
 
 	const theme = useAgGridTheme();
-
-	// Sync with selectedValues which can be updated outside of this component
-	const api = gridRef.current?.api;
-	useEffect(() => {
-		if (api === undefined) {
-			return;
-		}
-
-		const selectedSet = new Set(props.selectedValues);
-		const nodesToSelect: IRowNode[] = [];
-		const nodesToDeselect: IRowNode[] = [];
-		api.forEachNode((node) => {
-			const value = String(node.data.key);
-			if (node.isSelected() && !selectedSet.has(value)) {
-				nodesToDeselect.push(node);
-			} else if (!node.isSelected() && selectedSet.has(value)) {
-				nodesToSelect.push(node);
-			}
-		});
-		if (nodesToDeselect.length > 0) {
-			api.setNodesSelected({ nodes: nodesToDeselect, newValue: false });
-		}
-		if (nodesToSelect.length > 0) {
-			api.setNodesSelected({ nodes: nodesToSelect, newValue: true });
-		}
-	}, [props.selectedValues, api]);
 
 	return (
 		<>
