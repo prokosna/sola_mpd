@@ -2,6 +2,7 @@ import type { Song } from "@sola_mpd/shared/src/models/song_pb.js";
 import type {
 	SelectionColumnDef,
 	SuppressKeyboardEventParams,
+	TooltipCallbackParams,
 } from "ag-grid-community";
 import { useAtomValue } from "jotai";
 import { useMemo } from "react";
@@ -21,6 +22,7 @@ import {
 	type SongTableColumnView,
 	type SongTableKeyType,
 	type SongTableRowData,
+	type SongTableRowValue,
 } from "../types/songTableTypes";
 
 export function useAgGridReactData(
@@ -101,7 +103,9 @@ export function useAgGridReactData(
 			flex: column.widthFlex,
 			resizable: true,
 			sortable: isSortingEnabled,
-			tooltipField: convertSongMetadataTagToDisplayName(column.tag),
+			tooltip: ({
+				value,
+			}: TooltipCallbackParams<SongTableRowData, SongTableRowValue>) => value,
 			valueFormatter: SONG_METADATA_FORMATTERS[column.tag],
 			sort:
 				!isSortingEnabled ||
