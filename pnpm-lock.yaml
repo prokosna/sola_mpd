@@ -73,8 +73,8 @@ importers:
         specifier: ^5.0.6
         version: 5.0.6
       '@types/node':
-        specifier: ^25.9.9
-        version: 25.9.9
+        specifier: ^24.19.2
+        version: 24.19.2
       tsdown:
         specifier: ^0.21.10
         version: 0.21.10(typescript@6.0.3)
@@ -104,8 +104,8 @@ importers:
         specifier: ^1.65.1
         version: 1.65.1
       '@types/node':
-        specifier: ^25.9.9
-        version: 25.9.9
+        specifier: ^24.19.2
+        version: 24.19.2
       electron:
         specifier: ^41.10.7
         version: 41.10.7
@@ -284,8 +284,8 @@ importers:
         specifier: ^5.0.6
         version: 5.0.6
       '@types/node':
-        specifier: ^25.9.9
-        version: 25.9.9
+        specifier: ^24.19.2
+        version: 24.19.2
       tsdown:
         specifier: ^0.21.10
         version: 0.21.10(typescript@6.0.3)
@@ -1689,9 +1689,6 @@ packages:
 
   '@types/node@24.19.2':
     resolution: {integrity: sha512-93d49wCWJkCyN87MxLpNN6KXPCwFw7bVUg79mGUV1OS40JGWwVCr8n61DXCSqz7CV6/VfPkb7xec7uP2M+QHWQ==}
-
-  '@types/node@25.9.9':
-    resolution: {integrity: sha512-b4e2xxj/yMeT2hNlD6x7zNFiQK2Dlmkb9CQ6v3/1G2RezKN4YS2lcEv8lzGm1mhs4f2lM4yNAMI/zUDBZBBt7w==}
 
   '@types/node@26.6.5':
     resolution: {integrity: sha512-uMzsv9stDdofIZBx4UGh4Z9ZgXnGC9seRDscilBcTHAeOFk67MZg/k9bWVfO+bk4qZmG+l52hRnLwUiH2LnJTg==}
@@ -5266,18 +5263,18 @@ snapshots:
 
   '@types/better-sqlite3@9.6.0':
     dependencies:
-      '@types/node': 25.9.9
+      '@types/node': 24.19.2
 
   '@types/body-parser@1.19.6':
     dependencies:
       '@types/connect': 3.4.38
-      '@types/node': 25.9.9
+      '@types/node': 24.19.2
 
   '@types/cacheable-request@6.0.3':
     dependencies:
       '@types/http-cache-semantics': 4.2.0
       '@types/keyv': 3.1.4
-      '@types/node': 25.9.9
+      '@types/node': 24.19.2
       '@types/responselike': 1.0.3
 
   '@types/chai@5.2.3':
@@ -5287,11 +5284,11 @@ snapshots:
 
   '@types/connect@3.4.38':
     dependencies:
-      '@types/node': 25.9.9
+      '@types/node': 24.19.2
 
   '@types/cors@2.8.19':
     dependencies:
-      '@types/node': 25.9.9
+      '@types/node': 24.19.2
 
   '@types/debug@4.1.13':
     dependencies:
@@ -5307,7 +5304,7 @@ snapshots:
 
   '@types/express-serve-static-core@5.1.3':
     dependencies:
-      '@types/node': 25.9.9
+      '@types/node': 24.19.2
       '@types/qs': 6.15.1
       '@types/range-parser': 1.2.7
       '@types/send': 1.2.1
@@ -5320,7 +5317,7 @@ snapshots:
 
   '@types/fs-extra@9.0.13':
     dependencies:
-      '@types/node': 25.9.9
+      '@types/node': 24.19.2
 
   '@types/hast@3.0.5':
     dependencies:
@@ -5334,7 +5331,7 @@ snapshots:
 
   '@types/keyv@3.1.4':
     dependencies:
-      '@types/node': 25.9.9
+      '@types/node': 24.19.2
 
   '@types/mdast@4.0.4':
     dependencies:
@@ -5350,13 +5347,10 @@ snapshots:
     dependencies:
       undici-types: 7.24.6
 
-  '@types/node@25.9.9':
-    dependencies:
-      undici-types: 7.24.6
-
   '@types/node@26.6.5':
     dependencies:
       undici-types: 8.9.0
+    optional: true
 
   '@types/qs@6.15.1': {}
 
@@ -5372,16 +5366,16 @@ snapshots:
 
   '@types/responselike@1.0.3':
     dependencies:
-      '@types/node': 25.9.9
+      '@types/node': 24.19.2
 
   '@types/send@1.2.1':
     dependencies:
-      '@types/node': 25.9.9
+      '@types/node': 24.19.2
 
   '@types/serve-static@2.2.0':
     dependencies:
       '@types/http-errors': 2.0.5
-      '@types/node': 25.9.9
+      '@types/node': 24.19.2
 
   '@types/unist@3.0.3': {}
 
@@ -5389,7 +5383,7 @@ snapshots:
 
   '@types/ws@8.18.2':
     dependencies:
-      '@types/node': 26.6.5
+      '@types/node': 24.19.2
 
   '@typescript/vfs@1.6.5(typescript@5.4.5)':
     dependencies:
@@ -5694,7 +5688,7 @@ snapshots:
 
   buffer-image-size@0.6.4:
     dependencies:
-      '@types/node': 25.9.9
+      '@types/node': 24.19.2
 
   builder-util-runtime@9.7.0:
     dependencies:
@@ -6091,7 +6085,7 @@ snapshots:
   engine.io@6.6.11:
     dependencies:
       '@types/cors': 2.8.19
-      '@types/node': 25.9.9
+      '@types/node': 24.19.2
       '@types/ws': 8.18.2
       accepts: 1.3.8
       cookie: 0.7.2
@@ -6412,7 +6406,7 @@ snapshots:
 
   happy-dom@21.0.4:
     dependencies:
-      '@types/node': 25.9.9
+      '@types/node': 24.19.2
       '@types/whatwg-mimetype': 3.0.2
       '@types/ws': 8.18.2
       buffer-image-size: 0.6.4
@@ -7724,7 +7718,8 @@ snapshots:
 
   undici-types@7.24.6: {}
 
-  undici-types@8.9.0: {}
+  undici-types@8.9.0:
+    optional: true
 
   undici@6.29.1: {}
 
