@@ -5,6 +5,13 @@ on:
     branches: [main]
     types: [opened, synchronize, reopened]
 
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -14,19 +21,8 @@ jobs:
         node-version: [24.x]
 
     steps:
-      - name: Checkout main branch
+      - name: Checkout PR merge commit
         uses: actions/checkout@v6
-        with:
-          ref: "main"
-          fetch-depth: 0
-      - name: Configure git user
-        run: |
-          git config user.name "GitHub Actions"
-          git config user.email "actions@github.com"
-      - name: Merge PR branch into main
-        run: |
-          git fetch origin ${{ github.event.pull_request.head.ref }}
-          git merge --no-ff origin/${{ github.event.pull_request.head.ref }}
 
       - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v6
