@@ -1,7 +1,7 @@
 import type { Song } from "@sola_mpd/shared/src/models/song_pb.js";
 import type { SelectionChangedEvent } from "ag-grid-community";
 import { useCallback } from "react";
-import { getSongsInTableFromGrid } from "../functions/songTableState";
+import { getSelectedSongsInTableFromGrid } from "../functions/songTableState";
 import type { SongTableKey } from "../types/songTableTypes";
 
 export function useHandleSelectionChange(
@@ -11,8 +11,7 @@ export function useHandleSelectionChange(
 	return useCallback(
 		(event: SelectionChangedEvent) => {
 			const { api } = event;
-			const { selectedSortedSongs } = getSongsInTableFromGrid(
-				undefined,
+			const selectedSortedSongs = getSelectedSongsInTableFromGrid(
 				api,
 				songsMap,
 			);

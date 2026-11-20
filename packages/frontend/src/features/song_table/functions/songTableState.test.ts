@@ -4,7 +4,11 @@ import { SongSchema } from "@sola_mpd/shared/src/models/song_pb.js";
 import type { GridApi, IRowNode } from "ag-grid-community";
 import { describe, expect, it } from "vitest";
 
-import { getSongsInTableFromGrid, getTableIndexOfSong } from "./songTableState";
+import {
+	getSelectedSongsInTableFromGrid,
+	getSongsInTableFromGrid,
+	getTableIndexOfSong,
+} from "./songTableState";
 
 type FakeRow = {
 	key: string;
@@ -26,6 +30,7 @@ function createGridApi(rows: FakeRow[]): GridApi {
 		forEachNodeAfterFilterAndSort: (callback: (node: IRowNode) => void) => {
 			nodes.forEach(callback);
 		},
+		getSelectedNodes: () => nodes.filter((node) => node.isSelected()),
 	} as unknown as GridApi;
 }
 
@@ -97,5 +102,21 @@ describe("getTableIndexOfSong", () => {
 		const gridApi = createGridApi([{ key: "a", rowIndex: null }]);
 
 		expect(getTableIndexOfSong("a", gridApi)).toBeUndefined();
+	});
+});
+
+describe("getSelectedSongsInTableFromGrid", () => {
+	it("returns selected songs sorted by rowIndex and skips null rowIndex", () => {
+		const gridApi = createGridApi([
+			{ key: "c", selected: true, rowIndex: 4 },
+			{ key: "a", selected: true, rowIndex: 1 },
+			{ key: "b", selected: false, rowIndex: 2 },
+			{ key: "hidden", selected: true, rowIndex: null },
+		]);
+		const songsMap = createSongsMap(["a", "b", "c", "hidden"]);
+
+		const selected = getSelectedSongsInTableFromGrid(gridApi, songsMap);
+
+		expect(selected.map((song) => song.path)).toEqual(["a", "c"]);
 	});
 });

@@ -2,18 +2,18 @@ import { useEffect, useState } from "react";
 
 type UserDeviceType = "large" | "middle" | "small";
 
-export function useUserDeviceType(): UserDeviceType {
-	const getDeviceType = (width: number): UserDeviceType => {
-		if (width < 520) {
-			return "small";
-		}
-		if (width < 920) {
-			return "middle";
-		}
-		return "large";
-	};
+function getDeviceType(width: number): UserDeviceType {
+	if (width < 520) {
+		return "small";
+	}
+	if (width < 920) {
+		return "middle";
+	}
+	return "large";
+}
 
-	const [deviceType, setDeviceType] = useState(
+export function useUserDeviceType(): UserDeviceType {
+	const [deviceType, setDeviceType] = useState(() =>
 		getDeviceType(window.innerWidth),
 	);
 
@@ -21,7 +21,7 @@ export function useUserDeviceType(): UserDeviceType {
 		const handleResize = () => setDeviceType(getDeviceType(window.innerWidth));
 		window.addEventListener("resize", handleResize);
 		return () => window.removeEventListener("resize", handleResize);
-	});
+	}, []);
 
 	return deviceType;
 }
