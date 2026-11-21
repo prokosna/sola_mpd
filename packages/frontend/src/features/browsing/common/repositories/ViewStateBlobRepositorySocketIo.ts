@@ -9,7 +9,7 @@ const textEncoder = new TextEncoder();
 const textDecoder = new TextDecoder();
 
 // An empty response payload is the fetch-side sentinel for "token not found"
-// (mirrors the backend's SocketIoManager/ipc convention). Blob tokens always
+// (mirrors registerViewStateBlobHandlers on the backend). Blob tokens always
 // resolve to non-empty text, so this is unambiguous in practice.
 export class ViewStateBlobRepositorySocketIo
 	implements ViewStateBlobRepository

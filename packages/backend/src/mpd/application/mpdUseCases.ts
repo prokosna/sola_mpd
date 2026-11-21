@@ -6,7 +6,6 @@ import {
 } from "@sola_mpd/shared/src/models/mpd/mpd_command_pb.js";
 import type { MpdEvent } from "@sola_mpd/shared/src/models/mpd/mpd_event_pb.js";
 import type { MpdProfile } from "@sola_mpd/shared/src/models/mpd/mpd_profile_pb.js";
-import { MpdProfileSchema } from "@sola_mpd/shared/src/models/mpd/mpd_profile_pb.js";
 import type {
 	MpdClient,
 	MpdSubscriptionHandler,
@@ -30,36 +29,34 @@ export const executeMpdCommandBulkUseCase = async (
 };
 
 type SubscribeMpdEventsUseCaseInput = {
-	msg: Uint8Array;
+	profile: MpdProfile;
 	onEvent: (event: MpdEvent) => void;
 	mpdClient: MpdClient;
 };
 
 export const subscribeMpdEventsUseCase = async ({
-	msg,
+	profile,
 	onEvent,
 	mpdClient,
 }: SubscribeMpdEventsUseCaseInput): Promise<{
 	profile: MpdProfile;
 	handlerPromise: Promise<MpdSubscriptionHandler>;
 }> => {
-	const profile = fromBinary(MpdProfileSchema, msg);
 	const handlerPromise = mpdClient.subscribe(profile, onEvent);
 	return { profile, handlerPromise };
 };
 
 type UnsubscribeMpdEventsUseCaseInput = {
-	msg: Uint8Array;
+	profile: MpdProfile;
 	handlerPromise?: Promise<MpdSubscriptionHandler>;
 	mpdClient: MpdClient;
 };
 
 export const unsubscribeMpdEventsUseCase = async ({
-	msg,
+	profile,
 	handlerPromise,
 	mpdClient,
 }: UnsubscribeMpdEventsUseCaseInput): Promise<MpdProfile | undefined> => {
-	const profile = fromBinary(MpdProfileSchema, msg);
 	if (handlerPromise === undefined) {
 		return;
 	}
