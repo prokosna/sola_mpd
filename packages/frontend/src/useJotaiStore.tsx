@@ -1,29 +1,29 @@
 import { SOCKETIO_CONFIG_CHANGED } from "@sola_mpd/shared/src/const/socketio.js";
 import { createStore } from "jotai";
-import { AdvancedSearchClientSocketIo } from "./features/advanced_search/services/AdvancedSearchClientSocketIo";
+import { AdvancedSearchClientMessaging } from "./features/advanced_search/services/AdvancedSearchClientMessaging";
 import { advancedSearchClientAtom } from "./features/advanced_search/states/atoms/advancedSearchClientAtom";
-import { BrowserStateRepositorySocketIo } from "./features/browsing/browser/repositories/BrowserStateRepositorySocketIo";
+import { BrowserStateRepositoryMessaging } from "./features/browsing/browser/repositories/BrowserStateRepositoryMessaging";
 import { browserStateRepositoryAtom } from "./features/browsing/browser/states/atoms/browserStateRepositoryAtom";
-import { ViewStateBlobRepositorySocketIo } from "./features/browsing/common/repositories/ViewStateBlobRepositorySocketIo";
+import { ViewStateBlobRepositoryMessaging } from "./features/browsing/common/repositories/ViewStateBlobRepositoryMessaging";
 import { viewStateBlobRepositoryAtom } from "./features/browsing/common/states/atoms/viewStateBlobRepositoryAtom";
-import { RecentlyAddedStateRepositorySocketIo } from "./features/browsing/recently_added/repositories/RecentlyAddedStateRepositorySocketIo";
+import { RecentlyAddedStateRepositoryMessaging } from "./features/browsing/recently_added/repositories/RecentlyAddedStateRepositoryMessaging";
 import { recentlyAddedStateRepositoryAtom } from "./features/browsing/recently_added/states/atoms/recentlyAddedStateRepositoryAtom";
 import { DeviceSettingsRepositoryLocalStorage } from "./features/common/repositories/DeviceSettingsRepositoryLocalStorage";
 import { handleConfigChangedActionAtom } from "./features/common/states/actions/handleConfigChangedActionAtom";
 import { deviceSettingsRepositoryAtom } from "./features/common/states/atoms/deviceSettingsRepositoryAtom";
-import { MpdClientSocketIo } from "./features/mpd/services/MpdClientSocketIo";
-import { MpdListenerSocketIo } from "./features/mpd/services/MpdListenerSocketIo";
+import { MpdClientMessaging } from "./features/mpd/services/MpdClientMessaging";
+import { MpdListenerMessaging } from "./features/mpd/services/MpdListenerMessaging";
 import { setMpdClientActionAtom } from "./features/mpd/states/actions/setMpdClientActionAtom";
 import { setMpdListenerActionAtom } from "./features/mpd/states/actions/setMpdListenerActionAtom";
-import { PluginStateRepositorySocketIo } from "./features/plugin/repositories/PluginStateRepositorySocketIo";
-import { PluginServiceSocketIo } from "./features/plugin/services/PluginServiceSocketIo";
+import { PluginStateRepositoryMessaging } from "./features/plugin/repositories/PluginStateRepositoryMessaging";
+import { PluginServiceMessaging } from "./features/plugin/services/PluginServiceMessaging";
 import { pluginServiceAtom } from "./features/plugin/states/atoms/pluginServiceAtom";
 import { pluginStateRepositoryAtom } from "./features/plugin/states/atoms/pluginStateRepositoryAtom";
-import { MpdProfileStateRepositorySocketIo } from "./features/profile/repositories/MpdProfileStateRepositorySocketIo";
+import { MpdProfileStateRepositoryMessaging } from "./features/profile/repositories/MpdProfileStateRepositoryMessaging";
 import { mpdProfileStateRepositoryAtom } from "./features/profile/states/atoms/mpdProfileStateRepositoryAtom";
-import { SavedSearchesRepositorySocketIo } from "./features/search/repositories/SavedSearchesRepositorySocketIo";
+import { SavedSearchesRepositoryMessaging } from "./features/search/repositories/SavedSearchesRepositoryMessaging";
 import { savedSearchesRepositoryAtom } from "./features/search/states/atoms/savedSearchesRepositoryAtom";
-import { SongTableStateRepositorySocketIo } from "./features/song_table/repositories/SongTableStateRepositorySocketIo";
+import { SongTableStateRepositoryMessaging } from "./features/song_table/repositories/SongTableStateRepositoryMessaging";
 import { ClipboardNavigator } from "./features/song_table/services/ClipboardNavigator";
 import { clipboardAtom } from "./features/song_table/states/atoms/clipboardAtom";
 import { songTableStateRepositoryAtom } from "./features/song_table/states/atoms/songTableStateRepositoryAtom";
@@ -51,40 +51,43 @@ async function injectDependencies(): Promise<ReturnType<typeof createStore>> {
 		store.set(handleConfigChangedActionAtom, new TextDecoder().decode(payload));
 	});
 
-	store.set(setMpdClientActionAtom, new MpdClientSocketIo(messagingClient));
-	store.set(setMpdListenerActionAtom, new MpdListenerSocketIo(messagingClient));
+	store.set(setMpdClientActionAtom, new MpdClientMessaging(messagingClient));
+	store.set(
+		setMpdListenerActionAtom,
+		new MpdListenerMessaging(messagingClient),
+	);
 	store.set(
 		songTableStateRepositoryAtom,
-		new SongTableStateRepositorySocketIo(messagingClient),
+		new SongTableStateRepositoryMessaging(messagingClient),
 	);
 	store.set(
 		browserStateRepositoryAtom,
-		new BrowserStateRepositorySocketIo(messagingClient),
+		new BrowserStateRepositoryMessaging(messagingClient),
 	);
 	store.set(
 		viewStateBlobRepositoryAtom,
-		new ViewStateBlobRepositorySocketIo(messagingClient),
+		new ViewStateBlobRepositoryMessaging(messagingClient),
 	);
 	store.set(
 		pluginStateRepositoryAtom,
-		new PluginStateRepositorySocketIo(messagingClient),
+		new PluginStateRepositoryMessaging(messagingClient),
 	);
-	store.set(pluginServiceAtom, new PluginServiceSocketIo(messagingClient));
+	store.set(pluginServiceAtom, new PluginServiceMessaging(messagingClient));
 	store.set(
 		mpdProfileStateRepositoryAtom,
-		new MpdProfileStateRepositorySocketIo(messagingClient),
+		new MpdProfileStateRepositoryMessaging(messagingClient),
 	);
 	store.set(
 		savedSearchesRepositoryAtom,
-		new SavedSearchesRepositorySocketIo(messagingClient),
+		new SavedSearchesRepositoryMessaging(messagingClient),
 	);
 	store.set(
 		recentlyAddedStateRepositoryAtom,
-		new RecentlyAddedStateRepositorySocketIo(messagingClient),
+		new RecentlyAddedStateRepositoryMessaging(messagingClient),
 	);
 	store.set(
 		advancedSearchClientAtom,
-		new AdvancedSearchClientSocketIo(messagingClient),
+		new AdvancedSearchClientMessaging(messagingClient),
 	);
 	store.set(
 		deviceSettingsRepositoryAtom,

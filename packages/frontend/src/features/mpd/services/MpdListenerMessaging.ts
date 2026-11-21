@@ -17,7 +17,7 @@ import type { MessagingClient } from "../../../lib/messaging/MessagingClient";
 import { getResubscribeDelayMs } from "../functions/resubscribeBackoff";
 import type { MpdListener } from "./MpdListener";
 
-export class MpdListenerSocketIo implements MpdListener {
+export class MpdListenerMessaging implements MpdListener {
 	private socket: MessagingClient;
 	private callbacks: Map<MpdEvent_EventType, () => void>;
 	private subscribedCallback: ((isResubscription: boolean) => void) | undefined;

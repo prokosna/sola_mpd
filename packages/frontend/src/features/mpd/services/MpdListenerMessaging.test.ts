@@ -16,7 +16,7 @@ import {
 	RESUBSCRIBE_INITIAL_DELAY_MS,
 	RESUBSCRIBE_MAX_DELAY_MS,
 } from "../const/resubscribeBackoff";
-import { MpdListenerSocketIo } from "./MpdListenerSocketIo";
+import { MpdListenerMessaging } from "./MpdListenerMessaging";
 
 class FakeMessagingClient implements MessagingClient {
 	emitted: { event: string; profileName: string }[] = [];
@@ -69,14 +69,14 @@ async function flush() {
 	await new Promise((resolve) => setTimeout(resolve, 0));
 }
 
-describe("MpdListenerSocketIo", () => {
+describe("MpdListenerMessaging", () => {
 	let client: FakeMessagingClient;
-	let listener: MpdListenerSocketIo;
+	let listener: MpdListenerMessaging;
 
 	beforeEach(() => {
 		vi.spyOn(console, "info").mockImplementation(() => {});
 		client = new FakeMessagingClient();
-		listener = new MpdListenerSocketIo(client);
+		listener = new MpdListenerMessaging(client);
 	});
 
 	it("should dispatch events to the registered callback", async () => {

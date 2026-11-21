@@ -14,7 +14,7 @@ import {
 import type { MessagingClient } from "../../../lib/messaging/MessagingClient";
 import type { MpdClient } from "./MpdClient";
 
-export class MpdClientSocketIo implements MpdClient {
+export class MpdClientMessaging implements MpdClient {
 	constructor(private client: MessagingClient) {}
 
 	command = async (req: MpdRequest): Promise<MpdResponse> => {

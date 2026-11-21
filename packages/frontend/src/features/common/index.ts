@@ -15,7 +15,7 @@ export {
 export type { DeviceSettingsRepository } from "./repositories/DeviceSettingsRepository";
 export { DeviceSettingsRepositoryLocalStorage } from "./repositories/DeviceSettingsRepositoryLocalStorage";
 export type { StateRepository } from "./repositories/StateRepository";
-export { StateRepositorySocketIo } from "./repositories/StateRepositorySocketIo";
+export { StateRepositoryMessaging } from "./repositories/StateRepositoryMessaging";
 // States
 export { deviceSettingsRepositoryAtom } from "./states/atoms/deviceSettingsRepositoryAtom";
 export { createStateRepositoryAtom } from "./states/atoms/stateRepositoryAtom";

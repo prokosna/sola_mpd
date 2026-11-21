@@ -11,7 +11,7 @@ const textDecoder = new TextDecoder();
 // An empty response payload is the fetch-side sentinel for "token not found"
 // (mirrors registerViewStateBlobHandlers on the backend). Blob tokens always
 // resolve to non-empty text, so this is unambiguous in practice.
-export class ViewStateBlobRepositorySocketIo
+export class ViewStateBlobRepositoryMessaging
 	implements ViewStateBlobRepository
 {
 	constructor(private readonly client: MessagingClient) {}

@@ -7,7 +7,7 @@ import {
 import type { MessagingClient } from "../../../lib/messaging/MessagingClient";
 import type { StateRepository } from "./StateRepository";
 
-export class StateRepositorySocketIo<T extends Message>
+export class StateRepositoryMessaging<T extends Message>
 	implements StateRepository<T>
 {
 	private readonly fetchEvent: string;
