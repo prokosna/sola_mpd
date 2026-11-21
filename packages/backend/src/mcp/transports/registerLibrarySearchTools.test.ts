@@ -2,15 +2,14 @@ import { create } from "@bufbuild/protobuf";
 import { SongSchema } from "@sola_mpd/shared/src/models/song_pb.js";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import {
-	createFakeMcpServer,
 	makeLibraryIndex,
 	makeMpdClient,
 	makeMpdProfileStateRepository,
 	makeMpdResponse,
 	makeProfile,
-	parseToolJson,
 } from "../application/testHelpers.js";
 import { registerLibrarySearchTools } from "./registerLibrarySearchTools.js";
+import { createFakeMcpServer, parseToolJson } from "./testHelpers.js";
 
 vi.mock("../application/currentMpdProfile.js", () => ({
 	NoCurrentMpdProfileError: class extends Error {},
