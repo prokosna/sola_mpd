@@ -1,3 +1,4 @@
+import { MpdEvent_EventType } from "@sola_mpd/shared/src/models/mpd/mpd_event_pb.js";
 import { MpdPlayerStatus_PlaybackState } from "@sola_mpd/shared/src/models/mpd/mpd_player_pb.js";
 import {
 	AudioFormat_Encoding,
@@ -6,6 +7,7 @@ import {
 import { describe, expect, it } from "vitest";
 import {
 	parseFolder,
+	parseMpdEventType,
 	parseMpdOutputDevice,
 	parseMpdPlayerStatus,
 	parseMpdPlayerVolume,
@@ -385,5 +387,22 @@ describe("parseMpdPlayerStatus", () => {
 		const raw = { state: "play" };
 		const status = parseMpdPlayerStatus(raw);
 		expect(status?.isDatabaseUpdating).toBe(false);
+	});
+});
+
+describe("parseMpdEventType", () => {
+	it.each([
+		["database", MpdEvent_EventType.DATABASE],
+		["update", MpdEvent_EventType.UPDATE],
+		["mixer", MpdEvent_EventType.MIXER],
+		["options", MpdEvent_EventType.OPTIONS],
+		["player", MpdEvent_EventType.PLAYER],
+		["playlist", MpdEvent_EventType.PLAY_QUEUE],
+		["stored_playlist", MpdEvent_EventType.PLAYLIST],
+		["output", MpdEvent_EventType.UNKNOWN],
+		["toString", MpdEvent_EventType.UNKNOWN],
+		[undefined, MpdEvent_EventType.UNKNOWN],
+	])("maps %s to %s", (subsystem, expected) => {
+		expect(parseMpdEventType(subsystem)).toBe(expected);
 	});
 });
