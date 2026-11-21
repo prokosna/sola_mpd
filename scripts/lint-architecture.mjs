@@ -182,7 +182,12 @@ function hasSegment(path, segment) {
 
 function importsFolder(fromFile, specifier, folders) {
 	const target = rawTarget(fromFile, specifier);
-	return target !== undefined && folders.some((f) => hasSegment(target, f));
+	if (target === undefined) {
+		return false;
+	}
+	// A directory import resolves to its index file, whose parent is the folder.
+	const resolved = resolveSourceFile(target) ?? target;
+	return folders.some((f) => hasSegment(resolved, f));
 }
 
 const findings = [];
