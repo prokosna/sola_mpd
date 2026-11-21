@@ -1,5 +1,4 @@
 import type { McpServer } from "@modelcontextprotocol/server";
-
 import type { RegisterMcpToolsDeps } from "./mcpToolHelpers.js";
 import { registerLibraryAnalyticsTools } from "./registerLibraryAnalyticsTools.js";
 import { registerLibrarySearchTools } from "./registerLibrarySearchTools.js";

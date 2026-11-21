@@ -1,24 +1,24 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
-
-import { registerLibrarySqlTools } from "./registerLibrarySqlTools.js";
 import {
-	createFakeMcpServer,
 	makeLibraryIndex,
 	makeMpdClient,
 	makeMpdProfileStateRepository,
 	makeMpdResponse,
 	makeProfile,
-	parseToolJson,
-} from "./testHelpers.js";
+} from "../application/testHelpers.js";
+import { registerLibrarySqlTools } from "./registerLibrarySqlTools.js";
+import { createFakeMcpServer, parseToolJson } from "./testHelpers.js";
 
-vi.mock("./currentMpdProfile.js", () => ({
+vi.mock("../application/currentMpdProfile.js", () => ({
 	NoCurrentMpdProfileError: class extends Error {},
 	MpdProfileNotFoundError: class extends Error {},
 	resolveCurrentMpdProfile: vi.fn(),
 	listMpdProfiles: vi.fn(),
 }));
 
-const { resolveCurrentMpdProfile } = await import("./currentMpdProfile.js");
+const { resolveCurrentMpdProfile } = await import(
+	"../application/currentMpdProfile.js"
+);
 const resolveMock = vi.mocked(resolveCurrentMpdProfile);
 
 beforeEach(() => {

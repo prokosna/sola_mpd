@@ -1,9 +1,15 @@
 import type { McpServer } from "@modelcontextprotocol/server";
 import { z } from "zod";
 
+import {
+	getArtistSummaryUseCase,
+	getDecadeBreakdownUseCase,
+	getFormatDistributionUseCase,
+	getRecentlyAddedByArtistUseCase,
+	getTagBreakdownUseCase,
+	getTopByTagUseCase,
+} from "../application/libraryAnalyticsUseCases.js";
 import { toolResultJson } from "../functions/toolResult.js";
-import { resolveCurrentMpdProfile } from "./currentMpdProfile.js";
-import { ensureLibraryIndexUseCase } from "./libraryIndexUseCases.js";
 import {
 	errorToToolResult,
 	mcpProfileNameSchema,
@@ -23,7 +29,7 @@ export function registerLibraryAnalyticsTools(
 	server: McpServer,
 	deps: RegisterMcpToolsDeps,
 ): void {
-	const { mpdClient, libraryIndex } = deps;
+	const { mpdClient, libraryIndex, mpdProfileStateRepository } = deps;
 
 	server.registerTool(
 		"library_top_by_tag",
@@ -50,21 +56,17 @@ export function registerLibraryAnalyticsTools(
 		},
 		async (args) => {
 			try {
-				const profile = resolveCurrentMpdProfile(
-					deps.mpdProfileStateRepository,
-					args.profile,
-				);
-				await ensureLibraryIndexUseCase({ profile, mpdClient, libraryIndex });
-				const result = libraryIndex.topByTag(
-					args.tag,
-					args.by ?? "count",
-					args.limit ?? 25,
-				);
-				return toolResultJson({
+				const by = args.by ?? "count";
+				const result = await getTopByTagUseCase({
 					tag: args.tag,
-					by: args.by ?? "count",
-					...result,
+					by,
+					limit: args.limit ?? 25,
+					profileName: args.profile,
+					mpdClient,
+					libraryIndex,
+					mpdProfileStateRepository,
 				});
+				return toolResultJson({ tag: args.tag, by, ...result });
 			} catch (err) {
 				return errorToToolResult(err);
 			}
@@ -92,12 +94,14 @@ export function registerLibraryAnalyticsTools(
 		},
 		async (args) => {
 			try {
-				const profile = resolveCurrentMpdProfile(
-					deps.mpdProfileStateRepository,
-					args.profile,
-				);
-				await ensureLibraryIndexUseCase({ profile, mpdClient, libraryIndex });
-				const result = libraryIndex.breakdown(args.tag, args.limit);
+				const result = await getTagBreakdownUseCase({
+					tag: args.tag,
+					limit: args.limit,
+					profileName: args.profile,
+					mpdClient,
+					libraryIndex,
+					mpdProfileStateRepository,
+				});
 				return toolResultJson({ tag: args.tag, ...result });
 			} catch (err) {
 				return errorToToolResult(err);
@@ -115,12 +119,14 @@ export function registerLibraryAnalyticsTools(
 		},
 		async (args) => {
 			try {
-				const profile = resolveCurrentMpdProfile(
-					deps.mpdProfileStateRepository,
-					args.profile,
+				return toolResultJson(
+					await getFormatDistributionUseCase({
+						profileName: args.profile,
+						mpdClient,
+						libraryIndex,
+						mpdProfileStateRepository,
+					}),
 				);
-				await ensureLibraryIndexUseCase({ profile, mpdClient, libraryIndex });
-				return toolResultJson(libraryIndex.formatDistribution());
 			} catch (err) {
 				return errorToToolResult(err);
 			}
@@ -137,12 +143,14 @@ export function registerLibraryAnalyticsTools(
 		},
 		async (args) => {
 			try {
-				const profile = resolveCurrentMpdProfile(
-					deps.mpdProfileStateRepository,
-					args.profile,
+				return toolResultJson(
+					await getDecadeBreakdownUseCase({
+						profileName: args.profile,
+						mpdClient,
+						libraryIndex,
+						mpdProfileStateRepository,
+					}),
 				);
-				await ensureLibraryIndexUseCase({ profile, mpdClient, libraryIndex });
-				return toolResultJson(libraryIndex.decadeBreakdown());
 			} catch (err) {
 				return errorToToolResult(err);
 			}
@@ -175,19 +183,14 @@ export function registerLibraryAnalyticsTools(
 		},
 		async (args) => {
 			try {
-				const profile = resolveCurrentMpdProfile(
-					deps.mpdProfileStateRepository,
-					args.profile,
-				);
-				await ensureLibraryIndexUseCase({ profile, mpdClient, libraryIndex });
-				const since =
-					args.since_days !== undefined
-						? new Date(Date.now() - args.since_days * 24 * 3600 * 1000)
-						: undefined;
 				return toolResultJson(
-					libraryIndex.recentlyAddedByArtist({
+					await getRecentlyAddedByArtistUseCase({
 						limit: args.limit ?? 50,
-						since,
+						sinceDays: args.since_days,
+						profileName: args.profile,
+						mpdClient,
+						libraryIndex,
+						mpdProfileStateRepository,
 					}),
 				);
 			} catch (err) {
@@ -209,21 +212,21 @@ export function registerLibraryAnalyticsTools(
 		},
 		async (args) => {
 			try {
-				const profile = resolveCurrentMpdProfile(
-					deps.mpdProfileStateRepository,
-					args.profile,
-				);
-				await ensureLibraryIndexUseCase({ profile, mpdClient, libraryIndex });
-				const summary = libraryIndex.artistSummary(args.name);
-				if (summary === undefined) {
-					const suggestions = libraryIndex.findArtistCandidates(args.name, 10);
+				const result = await getArtistSummaryUseCase({
+					name: args.name,
+					profileName: args.profile,
+					mpdClient,
+					libraryIndex,
+					mpdProfileStateRepository,
+				});
+				if (!result.found) {
 					return toolResultJson({
 						found: false,
 						name_searched: args.name,
-						suggestions,
+						suggestions: result.suggestions,
 					});
 				}
-				return toolResultJson({ found: true, ...summary });
+				return toolResultJson({ found: true, ...result.summary });
 			} catch (err) {
 				return errorToToolResult(err);
 			}

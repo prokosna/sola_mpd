@@ -9,12 +9,11 @@ import {
 	type McpHttpHandler,
 	McpServer,
 } from "@modelcontextprotocol/server";
-
+import type { McpMessageHandler } from "./McpMessageHandler.js";
 import {
 	type RegisterMcpToolsDeps,
 	registerMcpTools,
-} from "../application/registerMcpTools.js";
-import type { McpMessageHandler } from "./McpMessageHandler.js";
+} from "./registerMcpTools.js";
 
 const SERVER_INFO = {
 	name: "sola-mpd",

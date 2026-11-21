@@ -1,13 +1,15 @@
 import type { McpServer } from "@modelcontextprotocol/server";
 import { z } from "zod";
 
+import {
+	getMpdStatsUseCase,
+	getMpdStatusUseCase,
+} from "../application/statusUseCases.js";
 import { buildMpdStatsResponse } from "../functions/buildMpdStatsResponse.js";
 import { buildMpdStatusResponse } from "../functions/buildMpdStatusResponse.js";
-import { toolError, toolResultJson } from "../functions/toolResult.js";
-import { resolveCurrentMpdProfile } from "./currentMpdProfile.js";
+import { toolResultJson } from "../functions/toolResult.js";
 import {
 	errorToToolResult,
-	executeMpdCommand,
 	mcpProfileNameSchema,
 	type RegisterMcpToolsDeps,
 } from "./mcpToolHelpers.js";
@@ -16,7 +18,7 @@ export function registerStatusTools(
 	server: McpServer,
 	deps: RegisterMcpToolsDeps,
 ): void {
-	const { mpdClient } = deps;
+	const { mpdClient, mpdProfileStateRepository } = deps;
 
 	server.registerTool(
 		"mpd_status",
@@ -28,25 +30,11 @@ export function registerStatusTools(
 		},
 		async (args) => {
 			try {
-				const profile = resolveCurrentMpdProfile(
-					deps.mpdProfileStateRepository,
-					args.profile,
-				);
-				const [statusRes, currentRes] = await Promise.all([
-					executeMpdCommand(mpdClient, profile, { case: "status", value: {} }),
-					executeMpdCommand(mpdClient, profile, {
-						case: "currentsong",
-						value: {},
-					}),
-				]);
-				const status =
-					statusRes.command?.case === "status"
-						? statusRes.command.value.status
-						: undefined;
-				const currentSong =
-					currentRes.command?.case === "currentsong"
-						? currentRes.command.value.song
-						: undefined;
+				const { status, currentSong } = await getMpdStatusUseCase({
+					profileName: args.profile,
+					mpdClient,
+					mpdProfileStateRepository,
+				});
 				return toolResultJson(buildMpdStatusResponse(status, currentSong));
 			} catch (err) {
 				return errorToToolResult(err);
@@ -64,18 +52,12 @@ export function registerStatusTools(
 		},
 		async (args) => {
 			try {
-				const profile = resolveCurrentMpdProfile(
-					deps.mpdProfileStateRepository,
-					args.profile,
-				);
-				const res = await executeMpdCommand(mpdClient, profile, {
-					case: "stats",
-					value: {},
+				const stats = await getMpdStatsUseCase({
+					profileName: args.profile,
+					mpdClient,
+					mpdProfileStateRepository,
 				});
-				if (res.command?.case !== "stats") {
-					return toolError("Unexpected response from MPD stats.");
-				}
-				return toolResultJson(buildMpdStatsResponse(res.command.value.stats));
+				return toolResultJson(buildMpdStatsResponse(stats));
 			} catch (err) {
 				return errorToToolResult(err);
 			}

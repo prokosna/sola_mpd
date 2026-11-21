@@ -2,17 +2,14 @@ import type { McpServer } from "@modelcontextprotocol/server";
 import { z } from "zod";
 
 import {
-	buildSearchConditions,
-	type SimpleFilter,
-} from "../functions/buildSearchConditions.js";
-import { mapSortKeyToMetadataTag } from "../functions/mapSortKeyToMetadataTag.js";
+	listTagValuesUseCase,
+	searchLibraryUseCase,
+} from "../application/librarySearchUseCases.js";
+import type { SimpleFilter } from "../functions/buildSearchConditions.js";
 import { songToOutput } from "../functions/songToOutput.js";
-import { tagNameToMetadataTag } from "../functions/tagNameToMetadataTag.js";
-import { toolError, toolResultJson } from "../functions/toolResult.js";
-import { resolveCurrentMpdProfile } from "./currentMpdProfile.js";
+import { toolResultJson } from "../functions/toolResult.js";
 import {
 	errorToToolResult,
-	executeMpdCommand,
 	mcpProfileNameSchema,
 	type RegisterMcpToolsDeps,
 } from "./mcpToolHelpers.js";
@@ -47,7 +44,7 @@ export function registerLibrarySearchTools(
 	server: McpServer,
 	deps: RegisterMcpToolsDeps,
 ): void {
-	const { mpdClient } = deps;
+	const { mpdClient, mpdProfileStateRepository } = deps;
 
 	server.registerTool(
 		"library_list_tag_values",
@@ -79,26 +76,18 @@ export function registerLibrarySearchTools(
 		},
 		async (args) => {
 			try {
-				const profile = resolveCurrentMpdProfile(
-					deps.mpdProfileStateRepository,
-					args.profile,
-				);
-				const conditions = args.filter
-					? buildSearchConditions(args.filter as SimpleFilter)
-					: [];
-				const res = await executeMpdCommand(mpdClient, profile, {
-					case: "list",
-					value: { tag: tagNameToMetadataTag(args.tag), conditions },
+				const { total, values } = await listTagValuesUseCase({
+					tag: args.tag,
+					filter: args.filter as SimpleFilter | undefined,
+					limit: args.limit ?? DEFAULT_TAG_VALUES,
+					profileName: args.profile,
+					mpdClient,
+					mpdProfileStateRepository,
 				});
-				if (res.command?.case !== "list") {
-					return toolError("Unexpected response from MPD list.");
-				}
-				const values = res.command.value.values;
-				const limit = args.limit ?? DEFAULT_TAG_VALUES;
 				return toolResultJson({
-					total: values.length,
-					returned: Math.min(values.length, limit),
-					values: values.slice(0, limit),
+					total,
+					returned: values.length,
+					values,
 				});
 			} catch (err) {
 				return errorToToolResult(err);
@@ -132,37 +121,22 @@ export function registerLibrarySearchTools(
 		},
 		async (args) => {
 			try {
-				const profile = resolveCurrentMpdProfile(
-					deps.mpdProfileStateRepository,
-					args.profile,
-				);
-				const conditions = buildSearchConditions(args.filter as SimpleFilter);
-				if (conditions.length === 0) {
-					return toolError(
-						"library_search requires at least one filter key. Use library_query_sql for unfiltered analytical queries.",
-					);
-				}
-				const limit = args.limit ?? DEFAULT_SEARCH_RESULTS;
 				const offset = args.offset ?? 0;
-				const res = await executeMpdCommand(mpdClient, profile, {
-					case: "search",
-					value: {
-						conditions,
-						sort: {
-							tag: mapSortKeyToMetadataTag(args.sort),
-							descending: args.sort_descending ?? false,
-						},
-						window: { start: offset, end: offset + limit },
-					},
-				});
-				if (res.command?.case !== "search") {
-					return toolError("Unexpected response from MPD search.");
-				}
-				const songs = res.command.value.songs.map(songToOutput);
-				return toolResultJson({
-					returned: songs.length,
+				const songs = await searchLibraryUseCase({
+					filter: args.filter as SimpleFilter,
+					limit: args.limit ?? DEFAULT_SEARCH_RESULTS,
 					offset,
-					songs,
+					sort: args.sort,
+					sortDescending: args.sort_descending,
+					profileName: args.profile,
+					mpdClient,
+					mpdProfileStateRepository,
+				});
+				const output = songs.map(songToOutput);
+				return toolResultJson({
+					returned: output.length,
+					offset,
+					songs: output,
 				});
 			} catch (err) {
 				return errorToToolResult(err);

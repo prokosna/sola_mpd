@@ -1,10 +1,12 @@
 import type { McpServer } from "@modelcontextprotocol/server";
 import { z } from "zod";
 
+import {
+	describeLibraryIndexUseCase,
+	getLibraryIndexStatsUseCase,
+	queryLibrarySqlUseCase,
+} from "../application/librarySqlUseCases.js";
 import { toolResultJson } from "../functions/toolResult.js";
-import { validateSelectSql } from "../functions/validateSelectSql.js";
-import { resolveCurrentMpdProfile } from "./currentMpdProfile.js";
-import { ensureLibraryIndexUseCase } from "./libraryIndexUseCases.js";
 import {
 	errorToToolResult,
 	mcpProfileNameSchema,
@@ -17,9 +19,9 @@ export function registerLibrarySqlTools(
 	server: McpServer,
 	deps: RegisterMcpToolsDeps,
 ): void {
-	const { mpdClient, libraryIndex } = deps;
+	const { mpdClient, libraryIndex, mpdProfileStateRepository } = deps;
 
-	const { sql_schema, notes } = libraryIndex.describe();
+	const { sql_schema, notes } = describeLibraryIndexUseCase({ libraryIndex });
 	server.registerTool(
 		"library_query_sql",
 		{
@@ -57,17 +59,15 @@ Omitting profile uses the workspace default profile.`,
 		},
 		async (args) => {
 			try {
-				const profile = resolveCurrentMpdProfile(
-					deps.mpdProfileStateRepository,
-					args.profile,
-				);
-				await ensureLibraryIndexUseCase({ profile, mpdClient, libraryIndex });
-				validateSelectSql(args.sql);
-				const result = libraryIndex.querySql(
-					args.sql,
-					args.params ?? [],
-					args.row_limit ?? DEFAULT_SQL_ROWS,
-				);
+				const result = await queryLibrarySqlUseCase({
+					sql: args.sql,
+					params: args.params ?? [],
+					rowLimit: args.row_limit ?? DEFAULT_SQL_ROWS,
+					profileName: args.profile,
+					mpdClient,
+					libraryIndex,
+					mpdProfileStateRepository,
+				});
 				return toolResultJson(result);
 			} catch (err) {
 				return errorToToolResult(err);
@@ -85,12 +85,14 @@ Omitting profile uses the workspace default profile.`,
 		},
 		async (args) => {
 			try {
-				const profile = resolveCurrentMpdProfile(
-					deps.mpdProfileStateRepository,
-					args.profile,
+				return toolResultJson(
+					await getLibraryIndexStatsUseCase({
+						profileName: args.profile,
+						mpdClient,
+						libraryIndex,
+						mpdProfileStateRepository,
+					}),
 				);
-				await ensureLibraryIndexUseCase({ profile, mpdClient, libraryIndex });
-				return toolResultJson(libraryIndex.stats());
 			} catch (err) {
 				return errorToToolResult(err);
 			}

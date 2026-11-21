@@ -1,12 +1,8 @@
 import type { McpServer } from "@modelcontextprotocol/server";
-import type { MpdProfile } from "@sola_mpd/shared/src/models/mpd/mpd_profile_pb.js";
 import { z } from "zod";
 
+import { listMpdProfilesUseCase } from "../application/profileUseCases.js";
 import { toolResultJson } from "../functions/toolResult.js";
-import {
-	listMpdProfiles,
-	resolveCurrentMpdProfile,
-} from "./currentMpdProfile.js";
 import type { RegisterMcpToolsDeps } from "./mcpToolHelpers.js";
 
 export function registerProfileTools(
@@ -22,15 +18,9 @@ export function registerProfileTools(
 			inputSchema: z.object({}),
 		},
 		async () => {
-			const profiles = listMpdProfiles(deps.mpdProfileStateRepository);
-			let defaultProfile: MpdProfile | undefined;
-			try {
-				defaultProfile = resolveCurrentMpdProfile(
-					deps.mpdProfileStateRepository,
-				);
-			} catch {
-				defaultProfile = undefined;
-			}
+			const { defaultProfile, profiles } = listMpdProfilesUseCase({
+				mpdProfileStateRepository: deps.mpdProfileStateRepository,
+			});
 			return toolResultJson({
 				default_profile: defaultProfile
 					? {

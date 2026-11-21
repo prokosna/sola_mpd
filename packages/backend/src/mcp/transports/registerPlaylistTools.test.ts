@@ -3,19 +3,17 @@ import { timestampFromDate } from "@bufbuild/protobuf/wkt";
 import { PlaylistSchema } from "@sola_mpd/shared/src/models/playlist_pb.js";
 import { SongSchema } from "@sola_mpd/shared/src/models/song_pb.js";
 import { beforeEach, describe, expect, it, vi } from "vitest";
-
-import { registerPlaylistTools } from "./registerPlaylistTools.js";
 import {
-	createFakeMcpServer,
 	makeLibraryIndex,
 	makeMpdClient,
 	makeMpdProfileStateRepository,
 	makeMpdResponse,
 	makeProfile,
-	parseToolJson,
-} from "./testHelpers.js";
+} from "../application/testHelpers.js";
+import { registerPlaylistTools } from "./registerPlaylistTools.js";
+import { createFakeMcpServer, parseToolJson } from "./testHelpers.js";
 
-vi.mock("./currentMpdProfile.js", () => ({
+vi.mock("../application/currentMpdProfile.js", () => ({
 	NoCurrentMpdProfileError: class extends Error {},
 	MpdProfileNotFoundError: class extends Error {},
 	resolveCurrentMpdProfile: vi.fn(),
@@ -23,7 +21,7 @@ vi.mock("./currentMpdProfile.js", () => ({
 }));
 
 const { NoCurrentMpdProfileError, resolveCurrentMpdProfile } = await import(
-	"./currentMpdProfile.js"
+	"../application/currentMpdProfile.js"
 );
 const resolveMock = vi.mocked(resolveCurrentMpdProfile);
 
