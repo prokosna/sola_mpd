@@ -17,7 +17,7 @@ import { GlobalFilterBox } from "../../features/global_filter";
 import { useGlobalKeyShortcuts } from "../../features/keyboard_shortcut";
 import { CenterSpinner } from "../../features/loading";
 import { BrandLogo } from "../../features/logo";
-import { MpdEventObserver } from "../../features/mpd";
+import { MpdErrorNotifier, MpdEventObserver } from "../../features/mpd";
 import { Player } from "../../features/player";
 import {
 	PluginExecutionIndicator,
@@ -115,6 +115,7 @@ export function HomeLayout() {
 				</AppShell.Footer>
 			</AppShell>
 			<MpdEventObserver />
+			<MpdErrorNotifier />
 			<PluginExecutionModal />
 			<SimilaritySearchModal />
 		</>

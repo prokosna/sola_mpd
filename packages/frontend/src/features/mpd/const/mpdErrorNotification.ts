@@ -1,0 +1,1 @@
+export const MPD_ERROR_NOTIFICATION_WINDOW_MS = 5_000;

@@ -1,4 +1,5 @@
 // Components
+export { MpdErrorNotifier } from "./components/MpdErrorNotifier";
 export { MpdEventObserver } from "./components/MpdEventObserver";
 
 // Functions
