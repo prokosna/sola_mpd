@@ -400,6 +400,7 @@ describe("parseMpdEventType", () => {
 		["playlist", MpdEvent_EventType.PLAY_QUEUE],
 		["stored_playlist", MpdEvent_EventType.PLAYLIST],
 		["output", MpdEvent_EventType.UNKNOWN],
+		["toString", MpdEvent_EventType.UNKNOWN],
 		[undefined, MpdEvent_EventType.UNKNOWN],
 	])("maps %s to %s", (subsystem, expected) => {
 		expect(parseMpdEventType(subsystem)).toBe(expected);

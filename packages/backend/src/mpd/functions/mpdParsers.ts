@@ -502,19 +502,19 @@ export function parseMpdPlayerStatus(
 	return mpdStatus;
 }
 
-const MPD_SUBSYSTEM_EVENT_TYPES: Record<string, MpdEvent_EventType> = {
-	database: MpdEvent_EventType.DATABASE,
-	update: MpdEvent_EventType.UPDATE,
-	mixer: MpdEvent_EventType.MIXER,
-	options: MpdEvent_EventType.OPTIONS,
-	player: MpdEvent_EventType.PLAYER,
-	playlist: MpdEvent_EventType.PLAY_QUEUE,
-	stored_playlist: MpdEvent_EventType.PLAYLIST,
-};
+const MPD_SUBSYSTEM_EVENT_TYPES = new Map<string, MpdEvent_EventType>([
+	["database", MpdEvent_EventType.DATABASE],
+	["update", MpdEvent_EventType.UPDATE],
+	["mixer", MpdEvent_EventType.MIXER],
+	["options", MpdEvent_EventType.OPTIONS],
+	["player", MpdEvent_EventType.PLAYER],
+	["playlist", MpdEvent_EventType.PLAY_QUEUE],
+	["stored_playlist", MpdEvent_EventType.PLAYLIST],
+]);
 
 export function parseMpdEventType(subsystem?: string): MpdEvent_EventType {
 	if (subsystem === undefined) {
 		return MpdEvent_EventType.UNKNOWN;
 	}
-	return MPD_SUBSYSTEM_EVENT_TYPES[subsystem] ?? MpdEvent_EventType.UNKNOWN;
+	return MPD_SUBSYSTEM_EVENT_TYPES.get(subsystem) ?? MpdEvent_EventType.UNKNOWN;
 }
