@@ -19,7 +19,10 @@ import {
 	mpdProfileStateAsyncAtom,
 } from "../../../profile/states/atoms/mpdProfileAtom";
 import { selectedProfileNameAtom } from "../../../profile/states/atoms/selectedProfileNameAtom";
-import type { AllSongsFastProgress } from "../../functions/allSongsFastLoading";
+import {
+	type AllSongsFastProgress,
+	loadAllSongsFast,
+} from "../../functions/allSongsFastLoading";
 import { allSongsFastStateAtom } from "../atoms/allSongsFastStateAtom";
 import { loadAllSongsFastActionAtom } from "./loadAllSongsFastActionAtom";
 
@@ -164,5 +167,49 @@ describe("loadAllSongsFastActionAtom", () => {
 
 		store.set(selectedProfileNameAtom, "A");
 		expect(store.get(allSongsFastStateAtom).songs).toEqual([]);
+	});
+
+	it("does not stay loading when the load finishes after a switch to a profile that wrote nothing", async () => {
+		const store = await createStoreWithProfiles();
+
+		const loadA = store.set(loadAllSongsFastActionAtom);
+		store.set(selectedProfileNameAtom, "B");
+		pendingLoads[0].resolve({
+			songs: buildSongs(2, "a"),
+			offset: 2,
+			hasMore: false,
+		});
+		await loadA;
+
+		store.set(selectedProfileNameAtom, "A");
+		expect(store.get(allSongsFastStateAtom).isLoading).toBe(false);
+
+		void store.set(loadAllSongsFastActionAtom);
+		expect(pendingLoads).toHaveLength(2);
+		expect(pendingLoads[1].options.profile.name).toBe("A");
+	});
+
+	it("does not stay loading when the load fails after a switch to a profile that wrote nothing", async () => {
+		const store = await createStoreWithProfiles();
+		let rejectLoad: (e: Error) => void = () => {};
+		vi.mocked(loadAllSongsFast).mockImplementationOnce(
+			() =>
+				new Promise((_, reject) => {
+					rejectLoad = reject;
+				}),
+		);
+
+		const loadA = store.set(loadAllSongsFastActionAtom);
+		const failure = expect(loadA).rejects.toThrow("boom");
+		store.set(selectedProfileNameAtom, "B");
+		rejectLoad(new Error("boom"));
+		await failure;
+
+		store.set(selectedProfileNameAtom, "A");
+		expect(store.get(allSongsFastStateAtom).isLoading).toBe(false);
+
+		void store.set(loadAllSongsFastActionAtom);
+		expect(pendingLoads).toHaveLength(1);
+		expect(pendingLoads[0].options.profile.name).toBe("A");
 	});
 });

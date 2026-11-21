@@ -25,6 +25,7 @@ import { loadMoreRecentlyAddedFastStateActionAtom } from "./loadMoreRecentlyAdde
 type PendingFetch = {
 	profile: MpdProfile;
 	resolve: (songs: Song[]) => void;
+	reject: (error: Error) => void;
 };
 
 const pendingFetches = vi.hoisted(() => [] as unknown[]) as PendingFetch[];
@@ -33,8 +34,8 @@ vi.mock("../../functions/recentlyAddedFastFetch", () => ({
 	computeSinceTime: () => new Date(0),
 	fetchRecentlyAddedFastDelta: vi.fn(
 		(_client: unknown, profile: MpdProfile) =>
-			new Promise<Song[]>((resolve) => {
-				pendingFetches.push({ profile, resolve });
+			new Promise<Song[]>((resolve, reject) => {
+				pendingFetches.push({ profile, resolve, reject });
 			}),
 	),
 }));
@@ -161,5 +162,37 @@ describe("loadMoreRecentlyAddedFastStateActionAtom", () => {
 
 		store.set(selectedProfileNameAtom, "A");
 		expect(store.get(recentlyAddedFastStateAtom).songs).toEqual([]);
+	});
+
+	it("does not stay loading when the load finishes after a switch to a profile that wrote nothing", async () => {
+		const store = await createStoreWithProfiles();
+
+		const loadA = store.set(loadMoreRecentlyAddedFastStateActionAtom);
+		store.set(selectedProfileNameAtom, "B");
+		await settle(loadA, 0, buildSongs(2, "a"));
+
+		store.set(selectedProfileNameAtom, "A");
+		expect(store.get(recentlyAddedFastStateAtom).isLoading).toBe(false);
+
+		void store.set(loadMoreRecentlyAddedFastStateActionAtom);
+		expect(pendingFetches).toHaveLength(2);
+		expect(pendingFetches[1].profile.name).toBe("A");
+	});
+
+	it("does not stay loading when the load fails after a switch to a profile that wrote nothing", async () => {
+		const store = await createStoreWithProfiles();
+
+		const loadA = store.set(loadMoreRecentlyAddedFastStateActionAtom);
+		const failure = expect(loadA).rejects.toThrow("boom");
+		store.set(selectedProfileNameAtom, "B");
+		pendingFetches[0].reject(new Error("boom"));
+		await failure;
+
+		store.set(selectedProfileNameAtom, "A");
+		expect(store.get(recentlyAddedFastStateAtom).isLoading).toBe(false);
+
+		void store.set(loadMoreRecentlyAddedFastStateActionAtom);
+		expect(pendingFetches).toHaveLength(2);
+		expect(pendingFetches[1].profile.name).toBe("A");
 	});
 });

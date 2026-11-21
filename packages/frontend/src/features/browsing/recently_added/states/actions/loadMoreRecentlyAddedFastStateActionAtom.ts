@@ -12,6 +12,7 @@ import {
 	fetchRecentlyAddedFastDelta,
 } from "../../functions/recentlyAddedFastFetch";
 import { recentlyAddedFastStateAtom } from "../atoms/recentlyAddedFastStateAtom";
+import { clearRecentlyAddedFastStateActionAtom } from "./clearRecentlyAddedFastStateActionAtom";
 import { setRecentlyAddedFastStateActionAtom } from "./setRecentlyAddedFastStateActionAtom";
 
 /**
@@ -89,6 +90,12 @@ export const loadMoreRecentlyAddedFastStateActionAtom = atom(
 				});
 			}
 			throw e;
+		} finally {
+			// A stale `isLoading: true` would otherwise block every retry once the
+			// user switches back to this profile.
+			if (get(currentMpdProfileAtom)?.name !== profile.name) {
+				set(clearRecentlyAddedFastStateActionAtom, profile.name);
+			}
 		}
 	},
 );

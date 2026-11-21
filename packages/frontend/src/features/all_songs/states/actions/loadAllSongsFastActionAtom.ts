@@ -6,6 +6,7 @@ import { statsAtom } from "../../../stats/states/atoms/statsAtom";
 import { ALL_SONGS_CHUNK_SIZE } from "../../const/allSongsDefaults";
 import { loadAllSongsFast } from "../../functions/allSongsFastLoading";
 import { allSongsFastStateAtom } from "../atoms/allSongsFastStateAtom";
+import { clearAllSongsFastStateActionAtom } from "./clearAllSongsFastStateActionAtom";
 import { setAllSongsFastStateActionAtom } from "./setAllSongsFastStateActionAtom";
 
 export const loadAllSongsFastActionAtom = atom(null, async (get, set) => {
@@ -76,5 +77,11 @@ export const loadAllSongsFastActionAtom = atom(null, async (get, set) => {
 			});
 		}
 		throw e;
+	} finally {
+		// A stale `isLoading: true` would otherwise block every retry once the
+		// user switches back to this profile.
+		if (get(currentMpdProfileAtom)?.name !== profile.name) {
+			set(clearAllSongsFastStateActionAtom, profile.name);
+		}
 	}
 });
