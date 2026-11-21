@@ -87,6 +87,13 @@ may be used at the package level.
     when the Jotai store is created, which is what lets derived atoms use them.
   - `states/actions`: Write-only Jotai actions, suffixed `xxxActionAtom`. **Actions are the
     only way to update atoms.** Export them directly; consumers use `useSetAtom()`.
+  - The one exception is an effect atom (`atomEffect` from `jotai-effect`), named
+    `syncXxxEffectAtom` and kept in `states/atoms` next to the atom it writes. It may only
+    react to a dependency change by marking or resetting state the view derives from (for
+    example, setting a loading flag when the selected playlist changes) — never perform a user
+    operation, fetch, or call a service. Mount it from the feature's hook with
+    `useAtomValue()`. If the state can instead be derived from its inputs, derive it and do
+    not add an effect.
 
 ### Backend
 
