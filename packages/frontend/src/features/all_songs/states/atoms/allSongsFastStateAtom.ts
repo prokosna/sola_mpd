@@ -1,7 +1,10 @@
 import type { Song } from "@sola_mpd/shared/src/models/song_pb.js";
 import { atom } from "jotai";
-import { atomEffect } from "jotai-effect";
 
+import {
+	type ProfileScopedState,
+	selectProfileScopedState,
+} from "../../../common/functions/profileScopedState";
 import { currentMpdProfileAtom } from "../../../profile/states/atoms/mpdProfileAtom";
 
 export type AllSongsFastState = {
@@ -19,30 +22,14 @@ export const initialAllSongsFastState: AllSongsFastState = {
 	hasMore: true,
 };
 
-export const allSongsFastStateAtom = atom<AllSongsFastState>(
-	initialAllSongsFastState,
+export const storedAllSongsFastStateAtom = atom<
+	ProfileScopedState<AllSongsFastState> | undefined
+>(undefined);
+
+export const allSongsFastStateAtom = atom((get) =>
+	selectProfileScopedState(
+		get(storedAllSongsFastStateAtom),
+		get(currentMpdProfileAtom)?.name,
+		initialAllSongsFastState,
+	),
 );
-
-// Tracks the profile name we last reacted to. The sentinel `initialized: false`
-// distinguishes a fresh subscription (e.g. revisiting the page with cached
-// data) from an actual profile change, which is what should clear the
-// accumulator.
-const lastSeenProfileNameAtom = atom<{ initialized: boolean; name?: string }>({
-	initialized: false,
-});
-
-export const syncAllSongsFastStateEffectAtom = atomEffect((get, set) => {
-	const profileName = get(currentMpdProfileAtom)?.name;
-	const lastSeen = get(lastSeenProfileNameAtom);
-
-	if (!lastSeen.initialized) {
-		set(lastSeenProfileNameAtom, { initialized: true, name: profileName });
-		return;
-	}
-	if (lastSeen.name === profileName) {
-		return;
-	}
-
-	set(lastSeenProfileNameAtom, { initialized: true, name: profileName });
-	set(allSongsFastStateAtom, initialAllSongsFastState);
-});

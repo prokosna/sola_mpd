@@ -1,6 +1,6 @@
 import { Plugin_PluginType } from "@sola_mpd/shared/src/models/plugin/plugin_pb.js";
 import type { Song } from "@sola_mpd/shared/src/models/song_pb.js";
-import { useAtom, useAtomValue, useSetAtom } from "jotai";
+import { useAtomValue, useSetAtom } from "jotai";
 import { type MutableRefObject, useCallback, useEffect, useRef } from "react";
 import { COMPONENT_ID_ALL_SONGS } from "../../../const/component";
 import { useNotification } from "../../../lib/mantine/hooks/useNotification";
@@ -19,10 +19,7 @@ import {
 import { loadAllSongsFastActionAtom } from "../states/actions/loadAllSongsFastActionAtom";
 import { setIsAllSongsLoadingActionAtom } from "../states/actions/setIsAllSongsLoadingActionAtom";
 import { allVisibleSongsAtom } from "../states/atoms/allSongsAtom";
-import {
-	allSongsFastStateAtom,
-	syncAllSongsFastStateEffectAtom,
-} from "../states/atoms/allSongsFastStateAtom";
+import { allSongsFastStateAtom } from "../states/atoms/allSongsFastStateAtom";
 import {
 	isAllSongsLoadingAtom,
 	syncAllSongsLoadingEffectAtom,
@@ -37,8 +34,7 @@ export function useAllSongsSongTableProps(
 
 	const notify = useNotification();
 
-	useAtom(syncAllSongsLoadingEffectAtom);
-	useAtom(syncAllSongsFastStateEffectAtom);
+	useAtomValue(syncAllSongsLoadingEffectAtom);
 	const slowIsLoading = useAtomValue(isAllSongsLoadingAtom);
 	const songs = useAtomValue(allVisibleSongsAtom);
 	const columns = useAtomValue(songTableColumnViewAtom);
