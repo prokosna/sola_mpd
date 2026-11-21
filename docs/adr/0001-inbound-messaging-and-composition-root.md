@@ -43,8 +43,11 @@ one composition root (`useJotaiStore.tsx`). The backend has no counterpart:
      `broadcast(channel, payload, { except })`. `peer.send` is a no-op once the peer is gone.
    - Adapters: `MessagingServerSocketIo` (backend) and `MessagingServerElectronIpc`
      (`packages/desktop`, so Electron stays named in the desktop package only). The Electron
-     adapter registers channels once and identifies a peer by its `webContents`, so a reload or
-     a second window is a separate peer.
+     adapter registers channels once. A peer is one renderer document, not one `webContents`:
+     a reload keeps the same `webContents` and its id and emits no `destroyed`, so the adapter
+     ends the peer (fires `onDisconnect`, then issues a new peer id) on a main-frame
+     cross-document navigation (`did-start-navigation` with `isMainFrame && !isSameDocument`),
+     on `render-process-gone` and on `destroyed`. A second window is a separate peer.
    - A channel port used by one feature only lives in that feature's `transports/`
      (`McpMessageHandler` and `McpMessageHandlerStreamableHttp` stay where they are).
 2. **Registration functions** bind a feature to a channel: `register<Feature>Handlers(server,
@@ -66,10 +69,20 @@ of the protocol and are not renamed.
 ### Error contract
 
 A handler that throws or rejects makes the caller's promise reject, on every channel. Socket.IO
-adapters carry this in the acknowledgement; Electron IPC already behaves this way. Feature
-responses that already have an error case (`MpdResponse`, `AdvancedSearchResponse`, plugin
-registration) keep it, and the registration function maps failures into it; the rejection
-covers every other failure. Nothing is swallowed into an empty or default response.
+adapters carry this in the acknowledgement; Electron IPC already behaves this way. Nothing is
+swallowed into an empty or default response.
+
+- Channels whose success response carries a message with an error case keep that case, and the
+  registration function maps failures into it: MPD commands (`MpdResponse`), advanced search
+  (`AdvancedSearchResponse`) and plugin registration.
+- Channels that succeed with an empty response reject on failure instead of returning another
+  channel's error message: MPD bulk commands, MPD subscribe and unsubscribe, config save. The
+  frontend stops decoding `MpdResponse` errors from these acknowledgements and handles the
+  rejection (bulk-command errors are no longer ignored).
+- Plugin execution acknowledges on receipt and streams results over its callback channel.
+  Failures before the acknowledgement (an undecodable request) reject; failures after it are
+  sent as the `error` case of `PluginExecuteResponseWrapper` on the callback channel, on every
+  transport.
 
 ### Use cases and codecs
 
@@ -89,7 +102,8 @@ never imports Express, Socket.IO, SQLite or MCP, so desktop does not bundle them
 ### Removed
 
 The unused Express routers for `/api/mpd`, `/api/configs` and `/api/view-state-blobs`, their
-`API_*` constants and the frontend `*RepositoryHttp` adapters are deleted.
+`API_*` constants, the frontend `*RepositoryHttp` adapters and `packages/frontend/src/lib/http/`
+(used only by those adapters) are deleted.
 
 ## Consequences
 

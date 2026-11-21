@@ -14,7 +14,7 @@ migrated and may not match yet.
 
 - **Ports** use pure business names — `MpdClient`, `NotificationService`. No `Port`/`Adapter`
   suffix, no technology in the name.
-- **Adapters** are named `<PortName><Technology>` — `MpdClientMpd3`, `HttpClientFetch`. The
+- **Adapters** are named `<PortName><Technology>` — `MpdClientMpd3`, `AdvancedSearchApiHttp`. The
   suffix names what the adapter actually depends on: an adapter built on another port is named
   after that port (`MpdClientMessaging` is built on `MessagingClient`).
 - One Port per file, one Adapter per file, co-located in the same folder.
@@ -37,8 +37,9 @@ migrated and may not match yet.
 - Inbound code calls use cases, never ports directly.
 - Per-connection state (event subscriptions) lives in `transports`, keyed by peer id.
 - **Errors.** A handler that throws or rejects makes the caller's promise reject on every
-  channel. Responses that have an error case keep it; nothing is swallowed into an empty or
-  default response.
+  channel. Responses that have an error case keep it; channels that succeed with an empty
+  response reject; streamed results report failures on their callback channel. Nothing is
+  swallowed into an empty or default response. Details in ADR 0001.
 
 ### Composition root
 
@@ -93,7 +94,8 @@ may be used at the package level.
   orchestrate models and ports to realize a single use case. They take and return domain
   models, never wire bytes, and receive ports as arguments instead of importing adapters.
 - Application files must not declare port interfaces. Import port contracts from the feature's
-  `services`, `repositories`, or `transports` folder.
+  `services` or `repositories` folder. `application` never imports from `transports`: inbound
+  code depends on use cases, not the other way round.
 - Add colocated `{file_name}.test.ts` for use cases with orchestration branches or side-effect
   coordination. Use ports/adapters as the test boundary and cover the success path plus key
   failure or idempotency paths.
