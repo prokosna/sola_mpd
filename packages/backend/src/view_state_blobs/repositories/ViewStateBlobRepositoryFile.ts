@@ -13,9 +13,7 @@ type ViewStateBlobDocument = Record<string, ViewStateBlobEntry>;
 
 const backedUpDirectories = new Set<string>();
 
-// Same rationale as ConfigRepositoryFile's backupDbDirectoryOnce(): deferred
-// to the first actual write so that a bare module import never touches the
-// real db directory.
+// As in ConfigRepositoryFile, the backup waits for the first write.
 function backupDbDirectoryOnce(dbDirectory: string) {
 	const key = path.resolve(dbDirectory);
 	if (backedUpDirectories.has(key)) {
@@ -25,9 +23,8 @@ function backupDbDirectoryOnce(dbDirectory: string) {
 	backupDbDirectory(dbDirectory);
 }
 
-// No in-memory cache, unlike ConfigRepositoryFile: read-through/write-through
-// keeps the constructor free of any filesystem access, so an import can never
-// touch the real db directory.
+// Read-through and write-through, unlike ConfigRepositoryFile, so constructing
+// it never touches the filesystem.
 export class ViewStateBlobRepositoryFile implements ViewStateBlobRepository {
 	private readonly localFilePath: string;
 

@@ -67,9 +67,8 @@ import type {
 
 const backedUpDirectories = new Set<string>();
 
-// The backup has to precede the first *write*: reads are non-destructive, and
-// deferring it this far keeps a bare module import — all a unit test does —
-// from writing into the real db directory.
+// Reads are non-destructive, so the backup waits for the first write; a
+// process that only reads never copies the directory.
 function backupDbDirectoryOnce(dbDirectory: string) {
 	const key = path.resolve(dbDirectory);
 	if (backedUpDirectories.has(key)) {
