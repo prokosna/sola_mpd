@@ -100,6 +100,22 @@ may be used at the package level.
   coordination. Use ports/adapters as the test boundary and cover the success path plus key
   failure or idempotency paths.
 
+## Enforced invariants
+
+`pnpm lint_architecture` (part of `pnpm lint`, an error gate) enforces these import rules
+on non-test source:
+
+- `socket.io` is imported only by `MessagingServerSocketIo.ts` and the backend `index.ts`;
+  `socket.io-client` only by `MessagingClientSocketIo.ts`; `electron` only under
+  `packages/desktop/src/`.
+- Use cases (`application/`) do not import `fromBinary`, `toBinary`, `fromJson` or `toJson`
+  from `@bufbuild/protobuf`, and do not import from `transports/`.
+- Use cases and inbound code (`transports/`) import `services/` and `repositories/` as types
+  only.
+- The import closure of `createBackendDependencies.ts` and `registerMessagingHandlers.ts`,
+  which desktop bundles, never reaches `socket.io`, `express`, `better-sqlite3` or
+  `@modelcontextprotocol/*`.
+
 ## Testing
 
 Tests live beside the code they cover as `{file_name}.test.ts`.
