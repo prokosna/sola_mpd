@@ -1,18 +1,21 @@
 import type { McpServer } from "@modelcontextprotocol/server";
 import { z } from "zod";
 
+import {
+	addUrisToQueueUseCase,
+	addUriToQueueUseCase,
+	clearQueueUseCase,
+	getQueueUseCase,
+} from "../application/queueUseCases.js";
 import { songToOutput } from "../functions/songToOutput.js";
 import {
 	toolError,
 	toolResultJson,
 	toolResultText,
 } from "../functions/toolResult.js";
-import { resolveCurrentMpdProfile } from "./currentMpdProfile.js";
 import {
 	errorMessage,
 	errorToToolResult,
-	executeMpdCommand,
-	executeMpdCommandsSequentially,
 	mcpProfileNameSchema,
 	type RegisterMcpToolsDeps,
 } from "./mcpToolHelpers.js";
@@ -25,7 +28,7 @@ export function registerQueueTools(
 	server: McpServer,
 	deps: RegisterMcpToolsDeps,
 ): void {
-	const { mpdClient } = deps;
+	const { mpdClient, mpdProfileStateRepository } = deps;
 
 	server.registerTool(
 		"queue_get",
@@ -47,23 +50,16 @@ export function registerQueueTools(
 		},
 		async (args) => {
 			try {
-				const profile = resolveCurrentMpdProfile(
-					deps.mpdProfileStateRepository,
-					args.profile,
-				);
-				const res = await executeMpdCommand(mpdClient, profile, {
-					case: "playlistinfo",
-					value: {},
+				const { total, songs } = await getQueueUseCase({
+					limit: args.limit ?? DEFAULT_QUEUE_RESULTS,
+					profileName: args.profile,
+					mpdClient,
+					mpdProfileStateRepository,
 				});
-				if (res.command?.case !== "playlistinfo") {
-					return toolError("Unexpected response from MPD playlistinfo.");
-				}
-				const all = res.command.value.songs.map(songToOutput);
-				const limit = args.limit ?? DEFAULT_QUEUE_RESULTS;
 				return toolResultJson({
-					total: all.length,
-					returned: Math.min(all.length, limit),
-					songs: all.slice(0, limit),
+					total,
+					returned: songs.length,
+					songs: songs.map(songToOutput),
 				});
 			} catch (err) {
 				return errorToToolResult(err);
@@ -94,13 +90,11 @@ export function registerQueueTools(
 		async (args) => {
 			try {
 				if (args.uri !== undefined && args.uris === undefined) {
-					const profile = resolveCurrentMpdProfile(
-						deps.mpdProfileStateRepository,
-						args.profile,
-					);
-					await executeMpdCommand(mpdClient, profile, {
-						case: "add",
-						value: { uri: args.uri },
+					await addUriToQueueUseCase({
+						uri: args.uri,
+						profileName: args.profile,
+						mpdClient,
+						mpdProfileStateRepository,
 					});
 					return toolResultText(`added: ${args.uri}`);
 				}
@@ -108,21 +102,18 @@ export function registerQueueTools(
 					return toolError("Provide exactly one of `uri` or `uris`.");
 				}
 				const uris = args.uris;
-				const profile = resolveCurrentMpdProfile(
-					deps.mpdProfileStateRepository,
-					args.profile,
-				);
-				const result = await executeMpdCommandsSequentially(
+				const result = await addUrisToQueueUseCase({
+					uris,
+					profileName: args.profile,
 					mpdClient,
-					profile,
-					uris.map((uri) => ({ case: "add", value: { uri } })),
-				);
+					mpdProfileStateRepository,
+				});
 				if (result.failure !== undefined) {
 					return toolError(
-						`Added ${result.completed} of ${uris.length} URIs to the queue, then failed on ${uris[result.failure.index]}: ${errorMessage(result.failure.error)}. The remaining URIs were not added.`,
+						`Added ${result.added} of ${uris.length} URIs to the queue, then failed on ${result.failure.uri}: ${errorMessage(result.failure.error)}. The remaining URIs were not added.`,
 					);
 				}
-				return toolResultText(`added ${result.completed} URIs to the queue`);
+				return toolResultText(`added ${result.added} URIs to the queue`);
 			} catch (err) {
 				return errorToToolResult(err);
 			}
@@ -139,13 +130,10 @@ export function registerQueueTools(
 		},
 		async (args) => {
 			try {
-				const profile = resolveCurrentMpdProfile(
-					deps.mpdProfileStateRepository,
-					args.profile,
-				);
-				await executeMpdCommand(mpdClient, profile, {
-					case: "clear",
-					value: {},
+				await clearQueueUseCase({
+					profileName: args.profile,
+					mpdClient,
+					mpdProfileStateRepository,
 				});
 				return toolResultText("queue cleared");
 			} catch (err) {

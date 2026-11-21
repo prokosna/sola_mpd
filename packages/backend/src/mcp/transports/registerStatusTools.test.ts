@@ -3,8 +3,6 @@ import { MpdPlayerStatusSchema } from "@sola_mpd/shared/src/models/mpd/mpd_playe
 import { MpdStatsSchema } from "@sola_mpd/shared/src/models/mpd/mpd_stats_pb.js";
 import { SongSchema } from "@sola_mpd/shared/src/models/song_pb.js";
 import { beforeEach, describe, expect, it, vi } from "vitest";
-
-import { registerStatusTools } from "./registerStatusTools.js";
 import {
 	createFakeMcpServer,
 	makeLibraryIndex,
@@ -13,9 +11,10 @@ import {
 	makeMpdResponse,
 	makeProfile,
 	parseToolJson,
-} from "./testHelpers.js";
+} from "../application/testHelpers.js";
+import { registerStatusTools } from "./registerStatusTools.js";
 
-vi.mock("./currentMpdProfile.js", () => ({
+vi.mock("../application/currentMpdProfile.js", () => ({
 	NoCurrentMpdProfileError: class extends Error {
 		constructor() {
 			super("no profile");
@@ -27,7 +26,9 @@ vi.mock("./currentMpdProfile.js", () => ({
 	listMpdProfiles: vi.fn(),
 }));
 
-const { resolveCurrentMpdProfile } = await import("./currentMpdProfile.js");
+const { resolveCurrentMpdProfile } = await import(
+	"../application/currentMpdProfile.js"
+);
 const resolveMock = vi.mocked(resolveCurrentMpdProfile);
 
 beforeEach(() => {

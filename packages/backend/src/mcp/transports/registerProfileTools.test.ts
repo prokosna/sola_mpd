@@ -5,8 +5,7 @@ import {
 } from "@sola_mpd/shared/src/models/mpd/mpd_profile_pb.js";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
-import { NoCurrentMpdProfileError } from "./currentMpdProfile.js";
-import { registerProfileTools } from "./registerProfileTools.js";
+import { NoCurrentMpdProfileError } from "../application/currentMpdProfile.js";
 import {
 	createFakeMcpServer,
 	makeLibraryIndex,
@@ -14,9 +13,10 @@ import {
 	makeMpdProfileStateRepository,
 	makeMpdResponse,
 	parseToolJson,
-} from "./testHelpers.js";
+} from "../application/testHelpers.js";
+import { registerProfileTools } from "./registerProfileTools.js";
 
-vi.mock("./currentMpdProfile.js", () => ({
+vi.mock("../application/currentMpdProfile.js", () => ({
 	NoCurrentMpdProfileError: class NoCurrentMpdProfileError extends Error {
 		constructor() {
 			super("no profile");
@@ -28,7 +28,7 @@ vi.mock("./currentMpdProfile.js", () => ({
 }));
 
 const { resolveCurrentMpdProfile, listMpdProfiles } = await import(
-	"./currentMpdProfile.js"
+	"../application/currentMpdProfile.js"
 );
 const resolveMock = vi.mocked(resolveCurrentMpdProfile);
 const listMock = vi.mocked(listMpdProfiles);

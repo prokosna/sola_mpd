@@ -1,19 +1,22 @@
 import type { McpServer } from "@modelcontextprotocol/server";
 import { z } from "zod";
 
-import { findSkippedPlaylistUris } from "../functions/findSkippedPlaylistUris.js";
+import {
+	addUrisToPlaylistUseCase,
+	getPlaylistSongsUseCase,
+	listPlaylistsUseCase,
+	loadPlaylistIntoQueueUseCase,
+	savePlaylistFromQueueUseCase,
+} from "../application/playlistUseCases.js";
 import { songToOutput } from "../functions/songToOutput.js";
 import {
 	toolError,
 	toolResultJson,
 	toolResultText,
 } from "../functions/toolResult.js";
-import { resolveCurrentMpdProfile } from "./currentMpdProfile.js";
 import {
 	errorMessage,
 	errorToToolResult,
-	executeMpdCommand,
-	executeMpdCommandsSequentially,
 	mcpProfileNameSchema,
 	type RegisterMcpToolsDeps,
 } from "./mcpToolHelpers.js";
@@ -22,7 +25,7 @@ export function registerPlaylistTools(
 	server: McpServer,
 	deps: RegisterMcpToolsDeps,
 ): void {
-	const { mpdClient } = deps;
+	const { mpdClient, mpdProfileStateRepository } = deps;
 
 	server.registerTool(
 		"playlist_list",
@@ -34,19 +37,13 @@ export function registerPlaylistTools(
 		},
 		async (args) => {
 			try {
-				const profile = resolveCurrentMpdProfile(
-					deps.mpdProfileStateRepository,
-					args.profile,
-				);
-				const res = await executeMpdCommand(mpdClient, profile, {
-					case: "listplaylists",
-					value: {},
+				const playlists = await listPlaylistsUseCase({
+					profileName: args.profile,
+					mpdClient,
+					mpdProfileStateRepository,
 				});
-				if (res.command?.case !== "listplaylists") {
-					return toolError("Unexpected response from MPD listplaylists.");
-				}
 				return toolResultJson({
-					playlists: res.command.value.playlists.map((p) => ({
+					playlists: playlists.map((p) => ({
 						name: p.name,
 						updated_at:
 							p.updatedAt !== undefined
@@ -73,20 +70,15 @@ export function registerPlaylistTools(
 		},
 		async (args) => {
 			try {
-				const profile = resolveCurrentMpdProfile(
-					deps.mpdProfileStateRepository,
-					args.profile,
-				);
-				const res = await executeMpdCommand(mpdClient, profile, {
-					case: "listplaylistinfo",
-					value: { name: args.name },
+				const songs = await getPlaylistSongsUseCase({
+					name: args.name,
+					profileName: args.profile,
+					mpdClient,
+					mpdProfileStateRepository,
 				});
-				if (res.command?.case !== "listplaylistinfo") {
-					return toolError("Unexpected response from MPD listplaylistinfo.");
-				}
 				return toolResultJson({
 					name: args.name,
-					songs: res.command.value.songs.map(songToOutput),
+					songs: songs.map(songToOutput),
 				});
 			} catch (err) {
 				return errorToToolResult(err);
@@ -111,25 +103,20 @@ export function registerPlaylistTools(
 		},
 		async (args) => {
 			try {
-				const profile = resolveCurrentMpdProfile(
-					deps.mpdProfileStateRepository,
-					args.profile,
-				);
-				const result = await executeMpdCommandsSequentially(
+				const result = await addUrisToPlaylistUseCase({
+					name: args.name,
+					uris: args.uris,
+					profileName: args.profile,
 					mpdClient,
-					profile,
-					args.uris.map((uri) => ({
-						case: "playlistadd",
-						value: { name: args.name, uri },
-					})),
-				);
+					mpdProfileStateRepository,
+				});
 				if (result.failure !== undefined) {
 					return toolError(
-						`Added ${result.completed} of ${args.uris.length} URIs to playlist "${args.name}", then failed on ${args.uris[result.failure.index]}: ${errorMessage(result.failure.error)}. The remaining URIs were not added.`,
+						`Added ${result.added} of ${args.uris.length} URIs to playlist "${args.name}", then failed on ${result.failure.uri}: ${errorMessage(result.failure.error)}. The remaining URIs were not added.`,
 					);
 				}
 				return toolResultText(
-					`added ${result.completed} URIs to playlist "${args.name}"`,
+					`added ${result.added} URIs to playlist "${args.name}"`,
 				);
 			} catch (err) {
 				return errorToToolResult(err);
@@ -150,13 +137,11 @@ export function registerPlaylistTools(
 		},
 		async (args) => {
 			try {
-				const profile = resolveCurrentMpdProfile(
-					deps.mpdProfileStateRepository,
-					args.profile,
-				);
-				await executeMpdCommand(mpdClient, profile, {
-					case: "save",
-					value: { name: args.name },
+				await savePlaylistFromQueueUseCase({
+					name: args.name,
+					profileName: args.profile,
+					mpdClient,
+					mpdProfileStateRepository,
 				});
 				return toolResultText(`queue saved as playlist "${args.name}"`);
 			} catch (err) {
@@ -178,58 +163,18 @@ export function registerPlaylistTools(
 		},
 		async (args) => {
 			try {
-				const profile = resolveCurrentMpdProfile(
-					deps.mpdProfileStateRepository,
-					args.profile,
-				);
-				const playlistRes = await executeMpdCommand(mpdClient, profile, {
-					case: "listplaylistinfo",
-					value: { name: args.name },
+				const { requested, skippedUris } = await loadPlaylistIntoQueueUseCase({
+					name: args.name,
+					profileName: args.profile,
+					mpdClient,
+					mpdProfileStateRepository,
 				});
-				if (playlistRes.command?.case !== "listplaylistinfo") {
-					return toolError("Unexpected response from MPD listplaylistinfo.");
-				}
-				const uris = playlistRes.command.value.songs.map((song) => song.path);
-				const statusRes = await executeMpdCommand(mpdClient, profile, {
-					case: "status",
-					value: {},
-				});
-				if (
-					statusRes.command?.case !== "status" ||
-					statusRes.command.value.status === undefined
-				) {
-					return toolError("Unexpected response from MPD status.");
-				}
-				const queueLengthBefore =
-					statusRes.command.value.status.playQueueLength;
-				await executeMpdCommand(mpdClient, profile, {
-					case: "load",
-					value: { name: args.name },
-				});
-				let appendedUris: string[];
-				try {
-					const queueRes = await executeMpdCommand(mpdClient, profile, {
-						case: "playlistinfo",
-						value: {},
-					});
-					if (queueRes.command?.case !== "playlistinfo") {
-						throw new Error("Unexpected response from MPD playlistinfo.");
-					}
-					appendedUris = queueRes.command.value.songs
-						.slice(queueLengthBefore)
-						.map((song) => song.path);
-				} catch (err) {
-					return toolError(
-						`Loaded playlist "${args.name}" into the queue, but could not read the queue back to find skipped songs: ${errorMessage(err)}`,
-					);
-				}
-				const skipped = findSkippedPlaylistUris(uris, appendedUris);
 				const skippedNote =
-					skipped.length > 0
-						? `; skipped ${skipped.length} not in the library: ${JSON.stringify(skipped)}`
+					skippedUris.length > 0
+						? `; skipped ${skippedUris.length} not in the library: ${JSON.stringify(skippedUris)}`
 						: "";
 				return toolResultText(
-					`added ${uris.length - skipped.length} of ${uris.length} songs from playlist "${args.name}" to the queue${skippedNote}`,
+					`added ${requested - skippedUris.length} of ${requested} songs from playlist "${args.name}" to the queue${skippedNote}`,
 				);
 			} catch (err) {
 				return errorToToolResult(err);
