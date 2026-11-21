@@ -1,4 +1,4 @@
-import type { Message } from "@bufbuild/protobuf";
+import { fromBinary, type Message, toBinary } from "@bufbuild/protobuf";
 import type { GenMessage } from "@bufbuild/protobuf/codegenv2";
 import {
 	CONFIG_KEY_BROWSER_STATE,
@@ -33,8 +33,9 @@ function bind<T extends Message>(
 	repository: ConfigRepository<T>,
 ): ConfigBinding {
 	return {
-		read: () => readConfigUseCase(schema, repository),
-		update: (data) => updateConfigUseCase(schema, repository, data),
+		read: () => Buffer.from(toBinary(schema, readConfigUseCase(repository))),
+		update: (data) =>
+			updateConfigUseCase(repository, fromBinary(schema, new Uint8Array(data))),
 	};
 }
 
