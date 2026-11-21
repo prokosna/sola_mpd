@@ -1,6 +1,6 @@
 import { Plugin_PluginType } from "@sola_mpd/shared/src/models/plugin/plugin_pb.js";
 import type { Song } from "@sola_mpd/shared/src/models/song_pb.js";
-import { useAtom, useAtomValue, useSetAtom } from "jotai";
+import { useAtomValue, useSetAtom } from "jotai";
 import { type MutableRefObject, useCallback } from "react";
 import { COMPONENT_ID_RECENTLY_ADDED } from "../../../../const/component";
 import { useSimilarSongsContextMenuItems } from "../../../advanced_search";
@@ -30,7 +30,7 @@ export function useRecentlyAddedSongTableProps(
 ): SongTableProps | undefined {
 	const songTableKeyType = SongTableKeyType.PATH;
 
-	useAtom(syncRecentlyAddedLoadingEffectAtom);
+	useAtomValue(syncRecentlyAddedLoadingEffectAtom);
 	const isLoading = useAtomValue(isRecentlyAddedLoadingAtom);
 	const songs = useAtomValue(recentlyAddedVisibleSongsAtom);
 	const columns = useAtomValue(songTableColumnViewAtom);
