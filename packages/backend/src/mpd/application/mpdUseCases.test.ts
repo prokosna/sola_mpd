@@ -42,10 +42,6 @@ const createCommandMessage = () => {
 	return new Uint8Array(toBinary(MpdRequestSchema, request));
 };
 
-const createProfileMessage = () => {
-	return new Uint8Array(toBinary(MpdProfileSchema, createProfile()));
-};
-
 const createMpdClient = (overrides?: Partial<MpdClient>): MpdClient => {
 	return {
 		execute: vi.fn(),
@@ -142,7 +138,7 @@ describe("mpdUseCases", () => {
 		const onEvent = vi.fn();
 
 		const result = await subscribeMpdEventsUseCase({
-			msg: createProfileMessage(),
+			profile: createProfile(),
 			onEvent,
 			mpdClient: mpdClient,
 		});
@@ -163,7 +159,7 @@ describe("mpdUseCases", () => {
 		mpdClient.subscribe = vi.fn().mockRejectedValue(expected);
 
 		const result = await subscribeMpdEventsUseCase({
-			msg: createProfileMessage(),
+			profile: createProfile(),
 			onEvent,
 			mpdClient: mpdClient,
 		});
@@ -175,7 +171,7 @@ describe("mpdUseCases", () => {
 		const mpdClient = createMpdClient();
 
 		const result = await unsubscribeMpdEventsUseCase({
-			msg: createProfileMessage(),
+			profile: createProfile(),
 			handlerPromise: undefined,
 			mpdClient: mpdClient,
 		});
@@ -191,7 +187,7 @@ describe("mpdUseCases", () => {
 		});
 
 		const result = await unsubscribeMpdEventsUseCase({
-			msg: createProfileMessage(),
+			profile: createProfile(),
 			handlerPromise: Promise.resolve(handler),
 			mpdClient: mpdClient,
 		});

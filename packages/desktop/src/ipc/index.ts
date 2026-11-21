@@ -33,7 +33,7 @@ import { DeepMap } from "@sola_mpd/shared/src/utils/DeepMap.js";
 import type { BrowserWindow } from "electron";
 import { ipcMain } from "electron";
 import { executeAdvancedSearchCommandUseCase } from "#backend/advanced_search/application/advancedSearchUseCases.js";
-import { ConfigMessageHandlerSocketIo } from "#backend/configs/transports/ConfigMessageHandlerSocketIo.js";
+import { createConfigBindings } from "#backend/configs/transports/configBindings.js";
 import type { BackendDependencies } from "#backend/createBackendDependencies.js";
 import {
 	disconnectMpdEventsUseCase,
@@ -94,9 +94,7 @@ async function cleanupSubscriptions(
 }
 
 function registerIpcHandlers(deps: BackendDependencies): void {
-	const configHandler = new ConfigMessageHandlerSocketIo(
-		deps.configRepositories,
-	);
+	const configBindings = createConfigBindings(deps.configRepositories);
 
 	// MPD command (request-response)
 	ipcMain.handle(
@@ -138,7 +136,7 @@ function registerIpcHandlers(deps: BackendDependencies): void {
 
 				const sender = event.sender;
 				const { handlerPromise } = await subscribeMpdEventsUseCase({
-					msg,
+					profile: targetProfile,
 					onEvent: (event) => {
 						if (event.eventType === MpdEvent_EventType.DISCONNECTED) {
 							idEventHandlerMap.delete([CLIENT_ID, targetProfile]);
@@ -182,7 +180,7 @@ function registerIpcHandlers(deps: BackendDependencies): void {
 				}
 
 				const unsubscribedProfile = await unsubscribeMpdEventsUseCase({
-					msg,
+					profile,
 					handlerPromise,
 					mpdClient: deps.mpdClient,
 				});
@@ -275,7 +273,7 @@ function registerIpcHandlers(deps: BackendDependencies): void {
 	for (const key of configKeys) {
 		ipcMain.handle(`${SOCKETIO_CONFIG_FETCH}_${key}`, (): Uint8Array => {
 			try {
-				const data = configHandler.fetch(key);
+				const data = configBindings[key].read();
 				return new Uint8Array(data);
 			} catch (err) {
 				console.error(err);
@@ -287,7 +285,7 @@ function registerIpcHandlers(deps: BackendDependencies): void {
 			`${SOCKETIO_CONFIG_SAVE}_${key}`,
 			(_event, msg: Uint8Array): Uint8Array => {
 				try {
-					configHandler.save(key, Buffer.from(msg));
+					configBindings[key].update(Buffer.from(msg));
 					return new Uint8Array(0);
 				} catch (err) {
 					console.error(err);
@@ -318,7 +316,7 @@ function registerIpcHandlers(deps: BackendDependencies): void {
 
 	// View state blob fetch (request-response): payload is the token text,
 	// response is the blob text, or an empty buffer when the token is unknown
-	// (mirrors the SocketIoManager convention: blob tokens always resolve to
+	// (blob tokens always resolve to
 	// non-empty text, so this is unambiguous).
 	ipcMain.handle(
 		SOCKETIO_VIEW_STATE_BLOB_FETCH,

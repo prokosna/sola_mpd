@@ -6,10 +6,11 @@ import { DB_DIRECTORY } from "@sola_mpd/shared/src/const/database.js";
 import express, { type ErrorRequestHandler } from "express";
 import { Server as SocketIOServer } from "socket.io";
 import { createBackendDependencies } from "./createBackendDependencies.js";
+import { MessagingServerSocketIo } from "./lib/messaging/MessagingServerSocketIo.js";
 import { createMcpRouter } from "./mcp/mcpRouter.js";
 import { LibraryIndexSqlite } from "./mcp/services/LibraryIndexSqlite.js";
 import { McpMessageHandlerStreamableHttp } from "./mcp/transports/McpMessageHandlerStreamableHttp.js";
-import { SocketIoManager } from "./SocketIoManager.js";
+import { registerMessagingHandlers } from "./registerMessagingHandlers.js";
 import { sweepViewStateBlobsUseCase } from "./view_state_blobs/application/viewStateBlobUseCases.js";
 
 const __filename = fileURLToPath(import.meta.url);
@@ -48,7 +49,7 @@ const io = new SocketIOServer(server, {
 	path: "/io/",
 	maxHttpBufferSize: 1.024e9,
 });
-SocketIoManager.initialize(io, deps);
+registerMessagingHandlers(new MessagingServerSocketIo(io), deps);
 
 app.use(express.static(path.join(__dirname, "public")));
 app.get("*splat", (_req, res) => {
