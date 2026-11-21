@@ -4,15 +4,14 @@ import { MpdStatsSchema } from "@sola_mpd/shared/src/models/mpd/mpd_stats_pb.js"
 import { SongSchema } from "@sola_mpd/shared/src/models/song_pb.js";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import {
-	createFakeMcpServer,
 	makeLibraryIndex,
 	makeMpdClient,
 	makeMpdProfileStateRepository,
 	makeMpdResponse,
 	makeProfile,
-	parseToolJson,
 } from "../application/testHelpers.js";
 import { registerStatusTools } from "./registerStatusTools.js";
+import { createFakeMcpServer, parseToolJson } from "./testHelpers.js";
 
 vi.mock("../application/currentMpdProfile.js", () => ({
 	NoCurrentMpdProfileError: class extends Error {

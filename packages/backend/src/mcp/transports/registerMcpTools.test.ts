@@ -1,12 +1,12 @@
 import { describe, expect, it, vi } from "vitest";
 import {
-	createFakeMcpServer,
 	makeLibraryIndex,
 	makeMpdClient,
 	makeMpdProfileStateRepository,
 	makeMpdResponse,
 } from "../application/testHelpers.js";
 import { registerMcpTools } from "./registerMcpTools.js";
+import { createFakeMcpServer } from "./testHelpers.js";
 
 vi.mock("../application/currentMpdProfile.js", () => ({
 	NoCurrentMpdProfileError: class extends Error {},
