@@ -49,15 +49,21 @@ export function registerPluginHandlers(
 			} catch (err) {
 				console.error(err);
 				if (callbackEvent) {
-					peer.send(
-						callbackEvent,
-						toBinary(
-							PluginExecuteResponseWrapperSchema,
-							create(PluginExecuteResponseWrapperSchema, {
-								result: { case: "error", value: toErrorMessage(err) },
-							}),
-						),
-					);
+					// The failure may be peer.send itself; it must not escape this
+					// detached task as an unhandled rejection.
+					try {
+						peer.send(
+							callbackEvent,
+							toBinary(
+								PluginExecuteResponseWrapperSchema,
+								create(PluginExecuteResponseWrapperSchema, {
+									result: { case: "error", value: toErrorMessage(err) },
+								}),
+							),
+						);
+					} catch (sendErr) {
+						console.error(sendErr);
+					}
 				}
 			}
 		})();
