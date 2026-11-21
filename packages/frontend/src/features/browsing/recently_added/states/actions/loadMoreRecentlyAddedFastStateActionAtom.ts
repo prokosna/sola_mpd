@@ -12,6 +12,7 @@ import {
 	fetchRecentlyAddedFastDelta,
 } from "../../functions/recentlyAddedFastFetch";
 import { recentlyAddedFastStateAtom } from "../atoms/recentlyAddedFastStateAtom";
+import { setRecentlyAddedFastStateActionAtom } from "./setRecentlyAddedFastStateActionAtom";
 
 /**
  * Keeps extending past a step that yields nothing — a quiet period in the
@@ -33,7 +34,7 @@ export const loadMoreRecentlyAddedFastStateActionAtom = atom(
 			return;
 		}
 
-		set(recentlyAddedFastStateAtom, {
+		set(setRecentlyAddedFastStateActionAtom, profile.name, {
 			...state,
 			isLoading: true,
 			error: undefined,
@@ -71,7 +72,7 @@ export const loadMoreRecentlyAddedFastStateActionAtom = atom(
 					break;
 				}
 			}
-			set(recentlyAddedFastStateAtom, {
+			set(setRecentlyAddedFastStateActionAtom, profile.name, {
 				songs,
 				daysVisible,
 				isLoading: false,
@@ -79,7 +80,7 @@ export const loadMoreRecentlyAddedFastStateActionAtom = atom(
 			});
 		} catch (e) {
 			if (get(currentMpdProfileAtom)?.name === profile.name) {
-				set(recentlyAddedFastStateAtom, {
+				set(setRecentlyAddedFastStateActionAtom, profile.name, {
 					songs,
 					daysVisible,
 					isLoading: false,
