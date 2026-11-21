@@ -5,6 +5,7 @@ import {
 	createFakeMcpServer,
 	makeLibraryIndex,
 	makeMpdClient,
+	makeMpdProfileStateRepository,
 	makeMpdResponse,
 	makeProfile,
 	parseToolJson,
@@ -45,6 +46,7 @@ describe("registerLibraryAnalyticsTools / library_top_by_tag", () => {
 		registerLibraryAnalyticsTools(server as never, {
 			mpdClient: makeMpdClientWithListAll(),
 			libraryIndex,
+			mpdProfileStateRepository: makeMpdProfileStateRepository(),
 		});
 
 		const result = await server.call("library_top_by_tag", { tag: "genre" });
@@ -77,6 +79,7 @@ describe("registerLibraryAnalyticsTools / library_artist_summary", () => {
 		registerLibraryAnalyticsTools(server as never, {
 			mpdClient: makeMpdClientWithListAll(),
 			libraryIndex,
+			mpdProfileStateRepository: makeMpdProfileStateRepository(),
 		});
 		const result = await server.call("library_artist_summary", {
 			name: "Aphex Twin",
@@ -95,6 +98,7 @@ describe("registerLibraryAnalyticsTools / library_artist_summary", () => {
 		registerLibraryAnalyticsTools(server as never, {
 			mpdClient: makeMpdClientWithListAll(),
 			libraryIndex,
+			mpdProfileStateRepository: makeMpdProfileStateRepository(),
 		});
 		const result = await server.call("library_artist_summary", {
 			name: "aphex twn",
@@ -122,6 +126,7 @@ describe("registerLibraryAnalyticsTools / library_recently_added_by_artist", () 
 		registerLibraryAnalyticsTools(server as never, {
 			mpdClient: makeMpdClientWithListAll(),
 			libraryIndex,
+			mpdProfileStateRepository: makeMpdProfileStateRepository(),
 		});
 		const before = Date.now();
 		await server.call("library_recently_added_by_artist", {

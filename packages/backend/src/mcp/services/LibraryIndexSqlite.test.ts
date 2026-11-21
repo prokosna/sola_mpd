@@ -12,7 +12,9 @@ import {
 } from "@sola_mpd/shared/src/models/song_pb.js";
 import { describe, expect, it } from "vitest";
 
-import { libraryIndexSqlite } from "./LibraryIndexSqlite.js";
+import { LibraryIndexSqlite } from "./LibraryIndexSqlite.js";
+
+const libraryIndexSqlite = new LibraryIndexSqlite();
 
 function makeSong(input: {
 	path: string;

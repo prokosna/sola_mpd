@@ -23,6 +23,7 @@ import type { AdvancedSearchMessageHandler } from "./advanced_search/transports/
 import { AdvancedSearchMessageHandlerSocketIo } from "./advanced_search/transports/AdvancedSearchMessageHandlerSocketIo.js";
 import type { ConfigMessageHandler } from "./configs/transports/ConfigMessageHandler.js";
 import { ConfigMessageHandlerSocketIo } from "./configs/transports/ConfigMessageHandlerSocketIo.js";
+import type { BackendDependencies } from "./createBackendDependencies.js";
 import type { MpdMessageHandler } from "./mpd/transports/MpdMessageHandler.js";
 import { MpdMessageHandlerSocketIo } from "./mpd/transports/MpdMessageHandlerSocketIo.js";
 import type { PluginMessageHandler } from "./plugins/transports/PluginMessageHandler.js";
@@ -38,20 +39,24 @@ import { ViewStateBlobMessageHandlerSocketIo } from "./view_state_blobs/transpor
 export class SocketIoManager {
 	private constructor(_io: IOServer) {}
 
-	static initialize(io: IOServer): SocketIoManager {
+	static initialize(io: IOServer, deps: BackendDependencies): SocketIoManager {
 		console.info("Socket.io is initializing...");
 		const socketIoManager = new SocketIoManager(io);
 
-		const mpdHandler: MpdMessageHandler =
-			MpdMessageHandlerSocketIo.initialize();
+		const mpdHandler: MpdMessageHandler = MpdMessageHandlerSocketIo.initialize(
+			deps.mpdClient,
+		);
 		const pluginHandler: PluginMessageHandler =
-			new PluginMessageHandlerSocketIo();
+			new PluginMessageHandlerSocketIo(deps.pluginClient);
 		const advancedSearchHandler: AdvancedSearchMessageHandler =
-			AdvancedSearchMessageHandlerSocketIo.initialize();
+			AdvancedSearchMessageHandlerSocketIo.initialize(
+				deps.advancedSearchApi,
+				deps.mpdClient,
+			);
 		const configHandler: ConfigMessageHandler =
-			new ConfigMessageHandlerSocketIo();
+			new ConfigMessageHandlerSocketIo(deps.configRepositories);
 		const viewStateBlobHandler: ViewStateBlobMessageHandler =
-			new ViewStateBlobMessageHandlerSocketIo();
+			new ViewStateBlobMessageHandlerSocketIo(deps.viewStateBlobRepository);
 
 		const configKeys = [
 			CONFIG_KEY_BROWSER_STATE,

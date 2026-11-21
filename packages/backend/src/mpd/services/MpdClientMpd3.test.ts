@@ -24,7 +24,8 @@ vi.mock("@prokosna/mpd3", () => ({
 	Parsers: {},
 }));
 
-const { mpdClientMpd3 } = await import("./MpdClientMpd3.js");
+const { MpdClientMpd3 } = await import("./MpdClientMpd3.js");
+const mpdClientMpd3 = new MpdClientMpd3();
 
 let profileSeq = 0;
 const createProfile = () =>

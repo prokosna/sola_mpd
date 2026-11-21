@@ -11,6 +11,7 @@ import {
 	createFakeMcpServer,
 	makeLibraryIndex,
 	makeMpdClient,
+	makeMpdProfileStateRepository,
 	makeMpdResponse,
 	parseToolJson,
 } from "./testHelpers.js";
@@ -56,6 +57,7 @@ describe("registerProfileTools / mpd_profiles", () => {
 		registerProfileTools(server as never, {
 			mpdClient: makeMpdClient(() => makeMpdResponse({})),
 			libraryIndex: makeLibraryIndex(),
+			mpdProfileStateRepository: makeMpdProfileStateRepository(),
 		});
 
 		const result = await server.call("mpd_profiles");
@@ -77,6 +79,7 @@ describe("registerProfileTools / mpd_profiles", () => {
 		registerProfileTools(server as never, {
 			mpdClient: makeMpdClient(() => makeMpdResponse({})),
 			libraryIndex: makeLibraryIndex(),
+			mpdProfileStateRepository: makeMpdProfileStateRepository(),
 		});
 
 		const result = await server.call("mpd_profiles");

@@ -10,6 +10,7 @@ import {
 	SOCKETIO_VIEW_STATE_BLOB_FETCH,
 	SOCKETIO_VIEW_STATE_BLOB_SAVE,
 } from "@sola_mpd/shared/src/const/socketio.js";
+import { BrowserStateSchema } from "@sola_mpd/shared/src/models/browser_pb.js";
 import {
 	MpdEvent_EventType,
 	MpdEventSchema,
@@ -17,6 +18,7 @@ import {
 import { MpdProfileSchema } from "@sola_mpd/shared/src/models/mpd/mpd_profile_pb.js";
 import type { BrowserWindow } from "electron";
 import { beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
+import type { BackendDependencies } from "#backend/createBackendDependencies.js";
 import { createMpdErrorBuffer } from "#backend/utils/errorBufferUtils.js";
 import { ALLOWED_INVOKE_CHANNELS } from "../preload/channels.js";
 
@@ -43,26 +45,30 @@ vi.mock("#backend/mpd/application/mpdUseCases.js", () => ({
 	unsubscribeMpdEventsUseCase,
 	disconnectMpdEventsUseCase,
 }));
-vi.mock("#backend/mpd/services/MpdClientMpd3.js", () => ({
-	mpdClientMpd3: {},
-}));
-
-const readBrowserState = vi.fn();
-const updateBrowserState = vi.fn();
-vi.mock("#backend/configs/application/configStateUseCases.js", () => ({
-	readBrowserState,
-	readCommonSongTableState: vi.fn(() => Buffer.alloc(0)),
-	readMpdProfileState: vi.fn(() => Buffer.alloc(0)),
-	readPluginState: vi.fn(() => Buffer.alloc(0)),
-	readRecentlyAddedState: vi.fn(() => Buffer.alloc(0)),
-	readSavedSearches: vi.fn(() => Buffer.alloc(0)),
-	updateBrowserState,
-	updateCommonSongTableState: vi.fn(),
-	updateMpdProfileState: vi.fn(),
-	updatePluginState: vi.fn(),
-	updateRecentlyAddedState: vi.fn(),
-	updateSavedSearches: vi.fn(),
-}));
+const browserStateRepository = {
+	get: vi.fn(),
+	update: vi.fn(),
+};
+const makeRepository = () => ({ get: vi.fn(), update: vi.fn() });
+const viewStateBlobRepository = {
+	get: vi.fn(),
+	put: vi.fn(),
+	sweep: vi.fn(),
+};
+const deps = {
+	mpdClient: {},
+	pluginClient: {},
+	advancedSearchApi: {},
+	configRepositories: {
+		browserState: browserStateRepository,
+		commonSongTableState: makeRepository(),
+		mpdProfileState: makeRepository(),
+		pluginState: makeRepository(),
+		recentlyAddedState: makeRepository(),
+		savedSearches: makeRepository(),
+	},
+	viewStateBlobRepository,
+} as unknown as BackendDependencies;
 
 const readViewStateBlobUseCase = vi.fn();
 const saveViewStateBlobUseCase = vi.fn();
@@ -78,18 +84,12 @@ vi.mock("#backend/plugins/application/pluginUseCases.js", () => ({
 	registerPluginUseCase: vi.fn(),
 	executePluginUseCase: vi.fn(),
 }));
-vi.mock("#backend/plugins/services/PluginClientConnect.js", () => ({
-	pluginClientConnect: {},
-}));
 vi.mock(
 	"#backend/advanced_search/application/advancedSearchUseCases.js",
 	() => ({
 		executeAdvancedSearchCommandUseCase: vi.fn(),
 	}),
 );
-vi.mock("#backend/advanced_search/services/AdvancedSearchApiHttp.js", () => ({
-	advancedSearchApiHttp: {},
-}));
 
 const { initializeIpcManager } = await import("./index.js");
 
@@ -124,7 +124,7 @@ function getHandler(channel: string): IpcHandler {
 describe("initializeIpcManager", () => {
 	beforeAll(() => {
 		const { win } = createFakeWindow();
-		initializeIpcManager(win);
+		initializeIpcManager(win, deps);
 	});
 
 	beforeEach(() => {
@@ -134,7 +134,7 @@ describe("initializeIpcManager", () => {
 	it("registers handlers matching ALLOWED_INVOKE_CHANNELS 1-to-1 and only once", () => {
 		const firstCount = registeredHandlers.size;
 		const { win: win2 } = createFakeWindow();
-		initializeIpcManager(win2);
+		initializeIpcManager(win2, deps);
 
 		expect(registeredHandlers.size).toBe(firstCount);
 		expect([...registeredHandlers.keys()].sort()).toEqual(
@@ -165,15 +165,20 @@ describe("initializeIpcManager", () => {
 			`${SOCKETIO_CONFIG_SAVE}_${CONFIG_KEY_BROWSER_STATE}`,
 		);
 
-		readBrowserState.mockReturnValueOnce(Buffer.from([4, 5]));
-		expect(fetchHandler({})).toEqual(new Uint8Array([4, 5]));
+		const state = create(BrowserStateSchema, { schemaVersion: 2 });
+		browserStateRepository.get.mockReturnValueOnce(state);
+		expect(fetchHandler({})).toEqual(
+			new Uint8Array(toBinary(BrowserStateSchema, state)),
+		);
 
-		const payload = new Uint8Array([7, 8]);
+		const payload = toBinary(BrowserStateSchema, state);
 		expect(saveHandler({}, payload)).toEqual(new Uint8Array(0));
-		expect(updateBrowserState).toHaveBeenCalledWith(Buffer.from(payload));
+		expect(browserStateRepository.update).toHaveBeenCalledWith(
+			expect.objectContaining({ schemaVersion: 2 }),
+		);
 
 		const errorSpy = vi.spyOn(console, "error").mockImplementation(() => {});
-		readBrowserState.mockImplementationOnce(() => {
+		browserStateRepository.get.mockImplementationOnce(() => {
 			throw new Error("disk full");
 		});
 		expect(() => fetchHandler({})).toThrow("disk full");
@@ -208,7 +213,7 @@ describe("initializeIpcManager", () => {
 
 	it("deduplicates MPD subscriptions, guards destroyed senders, and cleans up on window close", async () => {
 		const { win, triggerClosed } = createFakeWindow();
-		initializeIpcManager(win);
+		initializeIpcManager(win, deps);
 
 		const subscribeHandler = getHandler(SOCKETIO_MPD_SUBSCRIBE);
 		const unsubscribeHandler = getHandler(SOCKETIO_MPD_UNSUBSCRIBE);

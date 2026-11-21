@@ -5,6 +5,7 @@ import {
 	createFakeMcpServer,
 	makeLibraryIndex,
 	makeMpdClient,
+	makeMpdProfileStateRepository,
 	makeMpdResponse,
 	makeProfile,
 	parseToolJson,
@@ -47,6 +48,7 @@ describe("registerLibrarySqlTools / library_query_sql", () => {
 		registerLibrarySqlTools(server as never, {
 			mpdClient: makeMpdClientWithListAll(),
 			libraryIndex,
+			mpdProfileStateRepository: makeMpdProfileStateRepository(),
 		});
 		const result = await server.call("library_query_sql", {
 			sql: "SELECT 1 AS c",
@@ -77,6 +79,7 @@ describe("registerLibrarySqlTools / library_query_sql", () => {
 		registerLibrarySqlTools(server as never, {
 			mpdClient: makeMpdClientWithListAll(),
 			libraryIndex,
+			mpdProfileStateRepository: makeMpdProfileStateRepository(),
 		});
 		const result = await server.call("library_query_sql", {
 			sql: "DELETE FROM songs",
@@ -99,6 +102,7 @@ describe("registerLibrarySqlTools / library_index_stats", () => {
 		registerLibrarySqlTools(server as never, {
 			mpdClient: makeMpdClientWithListAll(),
 			libraryIndex,
+			mpdProfileStateRepository: makeMpdProfileStateRepository(),
 		});
 		const result = await server.call("library_index_stats");
 		const body = parseToolJson<{ song_count: number }>(result);

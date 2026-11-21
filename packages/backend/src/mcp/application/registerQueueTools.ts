@@ -47,7 +47,10 @@ export function registerQueueTools(
 		},
 		async (args) => {
 			try {
-				const profile = resolveCurrentMpdProfile(args.profile);
+				const profile = resolveCurrentMpdProfile(
+					deps.mpdProfileStateRepository,
+					args.profile,
+				);
 				const res = await executeMpdCommand(mpdClient, profile, {
 					case: "playlistinfo",
 					value: {},
@@ -91,7 +94,10 @@ export function registerQueueTools(
 		async (args) => {
 			try {
 				if (args.uri !== undefined && args.uris === undefined) {
-					const profile = resolveCurrentMpdProfile(args.profile);
+					const profile = resolveCurrentMpdProfile(
+						deps.mpdProfileStateRepository,
+						args.profile,
+					);
 					await executeMpdCommand(mpdClient, profile, {
 						case: "add",
 						value: { uri: args.uri },
@@ -102,7 +108,10 @@ export function registerQueueTools(
 					return toolError("Provide exactly one of `uri` or `uris`.");
 				}
 				const uris = args.uris;
-				const profile = resolveCurrentMpdProfile(args.profile);
+				const profile = resolveCurrentMpdProfile(
+					deps.mpdProfileStateRepository,
+					args.profile,
+				);
 				const result = await executeMpdCommandsSequentially(
 					mpdClient,
 					profile,
@@ -130,7 +139,10 @@ export function registerQueueTools(
 		},
 		async (args) => {
 			try {
-				const profile = resolveCurrentMpdProfile(args.profile);
+				const profile = resolveCurrentMpdProfile(
+					deps.mpdProfileStateRepository,
+					args.profile,
+				);
 				await executeMpdCommand(mpdClient, profile, {
 					case: "clear",
 					value: {},

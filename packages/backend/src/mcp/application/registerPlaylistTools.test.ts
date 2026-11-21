@@ -9,6 +9,7 @@ import {
 	createFakeMcpServer,
 	makeLibraryIndex,
 	makeMpdClient,
+	makeMpdProfileStateRepository,
 	makeMpdResponse,
 	makeProfile,
 	parseToolJson,
@@ -55,6 +56,7 @@ describe("registerPlaylistTools / playlist_list", () => {
 		registerPlaylistTools(server as never, {
 			mpdClient: client,
 			libraryIndex: makeLibraryIndex(),
+			mpdProfileStateRepository: makeMpdProfileStateRepository(),
 		});
 
 		const result = await server.call("playlist_list");
@@ -84,6 +86,7 @@ describe("registerPlaylistTools / playlist_get", () => {
 		registerPlaylistTools(server as never, {
 			mpdClient: client,
 			libraryIndex: makeLibraryIndex(),
+			mpdProfileStateRepository: makeMpdProfileStateRepository(),
 		});
 
 		const result = await server.call("playlist_get", { name: "p" });
@@ -113,6 +116,7 @@ function setup(client: ReturnType<typeof makeMpdClient>) {
 	registerPlaylistTools(server as never, {
 		mpdClient: client,
 		libraryIndex: makeLibraryIndex(),
+		mpdProfileStateRepository: makeMpdProfileStateRepository(),
 	});
 	return server;
 }

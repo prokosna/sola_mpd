@@ -11,6 +11,8 @@ import {
 	screen,
 	shell,
 } from "electron";
+import { createBackendDependencies } from "#backend/createBackendDependencies.js";
+import { initializeIpcManager as initializeIpc } from "../ipc/index.js";
 import { resolveRendererFilePath } from "./protocol.js";
 import {
 	DEFAULT_WINDOW_STATE,
@@ -59,18 +61,13 @@ app.whenReady().then(async () => {
 		return net.fetch(pathToFileURL(filePath).toString());
 	});
 
-	// Set working directory to userData so backend's relative "./db/..." paths
-	// resolve to the OS-specific user data directory.
-	const userDataPath = app.getPath("userData");
-	process.chdir(userDataPath);
-
-	// Dynamic import after chdir so backend singletons use the correct DB path.
+	const dbDir = path.join(app.getPath("userData"), "db");
 	let initializeIpcManager: (window: BrowserWindow) => void;
 	try {
-		({ initializeIpcManager } = await import("../ipc/index.js"));
+		const deps = createBackendDependencies({ dbDirectory: dbDir });
+		initializeIpcManager = (window) => initializeIpc(window, deps);
 	} catch (err) {
 		const message = err instanceof Error ? err.message : String(err);
-		const dbDir = path.join(userDataPath, "db");
 		dialog.showErrorBox(
 			"Sola MPD failed to start",
 			`${message}\n\nData directory: ${dbDir}`,

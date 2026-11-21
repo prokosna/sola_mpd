@@ -17,8 +17,10 @@ import {
 	subscribeMpdEventsUseCase,
 	unsubscribeMpdEventsUseCase,
 } from "../application/mpdUseCases.js";
-import type { MpdSubscriptionHandler } from "../services/MpdClient.js";
-import { mpdClientMpd3 } from "../services/MpdClientMpd3.js";
+import type {
+	MpdClient,
+	MpdSubscriptionHandler,
+} from "../services/MpdClient.js";
 import type {
 	MpdMessageHandler,
 	MpdTransportConnection,
@@ -30,12 +32,12 @@ export class MpdMessageHandlerSocketIo implements MpdMessageHandler {
 		Promise<MpdSubscriptionHandler>
 	>;
 
-	private constructor() {
+	private constructor(private readonly mpdClient: MpdClient) {
 		this.idEventHandlerMap = new DeepMap();
 	}
 
-	static initialize(): MpdMessageHandlerSocketIo {
-		return new MpdMessageHandlerSocketIo();
+	static initialize(mpdClient: MpdClient): MpdMessageHandlerSocketIo {
+		return new MpdMessageHandlerSocketIo(mpdClient);
 	}
 
 	async subscribeEvents(
@@ -59,7 +61,7 @@ export class MpdMessageHandlerSocketIo implements MpdMessageHandler {
 					this.idEventHandlerMap.delete([id, targetProfile]);
 				}
 			},
-			mpdClient: mpdClientMpd3,
+			mpdClient: this.mpdClient,
 		}).then(({ handlerPromise: innerPromise }) => innerPromise);
 
 		this.idEventHandlerMap.set([id, targetProfile], handlerPromise);
@@ -89,7 +91,7 @@ export class MpdMessageHandlerSocketIo implements MpdMessageHandler {
 			const unsubscribedProfile = await unsubscribeMpdEventsUseCase({
 				msg,
 				handlerPromise,
-				mpdClient: mpdClientMpd3,
+				mpdClient: this.mpdClient,
 			});
 			if (unsubscribedProfile !== undefined) {
 				this.idEventHandlerMap.delete([id, unsubscribedProfile]);
@@ -107,11 +109,11 @@ export class MpdMessageHandlerSocketIo implements MpdMessageHandler {
 	}
 
 	async command(msg: Uint8Array): Promise<Uint8Array> {
-		return executeMpdCommandUseCase(msg, mpdClientMpd3);
+		return executeMpdCommandUseCase(msg, this.mpdClient);
 	}
 
 	async commandBulk(msg: Uint8Array): Promise<void> {
-		return executeMpdCommandBulkUseCase(msg, mpdClientMpd3);
+		return executeMpdCommandBulkUseCase(msg, this.mpdClient);
 	}
 
 	async disconnect(
@@ -128,7 +130,7 @@ export class MpdMessageHandlerSocketIo implements MpdMessageHandler {
 				await disconnectMpdEventsUseCase({
 					profile,
 					handlerPromise,
-					mpdClient: mpdClientMpd3,
+					mpdClient: this.mpdClient,
 				});
 			} catch (err) {
 				console.error(err);

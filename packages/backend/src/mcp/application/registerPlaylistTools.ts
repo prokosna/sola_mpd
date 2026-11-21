@@ -34,7 +34,10 @@ export function registerPlaylistTools(
 		},
 		async (args) => {
 			try {
-				const profile = resolveCurrentMpdProfile(args.profile);
+				const profile = resolveCurrentMpdProfile(
+					deps.mpdProfileStateRepository,
+					args.profile,
+				);
 				const res = await executeMpdCommand(mpdClient, profile, {
 					case: "listplaylists",
 					value: {},
@@ -70,7 +73,10 @@ export function registerPlaylistTools(
 		},
 		async (args) => {
 			try {
-				const profile = resolveCurrentMpdProfile(args.profile);
+				const profile = resolveCurrentMpdProfile(
+					deps.mpdProfileStateRepository,
+					args.profile,
+				);
 				const res = await executeMpdCommand(mpdClient, profile, {
 					case: "listplaylistinfo",
 					value: { name: args.name },
@@ -105,7 +111,10 @@ export function registerPlaylistTools(
 		},
 		async (args) => {
 			try {
-				const profile = resolveCurrentMpdProfile(args.profile);
+				const profile = resolveCurrentMpdProfile(
+					deps.mpdProfileStateRepository,
+					args.profile,
+				);
 				const result = await executeMpdCommandsSequentially(
 					mpdClient,
 					profile,
@@ -141,7 +150,10 @@ export function registerPlaylistTools(
 		},
 		async (args) => {
 			try {
-				const profile = resolveCurrentMpdProfile(args.profile);
+				const profile = resolveCurrentMpdProfile(
+					deps.mpdProfileStateRepository,
+					args.profile,
+				);
 				await executeMpdCommand(mpdClient, profile, {
 					case: "save",
 					value: { name: args.name },
@@ -166,7 +178,10 @@ export function registerPlaylistTools(
 		},
 		async (args) => {
 			try {
-				const profile = resolveCurrentMpdProfile(args.profile);
+				const profile = resolveCurrentMpdProfile(
+					deps.mpdProfileStateRepository,
+					args.profile,
+				);
 				const playlistRes = await executeMpdCommand(mpdClient, profile, {
 					case: "listplaylistinfo",
 					value: { name: args.name },

@@ -3,9 +3,13 @@ import {
 	MpdRequestSchema,
 	type MpdResponse,
 } from "@sola_mpd/shared/src/models/mpd/mpd_command_pb.js";
-import type { MpdProfile } from "@sola_mpd/shared/src/models/mpd/mpd_profile_pb.js";
+import type {
+	MpdProfile,
+	MpdProfileState,
+} from "@sola_mpd/shared/src/models/mpd/mpd_profile_pb.js";
 import { z } from "zod";
 
+import type { ConfigRepository } from "../../configs/repositories/ConfigRepository.js";
 import type { MpdClient } from "../../mpd/services/MpdClient.js";
 import { toolError } from "../functions/toolResult.js";
 import type { LibraryIndex } from "../services/LibraryIndex.js";
@@ -28,6 +32,7 @@ export type MpdRequestCommand = MessageInitShape<
 export type RegisterMcpToolsDeps = {
 	mpdClient: MpdClient;
 	libraryIndex: LibraryIndex;
+	mpdProfileStateRepository: ConfigRepository<MpdProfileState>;
 };
 
 export async function executeMpdCommand(

@@ -79,7 +79,10 @@ export function registerLibrarySearchTools(
 		},
 		async (args) => {
 			try {
-				const profile = resolveCurrentMpdProfile(args.profile);
+				const profile = resolveCurrentMpdProfile(
+					deps.mpdProfileStateRepository,
+					args.profile,
+				);
 				const conditions = args.filter
 					? buildSearchConditions(args.filter as SimpleFilter)
 					: [];
@@ -129,7 +132,10 @@ export function registerLibrarySearchTools(
 		},
 		async (args) => {
 			try {
-				const profile = resolveCurrentMpdProfile(args.profile);
+				const profile = resolveCurrentMpdProfile(
+					deps.mpdProfileStateRepository,
+					args.profile,
+				);
 				const conditions = buildSearchConditions(args.filter as SimpleFilter);
 				if (conditions.length === 0) {
 					return toolError(

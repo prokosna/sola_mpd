@@ -7,6 +7,7 @@ import {
 	createFakeMcpServer,
 	makeLibraryIndex,
 	makeMpdClient,
+	makeMpdProfileStateRepository,
 	makeMpdResponse,
 	makeProfile,
 	parseToolJson,
@@ -41,6 +42,7 @@ describe("registerQueueTools / queue_get", () => {
 		registerQueueTools(server as never, {
 			mpdClient: client,
 			libraryIndex: makeLibraryIndex(),
+			mpdProfileStateRepository: makeMpdProfileStateRepository(),
 		});
 
 		const result = await server.call("queue_get", { limit: 2 });
@@ -63,6 +65,7 @@ describe("registerQueueTools / queue_get", () => {
 		registerQueueTools(server as never, {
 			mpdClient: client,
 			libraryIndex: makeLibraryIndex(),
+			mpdProfileStateRepository: makeMpdProfileStateRepository(),
 		});
 		const result = await server.call("queue_get");
 		expect(result.isError).toBe(true);
@@ -76,6 +79,7 @@ describe("registerQueueTools / queue_add", () => {
 		registerQueueTools(server as never, {
 			mpdClient: client,
 			libraryIndex: makeLibraryIndex(),
+			mpdProfileStateRepository: makeMpdProfileStateRepository(),
 		});
 
 		const result = await server.call("queue_add", { uri: "songs/foo.flac" });
@@ -94,6 +98,7 @@ describe("registerQueueTools / queue_add", () => {
 		registerQueueTools(server as never, {
 			mpdClient: client,
 			libraryIndex: makeLibraryIndex(),
+			mpdProfileStateRepository: makeMpdProfileStateRepository(),
 		});
 
 		const result = await server.call("queue_add", {
@@ -128,6 +133,7 @@ describe("registerQueueTools / queue_add", () => {
 		registerQueueTools(server as never, {
 			mpdClient: client,
 			libraryIndex: makeLibraryIndex(),
+			mpdProfileStateRepository: makeMpdProfileStateRepository(),
 		});
 
 		const result = await server.call("queue_add", {
@@ -147,6 +153,7 @@ describe("registerQueueTools / queue_add", () => {
 		registerQueueTools(server as never, {
 			mpdClient: makeMpdClient(() => makeMpdResponse({})),
 			libraryIndex: makeLibraryIndex(),
+			mpdProfileStateRepository: makeMpdProfileStateRepository(),
 		});
 		const schema = server.tools.get("queue_add")?.config.inputSchema as {
 			safeParse: (v: unknown) => {
@@ -172,6 +179,7 @@ describe("registerQueueTools / queue_add", () => {
 		registerQueueTools(server as never, {
 			mpdClient: client,
 			libraryIndex: makeLibraryIndex(),
+			mpdProfileStateRepository: makeMpdProfileStateRepository(),
 		});
 
 		const result = await server.call("queue_add", {});
@@ -186,6 +194,7 @@ describe("registerQueueTools / queue_add", () => {
 		registerQueueTools(server as never, {
 			mpdClient: client,
 			libraryIndex: makeLibraryIndex(),
+			mpdProfileStateRepository: makeMpdProfileStateRepository(),
 		});
 
 		const result = await server.call("queue_add", { uri: "a", uris: ["b"] });
@@ -203,6 +212,7 @@ describe("registerQueueTools / queue_clear", () => {
 		registerQueueTools(server as never, {
 			mpdClient: client,
 			libraryIndex: makeLibraryIndex(),
+			mpdProfileStateRepository: makeMpdProfileStateRepository(),
 		});
 		const result = await server.call("queue_clear");
 		expect(result.isError).toBeUndefined();

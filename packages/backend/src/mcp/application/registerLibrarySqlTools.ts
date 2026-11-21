@@ -57,7 +57,10 @@ Omitting profile uses the workspace default profile.`,
 		},
 		async (args) => {
 			try {
-				const profile = resolveCurrentMpdProfile(args.profile);
+				const profile = resolveCurrentMpdProfile(
+					deps.mpdProfileStateRepository,
+					args.profile,
+				);
 				await ensureLibraryIndexUseCase({ profile, mpdClient, libraryIndex });
 				validateSelectSql(args.sql);
 				const result = libraryIndex.querySql(
@@ -82,7 +85,10 @@ Omitting profile uses the workspace default profile.`,
 		},
 		async (args) => {
 			try {
-				const profile = resolveCurrentMpdProfile(args.profile);
+				const profile = resolveCurrentMpdProfile(
+					deps.mpdProfileStateRepository,
+					args.profile,
+				);
 				await ensureLibraryIndexUseCase({ profile, mpdClient, libraryIndex });
 				return toolResultJson(libraryIndex.stats());
 			} catch (err) {

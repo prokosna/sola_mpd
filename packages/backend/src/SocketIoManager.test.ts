@@ -4,34 +4,27 @@ import {
 } from "@sola_mpd/shared/src/const/socketio.js";
 import type { Server as IOServer } from "socket.io";
 import { beforeEach, describe, expect, it, vi } from "vitest";
-
-// SocketIoManager.initialize() transitively imports the config and view-state
-// blob repository singletons, which touch the filesystem (packages/backend/db)
-// at module-load time. Mocking these two leaf modules keeps the test fully
-// off disk while leaving the routing/broadcast logic under test untouched.
-vi.mock("./configs/repositories/ConfigRepositoryFile.js", () => {
-	const makeRepository = () => ({ get: vi.fn(), update: vi.fn() });
-	return {
-		browserStateRepository: makeRepository(),
-		commonSongTableStateRepository: makeRepository(),
-		mpdProfileStateRepository: makeRepository(),
-		pluginStateRepository: makeRepository(),
-		savedSearchRepository: makeRepository(),
-		recentlyAddedStateRepository: makeRepository(),
-	};
-});
-
-vi.mock(
-	"./view_state_blobs/repositories/ViewStateBlobRepositoryFile.js",
-	() => ({
-		viewStateBlobRepository: { get: vi.fn(), put: vi.fn(), sweep: vi.fn() },
-	}),
-);
+import type { BackendDependencies } from "./createBackendDependencies.js";
 
 const { SocketIoManager } = await import("./SocketIoManager.js");
-const { browserStateRepository } = await import(
-	"./configs/repositories/ConfigRepositoryFile.js"
-);
+
+const makeRepository = () => ({ get: vi.fn(), update: vi.fn() });
+const browserStateRepository = makeRepository();
+
+const deps = {
+	mpdClient: {},
+	pluginClient: {},
+	advancedSearchApi: {},
+	configRepositories: {
+		browserState: browserStateRepository,
+		commonSongTableState: makeRepository(),
+		mpdProfileState: makeRepository(),
+		pluginState: makeRepository(),
+		recentlyAddedState: makeRepository(),
+		savedSearches: makeRepository(),
+	},
+	viewStateBlobRepository: { get: vi.fn(), put: vi.fn(), sweep: vi.fn() },
+} as unknown as BackendDependencies;
 
 interface FakeSocket {
 	id: string;
@@ -68,7 +61,7 @@ function initializeWithFakeSocket(): {
 		}),
 	} as unknown as IOServer;
 
-	SocketIoManager.initialize(fakeIo);
+	SocketIoManager.initialize(fakeIo, deps);
 
 	const socket = createFakeSocket();
 	for (const handler of connectionHandlers) {

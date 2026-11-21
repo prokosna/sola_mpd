@@ -1,9 +1,9 @@
 import { describe, expect, it, vi } from "vitest";
 import type { ViewStateBlobRepository } from "../repositories/ViewStateBlobRepository.js";
 import {
-	createReadViewStateBlobUseCase,
-	createSaveViewStateBlobUseCase,
-	createSweepViewStateBlobsUseCase,
+	readViewStateBlobUseCase,
+	saveViewStateBlobUseCase,
+	sweepViewStateBlobsUseCase,
 	VIEW_STATE_BLOB_MAX_AGE_MS,
 } from "./viewStateBlobUseCases.js";
 
@@ -21,9 +21,11 @@ const createRepository = (
 describe("viewStateBlobUseCases", () => {
 	it("save computes the token from the data and upserts it via the repository", () => {
 		const repository = createRepository();
-		const save = createSaveViewStateBlobUseCase(repository);
 
-		const token = save("some-serialized-selection");
+		const token = saveViewStateBlobUseCase(
+			repository,
+			"some-serialized-selection",
+		);
 
 		expect(repository.put).toHaveBeenCalledTimes(1);
 		expect(repository.put).toHaveBeenCalledWith(
@@ -34,10 +36,9 @@ describe("viewStateBlobUseCases", () => {
 
 	it("save is idempotent: the same data always yields the same token", () => {
 		const repository = createRepository();
-		const save = createSaveViewStateBlobUseCase(repository);
 
-		const tokenA = save("same-selection");
-		const tokenB = save("same-selection");
+		const tokenA = saveViewStateBlobUseCase(repository, "same-selection");
+		const tokenB = saveViewStateBlobUseCase(repository, "same-selection");
 
 		expect(tokenA).toBe(tokenB);
 	});
@@ -50,9 +51,8 @@ describe("viewStateBlobUseCases", () => {
 				lastAccessedAt: 2,
 			}),
 		});
-		const read = createReadViewStateBlobUseCase(repository);
 
-		expect(read("some-token")).toBe("the-data");
+		expect(readViewStateBlobUseCase(repository, "some-token")).toBe("the-data");
 		expect(repository.get).toHaveBeenCalledWith("some-token");
 	});
 
@@ -60,18 +60,18 @@ describe("viewStateBlobUseCases", () => {
 		const repository = createRepository({
 			get: vi.fn().mockReturnValue(undefined),
 		});
-		const read = createReadViewStateBlobUseCase(repository);
 
-		expect(read("unknown-token")).toBeUndefined();
+		expect(
+			readViewStateBlobUseCase(repository, "unknown-token"),
+		).toBeUndefined();
 	});
 
 	it("sweep defaults to the 90-day retention window", () => {
 		const repository = createRepository({
 			sweep: vi.fn().mockReturnValue(3),
 		});
-		const sweep = createSweepViewStateBlobsUseCase(repository);
 
-		const removedCount = sweep();
+		const removedCount = sweepViewStateBlobsUseCase(repository);
 
 		expect(repository.sweep).toHaveBeenCalledWith(VIEW_STATE_BLOB_MAX_AGE_MS);
 		expect(removedCount).toBe(3);
@@ -79,9 +79,8 @@ describe("viewStateBlobUseCases", () => {
 
 	it("sweep accepts an explicit maxAgeMs override", () => {
 		const repository = createRepository({ sweep: vi.fn().mockReturnValue(0) });
-		const sweep = createSweepViewStateBlobsUseCase(repository);
 
-		sweep(1_000);
+		sweepViewStateBlobsUseCase(repository, 1_000);
 
 		expect(repository.sweep).toHaveBeenCalledWith(1_000);
 	});

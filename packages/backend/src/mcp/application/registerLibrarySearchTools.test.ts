@@ -7,6 +7,7 @@ import {
 	createFakeMcpServer,
 	makeLibraryIndex,
 	makeMpdClient,
+	makeMpdProfileStateRepository,
 	makeMpdResponse,
 	makeProfile,
 	parseToolJson,
@@ -39,6 +40,7 @@ describe("registerLibrarySearchTools / library_list_tag_values", () => {
 		registerLibrarySearchTools(server as never, {
 			mpdClient: client,
 			libraryIndex: makeLibraryIndex(),
+			mpdProfileStateRepository: makeMpdProfileStateRepository(),
 		});
 
 		const result = await server.call("library_list_tag_values", {
@@ -63,6 +65,7 @@ describe("registerLibrarySearchTools / library_search", () => {
 		registerLibrarySearchTools(server as never, {
 			mpdClient: client,
 			libraryIndex: makeLibraryIndex(),
+			mpdProfileStateRepository: makeMpdProfileStateRepository(),
 		});
 
 		const result = await server.call("library_search", { filter: {} });
@@ -82,6 +85,7 @@ describe("registerLibrarySearchTools / library_search", () => {
 		registerLibrarySearchTools(server as never, {
 			mpdClient: client,
 			libraryIndex: makeLibraryIndex(),
+			mpdProfileStateRepository: makeMpdProfileStateRepository(),
 		});
 
 		const result = await server.call("library_search", {

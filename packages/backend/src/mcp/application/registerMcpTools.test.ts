@@ -5,6 +5,7 @@ import {
 	createFakeMcpServer,
 	makeLibraryIndex,
 	makeMpdClient,
+	makeMpdProfileStateRepository,
 	makeMpdResponse,
 } from "./testHelpers.js";
 
@@ -21,6 +22,7 @@ describe("registerMcpTools", () => {
 		registerMcpTools(server as never, {
 			mpdClient: makeMpdClient(() => makeMpdResponse({})),
 			libraryIndex: makeLibraryIndex(),
+			mpdProfileStateRepository: makeMpdProfileStateRepository(),
 		});
 
 		const expected = [
