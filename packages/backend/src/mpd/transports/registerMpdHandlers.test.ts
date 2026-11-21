@@ -72,7 +72,7 @@ describe("registerMpdHandlers", () => {
 		expect(result).toEqual(createMpdErrorBuffer(err));
 	});
 
-	it("runs a bulk command and maps a failure to an MPD error response", async () => {
+	it("runs a bulk command and rejects on failure", async () => {
 		mpdClient.executeBulk.mockResolvedValueOnce(undefined);
 		const bulk = toBinary(
 			MpdRequestBulkSchema,
@@ -85,9 +85,7 @@ describe("registerMpdHandlers", () => {
 
 		const err = new Error("bulk boom");
 		mpdClient.executeBulk.mockRejectedValueOnce(err);
-		expect(await fake.call(SOCKETIO_MPD_COMMAND_BULK, bulk)).toEqual(
-			createMpdErrorBuffer(err),
-		);
+		await expect(fake.call(SOCKETIO_MPD_COMMAND_BULK, bulk)).rejects.toBe(err);
 	});
 
 	it("subscribes the calling peer and returns nothing", async () => {
@@ -102,29 +100,25 @@ describe("registerMpdHandlers", () => {
 		);
 	});
 
-	it("maps a subscribe failure to an MPD error response", async () => {
+	it("rejects when subscribing fails", async () => {
 		const err = new Error("MPD is down");
 		mpdClient.subscribe.mockRejectedValue(err);
 
-		const result = await fake.call(SOCKETIO_MPD_SUBSCRIBE, profileBytes);
-
-		expect(result).toEqual(createMpdErrorBuffer(err));
+		await expect(fake.call(SOCKETIO_MPD_SUBSCRIBE, profileBytes)).rejects.toBe(
+			err,
+		);
 	});
 
-	it("maps an unsubscribe failure to an MPD error response", async () => {
+	it("rejects when unsubscribing fails", async () => {
 		const err = new Error("unsubscribe boom");
 		mpdClient.subscribe.mockResolvedValue(() => {});
 		mpdClient.unsubscribe.mockRejectedValue(err);
 		const { peer } = fake.createPeer("p1");
 		await fake.call(SOCKETIO_MPD_SUBSCRIBE, profileBytes, peer);
 
-		const result = await fake.call(
-			SOCKETIO_MPD_UNSUBSCRIBE,
-			profileBytes,
-			peer,
-		);
-
-		expect(result).toEqual(createMpdErrorBuffer(err));
+		await expect(
+			fake.call(SOCKETIO_MPD_UNSUBSCRIBE, profileBytes, peer),
+		).rejects.toBe(err);
 	});
 
 	it("releases the peer's subscriptions on disconnect", async () => {

@@ -6,6 +6,21 @@ import type { MessagingClient } from "./MessagingClient";
 // leaving the returned Promise pending forever.
 const ACK_TIMEOUT_MS = 30_000;
 
+const toFailure = (failure: unknown): Error | undefined => {
+	if (failure === undefined) {
+		return undefined;
+	}
+	if (
+		typeof failure === "object" &&
+		failure !== null &&
+		"message" in failure &&
+		typeof failure.message === "string"
+	) {
+		return new Error(failure.message);
+	}
+	return new Error("Malformed failure acknowledgement");
+};
+
 export class MessagingClientSocketIo implements MessagingClient {
 	private socket: Promise<Socket>;
 	private reconnectCallbacks: (() => void)[] = [];
@@ -56,17 +71,26 @@ export class MessagingClientSocketIo implements MessagingClient {
 		return new Promise<R>((resolve, reject) => {
 			socket
 				.timeout(ACK_TIMEOUT_MS)
-				.emit(event, bytes, (err: Error | null, resp: ArrayBuffer) => {
-					if (err) {
-						reject(err);
-						return;
-					}
-					try {
-						resolve(fromBinary(new Uint8Array(resp)));
-					} catch (e) {
-						reject(e);
-					}
-				});
+				.emit(
+					event,
+					bytes,
+					(err: Error | null, resp: ArrayBuffer, failure?: unknown) => {
+						if (err) {
+							reject(err);
+							return;
+						}
+						const failed = toFailure(failure);
+						if (failed !== undefined) {
+							reject(failed);
+							return;
+						}
+						try {
+							resolve(fromBinary(new Uint8Array(resp)));
+						} catch (e) {
+							reject(e);
+						}
+					},
+				);
 		});
 	};
 
@@ -79,13 +103,22 @@ export class MessagingClientSocketIo implements MessagingClient {
 		return new Promise<Uint8Array>((resolve, reject) => {
 			socket
 				.timeout(ACK_TIMEOUT_MS)
-				.emit(event, bytes, (err: Error | null, data: ArrayBuffer) => {
-					if (err) {
-						reject(err);
-						return;
-					}
-					resolve(new Uint8Array(data));
-				});
+				.emit(
+					event,
+					bytes,
+					(err: Error | null, data: ArrayBuffer, failure?: unknown) => {
+						if (err) {
+							reject(err);
+							return;
+						}
+						const failed = toFailure(failure);
+						if (failed !== undefined) {
+							reject(failed);
+							return;
+						}
+						resolve(new Uint8Array(data));
+					},
+				);
 		});
 	};
 

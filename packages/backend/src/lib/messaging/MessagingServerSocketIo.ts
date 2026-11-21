@@ -1,4 +1,5 @@
 import type { Server as IOServer, Socket } from "socket.io";
+import { toErrorMessage } from "../../utils/errorUtils.js";
 import type {
 	MessagingHandler,
 	MessagingPeer,
@@ -47,14 +48,17 @@ export class MessagingServerSocketIo implements MessagingServer {
 		for (const [channel, handler] of this.handlers) {
 			socket.on(
 				channel,
-				async (msg: ArrayBuffer, callback?: (res: Buffer) => void) => {
-					let result: Uint8Array | undefined;
+				async (
+					msg: ArrayBuffer,
+					callback?: (res: Buffer, failure?: { message: string }) => void,
+				) => {
 					try {
-						result = await handler(new Uint8Array(msg), peer);
+						const result = await handler(new Uint8Array(msg), peer);
+						callback?.(Buffer.from(result ?? new Uint8Array(0)));
 					} catch (err) {
 						console.error(err);
+						callback?.(Buffer.alloc(0), { message: toErrorMessage(err) });
 					}
-					callback?.(Buffer.from(result ?? new Uint8Array(0)));
 				},
 			);
 		}

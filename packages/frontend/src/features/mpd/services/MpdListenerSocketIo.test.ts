@@ -4,7 +4,6 @@ import {
 	SOCKETIO_MPD_SUBSCRIBE,
 	SOCKETIO_MPD_UNSUBSCRIBE,
 } from "@sola_mpd/shared/src/const/socketio.js";
-import { MpdResponseSchema } from "@sola_mpd/shared/src/models/mpd/mpd_command_pb.js";
 import {
 	MpdEvent_EventType,
 	MpdEventSchema,
@@ -18,13 +17,6 @@ import {
 	RESUBSCRIBE_MAX_DELAY_MS,
 } from "../const/resubscribeBackoff";
 import { MpdListenerSocketIo } from "./MpdListenerSocketIo";
-
-const subscribeErrorAck = toBinary(
-	MpdResponseSchema,
-	create(MpdResponseSchema, {
-		command: { case: "error", value: { message: "MPD is down" } },
-	}),
-);
 
 class FakeMessagingClient implements MessagingClient {
 	emitted: { event: string; profileName: string }[] = [];
@@ -43,7 +35,7 @@ class FakeMessagingClient implements MessagingClient {
 		});
 		if (event === SOCKETIO_MPD_SUBSCRIBE && this.failingSubscribes > 0) {
 			this.failingSubscribes -= 1;
-			return subscribeErrorAck;
+			throw new Error("MPD is down");
 		}
 		return new Uint8Array(0);
 	};
