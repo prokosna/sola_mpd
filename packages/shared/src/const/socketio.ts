@@ -1,6 +1,3 @@
-// Socket IO
-export const SOCKETIO_MESSAGE = "socketio_message";
-
 // Socket IO - MPD
 export const SOCKETIO_MPD_SUBSCRIBE = "socketio_mpd_subscribe";
 export const SOCKETIO_MPD_UNSUBSCRIBE = "socketio_mpd_unsubscribe";

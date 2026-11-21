@@ -3,7 +3,9 @@ import {
 	AdvancedSearchCommand_TextToMusicType,
 } from "@sola_mpd/shared/src/models/advanced_search_pb.js";
 import { afterEach, describe, expect, it, vi } from "vitest";
-import { advancedSearchApiHttp } from "./AdvancedSearchApiHttp.js";
+import { AdvancedSearchApiHttp } from "./AdvancedSearchApiHttp.js";
+
+const advancedSearchApiHttp = new AdvancedSearchApiHttp();
 
 const endpoint = "http://lainbow.test";
 

@@ -1,15 +1,12 @@
 import type { Song_MetadataTag } from "@sola_mpd/shared/src/models/song_pb.js";
-import { useAtom, useAtomValue, useSetAtom } from "jotai";
+import { useAtomValue, useSetAtom } from "jotai";
 import { useCallback, useEffect, useRef } from "react";
 
 import { useNotification } from "../../../../lib/mantine/hooks/useNotification";
 import { mpdCapabilitiesAtom } from "../../../mpd/states/atoms/mpdCapabilitiesAtom";
 import type { BrowserFilterView } from "../../common/types/browserFilterView";
 import { loadMoreRecentlyAddedFastStateActionAtom } from "../states/actions/loadMoreRecentlyAddedFastStateActionAtom";
-import {
-	recentlyAddedFastStateAtom,
-	syncRecentlyAddedFastStateEffectAtom,
-} from "../states/atoms/recentlyAddedFastStateAtom";
+import { recentlyAddedFastStateAtom } from "../states/atoms/recentlyAddedFastStateAtom";
 import {
 	filteredRecentlyAddedFilterValuesMapAtom,
 	recentlyAddedFiltersAtom,
@@ -26,9 +23,6 @@ type RecentlyAddedNavigationProps = {
 };
 
 export function useRecentlyAddedNavigationProps(): RecentlyAddedNavigationProps {
-	// Mount the profile-switch reset effect for the fast accumulator.
-	useAtom(syncRecentlyAddedFastStateEffectAtom);
-
 	const browserFilters = useAtomValue(recentlyAddedFiltersAtom);
 	const browserFilterValues = useAtomValue(
 		filteredRecentlyAddedFilterValuesMapAtom,

@@ -20,10 +20,7 @@ describe("preload IPC channels parity with shared socketio constants", () => {
 	});
 
 	it("accounts for every SOCKETIO_* constant defined in @sola_mpd/shared", () => {
-		// Prefix constants and the unused SOCKETIO_MESSAGE constant are not
-		// registered directly as channels.
 		const knownSharedSocketEvents = new Set<string>([
-			socketioConst.SOCKETIO_MESSAGE,
 			socketioConst.SOCKETIO_CONFIG_FETCH,
 			socketioConst.SOCKETIO_CONFIG_SAVE,
 			...ALLOWED_INVOKE_CHANNELS,

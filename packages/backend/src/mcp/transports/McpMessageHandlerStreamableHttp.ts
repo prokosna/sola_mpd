@@ -9,14 +9,11 @@ import {
 	type McpHttpHandler,
 	McpServer,
 } from "@modelcontextprotocol/server";
-
-import { mpdClientMpd3 } from "../../mpd/services/MpdClientMpd3.js";
+import type { McpMessageHandler } from "./McpMessageHandler.js";
 import {
 	type RegisterMcpToolsDeps,
 	registerMcpTools,
-} from "../application/registerMcpTools.js";
-import { libraryIndexSqlite } from "../services/LibraryIndexSqlite.js";
-import type { McpMessageHandler } from "./McpMessageHandler.js";
+} from "./registerMcpTools.js";
 
 const SERVER_INFO = {
 	name: "sola-mpd",
@@ -64,9 +61,3 @@ export class McpMessageHandlerStreamableHttp implements McpMessageHandler {
 		await this.handler.close();
 	}
 }
-
-export const mcpMessageHandlerStreamableHttp: McpMessageHandler =
-	new McpMessageHandlerStreamableHttp({
-		mpdClient: mpdClientMpd3,
-		libraryIndex: libraryIndexSqlite,
-	});

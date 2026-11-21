@@ -1,65 +1,58 @@
-import { fromBinary, toBinary } from "@bufbuild/protobuf";
-import {
-	MpdRequestBulkSchema,
-	MpdRequestSchema,
-	MpdResponseSchema,
+import type {
+	MpdRequest,
+	MpdRequestBulk,
+	MpdResponse,
 } from "@sola_mpd/shared/src/models/mpd/mpd_command_pb.js";
 import type { MpdEvent } from "@sola_mpd/shared/src/models/mpd/mpd_event_pb.js";
 import type { MpdProfile } from "@sola_mpd/shared/src/models/mpd/mpd_profile_pb.js";
-import { MpdProfileSchema } from "@sola_mpd/shared/src/models/mpd/mpd_profile_pb.js";
 import type {
 	MpdClient,
 	MpdSubscriptionHandler,
 } from "../services/MpdClient.js";
 
-export const executeMpdCommandUseCase = async (
-	msg: Uint8Array,
+export const executeMpdCommandUseCase = (
+	request: MpdRequest,
 	mpdClient: MpdClient,
-): Promise<Uint8Array> => {
-	const request = fromBinary(MpdRequestSchema, msg);
-	const response = await mpdClient.execute(request);
-	return toBinary(MpdResponseSchema, response);
+): Promise<MpdResponse> => {
+	return mpdClient.execute(request);
 };
 
 export const executeMpdCommandBulkUseCase = async (
-	msg: Uint8Array,
+	bulk: MpdRequestBulk,
 	mpdClient: MpdClient,
 ): Promise<void> => {
-	const request = fromBinary(MpdRequestBulkSchema, msg);
-	await mpdClient.executeBulk(request.requests);
+	await mpdClient.executeBulk(bulk.requests);
 };
 
 type SubscribeMpdEventsUseCaseInput = {
-	msg: Uint8Array;
+	profile: MpdProfile;
 	onEvent: (event: MpdEvent) => void;
 	mpdClient: MpdClient;
 };
 
 export const subscribeMpdEventsUseCase = async ({
-	msg,
+	profile,
 	onEvent,
 	mpdClient,
 }: SubscribeMpdEventsUseCaseInput): Promise<{
 	profile: MpdProfile;
 	handlerPromise: Promise<MpdSubscriptionHandler>;
 }> => {
-	const profile = fromBinary(MpdProfileSchema, msg);
 	const handlerPromise = mpdClient.subscribe(profile, onEvent);
 	return { profile, handlerPromise };
 };
 
 type UnsubscribeMpdEventsUseCaseInput = {
-	msg: Uint8Array;
+	profile: MpdProfile;
 	handlerPromise?: Promise<MpdSubscriptionHandler>;
 	mpdClient: MpdClient;
 };
 
 export const unsubscribeMpdEventsUseCase = async ({
-	msg,
+	profile,
 	handlerPromise,
 	mpdClient,
 }: UnsubscribeMpdEventsUseCaseInput): Promise<MpdProfile | undefined> => {
-	const profile = fromBinary(MpdProfileSchema, msg);
 	if (handlerPromise === undefined) {
 		return;
 	}

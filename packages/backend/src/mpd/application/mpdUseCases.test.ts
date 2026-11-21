@@ -1,4 +1,4 @@
-import { create, fromBinary, toBinary } from "@bufbuild/protobuf";
+import { create } from "@bufbuild/protobuf";
 import {
 	MpdRequestBulkSchema,
 	MpdRequestSchema,
@@ -31,19 +31,14 @@ const createProfile = () => {
 	});
 };
 
-const createCommandMessage = () => {
-	const request = create(MpdRequestSchema, {
+const createCommandRequest = () => {
+	return create(MpdRequestSchema, {
 		profile: createProfile(),
 		command: {
 			case: "ping",
 			value: {},
 		},
 	});
-	return new Uint8Array(toBinary(MpdRequestSchema, request));
-};
-
-const createProfileMessage = () => {
-	return new Uint8Array(toBinary(MpdProfileSchema, createProfile()));
 };
 
 const createMpdClient = (overrides?: Partial<MpdClient>): MpdClient => {
@@ -57,7 +52,7 @@ const createMpdClient = (overrides?: Partial<MpdClient>): MpdClient => {
 };
 
 describe("mpdUseCases", () => {
-	it("executeMpdCommandUseCase decodes request and encodes response", async () => {
+	it("executeMpdCommandUseCase returns the client response", async () => {
 		const response = create(MpdResponseSchema, {
 			command: {
 				case: "ping",
@@ -68,21 +63,12 @@ describe("mpdUseCases", () => {
 			execute: vi.fn().mockResolvedValue(response),
 		});
 
-		const result = await executeMpdCommandUseCase(
-			createCommandMessage(),
-			mpdClient,
-		);
+		const request = createCommandRequest();
 
-		expect(mpdClient.execute).toHaveBeenCalledTimes(1);
-		const decoded = fromBinary(MpdResponseSchema, result);
-		expect(decoded).toMatchObject({
-			command: {
-				case: "ping",
-				value: {
-					version: "0.24.0",
-				},
-			},
-		});
+		const result = await executeMpdCommandUseCase(request, mpdClient);
+
+		expect(mpdClient.execute).toHaveBeenCalledWith(request);
+		expect(result).toBe(response);
 	});
 
 	it("executeMpdCommandUseCase propagates client errors", async () => {
@@ -92,7 +78,7 @@ describe("mpdUseCases", () => {
 		});
 
 		await expect(
-			executeMpdCommandUseCase(createCommandMessage(), mpdClient),
+			executeMpdCommandUseCase(createCommandRequest(), mpdClient),
 		).rejects.toThrow("execute failed");
 	});
 
@@ -104,19 +90,12 @@ describe("mpdUseCases", () => {
 				value: {},
 			},
 		});
-		const msg = new Uint8Array(
-			toBinary(
-				MpdRequestBulkSchema,
-				create(MpdRequestBulkSchema, {
-					requests: [request],
-				}),
-			),
-		);
+		const bulk = create(MpdRequestBulkSchema, { requests: [request] });
 		const mpdClient = createMpdClient({
 			executeBulk: vi.fn().mockResolvedValue(undefined),
 		});
 
-		await executeMpdCommandBulkUseCase(msg, mpdClient);
+		await executeMpdCommandBulkUseCase(bulk, mpdClient);
 
 		expect(mpdClient.executeBulk).toHaveBeenCalledTimes(1);
 		expect(mpdClient.executeBulk).toHaveBeenCalledWith(
@@ -142,7 +121,7 @@ describe("mpdUseCases", () => {
 		const onEvent = vi.fn();
 
 		const result = await subscribeMpdEventsUseCase({
-			msg: createProfileMessage(),
+			profile: createProfile(),
 			onEvent,
 			mpdClient: mpdClient,
 		});
@@ -163,7 +142,7 @@ describe("mpdUseCases", () => {
 		mpdClient.subscribe = vi.fn().mockRejectedValue(expected);
 
 		const result = await subscribeMpdEventsUseCase({
-			msg: createProfileMessage(),
+			profile: createProfile(),
 			onEvent,
 			mpdClient: mpdClient,
 		});
@@ -175,7 +154,7 @@ describe("mpdUseCases", () => {
 		const mpdClient = createMpdClient();
 
 		const result = await unsubscribeMpdEventsUseCase({
-			msg: createProfileMessage(),
+			profile: createProfile(),
 			handlerPromise: undefined,
 			mpdClient: mpdClient,
 		});
@@ -191,7 +170,7 @@ describe("mpdUseCases", () => {
 		});
 
 		const result = await unsubscribeMpdEventsUseCase({
-			msg: createProfileMessage(),
+			profile: createProfile(),
 			handlerPromise: Promise.resolve(handler),
 			mpdClient: mpdClient,
 		});

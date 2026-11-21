@@ -2,15 +2,16 @@ import http from "node:http";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 
-import { API_VIEW_STATE_BLOBS } from "@sola_mpd/shared/src/const/api.js";
+import { DB_DIRECTORY } from "@sola_mpd/shared/src/const/database.js";
 import express, { type ErrorRequestHandler } from "express";
 import { Server as SocketIOServer } from "socket.io";
-import configsRouter from "./configs/configsRouter.js";
-import mcpRouter from "./mcp/mcpRouter.js";
-import mpdRouter from "./mpd/mpdRouter.js";
-import { SocketIoManager } from "./SocketIoManager.js";
+import { createBackendDependencies } from "./createBackendDependencies.js";
+import { MessagingServerSocketIo } from "./lib/messaging/MessagingServerSocketIo.js";
+import { createMcpRouter } from "./mcp/mcpRouter.js";
+import { LibraryIndexSqlite } from "./mcp/services/LibraryIndexSqlite.js";
+import { McpMessageHandlerStreamableHttp } from "./mcp/transports/McpMessageHandlerStreamableHttp.js";
+import { registerMessagingHandlers } from "./registerMessagingHandlers.js";
 import { sweepViewStateBlobsUseCase } from "./view_state_blobs/application/viewStateBlobUseCases.js";
-import viewStateBlobsRouter from "./view_state_blobs/viewStateBlobsRouter.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -18,15 +19,21 @@ const __dirname = path.dirname(__filename);
 const app = express();
 const server = http.createServer(app);
 
-app.use("/api/configs", configsRouter);
-app.use("/api/mpd", mpdRouter);
-app.use(API_VIEW_STATE_BLOBS, viewStateBlobsRouter);
-app.use("/mcp", mcpRouter);
+const deps = createBackendDependencies({
+	dbDirectory: path.resolve(DB_DIRECTORY),
+});
+const mcpHandler = new McpMessageHandlerStreamableHttp({
+	mpdClient: deps.mpdClient,
+	libraryIndex: new LibraryIndexSqlite(),
+	mpdProfileStateRepository: deps.configRepositories.mpdProfileState,
+});
+
+app.use("/mcp", createMcpRouter(mcpHandler));
 
 // One-time startup sweep of view state blobs unused for longer than the
 // retention window. Never fatal: a failure here shouldn't block startup.
 try {
-	sweepViewStateBlobsUseCase();
+	sweepViewStateBlobsUseCase(deps.viewStateBlobRepository);
 } catch (err) {
 	console.error("Failed to sweep view state blobs on startup:", err);
 }
@@ -42,7 +49,7 @@ const io = new SocketIOServer(server, {
 	path: "/io/",
 	maxHttpBufferSize: 1.024e9,
 });
-SocketIoManager.initialize(io);
+registerMessagingHandlers(new MessagingServerSocketIo(io), deps);
 
 app.use(express.static(path.join(__dirname, "public")));
 app.get("*splat", (_req, res) => {

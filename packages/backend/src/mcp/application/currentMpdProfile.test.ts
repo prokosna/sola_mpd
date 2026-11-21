@@ -8,34 +8,36 @@ import {
 	MpdProfileStateSchema,
 } from "@sola_mpd/shared/src/models/mpd/mpd_profile_pb.js";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import { createConfigRepositoriesFile } from "../../configs/repositories/ConfigRepositoryFile.js";
+import {
+	MpdProfileNotFoundError,
+	NoCurrentMpdProfileError,
+	resolveCurrentMpdProfile,
+} from "./currentMpdProfile.js";
 
-// mpdProfileStateRepository is a module-level singleton built from a path
-// relative to process.cwd(), so each test chdirs into a temp directory and
-// re-imports to keep runs off the real packages/backend/db/.
 describe("resolveCurrentMpdProfile", () => {
 	let tempDir: string;
-	let originalCwd: string;
 	let errorSpy: ReturnType<typeof vi.spyOn>;
 
 	beforeEach(() => {
 		tempDir = fs.mkdtempSync(
 			path.join(os.tmpdir(), "sola-mpd-current-mpd-profile-test-"),
 		);
-		originalCwd = process.cwd();
-		process.chdir(tempDir);
-		vi.resetModules();
-		// db/ doesn't exist yet on the first import in a fresh temp dir, so
-		// the module-level backupDbDirectory() call logs a swallowed error;
-		// silence it to keep test output clean.
+		// db/ doesn't exist yet on the first write in a fresh temp dir, so the
+		// backup logs a swallowed error; silence it to keep test output clean.
 		errorSpy = vi.spyOn(console, "error").mockImplementation(() => {});
 	});
 
 	afterEach(() => {
 		errorSpy.mockRestore();
 		vi.restoreAllMocks();
-		process.chdir(originalCwd);
 		fs.rmSync(tempDir, { recursive: true, force: true });
 	});
+
+	function createRepository() {
+		return createConfigRepositoriesFile(path.join(tempDir, "db"))
+			.mpdProfileState;
+	}
 
 	function profile(name: string) {
 		return create(MpdProfileSchema, {
@@ -45,58 +47,42 @@ describe("resolveCurrentMpdProfile", () => {
 		});
 	}
 
-	it("returns the named profile when it matches listMpdProfiles()", async () => {
-		const { mpdProfileStateRepository } = await import(
-			"../../configs/repositories/ConfigRepositoryFile.js"
-		);
-		const { resolveCurrentMpdProfile } = await import("./currentMpdProfile.js");
-
+	it("returns the named profile when it matches listMpdProfiles()", () => {
+		const repository = createRepository();
 		const a = profile("a");
 		const b = profile("b");
-		mpdProfileStateRepository.update(
+		repository.update(
 			create(MpdProfileStateSchema, { profiles: [a, b], currentProfile: a }),
 		);
 
-		expect(resolveCurrentMpdProfile("b")).toEqual(b);
+		expect(resolveCurrentMpdProfile(repository, "b")).toEqual(b);
 	});
 
-	it("throws MpdProfileNotFoundError when the named profile does not match", async () => {
-		const { mpdProfileStateRepository } = await import(
-			"../../configs/repositories/ConfigRepositoryFile.js"
-		);
-		const { resolveCurrentMpdProfile, MpdProfileNotFoundError } = await import(
-			"./currentMpdProfile.js"
-		);
-
+	it("throws MpdProfileNotFoundError when the named profile does not match", () => {
+		const repository = createRepository();
 		const a = profile("a");
-		mpdProfileStateRepository.update(
+		repository.update(
 			create(MpdProfileStateSchema, { profiles: [a], currentProfile: a }),
 		);
 
-		expect(() => resolveCurrentMpdProfile("missing")).toThrow(
+		expect(() => resolveCurrentMpdProfile(repository, "missing")).toThrow(
 			MpdProfileNotFoundError,
 		);
 	});
 
-	it("falls back to the workspace default profile when name is omitted", async () => {
-		const { mpdProfileStateRepository } = await import(
-			"../../configs/repositories/ConfigRepositoryFile.js"
-		);
-		const { resolveCurrentMpdProfile } = await import("./currentMpdProfile.js");
-
+	it("falls back to the workspace default profile when name is omitted", () => {
+		const repository = createRepository();
 		const a = profile("a");
-		mpdProfileStateRepository.update(
+		repository.update(
 			create(MpdProfileStateSchema, { profiles: [a], currentProfile: a }),
 		);
 
-		expect(resolveCurrentMpdProfile()).toEqual(a);
+		expect(resolveCurrentMpdProfile(repository)).toEqual(a);
 	});
 
-	it("throws NoCurrentMpdProfileError when name is omitted and no default is set", async () => {
-		const { resolveCurrentMpdProfile, NoCurrentMpdProfileError } = await import(
-			"./currentMpdProfile.js"
+	it("throws NoCurrentMpdProfileError when name is omitted and no default is set", () => {
+		expect(() => resolveCurrentMpdProfile(createRepository())).toThrow(
+			NoCurrentMpdProfileError,
 		);
-
-		expect(() => resolveCurrentMpdProfile()).toThrow(NoCurrentMpdProfileError);
 	});
 });

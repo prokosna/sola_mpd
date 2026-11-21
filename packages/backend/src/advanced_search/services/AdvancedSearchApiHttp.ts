@@ -38,7 +38,7 @@ async function unprocessableMessage(response: Response): Promise<string> {
 	return `Lainbow cannot run this search: ${detail}`;
 }
 
-class AdvancedSearchApiHttp implements AdvancedSearchApi {
+export class AdvancedSearchApiHttp implements AdvancedSearchApi {
 	async fetchStats(endpoint: string) {
 		const url = `${endpoint}/api/v1/stats`;
 		const response = await fetch(url);
@@ -192,6 +192,3 @@ class AdvancedSearchApiHttp implements AdvancedSearchApi {
 		}
 	}
 }
-
-export const advancedSearchApiHttp: AdvancedSearchApi =
-	new AdvancedSearchApiHttp();

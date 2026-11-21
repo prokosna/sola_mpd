@@ -8,7 +8,6 @@ export default defineConfig([
 	{
 		entry: {
 			"main/index": "src/main/index.ts",
-			"ipc/index": "src/ipc/index.ts",
 		},
 		platform: "node",
 		dts: false,

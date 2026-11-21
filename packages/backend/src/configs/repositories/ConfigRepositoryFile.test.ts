@@ -11,25 +11,19 @@ import { Song_MetadataTag } from "@sola_mpd/shared/src/models/song_pb.js";
 import { SongTableStateSchema } from "@sola_mpd/shared/src/models/song_table_pb.js";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
-// The six repository singletons are constructed at module import time from
-// paths relative to process.cwd(), so each test chdirs into a fresh temp
-// directory and re-imports the module (vi.resetModules) to keep every run
-// isolated and confined to that temp directory.
+// Each test builds its repositories in a fresh temp directory; modules are
+// reset so the once-per-process backup state does not leak between tests.
 describe("ConfigRepositoryFile", () => {
 	let tempDir: string;
-	let originalCwd: string;
 	let errorSpy: ReturnType<typeof vi.spyOn>;
 
 	beforeEach(() => {
 		tempDir = fs.mkdtempSync(
 			path.join(os.tmpdir(), "sola-mpd-config-repo-test-"),
 		);
-		originalCwd = process.cwd();
-		process.chdir(tempDir);
 		vi.resetModules();
-		// db/ doesn't exist yet on the first import in a fresh temp dir, so
-		// the module-level backupDbDirectory() call logs a swallowed error;
-		// silence it to keep test output clean.
+		// db/ doesn't exist yet on the first write in a fresh temp dir, so the
+		// backup logs a swallowed error; silence it to keep test output clean.
 		errorSpy = vi.spyOn(console, "error").mockImplementation(() => {});
 	});
 
@@ -37,14 +31,15 @@ describe("ConfigRepositoryFile", () => {
 		errorSpy.mockRestore();
 		vi.restoreAllMocks();
 		vi.doUnmock("../functions/migrateConfigDocument.js");
-		process.chdir(originalCwd);
 		fs.rmSync(tempDir, { recursive: true, force: true });
 	});
 
 	it("stamps the current schema version when save() runs", async () => {
-		const { browserStateRepository } = await import(
+		const { createConfigRepositoriesFile } = await import(
 			"./ConfigRepositoryFile.js"
 		);
+		const { browserState: browserStateRepository } =
+			createConfigRepositoriesFile(path.join(tempDir, "db"));
 
 		browserStateRepository.update(
 			create(BrowserStateSchema, { schemaVersion: 0, filters: [] }),
@@ -57,9 +52,11 @@ describe("ConfigRepositoryFile", () => {
 	});
 
 	it("leaves the original file intact when the atomic write fails mid-way", async () => {
-		const { browserStateRepository } = await import(
+		const { createConfigRepositoriesFile } = await import(
 			"./ConfigRepositoryFile.js"
 		);
+		const { browserState: browserStateRepository } =
+			createConfigRepositoriesFile(path.join(tempDir, "db"));
 
 		const filePath = path.join(tempDir, "db", "browser_state.json");
 		const originalContent = fs.readFileSync(filePath, "utf-8");
@@ -80,9 +77,11 @@ describe("ConfigRepositoryFile", () => {
 	});
 
 	it("writes the temp file into the same directory as the destination before renaming", async () => {
-		const { browserStateRepository } = await import(
+		const { createConfigRepositoriesFile } = await import(
 			"./ConfigRepositoryFile.js"
 		);
+		const { browserState: browserStateRepository } =
+			createConfigRepositoriesFile(path.join(tempDir, "db"));
 
 		const renameSpy = vi.spyOn(fs, "renameSync");
 
@@ -128,9 +127,11 @@ describe("ConfigRepositoryFile", () => {
 			};
 		});
 
-		const { browserStateRepository } = await import(
+		const { createConfigRepositoriesFile } = await import(
 			"./ConfigRepositoryFile.js"
 		);
+		const { browserState: browserStateRepository } =
+			createConfigRepositoriesFile(path.join(tempDir, "db"));
 
 		expect(receivedDocs).toHaveLength(1);
 		expect(receivedDocs[0]).not.toHaveProperty("filters");
@@ -141,15 +142,12 @@ describe("ConfigRepositoryFile", () => {
 
 describe("ConfigRepositoryFile deprecated field preservation on save", () => {
 	let tempDir: string;
-	let originalCwd: string;
 	let errorSpy: ReturnType<typeof vi.spyOn>;
 
 	beforeEach(() => {
 		tempDir = fs.mkdtempSync(
 			path.join(os.tmpdir(), "sola-mpd-config-repo-guard-test-"),
 		);
-		originalCwd = process.cwd();
-		process.chdir(tempDir);
 		fs.mkdirSync(path.join(tempDir, "db"), { recursive: true });
 		vi.resetModules();
 		errorSpy = vi.spyOn(console, "error").mockImplementation(() => {});
@@ -158,7 +156,6 @@ describe("ConfigRepositoryFile deprecated field preservation on save", () => {
 	afterEach(() => {
 		errorSpy.mockRestore();
 		vi.restoreAllMocks();
-		process.chdir(originalCwd);
 		fs.rmSync(tempDir, { recursive: true, force: true });
 	});
 
@@ -172,9 +169,11 @@ describe("ConfigRepositoryFile deprecated field preservation on save", () => {
 			}),
 		);
 
-		const { commonSongTableStateRepository } = await import(
+		const { createConfigRepositoriesFile } = await import(
 			"./ConfigRepositoryFile.js"
 		);
+		const { commonSongTableState: commonSongTableStateRepository } =
+			createConfigRepositoriesFile(path.join(tempDir, "db"));
 
 		commonSongTableStateRepository.update(
 			create(SongTableStateSchema, {
@@ -201,9 +200,11 @@ describe("ConfigRepositoryFile deprecated field preservation on save", () => {
 			}),
 		);
 
-		const { browserStateRepository } = await import(
+		const { createConfigRepositoriesFile } = await import(
 			"./ConfigRepositoryFile.js"
 		);
+		const { browserState: browserStateRepository } =
+			createConfigRepositoriesFile(path.join(tempDir, "db"));
 
 		browserStateRepository.update(
 			create(BrowserStateSchema, {
@@ -230,9 +231,11 @@ describe("ConfigRepositoryFile deprecated field preservation on save", () => {
 			}),
 		);
 
-		const { recentlyAddedStateRepository } = await import(
+		const { createConfigRepositoriesFile } = await import(
 			"./ConfigRepositoryFile.js"
 		);
+		const { recentlyAddedState: recentlyAddedStateRepository } =
+			createConfigRepositoriesFile(path.join(tempDir, "db"));
 
 		recentlyAddedStateRepository.update(
 			create(RecentlyAddedStateSchema, {
@@ -264,7 +267,11 @@ describe("ConfigRepositoryFile deprecated field preservation on save", () => {
 			}),
 		);
 
-		const { savedSearchRepository } = await import("./ConfigRepositoryFile.js");
+		const { createConfigRepositoriesFile } = await import(
+			"./ConfigRepositoryFile.js"
+		);
+		const { savedSearches: savedSearchRepository } =
+			createConfigRepositoriesFile(path.join(tempDir, "db"));
 
 		savedSearchRepository.update(
 			create(SavedSearchesSchema, {
@@ -289,15 +296,12 @@ describe("ConfigRepositoryFile deprecated field preservation on save", () => {
 
 describe("ConfigRepositoryFile default documents", () => {
 	let tempDir: string;
-	let originalCwd: string;
 	let errorSpy: ReturnType<typeof vi.spyOn>;
 
 	beforeEach(() => {
 		tempDir = fs.mkdtempSync(
 			path.join(os.tmpdir(), "sola-mpd-config-repo-default-test-"),
 		);
-		originalCwd = process.cwd();
-		process.chdir(tempDir);
 		vi.resetModules();
 		errorSpy = vi.spyOn(console, "error").mockImplementation(() => {});
 	});
@@ -305,14 +309,15 @@ describe("ConfigRepositoryFile default documents", () => {
 	afterEach(() => {
 		errorSpy.mockRestore();
 		vi.restoreAllMocks();
-		process.chdir(originalCwd);
 		fs.rmSync(tempDir, { recursive: true, force: true });
 	});
 
 	it("common_song_table_state: a fresh install populates columnTags alongside the legacy columns", async () => {
-		const { commonSongTableStateRepository } = await import(
+		const { createConfigRepositoriesFile } = await import(
 			"./ConfigRepositoryFile.js"
 		);
+		const { commonSongTableState: commonSongTableStateRepository } =
+			createConfigRepositoriesFile(path.join(tempDir, "db"));
 
 		expect(commonSongTableStateRepository.get().columnTags).toEqual([
 			Song_MetadataTag.TITLE,
@@ -322,9 +327,11 @@ describe("ConfigRepositoryFile default documents", () => {
 	});
 
 	it("browser_state: a fresh install populates filterTags alongside the legacy filters", async () => {
-		const { browserStateRepository } = await import(
+		const { createConfigRepositoriesFile } = await import(
 			"./ConfigRepositoryFile.js"
 		);
+		const { browserState: browserStateRepository } =
+			createConfigRepositoriesFile(path.join(tempDir, "db"));
 
 		expect(browserStateRepository.get().filterTags).toEqual([
 			Song_MetadataTag.GENRE,
@@ -335,9 +342,11 @@ describe("ConfigRepositoryFile default documents", () => {
 	});
 
 	it("recently_added_state: a fresh install populates filterTags alongside the legacy filters", async () => {
-		const { recentlyAddedStateRepository } = await import(
+		const { createConfigRepositoriesFile } = await import(
 			"./ConfigRepositoryFile.js"
 		);
+		const { recentlyAddedState: recentlyAddedStateRepository } =
+			createConfigRepositoriesFile(path.join(tempDir, "db"));
 
 		expect(recentlyAddedStateRepository.get().filterTags).toEqual([
 			Song_MetadataTag.ALBUM,
@@ -371,8 +380,13 @@ describe("ConfigRepositoryFile default documents", () => {
 			}),
 		);
 
-		const { commonSongTableStateRepository, browserStateRepository } =
-			await import("./ConfigRepositoryFile.js");
+		const { createConfigRepositoriesFile } = await import(
+			"./ConfigRepositoryFile.js"
+		);
+		const {
+			commonSongTableState: commonSongTableStateRepository,
+			browserState: browserStateRepository,
+		} = createConfigRepositoriesFile(path.join(tempDir, "db"));
 
 		const songTableState = commonSongTableStateRepository.get();
 		expect(songTableState.columnTags).toEqual([
@@ -398,9 +412,11 @@ describe("ConfigRepositoryFile default documents", () => {
 			}),
 		);
 
-		const { commonSongTableStateRepository } = await import(
+		const { createConfigRepositoriesFile } = await import(
 			"./ConfigRepositoryFile.js"
 		);
+		const { commonSongTableState: commonSongTableStateRepository } =
+			createConfigRepositoriesFile(path.join(tempDir, "db"));
 
 		expect(commonSongTableStateRepository.get().columnTags).toEqual([
 			Song_MetadataTag.ALBUM,
@@ -413,16 +429,22 @@ describe("ConfigRepositoryFile default documents", () => {
 		const filePath = path.join(dbDir, "mpd_profile_state.json");
 		fs.writeFileSync(filePath, "{corrupt json");
 
-		await expect(import("./ConfigRepositoryFile.js")).rejects.toThrow(
+		const { createConfigRepositoriesFile } = await import(
+			"./ConfigRepositoryFile.js"
+		);
+
+		expect(() => createConfigRepositoriesFile(dbDir)).toThrow(
 			/Failed to load config file .*mpd_profile_state\.json.*Fix or restore/,
 		);
 		expect(fs.readFileSync(filePath, "utf-8")).toBe("{corrupt json");
 	});
 
 	it("keeps localCache unchanged and cleans up temp file if renameSync fails", async () => {
-		const { mpdProfileStateRepository } = await import(
+		const { createConfigRepositoriesFile } = await import(
 			"./ConfigRepositoryFile.js"
 		);
+		const { mpdProfileState: mpdProfileStateRepository } =
+			createConfigRepositoriesFile(path.join(tempDir, "db"));
 		const before = mpdProfileStateRepository.get();
 
 		vi.spyOn(fs, "renameSync").mockImplementationOnce(() => {

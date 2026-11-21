@@ -10,13 +10,12 @@ import {
 } from "@bufbuild/protobuf";
 import type { GenMessage } from "@bufbuild/protobuf/codegenv2";
 import {
-	DB_DIRECTORY,
-	DB_FILE_BROWSER_STATE,
-	DB_FILE_COMMON_SONG_TABLE_STATE,
-	DB_FILE_MPD_PROFILE_STATE,
-	DB_FILE_PLUGIN_STATE,
-	DB_FILE_RECENTLY_ADDED_STATE,
-	DB_FILE_SAVED_SEARCHES,
+	DB_FILE_NAME_BROWSER_STATE,
+	DB_FILE_NAME_COMMON_SONG_TABLE_STATE,
+	DB_FILE_NAME_MPD_PROFILE_STATE,
+	DB_FILE_NAME_PLUGIN_STATE,
+	DB_FILE_NAME_RECENTLY_ADDED_STATE,
+	DB_FILE_NAME_SAVED_SEARCHES,
 } from "@sola_mpd/shared/src/const/database.js";
 import {
 	CONFIG_KEY_BROWSER_STATE,
@@ -61,33 +60,38 @@ import {
 } from "../functions/migrateConfigDocument.js";
 import { preserveDeprecatedConfigFields } from "../functions/preserveDeprecatedConfigFields.js";
 import { backupDbDirectory } from "../utils/backupDbDirectory.js";
-import type { ConfigRepository } from "./ConfigRepository.js";
+import type {
+	ConfigRepositories,
+	ConfigRepository,
+} from "./ConfigRepository.js";
 
-let hasAttemptedDbBackup = false;
+const backedUpDirectories = new Set<string>();
 
-// The backup has to precede the first *write*: reads are non-destructive, and
-// deferring it this far keeps a bare module import — all a unit test does —
-// from writing into the real db directory.
-function backupDbDirectoryOnce() {
-	if (hasAttemptedDbBackup) {
+// Reads are non-destructive, so the backup waits for the first write; a
+// process that only reads never copies the directory.
+function backupDbDirectoryOnce(dbDirectory: string) {
+	const key = path.resolve(dbDirectory);
+	if (backedUpDirectories.has(key)) {
 		return;
 	}
-	hasAttemptedDbBackup = true;
-	backupDbDirectory(DB_DIRECTORY);
+	backedUpDirectories.add(key);
+	backupDbDirectory(dbDirectory);
 }
 
-class ConfigRepositoryFile<T extends Message & { schemaVersion: number }>
+export class ConfigRepositoryFile<T extends Message & { schemaVersion: number }>
 	implements ConfigRepository<T>
 {
 	private localCache: T;
+	private readonly localFilePath: string;
 
 	constructor(
-		private localFilePath: string,
+		private readonly dbDirectory: string,
+		fileName: string,
 		private schema: GenMessage<T>,
 		private configKey: ConfigKey,
 		defaultValue: T,
 	) {
-		this.localFilePath = localFilePath;
+		this.localFilePath = path.join(dbDirectory, fileName);
 		const dirPath = path.dirname(this.localFilePath);
 		try {
 			fs.mkdirSync(dirPath, { recursive: true });
@@ -144,7 +148,7 @@ class ConfigRepositoryFile<T extends Message & { schemaVersion: number }>
 	}
 
 	private save(value: T) {
-		backupDbDirectoryOnce();
+		backupDbDirectoryOnce(this.dbDirectory);
 
 		value.schemaVersion = getConfigDocumentCurrentVersion(this.configKey);
 
@@ -166,135 +170,143 @@ class ConfigRepositoryFile<T extends Message & { schemaVersion: number }>
 	}
 }
 
-export const browserStateRepository = new ConfigRepositoryFile<BrowserState>(
-	DB_FILE_BROWSER_STATE,
-	BrowserStateSchema,
-	CONFIG_KEY_BROWSER_STATE,
-	create(BrowserStateSchema, {
-		schemaVersion: getConfigDocumentCurrentVersion(CONFIG_KEY_BROWSER_STATE),
-		filters: [
-			create(BrowserFilterSchema, {
-				tag: Song_MetadataTag.GENRE,
-				order: 0,
-				selectedValues: [],
-				selectedOrder: -1,
+export function createConfigRepositoriesFile(
+	dbDirectory: string,
+): ConfigRepositories {
+	return {
+		browserState: new ConfigRepositoryFile<BrowserState>(
+			dbDirectory,
+			DB_FILE_NAME_BROWSER_STATE,
+			BrowserStateSchema,
+			CONFIG_KEY_BROWSER_STATE,
+			create(BrowserStateSchema, {
+				schemaVersion: getConfigDocumentCurrentVersion(
+					CONFIG_KEY_BROWSER_STATE,
+				),
+				filters: [
+					create(BrowserFilterSchema, {
+						tag: Song_MetadataTag.GENRE,
+						order: 0,
+						selectedValues: [],
+						selectedOrder: -1,
+					}),
+					create(BrowserFilterSchema, {
+						tag: Song_MetadataTag.ARTIST,
+						order: 1,
+						selectedValues: [],
+						selectedOrder: -1,
+					}),
+					create(BrowserFilterSchema, {
+						tag: Song_MetadataTag.ALBUM,
+						order: 2,
+						selectedValues: [],
+						selectedOrder: -1,
+					}),
+					create(BrowserFilterSchema, {
+						tag: Song_MetadataTag.COMPOSER,
+						order: 3,
+						selectedValues: [],
+						selectedOrder: -1,
+					}),
+				],
+				filterTags: [
+					Song_MetadataTag.GENRE,
+					Song_MetadataTag.ARTIST,
+					Song_MetadataTag.ALBUM,
+					Song_MetadataTag.COMPOSER,
+				],
 			}),
-			create(BrowserFilterSchema, {
-				tag: Song_MetadataTag.ARTIST,
-				order: 1,
-				selectedValues: [],
-				selectedOrder: -1,
+		),
+		commonSongTableState: new ConfigRepositoryFile<SongTableState>(
+			dbDirectory,
+			DB_FILE_NAME_COMMON_SONG_TABLE_STATE,
+			SongTableStateSchema,
+			CONFIG_KEY_COMMON_SONG_TABLE_STATE,
+			create(SongTableStateSchema, {
+				schemaVersion: getConfigDocumentCurrentVersion(
+					CONFIG_KEY_COMMON_SONG_TABLE_STATE,
+				),
+				columns: [
+					{
+						tag: Song_MetadataTag.TITLE,
+						widthFlex: 1,
+					},
+					{
+						tag: Song_MetadataTag.ARTIST,
+						widthFlex: 1,
+					},
+					{
+						tag: Song_MetadataTag.ALBUM,
+						widthFlex: 1,
+					},
+				],
+				columnTags: [
+					Song_MetadataTag.TITLE,
+					Song_MetadataTag.ARTIST,
+					Song_MetadataTag.ALBUM,
+				],
 			}),
-			create(BrowserFilterSchema, {
-				tag: Song_MetadataTag.ALBUM,
-				order: 2,
-				selectedValues: [],
-				selectedOrder: -1,
+		),
+		mpdProfileState: new ConfigRepositoryFile<MpdProfileState>(
+			dbDirectory,
+			DB_FILE_NAME_MPD_PROFILE_STATE,
+			MpdProfileStateSchema,
+			CONFIG_KEY_MPD_PROFILE_STATE,
+			create(MpdProfileStateSchema, {
+				schemaVersion: getConfigDocumentCurrentVersion(
+					CONFIG_KEY_MPD_PROFILE_STATE,
+				),
+				profiles: [],
 			}),
-			create(BrowserFilterSchema, {
-				tag: Song_MetadataTag.COMPOSER,
-				order: 3,
-				selectedValues: [],
-				selectedOrder: -1,
+		),
+		pluginState: new ConfigRepositoryFile<PluginState>(
+			dbDirectory,
+			DB_FILE_NAME_PLUGIN_STATE,
+			PluginStateSchema,
+			CONFIG_KEY_PLUGIN_STATE,
+			create(PluginStateSchema, {
+				schemaVersion: getConfigDocumentCurrentVersion(CONFIG_KEY_PLUGIN_STATE),
+				plugins: [],
 			}),
-		],
-		filterTags: [
-			Song_MetadataTag.GENRE,
-			Song_MetadataTag.ARTIST,
-			Song_MetadataTag.ALBUM,
-			Song_MetadataTag.COMPOSER,
-		],
-	}),
-);
-
-export const commonSongTableStateRepository =
-	new ConfigRepositoryFile<SongTableState>(
-		DB_FILE_COMMON_SONG_TABLE_STATE,
-		SongTableStateSchema,
-		CONFIG_KEY_COMMON_SONG_TABLE_STATE,
-		create(SongTableStateSchema, {
-			schemaVersion: getConfigDocumentCurrentVersion(
-				CONFIG_KEY_COMMON_SONG_TABLE_STATE,
-			),
-			columns: [
-				{
-					tag: Song_MetadataTag.TITLE,
-					widthFlex: 1,
-				},
-				{
-					tag: Song_MetadataTag.ARTIST,
-					widthFlex: 1,
-				},
-				{
-					tag: Song_MetadataTag.ALBUM,
-					widthFlex: 1,
-				},
-			],
-			columnTags: [
-				Song_MetadataTag.TITLE,
-				Song_MetadataTag.ARTIST,
-				Song_MetadataTag.ALBUM,
-			],
-		}),
-	);
-
-export const mpdProfileStateRepository =
-	new ConfigRepositoryFile<MpdProfileState>(
-		DB_FILE_MPD_PROFILE_STATE,
-		MpdProfileStateSchema,
-		CONFIG_KEY_MPD_PROFILE_STATE,
-		create(MpdProfileStateSchema, {
-			schemaVersion: getConfigDocumentCurrentVersion(
-				CONFIG_KEY_MPD_PROFILE_STATE,
-			),
-			profiles: [],
-		}),
-	);
-
-export const pluginStateRepository = new ConfigRepositoryFile<PluginState>(
-	DB_FILE_PLUGIN_STATE,
-	PluginStateSchema,
-	CONFIG_KEY_PLUGIN_STATE,
-	create(PluginStateSchema, {
-		schemaVersion: getConfigDocumentCurrentVersion(CONFIG_KEY_PLUGIN_STATE),
-		plugins: [],
-	}),
-);
-
-export const recentlyAddedStateRepository =
-	new ConfigRepositoryFile<RecentlyAddedState>(
-		DB_FILE_RECENTLY_ADDED_STATE,
-		RecentlyAddedStateSchema,
-		CONFIG_KEY_RECENTLY_ADDED_STATE,
-		create(RecentlyAddedStateSchema, {
-			schemaVersion: getConfigDocumentCurrentVersion(
-				CONFIG_KEY_RECENTLY_ADDED_STATE,
-			),
-			filters: [
-				create(RecentlyAddedFilterSchema, {
-					tag: Song_MetadataTag.ALBUM,
-				}),
-				create(RecentlyAddedFilterSchema, {
-					tag: Song_MetadataTag.ARTIST,
-				}),
-				create(RecentlyAddedFilterSchema, {
-					tag: Song_MetadataTag.COMPOSER,
-				}),
-			],
-			filterTags: [
-				Song_MetadataTag.ALBUM,
-				Song_MetadataTag.ARTIST,
-				Song_MetadataTag.COMPOSER,
-			],
-		}),
-	);
-
-export const savedSearchRepository = new ConfigRepositoryFile<SavedSearches>(
-	DB_FILE_SAVED_SEARCHES,
-	SavedSearchesSchema,
-	CONFIG_KEY_SAVED_SEARCHES,
-	create(SavedSearchesSchema, {
-		schemaVersion: getConfigDocumentCurrentVersion(CONFIG_KEY_SAVED_SEARCHES),
-		searches: [],
-	}),
-);
+		),
+		recentlyAddedState: new ConfigRepositoryFile<RecentlyAddedState>(
+			dbDirectory,
+			DB_FILE_NAME_RECENTLY_ADDED_STATE,
+			RecentlyAddedStateSchema,
+			CONFIG_KEY_RECENTLY_ADDED_STATE,
+			create(RecentlyAddedStateSchema, {
+				schemaVersion: getConfigDocumentCurrentVersion(
+					CONFIG_KEY_RECENTLY_ADDED_STATE,
+				),
+				filters: [
+					create(RecentlyAddedFilterSchema, {
+						tag: Song_MetadataTag.ALBUM,
+					}),
+					create(RecentlyAddedFilterSchema, {
+						tag: Song_MetadataTag.ARTIST,
+					}),
+					create(RecentlyAddedFilterSchema, {
+						tag: Song_MetadataTag.COMPOSER,
+					}),
+				],
+				filterTags: [
+					Song_MetadataTag.ALBUM,
+					Song_MetadataTag.ARTIST,
+					Song_MetadataTag.COMPOSER,
+				],
+			}),
+		),
+		savedSearches: new ConfigRepositoryFile<SavedSearches>(
+			dbDirectory,
+			DB_FILE_NAME_SAVED_SEARCHES,
+			SavedSearchesSchema,
+			CONFIG_KEY_SAVED_SEARCHES,
+			create(SavedSearchesSchema, {
+				schemaVersion: getConfigDocumentCurrentVersion(
+					CONFIG_KEY_SAVED_SEARCHES,
+				),
+				searches: [],
+			}),
+		),
+	};
+}

@@ -1,0 +1,101 @@
+import type { McpServer } from "@modelcontextprotocol/server";
+import { z } from "zod";
+
+import {
+	describeLibraryIndexUseCase,
+	getLibraryIndexStatsUseCase,
+	queryLibrarySqlUseCase,
+} from "../application/librarySqlUseCases.js";
+import { toolResultJson } from "../functions/toolResult.js";
+import {
+	errorToToolResult,
+	mcpProfileNameSchema,
+	type RegisterMcpToolsDeps,
+} from "./mcpToolHelpers.js";
+
+const DEFAULT_SQL_ROWS = 1000;
+
+export function registerLibrarySqlTools(
+	server: McpServer,
+	deps: RegisterMcpToolsDeps,
+): void {
+	const { mpdClient, libraryIndex, mpdProfileStateRepository } = deps;
+
+	const { sql_schema, notes } = describeLibraryIndexUseCase({ libraryIndex });
+	server.registerTool(
+		"library_query_sql",
+		{
+			title: "Run a SQL query against the library mirror",
+			description: `Runs a read-only SQL query against the in-memory SQLite mirror of the MPD library. Only SELECT / WITH / EXPLAIN are accepted.
+
+Schema:
+${sql_schema}
+
+${notes}
+
+Behaviour: rows beyond row_limit (default ${DEFAULT_SQL_ROWS}) are dropped and the response sets truncated=true. Use LIMIT in your SQL or raise row_limit when you really need more — large result sets may exceed your context window.
+
+Omitting profile uses the workspace default profile.`,
+			inputSchema: z.object({
+				sql: z
+					.string()
+					.min(1)
+					.describe(
+						"Single SELECT / WITH / EXPLAIN statement. Use ? placeholders bound by `params`.",
+					),
+				params: z
+					.array(z.union([z.string(), z.number(), z.boolean(), z.null()]))
+					.optional(),
+				row_limit: z
+					.number()
+					.int()
+					.positive()
+					.optional()
+					.describe(
+						`Maximum rows to materialize. Default ${DEFAULT_SQL_ROWS}. Very large values may exhaust server memory or your context window.`,
+					),
+				profile: mcpProfileNameSchema,
+			}),
+		},
+		async (args) => {
+			try {
+				const result = await queryLibrarySqlUseCase({
+					sql: args.sql,
+					params: args.params ?? [],
+					rowLimit: args.row_limit ?? DEFAULT_SQL_ROWS,
+					profileName: args.profile,
+					mpdClient,
+					libraryIndex,
+					mpdProfileStateRepository,
+				});
+				return toolResultJson(result);
+			} catch (err) {
+				return errorToToolResult(err);
+			}
+		},
+	);
+
+	server.registerTool(
+		"library_index_stats",
+		{
+			title: "Library mirror stats",
+			description:
+				"Returns metadata about the analytical SQLite mirror: when it was last built and how many songs it currently holds. Omitting profile uses the workspace default profile.",
+			inputSchema: z.object({ profile: mcpProfileNameSchema }),
+		},
+		async (args) => {
+			try {
+				return toolResultJson(
+					await getLibraryIndexStatsUseCase({
+						profileName: args.profile,
+						mpdClient,
+						libraryIndex,
+						mpdProfileStateRepository,
+					}),
+				);
+			} catch (err) {
+				return errorToToolResult(err);
+			}
+		},
+	);
+}

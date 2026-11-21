@@ -1,7 +1,6 @@
-import { create, fromBinary, toBinary } from "@bufbuild/protobuf";
+import { create } from "@bufbuild/protobuf";
 import {
 	type AdvancedSearchRequest,
-	AdvancedSearchRequestSchema,
 	type AdvancedSearchResponse,
 	AdvancedSearchResponseSchema,
 } from "@sola_mpd/shared/src/models/advanced_search_pb.js";
@@ -11,20 +10,6 @@ import {
 	fetchSongs,
 } from "../functions/advancedSearchFunctions.js";
 import type { AdvancedSearchApi } from "../services/AdvancedSearchApi.js";
-
-export const executeAdvancedSearchCommandUseCase = async (
-	msg: Uint8Array,
-	advancedSearchApi: AdvancedSearchApi,
-	mpdClient: MpdClient,
-): Promise<Uint8Array> => {
-	const request = fromBinary(AdvancedSearchRequestSchema, msg);
-	const response = await executeAdvancedSearchRequestUseCase(
-		request,
-		advancedSearchApi,
-		mpdClient,
-	);
-	return toBinary(AdvancedSearchResponseSchema, response);
-};
 
 export const executeAdvancedSearchRequestUseCase = async (
 	req: AdvancedSearchRequest,

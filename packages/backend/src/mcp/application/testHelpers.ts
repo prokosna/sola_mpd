@@ -1,5 +1,4 @@
 import { create, type MessageInitShape } from "@bufbuild/protobuf";
-import type { CallToolResult } from "@modelcontextprotocol/server";
 import {
 	type MpdRequest,
 	type MpdResponse,
@@ -8,48 +7,14 @@ import {
 import {
 	type MpdProfile,
 	MpdProfileSchema,
+	type MpdProfileState,
+	MpdProfileStateSchema,
 } from "@sola_mpd/shared/src/models/mpd/mpd_profile_pb.js";
 import { vi } from "vitest";
 
+import type { ConfigRepository } from "../../configs/repositories/ConfigRepository.js";
 import type { MpdClient } from "../../mpd/services/MpdClient.js";
 import type { LibraryIndex } from "../services/LibraryIndex.js";
-
-export type CapturedTool = {
-	name: string;
-	config: {
-		title?: string;
-		description?: string;
-		inputSchema?: unknown;
-	};
-	cb: (args: unknown) => Promise<CallToolResult>;
-};
-
-export type FakeMcpServer = {
-	registerTool: (
-		name: string,
-		config: CapturedTool["config"],
-		cb: CapturedTool["cb"],
-	) => void;
-	tools: Map<string, CapturedTool>;
-	call: (name: string, args?: unknown) => Promise<CallToolResult>;
-};
-
-export function createFakeMcpServer(): FakeMcpServer {
-	const tools = new Map<string, CapturedTool>();
-	return {
-		registerTool: (name, config, cb) => {
-			tools.set(name, { name, config, cb });
-		},
-		tools,
-		call: async (name, args) => {
-			const tool = tools.get(name);
-			if (tool === undefined) {
-				throw new Error(`tool not registered: ${name}`);
-			}
-			return tool.cb(args ?? {});
-		},
-	};
-}
 
 export function makeProfile(): MpdProfile {
 	return create(MpdProfileSchema, {
@@ -57,6 +22,13 @@ export function makeProfile(): MpdProfile {
 		host: "localhost",
 		port: 6600,
 	});
+}
+
+export function makeMpdProfileStateRepository(): ConfigRepository<MpdProfileState> {
+	return {
+		get: vi.fn(() => create(MpdProfileStateSchema, {})),
+		update: vi.fn(),
+	};
 }
 
 export function makeMpdResponse(
@@ -109,12 +81,4 @@ export function makeLibraryIndex(
 		close: vi.fn(),
 		...overrides,
 	};
-}
-
-export function parseToolJson<T = unknown>(result: CallToolResult): T {
-	const text = result.content?.[0];
-	if (text === undefined || text.type !== "text") {
-		throw new Error("expected text content");
-	}
-	return JSON.parse(text.text) as T;
 }

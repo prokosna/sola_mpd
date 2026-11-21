@@ -3,13 +3,13 @@
 An MPD client for large music libraries, shipped both as a web app (Docker) and as an
 Electron desktop app. TypeScript monorepo managed with pnpm workspaces.
 
-| Package | Role |
-| --- | --- |
-| `packages/frontend` | React + Vite + Socket.IO client |
-| `packages/backend` | Express + Socket.IO server, MPD access, MCP server |
-| `packages/desktop` | Electron shell; IPC transport adapters replacing Socket.IO (experimental) |
-| `packages/shared` | Protobuf-generated domain models plus constants and utilities shared across packages |
-| `plugins/subsonic` | Subsonic integration plugin |
+| Package             | Role                                                                                 |
+| ------------------- | ------------------------------------------------------------------------------------ |
+| `packages/frontend` | React + Vite + Socket.IO client                                                      |
+| `packages/backend`  | Express + Socket.IO server, MPD access, MCP server                                   |
+| `packages/desktop`  | Electron shell; IPC transport adapters replacing Socket.IO (experimental)            |
+| `packages/shared`   | Protobuf-generated domain models plus constants and utilities shared across packages |
+| `plugins/subsonic`  | Subsonic integration plugin                                                          |
 
 The frontend never talks to MPD directly. It reaches the backend through a transport port,
 which is Socket.IO on web and Electron IPC on desktop — keep that seam intact when adding
@@ -38,7 +38,7 @@ Documentation-only changes do not need them.
   no current value (`elapsed_seconds` when stopped, `last_updated` before the first DB update)
   use `null` so the JSON shape stays stable for LLM consumers. Optional nested objects
   (`current_song`, `current`) stay `undefined` to keep payloads compact.
-- **Comments.** Only where the *why* is non-obvious — a constraint, hazard, or trap the
+- **Comments.** Only where the _why_ is non-obvious — a constraint, hazard, or trap the
   reader cannot see from the code. Keep them short; a comment longer than the code it
   explains is a sign the code needs work instead. Do not write:
   - narration of what the code does, or restatements of a name or signature;
@@ -50,6 +50,8 @@ Documentation-only changes do not need them.
   `pnpm lint` warns on any comment over four lines of prose (`pnpm lint_comments` alone).
   It is a warning, not a gate: a few long comments are genuinely earned. Read each one it
   names and either shorten it or leave it deliberately.
+  `pnpm lint` also runs `pnpm lint_architecture`, an error gate for the import rules in
+  [docs/architecture.md](docs/architecture.md).
 - **English only** in the repository — code, identifiers, comments, docs, test data. Chat with
   the user may be in Japanese; repository content may not.
 - **Commit scope.** One purpose per change; split unrelated edits.

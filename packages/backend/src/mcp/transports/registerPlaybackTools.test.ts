@@ -1,0 +1,150 @@
+import { create } from "@bufbuild/protobuf";
+import { MpdProfileSchema } from "@sola_mpd/shared/src/models/mpd/mpd_profile_pb.js";
+import { beforeEach, describe, expect, it, vi } from "vitest";
+import {
+	makeLibraryIndex,
+	makeMpdClient,
+	makeMpdProfileStateRepository,
+	makeMpdResponse,
+	makeProfile,
+} from "../application/testHelpers.js";
+import { registerPlaybackTools } from "./registerPlaybackTools.js";
+import { createFakeMcpServer } from "./testHelpers.js";
+
+vi.mock("../application/currentMpdProfile.js", () => ({
+	NoCurrentMpdProfileError: class extends Error {},
+	MpdProfileNotFoundError: class extends Error {},
+	resolveCurrentMpdProfile: vi.fn(),
+	listMpdProfiles: vi.fn(),
+}));
+
+const { resolveCurrentMpdProfile } = await import(
+	"../application/currentMpdProfile.js"
+);
+const resolveMock = vi.mocked(resolveCurrentMpdProfile);
+
+beforeEach(() => {
+	resolveMock.mockReset();
+	resolveMock.mockReturnValue(makeProfile());
+});
+
+function setupServer() {
+	const client = makeMpdClient(() => makeMpdResponse({}));
+	const server = createFakeMcpServer();
+	registerPlaybackTools(server as never, {
+		mpdClient: client,
+		libraryIndex: makeLibraryIndex(),
+		mpdProfileStateRepository: makeMpdProfileStateRepository(),
+	});
+	return { server, client };
+}
+
+describe("registerPlaybackTools / playback_control", () => {
+	it("dispatches play with the supplied queue_position", async () => {
+		const { server, client } = setupServer();
+		const result = await server.call("playback_control", {
+			action: "play",
+			queue_position: 3,
+		});
+		expect(result.isError).toBeUndefined();
+		const req = (client.execute as unknown as { mock: { calls: unknown[][] } })
+			.mock.calls[0]?.[0] as {
+			command: {
+				case: string;
+				value: { target: { case: string; value: string } };
+			};
+		};
+		expect(req.command.case).toBe("play");
+		expect(req.command.value.target.value).toBe("3");
+	});
+
+	it.each(["play", "resume"])(
+		"sends a bare play for %s without queue_position",
+		async (action) => {
+			const { server, client } = setupServer();
+			const result = await server.call("playback_control", { action });
+			expect(result.isError).toBeUndefined();
+			const req = (
+				client.execute as unknown as { mock: { calls: unknown[][] } }
+			).mock.calls[0]?.[0] as {
+				command: { case: string; value: { target: { case?: string } } };
+			};
+			expect(req.command.case).toBe("play");
+			expect(req.command.value.target.case).toBeUndefined();
+		},
+	);
+
+	it("returns a tool error when seek is called without seek_seconds", async () => {
+		const { server, client } = setupServer();
+		const result = await server.call("playback_control", { action: "seek" });
+		expect(result.isError).toBe(true);
+		expect(client.execute).not.toHaveBeenCalled();
+	});
+
+	it("sends only the modes that were specified", async () => {
+		const { server, client } = setupServer();
+		const result = await server.call("playback_set_mode", {
+			repeat: true,
+			random: false,
+		});
+		expect(result.isError).toBeUndefined();
+		expect(client.execute).toHaveBeenCalledTimes(2);
+		const cases = (
+			client.execute as unknown as { mock: { calls: unknown[][] } }
+		).mock.calls.map(
+			(c) =>
+				(c[0] as { command: { case: string; value: { enable: boolean } } })
+					.command,
+		);
+		expect(
+			cases.map((c) => ({ case: c.case, enable: c.value.enable })),
+		).toEqual([
+			{ case: "repeat", enable: true },
+			{ case: "random", enable: false },
+		]);
+	});
+
+	it("routes an explicit profile argument to resolveCurrentMpdProfile and the outgoing MPD command", async () => {
+		const office = create(MpdProfileSchema, {
+			name: "office",
+			host: "office.local",
+			port: 6600,
+		});
+		resolveMock.mockReturnValue(office);
+		const { server, client } = setupServer();
+
+		const result = await server.call("playback_control", {
+			action: "stop",
+			profile: "office",
+		});
+
+		expect(result.isError).toBeUndefined();
+		expect(resolveMock).toHaveBeenCalledWith(expect.anything(), "office");
+		const req = (client.execute as unknown as { mock: { calls: unknown[][] } })
+			.mock.calls[0]?.[0] as { profile: { name: string } };
+		expect(req.profile.name).toBe("office");
+	});
+
+	it("maps a thrown profile resolution error to a tool error", async () => {
+		resolveMock.mockImplementation(() => {
+			throw new Error("nope");
+		});
+		const { server } = setupServer();
+		const result = await server.call("playback_control", { action: "pause" });
+		expect(result.isError).toBe(true);
+	});
+});
+
+describe("registerPlaybackTools / playback_set_volume", () => {
+	it("issues setvol with the requested level", async () => {
+		const { server, client } = setupServer();
+		const result = await server.call("playback_set_volume", { volume: 42 });
+		expect(result.isError).toBeUndefined();
+		const req = (client.execute as unknown as { mock: { calls: unknown[][] } })
+			.mock.calls[0]?.[0] as {
+			command: { case: string; value: { vol: number } };
+		};
+		expect(req.command.case).toBe("setvol");
+		expect(req.command.value.vol).toBe(42);
+	});
+});
