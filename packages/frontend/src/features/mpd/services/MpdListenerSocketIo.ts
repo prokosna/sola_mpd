@@ -15,7 +15,6 @@ import {
 
 import type { MessagingClient } from "../../../lib/messaging/MessagingClient";
 import { getResubscribeDelayMs } from "../functions/resubscribeBackoff";
-import { getSubscribeAckError } from "../functions/subscribeAck";
 import type { MpdListener } from "./MpdListener";
 
 export class MpdListenerSocketIo implements MpdListener {
@@ -56,10 +55,11 @@ export class MpdListenerSocketIo implements MpdListener {
 		this.resetRecovery();
 		this.subscribedProfile = undefined;
 		this.socket.off(SOCKETIO_MPD_EVENT);
-		this.socket.emit(
-			SOCKETIO_MPD_UNSUBSCRIBE,
-			toBinary(MpdProfileSchema, profile),
-		);
+		this.socket
+			.emit(SOCKETIO_MPD_UNSUBSCRIBE, toBinary(MpdProfileSchema, profile))
+			.catch((err) => {
+				console.error(err);
+			});
 	};
 
 	on = (event: MpdEvent_EventType, callback: () => void): void => {
@@ -80,11 +80,7 @@ export class MpdListenerSocketIo implements MpdListener {
 	): void {
 		this.socket
 			.emit(SOCKETIO_MPD_SUBSCRIBE, toBinary(MpdProfileSchema, profile))
-			.then((ack) => {
-				const error = getSubscribeAckError(ack);
-				if (error !== undefined) {
-					throw new Error(error);
-				}
+			.then(() => {
 				// A late ack for a profile switched away from must not trigger a
 				// refetch on its behalf.
 				if (this.subscribedProfile === profile) {

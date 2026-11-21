@@ -71,8 +71,8 @@ describe("MessagingServerSocketIo", () => {
 		await b.trigger("echo", new Uint8Array([9, 8]).buffer, ackB);
 
 		expect(handler.mock.calls[0][0]).toEqual(new Uint8Array([1, 2, 3]));
-		expect(ack).toHaveBeenCalledWith(Buffer.from([2, 3]));
-		expect(ackB).toHaveBeenCalledWith(Buffer.from([8]));
+		expect(ack.mock.calls).toEqual([[Buffer.from([2, 3])]]);
+		expect(ackB.mock.calls).toEqual([[Buffer.from([8])]]);
 	});
 
 	it("acks an empty buffer when the handler returns nothing", async () => {
@@ -85,10 +85,10 @@ describe("MessagingServerSocketIo", () => {
 		const ack = vi.fn();
 		await socket.trigger("noop", new ArrayBuffer(0), ack);
 
-		expect(ack).toHaveBeenCalledWith(Buffer.alloc(0));
+		expect(ack.mock.calls).toEqual([[Buffer.alloc(0)]]);
 	});
 
-	it("logs a failing handler and acks an empty buffer", async () => {
+	it("logs a failing handler and acks an empty buffer with the failure message", async () => {
 		const errorSpy = vi.spyOn(console, "error").mockImplementation(() => {});
 		const fake = createFakeIo();
 		const server = fake.server();
@@ -106,8 +106,10 @@ describe("MessagingServerSocketIo", () => {
 		await socket.trigger("fail", new ArrayBuffer(0), ack);
 		await socket.trigger("reject", new ArrayBuffer(0), ack);
 
-		expect(ack).toHaveBeenCalledTimes(2);
-		expect(ack).toHaveBeenCalledWith(Buffer.alloc(0));
+		expect(ack.mock.calls).toEqual([
+			[Buffer.alloc(0), { message: "disk full" }],
+			[Buffer.alloc(0), { message: "disk full" }],
+		]);
 		expect(errorSpy).toHaveBeenCalledWith(failure);
 	});
 

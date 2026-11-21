@@ -91,11 +91,24 @@ describe("registerPluginHandlers", () => {
 		).toBe("complete");
 	});
 
-	it("only logs when the result stream itself fails", async () => {
+	it("rejects an undecodable execute request before acknowledging", async () => {
+		const { peer } = fake.createPeer();
+
+		await expect(
+			fake.call(
+				SOCKETIO_PLUGIN_EXECUTE,
+				new Uint8Array([0xff, 0xff, 0xff]),
+				peer,
+			),
+		).rejects.toThrow();
+		expect(pluginClient.execute).not.toHaveBeenCalled();
+	});
+
+	it("logs a failing stream and sends the error to the callback event", async () => {
 		const errorSpy = vi.spyOn(console, "error").mockImplementation(() => {});
 		const { peer, send } = fake.createPeer();
 		const failure = new Error("send failed");
-		send.mockImplementation(() => {
+		send.mockImplementationOnce(() => {
 			throw failure;
 		});
 		pluginClient.execute.mockImplementation(async function* () {
@@ -113,6 +126,40 @@ describe("registerPluginHandlers", () => {
 			fake.call(SOCKETIO_PLUGIN_EXECUTE, msg, peer),
 		).resolves.toBeUndefined();
 
-		await vi.waitFor(() => expect(errorSpy).toHaveBeenCalledWith(failure));
+		await vi.waitFor(() => expect(send).toHaveBeenCalledTimes(2));
+		expect(errorSpy).toHaveBeenCalledWith(failure);
+		expect(send.mock.calls[1][0]).toBe("cb_1");
+		const wrapper = fromBinary(
+			PluginExecuteResponseWrapperSchema,
+			send.mock.calls[1][1],
+		);
+		expect(wrapper.result).toEqual({ case: "error", value: "send failed" });
+	});
+
+	it("logs instead of rejecting when reporting the failure also fails", async () => {
+		const errorSpy = vi.spyOn(console, "error").mockImplementation(() => {});
+		const unhandled = vi.fn();
+		process.on("unhandledRejection", unhandled);
+		const { peer, send } = fake.createPeer();
+		send.mockImplementation(() => {
+			throw new Error("peer gone");
+		});
+		pluginClient.execute.mockImplementation(async function* () {
+			yield { result: "one" };
+		});
+		const msg = toBinary(
+			PluginExecuteRequestWrapperSchema,
+			create(PluginExecuteRequestWrapperSchema, {
+				callbackEvent: "cb_1",
+				request: {},
+			}),
+		);
+
+		await fake.call(SOCKETIO_PLUGIN_EXECUTE, msg, peer);
+
+		await vi.waitFor(() => expect(errorSpy).toHaveBeenCalledTimes(2));
+		await new Promise((resolve) => setTimeout(resolve, 0));
+		process.off("unhandledRejection", unhandled);
+		expect(unhandled).not.toHaveBeenCalled();
 	});
 });

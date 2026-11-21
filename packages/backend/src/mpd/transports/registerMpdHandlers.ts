@@ -32,33 +32,15 @@ export function registerMpdHandlers(
 	});
 
 	server.handle(SOCKETIO_MPD_COMMAND_BULK, async (msg) => {
-		try {
-			await executeMpdCommandBulkUseCase(msg, mpdClient);
-		} catch (err) {
-			console.error(err);
-			return createMpdErrorBuffer(err);
-		}
+		await executeMpdCommandBulkUseCase(msg, mpdClient);
 	});
 
 	server.handle(SOCKETIO_MPD_SUBSCRIBE, async (msg, peer) => {
-		try {
-			await subscriptions.subscribe(peer, fromBinary(MpdProfileSchema, msg));
-		} catch (err) {
-			console.error(err);
-			return createMpdErrorBuffer(err);
-		}
+		await subscriptions.subscribe(peer, fromBinary(MpdProfileSchema, msg));
 	});
 
 	server.handle(SOCKETIO_MPD_UNSUBSCRIBE, async (msg, peer) => {
-		try {
-			await subscriptions.unsubscribe(
-				peer.id,
-				fromBinary(MpdProfileSchema, msg),
-			);
-		} catch (err) {
-			console.error(err);
-			return createMpdErrorBuffer(err);
-		}
+		await subscriptions.unsubscribe(peer.id, fromBinary(MpdProfileSchema, msg));
 	});
 
 	server.onDisconnect((peer) => subscriptions.disconnect(peer.id));
