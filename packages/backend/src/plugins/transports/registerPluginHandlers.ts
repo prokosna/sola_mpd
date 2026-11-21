@@ -6,6 +6,8 @@ import {
 import {
 	PluginExecuteRequestWrapperSchema,
 	PluginExecuteResponseWrapperSchema,
+	PluginRegisterRequestWrapperSchema,
+	PluginRegisterResponseWrapperSchema,
 } from "@sola_mpd/shared/src/models/plugin/plugin_wrapper_pb.js";
 import type { MessagingServer } from "../../lib/messaging/MessagingServer.js";
 import { createPluginRegisterErrorBuffer } from "../../utils/errorBufferUtils.js";
@@ -24,7 +26,11 @@ export function registerPluginHandlers(
 
 	server.handle(SOCKETIO_PLUGIN_REGISTER, async (msg) => {
 		try {
-			return await registerPluginUseCase(msg, pluginClient);
+			const response = await registerPluginUseCase(
+				fromBinary(PluginRegisterRequestWrapperSchema, msg),
+				pluginClient,
+			);
+			return toBinary(PluginRegisterResponseWrapperSchema, response);
 		} catch (err) {
 			console.error(err);
 			return createPluginRegisterErrorBuffer(err);
@@ -34,17 +40,15 @@ export function registerPluginHandlers(
 	// ACK on receipt, not completion: results stream via separate events
 	// and execution may outlast the client's ACK timeout.
 	server.handle(SOCKETIO_PLUGIN_EXECUTE, (msg, peer) => {
-		const { callbackEvent } = fromBinary(
-			PluginExecuteRequestWrapperSchema,
-			msg,
-		);
+		const request = fromBinary(PluginExecuteRequestWrapperSchema, msg);
+		const { callbackEvent } = request;
 		void (async () => {
 			try {
-				for await (const [callbackEvent, resp] of executePluginUseCase(
-					msg,
+				for await (const [event, resp] of executePluginUseCase(
+					request,
 					pluginClient,
 				)) {
-					peer.send(callbackEvent, resp);
+					peer.send(event, toBinary(PluginExecuteResponseWrapperSchema, resp));
 				}
 			} catch (err) {
 				console.error(err);

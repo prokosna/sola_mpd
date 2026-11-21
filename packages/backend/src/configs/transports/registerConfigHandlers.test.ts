@@ -78,6 +78,14 @@ describe("registerConfigHandlers", () => {
 		expect(options).toEqual({ except: "sender" });
 	});
 
+	it("rejects an undecodable save without updating or broadcasting", async () => {
+		await expect(
+			fake.call(saveChannel, new Uint8Array([0xff, 0xff, 0xff])),
+		).rejects.toThrow();
+		expect(browserState.update).not.toHaveBeenCalled();
+		expect(fake.broadcast).not.toHaveBeenCalled();
+	});
+
 	it("still succeeds when the broadcast itself throws", async () => {
 		const errorSpy = vi.spyOn(console, "error").mockImplementation(() => {});
 		fake.broadcast.mockImplementation(() => {

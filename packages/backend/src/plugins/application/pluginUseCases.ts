@@ -1,19 +1,19 @@
-import { create, fromBinary, toBinary } from "@bufbuild/protobuf";
+import { create } from "@bufbuild/protobuf";
 import {
-	PluginExecuteRequestWrapperSchema,
+	type PluginExecuteRequestWrapper,
+	type PluginExecuteResponseWrapper,
 	PluginExecuteResponseWrapperSchema,
-	PluginRegisterRequestWrapperSchema,
+	type PluginRegisterRequestWrapper,
+	type PluginRegisterResponseWrapper,
 	PluginRegisterResponseWrapperSchema,
 } from "@sola_mpd/shared/src/models/plugin/plugin_wrapper_pb.js";
 import { toErrorMessage } from "../../utils/errorUtils.js";
 import type { PluginClient } from "../services/PluginClient.js";
 
 export const registerPluginUseCase = async (
-	msg: Uint8Array,
+	req: PluginRegisterRequestWrapper,
 	pluginClient: PluginClient,
-): Promise<Uint8Array> => {
-	const req = fromBinary(PluginRegisterRequestWrapperSchema, msg);
-
+): Promise<PluginRegisterResponseWrapper> => {
 	try {
 		const request = req.request;
 		if (request === undefined) {
@@ -21,30 +21,26 @@ export const registerPluginUseCase = async (
 		}
 
 		const response = await pluginClient.register(request);
-		const wrapper = create(PluginRegisterResponseWrapperSchema, {
+		return create(PluginRegisterResponseWrapperSchema, {
 			result: {
 				case: "response",
 				value: response,
 			},
 		});
-		return toBinary(PluginRegisterResponseWrapperSchema, wrapper);
 	} catch (err) {
-		const message = toErrorMessage(err);
-		const wrapper = create(PluginRegisterResponseWrapperSchema, {
+		return create(PluginRegisterResponseWrapperSchema, {
 			result: {
 				case: "error",
-				value: message,
+				value: toErrorMessage(err),
 			},
 		});
-		return toBinary(PluginRegisterResponseWrapperSchema, wrapper);
 	}
 };
 
 export const executePluginUseCase = async function* (
-	msg: Uint8Array,
+	req: PluginExecuteRequestWrapper,
 	pluginClient: PluginClient,
-): AsyncGenerator<[string, Uint8Array]> {
-	const req = fromBinary(PluginExecuteRequestWrapperSchema, msg);
+): AsyncGenerator<[string, PluginExecuteResponseWrapper]> {
 	const callbackEvent = req.callbackEvent;
 
 	try {
@@ -56,41 +52,33 @@ export const executePluginUseCase = async function* (
 		for await (const response of pluginClient.execute(request)) {
 			yield [
 				callbackEvent,
-				toBinary(
-					PluginExecuteResponseWrapperSchema,
-					create(PluginExecuteResponseWrapperSchema, {
-						result: {
-							case: "response",
-							value: response,
-						},
-					}),
-				),
+				create(PluginExecuteResponseWrapperSchema, {
+					result: {
+						case: "response",
+						value: response,
+					},
+				}),
 			];
 		}
 
 		yield [
 			callbackEvent,
-			toBinary(
-				PluginExecuteResponseWrapperSchema,
-				create(PluginExecuteResponseWrapperSchema, {
-					result: {
-						case: "complete",
-						value: true,
-					},
-				}),
-			),
+			create(PluginExecuteResponseWrapperSchema, {
+				result: {
+					case: "complete",
+					value: true,
+				},
+			}),
 		];
 	} catch (err) {
-		const message = toErrorMessage(err);
-		const wrapper = create(PluginExecuteResponseWrapperSchema, {
-			result: {
-				case: "error",
-				value: message,
-			},
-		});
 		yield [
 			callbackEvent,
-			toBinary(PluginExecuteResponseWrapperSchema, wrapper),
+			create(PluginExecuteResponseWrapperSchema, {
+				result: {
+					case: "error",
+					value: toErrorMessage(err),
+				},
+			}),
 		];
 	}
 };

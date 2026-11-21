@@ -1,10 +1,15 @@
-import { fromBinary } from "@bufbuild/protobuf";
+import { fromBinary, toBinary } from "@bufbuild/protobuf";
 import {
 	SOCKETIO_MPD_COMMAND,
 	SOCKETIO_MPD_COMMAND_BULK,
 	SOCKETIO_MPD_SUBSCRIBE,
 	SOCKETIO_MPD_UNSUBSCRIBE,
 } from "@sola_mpd/shared/src/const/socketio.js";
+import {
+	MpdRequestBulkSchema,
+	MpdRequestSchema,
+	MpdResponseSchema,
+} from "@sola_mpd/shared/src/models/mpd/mpd_command_pb.js";
 import { MpdProfileSchema } from "@sola_mpd/shared/src/models/mpd/mpd_profile_pb.js";
 import type { MessagingServer } from "../../lib/messaging/MessagingServer.js";
 import { createMpdErrorBuffer } from "../../utils/errorBufferUtils.js";
@@ -24,7 +29,11 @@ export function registerMpdHandlers(
 
 	server.handle(SOCKETIO_MPD_COMMAND, async (msg) => {
 		try {
-			return await executeMpdCommandUseCase(msg, mpdClient);
+			const response = await executeMpdCommandUseCase(
+				fromBinary(MpdRequestSchema, msg),
+				mpdClient,
+			);
+			return toBinary(MpdResponseSchema, response);
 		} catch (err) {
 			console.error(err);
 			return createMpdErrorBuffer(err);
@@ -32,7 +41,10 @@ export function registerMpdHandlers(
 	});
 
 	server.handle(SOCKETIO_MPD_COMMAND_BULK, async (msg) => {
-		await executeMpdCommandBulkUseCase(msg, mpdClient);
+		await executeMpdCommandBulkUseCase(
+			fromBinary(MpdRequestBulkSchema, msg),
+			mpdClient,
+		);
 	});
 
 	server.handle(SOCKETIO_MPD_SUBSCRIBE, async (msg, peer) => {

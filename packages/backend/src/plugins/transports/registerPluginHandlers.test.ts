@@ -43,6 +43,21 @@ describe("registerPluginHandlers", () => {
 		).toBe("response");
 	});
 
+	it("encodes a missing registration request as an error wrapper", async () => {
+		const msg = toBinary(
+			PluginRegisterRequestWrapperSchema,
+			create(PluginRegisterRequestWrapperSchema, {}),
+		);
+
+		const result = await fake.call(SOCKETIO_PLUGIN_REGISTER, msg);
+
+		expect(
+			fromBinary(PluginRegisterResponseWrapperSchema, result as Uint8Array)
+				.result.case,
+		).toBe("error");
+		expect(pluginClient.register).not.toHaveBeenCalled();
+	});
+
 	it("maps an undecodable registration request to a register error response", async () => {
 		const result = await fake.call(
 			SOCKETIO_PLUGIN_REGISTER,

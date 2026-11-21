@@ -1,9 +1,8 @@
-import { create, fromBinary, toBinary } from "@bufbuild/protobuf";
+import { create } from "@bufbuild/protobuf";
 import {
 	AdvancedSearchCommand_SimilarityType,
 	AdvancedSearchCommand_TextToMusicType,
 	AdvancedSearchRequestSchema,
-	AdvancedSearchResponseSchema,
 } from "@sola_mpd/shared/src/models/advanced_search_pb.js";
 import {
 	type MpdResponse,
@@ -14,10 +13,7 @@ import { SongSchema } from "@sola_mpd/shared/src/models/song_pb.js";
 import { describe, expect, it, vi } from "vitest";
 import type { MpdClient } from "../../mpd/services/MpdClient.js";
 import type { AdvancedSearchApi } from "../services/AdvancedSearchApi.js";
-import {
-	executeAdvancedSearchCommandUseCase,
-	executeAdvancedSearchRequestUseCase,
-} from "./advancedSearchUseCases.js";
+import { executeAdvancedSearchRequestUseCase } from "./advancedSearchUseCases.js";
 
 const createProfile = () => {
 	return create(MpdProfileSchema, {
@@ -198,35 +194,5 @@ describe("advancedSearchUseCases", () => {
 
 		expect(result.command.case).toBe("error");
 		expect(advancedSearchApi.fetchStats).not.toHaveBeenCalled();
-	});
-
-	it("executeAdvancedSearchCommandUseCase encodes response bytes", async () => {
-		const advancedSearchApi = createAdvancedSearchApi({
-			scanLibrary: vi.fn().mockResolvedValue(undefined),
-		});
-		const mpdClient = createMpdClient();
-		const msg = new Uint8Array(
-			toBinary(
-				AdvancedSearchRequestSchema,
-				create(AdvancedSearchRequestSchema, {
-					config: {
-						endpoint: "http://localhost:3001",
-					},
-					command: {
-						case: "scanLibrary",
-						value: {},
-					},
-				}),
-			),
-		);
-
-		const result = await executeAdvancedSearchCommandUseCase(
-			msg,
-			advancedSearchApi,
-			mpdClient,
-		);
-
-		const decoded = fromBinary(AdvancedSearchResponseSchema, result);
-		expect(decoded.command.case).toBe("scanLibrary");
 	});
 });
