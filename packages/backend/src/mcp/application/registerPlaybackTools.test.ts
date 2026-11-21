@@ -7,6 +7,7 @@ import {
 	createFakeMcpServer,
 	makeLibraryIndex,
 	makeMpdClient,
+	makeMpdProfileStateRepository,
 	makeMpdResponse,
 	makeProfile,
 } from "./testHelpers.js";
@@ -32,6 +33,7 @@ function setupServer() {
 	registerPlaybackTools(server as never, {
 		mpdClient: client,
 		libraryIndex: makeLibraryIndex(),
+		mpdProfileStateRepository: makeMpdProfileStateRepository(),
 	});
 	return { server, client };
 }
@@ -116,7 +118,7 @@ describe("registerPlaybackTools / playback_control", () => {
 		});
 
 		expect(result.isError).toBeUndefined();
-		expect(resolveMock).toHaveBeenCalledWith("office");
+		expect(resolveMock).toHaveBeenCalledWith(expect.anything(), "office");
 		const req = (client.execute as unknown as { mock: { calls: unknown[][] } })
 			.mock.calls[0]?.[0] as { profile: { name: string } };
 		expect(req.profile.name).toBe("office");

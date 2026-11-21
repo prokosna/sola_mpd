@@ -9,6 +9,7 @@ import {
 	createFakeMcpServer,
 	makeLibraryIndex,
 	makeMpdClient,
+	makeMpdProfileStateRepository,
 	makeMpdResponse,
 	makeProfile,
 	parseToolJson,
@@ -65,6 +66,7 @@ describe("registerStatusTools / mpd_status", () => {
 		registerStatusTools(server as never, {
 			mpdClient: client,
 			libraryIndex: makeLibraryIndex(),
+			mpdProfileStateRepository: makeMpdProfileStateRepository(),
 		});
 
 		const result = await server.call("mpd_status");
@@ -91,6 +93,7 @@ describe("registerStatusTools / mpd_status", () => {
 		registerStatusTools(server as never, {
 			mpdClient: makeMpdClient(() => makeMpdResponse({})),
 			libraryIndex: makeLibraryIndex(),
+			mpdProfileStateRepository: makeMpdProfileStateRepository(),
 		});
 
 		const result = await server.call("mpd_status");
@@ -120,6 +123,7 @@ describe("registerStatusTools / mpd_stats", () => {
 		registerStatusTools(server as never, {
 			mpdClient: client,
 			libraryIndex: makeLibraryIndex(),
+			mpdProfileStateRepository: makeMpdProfileStateRepository(),
 		});
 
 		const result = await server.call("mpd_stats");
@@ -149,6 +153,7 @@ describe("registerStatusTools / mpd_stats", () => {
 		registerStatusTools(server as never, {
 			mpdClient: client,
 			libraryIndex: makeLibraryIndex(),
+			mpdProfileStateRepository: makeMpdProfileStateRepository(),
 		});
 
 		const result = await server.call("mpd_stats");

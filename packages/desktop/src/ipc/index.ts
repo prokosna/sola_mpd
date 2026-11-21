@@ -33,21 +33,8 @@ import { DeepMap } from "@sola_mpd/shared/src/utils/DeepMap.js";
 import type { BrowserWindow } from "electron";
 import { ipcMain } from "electron";
 import { executeAdvancedSearchCommandUseCase } from "#backend/advanced_search/application/advancedSearchUseCases.js";
-import { advancedSearchApiHttp } from "#backend/advanced_search/services/AdvancedSearchApiHttp.js";
-import {
-	readBrowserState,
-	readCommonSongTableState,
-	readMpdProfileState,
-	readPluginState,
-	readRecentlyAddedState,
-	readSavedSearches,
-	updateBrowserState,
-	updateCommonSongTableState,
-	updateMpdProfileState,
-	updatePluginState,
-	updateRecentlyAddedState,
-	updateSavedSearches,
-} from "#backend/configs/application/configStateUseCases.js";
+import { ConfigMessageHandlerSocketIo } from "#backend/configs/transports/ConfigMessageHandlerSocketIo.js";
+import type { BackendDependencies } from "#backend/createBackendDependencies.js";
 import {
 	disconnectMpdEventsUseCase,
 	executeMpdCommandBulkUseCase,
@@ -56,12 +43,10 @@ import {
 	unsubscribeMpdEventsUseCase,
 } from "#backend/mpd/application/mpdUseCases.js";
 import type { MpdSubscriptionHandler } from "#backend/mpd/services/MpdClient.js";
-import { mpdClientMpd3 } from "#backend/mpd/services/MpdClientMpd3.js";
 import {
 	executePluginUseCase,
 	registerPluginUseCase,
 } from "#backend/plugins/application/pluginUseCases.js";
-import { pluginClientConnect } from "#backend/plugins/services/PluginClientConnect.js";
 import {
 	createAdvancedSearchErrorBuffer,
 	createMpdErrorBuffer,
@@ -83,24 +68,6 @@ const configKeys = [
 	CONFIG_KEY_RECENTLY_ADDED_STATE,
 ];
 
-const readUseCases: Record<string, () => Buffer> = {
-	[CONFIG_KEY_BROWSER_STATE]: readBrowserState,
-	[CONFIG_KEY_COMMON_SONG_TABLE_STATE]: readCommonSongTableState,
-	[CONFIG_KEY_MPD_PROFILE_STATE]: readMpdProfileState,
-	[CONFIG_KEY_PLUGIN_STATE]: readPluginState,
-	[CONFIG_KEY_SAVED_SEARCHES]: readSavedSearches,
-	[CONFIG_KEY_RECENTLY_ADDED_STATE]: readRecentlyAddedState,
-};
-
-const writeUseCases: Record<string, (data: Buffer) => void> = {
-	[CONFIG_KEY_BROWSER_STATE]: updateBrowserState,
-	[CONFIG_KEY_COMMON_SONG_TABLE_STATE]: updateCommonSongTableState,
-	[CONFIG_KEY_MPD_PROFILE_STATE]: updateMpdProfileState,
-	[CONFIG_KEY_PLUGIN_STATE]: updatePluginState,
-	[CONFIG_KEY_SAVED_SEARCHES]: updateSavedSearches,
-	[CONFIG_KEY_RECENTLY_ADDED_STATE]: updateRecentlyAddedState,
-};
-
 let handlersRegistered = false;
 
 const idEventHandlerMap = new DeepMap<
@@ -108,14 +75,16 @@ const idEventHandlerMap = new DeepMap<
 	Promise<MpdSubscriptionHandler>
 >();
 
-async function cleanupSubscriptions(): Promise<void> {
+async function cleanupSubscriptions(
+	mpdClient: BackendDependencies["mpdClient"],
+): Promise<void> {
 	for (const [key, handlerPromise] of idEventHandlerMap) {
 		const [, profile] = key;
 		try {
 			await disconnectMpdEventsUseCase({
 				profile,
 				handlerPromise,
-				mpdClient: mpdClientMpd3,
+				mpdClient,
 			});
 		} catch (err) {
 			console.error(err);
@@ -124,13 +93,17 @@ async function cleanupSubscriptions(): Promise<void> {
 	idEventHandlerMap.clear();
 }
 
-function registerIpcHandlers(): void {
+function registerIpcHandlers(deps: BackendDependencies): void {
+	const configHandler = new ConfigMessageHandlerSocketIo(
+		deps.configRepositories,
+	);
+
 	// MPD command (request-response)
 	ipcMain.handle(
 		SOCKETIO_MPD_COMMAND,
 		async (_event, msg: Uint8Array): Promise<Uint8Array> => {
 			try {
-				return await executeMpdCommandUseCase(msg, mpdClientMpd3);
+				return await executeMpdCommandUseCase(msg, deps.mpdClient);
 			} catch (err) {
 				console.error(err);
 				return createMpdErrorBuffer(err);
@@ -143,7 +116,7 @@ function registerIpcHandlers(): void {
 		SOCKETIO_MPD_COMMAND_BULK,
 		async (_event, msg: Uint8Array): Promise<Uint8Array> => {
 			try {
-				await executeMpdCommandBulkUseCase(msg, mpdClientMpd3);
+				await executeMpdCommandBulkUseCase(msg, deps.mpdClient);
 				return new Uint8Array(0);
 			} catch (err) {
 				console.error(err);
@@ -174,7 +147,7 @@ function registerIpcHandlers(): void {
 							sender.send(SOCKETIO_MPD_EVENT, toBinary(MpdEventSchema, event));
 						}
 					},
-					mpdClient: mpdClientMpd3,
+					mpdClient: deps.mpdClient,
 				});
 
 				idEventHandlerMap.set([CLIENT_ID, targetProfile], handlerPromise);
@@ -211,7 +184,7 @@ function registerIpcHandlers(): void {
 				const unsubscribedProfile = await unsubscribeMpdEventsUseCase({
 					msg,
 					handlerPromise,
-					mpdClient: mpdClientMpd3,
+					mpdClient: deps.mpdClient,
 				});
 				if (unsubscribedProfile !== undefined) {
 					idEventHandlerMap.delete([CLIENT_ID, unsubscribedProfile]);
@@ -231,7 +204,7 @@ function registerIpcHandlers(): void {
 		SOCKETIO_PLUGIN_REGISTER,
 		async (_event, msg: Uint8Array): Promise<Uint8Array> => {
 			try {
-				return await registerPluginUseCase(msg, pluginClientConnect);
+				return await registerPluginUseCase(msg, deps.pluginClient);
 			} catch (err) {
 				console.error(err);
 				return createPluginRegisterErrorBuffer(err);
@@ -253,7 +226,7 @@ function registerIpcHandlers(): void {
 				try {
 					for await (const [eventChannel, resp] of executePluginUseCase(
 						msg,
-						pluginClientConnect,
+						deps.pluginClient,
 					)) {
 						if (!sender.isDestroyed()) {
 							sender.send(eventChannel, resp);
@@ -287,8 +260,8 @@ function registerIpcHandlers(): void {
 			try {
 				return await executeAdvancedSearchCommandUseCase(
 					msg,
-					advancedSearchApiHttp,
-					mpdClientMpd3,
+					deps.advancedSearchApi,
+					deps.mpdClient,
 				);
 			} catch (err) {
 				console.error(err);
@@ -302,7 +275,7 @@ function registerIpcHandlers(): void {
 	for (const key of configKeys) {
 		ipcMain.handle(`${SOCKETIO_CONFIG_FETCH}_${key}`, (): Uint8Array => {
 			try {
-				const data = readUseCases[key]();
+				const data = configHandler.fetch(key);
 				return new Uint8Array(data);
 			} catch (err) {
 				console.error(err);
@@ -314,7 +287,7 @@ function registerIpcHandlers(): void {
 			`${SOCKETIO_CONFIG_SAVE}_${key}`,
 			(_event, msg: Uint8Array): Uint8Array => {
 				try {
-					writeUseCases[key](Buffer.from(msg));
+					configHandler.save(key, Buffer.from(msg));
 					return new Uint8Array(0);
 				} catch (err) {
 					console.error(err);
@@ -331,7 +304,10 @@ function registerIpcHandlers(): void {
 		(_event, msg: Uint8Array): Uint8Array => {
 			try {
 				const data = Buffer.from(msg).toString("utf-8");
-				const token = saveViewStateBlobUseCase(data);
+				const token = saveViewStateBlobUseCase(
+					deps.viewStateBlobRepository,
+					data,
+				);
 				return new Uint8Array(Buffer.from(token, "utf-8"));
 			} catch (err) {
 				console.error(err);
@@ -349,7 +325,10 @@ function registerIpcHandlers(): void {
 		(_event, msg: Uint8Array): Uint8Array => {
 			try {
 				const token = Buffer.from(msg).toString("utf-8");
-				const data = readViewStateBlobUseCase(token);
+				const data = readViewStateBlobUseCase(
+					deps.viewStateBlobRepository,
+					token,
+				);
 				return data === undefined
 					? new Uint8Array(0)
 					: new Uint8Array(Buffer.from(data, "utf-8"));
@@ -361,13 +340,16 @@ function registerIpcHandlers(): void {
 	);
 }
 
-export function initializeIpcManager(mainWindow: BrowserWindow): void {
+export function initializeIpcManager(
+	mainWindow: BrowserWindow,
+	deps: BackendDependencies,
+): void {
 	if (!handlersRegistered) {
-		registerIpcHandlers();
+		registerIpcHandlers(deps);
 		handlersRegistered = true;
 	}
 
 	mainWindow.on("closed", async () => {
-		await cleanupSubscriptions();
+		await cleanupSubscriptions(deps.mpdClient);
 	});
 }

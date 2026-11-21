@@ -8,9 +8,12 @@ import {
 import {
 	type MpdProfile,
 	MpdProfileSchema,
+	type MpdProfileState,
+	MpdProfileStateSchema,
 } from "@sola_mpd/shared/src/models/mpd/mpd_profile_pb.js";
 import { vi } from "vitest";
 
+import type { ConfigRepository } from "../../configs/repositories/ConfigRepository.js";
 import type { MpdClient } from "../../mpd/services/MpdClient.js";
 import type { LibraryIndex } from "../services/LibraryIndex.js";
 
@@ -57,6 +60,13 @@ export function makeProfile(): MpdProfile {
 		host: "localhost",
 		port: 6600,
 	});
+}
+
+export function makeMpdProfileStateRepository(): ConfigRepository<MpdProfileState> {
+	return {
+		get: vi.fn(() => create(MpdProfileStateSchema, {})),
+		update: vi.fn(),
+	};
 }
 
 export function makeMpdResponse(

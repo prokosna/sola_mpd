@@ -50,7 +50,10 @@ export function registerLibraryAnalyticsTools(
 		},
 		async (args) => {
 			try {
-				const profile = resolveCurrentMpdProfile(args.profile);
+				const profile = resolveCurrentMpdProfile(
+					deps.mpdProfileStateRepository,
+					args.profile,
+				);
 				await ensureLibraryIndexUseCase({ profile, mpdClient, libraryIndex });
 				const result = libraryIndex.topByTag(
 					args.tag,
@@ -89,7 +92,10 @@ export function registerLibraryAnalyticsTools(
 		},
 		async (args) => {
 			try {
-				const profile = resolveCurrentMpdProfile(args.profile);
+				const profile = resolveCurrentMpdProfile(
+					deps.mpdProfileStateRepository,
+					args.profile,
+				);
 				await ensureLibraryIndexUseCase({ profile, mpdClient, libraryIndex });
 				const result = libraryIndex.breakdown(args.tag, args.limit);
 				return toolResultJson({ tag: args.tag, ...result });
@@ -109,7 +115,10 @@ export function registerLibraryAnalyticsTools(
 		},
 		async (args) => {
 			try {
-				const profile = resolveCurrentMpdProfile(args.profile);
+				const profile = resolveCurrentMpdProfile(
+					deps.mpdProfileStateRepository,
+					args.profile,
+				);
 				await ensureLibraryIndexUseCase({ profile, mpdClient, libraryIndex });
 				return toolResultJson(libraryIndex.formatDistribution());
 			} catch (err) {
@@ -128,7 +137,10 @@ export function registerLibraryAnalyticsTools(
 		},
 		async (args) => {
 			try {
-				const profile = resolveCurrentMpdProfile(args.profile);
+				const profile = resolveCurrentMpdProfile(
+					deps.mpdProfileStateRepository,
+					args.profile,
+				);
 				await ensureLibraryIndexUseCase({ profile, mpdClient, libraryIndex });
 				return toolResultJson(libraryIndex.decadeBreakdown());
 			} catch (err) {
@@ -163,7 +175,10 @@ export function registerLibraryAnalyticsTools(
 		},
 		async (args) => {
 			try {
-				const profile = resolveCurrentMpdProfile(args.profile);
+				const profile = resolveCurrentMpdProfile(
+					deps.mpdProfileStateRepository,
+					args.profile,
+				);
 				await ensureLibraryIndexUseCase({ profile, mpdClient, libraryIndex });
 				const since =
 					args.since_days !== undefined
@@ -194,7 +209,10 @@ export function registerLibraryAnalyticsTools(
 		},
 		async (args) => {
 			try {
-				const profile = resolveCurrentMpdProfile(args.profile);
+				const profile = resolveCurrentMpdProfile(
+					deps.mpdProfileStateRepository,
+					args.profile,
+				);
 				await ensureLibraryIndexUseCase({ profile, mpdClient, libraryIndex });
 				const summary = libraryIndex.artistSummary(args.name);
 				if (summary === undefined) {

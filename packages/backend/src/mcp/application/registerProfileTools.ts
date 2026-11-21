@@ -11,7 +11,7 @@ import type { RegisterMcpToolsDeps } from "./mcpToolHelpers.js";
 
 export function registerProfileTools(
 	server: McpServer,
-	_deps: RegisterMcpToolsDeps,
+	deps: RegisterMcpToolsDeps,
 ): void {
 	server.registerTool(
 		"mpd_profiles",
@@ -22,10 +22,12 @@ export function registerProfileTools(
 			inputSchema: z.object({}),
 		},
 		async () => {
-			const profiles = listMpdProfiles();
+			const profiles = listMpdProfiles(deps.mpdProfileStateRepository);
 			let defaultProfile: MpdProfile | undefined;
 			try {
-				defaultProfile = resolveCurrentMpdProfile();
+				defaultProfile = resolveCurrentMpdProfile(
+					deps.mpdProfileStateRepository,
+				);
 			} catch {
 				defaultProfile = undefined;
 			}

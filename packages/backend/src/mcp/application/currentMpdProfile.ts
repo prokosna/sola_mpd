@@ -1,6 +1,9 @@
-import type { MpdProfile } from "@sola_mpd/shared/src/models/mpd/mpd_profile_pb.js";
+import type {
+	MpdProfile,
+	MpdProfileState,
+} from "@sola_mpd/shared/src/models/mpd/mpd_profile_pb.js";
 
-import { mpdProfileStateRepository } from "../../configs/repositories/ConfigRepositoryFile.js";
+import type { ConfigRepository } from "../../configs/repositories/ConfigRepository.js";
 
 export class NoCurrentMpdProfileError extends Error {
 	constructor() {
@@ -25,7 +28,10 @@ export class MpdProfileNotFoundError extends Error {
  * has no device of its own, targets a non-default profile. Without it, falls
  * back to the workspace default.
  */
-export function resolveCurrentMpdProfile(name?: string): MpdProfile {
+export function resolveCurrentMpdProfile(
+	mpdProfileStateRepository: ConfigRepository<MpdProfileState>,
+	name?: string,
+): MpdProfile {
 	const state = mpdProfileStateRepository.get();
 	if (name !== undefined) {
 		const profile = state.profiles.find((p) => p.name === name);
@@ -40,6 +46,8 @@ export function resolveCurrentMpdProfile(name?: string): MpdProfile {
 	return state.currentProfile;
 }
 
-export function listMpdProfiles(): MpdProfile[] {
+export function listMpdProfiles(
+	mpdProfileStateRepository: ConfigRepository<MpdProfileState>,
+): MpdProfile[] {
 	return mpdProfileStateRepository.get().profiles;
 }

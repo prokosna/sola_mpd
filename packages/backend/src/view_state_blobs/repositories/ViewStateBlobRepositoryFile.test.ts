@@ -4,21 +4,16 @@ import path from "node:path";
 
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
-// The singleton is constructed at module import time from a path relative to
-// process.cwd(), so each test chdirs into a fresh temp directory and
-// re-imports the module (vi.resetModules) to keep every run isolated and
-// confined to that temp directory.
+// Each test builds its repository in a fresh temp directory; modules are
+// reset so the once-per-process backup state does not leak between tests.
 describe("ViewStateBlobRepositoryFile", () => {
 	let tempDir: string;
-	let originalCwd: string;
 	let errorSpy: ReturnType<typeof vi.spyOn>;
 
 	beforeEach(() => {
 		tempDir = fs.mkdtempSync(
 			path.join(os.tmpdir(), "sola-mpd-view-state-blob-repo-test-"),
 		);
-		originalCwd = process.cwd();
-		process.chdir(tempDir);
 		vi.resetModules();
 		// db/ doesn't exist yet on the first write in a fresh temp dir, so the
 		// backupDbDirectoryOnce() call logs a swallowed error; silence it to
@@ -29,7 +24,6 @@ describe("ViewStateBlobRepositoryFile", () => {
 	afterEach(() => {
 		errorSpy.mockRestore();
 		vi.restoreAllMocks();
-		process.chdir(originalCwd);
 		fs.rmSync(tempDir, { recursive: true, force: true });
 	});
 
@@ -40,8 +34,11 @@ describe("ViewStateBlobRepositoryFile", () => {
 	});
 
 	it("put is idempotent: putting the same token twice keeps the original createdAt", async () => {
-		const { viewStateBlobRepository } = await import(
+		const { ViewStateBlobRepositoryFile } = await import(
 			"./ViewStateBlobRepositoryFile.js"
+		);
+		const viewStateBlobRepository = new ViewStateBlobRepositoryFile(
+			path.join(tempDir, "db"),
 		);
 
 		vi.setSystemTime(1_000);
@@ -60,8 +57,11 @@ describe("ViewStateBlobRepositoryFile", () => {
 	});
 
 	it("get refreshes lastAccessedAt", async () => {
-		const { viewStateBlobRepository } = await import(
+		const { ViewStateBlobRepositoryFile } = await import(
 			"./ViewStateBlobRepositoryFile.js"
+		);
+		const viewStateBlobRepository = new ViewStateBlobRepositoryFile(
+			path.join(tempDir, "db"),
 		);
 
 		vi.setSystemTime(1_000);
@@ -76,16 +76,22 @@ describe("ViewStateBlobRepositoryFile", () => {
 	});
 
 	it("get returns undefined for an unknown token", async () => {
-		const { viewStateBlobRepository } = await import(
+		const { ViewStateBlobRepositoryFile } = await import(
 			"./ViewStateBlobRepositoryFile.js"
+		);
+		const viewStateBlobRepository = new ViewStateBlobRepositoryFile(
+			path.join(tempDir, "db"),
 		);
 
 		expect(viewStateBlobRepository.get("unknown-token")).toBeUndefined();
 	});
 
 	it("sweep removes only entries past the cutoff and returns the count", async () => {
-		const { viewStateBlobRepository } = await import(
+		const { ViewStateBlobRepositoryFile } = await import(
 			"./ViewStateBlobRepositoryFile.js"
+		);
+		const viewStateBlobRepository = new ViewStateBlobRepositoryFile(
+			path.join(tempDir, "db"),
 		);
 
 		const now = 100_000_000;
@@ -106,8 +112,11 @@ describe("ViewStateBlobRepositoryFile", () => {
 	});
 
 	it("writes the temp file into the same directory as the destination before renaming", async () => {
-		const { viewStateBlobRepository } = await import(
+		const { ViewStateBlobRepositoryFile } = await import(
 			"./ViewStateBlobRepositoryFile.js"
+		);
+		const viewStateBlobRepository = new ViewStateBlobRepositoryFile(
+			path.join(tempDir, "db"),
 		);
 		const renameSpy = vi.spyOn(fs, "renameSync");
 
@@ -122,8 +131,11 @@ describe("ViewStateBlobRepositoryFile", () => {
 	});
 
 	it("ignores Object.prototype keys in get and put", async () => {
-		const { viewStateBlobRepository } = await import(
+		const { ViewStateBlobRepositoryFile } = await import(
 			"./ViewStateBlobRepositoryFile.js"
+		);
+		const viewStateBlobRepository = new ViewStateBlobRepositoryFile(
+			path.join(tempDir, "db"),
 		);
 
 		expect(viewStateBlobRepository.get("constructor")).toBeUndefined();
@@ -137,8 +149,11 @@ describe("ViewStateBlobRepositoryFile", () => {
 		const filePath = path.join(dbDir, "view_state_blobs.json");
 		fs.writeFileSync(filePath, "{corrupt json");
 
-		const { viewStateBlobRepository } = await import(
+		const { ViewStateBlobRepositoryFile } = await import(
 			"./ViewStateBlobRepositoryFile.js"
+		);
+		const viewStateBlobRepository = new ViewStateBlobRepositoryFile(
+			path.join(tempDir, "db"),
 		);
 
 		expect(() => viewStateBlobRepository.get("token-a")).toThrow();

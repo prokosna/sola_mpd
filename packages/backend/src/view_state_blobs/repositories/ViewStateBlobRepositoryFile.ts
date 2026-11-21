@@ -1,10 +1,7 @@
 import fs from "node:fs";
 import path from "node:path";
 
-import {
-	DB_DIRECTORY,
-	DB_FILE_VIEW_STATE_BLOBS,
-} from "@sola_mpd/shared/src/const/database.js";
+import { DB_FILE_NAME_VIEW_STATE_BLOBS } from "@sola_mpd/shared/src/const/database.js";
 
 import { backupDbDirectory } from "../../configs/utils/backupDbDirectory.js";
 import type {
@@ -14,24 +11,26 @@ import type {
 
 type ViewStateBlobDocument = Record<string, ViewStateBlobEntry>;
 
-let hasAttemptedDbBackup = false;
+const backedUpDirectories = new Set<string>();
 
-// Same rationale as ConfigRepositoryFile's backupDbDirectoryOnce(): deferred
-// to the first actual write so that a bare module import never touches the
-// real db directory.
-function backupDbDirectoryOnce() {
-	if (hasAttemptedDbBackup) {
+// As in ConfigRepositoryFile, the backup waits for the first write.
+function backupDbDirectoryOnce(dbDirectory: string) {
+	const key = path.resolve(dbDirectory);
+	if (backedUpDirectories.has(key)) {
 		return;
 	}
-	hasAttemptedDbBackup = true;
-	backupDbDirectory(DB_DIRECTORY);
+	backedUpDirectories.add(key);
+	backupDbDirectory(dbDirectory);
 }
 
-// No in-memory cache, unlike ConfigRepositoryFile: read-through/write-through
-// keeps the constructor free of any filesystem access, so an import can never
-// touch the real db directory.
-class ViewStateBlobRepositoryFile implements ViewStateBlobRepository {
-	constructor(private readonly localFilePath: string) {}
+// Read-through and write-through, unlike ConfigRepositoryFile, so constructing
+// it never touches the filesystem.
+export class ViewStateBlobRepositoryFile implements ViewStateBlobRepository {
+	private readonly localFilePath: string;
+
+	constructor(private readonly dbDirectory: string) {
+		this.localFilePath = path.join(dbDirectory, DB_FILE_NAME_VIEW_STATE_BLOBS);
+	}
 
 	private readDocument(): ViewStateBlobDocument {
 		try {
@@ -54,7 +53,7 @@ class ViewStateBlobRepositoryFile implements ViewStateBlobRepository {
 	}
 
 	private writeDocument(document: ViewStateBlobDocument): void {
-		backupDbDirectoryOnce();
+		backupDbDirectoryOnce(this.dbDirectory);
 
 		const dirPath = path.dirname(this.localFilePath);
 		fs.mkdirSync(dirPath, { recursive: true });
@@ -118,6 +117,3 @@ class ViewStateBlobRepositoryFile implements ViewStateBlobRepository {
 		return removedCount;
 	};
 }
-
-export const viewStateBlobRepository: ViewStateBlobRepository =
-	new ViewStateBlobRepositoryFile(DB_FILE_VIEW_STATE_BLOBS);

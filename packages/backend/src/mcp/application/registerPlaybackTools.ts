@@ -51,7 +51,10 @@ export function registerPlaybackTools(
 		},
 		async (args) => {
 			try {
-				const profile = resolveCurrentMpdProfile(args.profile);
+				const profile = resolveCurrentMpdProfile(
+					deps.mpdProfileStateRepository,
+					args.profile,
+				);
 				switch (args.action) {
 					case "play":
 						await executeMpdCommand(mpdClient, profile, {
@@ -132,7 +135,10 @@ export function registerPlaybackTools(
 		},
 		async (args) => {
 			try {
-				const profile = resolveCurrentMpdProfile(args.profile);
+				const profile = resolveCurrentMpdProfile(
+					deps.mpdProfileStateRepository,
+					args.profile,
+				);
 				await executeMpdCommand(mpdClient, profile, {
 					case: "setvol",
 					value: { vol: args.volume },
@@ -160,7 +166,10 @@ export function registerPlaybackTools(
 		},
 		async (args) => {
 			try {
-				const profile = resolveCurrentMpdProfile(args.profile);
+				const profile = resolveCurrentMpdProfile(
+					deps.mpdProfileStateRepository,
+					args.profile,
+				);
 				const changed: string[] = [];
 				if (args.repeat !== undefined) {
 					await executeMpdCommand(mpdClient, profile, {

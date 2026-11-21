@@ -47,7 +47,7 @@ const SQL_NOTES = `Notes:
 - Convert added_at_ms / updated_at_ms into ISO timestamps with datetime(added_at_ms/1000, 'unixepoch').
 - The mirror is rebuilt from MPD's full song list each time the underlying cache changes; there is no historical data beyond what MPD itself stores.`;
 
-class LibraryIndexSqlite implements LibraryIndex {
+export class LibraryIndexSqlite implements LibraryIndex {
 	private readonly db: Database.Database;
 	private lastSongsRef: Song[] | undefined = undefined;
 	private lastBuiltAt: Date | undefined = undefined;
@@ -378,5 +378,3 @@ function msToIso(ms: number | null): string | null {
 	}
 	return new Date(ms).toISOString();
 }
-
-export const libraryIndexSqlite: LibraryIndex = new LibraryIndexSqlite();

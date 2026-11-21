@@ -6,7 +6,10 @@ import {
 } from "@sola_mpd/shared/src/models/mpd/mpd_event_pb.js";
 import { MpdProfileSchema } from "@sola_mpd/shared/src/models/mpd/mpd_profile_pb.js";
 import { beforeEach, describe, expect, it, vi } from "vitest";
-import type { MpdSubscriptionHandler } from "../services/MpdClient.js";
+import type {
+	MpdClient,
+	MpdSubscriptionHandler,
+} from "../services/MpdClient.js";
 
 const subscribe =
 	vi.fn<
@@ -16,10 +19,6 @@ const subscribe =
 		) => Promise<MpdSubscriptionHandler>
 	>();
 const unsubscribe = vi.fn(async () => true);
-
-vi.mock("../services/MpdClientMpd3.js", () => ({
-	mpdClientMpd3: { subscribe, unsubscribe },
-}));
 
 const { MpdMessageHandlerSocketIo } = await import(
 	"./MpdMessageHandlerSocketIo.js"
@@ -41,7 +40,10 @@ describe("MpdMessageHandlerSocketIo", () => {
 		subscribe.mockReset();
 		unsubscribe.mockClear();
 		vi.spyOn(console, "info").mockImplementation(() => {});
-		handler = MpdMessageHandlerSocketIo.initialize();
+		handler = MpdMessageHandlerSocketIo.initialize({
+			subscribe,
+			unsubscribe,
+		} as unknown as MpdClient);
 	});
 
 	it("does not subscribe twice for the same client and profile", async () => {

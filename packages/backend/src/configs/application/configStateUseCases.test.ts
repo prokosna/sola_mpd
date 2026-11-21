@@ -4,8 +4,8 @@ import { BrowserStateSchema } from "@sola_mpd/shared/src/models/browser_pb.js";
 import { describe, expect, it, vi } from "vitest";
 import type { ConfigRepository } from "../repositories/ConfigRepository.js";
 import {
-	createReadConfigUseCase,
-	createUpdateConfigUseCase,
+	readConfigUseCase,
+	updateConfigUseCase,
 } from "./configStateUseCases.js";
 
 const createConfigRepository = (
@@ -19,7 +19,7 @@ const createConfigRepository = (
 };
 
 describe("configStateUseCases", () => {
-	it("createReadConfigUseCase serializes repository value to binary", () => {
+	it("readConfigUseCase serializes repository value to binary", () => {
 		const state = create(BrowserStateSchema, {
 			filters: [],
 		});
@@ -27,23 +27,21 @@ describe("configStateUseCases", () => {
 			get: vi.fn().mockReturnValue(state),
 		});
 
-		const read = createReadConfigUseCase(BrowserStateSchema, repository);
-		const result = read();
+		const result = readConfigUseCase(BrowserStateSchema, repository);
 
 		expect(repository.get).toHaveBeenCalledTimes(1);
 		const decoded = fromBinary(BrowserStateSchema, result);
 		expect(decoded).toMatchObject({ filters: [] });
 	});
 
-	it("createUpdateConfigUseCase deserializes binary and updates repository", () => {
+	it("updateConfigUseCase deserializes binary and updates repository", () => {
 		const state = create(BrowserStateSchema, {
 			filters: [],
 		});
 		const binary = Buffer.from(toBinary(BrowserStateSchema, state));
 		const repository = createConfigRepository();
 
-		const update = createUpdateConfigUseCase(BrowserStateSchema, repository);
-		update(binary);
+		updateConfigUseCase(BrowserStateSchema, repository, binary);
 
 		expect(repository.update).toHaveBeenCalledTimes(1);
 		expect(repository.update).toHaveBeenCalledWith(
@@ -51,7 +49,7 @@ describe("configStateUseCases", () => {
 		);
 	});
 
-	it("createReadConfigUseCase returns valid binary round-trip", () => {
+	it("readConfigUseCase returns valid binary round-trip", () => {
 		const state = create(BrowserStateSchema, {
 			filters: [],
 		});
@@ -59,15 +57,14 @@ describe("configStateUseCases", () => {
 			get: vi.fn().mockReturnValue(state),
 		});
 
-		const read = createReadConfigUseCase(BrowserStateSchema, repository);
-		const binary = read();
+		const binary = readConfigUseCase(BrowserStateSchema, repository);
 
 		const decoded = fromBinary(BrowserStateSchema, binary);
 		const reEncoded = Buffer.from(toBinary(BrowserStateSchema, decoded));
 		expect(Buffer.from(binary).equals(reEncoded)).toBe(true);
 	});
 
-	it("createUpdateConfigUseCase passes deserialized message to repository", () => {
+	it("updateConfigUseCase passes deserialized message to repository", () => {
 		const state = create(BrowserStateSchema, {
 			filters: [],
 		});
@@ -75,8 +72,7 @@ describe("configStateUseCases", () => {
 		const updateFn = vi.fn();
 		const repository = createConfigRepository({ update: updateFn });
 
-		const update = createUpdateConfigUseCase(BrowserStateSchema, repository);
-		update(binary);
+		updateConfigUseCase(BrowserStateSchema, repository, binary);
 
 		const passedValue = updateFn.mock.calls[0][0];
 		const reEncoded = fromBinary(

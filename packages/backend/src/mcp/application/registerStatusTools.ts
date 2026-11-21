@@ -28,7 +28,10 @@ export function registerStatusTools(
 		},
 		async (args) => {
 			try {
-				const profile = resolveCurrentMpdProfile(args.profile);
+				const profile = resolveCurrentMpdProfile(
+					deps.mpdProfileStateRepository,
+					args.profile,
+				);
 				const [statusRes, currentRes] = await Promise.all([
 					executeMpdCommand(mpdClient, profile, { case: "status", value: {} }),
 					executeMpdCommand(mpdClient, profile, {
@@ -61,7 +64,10 @@ export function registerStatusTools(
 		},
 		async (args) => {
 			try {
-				const profile = resolveCurrentMpdProfile(args.profile);
+				const profile = resolveCurrentMpdProfile(
+					deps.mpdProfileStateRepository,
+					args.profile,
+				);
 				const res = await executeMpdCommand(mpdClient, profile, {
 					case: "stats",
 					value: {},
