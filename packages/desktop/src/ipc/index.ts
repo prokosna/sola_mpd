@@ -118,7 +118,7 @@ function registerIpcHandlers(deps: BackendDependencies): void {
 				return new Uint8Array(0);
 			} catch (err) {
 				console.error(err);
-				return createMpdErrorBuffer(err);
+				throw err;
 			}
 		},
 	);
@@ -164,7 +164,7 @@ function registerIpcHandlers(deps: BackendDependencies): void {
 				return new Uint8Array(0);
 			} catch (err) {
 				console.error(err);
-				return createMpdErrorBuffer(err);
+				throw err;
 			}
 		},
 	);
@@ -192,7 +192,7 @@ function registerIpcHandlers(deps: BackendDependencies): void {
 				return new Uint8Array(0);
 			} catch (err) {
 				console.error(err);
-				return createMpdErrorBuffer(err);
+				throw err;
 			}
 		},
 	);
