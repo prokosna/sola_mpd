@@ -5,6 +5,7 @@ import {
 	app,
 	BrowserWindow,
 	dialog,
+	ipcMain,
 	Menu,
 	net,
 	protocol,
@@ -12,7 +13,8 @@ import {
 	shell,
 } from "electron";
 import { createBackendDependencies } from "#backend/createBackendDependencies.js";
-import { initializeIpcManager as initializeIpc } from "../ipc/index.js";
+import { registerMessagingHandlers } from "#backend/registerMessagingHandlers.js";
+import { MessagingServerElectronIpc } from "../lib/messaging/MessagingServerElectronIpc.js";
 import { resolveRendererFilePath } from "./protocol.js";
 import {
 	DEFAULT_WINDOW_STATE,
@@ -62,10 +64,9 @@ app.whenReady().then(async () => {
 	});
 
 	const dbDir = path.join(app.getPath("userData"), "db");
-	let initializeIpcManager: (window: BrowserWindow) => void;
 	try {
 		const deps = createBackendDependencies({ dbDirectory: dbDir });
-		initializeIpcManager = (window) => initializeIpc(window, deps);
+		registerMessagingHandlers(new MessagingServerElectronIpc(ipcMain), deps);
 	} catch (err) {
 		const message = err instanceof Error ? err.message : String(err);
 		dialog.showErrorBox(
@@ -76,13 +77,11 @@ app.whenReady().then(async () => {
 		return;
 	}
 
-	const mainWindow = createWindow();
-	initializeIpcManager(mainWindow);
+	createWindow();
 
 	app.on("activate", () => {
 		if (BrowserWindow.getAllWindows().length === 0) {
-			const win = createWindow();
-			initializeIpcManager(win);
+			createWindow();
 		}
 	});
 });
