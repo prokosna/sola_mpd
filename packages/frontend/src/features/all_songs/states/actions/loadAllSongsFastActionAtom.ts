@@ -6,6 +6,8 @@ import { statsAtom } from "../../../stats/states/atoms/statsAtom";
 import { ALL_SONGS_CHUNK_SIZE } from "../../const/allSongsDefaults";
 import { loadAllSongsFast } from "../../functions/allSongsFastLoading";
 import { allSongsFastStateAtom } from "../atoms/allSongsFastStateAtom";
+import { clearAllSongsFastStateActionAtom } from "./clearAllSongsFastStateActionAtom";
+import { setAllSongsFastStateActionAtom } from "./setAllSongsFastStateActionAtom";
 
 export const loadAllSongsFastActionAtom = atom(null, async (get, set) => {
 	const state = get(allSongsFastStateAtom);
@@ -19,7 +21,11 @@ export const loadAllSongsFastActionAtom = atom(null, async (get, set) => {
 		return;
 	}
 
-	set(allSongsFastStateAtom, { ...state, isLoading: true, error: undefined });
+	set(setAllSongsFastStateActionAtom, profile.name, {
+		...state,
+		isLoading: true,
+		error: undefined,
+	});
 
 	let lastProgress = {
 		songs: state.songs,
@@ -39,7 +45,7 @@ export const loadAllSongsFastActionAtom = atom(null, async (get, set) => {
 					return;
 				}
 				lastProgress = progress;
-				set(allSongsFastStateAtom, {
+				set(setAllSongsFastStateActionAtom, profile.name, {
 					songs: progress.songs,
 					offset: progress.offset,
 					isLoading: progress.hasMore,
@@ -62,7 +68,7 @@ export const loadAllSongsFastActionAtom = atom(null, async (get, set) => {
 		}
 	} catch (e) {
 		if (get(currentMpdProfileAtom)?.name === profile.name) {
-			set(allSongsFastStateAtom, {
+			set(setAllSongsFastStateActionAtom, profile.name, {
 				songs: lastProgress.songs,
 				offset: lastProgress.offset,
 				isLoading: false,
@@ -71,5 +77,11 @@ export const loadAllSongsFastActionAtom = atom(null, async (get, set) => {
 			});
 		}
 		throw e;
+	} finally {
+		// A stale `isLoading: true` would otherwise block every retry once the
+		// user switches back to this profile.
+		if (get(currentMpdProfileAtom)?.name !== profile.name) {
+			set(clearAllSongsFastStateActionAtom, profile.name);
+		}
 	}
 });
