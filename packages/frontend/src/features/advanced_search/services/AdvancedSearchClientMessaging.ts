@@ -9,7 +9,7 @@ import {
 import type { MessagingClient } from "../../../lib/messaging/MessagingClient";
 import type { AdvancedSearchClient } from "./AdvancedSearchClient";
 
-export class AdvancedSearchClientSocketIo implements AdvancedSearchClient {
+export class AdvancedSearchClientMessaging implements AdvancedSearchClient {
 	constructor(private client: MessagingClient) {}
 
 	command = async (

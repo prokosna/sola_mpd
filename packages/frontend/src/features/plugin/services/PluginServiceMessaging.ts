@@ -22,7 +22,7 @@ import { type Observable, Subject } from "rxjs";
 import type { MessagingClient } from "../../../lib/messaging/MessagingClient";
 import type { PluginService } from "./PluginService";
 
-export class PluginServiceSocketIo implements PluginService {
+export class PluginServiceMessaging implements PluginService {
 	constructor(private readonly client: MessagingClient) {}
 
 	register = async (

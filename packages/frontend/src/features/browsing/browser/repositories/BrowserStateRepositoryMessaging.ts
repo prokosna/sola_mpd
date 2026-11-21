@@ -2,9 +2,9 @@ import { CONFIG_KEY_BROWSER_STATE } from "@sola_mpd/shared/src/const/socketio.js
 import type { BrowserState } from "@sola_mpd/shared/src/models/browser_pb.js";
 import { BrowserStateSchema } from "@sola_mpd/shared/src/models/browser_pb.js";
 import type { MessagingClient } from "../../../../lib/messaging/MessagingClient";
-import { StateRepositorySocketIo } from "../../../common";
+import { StateRepositoryMessaging } from "../../../common";
 
-export class BrowserStateRepositorySocketIo extends StateRepositorySocketIo<BrowserState> {
+export class BrowserStateRepositoryMessaging extends StateRepositoryMessaging<BrowserState> {
 	constructor(client: MessagingClient) {
 		super(client, CONFIG_KEY_BROWSER_STATE, BrowserStateSchema);
 	}
