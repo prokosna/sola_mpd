@@ -9,6 +9,7 @@ import {
 	savePlaylistFromQueueUseCase,
 } from "../application/playlistUseCases.js";
 import { songToOutput } from "../functions/songToOutput.js";
+import { timestampToIsoString } from "../functions/timestampToIsoString.js";
 import {
 	toolError,
 	toolResultJson,
@@ -45,10 +46,7 @@ export function registerPlaylistTools(
 				return toolResultJson({
 					playlists: playlists.map((p) => ({
 						name: p.name,
-						updated_at:
-							p.updatedAt !== undefined
-								? new Date(Number(p.updatedAt.seconds) * 1000).toISOString()
-								: null,
+						updated_at: timestampToIsoString(p.updatedAt),
 					})),
 				});
 			} catch (err) {

@@ -1,5 +1,7 @@
 import type { MpdStats } from "@sola_mpd/shared/src/models/mpd/mpd_stats_pb.js";
 
+import { timestampToIsoString } from "./timestampToIsoString.js";
+
 export type MpdStatsResponse = {
 	version: string;
 	artists_count: number;
@@ -20,9 +22,6 @@ export function buildMpdStatsResponse(
 		songs_count: stats?.songsCount ?? 0,
 		total_playtime_seconds: stats?.totalPlaytime ?? 0,
 		uptime_seconds: stats?.uptime ?? 0,
-		last_updated:
-			stats?.lastUpdated !== undefined
-				? new Date(Number(stats.lastUpdated.seconds) * 1000).toISOString()
-				: null,
+		last_updated: timestampToIsoString(stats?.lastUpdated),
 	};
 }
