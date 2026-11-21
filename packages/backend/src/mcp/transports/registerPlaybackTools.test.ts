@@ -2,7 +2,6 @@ import { create } from "@bufbuild/protobuf";
 import { MpdProfileSchema } from "@sola_mpd/shared/src/models/mpd/mpd_profile_pb.js";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import {
-	createFakeMcpServer,
 	makeLibraryIndex,
 	makeMpdClient,
 	makeMpdProfileStateRepository,
@@ -10,6 +9,7 @@ import {
 	makeProfile,
 } from "../application/testHelpers.js";
 import { registerPlaybackTools } from "./registerPlaybackTools.js";
+import { createFakeMcpServer } from "./testHelpers.js";
 
 vi.mock("../application/currentMpdProfile.js", () => ({
 	NoCurrentMpdProfileError: class extends Error {},

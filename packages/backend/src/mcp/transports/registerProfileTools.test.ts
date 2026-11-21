@@ -7,14 +7,13 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 
 import { NoCurrentMpdProfileError } from "../application/currentMpdProfile.js";
 import {
-	createFakeMcpServer,
 	makeLibraryIndex,
 	makeMpdClient,
 	makeMpdProfileStateRepository,
 	makeMpdResponse,
-	parseToolJson,
 } from "../application/testHelpers.js";
 import { registerProfileTools } from "./registerProfileTools.js";
+import { createFakeMcpServer, parseToolJson } from "./testHelpers.js";
 
 vi.mock("../application/currentMpdProfile.js", () => ({
 	NoCurrentMpdProfileError: class NoCurrentMpdProfileError extends Error {
