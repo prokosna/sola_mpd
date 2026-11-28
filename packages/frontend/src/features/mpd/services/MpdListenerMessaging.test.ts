@@ -49,6 +49,8 @@ class FakeMessagingClient implements MessagingClient {
 		this.reconnectCallbacks.push(callback);
 	};
 
+	onDisconnect = (_callback: () => void) => () => {};
+
 	reconnect() {
 		for (const callback of this.reconnectCallbacks) {
 			callback();

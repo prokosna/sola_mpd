@@ -269,4 +269,29 @@ describe("LibraryIndexSqlite", () => {
 		expect(result.row_count).toBe(10);
 		expect(result.truncated).toBe(true);
 	});
+
+	it("binds boolean params as 1 and 0", () => {
+		const result = libraryIndexSqlite.querySql(
+			"SELECT ? AS t, ? AS f",
+			[true, false],
+			10,
+		);
+		expect(result.rows).toEqual([[1, 0]]);
+	});
+
+	it("keeps both values when result columns share a name", () => {
+		const result = libraryIndexSqlite.querySql("SELECT 1 AS x, 2 AS x", [], 10);
+		expect(result.columns).toEqual(["x", "x"]);
+		expect(result.rows).toEqual([[1, 2]]);
+	});
+
+	it("still returns rows for EXPLAIN statements", () => {
+		const result = libraryIndexSqlite.querySql(
+			"EXPLAIN QUERY PLAN SELECT path FROM songs",
+			[],
+			10,
+		);
+		expect(result.columns.length).toBeGreaterThan(0);
+		expect(result.row_count).toBeGreaterThan(0);
+	});
 });

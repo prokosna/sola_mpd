@@ -41,11 +41,12 @@ describe("updateSongTableServerStateActionAtom", () => {
 			],
 		});
 
-		await store.set(updateSongTableServerStateActionAtom, {
+		const result = await store.set(updateSongTableServerStateActionAtom, {
 			state: newState,
 			mode: UpdateMode.PERSIST | UpdateMode.LOCAL_STATE,
 		});
 
+		expect(result).toBe(true);
 		expect(songTableStateRepository.save).toHaveBeenCalledWith(newState);
 		// Set directly with a plain (already-resolved) value, so it's
 		// readable synchronously without going through atomWithSync/unwrap.
@@ -64,11 +65,12 @@ describe("updateSongTableServerStateActionAtom", () => {
 		const errorSpy = vi.spyOn(console, "error").mockImplementation(() => {});
 
 		const newState = create(SongTableStateSchema, { columns: [] });
-		await store.set(updateSongTableServerStateActionAtom, {
+		const result = await store.set(updateSongTableServerStateActionAtom, {
 			state: newState,
 			mode: UpdateMode.PERSIST | UpdateMode.LOCAL_STATE,
 		});
 
+		expect(result).toBe(false);
 		expect(save).toHaveBeenCalledWith(newState);
 		expect(store.get(songTableStateAsyncAtom)).not.toBe(newState);
 

@@ -19,11 +19,12 @@ export const updatePluginActionAtom = atom(
 					description: e instanceof Error ? e.message : String(e),
 					status: "error",
 				});
-				return;
+				return false;
 			}
 		}
 		if (params.mode & UpdateMode.LOCAL_STATE) {
 			set(pluginAsyncAtom, params.pluginState);
 		}
+		return true;
 	},
 );

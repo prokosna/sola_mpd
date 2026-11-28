@@ -1,5 +1,5 @@
 import { atom } from "jotai";
-import { atomWithStorage } from "jotai/utils";
+import { atomWithStorage, createJSONStorage } from "jotai/utils";
 
 import { ENV_ADVANCED_SEARCH_ENDPOINT } from "../../../../const/envs";
 import { atomWithSync } from "../../../../lib/jotai/atomWithSync";
@@ -8,6 +8,10 @@ import {
 	DEVICE_SETTING_KEY_ADVANCED_SEARCH_QUERY_LIMIT,
 } from "../../../common";
 import { fetchAdvancedSearchStats } from "../../functions/advancedSearchOperations";
+import {
+	DEFAULT_QUERY_LIMIT,
+	parseQueryLimit,
+} from "../../functions/queryLimit";
 import { advancedSearchClientAtom } from "./advancedSearchClientAtom";
 
 export const advancedSearchEndpointAtom = atom<string | undefined>(
@@ -31,9 +35,16 @@ export const advancedSearchStatsAtom = atomWithSync(
 	advancedSearchStatsAsyncAtom,
 );
 
-export const advancedSearchQueryLimitAtom = atomWithStorage(
+const queryLimitStorage = createJSONStorage<number>();
+
+export const advancedSearchQueryLimitAtom = atomWithStorage<number>(
 	buildDeviceSettingKey(DEVICE_SETTING_KEY_ADVANCED_SEARCH_QUERY_LIMIT),
-	100,
-	undefined,
+	DEFAULT_QUERY_LIMIT,
+	{
+		...queryLimitStorage,
+		getItem: (key, initialValue) =>
+			parseQueryLimit(queryLimitStorage.getItem(key, initialValue)) ??
+			initialValue,
+	},
 	{ getOnInit: true },
 );
