@@ -23,6 +23,8 @@ import type { MessagingClient } from "../../../lib/messaging/MessagingClient";
 import type { PluginService } from "./PluginService";
 
 export class PluginServiceMessaging implements PluginService {
+	private callbackSeq = 0;
+
 	constructor(private readonly client: MessagingClient) {}
 
 	register = async (
@@ -47,7 +49,7 @@ export class PluginServiceMessaging implements PluginService {
 	execute = (req: PluginExecuteRequest): Observable<PluginExecuteResponse> => {
 		const reqWrapper = create(PluginExecuteRequestWrapperSchema, {
 			request: req,
-			callbackEvent: `${Date.now()}_${Math.random()}`,
+			callbackEvent: `${Date.now()}_${++this.callbackSeq}`,
 		});
 		const bytes = toBinary(PluginExecuteRequestWrapperSchema, reqWrapper);
 		const callbackEvent = reqWrapper.callbackEvent;
