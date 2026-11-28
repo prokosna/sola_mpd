@@ -24,6 +24,7 @@ const toFailure = (failure: unknown): Error | undefined => {
 export class MessagingClientSocketIo implements MessagingClient {
 	private socket: Promise<Socket>;
 	private reconnectCallbacks: (() => void)[] = [];
+	private disconnectCallbacks = new Set<() => void>();
 
 	constructor() {
 		this.socket = new Promise((resolve, reject) => {
@@ -50,6 +51,9 @@ export class MessagingClientSocketIo implements MessagingClient {
 
 			socket.on("disconnect", () => {
 				console.info("Socket.io is disconnected.");
+				for (const callback of [...this.disconnectCallbacks]) {
+					callback();
+				}
 			});
 		});
 	}
@@ -139,5 +143,12 @@ export class MessagingClientSocketIo implements MessagingClient {
 
 	onReconnect = (callback: () => void): void => {
 		this.reconnectCallbacks.push(callback);
+	};
+
+	onDisconnect = (callback: () => void): (() => void) => {
+		this.disconnectCallbacks.add(callback);
+		return () => {
+			this.disconnectCallbacks.delete(callback);
+		};
 	};
 }
