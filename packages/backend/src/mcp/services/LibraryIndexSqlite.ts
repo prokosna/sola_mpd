@@ -341,13 +341,15 @@ export class LibraryIndexSqlite implements LibraryIndex {
 			const rows: unknown[][] = [];
 			let truncated = false;
 			let count = 0;
-			for (const raw of stmt.iterate(...params)) {
+			if (stmt.reader) {
+				stmt.raw(true);
+			}
+			for (const row of stmt.iterate(...params.map(toBindable))) {
 				if (count >= rowLimit) {
 					truncated = true;
 					break;
 				}
-				const obj = raw as Record<string, unknown>;
-				rows.push(columns.map((col) => obj[col]));
+				rows.push(row as unknown[]);
 				count++;
 			}
 			return {
@@ -370,6 +372,11 @@ export class LibraryIndexSqlite implements LibraryIndex {
 			this.db.close();
 		}
 	}
+}
+
+// better-sqlite3 rejects booleans; SQLite stores them as 0/1.
+function toBindable(value: unknown): unknown {
+	return typeof value === "boolean" ? Number(value) : value;
 }
 
 function msToIso(ms: number | null): string | null {
