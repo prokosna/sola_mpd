@@ -10,6 +10,7 @@ import {
 } from "react-router";
 import { describe, expect, it } from "vitest";
 
+import { createRememberSelectionActionAtom } from "../states/actions/createRememberSelectionActionAtom";
 import type { SelectionQueryParam } from "../types/browserSelection";
 
 import { BrowsingSelectionObserver } from "./BrowsingSelectionObserver";
@@ -101,6 +102,9 @@ describe("BrowsingSelectionObserver", () => {
 						<BrowsingSelectionObserver
 							selectionQueryParam={SELECTION_QUERY_PARAM}
 							rememberedSelectionAtom={rememberedSelectionAtom}
+							rememberSelectionActionAtom={createRememberSelectionActionAtom({
+								rememberedSelectionAtom,
+							})}
 							restoreSelectionActionAtom={restoreSelectionActionAtom}
 						/>
 						<SelectionWriter value="Rock" />
@@ -146,6 +150,9 @@ describe("BrowsingSelectionObserver", () => {
 						<BrowsingSelectionObserver
 							selectionQueryParam={SELECTION_QUERY_PARAM}
 							rememberedSelectionAtom={rememberedSelectionAtom}
+							rememberSelectionActionAtom={createRememberSelectionActionAtom({
+								rememberedSelectionAtom,
+							})}
 							restoreSelectionActionAtom={restoreSelectionActionAtom}
 						/>
 						<LocationDisplay />
@@ -193,6 +200,9 @@ describe("BrowsingSelectionObserver", () => {
 						<BrowsingSelectionObserver
 							selectionQueryParam={SELECTION_QUERY_PARAM}
 							rememberedSelectionAtom={rememberedSelectionAtom}
+							rememberSelectionActionAtom={createRememberSelectionActionAtom({
+								rememberedSelectionAtom,
+							})}
 							restoreSelectionActionAtom={restoreSelectionActionAtom}
 						/>
 						<LocationDisplay />
@@ -223,6 +233,9 @@ describe("BrowsingSelectionObserver", () => {
 						<BrowsingSelectionObserver
 							selectionQueryParam={SELECTION_QUERY_PARAM}
 							rememberedSelectionAtom={rememberedSelectionAtom}
+							rememberSelectionActionAtom={createRememberSelectionActionAtom({
+								rememberedSelectionAtom,
+							})}
 							restoreSelectionActionAtom={restoreSelectionActionAtom}
 						/>
 						<LocationDisplay />
@@ -259,6 +272,9 @@ describe("BrowsingSelectionObserver", () => {
 						<BrowsingSelectionObserver
 							selectionQueryParam={SELECTION_QUERY_PARAM}
 							rememberedSelectionAtom={rememberedSelectionAtom}
+							rememberSelectionActionAtom={createRememberSelectionActionAtom({
+								rememberedSelectionAtom,
+							})}
 							restoreSelectionActionAtom={restoreSelectionActionAtom}
 						/>
 						<LocationDisplay />
@@ -304,6 +320,9 @@ describe("BrowsingSelectionObserver", () => {
 						<BrowsingSelectionObserver
 							selectionQueryParam={SELECTION_QUERY_PARAM}
 							rememberedSelectionAtom={rememberedSelectionAtom}
+							rememberSelectionActionAtom={createRememberSelectionActionAtom({
+								rememberedSelectionAtom,
+							})}
 							restoreSelectionActionAtom={restoreSelectionActionAtom}
 						/>
 						<LocationDisplay />
@@ -333,6 +352,9 @@ describe("BrowsingSelectionObserver", () => {
 						<BrowsingSelectionObserver
 							selectionQueryParam={SELECTION_QUERY_PARAM}
 							rememberedSelectionAtom={rememberedSelectionAtom}
+							rememberSelectionActionAtom={createRememberSelectionActionAtom({
+								rememberedSelectionAtom,
+							})}
 							restoreSelectionActionAtom={restoreSelectionActionAtom}
 						/>
 						<LocationDisplay />
