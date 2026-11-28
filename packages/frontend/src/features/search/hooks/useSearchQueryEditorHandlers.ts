@@ -1,9 +1,6 @@
-import { clone, create } from "@bufbuild/protobuf";
+import { create } from "@bufbuild/protobuf";
 import type { UseFormReturnType } from "@mantine/form";
-import {
-	SavedSearchesSchema,
-	SearchSortSchema,
-} from "@sola_mpd/shared/src/models/search_pb.js";
+import { SearchSortSchema } from "@sola_mpd/shared/src/models/search_pb.js";
 import { useAtomValue, useSetAtom } from "jotai";
 import { useCallback } from "react";
 import { UpdateMode } from "../../../types/stateTypes";
@@ -11,6 +8,7 @@ import {
 	convertConditionToFormValues,
 	convertFormValuesToSearch,
 	getDefaultCondition,
+	upsertSearch,
 } from "../functions/search";
 import { setEditingSearchStatusActionAtom } from "../states/actions/setEditingSearchStatusActionAtom";
 import { setIsSearchLoadingActionAtom } from "../states/actions/setIsSearchLoadingActionAtom";
@@ -34,7 +32,7 @@ export function useSearchQueryEditorHandlers(
 	const setEditingSearchStatus = useSetAtom(setEditingSearchStatusActionAtom);
 
 	const handleSave = useCallback(
-		(values: typeof form.values) => {
+		async (values: typeof form.values) => {
 			if (savedSearches === undefined) {
 				return;
 			}
@@ -43,20 +41,14 @@ export function useSearchQueryEditorHandlers(
 			editingSearch.sort = (searchEditColumns?.sort ?? []).map((entry) =>
 				create(SearchSortSchema, entry),
 			);
-			const index = savedSearches.searches.findIndex(
-				(search) => search.name === editingSearch.name,
-			);
-			if (index >= 0) {
-				savedSearches.searches[index] = editingSearch;
-			} else {
-				savedSearches.searches.push(editingSearch);
-			}
 
-			updateSavedSearchesAction({
-				savedSearches: clone(SavedSearchesSchema, savedSearches),
+			const saved = await updateSavedSearchesAction({
+				savedSearches: upsertSearch(savedSearches, editingSearch),
 				mode: UpdateMode.LOCAL_STATE | UpdateMode.PERSIST,
 			});
-			setEditingSearchStatus(EditingSearchStatus.SAVED);
+			if (saved) {
+				setEditingSearchStatus(EditingSearchStatus.SAVED);
+			}
 		},
 		[
 			savedSearches,

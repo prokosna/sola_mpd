@@ -13,9 +13,14 @@ import {
 	MpdResponseSchema,
 } from "@sola_mpd/shared/src/models/mpd/mpd_command_pb.js";
 import type { MpdProfile } from "@sola_mpd/shared/src/models/mpd/mpd_profile_pb.js";
-import type { Query, Search } from "@sola_mpd/shared/src/models/search_pb.js";
+import type {
+	Query,
+	SavedSearches,
+	Search,
+} from "@sola_mpd/shared/src/models/search_pb.js";
 import {
 	QuerySchema,
+	SavedSearchesSchema,
 	SearchSchema,
 } from "@sola_mpd/shared/src/models/search_pb.js";
 import {
@@ -276,6 +281,20 @@ export function convertFormValuesToSearch(values: SearchFormValues): Search {
 			})),
 		})),
 	});
+}
+
+export function upsertSearch(
+	savedSearches: SavedSearches,
+	search: Search,
+): SavedSearches {
+	const updated = clone(SavedSearchesSchema, savedSearches);
+	const index = updated.searches.findIndex((s) => s.name === search.name);
+	if (index >= 0) {
+		updated.searches[index] = search;
+	} else {
+		updated.searches.push(search);
+	}
+	return updated;
 }
 
 export async function fetchSearchSongs(

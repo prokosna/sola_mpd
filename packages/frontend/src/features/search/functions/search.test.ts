@@ -7,6 +7,7 @@ import {
 import {
 	type Query,
 	QuerySchema,
+	SavedSearchesSchema,
 	type Search,
 	SearchSchema,
 } from "@sola_mpd/shared/src/models/search_pb.js";
@@ -34,6 +35,7 @@ import {
 	mergeSongsList,
 	removeEditingQueryCondition,
 	removeEditingSearchQuery,
+	upsertSearch,
 } from "./search";
 
 function createCondition(
@@ -450,5 +452,38 @@ describe("search", () => {
 				FilterCondition_Operator.EQUAL,
 			);
 		});
+	});
+});
+
+describe("upsertSearch", () => {
+	const saved = () =>
+		create(SavedSearchesSchema, {
+			searches: [
+				create(SearchSchema, { name: "a" }),
+				create(SearchSchema, { name: "b" }),
+			],
+		});
+
+	it("replaces the search with the same name without mutating the input", () => {
+		const original = saved();
+		const replacement = create(SearchSchema, {
+			name: "b",
+			queries: [create(QuerySchema, {})],
+		});
+
+		const result = upsertSearch(original, replacement);
+
+		expect(result.searches.map((s) => s.name)).toEqual(["a", "b"]);
+		expect(result.searches[1].queries).toHaveLength(1);
+		expect(original.searches[1].queries).toHaveLength(0);
+	});
+
+	it("appends a search with a new name without mutating the input", () => {
+		const original = saved();
+
+		const result = upsertSearch(original, create(SearchSchema, { name: "c" }));
+
+		expect(result.searches.map((s) => s.name)).toEqual(["a", "b", "c"]);
+		expect(original.searches).toHaveLength(2);
 	});
 });
