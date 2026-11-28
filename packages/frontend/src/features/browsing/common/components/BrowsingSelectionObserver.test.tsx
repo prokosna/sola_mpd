@@ -1,4 +1,4 @@
-import { render, waitFor } from "@testing-library/react";
+import { fireEvent, render, waitFor } from "@testing-library/react";
 import { atom, createStore, type WritableAtom } from "jotai";
 import { Provider } from "jotai/react";
 import { StrictMode } from "react";
@@ -116,12 +116,12 @@ describe("BrowsingSelectionObserver", () => {
 
 		await waitFor(() => expect(searches).toContain(""));
 
-		getByText("write").click();
+		fireEvent.click(getByText("write"));
 		await waitFor(() =>
 			expect(searches.some((s) => s.includes("Rock"))).toBe(true),
 		);
 
-		getByText("back").click();
+		fireEvent.click(getByText("back"));
 		await waitFor(() => expect(searches[searches.length - 1]).toBe(""));
 	});
 
@@ -179,7 +179,7 @@ describe("BrowsingSelectionObserver", () => {
 
 		// A pushed bare entry would need a second Back click to leave /browser;
 		// replace: true means one click exits it.
-		getByText("back").click();
+		fireEvent.click(getByText("back"));
 		await waitFor(() =>
 			expect(getByTestId("location").textContent).toBe("/other"),
 		);
@@ -290,7 +290,7 @@ describe("BrowsingSelectionObserver", () => {
 			expect(getByTestId("location").textContent).toBe("/browser?bsel=Rock"),
 		);
 
-		getByText("clear").click();
+		fireEvent.click(getByText("clear"));
 
 		await waitFor(() =>
 			expect(getByTestId("location").textContent).toBe("/browser"),
@@ -338,7 +338,7 @@ describe("BrowsingSelectionObserver", () => {
 			),
 		);
 
-		first.getByText("clear").click();
+		fireEvent.click(first.getByText("clear"));
 		await waitFor(() =>
 			expect(store.get(rememberedSelectionAtom)).toBe(undefined),
 		);
