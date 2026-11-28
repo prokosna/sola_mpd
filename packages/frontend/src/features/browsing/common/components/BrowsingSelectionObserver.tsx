@@ -1,4 +1,4 @@
-import { useAtomValue, useSetAtom, type WritableAtom } from "jotai";
+import { type Atom, useAtomValue, useSetAtom, type WritableAtom } from "jotai";
 import { useEffect, useRef } from "react";
 import { useSearchParams } from "react-router";
 
@@ -22,11 +22,7 @@ export function BrowsingSelectionObserver({
 	restoreSelectionActionAtom,
 }: {
 	selectionQueryParam: string;
-	rememberedSelectionAtom: WritableAtom<
-		SelectionQueryParam | undefined,
-		[SelectionQueryParam | undefined],
-		void
-	>;
+	rememberedSelectionAtom: Atom<SelectionQueryParam | undefined>;
 	rememberSelectionActionAtom: WritableAtom<
 		null,
 		[SelectionQueryParam | undefined],
