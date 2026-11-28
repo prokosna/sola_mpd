@@ -61,10 +61,13 @@ export function useSavedSearchesSelectListProps({
 								savedSearches,
 							);
 							newSavedSearches.searches.splice(index, 1);
-							updateSavedSearchesAction({
+							const saved = await updateSavedSearchesAction({
 								savedSearches: newSavedSearches,
 								mode: UpdateMode.LOCAL_STATE | UpdateMode.PERSIST,
 							});
+							if (!saved) {
+								return;
+							}
 
 							notify({
 								status: "success",

@@ -31,8 +31,11 @@ export function ProfilesProfile(props: ProfilesProfileProps) {
 	const isDefaultProfile =
 		mpdProfileState.currentProfile?.name === profile.name;
 
-	const handleProfileDeleted = useCallback(() => {
-		deleteMpdProfile({ profileName: profile.name });
+	const handleProfileDeleted = useCallback(async () => {
+		const saved = await deleteMpdProfile({ profileName: profile.name });
+		if (!saved) {
+			return;
+		}
 		notify({
 			status: "success",
 			title: "Profile successfully deleted",
@@ -40,14 +43,17 @@ export function ProfilesProfile(props: ProfilesProfileProps) {
 		});
 	}, [deleteMpdProfile, notify, profile.name]);
 
-	const handleSetAsDefault = useCallback(() => {
+	const handleSetAsDefault = useCallback(async () => {
 		// This sets the workspace default for new devices, not what this device
 		// is using. LOCAL_STATE keeps the "Default" badge from waiting for the
 		// next refetch.
-		updateCurrentMpdProfile({
+		const saved = await updateCurrentMpdProfile({
 			profile,
 			mode: UpdateMode.LOCAL_STATE | UpdateMode.PERSIST,
 		});
+		if (!saved) {
+			return;
+		}
 		notify({
 			status: "success",
 			title: "Default profile updated",

@@ -7,7 +7,7 @@ import { parseSettingsStateJson } from "../functions/parseSettingsStateJson";
 export type SettingsStatesEditorProps<T extends Message> = {
 	schema: GenMessage<T>;
 	state: T;
-	onSave: (state: T) => Promise<void>;
+	onSave: (state: T) => Promise<boolean>;
 	isOpen: boolean;
 	onClose: () => void;
 };
@@ -60,10 +60,11 @@ export function SettingsStatesEditor<T extends Message>(
 				<Group justify="flex-end">
 					<Button
 						disabled={newStateRef.current === undefined || errorMessage !== ""}
-						onClick={() => {
+						onClick={async () => {
 							if (newStateRef.current === undefined) return;
-							onSave(newStateRef.current);
-							close();
+							if (await onSave(newStateRef.current)) {
+								close();
+							}
 						}}
 					>
 						Save

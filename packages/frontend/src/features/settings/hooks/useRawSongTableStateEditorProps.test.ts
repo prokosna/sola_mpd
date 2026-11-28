@@ -7,7 +7,7 @@ import {
 import { act, renderHook } from "@testing-library/react";
 import { getDefaultStore } from "jotai";
 import { describe, expect, it, vi } from "vitest";
-
+import { showNotification } from "../../../lib/mantine/showNotification";
 import type { DeviceSettingsRepository } from "../../common";
 import { deviceSettingsRepositoryAtom } from "../../common";
 import type { SongTableStateRepository } from "../../song_table/repositories/SongTableStateRepository";
@@ -18,7 +18,6 @@ import {
 import { songTableColumnViewAtom } from "../../song_table/states/atoms/songTableColumnViewAtom";
 import { songTableDeviceLayoutAtom } from "../../song_table/states/atoms/songTableDeviceLayoutAtom";
 import { songTableStateRepositoryAtom } from "../../song_table/states/atoms/songTableStateRepositoryAtom";
-
 import { useRawSongTableStateEditorProps } from "./useRawSongTableStateEditorProps";
 
 function createFakeDeviceSettingsRepository(): DeviceSettingsRepository {
@@ -45,6 +44,10 @@ function createFakeSongTableStateRepository(): SongTableStateRepository {
 		save: vi.fn(async () => {}),
 	};
 }
+
+vi.mock("../../../lib/mantine/showNotification", () => ({
+	showNotification: vi.fn(),
+}));
 
 async function flush() {
 	await new Promise((resolve) => setTimeout(resolve, 0));
@@ -119,4 +122,36 @@ describe("useRawSongTableStateEditorProps", () => {
 			expect(songTableStateRepository.save).toHaveBeenCalledWith(edited);
 		},
 	);
+
+	it("reports the failure without a success notification when the save fails", async () => {
+		const store = getDefaultStore();
+		store.set(
+			deviceSettingsRepositoryAtom,
+			createFakeDeviceSettingsRepository(),
+		);
+		store.set(songTableStateRepositoryAtom, {
+			fetch: vi.fn(async () => create(SongTableStateSchema, {})),
+			save: vi.fn(async () => Promise.reject(new Error("boom"))),
+		});
+		store.set(
+			songTableStateAsyncAtom,
+			Promise.resolve(create(SongTableStateSchema, {})),
+		);
+		store.get(songTableServerStateAtom);
+		await flush();
+		vi.mocked(showNotification).mockClear();
+		vi.spyOn(console, "error").mockImplementation(() => {});
+
+		const { result } = renderHook(() => useRawSongTableStateEditorProps());
+		let saved: boolean | undefined;
+		await act(async () => {
+			saved = await result.current[1]?.onSave(create(SongTableStateSchema, {}));
+		});
+
+		expect(saved).toBe(false);
+		expect(showNotification).toHaveBeenCalledTimes(1);
+		expect(showNotification).toHaveBeenCalledWith(
+			expect.objectContaining({ status: "error" }),
+		);
+	});
 });

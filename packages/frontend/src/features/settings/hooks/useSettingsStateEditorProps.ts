@@ -9,7 +9,7 @@ import type { SettingsStatesEditorProps } from "../components/SettingsStatesEdit
 export function useSettingsStateEditorProps<T extends Message>(
 	schema: GenMessage<T>,
 	state: T | undefined,
-	update: (newState: T) => Promise<void>,
+	update: (newState: T) => Promise<boolean>,
 ): [() => void, SettingsStatesEditorProps<T> | undefined] {
 	const notify = useNotification();
 
@@ -17,11 +17,14 @@ export function useSettingsStateEditorProps<T extends Message>(
 
 	const onSave = useCallback(
 		async (newState: T) => {
-			update(newState);
-			notify({
-				status: "success",
-				title: "Settings successfully updated",
-			});
+			const saved = await update(newState);
+			if (saved) {
+				notify({
+					status: "success",
+					title: "Settings successfully updated",
+				});
+			}
+			return saved;
 		},
 		[notify, update],
 	);
