@@ -47,14 +47,19 @@ describe("MpdClientMessaging", () => {
 	});
 
 	it("rejects with MpdCommandError when the transport fails", async () => {
+		const cause = new Error("operation has timed out");
 		const client = createMessagingClient({
-			fetch: vi.fn().mockRejectedValue(new Error("operation has timed out")),
+			fetch: vi.fn().mockRejectedValue(cause),
 		});
 
 		const result = new MpdClientMessaging(client).command(request);
 
 		await expect(result).rejects.toBeInstanceOf(MpdCommandError);
-		await expect(result).rejects.toThrow("operation has timed out");
+		await expect(result).rejects.toMatchObject({
+			name: "MpdCommandError",
+			message: "operation has timed out",
+			cause,
+		});
 	});
 
 	it("rejects a failed bulk command with MpdCommandError", async () => {

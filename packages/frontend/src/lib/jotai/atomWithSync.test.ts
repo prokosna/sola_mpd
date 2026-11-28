@@ -38,6 +38,25 @@ describe("atomWithSync", () => {
 		expect(onRejected).toHaveBeenCalledWith(new Error("timed out"));
 	});
 
+	it("updates again once a later load succeeds after a failure", async () => {
+		const resultAtom = atom<"fail" | "ok">("fail");
+		const baseAtom = atom(async (get) => {
+			if (get(resultAtom) === "fail") {
+				throw new Error("timed out");
+			}
+			return "songs";
+		});
+		const syncAtom = atomWithSync(baseAtom, vi.fn());
+		const store = createStore();
+		store.sub(syncAtom, () => {});
+		await flush();
+
+		store.set(resultAtom, "ok");
+		await flush();
+
+		expect(store.get(syncAtom)).toBe("songs");
+	});
+
 	it("stays undefined without throwing when the first load fails", async () => {
 		const baseAtom = atom(async (): Promise<string> => {
 			throw new Error("timed out");

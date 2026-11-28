@@ -16,7 +16,9 @@ import { MpdCommandError } from "../types/MpdCommandError";
 import type { MpdClient } from "./MpdClient";
 
 const toMpdCommandError = (err: unknown): MpdCommandError =>
-	new MpdCommandError(err instanceof Error ? err.message : String(err));
+	new MpdCommandError(err instanceof Error ? err.message : String(err), {
+		cause: err,
+	});
 
 export class MpdClientMessaging implements MpdClient {
 	constructor(private client: MessagingClient) {}
