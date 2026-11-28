@@ -18,6 +18,7 @@ const createMessagingClient = (
 	on: vi.fn(),
 	off: vi.fn(),
 	onReconnect: vi.fn(),
+	onDisconnect: vi.fn(() => () => {}),
 	...overrides,
 });
 

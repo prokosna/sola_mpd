@@ -17,6 +17,13 @@ import { refreshMpdProfileActionAtom } from "../../../profile";
 import { refreshSavedSearchesActionAtom } from "../../../search";
 import { refreshSongTableStateActionAtom } from "../../../song_table";
 
+// Background refreshes are not user-initiated, so a failure is logged, not notified.
+function report(configKey: string, refreshing: Promise<unknown>) {
+	refreshing.catch((error: unknown) => {
+		console.error(`Failed to refresh config "${configKey}":`, error);
+	});
+}
+
 // An unrecognized key is ignored rather than thrown: an older client must stay
 // functional when a newer server broadcasts a config key it does not know yet.
 export const handleConfigChangedActionAtom = atom(
@@ -24,22 +31,22 @@ export const handleConfigChangedActionAtom = atom(
 	(_get, set, configKey: string) => {
 		switch (configKey) {
 			case CONFIG_KEY_BROWSER_STATE:
-				set(refreshBrowserStateActionAtom);
+				report(configKey, set(refreshBrowserStateActionAtom));
 				return;
 			case CONFIG_KEY_COMMON_SONG_TABLE_STATE:
-				set(refreshSongTableStateActionAtom);
+				report(configKey, set(refreshSongTableStateActionAtom));
 				return;
 			case CONFIG_KEY_MPD_PROFILE_STATE:
-				set(refreshMpdProfileActionAtom);
+				report(configKey, set(refreshMpdProfileActionAtom));
 				return;
 			case CONFIG_KEY_PLUGIN_STATE:
-				set(refreshPluginActionAtom);
+				report(configKey, set(refreshPluginActionAtom));
 				return;
 			case CONFIG_KEY_SAVED_SEARCHES:
-				set(refreshSavedSearchesActionAtom);
+				report(configKey, set(refreshSavedSearchesActionAtom));
 				return;
 			case CONFIG_KEY_RECENTLY_ADDED_STATE:
-				set(refreshRecentlyAddedStateActionAtom);
+				report(configKey, set(refreshRecentlyAddedStateActionAtom));
 				return;
 			default:
 				return;

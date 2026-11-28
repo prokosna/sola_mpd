@@ -181,6 +181,33 @@ describe("MpdEventSubscriptions", () => {
 		expect(subscribe).toHaveBeenCalledTimes(2);
 	});
 
+	// Regression: a subscribe during a pending unsubscribe must not be torn down with it.
+	it("creates a live subscription when subscribe arrives during a pending unsubscribe", async () => {
+		const first: MpdSubscriptionHandler = () => {};
+		const second: MpdSubscriptionHandler = () => {};
+		subscribe.mockResolvedValueOnce(first).mockResolvedValueOnce(second);
+		let finishUnsubscribe: () => void = () => {};
+		unsubscribe.mockImplementationOnce(
+			() =>
+				new Promise<boolean>((resolve) => {
+					finishUnsubscribe = () => resolve(true);
+				}),
+		);
+		const { peer } = createPeer("p1");
+		await subscriptions.subscribe(peer, profile);
+
+		const pending = subscriptions.unsubscribe(peer.id, profile);
+		await subscriptions.subscribe(peer, profile);
+		finishUnsubscribe();
+		await pending;
+
+		expect(subscribe).toHaveBeenCalledTimes(2);
+		expect(unsubscribe).toHaveBeenCalledTimes(1);
+		expect(unsubscribe).toHaveBeenCalledWith(profile, first);
+		await subscriptions.unsubscribe(peer.id, profile);
+		expect(unsubscribe).toHaveBeenLastCalledWith(profile, second);
+	});
+
 	it("ignores an unsubscribe for a subscription it does not hold", async () => {
 		await subscriptions.unsubscribe("p1", profile);
 

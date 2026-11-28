@@ -46,7 +46,7 @@ describe("updateSongTableColumnTagsActionAtom", () => {
 		store.get(songTableServerStateAtom); // primes the async->sync unwrap
 		await flush();
 
-		await store.set(updateSongTableColumnTagsActionAtom, [
+		const result = await store.set(updateSongTableColumnTagsActionAtom, [
 			Song_MetadataTag.ARTIST,
 			Song_MetadataTag.TITLE,
 		]);
@@ -58,6 +58,7 @@ describe("updateSongTableColumnTagsActionAtom", () => {
 			Song_MetadataTag.ARTIST,
 			Song_MetadataTag.TITLE,
 		];
+		expect(result).toBe(true);
 		expect(songTableStateRepository.save).toHaveBeenCalledWith(expectedState);
 		expect(store.get(songTableServerStateAtom)?.columnTags).toEqual([
 			Song_MetadataTag.ARTIST,
@@ -70,10 +71,40 @@ describe("updateSongTableColumnTagsActionAtom", () => {
 		const songTableStateRepository = createFakeSongTableStateRepository();
 		store.set(songTableStateRepositoryAtom, songTableStateRepository);
 
-		await store.set(updateSongTableColumnTagsActionAtom, [
+		const result = await store.set(updateSongTableColumnTagsActionAtom, [
 			Song_MetadataTag.TITLE,
 		]);
 
+		expect(result).toBe(false);
 		expect(songTableStateRepository.save).not.toHaveBeenCalled();
+	});
+
+	it("returns false and keeps local state when the save fails", async () => {
+		const save = vi.fn(async () => {
+			throw new Error("disk full");
+		});
+		const store = createStore();
+		store.set(songTableStateRepositoryAtom, {
+			fetch: vi.fn(),
+			save,
+		});
+		const initialState = create(SongTableStateSchema, {
+			columnTags: [Song_MetadataTag.TITLE],
+		});
+		store.set(songTableStateAsyncAtom, Promise.resolve(initialState));
+		store.get(songTableServerStateAtom);
+		await flush();
+		const errorSpy = vi.spyOn(console, "error").mockImplementation(() => {});
+
+		const result = await store.set(updateSongTableColumnTagsActionAtom, [
+			Song_MetadataTag.ARTIST,
+		]);
+
+		expect(result).toBe(false);
+		expect(save).toHaveBeenCalledTimes(1);
+		expect(store.get(songTableServerStateAtom)?.columnTags).toEqual([
+			Song_MetadataTag.TITLE,
+		]);
+		errorSpy.mockRestore();
 	});
 });

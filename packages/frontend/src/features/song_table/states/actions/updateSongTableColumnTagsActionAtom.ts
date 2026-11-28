@@ -21,7 +21,7 @@ export const updateSongTableColumnTagsActionAtom = atom(
 	async (get, set, tags: Song_MetadataTag[]) => {
 		const current = get(songTableServerStateAtom);
 		if (current === undefined) {
-			return;
+			return false;
 		}
 		const newState = clone(SongTableStateSchema, current);
 		newState.columnTags = tags;
@@ -35,8 +35,9 @@ export const updateSongTableColumnTagsActionAtom = atom(
 				description: e instanceof Error ? e.message : String(e),
 				status: "error",
 			});
-			return;
+			return false;
 		}
 		set(songTableStateAsyncAtom, newState);
+		return true;
 	},
 );
