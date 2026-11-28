@@ -156,6 +156,32 @@ describe("handleConfigChangedActionAtom", () => {
 		expect(fetch).toHaveBeenCalledTimes(2);
 	});
 
+	it("logs a failing refresh instead of leaving an unhandled rejection (vitest fails the run on one)", async () => {
+		const store = createStore();
+		const error = new Error("disconnected");
+		const fetch = vi
+			.fn()
+			.mockResolvedValueOnce(create(BrowserStateSchema, { filters: [] }))
+			.mockRejectedValueOnce(error);
+		store.set(browserStateRepositoryAtom, { fetch, save: vi.fn() });
+		const consoleError = vi
+			.spyOn(console, "error")
+			.mockImplementation(() => {});
+
+		try {
+			await store.get(browserStateAsyncAtom);
+			store.set(handleConfigChangedActionAtom, CONFIG_KEY_BROWSER_STATE);
+			await new Promise((resolve) => setTimeout(resolve, 0));
+
+			expect(consoleError).toHaveBeenCalledWith(
+				expect.stringContaining(CONFIG_KEY_BROWSER_STATE),
+				error,
+			);
+		} finally {
+			consoleError.mockRestore();
+		}
+	});
+
 	it("ignores an unknown config key instead of throwing", () => {
 		const store = createStore();
 

@@ -60,18 +60,20 @@ export class MpdEventSubscriptions {
 	}
 
 	async unsubscribe(peerId: string, profile: MpdProfile): Promise<void> {
-		const handlerPromise = this.entries.get([peerId, profile]);
+		const key: [string, MpdProfile] = [peerId, profile];
+		const handlerPromise = this.entries.get(key);
 		if (handlerPromise === undefined) {
 			return;
 		}
 
+		// Removed before awaiting so a concurrent subscribe starts a fresh subscription.
+		this.entries.delete(key);
 		const unsubscribed = await unsubscribeMpdEventsUseCase({
 			profile,
 			handlerPromise,
 			mpdClient: this.mpdClient,
 		});
 		if (unsubscribed !== undefined) {
-			this.entries.delete([peerId, unsubscribed]);
 			console.info(`${peerId}.${unsubscribed.name} has been unsubscribed.`);
 		}
 	}

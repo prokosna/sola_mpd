@@ -196,9 +196,9 @@ export class LibraryIndexSqlite implements LibraryIndex {
 		limit: number;
 		since?: Date;
 	}): LibraryAggregated<LibraryRecentlyAddedRow> {
-		const sinceMs = opts.since?.getTime() ?? null;
+		const sinceMs = opts.since?.getTime();
 		const whereClause =
-			sinceMs === null
+			sinceMs === undefined
 				? "added_at_ms IS NOT NULL"
 				: "added_at_ms IS NOT NULL AND added_at_ms >= ?";
 		// GROUP BY must reference the same expression used in SELECT — a bare
@@ -218,8 +218,9 @@ export class LibraryIndexSqlite implements LibraryIndex {
 		const distinctSql = `SELECT COUNT(DISTINCT COALESCE(NULLIF(album_artist, ''), artist)) AS n
        FROM songs
        WHERE ${whereClause} AND (artist <> '' OR album_artist <> '')`;
-		const rowsParams = sinceMs === null ? [opts.limit] : [sinceMs, opts.limit];
-		const distinctParams = sinceMs === null ? [] : [sinceMs];
+		const rowsParams =
+			sinceMs === undefined ? [opts.limit] : [sinceMs, opts.limit];
+		const distinctParams = sinceMs === undefined ? [] : [sinceMs];
 		const rows = this.db
 			.prepare(rowsSql)
 			.all(...rowsParams) as LibraryRecentlyAddedRow[];
@@ -341,13 +342,15 @@ export class LibraryIndexSqlite implements LibraryIndex {
 			const rows: unknown[][] = [];
 			let truncated = false;
 			let count = 0;
-			for (const raw of stmt.iterate(...params)) {
+			if (stmt.reader) {
+				stmt.raw(true);
+			}
+			for (const row of stmt.iterate(...params.map(toBindable))) {
 				if (count >= rowLimit) {
 					truncated = true;
 					break;
 				}
-				const obj = raw as Record<string, unknown>;
-				rows.push(columns.map((col) => obj[col]));
+				rows.push(row as unknown[]);
 				count++;
 			}
 			return {
@@ -370,6 +373,11 @@ export class LibraryIndexSqlite implements LibraryIndex {
 			this.db.close();
 		}
 	}
+}
+
+// better-sqlite3 rejects booleans; SQLite stores them as 0/1.
+function toBindable(value: unknown): unknown {
+	return typeof value === "boolean" ? Number(value) : value;
 }
 
 function msToIso(ms: number | null): string | null {

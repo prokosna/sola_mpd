@@ -13,7 +13,7 @@ export const deleteMpdProfileActionAtom = atom(
 			params.profileName,
 		);
 		if (newState === undefined) {
-			return;
+			return false;
 		}
 		try {
 			await get(mpdProfileStateRepositoryAtom).save(newState);
@@ -24,8 +24,9 @@ export const deleteMpdProfileActionAtom = atom(
 				description: e instanceof Error ? e.message : String(e),
 				status: "error",
 			});
-			return;
+			return false;
 		}
 		set(mpdProfileStateAsyncAtom, Promise.resolve(newState));
+		return true;
 	},
 );

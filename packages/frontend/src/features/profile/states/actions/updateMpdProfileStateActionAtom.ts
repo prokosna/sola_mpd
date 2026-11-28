@@ -19,11 +19,12 @@ export const updateMpdProfileStateActionAtom = atom(
 					description: e instanceof Error ? e.message : String(e),
 					status: "error",
 				});
-				return;
+				return false;
 			}
 		}
 		if (params.mode & UpdateMode.LOCAL_STATE) {
 			set(mpdProfileStateAsyncAtom, Promise.resolve(params.state));
 		}
+		return true;
 	},
 );
