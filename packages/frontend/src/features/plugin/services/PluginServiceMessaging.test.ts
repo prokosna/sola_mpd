@@ -20,6 +20,7 @@ const createClient = () => {
 		fetch: vi.fn(),
 		emit: vi.fn(async () => new Uint8Array(0)),
 		on: vi.fn(async (event, callback) => {
+			await Promise.resolve();
 			listeners.set(event, callback);
 		}),
 		off: vi.fn(async (event) => {
@@ -79,6 +80,18 @@ describe("PluginServiceMessaging.execute", () => {
 
 		expect(listeners.size).toBe(0);
 		expect(client.emit).not.toHaveBeenCalled();
+	});
+
+	it("registers a distinct callback event per subscription", async () => {
+		const { client } = createClient();
+		const observable = new PluginServiceMessaging(client).execute(request);
+		observable.subscribe();
+		observable.subscribe();
+		await flush();
+
+		const events = vi.mocked(client.on).mock.calls.map(([event]) => event);
+		expect(events).toHaveLength(2);
+		expect(new Set(events).size).toBe(2);
 	});
 
 	it("errors the stream and removes the listener on disconnect", async () => {

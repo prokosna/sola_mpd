@@ -47,14 +47,14 @@ export class PluginServiceMessaging implements PluginService {
 	};
 
 	execute = (req: PluginExecuteRequest): Observable<PluginExecuteResponse> => {
-		const reqWrapper = create(PluginExecuteRequestWrapperSchema, {
-			request: req,
-			callbackEvent: `${Date.now()}_${++this.callbackSeq}`,
-		});
-		const bytes = toBinary(PluginExecuteRequestWrapperSchema, reqWrapper);
-		const callbackEvent = reqWrapper.callbackEvent;
-
 		return new Observable<PluginExecuteResponse>((subscriber) => {
+			const reqWrapper = create(PluginExecuteRequestWrapperSchema, {
+				request: req,
+				callbackEvent: `${Date.now()}_${++this.callbackSeq}`,
+			});
+			const bytes = toBinary(PluginExecuteRequestWrapperSchema, reqWrapper);
+			const callbackEvent = reqWrapper.callbackEvent;
+
 			const removeDisconnectListener = this.client.onDisconnect(() => {
 				subscriber.error(new Error("Connection lost during plugin execution"));
 			});
