@@ -5,6 +5,34 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [4.15.0](https://github.com/prokosna/sola_mpd/compare/v4.14.2...v4.15.0) (2026-11-28)
+
+
+### Features
+
+* **frontend:** notify MPD command and load failures ([#465](https://github.com/prokosna/sola_mpd/issues/465)) ([0439307](https://github.com/prokosna/sola_mpd/commit/0439307590b836d64ee3b48274c6c8733c354ea1))
+
+
+### Bug Fixes
+
+* **backend:** drop the subscription entry before awaiting unsubscribe ([#468](https://github.com/prokosna/sola_mpd/issues/468)) ([a8ad3c0](https://github.com/prokosna/sola_mpd/commit/a8ad3c04591c9c3f7f46847d16f0c7cd0a351c8d))
+* **backend:** return empty advanced search results and always remove the temp playlist ([#469](https://github.com/prokosna/sola_mpd/issues/469)) ([b4635df](https://github.com/prokosna/sola_mpd/commit/b4635dfdeb6898f1661d0c2e54a6693251bdf743))
+* **backend:** validate Socket.IO payload and ack from untrusted clients ([#467](https://github.com/prokosna/sola_mpd/issues/467)) ([b0013b8](https://github.com/prokosna/sola_mpd/commit/b0013b87b90a74e384112c86109862e48980f28e))
+* **desktop:** sweep expired view state blobs at startup ([#472](https://github.com/prokosna/sola_mpd/issues/472)) ([f43254d](https://github.com/prokosna/sola_mpd/commit/f43254d44a5d6c9cb9a40bd548b06c281c1cc0ad))
+* **frontend:** identify the current MPD profile by name ([#476](https://github.com/prokosna/sola_mpd/issues/476)) ([ba29e2f](https://github.com/prokosna/sola_mpd/commit/ba29e2fd99fab123f2b375d9cebb575e9bbd9362))
+* **frontend:** ignore stale ?vs= token resolutions ([#470](https://github.com/prokosna/sola_mpd/issues/470)) ([d414783](https://github.com/prokosna/sola_mpd/commit/d414783d8e28a6361d4c9e6809559c7a8e5a2e89))
+* **frontend:** keep saved searches intact when saving a search fails ([#477](https://github.com/prokosna/sola_mpd/issues/477)) ([87efa13](https://github.com/prokosna/sola_mpd/commit/87efa1332a250f99f55c1879d8d35ed67278eb81))
+* **frontend:** keep the similarity search spinner inside its modal ([#482](https://github.com/prokosna/sola_mpd/issues/482)) ([a24e6db](https://github.com/prokosna/sola_mpd/commit/a24e6db4e6e91d23b14abf109ebd4e999cffc614))
+* **frontend:** log failed config refreshes instead of leaving them unhandled ([#478](https://github.com/prokosna/sola_mpd/issues/478)) ([9b29b81](https://github.com/prokosna/sola_mpd/commit/9b29b819fb659a40066548d3843622081e022319))
+* **frontend:** make plugin callback channel ids match the desktop preload allowlist ([#487](https://github.com/prokosna/sola_mpd/issues/487)) ([795d5dc](https://github.com/prokosna/sola_mpd/commit/795d5dc2f2079b1908de1e1083b78fd1abf7dae1))
+* **frontend:** release plugin execute listener on unsubscribe and disconnect ([#483](https://github.com/prokosna/sola_mpd/issues/483)) ([1d091ef](https://github.com/prokosna/sola_mpd/commit/1d091ef6cf7c003c93d1f7ff3390a63c56ebbce8))
+* **frontend:** report Scan Library / Retry Failed outcomes ([#475](https://github.com/prokosna/sola_mpd/issues/475)) ([0001fb7](https://github.com/prokosna/sola_mpd/commit/0001fb7d320888daf808c72e8b9167dc103a4399))
+* **frontend:** skip success feedback when a save fails ([#479](https://github.com/prokosna/sola_mpd/issues/479)) ([e3d87b9](https://github.com/prokosna/sola_mpd/commit/e3d87b91e3b7efaa0c234359d49220338ea9a07f))
+* **frontend:** store the Advanced Search query limit as an integer ([#480](https://github.com/prokosna/sola_mpd/issues/480)) ([3bd69f2](https://github.com/prokosna/sola_mpd/commit/3bd69f2ea5940f1eaa9f8a6de7252f8c6fb789c3))
+* **mcp:** bind boolean SQL params and keep duplicate result columns ([#474](https://github.com/prokosna/sola_mpd/issues/474)) ([641620f](https://github.com/prokosna/sola_mpd/commit/641620f6d7ccab2537a588ad64eb7c10d164fc64))
+* **messaging:** reject the caller when a Socket.IO handler fails ([#456](https://github.com/prokosna/sola_mpd/issues/456)) ([342b05e](https://github.com/prokosna/sola_mpd/commit/342b05ee2e529eb62e41b1bbb46e91ffe192fce1))
+* **subsonic:** treat missing tags as empty when diffing playlists ([#473](https://github.com/prokosna/sola_mpd/issues/473)) ([2912c45](https://github.com/prokosna/sola_mpd/commit/2912c459519ddeb1d04210bb1e9afd4471a4b009))
+
 ## [4.14.2](https://github.com/prokosna/sola_mpd/compare/v4.14.1...v4.14.2) (2026-11-20)
 
 
