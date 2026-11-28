@@ -196,9 +196,9 @@ export class LibraryIndexSqlite implements LibraryIndex {
 		limit: number;
 		since?: Date;
 	}): LibraryAggregated<LibraryRecentlyAddedRow> {
-		const sinceMs = opts.since?.getTime() ?? null;
+		const sinceMs = opts.since?.getTime();
 		const whereClause =
-			sinceMs === null
+			sinceMs === undefined
 				? "added_at_ms IS NOT NULL"
 				: "added_at_ms IS NOT NULL AND added_at_ms >= ?";
 		// GROUP BY must reference the same expression used in SELECT — a bare
@@ -218,8 +218,9 @@ export class LibraryIndexSqlite implements LibraryIndex {
 		const distinctSql = `SELECT COUNT(DISTINCT COALESCE(NULLIF(album_artist, ''), artist)) AS n
        FROM songs
        WHERE ${whereClause} AND (artist <> '' OR album_artist <> '')`;
-		const rowsParams = sinceMs === null ? [opts.limit] : [sinceMs, opts.limit];
-		const distinctParams = sinceMs === null ? [] : [sinceMs];
+		const rowsParams =
+			sinceMs === undefined ? [opts.limit] : [sinceMs, opts.limit];
+		const distinctParams = sinceMs === undefined ? [] : [sinceMs];
 		const rows = this.db
 			.prepare(rowsSql)
 			.all(...rowsParams) as LibraryRecentlyAddedRow[];
