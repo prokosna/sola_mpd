@@ -96,15 +96,53 @@ describe("updateCurrentMpdProfileActionAtom", () => {
 		});
 		store.set(mpdProfileStateAsyncAtom, Promise.resolve(state));
 
-		await store.set(updateCurrentMpdProfileActionAtom, {
+		const result = await store.set(updateCurrentMpdProfileActionAtom, {
 			profile: profileB,
 			mode: UpdateMode.LOCAL_STATE | UpdateMode.PERSIST,
 		});
 
+		expect(result).toBe(true);
 		expect(mpdProfileStateRepository.save).toHaveBeenCalledTimes(1);
 		const savedState = (
 			mpdProfileStateRepository.save as ReturnType<typeof vi.fn>
 		).mock.calls[0][0];
 		expect(savedState.currentProfile.name).toBe("B");
+	});
+
+	it("returns false and keeps local state when the save fails", async () => {
+		const store = createStore();
+		const mpdProfileStateRepository = createFakeMpdProfileStateRepository();
+		(
+			mpdProfileStateRepository.save as ReturnType<typeof vi.fn>
+		).mockRejectedValue(new Error("disk full"));
+		store.set(mpdProfileStateRepositoryAtom, mpdProfileStateRepository);
+		const errorSpy = vi.spyOn(console, "error").mockImplementation(() => {});
+
+		const profileA = create(MpdProfileSchema, {
+			name: "A",
+			host: "localhost",
+			port: 6600,
+		});
+		const profileB = create(MpdProfileSchema, {
+			name: "B",
+			host: "localhost",
+			port: 6601,
+		});
+		const state = create(MpdProfileStateSchema, {
+			currentProfile: profileA,
+			profiles: [profileA, profileB],
+		});
+		store.set(mpdProfileStateAsyncAtom, Promise.resolve(state));
+
+		const result = await store.set(updateCurrentMpdProfileActionAtom, {
+			profile: profileB,
+			mode: UpdateMode.LOCAL_STATE | UpdateMode.PERSIST,
+		});
+
+		expect(result).toBe(false);
+		store.get(mpdProfileStateAtom);
+		await flush();
+		expect(store.get(mpdProfileStateAtom)?.currentProfile?.name).toBe("A");
+		errorSpy.mockRestore();
 	});
 });
