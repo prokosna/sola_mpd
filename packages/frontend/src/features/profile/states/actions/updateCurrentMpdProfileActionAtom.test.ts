@@ -145,4 +145,77 @@ describe("updateCurrentMpdProfileActionAtom", () => {
 		expect(store.get(mpdProfileStateAtom)?.currentProfile?.name).toBe("A");
 		errorSpy.mockRestore();
 	});
+
+	it("accepts a structurally equal profile that is a different object", async () => {
+		const store = createStore();
+		const repository = createFakeMpdProfileStateRepository();
+		store.set(mpdProfileStateRepositoryAtom, repository);
+		const profileA = create(MpdProfileSchema, { name: "A", port: 6600 });
+		const profileB = create(MpdProfileSchema, { name: "B", port: 6601 });
+		const state = create(MpdProfileStateSchema, {
+			currentProfile: profileA,
+			profiles: [profileA, profileB],
+		});
+		store.set(mpdProfileStateAsyncAtom, Promise.resolve(state));
+
+		const result = await store.set(updateCurrentMpdProfileActionAtom, {
+			profile: create(MpdProfileSchema, { name: "B", port: 6601 }),
+			mode: UpdateMode.LOCAL_STATE | UpdateMode.PERSIST,
+		});
+
+		expect(result).toBe(true);
+		expect(repository.save).toHaveBeenCalledTimes(1);
+	});
+
+	it("sets currentProfile to the element inside profiles", async () => {
+		const store = createStore();
+		store.set(
+			mpdProfileStateRepositoryAtom,
+			createFakeMpdProfileStateRepository(),
+		);
+		const profileA = create(MpdProfileSchema, { name: "A", port: 6600 });
+		const profileB = create(MpdProfileSchema, { name: "B", port: 6601 });
+		const state = create(MpdProfileStateSchema, {
+			currentProfile: profileA,
+			profiles: [profileA, profileB],
+		});
+		store.set(mpdProfileStateAsyncAtom, Promise.resolve(state));
+		store.get(mpdProfileStateAtom);
+		await flush();
+
+		await store.set(updateCurrentMpdProfileActionAtom, {
+			profile: create(MpdProfileSchema, { name: "B", port: 6601 }),
+			mode: UpdateMode.LOCAL_STATE | UpdateMode.PERSIST,
+		});
+		store.get(mpdProfileStateAtom);
+		await flush();
+
+		const next = store.get(mpdProfileStateAtom);
+		expect(next?.currentProfile).toBe(next?.profiles[1]);
+	});
+
+	it("resolves false without throwing or writing state for an unknown name", async () => {
+		const store = createStore();
+		const repository = createFakeMpdProfileStateRepository();
+		store.set(mpdProfileStateRepositoryAtom, repository);
+		const profileA = create(MpdProfileSchema, { name: "A", port: 6600 });
+		const state = create(MpdProfileStateSchema, {
+			currentProfile: profileA,
+			profiles: [profileA],
+		});
+		store.set(mpdProfileStateAsyncAtom, Promise.resolve(state));
+		store.get(mpdProfileStateAtom);
+		await flush();
+
+		const result = await store.set(updateCurrentMpdProfileActionAtom, {
+			profile: create(MpdProfileSchema, { name: "Z" }),
+			mode: UpdateMode.LOCAL_STATE | UpdateMode.PERSIST,
+		});
+
+		expect(result).toBe(false);
+		expect(repository.save).not.toHaveBeenCalled();
+		store.get(mpdProfileStateAtom);
+		await flush();
+		expect(store.get(mpdProfileStateAtom)).toBe(state);
+	});
 });
