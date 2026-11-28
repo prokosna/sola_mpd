@@ -43,7 +43,12 @@ export function createRestoreSelectionActionAtom(config: {
 	const { selectionQueryParam, resolvedSelectionAtom, setIsLoadingActionAtom } =
 		config;
 
+	// Last call wins: a slow token resolution must not overwrite a newer one.
+	let generation = 0;
+	let isTokenInFlight = false;
+
 	return atom(null, async (get, set, search: string): Promise<void> => {
+		const current = ++generation;
 		const deserialized = deserializeBrowserSelection(
 			search,
 			selectionQueryParam,
@@ -53,13 +58,21 @@ export function createRestoreSelectionActionAtom(config: {
 			// Cleared as well as set: a token result must not outlive the URL
 			// that referenced it.
 			set(resolvedSelectionAtom, deserialized.selection);
+			if (isTokenInFlight) {
+				// The superseded request will never clear the loading flag itself.
+				isTokenInFlight = false;
+				set(setIsLoadingActionAtom, false);
+			}
 			return;
 		}
 
+		isTokenInFlight = true;
 		set(setIsLoadingActionAtom, true);
-		set(
-			resolvedSelectionAtom,
-			await resolveSelectionToken(get, deserialized.token),
-		);
+		const resolved = await resolveSelectionToken(get, deserialized.token);
+		if (current !== generation) {
+			return;
+		}
+		isTokenInFlight = false;
+		set(resolvedSelectionAtom, resolved);
 	});
 }
