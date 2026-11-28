@@ -39,6 +39,23 @@ const flush = () => new Promise((resolve) => setTimeout(resolve, 0));
 const request = create(PluginExecuteRequestSchema);
 
 describe("PluginServiceMessaging.execute", () => {
+	it("uses unique callback channels the desktop preload accepts", async () => {
+		const { client } = createClient();
+		const service = new PluginServiceMessaging(client);
+		const subscriptions = [1, 2, 3].map(() =>
+			service.execute(request).subscribe(),
+		);
+		await flush();
+
+		const channels = vi.mocked(client.on).mock.calls.map(([event]) => event);
+		expect(new Set(channels).size).toBe(3);
+		// Mirrors isPluginCallbackChannel in packages/desktop/src/preload/channels.ts.
+		for (const channel of channels) {
+			expect(channel).toMatch(/^\d+_[\d.]+$/);
+		}
+		for (const subscription of subscriptions) subscription.unsubscribe();
+	});
+
 	it("removes the callback listener when the consumer unsubscribes early", async () => {
 		const { client, listeners, disconnectListeners } = createClient();
 		const subscription = new PluginServiceMessaging(client)
