@@ -64,7 +64,7 @@ export function useSettingsStatesProps(): SettingsStatesProps | undefined {
 			MpdProfileStateSchema,
 			mpdProfileState,
 			async (state: MpdProfileState) => {
-				updateMpdProfileState({ state, mode: persistMode });
+				return updateMpdProfileState({ state, mode: persistMode });
 			},
 		);
 
@@ -78,7 +78,7 @@ export function useSettingsStatesProps(): SettingsStatesProps | undefined {
 			BrowserStateSchema,
 			browserState,
 			async (state: BrowserState) => {
-				updateBrowserState({ state, mode: persistMode });
+				return updateBrowserState({ state, mode: persistMode });
 			},
 		);
 
@@ -89,7 +89,7 @@ export function useSettingsStatesProps(): SettingsStatesProps | undefined {
 			SavedSearchesSchema,
 			savedSearches,
 			async (savedSearches: SavedSearches) => {
-				updateSavedSearches({ savedSearches, mode: persistMode });
+				return updateSavedSearches({ savedSearches, mode: persistMode });
 			},
 		);
 
@@ -100,7 +100,7 @@ export function useSettingsStatesProps(): SettingsStatesProps | undefined {
 			PluginStateSchema,
 			pluginState,
 			async (pluginState: PluginState) => {
-				updatePlugin({ pluginState, mode: persistMode });
+				return updatePlugin({ pluginState, mode: persistMode });
 			},
 		);
 
@@ -113,7 +113,7 @@ export function useSettingsStatesProps(): SettingsStatesProps | undefined {
 			RecentlyAddedStateSchema,
 			recentlyAddedState,
 			async (state: RecentlyAddedState) => {
-				updateRecentlyAddedState({ state, mode: persistMode });
+				return updateRecentlyAddedState({ state, mode: persistMode });
 			},
 		);
 

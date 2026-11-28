@@ -75,7 +75,10 @@ export function MpdProfileForm(props: MpdProfileFormProps) {
 	const handleSubmit = useCallback(
 		async (values: typeof form.values) => {
 			const profileInput = buildProfileInputFromForm(values);
-			await addMpdProfile(profileInput);
+			const saved = await addMpdProfile(profileInput);
+			if (!saved) {
+				return;
+			}
 			notify({
 				status: "success",
 				title: "MPD profile successfully created",

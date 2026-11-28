@@ -10,6 +10,7 @@ import {
 } from "@mantine/core";
 import {
 	type Plugin,
+	PluginSchema,
 	PluginStateSchema,
 } from "@sola_mpd/shared/src/models/plugin/plugin_pb.js";
 import { useAtomValue, useSetAtom } from "jotai";
@@ -36,21 +37,25 @@ export function PluginAddModalRegister(props: PluginAddModalRegisterProps) {
 		new Map(),
 	);
 
-	const handlePluginRegistered = useCallback(() => {
+	const handlePluginRegistered = useCallback(async () => {
 		if (pluginState === undefined) {
 			return;
 		}
 
+		const newPlugin = clone(PluginSchema, pluginToAdd);
 		parameterValues.forEach((value, key) => {
-			pluginToAdd.pluginParameters[key] = value;
+			newPlugin.pluginParameters[key] = value;
 		});
 
 		const newPluginState = clone(PluginStateSchema, pluginState);
-		newPluginState.plugins.push(pluginToAdd);
-		updatePlugin({
+		newPluginState.plugins.push(newPlugin);
+		const saved = await updatePlugin({
 			pluginState: newPluginState,
 			mode: UpdateMode.LOCAL_STATE | UpdateMode.PERSIST,
 		});
+		if (!saved) {
+			return;
+		}
 
 		notify({
 			status: "success",

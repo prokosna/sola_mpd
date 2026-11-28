@@ -26,7 +26,7 @@ export function useRawSongTableStateEditorProps(): [
 		SongTableStateSchema,
 		songTableServerState,
 		async (newState: SongTableState) => {
-			updateSongTableServerState({
+			return updateSongTableServerState({
 				state: newState,
 				mode: UpdateMode.LOCAL_STATE | UpdateMode.PERSIST,
 			});

@@ -25,10 +25,13 @@ export function useHandlePluginRemoved(plugin: Plugin) {
 		if (newState === undefined) {
 			return;
 		}
-		await updatePlugin({
+		const saved = await updatePlugin({
 			pluginState: newState,
 			mode: UpdateMode.LOCAL_STATE | UpdateMode.PERSIST,
 		});
+		if (!saved) {
+			return;
+		}
 		notify({
 			status: "success",
 			title: "Plugin successfully removed",
