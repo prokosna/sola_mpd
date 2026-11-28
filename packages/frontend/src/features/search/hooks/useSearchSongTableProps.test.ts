@@ -15,7 +15,7 @@ import {
 } from "@sola_mpd/shared/src/models/search_pb.js";
 import { Song_MetadataTag } from "@sola_mpd/shared/src/models/song_pb.js";
 import { SongTableStateSchema } from "@sola_mpd/shared/src/models/song_table_pb.js";
-import { renderHook, waitFor } from "@testing-library/react";
+import { act, renderHook, waitFor } from "@testing-library/react";
 import { createStore } from "jotai";
 import { Provider } from "jotai/react";
 import { createElement } from "react";
@@ -234,7 +234,9 @@ describe("useSearchSongTableProps", () => {
 		const resetLayoutItem = result.current?.contextMenuSections
 			.flatMap((section) => section.items)
 			.find((item) => item.name === "Reset Layout");
-		await resetLayoutItem?.onClick?.(undefined);
+		await act(async () => {
+			await resetLayoutItem?.onClick?.(undefined);
+		});
 
 		expect(store.get(songTableDeviceLayoutAtom)).toEqual({
 			...sharedLayout,
