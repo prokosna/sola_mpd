@@ -38,4 +38,9 @@ export class MessagingClientElectronIpc implements MessagingClient {
 
 	// IPC lives as long as the renderer, so there is nothing to reconnect.
 	onReconnect = (_callback: () => void): void => {};
+
+	// IPC never disconnects while the renderer is alive.
+	onDisconnect = (_callback: () => void): (() => void) => {
+		return () => {};
+	};
 }

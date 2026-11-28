@@ -2,10 +2,10 @@ import {
 	Button,
 	Divider,
 	Group,
+	NumberInput,
 	Stack,
 	Table,
 	Text,
-	TextInput,
 	Title,
 } from "@mantine/core";
 import { useForm } from "@mantine/form";
@@ -14,6 +14,8 @@ import { useAtomValue, useSetAtom } from "jotai";
 import {
 	advancedSearchQueryLimitAtom,
 	analyzeActionAtom,
+	MAX_QUERY_LIMIT,
+	parseQueryLimit,
 	scanLibraryActionAtom,
 	setAdvancedSearchQueryLimitActionAtom,
 } from "../../advanced_search";
@@ -33,23 +35,24 @@ export function AdvancedSearchSettings({
 	const form = useForm({
 		mode: "uncontrolled",
 		initialValues: {
-			limit: advancedSearchQueryLimit,
+			limit: advancedSearchQueryLimit as number | string,
 		},
 		validate: {
 			limit: (value) => {
-				if (value === undefined || value === null) {
+				if (value === "") {
 					return "Limit is required";
 				}
-				if (value < 1) {
-					return "Limit must be greater than 0";
+				if (parseQueryLimit(value) === undefined) {
+					return `Limit must be an integer between 1 and ${MAX_QUERY_LIMIT}`;
 				}
 				return undefined;
 			},
 		},
 		onValuesChange: (values) => {
 			form.validate();
-			if (form.isValid()) {
-				setAdvancedSearchQueryLimit(values.limit);
+			const limit = parseQueryLimit(values.limit);
+			if (limit !== undefined) {
+				setAdvancedSearchQueryLimit(limit);
 			}
 		},
 	});
@@ -64,10 +67,13 @@ export function AdvancedSearchSettings({
 			</Text>
 			<form>
 				<Group>
-					<TextInput
+					<NumberInput
 						label="Query Limit"
 						maw="100"
-						type="number"
+						min={1}
+						max={MAX_QUERY_LIMIT}
+						allowNegative={false}
+						allowDecimal={false}
 						key={form.key("limit")}
 						{...form.getInputProps("limit")}
 					/>
