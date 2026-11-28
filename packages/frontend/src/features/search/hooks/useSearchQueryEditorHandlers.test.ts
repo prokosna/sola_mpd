@@ -56,6 +56,10 @@ describe("useSearchQueryEditorHandlers handleSave", () => {
 
 		expect(store.get(editingSearchStatusAtom)).toBe(EditingSearchStatus.SAVED);
 		expect(original.searches.map((s) => s.name)).toEqual(["a"]);
+		expect(store.get(savedSearchesAtom)?.searches.map((s) => s.name)).toEqual([
+			"a",
+			"b",
+		]);
 	});
 
 	it("leaves the atom's search list and editing status alone when persisting fails", async () => {
@@ -64,7 +68,7 @@ describe("useSearchQueryEditorHandlers handleSave", () => {
 				throw new Error("save failed");
 			}),
 		);
-		vi.spyOn(console, "error").mockImplementation(() => {});
+		const errorSpy = vi.spyOn(console, "error").mockImplementation(() => {});
 
 		await act(async () => {
 			await result.current.handleSave(initialValues);
@@ -74,5 +78,9 @@ describe("useSearchQueryEditorHandlers handleSave", () => {
 		expect(store.get(editingSearchStatusAtom)).toBe(
 			EditingSearchStatus.NOT_SAVED,
 		);
+		expect(store.get(savedSearchesAtom)?.searches.map((s) => s.name)).toEqual([
+			"a",
+		]);
+		errorSpy.mockRestore();
 	});
 });

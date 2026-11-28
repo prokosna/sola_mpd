@@ -486,4 +486,16 @@ describe("upsertSearch", () => {
 		expect(result.searches.map((s) => s.name)).toEqual(["a", "b", "c"]);
 		expect(original.searches).toHaveLength(2);
 	});
+
+	it("stores a copy of the search so later mutation cannot alias saved state", () => {
+		const search = create(SearchSchema, { name: "b" });
+
+		const replaced = upsertSearch(saved(), search);
+		const appended = upsertSearch(saved(), create(SearchSchema, { name: "c" }));
+
+		expect(replaced.searches[1]).not.toBe(search);
+		expect(replaced.searches[1].name).toBe("b");
+		const added = create(SearchSchema, { name: "d" });
+		expect(upsertSearch(appended, added).searches[3]).not.toBe(added);
+	});
 });

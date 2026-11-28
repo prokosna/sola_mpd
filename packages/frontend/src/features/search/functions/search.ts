@@ -290,9 +290,9 @@ export function upsertSearch(
 	const updated = clone(SavedSearchesSchema, savedSearches);
 	const index = updated.searches.findIndex((s) => s.name === search.name);
 	if (index >= 0) {
-		updated.searches[index] = search;
+		updated.searches[index] = clone(SearchSchema, search);
 	} else {
-		updated.searches.push(search);
+		updated.searches.push(clone(SearchSchema, search));
 	}
 	return updated;
 }
