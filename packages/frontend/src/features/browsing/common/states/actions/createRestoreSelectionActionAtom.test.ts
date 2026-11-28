@@ -47,10 +47,22 @@ function setup() {
 		resolvedSelectionAtom: resolvedAtom,
 		setIsLoadingActionAtom: setLoadingAtom,
 	});
-	const store = createStore();
-	store.set(viewStateBlobRepositoryAtom, repository);
+	const createConfiguredStore = () => {
+		const s = createStore();
+		s.set(viewStateBlobRepositoryAtom, repository);
+		return s;
+	};
+	const store = createConfiguredStore();
 	const restore = (search: string) => store.set(restoreAtom, search);
-	return { store, restore, pending, resolvedAtom, loadingAtom };
+	return {
+		store,
+		restore,
+		pending,
+		resolvedAtom,
+		loadingAtom,
+		restoreAtom,
+		createConfiguredStore,
+	};
 }
 
 const tokenSearch = (token: string) =>
@@ -103,5 +115,40 @@ describe("createRestoreSelectionActionAtom", () => {
 		await call;
 
 		expect(store.get(resolvedAtom)).toEqual(selection("only"));
+	});
+
+	it("keeps in-flight state separate per store", async () => {
+		const {
+			store: storeA,
+			restoreAtom,
+			createConfiguredStore,
+			pending,
+			resolvedAtom,
+			loadingAtom,
+		} = setup();
+		const storeB = createConfiguredStore();
+
+		const inFlightA = storeA.set(restoreAtom, tokenSearch("a"));
+		await storeB.set(
+			restoreAtom,
+			`?${INLINE_PARAM}=${encodeURIComponent(payload("inline"))}`,
+		);
+
+		expect(storeB.get(resolvedAtom)).toEqual(selection("inline"));
+		expect(storeA.get(loadingAtom)).toBe(true);
+
+		const inFlightB = storeB.set(restoreAtom, tokenSearch("b"));
+		await storeA.set(
+			restoreAtom,
+			`?${INLINE_PARAM}=${encodeURIComponent(payload("inlineA"))}`,
+		);
+		pending.get("b")?.resolve(payload("resultB"));
+		await inFlightB;
+		pending.get("a")?.resolve(payload("stale"));
+		await inFlightA;
+
+		expect(storeB.get(resolvedAtom)).toEqual(selection("resultB"));
+		expect(storeA.get(resolvedAtom)).toEqual(selection("inlineA"));
+		expect(storeA.get(loadingAtom)).toBe(false);
 	});
 });
