@@ -14,6 +14,7 @@ import { useAtomValue, useSetAtom } from "jotai";
 import {
 	advancedSearchQueryLimitAtom,
 	analyzeActionAtom,
+	MAX_QUERY_LIMIT,
 	parseQueryLimit,
 	scanLibraryActionAtom,
 	setAdvancedSearchQueryLimitActionAtom,
@@ -42,7 +43,7 @@ export function AdvancedSearchSettings({
 					return "Limit is required";
 				}
 				if (parseQueryLimit(value) === undefined) {
-					return "Limit must be a positive integer";
+					return `Limit must be an integer between 1 and ${MAX_QUERY_LIMIT}`;
 				}
 				return undefined;
 			},
@@ -70,6 +71,8 @@ export function AdvancedSearchSettings({
 						label="Query Limit"
 						maw="100"
 						min={1}
+						max={MAX_QUERY_LIMIT}
+						allowNegative={false}
 						allowDecimal={false}
 						key={form.key("limit")}
 						{...form.getInputProps("limit")}

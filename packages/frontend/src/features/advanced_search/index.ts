@@ -3,7 +3,7 @@ export { SimilaritySearchModal } from "./components/SimilaritySearchModal";
 export { TextToMusicSearch } from "./components/TextToMusicSearch";
 
 // Functions
-export { parseQueryLimit } from "./functions/queryLimit";
+export { MAX_QUERY_LIMIT, parseQueryLimit } from "./functions/queryLimit";
 
 // Hooks
 export { useSimilarSongsContextMenuItems } from "./hooks/useSimilarSongsContextMenuItems";
