@@ -47,7 +47,11 @@ describe("deleteMpdProfileActionAtom", () => {
 		});
 		store.set(mpdProfileStateAsyncAtom, Promise.resolve(state));
 
-		await store.set(deleteMpdProfileActionAtom, { profileName: "Home" });
+		const result = await store.set(deleteMpdProfileActionAtom, {
+			profileName: "Home",
+		});
+
+		expect(result).toBe(true);
 
 		expect(mpdProfileStateRepository.save).toHaveBeenCalledTimes(1);
 		const savedState = (
@@ -80,10 +84,49 @@ describe("deleteMpdProfileActionAtom", () => {
 		});
 		store.set(mpdProfileStateAsyncAtom, Promise.resolve(state));
 
-		await store.set(deleteMpdProfileActionAtom, {
+		const result = await store.set(deleteMpdProfileActionAtom, {
 			profileName: "NonExistent",
 		});
 
+		expect(result).toBe(false);
 		expect(mpdProfileStateRepository.save).not.toHaveBeenCalled();
+	});
+
+	it("returns false and keeps local state when the save fails", async () => {
+		const store = createStore();
+		const mpdProfileStateRepository = createFakeMpdProfileStateRepository();
+		(
+			mpdProfileStateRepository.save as ReturnType<typeof vi.fn>
+		).mockRejectedValue(new Error("disk full"));
+		store.set(mpdProfileStateRepositoryAtom, mpdProfileStateRepository);
+		const errorSpy = vi.spyOn(console, "error").mockImplementation(() => {});
+
+		const profileHome = create(MpdProfileSchema, {
+			name: "Home",
+			host: "localhost",
+			port: 6600,
+		});
+		const profileOffice = create(MpdProfileSchema, {
+			name: "Office",
+			host: "localhost",
+			port: 6601,
+		});
+		const state = create(MpdProfileStateSchema, {
+			currentProfile: profileHome,
+			profiles: [profileHome, profileOffice],
+		});
+		store.set(mpdProfileStateAsyncAtom, Promise.resolve(state));
+
+		const result = await store.set(deleteMpdProfileActionAtom, {
+			profileName: "Home",
+		});
+
+		expect(result).toBe(false);
+		store.get(mpdProfileStateAtom);
+		await flush();
+		expect(store.get(mpdProfileStateAtom)?.profiles.map((p) => p.name)).toEqual(
+			["Home", "Office"],
+		);
+		errorSpy.mockRestore();
 	});
 });

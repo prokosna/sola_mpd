@@ -20,11 +20,12 @@ export const updateBrowserStateActionAtom = atom(
 					description: e instanceof Error ? e.message : String(e),
 					status: "error",
 				});
-				return;
+				return false;
 			}
 		}
 		if (mode & UpdateMode.LOCAL_STATE) {
 			set(browserStateAsyncAtom, state);
 		}
+		return true;
 	},
 );
