@@ -3,10 +3,11 @@ import {
 	type AdvancedSearchResponse,
 	AdvancedSearchResponseSchema,
 } from "@sola_mpd/shared/src/models/advanced_search_pb.js";
-import { MpdRequestSchema } from "@sola_mpd/shared/src/models/mpd/mpd_command_pb.js";
+import {
+	type MpdRequest,
+	MpdRequestSchema,
+} from "@sola_mpd/shared/src/models/mpd/mpd_command_pb.js";
 import type { MpdProfile } from "@sola_mpd/shared/src/models/mpd/mpd_profile_pb.js";
-import type { Song } from "@sola_mpd/shared/src/models/song_pb.js";
-import type { MpdClient } from "../../mpd/services/MpdClient.js";
 import { toErrorMessage } from "../../utils/errorUtils.js";
 
 export { toErrorMessage };
@@ -22,60 +23,42 @@ export const createErrorResponse = (err: unknown): AdvancedSearchResponse => {
 	});
 };
 
-export const fetchSongs = async (
+export const createTempPlaylistName = (random: number): string => {
+	return `${SEARCH_RESULT_PLAYLIST_NAME}_${Math.round(random * 1000000)}`;
+};
+
+export const createAddToPlaylistRequests = (
 	profile: MpdProfile,
+	playlistName: string,
 	filePaths: string[],
-	mpdClient: MpdClient,
-): Promise<Song[]> => {
-	// MPD has no playlist to list when nothing was added to it.
-	if (filePaths.length === 0) {
-		return [];
-	}
-
-	const playlistName = `${SEARCH_RESULT_PLAYLIST_NAME}_${Math.round(Math.random() * 1000000)}`;
-	const removeCommand = create(MpdRequestSchema, {
-		profile,
-		command: {
-			case: "rm",
-			value: {
-				name: playlistName,
-			},
-		},
-	});
-
-	try {
-		const addCommands = filePaths.map((filePath) =>
-			create(MpdRequestSchema, {
-				profile,
-				command: {
-					case: "playlistadd",
-					value: {
-						name: playlistName,
-						uri: filePath,
-					},
-				},
-			}),
-		);
-		await mpdClient.executeBulk(addCommands);
-
-		const getSongsCommand = create(MpdRequestSchema, {
+): MpdRequest[] => {
+	return filePaths.map((filePath) =>
+		create(MpdRequestSchema, {
 			profile,
 			command: {
-				case: "listplaylistinfo",
-				value: {
-					name: playlistName,
-				},
+				case: "playlistadd",
+				value: { name: playlistName, uri: filePath },
 			},
-		});
-		const response = await mpdClient.execute(getSongsCommand);
-		return response.command?.case === "listplaylistinfo"
-			? response.command.value.songs
-			: [];
-	} finally {
-		try {
-			await mpdClient.execute(removeCommand);
-		} catch (err) {
-			console.error(`Failed to remove temporary playlist ${playlistName}`, err);
-		}
-	}
+		}),
+	);
+};
+
+export const createListPlaylistRequest = (
+	profile: MpdProfile,
+	playlistName: string,
+): MpdRequest => {
+	return create(MpdRequestSchema, {
+		profile,
+		command: { case: "listplaylistinfo", value: { name: playlistName } },
+	});
+};
+
+export const createRemovePlaylistRequest = (
+	profile: MpdProfile,
+	playlistName: string,
+): MpdRequest => {
+	return create(MpdRequestSchema, {
+		profile,
+		command: { case: "rm", value: { name: playlistName } },
+	});
 };
