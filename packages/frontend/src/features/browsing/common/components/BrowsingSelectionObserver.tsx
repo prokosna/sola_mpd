@@ -1,4 +1,4 @@
-import { useAtomValue, useSetAtom, type WritableAtom } from "jotai";
+import { type Atom, useAtomValue, useSetAtom, type WritableAtom } from "jotai";
 import { useEffect, useRef } from "react";
 import { useSearchParams } from "react-router";
 
@@ -18,11 +18,13 @@ import type { SelectionQueryParam } from "../types/browserSelection";
 export function BrowsingSelectionObserver({
 	selectionQueryParam,
 	rememberedSelectionAtom,
+	rememberSelectionActionAtom,
 	restoreSelectionActionAtom,
 }: {
 	selectionQueryParam: string;
-	rememberedSelectionAtom: WritableAtom<
-		SelectionQueryParam | undefined,
+	rememberedSelectionAtom: Atom<SelectionQueryParam | undefined>;
+	rememberSelectionActionAtom: WritableAtom<
+		null,
 		[SelectionQueryParam | undefined],
 		void
 	>;
@@ -31,7 +33,7 @@ export function BrowsingSelectionObserver({
 	const [searchParams] = useSearchParams();
 	const restoreSelection = useSetAtom(restoreSelectionActionAtom);
 	const remembered = useAtomValue(rememberedSelectionAtom);
-	const setRemembered = useSetAtom(rememberedSelectionAtom);
+	const rememberSelection = useSetAtom(rememberSelectionActionAtom);
 	const applySelectionToUrl = useApplySelectionToUrl(selectionQueryParam);
 	const search = searchParams.toString();
 	const hydratedRef = useRef(false);
@@ -60,13 +62,13 @@ export function BrowsingSelectionObserver({
 		}
 
 		hydratedRef.current = true;
-		setRemembered(current);
+		rememberSelection(current);
 		restoreSelection(search);
 	}, [
 		search,
 		selectionQueryParam,
 		restoreSelection,
-		setRemembered,
+		rememberSelection,
 		applySelectionToUrl,
 	]);
 

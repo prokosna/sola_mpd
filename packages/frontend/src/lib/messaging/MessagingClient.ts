@@ -15,4 +15,6 @@ export interface MessagingClient {
 
 	// Server-side subscriptions do not survive a transport reconnect.
 	onReconnect: (callback: () => void) => void;
+
+	onDisconnect: (callback: () => void) => () => void;
 }

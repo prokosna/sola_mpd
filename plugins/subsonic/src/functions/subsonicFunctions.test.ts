@@ -138,4 +138,31 @@ describe("diffSongs", () => {
 
 		expect(result).toBeUndefined();
 	});
+
+	it("treats songs without tags on both sides as equal", () => {
+		const targets = [create(SongSchema, {})];
+		const existing: SubsonicSong[] = [{ id: "1" }];
+
+		const result = diffSongs(targets, existing);
+
+		expect(result).toEqual([]);
+	});
+
+	it("treats a missing Subsonic tag as an empty string", () => {
+		const targets = [createSong("A", "", "")];
+		const existing: SubsonicSong[] = [{ id: "1", title: "A" }];
+
+		const result = diffSongs(targets, existing);
+
+		expect(result).toEqual([]);
+	});
+
+	it("returns undefined when a missing Subsonic tag has a non-empty target", () => {
+		const targets = [createSong("A", "Artist1", "Album1")];
+		const existing: SubsonicSong[] = [{ id: "1", title: "A" }];
+
+		const result = diffSongs(targets, existing);
+
+		expect(result).toBeUndefined();
+	});
 });
