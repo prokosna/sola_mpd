@@ -1,7 +1,6 @@
-import { clone, toJsonString } from "@bufbuild/protobuf";
+import { clone } from "@bufbuild/protobuf";
 import {
 	type MpdProfile,
-	MpdProfileSchema,
 	MpdProfileStateSchema,
 } from "@sola_mpd/shared/src/models/mpd/mpd_profile_pb.js";
 import { atom } from "jotai";
@@ -15,13 +14,19 @@ export const updateCurrentMpdProfileActionAtom = atom(
 	null,
 	async (get, set, params: { profile: MpdProfile; mode: UpdateMode }) => {
 		const mpdProfileState = await get(mpdProfileStateAsyncAtom);
-		if (!mpdProfileState.profiles.includes(params.profile)) {
-			throw Error(
-				`Invalid profile state: ${toJsonString(MpdProfileSchema, params.profile)} is not in profiles`,
-			);
-		}
 		const newMpdProfileState = clone(MpdProfileStateSchema, mpdProfileState);
-		newMpdProfileState.currentProfile = params.profile;
+		const target = newMpdProfileState.profiles.find(
+			(profile) => profile.name === params.profile.name,
+		);
+		if (target === undefined) {
+			showNotification({
+				title: "Could not switch MPD profile",
+				description: `Profile "${params.profile.name}" no longer exists.`,
+				status: "error",
+			});
+			return false;
+		}
+		newMpdProfileState.currentProfile = target;
 		if (params.mode & UpdateMode.PERSIST) {
 			try {
 				await get(mpdProfileStateRepositoryAtom).save(newMpdProfileState);
