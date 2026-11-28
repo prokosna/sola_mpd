@@ -10,7 +10,11 @@ const equal = (a: Song, b: SubsonicSong): boolean => {
 	const title = getSongMetadataAsString(a, Song_MetadataTag.TITLE);
 	const artist = getSongMetadataAsString(a, Song_MetadataTag.ARTIST);
 	const album = getSongMetadataAsString(a, Song_MetadataTag.ALBUM);
-	return b.title === title && b.artist === artist && b.album === album;
+	return (
+		(b.title ?? "") === title &&
+		(b.artist ?? "") === artist &&
+		(b.album ?? "") === album
+	);
 };
 
 export const diffSongs = (

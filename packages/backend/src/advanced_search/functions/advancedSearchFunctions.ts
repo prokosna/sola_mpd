@@ -27,36 +27,12 @@ export const fetchSongs = async (
 	filePaths: string[],
 	mpdClient: MpdClient,
 ): Promise<Song[]> => {
+	// MPD has no playlist to list when nothing was added to it.
+	if (filePaths.length === 0) {
+		return [];
+	}
+
 	const playlistName = `${SEARCH_RESULT_PLAYLIST_NAME}_${Math.round(Math.random() * 1000000)}`;
-	const addCommands = filePaths.map((filePath) =>
-		create(MpdRequestSchema, {
-			profile,
-			command: {
-				case: "playlistadd",
-				value: {
-					name: playlistName,
-					uri: filePath,
-				},
-			},
-		}),
-	);
-	await mpdClient.executeBulk(addCommands);
-
-	const getSongsCommand = create(MpdRequestSchema, {
-		profile,
-		command: {
-			case: "listplaylistinfo",
-			value: {
-				name: playlistName,
-			},
-		},
-	});
-	const response = await mpdClient.execute(getSongsCommand);
-	const songs =
-		response.command?.case === "listplaylistinfo"
-			? response.command.value.songs
-			: [];
-
 	const removeCommand = create(MpdRequestSchema, {
 		profile,
 		command: {
@@ -66,7 +42,40 @@ export const fetchSongs = async (
 			},
 		},
 	});
-	await mpdClient.execute(removeCommand);
 
-	return songs;
+	try {
+		const addCommands = filePaths.map((filePath) =>
+			create(MpdRequestSchema, {
+				profile,
+				command: {
+					case: "playlistadd",
+					value: {
+						name: playlistName,
+						uri: filePath,
+					},
+				},
+			}),
+		);
+		await mpdClient.executeBulk(addCommands);
+
+		const getSongsCommand = create(MpdRequestSchema, {
+			profile,
+			command: {
+				case: "listplaylistinfo",
+				value: {
+					name: playlistName,
+				},
+			},
+		});
+		const response = await mpdClient.execute(getSongsCommand);
+		return response.command?.case === "listplaylistinfo"
+			? response.command.value.songs
+			: [];
+	} finally {
+		try {
+			await mpdClient.execute(removeCommand);
+		} catch (err) {
+			console.error(`Failed to remove temporary playlist ${playlistName}`, err);
+		}
+	}
 };

@@ -127,6 +127,81 @@ describe("MessagingServerSocketIo", () => {
 		expect(handler).toHaveBeenCalledTimes(1);
 	});
 
+	it("does not reject when the ack argument is not a function", async () => {
+		const errorSpy = vi.spyOn(console, "error").mockImplementation(() => {});
+		const fake = createFakeIo();
+		const server = fake.server();
+		server.handle("ok", () => new Uint8Array([1]));
+		server.handle("fail", () => {
+			throw new Error("boom");
+		});
+		const socket = createFakeSocket();
+		fake.connect(socket);
+
+		await expect(
+			socket.trigger("ok", new ArrayBuffer(0), "not a function"),
+		).resolves.toBeUndefined();
+		await expect(
+			socket.trigger("fail", new ArrayBuffer(0), { a: 1 }),
+		).resolves.toBeUndefined();
+		expect(errorSpy).toHaveBeenCalled();
+	});
+
+	it("does not reject when the ack itself throws", async () => {
+		vi.spyOn(console, "error").mockImplementation(() => {});
+		const fake = createFakeIo();
+		const server = fake.server();
+		server.handle("ok", () => new Uint8Array([1]));
+		const socket = createFakeSocket();
+		fake.connect(socket);
+
+		await expect(
+			socket.trigger("ok", new ArrayBuffer(0), () => {
+				throw new Error("ack failed");
+			}),
+		).resolves.toBeUndefined();
+	});
+
+	it.each([
+		["a number", 1e9],
+		["a string", "abc"],
+		["undefined", undefined],
+		["a plain object", { length: 3 }],
+	])("rejects %s as a payload without calling the handler", async (_n, msg) => {
+		const fake = createFakeIo();
+		const server = fake.server();
+		const handler = vi.fn();
+		server.handle("echo", handler);
+		const socket = createFakeSocket();
+		fake.connect(socket);
+
+		const ack = vi.fn();
+		await socket.trigger("echo", msg, ack);
+
+		expect(handler).not.toHaveBeenCalled();
+		expect(ack.mock.calls).toEqual([
+			[Buffer.alloc(0), { message: "Invalid payload" }],
+		]);
+	});
+
+	it("passes a Buffer payload to the handler without copying", async () => {
+		const fake = createFakeIo();
+		const server = fake.server();
+		const handler = vi.fn(async (payload: Uint8Array) => payload);
+		server.handle("echo", handler);
+		const socket = createFakeSocket();
+		fake.connect(socket);
+		const source = Buffer.from([1, 2, 3, 4]).subarray(1, 3);
+
+		const ack = vi.fn();
+		await socket.trigger("echo", source, ack);
+
+		const received = handler.mock.calls[0][0];
+		expect(Array.from(received)).toEqual([2, 3]);
+		expect(received.buffer).toBe(source.buffer);
+		expect(ack.mock.calls).toEqual([[Buffer.from([2, 3])]]);
+	});
+
 	it("gives handlers a peer that sends to its own socket and is a no-op after disconnect", async () => {
 		const fake = createFakeIo();
 		const server = fake.server();

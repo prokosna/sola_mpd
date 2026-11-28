@@ -14,6 +14,7 @@ import {
 } from "electron";
 import { createBackendDependencies } from "#backend/createBackendDependencies.js";
 import { registerMessagingHandlers } from "#backend/registerMessagingHandlers.js";
+import { sweepViewStateBlobsUseCase } from "#backend/view_state_blobs/application/viewStateBlobUseCases.js";
 import { MessagingServerElectronIpc } from "../lib/messaging/MessagingServerElectronIpc.js";
 import { resolveRendererFilePath } from "./protocol.js";
 import {
@@ -67,6 +68,11 @@ app.whenReady().then(async () => {
 	try {
 		const deps = createBackendDependencies({ dbDirectory: dbDir });
 		registerMessagingHandlers(new MessagingServerElectronIpc(ipcMain), deps);
+		try {
+			sweepViewStateBlobsUseCase(deps.viewStateBlobRepository);
+		} catch (err) {
+			console.error("Failed to sweep view state blobs on startup:", err);
+		}
 	} catch (err) {
 		const message = err instanceof Error ? err.message : String(err);
 		dialog.showErrorBox(
