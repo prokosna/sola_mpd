@@ -69,9 +69,8 @@ export function SimilaritySearchModal() {
 		refreshSimilaritySearchSongsState,
 	]);
 
-	if (songTableProps === undefined || columnEditModalProps === undefined) {
-		return <CenterSpinner />;
-	}
+	const isLoading =
+		songTableProps === undefined || columnEditModalProps === undefined;
 
 	return (
 		<Modal.Root
@@ -93,26 +92,30 @@ export function SimilaritySearchModal() {
 						height: "80vh",
 					}}
 				>
-					<Box
-						w="100%"
-						flex={1}
-						style={{
-							border: "1px solid var(--mantine-color-default-border)",
-						}}
-					>
-						{searchResult?.kind === "error" ? (
-							<Alert color="gray" title="Not available yet" m="md">
-								{searchResult.message}
-							</Alert>
-						) : (
-							<SongTable
-								{...songTableProps}
-								contextMenuAnchorRef={contextMenuAnchorRef}
-							/>
-						)}
-						<PlaylistSelectModal {...playlistSelectModalProps} />
-						<ColumnEditModal {...columnEditModalProps} />
-					</Box>
+					{isLoading ? (
+						<CenterSpinner />
+					) : (
+						<Box
+							w="100%"
+							flex={1}
+							style={{
+								border: "1px solid var(--mantine-color-default-border)",
+							}}
+						>
+							{searchResult?.kind === "error" ? (
+								<Alert color="gray" title="Not available yet" m="md">
+									{searchResult.message}
+								</Alert>
+							) : (
+								<SongTable
+									{...songTableProps}
+									contextMenuAnchorRef={contextMenuAnchorRef}
+								/>
+							)}
+							<PlaylistSelectModal {...playlistSelectModalProps} />
+							<ColumnEditModal {...columnEditModalProps} />
+						</Box>
+					)}
 				</Modal.Body>
 			</Modal.Content>
 		</Modal.Root>
