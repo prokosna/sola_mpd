@@ -5,6 +5,18 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [4.15.0](https://github.com/prokosna/sola_mpd/compare/v4.14.2...v4.15.0) (2026-11-28)
+
+
+### Features
+
+* **frontend:** notify MPD command and load failures ([#465](https://github.com/prokosna/sola_mpd/issues/465)) ([0439307](https://github.com/prokosna/sola_mpd/commit/0439307590b836d64ee3b48274c6c8733c354ea1))
+
+
+### Bug Fixes
+
+* **messaging:** reject the caller when a Socket.IO handler fails ([#456](https://github.com/prokosna/sola_mpd/issues/456)) ([342b05e](https://github.com/prokosna/sola_mpd/commit/342b05ee2e529eb62e41b1bbb46e91ffe192fce1))
+
 ## [4.14.2](https://github.com/prokosna/sola_mpd/compare/v4.14.1...v4.14.2) (2026-11-20)
 
 
