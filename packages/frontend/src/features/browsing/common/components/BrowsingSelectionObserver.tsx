@@ -18,6 +18,7 @@ import type { SelectionQueryParam } from "../types/browserSelection";
 export function BrowsingSelectionObserver({
 	selectionQueryParam,
 	rememberedSelectionAtom,
+	rememberSelectionActionAtom,
 	restoreSelectionActionAtom,
 }: {
 	selectionQueryParam: string;
@@ -26,12 +27,17 @@ export function BrowsingSelectionObserver({
 		[SelectionQueryParam | undefined],
 		void
 	>;
+	rememberSelectionActionAtom: WritableAtom<
+		null,
+		[SelectionQueryParam | undefined],
+		void
+	>;
 	restoreSelectionActionAtom: WritableAtom<null, [string], Promise<void>>;
 }) {
 	const [searchParams] = useSearchParams();
 	const restoreSelection = useSetAtom(restoreSelectionActionAtom);
 	const remembered = useAtomValue(rememberedSelectionAtom);
-	const setRemembered = useSetAtom(rememberedSelectionAtom);
+	const rememberSelection = useSetAtom(rememberSelectionActionAtom);
 	const applySelectionToUrl = useApplySelectionToUrl(selectionQueryParam);
 	const search = searchParams.toString();
 	const hydratedRef = useRef(false);
@@ -60,13 +66,13 @@ export function BrowsingSelectionObserver({
 		}
 
 		hydratedRef.current = true;
-		setRemembered(current);
+		rememberSelection(current);
 		restoreSelection(search);
 	}, [
 		search,
 		selectionQueryParam,
 		restoreSelection,
-		setRemembered,
+		rememberSelection,
 		applySelectionToUrl,
 	]);
 

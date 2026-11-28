@@ -3,6 +3,7 @@ import { useMemo } from "react";
 import { BrowserView } from "../../common/components/BrowserView";
 import { BrowsingSelectionObserver } from "../../common/components/BrowsingSelectionObserver";
 import { RECENTLY_ADDED_SELECTION_QUERY_PARAM } from "../../common/const/browsingSelectionQueryParams";
+import { rememberRecentlyAddedSelectionActionAtom } from "../states/actions/rememberRecentlyAddedSelectionActionAtom";
 import { restoreRecentlyAddedSelectionActionAtom } from "../states/actions/restoreRecentlyAddedSelectionActionAtom";
 import { rememberedRecentlyAddedSelectionAtom } from "../states/atoms/rememberedRecentlyAddedSelectionAtom";
 import { RecentlyAddedContent } from "./RecentlyAddedContent";
@@ -25,6 +26,7 @@ export function RecentlyAdded() {
 			<BrowsingSelectionObserver
 				selectionQueryParam={RECENTLY_ADDED_SELECTION_QUERY_PARAM}
 				rememberedSelectionAtom={rememberedRecentlyAddedSelectionAtom}
+				rememberSelectionActionAtom={rememberRecentlyAddedSelectionActionAtom}
 				restoreSelectionActionAtom={restoreRecentlyAddedSelectionActionAtom}
 			/>
 			<BrowserView
